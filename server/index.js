@@ -6,6 +6,8 @@ const user = require('./app/user/user.route');
 const auth = require('./app/auth/auth.route');
 const company = require('./app/company/company.route');
 const role = require('./app/role/role.route');
+const link = require('./app/link/link.route');
+const department = require('./app/department/department.route');
 
 require('dotenv').config();
 
@@ -40,6 +42,8 @@ app.use("/user", user);
 app.use("/auth", auth);
 app.use("/company", company);
 app.use("/role", role);
+app.use("/link", link);
+app.use("/department", department);
 
 
 const port = process.env.PORT || 5000;

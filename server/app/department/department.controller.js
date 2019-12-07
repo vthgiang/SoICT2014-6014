@@ -1,8 +1,8 @@
-const RoleService = require('./role.service');
+const DepartmentService = require('./department.service');
 
 exports.get = async (req, res) => {
     try {
-        var roles = await RoleService.get(req, res);
+        var roles = await DepartmentService.get(req, res);
         
         res.status(200).json(roles);
     } catch (error) {
@@ -13,7 +13,7 @@ exports.get = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        var role = await RoleService.create(req, res);
+        var role = await DepartmentService.create(req, res);
         
         res.status(200).json(role);
     } catch (error) {
@@ -24,7 +24,7 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var role = await RoleService.getById(req, res);
+        var role = await DepartmentService.getById(req, res);
         
         res.status(200).json(role);
     } catch (error) {
@@ -35,7 +35,7 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
-        var role = await RoleService.edit(req, res);
+        var role = await DepartmentService.edit(req, res);
         
         res.status(200).json(role);
     } catch (error) {
@@ -46,7 +46,7 @@ exports.edit = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        var role = await RoleService.delete(req, res);
+        var role = await DepartmentService.delete(req, res);
         
         res.status(200).json(role);
     } catch (error) {
