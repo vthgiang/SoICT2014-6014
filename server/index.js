@@ -2,12 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
-const user = require('./app/user/user.route');
-const auth = require('./app/auth/auth.route');
-const company = require('./app/company/company.route');
-const role = require('./app/role/role.route');
-const link = require('./app/link/link.route');
-const department = require('./app/department/department.route');
+const user = require('./modules/basic.user/user.route');
+const auth = require('./modules/basic.auth/auth.route');
+const company = require('./modules/basic.company/company.route');
+const role = require('./modules/basic.role/role.route');
+const link = require('./modules/basic.link/link.route');
+const department = require('./modules/basic.department/department.route');
 
 require('dotenv').config();
 
@@ -30,9 +30,9 @@ mongoose
 .connect(
     db,
     { 
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
     }
 )
 .then(() => console.log("MongoDB successfully connected"))

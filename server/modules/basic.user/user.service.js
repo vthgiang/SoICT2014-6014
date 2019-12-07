@@ -3,9 +3,10 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 
+//lay danh sach thong tin tat ca nguoi dung trong cong ty
 exports.get = async (req, res) => {
     const users = await User
-    .find()
+    .find({ company: req.body.company })
     .select('_id name email company roles')
     .populate([
         { path: 'roles' }, 
@@ -15,6 +16,7 @@ exports.get = async (req, res) => {
     return users;
 }
 
+//lay thong tin nguoi dung theo id
 exports.getById = async (req, res) => {
     var user = await User
         .findById(req.params.id)
@@ -27,6 +29,7 @@ exports.getById = async (req, res) => {
     return user;
 }
 
+//tao mot tai khoan cho nguoi dung moi trong cong ty
 exports.create = async (req, res) => {
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(req.body.password, salt);
