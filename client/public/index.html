@@ -1,35 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/Ionicons/css/ionicons.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet"
+    href="%PUBLIC_URL%/adminLTE/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <!-- Google Font -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+     folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/dist/css/skins/_all-skins.min.css">
+  <!-- Morris chart -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/morris.js/morris.css">
+  <!-- jvectormap -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/jvectormap/jquery-jvectormap.css">
+  <!-- Date Picker -->
+  <link rel="stylesheet"
+    href="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <!-- Table Evaluate -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/datatableedit.css">
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/tablecrollcolumn.css">
+  <!-- Modal css -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/modal.css">
+  <!-- fieldset -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/fieldset.css">
+  <!-- tree grid table data -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/gridtable.css">
+  <!-- BEGIN CO CAU TO CHUC-->
+  <!-- daterange picker -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet"
+    href="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/plugins/iCheck/all.css">
+  <!-- Bootstrap Color Picker -->
+  <link rel="stylesheet"
+    href="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css">
+  <!-- Bootstrap time Picker -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/plugins/timepicker/bootstrap-timepicker.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/select2/dist/css/select2.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/dist/css/AdminLTE.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/plugins/iCheck/square/blue.css">
+  <!-- Kpi member-->
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/kpimember.css">
+  <!-- Organization Structure-->
+  <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+  <link href="%PUBLIC_URL%/main/css/jquery.orgchart.css" media="all" rel="stylesheet" type="text/css" />
+  <!-- fullCalendar -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/fullcalendar/dist/fullcalendar.min.css">
+  <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
+    media="print">
+  <title>QLCV</title>
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+  <div id="root"></div>
+  
+  <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -39,5 +88,100 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+  <!-- jQuery 3 -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.7 -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- DataTables -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script type="text/babel" src="%PUBLIC_URL%/adminLTE/bower_components/jquery-ui/jquery-ui.min.js"></script>
+  <!-- BEGIN JS DASHBOARD-->
+  <!-- Table Edit -->
+  <script type="text/javascript" src="%PUBLIC_URL%/main/js/TableEdit.js"></script>
+  <!-- Morris.js charts -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/raphael/raphael.min.js"></script>
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/morris.js/morris.min.js"></script>
+  <!-- Sparkline -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+  <!-- jvectormap -->
+  <script src="%PUBLIC_URL%/adminLTE/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+  <script src="%PUBLIC_URL%/adminLTE/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <!-- jQuery Knob Chart -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+  <!-- END JS DASHBOARD-->
+  <!-- BEGIN JS CO CAU TO CHUC-->
+  <!-- Select2 -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
+  <!-- InputMask -->
+  <script src="%PUBLIC_URL%/adminLTE/plugins/input-mask/jquery.inputmask.js"></script>
+  <script src="%PUBLIC_URL%/adminLTE/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+  <script src="%PUBLIC_URL%/adminLTE/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+  <!-- date-range-picker -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/moment/min/moment.min.js"></script>
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <!-- bootstrap datepicker -->
+  <script
+    src="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+  <!-- bootstrap color picker -->
+  <script
+    src="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+  <!-- bootstrap time picker -->
+  <script src="%PUBLIC_URL%/adminLTE/plugins/timepicker/bootstrap-timepicker.min.js"></script>
+  <!-- Bootstrap WYSIHTML5 -->
+  <script src="%PUBLIC_URL%/adminLTE/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+  <!-- Slimscroll -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+  <!-- iCheck 1.0.1 -->
+  <script src="%PUBLIC_URL%/adminLTE/plugins/iCheck/icheck.min.js"></script>
+  <!-- FastClick -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/fastclick/lib/fastclick.js"></script>
+  <!-- AdminLTE App -->
+  <script src="%PUBLIC_URL%/adminLTE/dist/js/adminlte.min.js"></script>
+  <!-- <script src="%PUBLIC_URL%/adminLTE/dist/js/pages/dashboard.js"></script> -->
+  <!-- AdminLTE for demo purposes -->
+  <script src="%PUBLIC_URL%/adminLTE/dist/js/demo.js"></script>
+  <!-- Page script -->
+  <!-- <script src="%PUBLIC_URL%/main/js/cocautochuc.js"></script> -->
+  <!-- END JS CO CAU TO CHUC-->
+  <!---Begin Calender Home-->
+  <!-- fullCalendar -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/moment/moment.js"></script>
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+  <!--Begin Organization Structure-->
+  <!-- <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> -->
+  <script type="text/javascript" src="%PUBLIC_URL%/main/js/jquery.orgchart.js"></script>
+  <!-- End Organization Structure-->
+  <script>
+    $(function () {
+      $('#example1').DataTable()
+      $('#example2').DataTable({
+        'paging': true,
+        'lengthChange': false,
+        'searching': false,
+        'ordering': true,
+        'info': true,
+        'autoWidth': false
+      })
+    })
+  </script>
+  <!-- KPI JS -->
+  <!-- ChartJS -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/chart.js/Chart.js"></script>
+  <!-- FLOT CHARTS -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/Flot/jquery.flot.js"></script>
+  <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/Flot/jquery.flot.resize.js"></script>
+  <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+  <!-- <script src="%PUBLIC_URL%/adminLTE/bower_components/Flot/jquery.flot.pie.js"></script> -->
+  <!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/Flot/jquery.flot.categories.js"></script>
+  <!-- <script src="%PUBLIC_URL%/main/js/FlotChart.js"></script> -->
+
+  <!-- Task Management -->
+  <!-- Grid Table Data -->
+  <!-- <script src="%PUBLIC_URL%/main/js/GridTable.js"></script> -->
+</body>
+
 </html>

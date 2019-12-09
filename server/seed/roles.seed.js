@@ -2,7 +2,7 @@ const Role = require('../models/role.model');
 const mongoose = require("mongoose");
 
 // DB Config
-const db = 'mongodb://localhost/qlcv';
+const db = 'mongodb://localhost/vnist-qlcv';
 
 // Connect to MongoDB
 mongoose

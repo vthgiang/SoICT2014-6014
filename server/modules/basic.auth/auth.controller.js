@@ -10,3 +10,15 @@ exports.login = async (req, res) => {
         res.status(400).json(error);
     }
 };
+
+exports.logout = async (req, res) => {
+    try {
+        var logout = await AuthService.logout(req, res);
+        
+        res.status(200).json(logout);
+    } catch (error) {
+
+        res.status(400).json(error);
+    }
+};
+

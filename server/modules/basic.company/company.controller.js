@@ -4,6 +4,7 @@ exports.get = async (req, res) => {
     try {
         const companies = await CompanyService.get(req, res);
         
+        console.log("get all companies");
         res.status(200).json(companies);
     } catch (error) {
         
@@ -14,7 +15,6 @@ exports.get = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const company = await CompanyService.create(req, res);
-        const user = await UserService.create(req, res);
         
         res.status(200).json(company);
     } catch (error) {

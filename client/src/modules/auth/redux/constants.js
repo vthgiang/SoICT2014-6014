@@ -1,0 +1,6 @@
+export const AuthConstants = {
+    LOGIN_REQUEST: 'LOGIN_REQUEST',
+    LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+    LOGIN_FAILE: 'LOGIN_FAILE',
+    LOGOUT: 'LOGOUT',
+}

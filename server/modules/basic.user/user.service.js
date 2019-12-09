@@ -7,7 +7,7 @@ const generator = require("generate-password");
 exports.get = async (req, res) => {
     const users = await User
     .find({ company: req.body.company })
-    .select('_id name email company roles')
+    .select('-password -status -delete_soft')
     .populate([
         { path: 'roles' }, 
         { path: 'company' }
@@ -20,7 +20,7 @@ exports.get = async (req, res) => {
 exports.getById = async (req, res) => {
     var user = await User
         .findById(req.params.id)
-        .select('_id name email company roles')
+        .select('-password -status -delete_soft')
         .populate([
             { path: 'roles' }, 
             { path: 'company' }
@@ -32,12 +32,12 @@ exports.getById = async (req, res) => {
 //tao mot tai khoan cho nguoi dung moi trong cong ty
 exports.create = async (req, res) => {
     var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(req.body.password, salt);
+    var password = generator.generate({ length: 10, numbers: true });
+    var hash = bcrypt.hashSync(password, salt);
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
-    var password = generator.generate({ length: 10, numbers: true });
     var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
         from: 'vnist.qlcv@gmail.com',
         to: req.body.email,
