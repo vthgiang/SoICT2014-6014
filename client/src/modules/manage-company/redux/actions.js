@@ -15,3 +15,19 @@ export const get = () => {
             })
     }
 }
+
+export const create = (company) => {
+    console.log("Company req: ",company);
+    return dispatch => {
+        companyServices.create(company)
+            .then(res => {
+                dispatch({
+                    type: companyConstants.CREATE_COMPANIE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err.response.data);
+            })
+    }
+}

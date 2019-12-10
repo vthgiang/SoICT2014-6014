@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { create } from '../redux/actions';
 
 class CompanyCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
             name: null,
-            shortName: null,
+            short_name: null,
             description: null,
             email: null
         }
@@ -26,8 +27,8 @@ class CompanyCreateForm extends Component {
 
     save = (e) => {
         e.preventDefault();
-        const { name, shortName, description, email } = this.state;
-        const company = { name, shortName, description, email };
+        const { name, short_name, description, email } = this.state;
+        const company = { name, short_name, description, email };
         this.props.addCompany( company );
     }
 
@@ -55,7 +56,7 @@ class CompanyCreateForm extends Component {
                                         </div>
                                         <div className="form-group">
                                             <label>{ translate('table.shortName') }</label>
-                                            <input type="text" className="form-control" name="shortName" onChange={ this.inputChange }/>
+                                            <input type="text" className="form-control" name="short_name" onChange={ this.inputChange }/>
                                         </div>
                                         <div className="form-group">
                                             <label>{ translate('table.description') }</label>
@@ -86,9 +87,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return{
-        // addCompany: (company) => {
-        //     dispatch(create(company)); 
-        // },
+        addCompany: (company) => {
+            dispatch(create(company)); 
+        },
     }
 }
 

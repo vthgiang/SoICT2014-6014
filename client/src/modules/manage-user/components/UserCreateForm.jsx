@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { get } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
-import ReactLoading from 'react-loading';
+// import Swal from 'sweetalert2';
+// import ReactLoading from 'react-loading';
 
 class UserCreateForm extends Component {
     constructor(props) {

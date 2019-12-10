@@ -23,7 +23,6 @@ class MainHeaderMenu extends Component {
 
     render() {
         const { auth } = this.props;
-        console.log("header auth: ", auth);
         const { currentRole } = this.state;
         return (
             <React.Fragment>

@@ -1,4 +1,4 @@
-import { companyConstants } from "./constants";
+import { RoleConstants } from "./constants";
 
 const initState = {
     list: [],
@@ -6,16 +6,22 @@ const initState = {
     error: null
 }
 
-export function company(state = initState, action) {
+export function role(state = initState, action) {
 
     switch (action.type) {
-        case companyConstants.GET_COMPANIES_SUCCESS:
+        case RoleConstants.GET_ROLES_SUCCESS:
             return {
                 ...state,
                 list: action.payload
             };
-        
-        case companyConstants.CREATE_COMPANIE_SUCCESS:
+
+        case RoleConstants.SHOW_ROLE_SUCCESS:
+            return {
+                ...state,
+                item: action.payload
+            };
+
+        case RoleConstants.CREATE_ROLE_SUCCESS:
             return {
                 ...state,
                 list: [

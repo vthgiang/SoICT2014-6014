@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { get } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import ReactLoading from 'react-loading';
+// import ReactLoading from 'react-loading';
 import ManageUserTable from './ManageUserTable';
 import UserCreateForm from './UserCreateForm';
 
@@ -66,7 +66,6 @@ class ManageUser extends Component {
     }
 
     render() { 
-        const { user, translate } = this.props;
         return ( 
             <React.Fragment>
                 <UserCreateForm/>

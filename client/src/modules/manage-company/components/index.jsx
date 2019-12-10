@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get } from '../redux/actions';
 import CompanyTable from './CompanyTable';
 import CompanyCreateForm from './CompanyCreateForm';
 
@@ -10,12 +9,7 @@ class Company extends Component {
         this.state = {  }
     }
 
-    componentDidMount(){
-        this.props.getCompanies();
-    }
-
     render() { 
-        const { company } = this.props;
         return ( 
             <React.Fragment>
                 <CompanyCreateForm/>
@@ -31,9 +25,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return{
-        getCompanies: () => {
-            dispatch(get()); 
-        },
     }
 }
 
