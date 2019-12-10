@@ -3,11 +3,13 @@ import { combineReducers } from 'redux';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/manage-company/redux/reducers';
 import { user } from '../modules/manage-user/redux/reducers';
+import { role } from '../modules/manage-role/redux/reducers';
 
 const rootReducer = combineReducers(Object.assign({
     auth,
     company,
-    user
+    user,
+    role
 
 }, { Intl }));
 

@@ -15,6 +15,10 @@ const menu = [
         name: 'Manage User',
         path: '/manage-user',
         icon: 'fa fa-users'
+    },{
+        name: 'Manage Role',
+        path: '/manage-role',
+        icon: 'fa fa-lock'
     },
 ];
 

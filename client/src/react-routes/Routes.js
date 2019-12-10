@@ -8,11 +8,13 @@ import Login from '../modules/auth/components/Login';
 import Home from '../modules/home/components';
 import ManageCompany from '../modules/manage-company/components';
 import ManageUser from '../modules/manage-user/components';
+import ManageRole from '../modules/manage-role/components';
 
 const pages = [
     { path: '/', exact: true, component: () => <Home/> },
     { path: '/manage-company', exact: true, component: () => <ManageCompany/> },
     { path: '/manage-user', exact: true, component: () => <ManageUser/> },
+    { path: '/manage-role', exact: true, component: () => <ManageRole/> },
 ]
 
 class Routes extends Component {
