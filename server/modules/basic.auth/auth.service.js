@@ -3,19 +3,20 @@ const jwt = require('jsonwebtoken');
 const User = require('../../models/user.model');
 const {loginValidation} = require('./auth.validation');
 
-exports.login = async (req, res) => {
-    const {error} = loginValidation(req.body);
-    if(error) return res.status(400).json({msg: error.details[0].message});
+exports.login = async (data) => { // data bao gom email va password
+    const {error} = loginValidation(data);
+    if(error) throw {msg: error.details[0].message};
 
     const user = await User
-        .findOne({email: req.body.email})
+        .findOne({email : data.email})
         .populate([
             { path: 'roles' }, 
             { path: 'company' }
         ]);
 
-    if(!user) return res.status(400).json({msg: 'Email invalid'});
-    const validPass = await bcrypt.compare(req.body.password, user.password);
+    if(!user) throw {msg: "Email invalid"};
+
+    const validPass = await bcrypt.compare(data.password, user.password);
 
     if(!validPass) {
         if(user.active) user.status = user.status + 1;
@@ -24,14 +25,14 @@ exports.login = async (req, res) => {
             user.status = 0;
             user.save();
 
-            return res.status(400).json({ msg: 'Enter the wrong password more than 5 times. The account has been locked.'});
+            throw { msg: 'Enter the wrong password more than 5 times. The account has been locked.'};
         }
         user.save();
 
-        return res.status(400).json({msg: 'Password invalid'});
+        throw {msg: 'Password invalid'};
     }
 
-    if(!user.active) return res.status(400).json({ msg: ' Cannot login! The account has been locked !'});
+    if(!user.active) throw { msg: ' Cannot login! The account has been locked !'};
     
     //Check user info OK. => Login success to user
     const token = await jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);

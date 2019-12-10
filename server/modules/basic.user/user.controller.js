@@ -2,7 +2,8 @@ const UserService = require('./user.service');
 
 exports.get = async (req, res) => {
     try {
-        var users = await UserService.get(req, res);
+        console.log("ID company: ", req.params.idCompany);
+        var users = await UserService.get(req.params.idCompany);
 
         res.status(200).json(users);
     } catch (error) {
@@ -13,7 +14,7 @@ exports.get = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        var user = await UserService.create(req, res);
+        var user = await UserService.create(req.body);
 
         res.status(200).json(user);
     } catch (error) {
@@ -23,7 +24,7 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var user = await UserService.getById(req, res);
+        var user = await UserService.getById(req.params.id);
 
         res.status(200).json(user)
     } catch (error) {
@@ -34,7 +35,7 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
-        var user = await UserService.edit(req, res);
+        var user = await UserService.edit(req.params.id, req.body);
         
         res.status(200).json(user);
     } catch (error) {
@@ -45,7 +46,7 @@ exports.edit = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        var deleteUser = await UserService.delete(req, res);
+        var deleteUser = await UserService.delete(req.params.id);
 
         res.status(200).json(deleteUser);
     } catch (error) {

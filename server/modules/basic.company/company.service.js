@@ -1,42 +1,42 @@
 const Company = require('../../models/company.model');
 
-exports.get = async (req, res) => {
+exports.get = async () => {
     
     return await Company.find();
 }
 
-exports.getById = async (req, res) => {
+exports.getById = async (id) => {
     
-    return await Company.findById(req.params.id);
+    return await Company.findById(id);
 }
 
-exports.create = async(req, res) => {
-    var test = await Company.findOne({ short_name: req.body.short_name });
-    if(test) return res.status(400).json({ msg: 'Short name already exists' });
+exports.create = async(data) => {
+    var test = await Company.findOne({ short_name: data.short_name });
+    if(test) throw { msg: 'Short name already exists' };
     
     return await Company.create({
-        name: req.body.name,
-        description: req.body.description,
-        short_name: req.body.short_name
+        name: data.name,
+        description: data.description,
+        short_name: data.short_name
     });
 }
 
-exports.edit = async(req, res) => {
-    var company = await Company.findById(req.params.id);
-    if(company.short_name !== req.body.short_name){
+exports.edit = async(id, data) => {
+    var company = await Company.findById(id);
+    if(company.short_name !== data.short_name){
         //check shortname invalid?
-        var test = await Company.findOne({ short_name: req.body.short_name }); 
-        if(test) return res.status(400).json({ msg: 'Short name already exists' }); 
+        var test = await Company.findOne({ short_name: data.short_name }); 
+        if(test) throw { msg: 'Short name already exists' }; 
     }
-    company.name = req.body.name,
-    company.description = req.body.description,
-    company.short_name = req.body.short_name
+    company.name = data.name;
+    company.description = data.description;
+    company.short_name = data.short_name;
     company.save();
 
     return company;
 }
 
-exports.delete = async(req, res) => {
+exports.delete = async(id) => {
 
-    return await Company.deleteOne({ _id: req.params.id });
+    return await Company.deleteOne({ _id: id });
 }

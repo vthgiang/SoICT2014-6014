@@ -54,3 +54,16 @@ exports.delete = async (req, res) => {
         res.status(400).json(error);
     }
 };
+
+
+/* ------manage links of 1 company ------------------*/
+exports.getLinksOfCompany = async (req, res) => {
+    try {
+        var links = await LinkService.getLinksOfCompany(req, res);
+
+        res.status(200).json(links);
+    } catch (error) {
+
+        res.status(400).json(error);
+    }
+}

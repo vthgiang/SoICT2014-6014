@@ -8,4 +8,7 @@ router.get("/:id", LinkController.show);
 router.patch("/:id", LinkController.edit);
 router.delete("/:id", LinkController.delete);
 
+//manage link of 1 company
+router.get("/company/:idCompany", LinkController.getLinksOfCompany);
+
 module.exports = router;

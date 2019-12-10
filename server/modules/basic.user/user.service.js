@@ -4,22 +4,22 @@ const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 
 //lay danh sach thong tin tat ca nguoi dung trong cong ty
-exports.get = async (req, res) => {
+exports.get = async (company) => { //id cua cong ty do
     const users = await User
-    .find({ company: req.body.company })
-    .select('-password -status -delete_soft')
-    .populate([
-        { path: 'roles' }, 
-        { path: 'company' }
-    ]);
+        .find({ company })
+        .select('-password -status -delete_soft')
+        .populate([
+            { path: 'roles' }, 
+            { path: 'company' }
+        ]);
 
     return users;
 }
 
 //lay thong tin nguoi dung theo id
-exports.getById = async (req, res) => {
+exports.getById = async (id) => { //tim user theo id
     var user = await User
-        .findById(req.params.id)
+        .findById(id)
         .select('-password -status -delete_soft')
         .populate([
             { path: 'roles' }, 
@@ -30,7 +30,7 @@ exports.getById = async (req, res) => {
 }
 
 //tao mot tai khoan cho nguoi dung moi trong cong ty
-exports.create = async (req, res) => {
+exports.create = async (data) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({ length: 10, numbers: true });
     var hash = bcrypt.hashSync(password, salt);
@@ -40,48 +40,48 @@ exports.create = async (req, res) => {
     });
     var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
         from: 'vnist.qlcv@gmail.com',
-        to: req.body.email,
+        to: data.email,
         subject: 'Xác thực tạo tài khoản trên hệ thống quản lý công việc',
-        text: 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + req.body.email,
+        text: 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + data.email,
         html:   
                 '<p>Tài khoản dùng để đăng nhập của bạn là : </p' + 
                 '<ul>' + 
-                    '<li>Tài khoản :' + req.body.email + '</li>' +
+                    '<li>Tài khoản :' + data.email + '</li>' +
                     '<li>Mật khẩu :' + password + '</li>' + 
                 '</ul>' + 
                 `<p>Đăng nhập ngay tại : <a href="${process.env.SERVER}/login">${process.env.SERVER}/login</a></p>` + '<br>' +
                 '<p>Your account use to login in system : </p' + 
                 '<ul>' + 
-                    '<li>Account :' + req.body.email + '</li>' +
+                    '<li>Account :' + data.email + '</li>' +
                     '<li>Password :' + password + '</li>' + 
                 '</ul>' + 
                 `<p>Login in: <a href="${process.env.SERVER}/login">${process.env.SERVER}/login</a></p>`
     }
     var user = await User.create({
-        name: req.body.name,
-        email: req.body.email,
+        name: data.name,
+        email: data.email,
         password: hash,
-        roles: req.body.roles ? req.body.roles : [], //array roles to user
-        company: req.body.company ? req.body.company : null //company for user
+        roles: data.roles ? data.roles : [], //array roles to user
+        company: data.company ? data.company : null //company for user
     });
     var mail = await transporter.sendMail(mainOptions);
     
     return {user, mail};
 }
 
-exports.edit = async (req, res) => {
+exports.edit = async (id, data) => {
     var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(req.body.password, salt);
-    var user = await User.findById(req.params.id);
-    user.name = req.body.name;
+    var hash = bcrypt.hashSync(data.password, salt);
+    var user = await User.findById(id);
+    user.name = data.name;
     user.password = hash;
     user.save();
 
     return user;
 }
 
-exports.delete = async (req, res) => {
-    var deleteUser = await User.deleteOne({ _id: req.params.id });
+exports.delete = async (id) => {
+    var deleteUser = await User.deleteOne({ _id: id });
     
     return deleteUser;
 }
