@@ -1,53 +1,44 @@
 const Link = require('../../models/link.model');
 
-exports.get = async (req, res) => {
+exports.get = async () => {
 
     return await Link.find();
 }
 
-exports.getById = async (req, res) => {
+exports.getById = async (id) => {
 
-    return await Link.findById(req.params.id);
+    return await Link.findById(id);
 }
 
-exports.create = async(req, res) => {
+exports.create = async(data) => {
 
     return await Link.create({
-        url: req.body.url,
-        description: req.body.description,
-        company: req.body.company
+        url: data.url,
+        description: data.description,
+        company: data.company
     });
 }
 
-exports.edit = async(req, res) => {
-    var link = await Link.findById(req.params.id);
-    link.url = req.body.url;
-    link.description = req.body.description;
-    link.company = req.body.company ? req.body.company : link.company;
+exports.edit = async(id, data) => {
+    var link = await Link.findById(id);
+    link.url = data.url;
+    link.description = data.description;
+    link.company = data.company ? data.company : link.company;
     link.save();
 
     return link;
 }
 
-exports.delete = async(req, res) => {
+exports.delete = async(id) => {
     
-    return await Link.deleteOne({ _id: req.params.id });
+    return await Link.deleteOne({ _id: id});
 }
 
 /*----------------------------------------------------------
 -----------------Manage links of 1 company -----------------
 -----------------------------------------------------------*/
 
-exports.getLinksOfCompany = async(req, res) => {
+exports.getLinksOfCompany = async(id) => {
 
-    return await Link.find({ company: req.params.idCompany });
+    return await Link.find({ company: id });
 } 
-
-exports.getLinkOfCompanyById = async(req, res) => {
-
-    return await Link.findOne({ 
-        _id: req.params.id,
-        company: req.params.idCompany,
-    });
-}
-

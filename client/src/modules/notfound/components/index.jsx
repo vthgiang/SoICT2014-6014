@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import RoleTable from './RoleTable';
-import RoleCreateForm from './RoleCreateForm';
 
-class ManageRole extends Component {
+class NotFoundPage extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
@@ -10,11 +8,10 @@ class ManageRole extends Component {
     render() { 
         return ( 
             <React.Fragment>
-                <RoleCreateForm/>
-                <RoleTable/>
+                <h1 style={{ textAlign: 'center', color: 'red'}}> NOT FOUND THIS PAGE</h1>
             </React.Fragment>
          );
     }
 }
  
-export default ManageRole;
+export default NotFoundPage;

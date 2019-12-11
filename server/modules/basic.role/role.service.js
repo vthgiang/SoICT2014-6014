@@ -36,11 +36,14 @@ exports.create = async(data) => {
 }
 
 exports.edit = async(id, data) => {
-    var role = await Role.findById(id);
-    role.name = data.name !== null ? data.name : role.name ;
-    role.users = data.users !== null ? data.users : role.users;
-    role.abstract = data.abstract !== null ? data.abstract : role.abstract;
-    role.save();
+    var role = await Role.updateOne({ _id: id },{
+        '$set': {
+            name: data.name,
+            users: data.users,
+            abstract: data.abstract
+        }
+    });
+    console.log("role end: ", role);
 
     return role;
 }

@@ -1,4 +1,4 @@
-import { RoleConstants } from "./constants";
+import { LinkConstants } from "./constants";
 
 const initState = {
     list: [],
@@ -6,22 +6,22 @@ const initState = {
     error: null
 }
 
-export function role(state = initState, action) {
+export function link (state = initState, action) {
 
     switch (action.type) {
-        case RoleConstants.GET_ROLES_SUCCESS:
+        case LinkConstants.GET_LINKS_SUCCESS:
             return {
                 ...state,
                 list: action.payload
             };
 
-        case RoleConstants.SHOW_ROLE_SUCCESS:
+        case LinkConstants.SHOW_LINK_SUCCESS:
             return {
                 ...state,
                 item: action.payload
             };
 
-        case RoleConstants.CREATE_ROLE_SUCCESS:
+        case LinkConstants.CREATE_LINK_SUCCESS:
             return {
                 ...state,
                 list: [

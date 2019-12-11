@@ -1,33 +1,24 @@
 const Privilege = require('../../models/privilege.model');
+const Link = require('../../models/link.model');
+const Role = require('../../models/role.model');
 
-exports.get = async (req, res) => {
+exports.addRoleToLink = async (idLink, arrRole) => {
+    const check = await Privilege.findOne({ resource: idLink });
+    if(check === null){
+        //Chua co privilege cho link hien tai
+        const privilege = await Privilege.create({
+            resource: idLink,
+            resource_type: 'Link',
+            role: arrRole
+        });
 
-    return await Link.find();
-}
+        return privilege;
+    }else{
+        //Privilege cho link hien tai da ton tai
+        check.role = check.role.concat(arrRole);
+        check.save();
 
-exports.getById = async (req, res) => {
-
-    return await Link.findById(req.params.id);
-}
-
-exports.create = async(req, res) => {
-
-    return await Link.create({
-        url: req.body.url,
-        description: req.body.description
-    });
-}
-
-exports.edit = async(req, res) => {
-    var link = await Link.findById(req.params.id);
-    link.url = req.body.url;
-    link.description = req.body.description;
-    link.save();
-
-    return link;
-}
-
-exports.delete = async(req, res) => {
+        return check;
+    }
     
-    return await Link.deleteOne({ _id: req.params.id });
 }

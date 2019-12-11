@@ -1,25 +1,36 @@
 import React, { Component } from 'react';
 import Item from './Item';
 import { connect } from 'react-redux';
+import {reactLocalStorage} from 'reactjs-localstorage';
+let companyURL = reactLocalStorage.getObject('company');
 
 const menu = [
     {
         name: 'Home',
-        path: '/',
+        path: `/${companyURL.short_name}/`,
         icon: 'fa fa-home'
     },{
         name: 'Manage Company',
-        path: '/manage-company',
+        path: `/manage-company`,
         icon: 'fa fa-building'
     },{
         name: 'Manage User',
-        path: '/manage-user',
+        path: `/${companyURL.short_name}/manage-user`,
         icon: 'fa fa-users'
     },{
         name: 'Manage Role',
-        path: '/manage-role',
+        path: `/${companyURL.short_name}/manage-role`,
         icon: 'fa fa-lock'
-    },
+    },{
+        name: 'Manage Link',
+        path: `/${companyURL.short_name}/manage-link`,
+        icon: 'fa fa-link'
+    }
+    // ,{
+    //     name: 'Manage ComponentUI',
+    //     path: `/${companyURL.short_name}/manage-component-ui`,
+    //     icon: 'fa fa-simplybuilt'
+    // },
 ];
 
 class SideBar extends Component {

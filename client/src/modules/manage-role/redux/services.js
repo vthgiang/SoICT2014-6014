@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../config';
+import {reactLocalStorage} from 'reactjs-localstorage';
+const company = reactLocalStorage.getObject('company');
 
 export const RoleServices = {
     get,
@@ -9,7 +11,7 @@ export const RoleServices = {
 
 function get() {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/role`,
+        url: `${ LOCAL_SERVER_API }/role/company/${company._id}`,
         method: 'GET'
     };
 

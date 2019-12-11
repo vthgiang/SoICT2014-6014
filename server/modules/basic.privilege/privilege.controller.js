@@ -54,3 +54,14 @@ exports.delete = async (req, res) => {
         res.status(400).json(error);
     }
 };
+
+exports.addRoleToLink = async (req, res) => {
+    try {
+        var role = await PrivilegeService.addRoleToLink(req.body.idLink, req.body.idRole);
+        
+        res.status(200).json(role);
+    } catch (error) {
+        
+        res.status(400).json(error);
+    }
+};

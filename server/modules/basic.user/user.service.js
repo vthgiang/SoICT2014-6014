@@ -66,7 +66,7 @@ exports.create = async (data) => {
     });
     var mail = await transporter.sendMail(mainOptions);
     
-    return {user, mail};
+    return user;
 }
 
 exports.edit = async (id, data) => {

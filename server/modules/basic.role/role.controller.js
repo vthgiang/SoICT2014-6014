@@ -2,7 +2,7 @@ const RoleService = require('./role.service');
 
 exports.get = async (req, res) => {
     try {
-        var roles = await RoleService.get(req.body.company); //truyen vao id cua cong ty
+        var roles = await RoleService.get(req.params.idCompany); //truyen vao id cua cong ty
         
         res.status(200).json(roles);
     } catch (error) {
