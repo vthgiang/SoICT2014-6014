@@ -15,6 +15,9 @@ export function department(state = initState, action) {
                 list: action.payload
             };
 
+        case 'RESET_APP':
+            return initState;
+
         default:
             return state;
     }

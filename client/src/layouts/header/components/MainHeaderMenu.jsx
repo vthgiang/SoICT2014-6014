@@ -4,6 +4,7 @@ import '../css/MainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
 import { logout } from '../../../modules/auth/redux/actions';
 import { IntlActions } from 'react-redux-multilingual';
+import { getLinksOfRole } from '../../../modules/manage-link/redux/actions';
 
 class MainHeaderMenu extends Component {
 
@@ -18,7 +19,11 @@ class MainHeaderMenu extends Component {
     selectHandle(e){
         this.setState({currentRole: e.target.value});
         localStorage.setItem('currentRole', e.target.value);
-        // this.props.getLinkOfRole();
+        this.props.getLinksOfRole(e.target.value);
+    }
+
+    componentDidMount(){
+        this.props.getLinksOfRole(this.state.currentRole);
     }
 
     render() {
@@ -120,9 +125,9 @@ const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
             localStorage.setItem('lang', 'en');
             dispatch(IntlActions.setLocale('en'));
         },
-        // getLinkOfRole: () => {
-        //     dispatch(getLinkOfRole());
-        // },
+        getLinksOfRole: (idRole) => {
+            dispatch(getLinksOfRole(idRole));
+        },
     }
 }
 

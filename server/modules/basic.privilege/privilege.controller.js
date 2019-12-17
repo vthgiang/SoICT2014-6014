@@ -65,3 +65,14 @@ exports.addRoleToLink = async (req, res) => {
         res.status(400).json(error);
     }
 };
+
+exports.getLinksOfRole = async (req, res) => {
+    try {
+        var links = await PrivilegeService.getLinksOfRole(req.params.idRole);
+        
+        res.status(200).json(links);
+    } catch (error) {
+        
+        res.status(400).json(error);
+    }
+};

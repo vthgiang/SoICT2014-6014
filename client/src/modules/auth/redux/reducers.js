@@ -8,7 +8,7 @@ const email = localStorage.getItem('email');
 const roles = reactLocalStorage.getObject('roles');
 const company = reactLocalStorage.getObject('company');
 
-const initAuth = {
+const initState = {
     logged: token ? true : false,
     user: {
         _id: _id ? _id : null,
@@ -20,7 +20,7 @@ const initAuth = {
     error: null
 }
 
-export function auth(state = initAuth, action) {
+export function auth(state = initState, action) {
 
     switch (action.type) {
         case AuthConstants.LOGIN_SUCCESS:
@@ -45,19 +45,8 @@ export function auth(state = initAuth, action) {
                 error: action.payload.msg
             };
 
-        case AuthConstants.LOGOUT:
-            return {
-                ...state,
-                logged: false,
-                user: {
-                    _id: null,
-                    name: null,
-                    email: null,
-                    roles: null,
-                    company: null
-                },
-                error: null
-            };
+        case 'RESET_APP':
+            return initState;
 
         default:
             return state;

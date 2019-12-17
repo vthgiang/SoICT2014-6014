@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 // DB Config
-const db = 'mongodb://localhost/vnist-qlcv';
+const db = 'mongodb+srv://qlcv:thai135@cluster0-zqzcq.mongodb.net/test?retryWrites=true&w=majority';
 
 // Connect to MongoDB
 mongoose

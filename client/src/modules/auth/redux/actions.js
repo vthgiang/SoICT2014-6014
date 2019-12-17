@@ -33,7 +33,7 @@ export const logout = () => {
 
     return dispatch => {
         dispatch({
-            type: AuthConstants.LOGOUT
+            type: 'RESET_APP'
         })
     }
 }

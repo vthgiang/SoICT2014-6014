@@ -30,6 +30,9 @@ export function role(state = initState, action) {
                 ]
             };
 
+        case 'RESET_APP':
+            return initState;
+
         default:
             return state;
     }

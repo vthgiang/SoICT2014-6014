@@ -52,6 +52,9 @@ class RoleTable extends Component {
                         </tbody>
                     </table>
                 }
+                {/* <fieldset className="scheduler-border">
+                    <legend className="scheduler-border"><h4 className="box-title">Thông tin cơ bản</h4></legend>
+                </fieldset> */}
             </React.Fragment>
          );
     }

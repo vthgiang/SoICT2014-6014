@@ -8,6 +8,7 @@ const company = require('./modules/basic.company/company.route');
 const role = require('./modules/basic.role/role.route');
 const link = require('./modules/basic.link/link.route');
 const department = require('./modules/basic.department/department.route');
+const privilege = require('./modules/basic.privilege/privilege.route');
 
 require('dotenv').config();
 
@@ -44,6 +45,7 @@ app.use("/company", company);
 app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
+app.use("/privilege", privilege);
 
 
 const port = process.env.PORT || 5000;

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { get, create } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
+import { reactLocalStorage } from 'reactjs-localstorage';
 
 class RoleCreateForm extends Component {
     constructor(props) {
@@ -36,9 +37,11 @@ class RoleCreateForm extends Component {
         e.preventDefault();
         let select = this.refs.abstract;
         let abstract = [].filter.call(select.options, o => o.selected).map(o => o.value);
+        const com = reactLocalStorage.getObject('company');
+        const company = com._id;
 
         const { name } = this.state;
-        const role = { name, abstract }
+        const role = { name, company, abstract };
         this.props.create(role);
     }
 

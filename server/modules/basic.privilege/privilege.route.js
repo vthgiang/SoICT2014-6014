@@ -8,4 +8,6 @@ router.get("/:id", PrivilegeController.show);
 router.patch("/:id", PrivilegeController.edit);
 router.delete("/:id", PrivilegeController.delete);
 
+router.get("/get-links-of-role/:idRole", PrivilegeController.getLinksOfRole);
+
 module.exports = router;

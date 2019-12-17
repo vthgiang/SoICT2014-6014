@@ -6,7 +6,8 @@ const company = reactLocalStorage.getObject('company');
 export const LinkServices = {
     get,
     show,
-    create
+    create,
+    getLinksOfRole
 };
 
 function get() {
@@ -32,6 +33,15 @@ function create(link) {
         url: `${ LOCAL_SERVER_API }/link`,
         method: 'POST',
         data: link
+    };
+
+    return axios(requestOptions);
+}
+
+function getLinksOfRole(idRole) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/privilege/get-links-of-role/${idRole}`,
+        method: 'GET'
     };
 
     return axios(requestOptions);

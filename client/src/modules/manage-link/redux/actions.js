@@ -45,3 +45,18 @@ export const create = (link) => {
             })
     }
 }
+
+export const getLinksOfRole = (idRole) => {
+    return dispatch => {
+        LinkServices.getLinksOfRole(idRole)
+            .then(res => {
+                dispatch({
+                    type: LinkConstants.GET_LINKS_OF_ROLE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
