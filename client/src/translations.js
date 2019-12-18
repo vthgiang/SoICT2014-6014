@@ -3,7 +3,7 @@ export default {
         locale: 'vn',
         messages: {
             hello: 'Xin chào {name}',
-            profile: 'Hồ sơ',
+            profile: 'Thông tin tài khoản người dùng',
             logout: 'Đăng xuất',
             manageCompany: {
                 name: 'Quản lý thông tin các công ty',
@@ -63,6 +63,7 @@ export default {
                 email: 'Email',
                 action: 'Hành động',
                 password: 'Mật khẩu',
+                confirm: 'Xác nhận mật khẩu',
                 back: 'Quay lại',
                 close: 'Đóng',
                 save: 'Lưu',
@@ -159,6 +160,7 @@ export default {
                 email: 'Email',
                 action: 'Action',
                 password: 'Password',
+                confirm: 'Confirm password',
                 back: 'Back',
                 close: 'Close',
                 save: 'Save',

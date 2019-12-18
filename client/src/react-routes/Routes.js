@@ -30,14 +30,14 @@ class Routes extends Component {
 
         return (
             <React.Fragment>
-                {/* <Route exact path=" " component={ NotFoundPage }></Route> */}
-                <AuthRoute 
-                    exact
-                    auth={ auth }
-                    path="/login"
-                    component={ Login }
-                />
                 {
+                    !auth.logged ? 
+                    <AuthRoute 
+                        exact
+                        auth={ auth }
+                        path="/login"
+                        component={ Login }
+                    /> :
                     pages.map( page => 
                         <PrivateRoute 
                             key={ page.path}
@@ -49,7 +49,6 @@ class Routes extends Component {
                         />
                     )
                 }
-                <Route exact path="/login" component={ Login }/>
             </React.Fragment>
         );
     }
