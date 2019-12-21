@@ -1,15 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get } from '../redux/actions';
+import { create } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
+import { reactLocalStorage } from 'reactjs-localstorage';
 // import Swal from 'sweetalert2';
 // import ReactLoading from 'react-loading';
 
 class UserCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            name: null,
+            email: null
+         }
+        this.inputChange = this.inputChange.bind(this);
+        this.save = this.save.bind(this);
     }
+
+    inputChange = (e) => {
+        const target = e.target;
+        const name = target.name;
+        const value = target.value;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    save = (e) => {
+        e.preventDefault();
+        const { name, email } = this.state;
+        const company = reactLocalStorage.getObject('company');
+        const user = {
+            name, email,
+            company: company._id
+        };
+        this.props.create(user);
+    }
+
     render() { 
         const{ translate } = this.props;
         return ( 
@@ -18,9 +45,8 @@ class UserCreateForm extends Component {
                 <div className="modal fade" id="modal-id">
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 className="modal-title">{ translate('manageUser.name') }</h4>
+                            <div className="modal-header bg bg-purple">
+                                <h4 className="modal-title">{ translate('manageUser.create') }</h4>
                             </div>
                             <div className="modal-body">
                                 <form style={{ marginBottom: '20px' }} >
@@ -35,8 +61,8 @@ class UserCreateForm extends Component {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-danger" data-dismiss="modal"><i className="fa fa-close"></i> { translate('table.close') }</button>
-                                <button className="btn btn-primary" onClick={ this.save } data-dismiss="modal"><i className="fa fa-save"></i> { translate('table.save') }</button>
+                                <button className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
+                                <button className="btn btn-success" onClick={ this.save } data-dismiss="modal">{ translate('table.save') }</button>
                             </div>
                         </div>
                     </div>
@@ -52,12 +78,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return{
-        getUser: () => {
-            dispatch(get()); 
+        create: (user) => {
+            dispatch(create(user));
         },
-        // create: (user) => {
-        //     dispatch(create(user));
-        // },
         // destroy: (id) => {
         //     dispatch(destroy(id));
         // }

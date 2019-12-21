@@ -35,7 +35,7 @@ class CompanyEditForm extends Component {
         const { translate, companyID, companyName, companyShortName, companyDescription } = this.props;
         return ( 
             <React.Fragment>
-                <a data-toggle="modal" href={ `#modal-company-${companyID}` } ><i className="fa fa-info"></i></a>
+                <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#modal-company-${companyID}` } ><i className="fa fa-info"></i></a>
                 <div className="modal fade" id={ `modal-company-${companyID}` }>
                     <div className="modal-dialog">
                     <div className="modal-content">

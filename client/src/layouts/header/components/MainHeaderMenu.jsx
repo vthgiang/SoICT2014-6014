@@ -4,7 +4,7 @@ import '../css/MainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
 import { logout } from '../../../modules/auth/redux/actions';
 import { IntlActions } from 'react-redux-multilingual';
-import { getLinksOfRole } from '../../../modules/manage-link/redux/actions';
+import { getLinksOfRole } from '../../../modules/auth/redux/actions';
 
 class MainHeaderMenu extends Component {
 
@@ -23,6 +23,7 @@ class MainHeaderMenu extends Component {
     }
 
     componentDidMount(){
+        console.log('Lay link cua role hien tai')
         this.props.getLinksOfRole(this.state.currentRole);
     }
 
@@ -44,8 +45,8 @@ class MainHeaderMenu extends Component {
                                     { 
                                         auth.user.roles.map( role => {
                                             return (
-                                                <option key={ role._id } value={ role._id }>
-                                                    { role.name }
+                                                <option key={ role.roleId._id } value={ role.roleId._id }>
+                                                    { role.roleId.name }
                                                 </option>
                                             )
                                         })

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MainHeaderMenu from './MainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { editProfile } from '../../../modules/auth/redux/actions';
 
 class Header extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class Header extends Component {
         const { name, email, password, confirm } = this.state;
         if( password === confirm && password !== null ){
             const profile = { name, email, password };
-            this.props.editUser( profile );
+            this.props.editProfile( profile );
         }else{
             if(password !== null) this.setState({ confirmNotification: 'Confirm invalid! Please input again!' });
             else this.setState({ confirmNotification: 'Password is not null' });
@@ -89,7 +90,7 @@ class Header extends Component {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-default pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-primary" onClick={ this.save }>{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={ this.save }>{ translate('table.save') }</button>
                         </div>
                         </div>
                     </div>
@@ -105,9 +106,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return{
-        // getUser: () => {
-        //     dispatch(get()); 
-        // }
+        editProfile: (data) => {
+            dispatch(editProfile(data)); 
+        }
     }
 }
 

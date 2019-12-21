@@ -45,3 +45,18 @@ export const create = (role) => {
             })
     }
 }
+
+export const edit = (role) => {
+    return dispatch => {
+        RoleServices.edit(role)
+            .then(res => {
+                dispatch({
+                    type: RoleConstants.EDIT_ROLE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}

@@ -2,9 +2,9 @@ const DepartmentService = require('./department.service');
 
 exports.get = async (req, res) => {
     try {
-        var roles = await DepartmentService.get(req, res);
+        var department = await DepartmentService.get(res.params.id); //truyen vao id cua company
         
-        res.status(200).json(roles);
+        res.status(200).json(department);
     } catch (error) {
         
         res.status(400).json(error);

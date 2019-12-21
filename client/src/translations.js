@@ -11,6 +11,7 @@ export default {
             },
             manageUser: {
                 name: 'Quản lý tài khoản người dùng',
+                info: 'Thông tin tài khoản',
                 create: 'Thêm tài khoản người dùng',
                 delete: 'Xóa tài khoản người dùng'
             },
@@ -109,7 +110,8 @@ export default {
             },
             manageUser: {
                 name: 'Manage User',
-                create: 'Create',
+                info: 'Information of user',
+                create: 'Create user',
                 delete: 'Delete account'
             },
             manageDepartment: {
@@ -119,9 +121,9 @@ export default {
                 dean: 'Dean of',
                 vicedean: 'ViceDean of',
                 employee: 'Employee of',
-                sub_dean: 'VD: Dean of financial department, ...',
-                sub_vicedean: 'VD: Vice Dean of financial department, ...',
-                sub_employee: 'VD: Employee of financial department, ...',
+                sub_dean: 'Example: Dean of financial department, ...',
+                sub_vicedean: 'Example: Vice Dean of financial department, ...',
+                sub_employee: 'Example: Employee of financial department, ...',
                 delete: 'Delete department',
                 description: 'Description of department',
                 departmentParent: 'Department Parent',

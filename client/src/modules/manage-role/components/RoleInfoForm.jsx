@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { edit } from '../redux/actions';
 
 class RoleInfoForm extends Component {
     constructor(props) {
@@ -9,6 +10,7 @@ class RoleInfoForm extends Component {
             name: null
         }
         this.inputChange = this.inputChange.bind(this);
+        this.save = this.save.bind(this);
     }
 
     inputChange = (e) => {
@@ -20,12 +22,27 @@ class RoleInfoForm extends Component {
         });
     }
 
+    save(e){
+        e.preventDefault();
+        let select = this.refs.abstract;
+        let abstract = [].filter.call(select.options, o => o.selected).map(o => o.value);
+
+        let selectUsers = this.refs.users;
+        let users = [].filter.call(selectUsers.options, o => o.selected).map(o => o.value);
+
+        const { name } = this.state;
+        var role = { id: this.props.roleInfo._id, name, abstract, users }; // IDrole, tên , abstract roles, những người có role này
+        console.log("Dữ liệu ROLE cập nhật: ", role);
+        this.props.editRole(role);
+    }
+
     componentDidMount(){
         let script = document.createElement('script');
         script.src = '/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+        this.setState({ name: this.props.roleInfo.name });
     }
 
     render() { 
@@ -69,7 +86,7 @@ class RoleInfoForm extends Component {
                                                 multiple="multiple" 
                                                 onChange={ this.inputChange }
                                                 style={{ width: '100%' }} 
-                                                value={ roleInfo.users }
+                                                value={ roleInfo.users.map( user => user.userId ) }
                                                 ref="users"
                                             >
                                                 {   
@@ -82,7 +99,7 @@ class RoleInfoForm extends Component {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary">Save</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={ this.save }>Save</button>
                             </div>
                         </div>
                     </div>
@@ -96,7 +113,9 @@ const mapState = state => state;
 
 const dispatchStateToProps = (dispatch, props) => {
     return {
-
+        editRole: ( role ) => {
+            dispatch(edit( role )); 
+        },
     }
 }
 

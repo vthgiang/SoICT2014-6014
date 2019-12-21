@@ -17,6 +17,7 @@ const initState = {
         roles: roles ? roles : null,
         company: company ? company : null,
     },
+    links: [],
     error: null
 }
 
@@ -45,8 +46,30 @@ export function auth(state = initState, action) {
                 error: action.payload.msg
             };
 
+        case AuthConstants.EDIT_PROFILE_SUCCESS:
+            return {
+                ...state,
+                user: action.payload
+            };
+
+        case AuthConstants.GET_LINKS_OF_ROLE_SUCCESS:
+            return {
+                ...state,
+                links: action.payload
+            };
+
         case 'RESET_APP':
-            return initState;
+            return {
+                logged: false,
+                user: {
+                    _id: null,
+                    name: null,
+                    email: null,
+                    roles: null,
+                    company: null
+                },
+                error: null
+            };
 
         default:
             return state;

@@ -35,7 +35,8 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
-        var role = await RoleService.edit(req.params.id, req.body);
+        console.log("data: ", req.body);
+        var role = await RoleService.edit(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
         
         res.status(200).json(role);
     } catch (error) {

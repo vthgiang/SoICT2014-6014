@@ -8,7 +8,7 @@ class UserEditForm extends Component {
         this.state = { 
             id: this.props.userEditID,
             email: this.props.email,
-            username: this.props.username,
+            name: this.props.username,
             active: this.props.active,
             status: [
                 { id: 1, name: "Disable", value: false },
@@ -16,7 +16,7 @@ class UserEditForm extends Component {
             ]
         }
         this.inputChange = this.inputChange.bind(this);
-        this.inputChange = this.inputChange.bind(this);
+        this.save = this.save.bind(this);
     }
 
     inputChange = (e) => {
@@ -31,29 +31,27 @@ class UserEditForm extends Component {
     save = (e) => {
 
         e.preventDefault();
-        const { id, username, active } = this.state;
+        const { id, name, active } = this.state;
         const user = {
             id,
-            name: username,
+            name,
             active
         };
 
-        this.props.edit(user);
+        this.props.editUser(user);
     }
 
     render() { 
         const { userEditID, translate } = this.props;
-        const { email, username, active, status } = this.state;
-        console.log("trạng thái ", this.state);
+        const { email, name, active, status } = this.state;
 
         return ( 
             <React.Fragment>
                 <div className="modal fade" id={ `edit-user-modal-${userEditID}` }>
                     <div className="modal-dialog">
                         <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 className="modal-title">{ userEditID }</h4>
+                        <div className="modal-header bg bg-purple">
+                            <h4 className="modal-title">{ translate('manageUser.info') }</h4>
                         </div>
                         <div className="modal-body">
                             <form style={{ marginBottom: '20px' }} >
@@ -78,13 +76,13 @@ class UserEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>{ translate('table.name') }</label>
-                                    <input type="email" className="form-control" name="username" onChange={ this.inputChange } defaultValue={ username }/>
+                                    <input type="text" className="form-control" name="name" onChange={ this.inputChange } defaultValue={ name }/>
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.save}>{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
+                            <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.save}>{ translate('table.save') }</button>
                         </div>
                         </div>
                     </div>
@@ -100,12 +98,5 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        // edit: (user) => {
-        //     dispatch(edit(user)); 
-        // },
-    }
-}
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(UserEditForm) );
+export default connect( mapStateToProps, null )( withTranslate(UserEditForm) );

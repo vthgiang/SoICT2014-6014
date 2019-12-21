@@ -13,16 +13,23 @@ const RoleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Company
     },
-    users: [{
-        type: Schema.Types.ObjectId,
-        ref: User
-    }],
+    // users: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: User
+    // }],
     abstract: [{ //có tất cả các quyền của những role bên trong mảng này
         type: Schema.Types.ObjectId,
         replies: this
     }]
 },{
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true }
 });
 
-module.exports = Role = mongoose.model("roles", RoleSchema);
+RoleSchema.virtual('users', {
+    ref: 'UserRole',
+    localField: '_id',
+    foreignField: 'roleId'
+});
+
+module.exports = Role = mongoose.model("Role", RoleSchema);

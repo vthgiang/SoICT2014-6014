@@ -1,4 +1,5 @@
 const User = require('../../models/user.model');
+const UserRole = require('../../models/user_role.model');
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -9,7 +10,7 @@ exports.get = async (company) => { //id cua cong ty do
         .find({ company })
         .select('-password -status -delete_soft')
         .populate([
-            { path: 'roles' }, 
+            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
 
@@ -22,7 +23,7 @@ exports.getById = async (id) => { //tim user theo id
         .findById(id)
         .select('-password -status -delete_soft')
         .populate([
-            { path: 'roles' }, 
+            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
     
@@ -61,7 +62,6 @@ exports.create = async (data) => {
         name: data.name,
         email: data.email,
         password: hash,
-        roles: data.roles ? data.roles : [], //array roles to user
         company: data.company ? data.company : null //company for user
     });
     var mail = await transporter.sendMail(mainOptions);
@@ -70,11 +70,21 @@ exports.create = async (data) => {
 }
 
 exports.edit = async (id, data) => {
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(data.password, salt);
-    var user = await User.findById(id);
+    var user = await User
+        .findById(id)
+        .select('-password -status -delete_soft')
+        .populate([
+            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+            { path: 'company' }
+        ]);
+    
     user.name = data.name;
-    user.password = hash;
+    if(data.password !== undefined && data.password !== null){
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(data.password, salt);
+        user.password = hash;
+    }
+    if(data.active !== undefined && data.active !== null) user.active = data.active;
     user.save();
 
     return user;
@@ -82,6 +92,16 @@ exports.edit = async (id, data) => {
 
 exports.delete = async (id) => {
     var deleteUser = await User.deleteOne({ _id: id });
+    await UserRole.deleteOne({ userId: id });
     
     return deleteUser;
+}
+
+exports.relationshipUserRole = async (userId, roleId) => { 
+    var relationship = await UserRole.create({
+        userId,
+        roleId
+    });
+    
+    return relationship;
 }

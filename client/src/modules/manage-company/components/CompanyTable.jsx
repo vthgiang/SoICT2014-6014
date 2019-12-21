@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get } from '../redux/actions';
+import { get as getCompanies } from '../redux/actions';
 import CompanyEditForm from './CompanyEditForm';
 
 class CompanyTable extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount(){
@@ -14,6 +15,7 @@ class CompanyTable extends Component {
     }
 
     render() { 
+        console.log("TAO DANG RENDER")
         const { company } = this.props;
         return ( 
             <React.Fragment>
@@ -23,7 +25,7 @@ class CompanyTable extends Component {
                             <th>Name</th>
                             <th>Short name</th>
                             <th>Description</th>
-                            <th style={{ width: '35px' }}></th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,8 +68,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     return{
         getCompanies: () => {
-            dispatch(get()); 
-        },
+            console.log("THUC HIEN LAY DU LIEU CAC CONG TY");
+            dispatch(getCompanies()); 
+        }
     }
 }
 

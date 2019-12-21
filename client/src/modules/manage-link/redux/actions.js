@@ -3,6 +3,7 @@ import { LinkConstants } from "./constants";
 
 export const get = () => {
     return dispatch => {
+        console.log("GET LINK INFORMARION")
         LinkServices.get()
             .then(res => {
                 dispatch({
@@ -37,21 +38,6 @@ export const create = (link) => {
             .then(res => {
                 dispatch({
                     type: LinkConstants.CREATE_LINK_SUCCESS,
-                    payload: res.data
-                })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
-    }
-}
-
-export const getLinksOfRole = (idRole) => {
-    return dispatch => {
-        LinkServices.getLinksOfRole(idRole)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.GET_LINKS_OF_ROLE_SUCCESS,
                     payload: res.data
                 })
             })

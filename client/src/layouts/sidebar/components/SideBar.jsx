@@ -1,34 +1,40 @@
 import React, { Component } from 'react';
 import Item from './Item';
 import { connect } from 'react-redux';
-import {reactLocalStorage} from 'reactjs-localstorage';
-let companyURL = reactLocalStorage.getObject('company');
 
 const menu = [
     {
         name: 'Home',
-        path: `/${companyURL.short_name}/`,
+        path: '/',
         icon: 'fa fa-home'
     },{
         name: 'Manage Company',
-        path: `/manage-company`,
+        path: '/manage-company',
         icon: 'fa fa-building'
     },{
         name: 'Manage User',
-        path: `/${companyURL.short_name}/manage-user`,
+        path: '/manage-user',
         icon: 'fa fa-users'
     },{
         name: 'Manage Role',
-        path: `/${companyURL.short_name}/manage-role`,
+        path: '/manage-role',
         icon: 'fa fa-lock'
     },{
         name: 'Manage Link',
-        path: `/${companyURL.short_name}/manage-link`,
+        path: '/manage-link',
         icon: 'fa fa-link'
+    },{
+        name: 'Manage Department',
+        path: '/manage-department',
+        icon: 'fa fa-object-group'
+    },{
+        name: 'Manage Form-Document',
+        path: '/manage-form-document',
+        icon: 'fa fa-folder-open'
     }
     // ,{
     //     name: 'Manage ComponentUI',
-    //     path: `/${companyURL.short_name}/manage-component-ui`,
+    //     path: '/manage-component-ui',
     //     icon: 'fa fa-simplybuilt'
     // },
 ];
@@ -41,6 +47,7 @@ class SideBar extends Component {
     }
 
     render() {
+
         return (
             <React.Fragment>
                 <aside className="main-sidebar">

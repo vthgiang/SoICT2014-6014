@@ -2,6 +2,7 @@ import { companyServices } from "./services";
 import { companyConstants } from "./constants";
 
 export const get = () => {
+    console.log("Lay thong tin cac cong ty")
     return dispatch => {
         companyServices.get()
             .then(res => {

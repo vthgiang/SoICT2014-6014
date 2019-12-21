@@ -1,71 +1,34 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get } from '../redux/actions';
+import { get, edit, destroy } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
-// import ReactLoading from 'react-loading';
 import UserEditForm from './UserEditForm';
+import DeleteNotificationModal from './DeleteNotificationModal';
 
 class ManageUserTable extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            name: null,
-            email: null
-         }
-        this.inputChange = this.inputChange.bind(this);
-        this.save = this.save.bind(this);
-        this.addUserSuccess = this.addUserSuccess.bind(this);
+        }
+        this.editUser = this.editUser.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentDidMount(){
         this.props.getUser();
     }
 
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
+    editUser = (data) => {
+        this.props.edit(data);
     }
 
-    alert(id, title, email){
-        Swal.fire({
-            title: `${title} "${email}"`,
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Delete'
-        }).then((res) => {
-            if(res.value){
-                this.props.destroy(id)
-            }
-        });
-    }
-
-    save = (e) => {
-        e.preventDefault();
-        var {name , email } = this.state;
-        this.props.create({
-            name,
-            email
-        });
-    }
-
-    addUserSuccess(content){
-        Swal.fire({
-            type: 'success',
-            title: content,
-            showConfirmButton: false,
-            timer: 2200
-        });
+    delete = (id) => {
+        this.props.destroy(id)
     }
 
     render() { 
         const { user, translate } = this.props;
+        console.log("RENDER USER TABLE");
         return ( 
             <React.Fragment>
                 {
@@ -91,13 +54,20 @@ class ManageUserTable extends Component {
                                         <td>{ u.active ? <p><i className="fa fa-circle text-success" /> Enable</p> : <p><i className="fa fa-circle text-danger" /> Disable</p> }</td>
                                         <td>
                                             <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#edit-user-modal-${u._id}` }><i className="fa fa-edit"></i></a>{' '}
-                                            <button className="btn btn-sm btn-danger" onClick={() => this.alert(u._id, translate('manageUser.delete'), u.email)}><i className="fa fa-trash"></i></button>
+                                            <a className="btn btn-sm btn-danger" data-toggle="modal" href={ `#modal-delete-${u._id}` }><i className="fa fa-trash"></i></a>
                                             <UserEditForm 
                                                 userEditID={ u._id } 
                                                 email={ u.email }
                                                 username={ u.name }
                                                 active={ u.active }
+                                                editUser={this.editUser}
                                             />
+                                            <DeleteNotificationModal
+                                                userId={u._id}
+                                                userEmail={u.email}
+                                                delete={this.delete}
+                                            />
+                                            
                                         </td>
                                     </tr>
                                 ))
@@ -119,12 +89,12 @@ const mapDispatchToProps = (dispatch, props) => {
         getUser: () => {
             dispatch(get()); 
         },
-        // create: (user) => {
-        //     dispatch(create(user));
-        // },
-        // destroy: (id) => {
-        //     dispatch(destroy(id));
-        // }
+        edit: (user) => {
+            dispatch(edit(user)); 
+        },
+        destroy: (id) => {
+            dispatch(destroy(id));
+        }
     }
 }
 

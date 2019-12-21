@@ -32,9 +32,13 @@ class ManageLink extends Component {
     //     this.props.create(url, description, role);
     // }
 
+    // componentDidMount(){
+    //     // this.props.get();
+    //     // this.props.getSuperRole();
+    // }
+
     componentDidMount(){
-        this.props.get();
-        // this.props.getSuperRole();
+        this.props.getLinks();
     }
 
     alert(id){
@@ -54,7 +58,6 @@ class ManageLink extends Component {
 
     render() { 
         const { translate, link } = this.props;
-        // console.log("link create :", this.state);
         return ( 
             <React.Fragment>
                 {/* <a className="btn btn-primary" data-toggle="modal" href="#modal-create-link">{ translate('manageResource.createLink') }</a>
@@ -143,7 +146,7 @@ class ManageLink extends Component {
 const mapState = state => state;
 const getState = (dispatch, props) => {
     return {
-        get: () => {
+        getLinks: () => {
             dispatch(get());
         },
         // getSuperRole: () => {

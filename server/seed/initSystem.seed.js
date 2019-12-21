@@ -1,7 +1,9 @@
 const Role = require('../models/role.model');
 const User = require('../models/user.model');
 const Link = require('../models/link.model');
+const Company = require('../models/company.model');
 const Privilege = require('../models/privilege.model');
+const UserRole = require('../models/user_role.model');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
@@ -22,6 +24,12 @@ mongoose
   .catch(err => console.log(err));
 
 initSystem = async () => {
+    var company = await Company.create({
+        name: 'VNIST',
+        short_name: 'vnist',
+        description: 'Cty VNIST'
+    });
+
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync('123456', salt);
 
@@ -29,19 +37,21 @@ initSystem = async () => {
     var user = await User.create({
         name: "System Admin",
         email: 'systemAdmin@gmail.com',
-        password: hash
+        password: hash,
+        company: company._id
     });
 
     //Tao role System Admin 
     var role = await Role.create({
         name: "System Admin",
-        users: [user._id]
+        company: company._id
     });
 
-    var updateUser = await User.updateOne(
-        { _id: user.id },
-        { $set: { roles: [role._id] } }
-    );
+    //phan quyen system admin cho tai khoan
+    var user_role = await UserRole.create({
+        userId: user._id,
+        roleId: role._id
+    });
 
     //Tao link quan ly thong tin cac cong ty
     var link = await Link.create({
@@ -56,7 +66,7 @@ initSystem = async () => {
         role: [role._id]
     });
 
-    console.log("success: ", user, role, link, privilege );
+    console.log("success: ", user, role, user_role, link, privilege );
 }
 
 try {

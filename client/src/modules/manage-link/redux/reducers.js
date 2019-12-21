@@ -3,7 +3,6 @@ import { LinkConstants } from "./constants";
 const initState = {
     list: [],
     item: null,
-    withRole: [],
     error: null
 }
 
@@ -29,12 +28,6 @@ export function link (state = initState, action) {
                     ...state.list,
                     action.payload
                 ]
-            };
-
-        case LinkConstants.GET_LINKS_OF_ROLE_SUCCESS:
-            return {
-                ...state,
-                withRole: action.payload
             };
 
         case 'RESET_APP':

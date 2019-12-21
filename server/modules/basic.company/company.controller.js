@@ -28,23 +28,17 @@ exports.create = async (req, res) => {
         var employee = await RoleSerVice.create({ name: "Employee", company: company._id });
         
         //add tai khoan superadmin cho cong ty do
-        const superAdminUser = await UserService.create({ name: `Super Admin - ${company.short_name}`, email: req.body.email, roles: [superAdmin._id], company: company._id });
-        
-        var data = {
-            name: 'Super Admin',
-            users: [superAdminUser._id],
-            abstract: []
-        };
-        await RoleSerVice.edit(superAdmin._id, data );
-        console.log("send data: ", data, superAdminUser);
+        const superAdminUser = await UserService.create({ name: `Super Admin - ${company.short_name}`, email: req.body.email, company: company._id });
+        //add quyen superadmin cho tai khoan do
+        const user_role = await UserService.relationshipUserRole(superAdminUser._id, superAdmin._id);
 
         //Create manage link for company------------------------------------------------
-        var homePage = await LinkService.create({ url: `/${company.short_name}`, description: `HomePage of ${company.name}`, company: company._id });
-        var manageUser = await LinkService.create({ url: `/${company.short_name}/manage-user`, description: `Manage user of ${company.name}`, company: company._id });
-        var manageRole = await LinkService.create({ url: `/${company.short_name}/manage-role`, description: `Manage role of ${company.name}`, company: company._id });
-        var manageDepartment = await LinkService.create({ url: `/${company.short_name}/manage-department`, description: `Manage department of ${company.name}`, company: company._id });
-        var manageLink = await LinkService.create({ url: `/${company.short_name}/manage-link`, description: `Manage link of ${company.name}`, company: company._id });
-        var manageComponentUI = await LinkService.create({ url: `/${company.short_name}/manage-component-ui`, description: `Manage component UI of ${company.name}`, company: company._id });
+        var homePage = await LinkService.create({ url: '/', description: `HomePage of ${company.name}`, company: company._id });
+        var manageUser = await LinkService.create({ url: '/manage-user', description: `Manage user of ${company.name}`, company: company._id });
+        var manageRole = await LinkService.create({ url: '/manage-role', description: `Manage role of ${company.name}`, company: company._id });
+        var manageDepartment = await LinkService.create({ url: '/manage-department', description: `Manage department of ${company.name}`, company: company._id });
+        var manageLink = await LinkService.create({ url: '/manage-link', description: `Manage link of ${company.name}`, company: company._id });
+        var manageComponentUI = await LinkService.create({ url: '/manage-component-ui', description: `Manage component UI of ${company.name}`, company: company._id });
 
         await PrivilegeService.addRoleToLink( homePage._id, [ superAdmin._id, admin._id, dean._id, viceDean._id, employee._id ] );
         await PrivilegeService.addRoleToLink( manageUser._id, [ superAdmin._id, admin._id ] );

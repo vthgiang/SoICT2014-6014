@@ -23,12 +23,28 @@ class RoleEditForm extends Component {
         });
     }
 
+    save(e){
+        e.preventDefault();
+        let select = this.refs.abstract;
+        let abstract = [].filter.call(select.options, o => o.selected).map(o => o.value);
+
+        let selectUsers = this.refs.users;
+        let users = [].filter.call(selectUsers.options, o => o.selected).map(o => o.value);
+
+        const com = reactLocalStorage.getObject('company');
+        const company = com._id;
+
+        const { name } = this.state;
+        const role = { id: this.props.roleID, name, abstract, users }; // IDrole, tên , abstract roles, những người có role này
+        this.props.editRole(role);
+    }
+
     componentDidMount(){
         let script = document.createElement('script');
         script.src = '/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
-        document.body.appendChild(script);
+        document.body.appendChild(script); 
     }
 
     render() { 

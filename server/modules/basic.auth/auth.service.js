@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/user.model');
+const UserRole = require('../../models/user_role.model');
 const {loginValidation} = require('./auth.validation');
 
 exports.login = async (data) => { // data bao gom email va password
@@ -10,7 +11,7 @@ exports.login = async (data) => { // data bao gom email va password
     const user = await User
         .findOne({email : data.email})
         .populate([
-            { path: 'roles' }, 
+            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
 

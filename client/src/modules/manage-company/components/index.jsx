@@ -6,10 +6,12 @@ import CompanyCreateForm from './CompanyCreateForm';
 class Company extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+         }
     }
 
     render() { 
+        console.log("manage company index")
         return ( 
             <React.Fragment>
                 <CompanyCreateForm/>
@@ -23,9 +25,4 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-    }
-}
-
-export default connect( mapStateToProps, mapDispatchToProps )( Company );
+export default connect( mapStateToProps, null )( Company );
