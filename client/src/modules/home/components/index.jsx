@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
+        
     }
+
     render() { 
+
         return ( 
             <React.Fragment>
                 Home
@@ -14,4 +18,14 @@ class Home extends Component {
     }
 }
  
-export default Home;
+const mapStateToProps = state => {
+    return state;
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+    return{
+
+    }
+}
+
+export default connect( mapStateToProps, mapDispatchToProps )( Home );

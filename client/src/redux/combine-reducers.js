@@ -1,14 +1,21 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual'
 import { combineReducers } from 'redux';
 import { auth } from '../modules/auth/redux/reducers';
-import { company } from '../modules/manage-company/redux/reducers';
-import { user } from '../modules/manage-user/redux/reducers';
+import { company } from '../modules/system-admin-management/manage-company/redux/reducers';
+import { user } from '../modules/super-admin-management/manage-user/redux/reducers';
+import { role } from '../modules/super-admin-management/manage-role/redux/reducers';
+import { link } from '../modules/system-admin-management/manage-link/redux/reducers';
+import { component } from '../modules/system-admin-management/manage-component/redux/reducers';
+import { department } from '../modules/super-admin-management/manage-department/redux/reducers';
 
 const rootReducer = combineReducers(Object.assign({
     auth,
     company,
-    user
-
+    user,
+    role,
+    link,
+    component,
+    department
 }, { Intl }));
 
 export default rootReducer;

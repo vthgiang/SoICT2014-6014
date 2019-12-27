@@ -4,6 +4,7 @@ import '../css/MainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
 import { logout } from '../../../modules/auth/redux/actions';
 import { IntlActions } from 'react-redux-multilingual';
+import { getLinksOfRole,refresh } from '../../../modules/auth/redux/actions';
 
 class MainHeaderMenu extends Component {
 
@@ -18,12 +19,16 @@ class MainHeaderMenu extends Component {
     selectHandle(e){
         this.setState({currentRole: e.target.value});
         localStorage.setItem('currentRole', e.target.value);
-        // this.props.getLinkOfRole();
+        this.props.getLinksOfRole(e.target.value);
+    }
+
+    componentDidMount(){
+        this.props.getLinksOfRole(this.state.currentRole);
+        this.props.refresh();
     }
 
     render() {
         const { auth } = this.props;
-        console.log("header auth: ", auth);
         const { currentRole } = this.state;
         return (
             <React.Fragment>
@@ -40,8 +45,8 @@ class MainHeaderMenu extends Component {
                                     { 
                                         auth.user.roles.map( role => {
                                             return (
-                                                <option key={ role._id } value={ role._id }>
-                                                    { role.name }
+                                                <option key={ role.roleId._id } value={ role.roleId._id }>
+                                                    { role.roleId.name }
                                                 </option>
                                             )
                                         })
@@ -121,9 +126,12 @@ const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
             localStorage.setItem('lang', 'en');
             dispatch(IntlActions.setLocale('en'));
         },
-        // getLinkOfRole: () => {
-        //     dispatch(getLinkOfRole());
-        // },
+        getLinksOfRole: (idRole) => {
+            dispatch(getLinksOfRole(idRole));
+        },
+        refresh: () => {
+            dispatch(refresh());
+        },
     }
 }
 

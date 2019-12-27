@@ -2,12 +2,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
-const user = require('./modules/basic.user/user.route');
-const auth = require('./modules/basic.auth/auth.route');
-const company = require('./modules/basic.company/company.route');
-const role = require('./modules/basic.role/role.route');
-const link = require('./modules/basic.link/link.route');
-const department = require('./modules/basic.department/department.route');
+const user = require('./modules/super-admin-management/manage-user/user.route');
+const auth = require('./modules/auth/auth.route');
+const company = require('./modules/system-admin-management/manage-company/company.route');
+const role = require('./modules/super-admin-management/manage-role/role.route');
+const link = require('./modules/system-admin-management/manage-link/link.route');
+const department = require('./modules/super-admin-management/manage-department/department.route');
+const privilege = require('./modules/super-admin-management/manage-privilege/privilege.route');
+const component = require('./modules/system-admin-management/manage-component/component.route');
+const sample = require('./modules/_sample-module/_sample.route');
 
 require('dotenv').config();
 
@@ -44,6 +47,9 @@ app.use("/company", company);
 app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
+app.use("/privilege", privilege);
+app.use("/sample", sample);
+app.use("/component", component);
 
 
 const port = process.env.PORT || 5000;

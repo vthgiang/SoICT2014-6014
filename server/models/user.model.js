@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Role = require('./role.model');
 const Company = require('./company.model');
 
 // Create Schema
@@ -17,10 +16,6 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    roles: [{
-        type: Schema.Types.ObjectId,
-        ref: Role
-    }],
     company: {
         type: Schema.Types.ObjectId,
         ref: Company
@@ -41,7 +36,14 @@ const UserSchema = new Schema({
         default: false
     }
 },{
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true }
 });
 
-module.exports = User = mongoose.model("users", UserSchema);
+UserSchema.virtual('roles', {
+    ref: 'UserRole',
+    localField: '_id',
+    foreignField: 'userId'
+});
+
+module.exports = User = mongoose.model("User", UserSchema);
