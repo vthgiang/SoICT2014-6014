@@ -3,6 +3,8 @@ export default {
         locale: 'vn',
         messages: {
             hello: 'Xin chào {name}',
+            page: 'Trang : ',
+            show: 'Hiển thị / trang',
             loading: 'Đang xử lý dữ liệu...Xin vui lòng đợi',
             question: {
                 yes: 'Có',
@@ -124,6 +126,8 @@ export default {
         locale: 'en-US',
         messages: {
             hello: 'how are you {name}',
+            page: 'Page : ',
+            show: 'Show value / page',
             loading: 'Loading...Please wait',
             question: {
                 yes: 'Yes',

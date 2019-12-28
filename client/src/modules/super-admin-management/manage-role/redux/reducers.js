@@ -12,17 +12,28 @@ var findIndex = (array, id) => {
 
 const initState = {
     list: [],
-    item: null,
+    listPaginate: [],
+    totalDocs: null,
+    limit: null,
+    totalPages: null,
+    page: null,
+    pagingCounter: null,
+    hasPrevPage: false,
+    hasNextPage: false,
+    prevPage: null,
+    nextPage: null,
     error: null,
     isLoading: true
 }
 
 export function role(state = initState, action) {
     var index = -1;
+    var indexPaginate = -1;
     switch (action.type) {
         case RoleConstants.GET_ROLES_REQUEST:
         case RoleConstants.CREATE_ROLE_REQUEST:
         case RoleConstants.EDIT_ROLE_REQUEST:
+        case RoleConstants.GET_ROLES_PAGINATE_REQUEST:
         case RoleConstants.DELETE_ROLE_REQUEST:
             return {
                 ...state,
@@ -33,6 +44,22 @@ export function role(state = initState, action) {
             return {
                 ...state,
                 list: action.payload,
+                isLoading: false
+            };
+
+        case RoleConstants.GET_ROLES_PAGINATE_SUCCESS:
+            return {
+                ...state,
+                listPaginate: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
+                limit: action.payload.limit,
+                totalPages: action.payload.totalPages,
+                page: action.payload.page,
+                pagingCounter: action.payload.pagingCounter,
+                hasPrevPage: action.payload.hasPrevPage,
+                hasNextPage: action.payload.hasNextPage,
+                prevPage: action.payload.prevPage,
+                nextPage: action.payload.nextPage,
                 isLoading: false
             };
 
@@ -47,19 +74,28 @@ export function role(state = initState, action) {
             return {
                 ...state,
                 list: [
-                    ...state.list,
-                    action.payload
+                    action.payload,
+                    ...state.list
+                ],
+                listPaginate: [
+                    action.payload,
+                    ...state.listPaginate
                 ],
                 isLoading: false
             };
         
         case RoleConstants.EDIT_ROLE_SUCCESS:
             index = findIndex(state.list, action.payload._id);
-            console.log("role data: ",action.payload);
+            indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
                 state.list[index].name = action.payload.name;
                 state.list[index].abstract = action.payload.abstract;
                 state.list[index].users = action.payload.users;
+            }
+            if(indexPaginate !== -1){
+                state.listPaginate[index].name = action.payload.name;
+                state.listPaginate[index].abstract = action.payload.abstract;
+                state.listPaginate[index].users = action.payload.users;
             }
             return {
                 ...state,
@@ -68,7 +104,11 @@ export function role(state = initState, action) {
 
         case RoleConstants.DELETE_ROLE_SUCCESS:
             index = findIndex(state.list, action.payload);
-            state.list.splice(index, 1);
+            indexPaginate = findIndex(state.listPaginate, action.payload);
+            if(index !== -1)
+                state.list.splice(index, 1);
+            if(indexPaginate !== -1)
+                state.listPaginate.splice(indexPaginate, 1);
 
             return {
                 ...state,

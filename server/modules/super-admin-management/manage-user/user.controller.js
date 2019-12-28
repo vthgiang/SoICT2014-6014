@@ -2,8 +2,7 @@ const UserService = require('./user.service');
 
 exports.get = async (req, res) => {
     try {
-        console.log("ID company: ", req.params.idCompany);
-        var users = await UserService.get(req.params.idCompany);
+        var users = await UserService.get(req.user.company._id);
 
         res.status(200).json(users);
     } catch (error) {

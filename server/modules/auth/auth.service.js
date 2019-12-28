@@ -36,7 +36,9 @@ exports.login = async (data) => { // data bao gom email va password
     if(!user.active) throw { msg: ' Cannot login! The account has been locked !'};
     
     //Check user info OK. => Login success to user
-    const token = await jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
+    const token = await jwt.sign({_id: user._id, email: user.email, company: user.company}, process.env.TOKEN_SECRET);
+    // const verified = await jwt.verify(token, process.env.TOKEN_SECRET);
+    // console.log("VERIFY: ", verified);
     user.status = 0; 
     user.save();
     

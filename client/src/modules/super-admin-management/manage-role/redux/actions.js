@@ -17,6 +17,22 @@ export const get = () => {
     }
 }
 
+export const getPaginate = (data) => {
+    return dispatch => {
+        dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_REQUEST});
+        RoleServices.getPaginate(data)
+            .then(res => {
+                dispatch({
+                    type: RoleConstants.GET_ROLES_PAGINATE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
 export const show = (id) => {
     return dispatch => {
         dispatch({ type: RoleConstants.SHOW_ROLE_REQUEST});

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Company = require('./company.model');
-const User = require('./user.model');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const RoleSchema = new Schema({
@@ -43,5 +43,7 @@ RoleSchema.virtual('components', {
     localField: '_id',
     foreignField: 'roleId'
 });
+
+RoleSchema.plugin(mongoosePaginate);
 
 module.exports = Role = mongoose.model("Role", RoleSchema);
