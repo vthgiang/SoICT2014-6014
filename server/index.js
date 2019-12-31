@@ -9,6 +9,8 @@ const role = require('./modules/basic.role/role.route');
 const link = require('./modules/basic.link/link.route');
 const department = require('./modules/basic.department/department.route');
 const privilege = require('./modules/basic.privilege/privilege.route');
+const educationProgram = require('./modules/trainning-Course/educationProgram/educationProgram.route');
+const employee = require('./modules/employees-manager/employee/employee.route');
 const sample = require('./modules/_sample-module/_sample.route');
 
 require('dotenv').config();
@@ -29,16 +31,15 @@ const db = process.env.DATABASE;
 
 // Connect to MongoDB
 mongoose
-.connect(
-    db,
-    { 
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-    }
-)
-.then(() => console.log("MongoDB successfully connected"))
-.catch(err => console.log(err));
+    .connect(
+        db, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        }
+    )
+    .then(() => console.log("MongoDB successfully connected"))
+    .catch(err => console.log(err));
 
 app.use("/user", user);
 app.use("/auth", auth);
@@ -47,6 +48,8 @@ app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
 app.use("/privilege", privilege);
+app.use("/educationProgram", educationProgram);
+app.use("/employee", employee);
 app.use("/sample", sample);
 
 
