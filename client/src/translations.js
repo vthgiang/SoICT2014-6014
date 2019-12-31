@@ -3,6 +3,11 @@ export default {
         locale: 'vn',
         messages: {
             hello: 'Xin chào {name}',
+            loading: 'Đang xử lý dữ liệu...Xin vui lòng đợi',
+            question: {
+                yes: 'Có',
+                no: 'Không'
+            },
             profile: 'Thông tin tài khoản người dùng',
             logout: 'Đăng xuất',
             manageCompany: {
@@ -13,7 +18,7 @@ export default {
                 name: 'Quản lý tài khoản người dùng',
                 info: 'Thông tin tài khoản',
                 create: 'Thêm tài khoản người dùng',
-                delete: 'Xóa tài khoản người dùng'
+                delete: 'Xóa tài khoản người dùng ?'
             },
             manageDepartment: {
                 name: 'Quản lý phòng ban',
@@ -31,24 +36,27 @@ export default {
                 selectDepartment: '--Chọn một đơn vị cha --',
                 relationDepartment: 'Xem mối quan hệ giữa các đơn vị',
                 tableDepartment: 'Bảng danh sách các đơn vị',
-                info: 'Thông tin về đơn vị'
+                info: 'Thông tin về đơn vị',
+                rolesOfDepartment: "Các chức danh của đơn vị"
 
             },
             manageRole: {
                 name: 'Quản lý admin',
                 admins: 'Quản lý danh sách dmin',
                 roles: 'Quản lý các phân quyền khác',
-                add: 'Thêm',
+                add: 'Thêm phân quyền mới',
+                delete: 'Xóa phân quyền ?',
                 create: 'Tạo thêm phân quyền mới',
                 roleName: 'Tên phân quyền',
-                abstract: 'Kế thừa các role',
+                abstract: 'Kế thừa các phân quyền',
                 select: 'Chọn role muốn kế thừa quyền',
-                roleTitle: 'Thông tin về phân quyền'
+                roleInfo: 'Thông tin về phân quyền',
+                users: 'Những người dùng có phân quyền :',
             },
             manageResource: {
                 name: 'Quản lý tài nguyên',
                 url: 'Đường link',
-                urlDescription: 'Mô tả về  URL',
+                urlDescription: 'Mô tả về URL',
                 roleTo: 'Cấp quyền cho',
                 selectRole: '--- chọn role ---',
                 createLink: 'Thêm link',
@@ -56,6 +64,16 @@ export default {
                 createComponent: 'Tạo thêm thành phần',
                 link: 'Đường link',
                 component: 'Thành phần UI'
+            },
+            manageLink: {
+                linkInfo: 'Thông tin LINK',
+                add: 'Thêm link mới',
+                delete: 'Xóa link ?',
+            },
+            manageComponent: {
+                componentInfo: 'Thông tin Component',
+                add: 'Thêm component mới',
+                delete: 'Xóa component ?',
             },
             input: 'Nhập thông tin ... ',
             table: {
@@ -72,7 +90,8 @@ export default {
                 label: 'Nhãn',
                 description: 'Mô tả',
                 status: 'Trạng thái',
-                shortName: 'Tên viết tắt'
+                shortName: 'Tên viết tắt',
+                department: 'Phòng ban'
             },
             mainSideBar: {
                 search: 'Tìm kiếm ...',
@@ -80,11 +99,14 @@ export default {
                 dashboard: 'Bảng điều khiển',
                 adminManage: 'Quản lý trang admin',
                 taskManage: 'Quản lý công việc',
-                user: 'Quản lý người dùng',
-                company: 'Quản lý các doanh nghiệp',
-                department: 'Quản lý cơ cấu tổ chức',
-                role: 'Quản lý phân quyền',
-                resource: 'Quản lý tài nguyên',
+                manageUser: 'Quản lý người dùng',
+                manageCompany: 'Quản lý các doanh nghiệp',
+                manageDepartment: 'Quản lý cơ cấu tổ chức',
+                manageRole: 'Quản lý phân quyền',
+                manageResource: 'Quản lý tài nguyên',
+                manageLink: 'Quản lý links',
+                manageComponent: 'Quản lý ComponentUI',
+                manageFormDocument: 'Quản lý tài liệu biểu mẫu',
                 tasktemplate: 'Mẫu Công Việc',
                 cocautochuc: 'Cơ Cấu Tổ Chức',
                 taskmanagement: 'Quản Lý Công Việc',
@@ -102,6 +124,11 @@ export default {
         locale: 'en-US',
         messages: {
             hello: 'how are you {name}',
+            loading: 'Loading...Please wait',
+            question: {
+                yes: 'Yes',
+                no: 'No'
+            },
             profile: 'Profile',
             logout: 'Log out',
             manageCompany: {
@@ -112,7 +139,7 @@ export default {
                 name: 'Manage User',
                 info: 'Information of user',
                 create: 'Create user',
-                delete: 'Delete account'
+                delete: 'Delete account ?'
             },
             manageDepartment: {
                 name: 'Manage Department',
@@ -130,18 +157,21 @@ export default {
                 selectDepartment: '--Select parent department --',
                 relationDepartment: 'Relations between departments',
                 tableDepartment: 'Department Table',
-                info: 'Information of department'
+                info: 'Information of department',
+                rolesOfDepartment: "Roles of department"
             },
             manageRole: {
                 name: 'Manage Admin',
                 admins: 'Manage Super Admin',
                 roles: 'Manage Different Role Accounts',
-                add: 'Add',
+                add: 'Add new role',
+                delete: 'Delete role ?',
                 create: 'Create new role',
                 roleName: 'Name of role',
                 abstract: 'Select roles',
                 select: 'Select abstract role',
-                roleTitle: 'Infomation of role'
+                roleInfo: 'Infomation of role',
+                users: 'Users has role :',
             },
             manageResource: {
                 name: 'Manage Resource',
@@ -154,6 +184,16 @@ export default {
                 createComponent: 'Create component',
                 link: 'Links',
                 component: 'Components UI'
+            },
+            manageLink: {
+                linkInfo: 'Link information',
+                add: 'Add new link',
+                delete: 'Delete link ?',
+            },
+            manageComponent: {
+                componentInfo: 'Component Information',
+                add: 'Add new component',
+                delete: 'Delete component ?',
             },
             input: 'Input here ...',
             table: {
@@ -170,7 +210,8 @@ export default {
                 label: 'Label',
                 description: 'Description',
                 status: 'Status',
-                shortName: 'Short name'
+                shortName: 'Short name',
+                department: 'Department'
             },
             mainSideBar: {
                 search: 'Search ...',
@@ -178,11 +219,14 @@ export default {
                 dashboard: 'Dashboard',
                 adminManage: 'Admin manager',
                 taskManage: 'Task manager',
-                company: 'Company information manager',
-                user: 'User manager',
-                department: 'Department manager',
-                role: 'Role manager',
-                resource: 'Resource manager',
+                manageUser: 'Manage Users',
+                manageCompany: 'Manage Companies',
+                manageDepartment: 'Manage Departments',
+                manageRole: 'Manage Roles',
+                manageResource: 'Manage Resources',
+                manageLink: 'Manage Links',
+                manageComponent: 'Manage ComponentUI',
+                manageFormDocument: 'Manage Form-Document',
                 tasktemplate: 'Task Template',
                 cocautochuc: 'Organizational Structure',
                 taskmanagement: 'Task Management',

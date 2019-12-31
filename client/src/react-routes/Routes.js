@@ -5,47 +5,108 @@ import { PrivateRoute, AuthRoute } from './route-export';
 import Layout from '../layouts/Layout';
 import Login from '../modules/auth/components/Login';
 import Home from '../modules/home/components';
-import ManageCompany from '../modules/manage-company/components';
-import ManageUser from '../modules/manage-user/components';
-import ManageRole from '../modules/manage-role/components';
-import ManageLink from '../modules/manage-link/components';
-import ManageDepartment from '../modules/manage-department/components';
-import ManageFormDocument from '../modules/manage-form-document/components';
-// import NotFoundPage from '../modules/notfound/components';
-
-const pages = [
-    { path: '/', exact: true, component: () => <Home/> },
-    { path: '/manage-company', exact: true, component: () => <ManageCompany/> },
-    { path: '/manage-user', exact: true, component: () => <ManageUser/> },
-    { path: '/manage-role', exact: true, component: () => <ManageRole/> },
-    { path: '/manage-link', exact: true, component: () => <ManageLink/> },
-    { path: '/manage-department', exact: true, component: () => <ManageDepartment/> },
-    { path: '/manage-form-document', exact: true, component: () => <ManageFormDocument/> },
-];  
+import ManageCompany from '../modules/system-admin-management/manage-company/components';
+import ManageUser from '../modules/super-admin-management/manage-user/components';
+import ManageRole from '../modules/super-admin-management/manage-role/components';
+import ManageLink from '../modules/system-admin-management/manage-link/components';
+import ManageDepartment from '../modules/super-admin-management/manage-department/components';
+import ManageComponent from '../modules/system-admin-management/manage-component/components';
+import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
 
 class Routes extends Component {
+
     render() {
-        const { auth } = this.props;
+        const { auth, company, user, role, link, component, department } = this.props;
         return (
             <React.Fragment>
-                <AuthRoute 
-                    exact
+                <AuthRoute exact auth={ auth } path="/login" component={ Login } />
+                <PrivateRoute 
+                    isLoading={ auth.isLoading }
+                    key={ 'home' }
                     auth={ auth }
-                    path="/login"
-                    component={ Login }
+                    exact={ true }
+                    link={ '/' }
+                    path={ '/' }
+                    pageName={ 'home' }
+                    layout={ Layout }
+                    component={ Home }
                 />
-                {
-                    pages.map( page => 
-                        <PrivateRoute 
-                            key={ page.path}
-                            auth={ auth }
-                            exact={ page.exact }
-                            path={ page.path }
-                            layout={ Layout }
-                            component={ page.component }
-                        />
-                    )
-                }
+                <PrivateRoute 
+                    isLoading={ company.isLoading }
+                    key={ 'manage-company' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-company' }
+                    path={ '/manage-company' }
+                    pageName={ 'manageCompany' }
+                    layout={ Layout }
+                    component={ ManageCompany }
+                />
+                <PrivateRoute 
+                    isLoading={ user.isLoading }
+                    key={ 'manage-user' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-user' }
+                    path={ '/manage-user' }
+                    pageName={ 'manageUser' }
+                    layout={ Layout }
+                    component={ ManageUser }
+                />
+                <PrivateRoute 
+                    isLoading={ role.isLoading }
+                    key={ 'manage-role' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-role' }
+                    path={ '/manage-role' }
+                    pageName={ 'manageRole' }
+                    layout={ Layout }
+                    component={ ManageRole }
+                />
+                <PrivateRoute 
+                    isLoading={ link.isLoading }
+                    key={ 'manage-link' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-link' }
+                    path={ '/manage-link' }
+                    pageName={ 'manageLink' }
+                    layout={ Layout }
+                    component={ ManageLink }
+                />
+                <PrivateRoute 
+                    isLoading={ department.isLoading }
+                    key={ 'manage-department' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-department' }
+                    path={ '/manage-department' }
+                    pageName={ 'manageDepartment' }
+                    layout={ Layout }
+                    component={ ManageDepartment }
+                />
+                <PrivateRoute 
+                    isLoading={ component.isLoading }
+                    key={ 'manage-component' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-component' }
+                    path={ '/manage-component' }
+                    pageName={ 'manageComponent' }
+                    layout={ Layout }
+                    component={ ManageComponent }
+                />
+                <PrivateRoute 
+                    key={ 'manage-form-document' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-form-document' }
+                    path={ '/manage-form-document' }
+                    pageName={ 'manageFormDocument' }
+                    layout={ Layout }
+                    component={ ManageFormDocument }
+                />
             </React.Fragment>
         );
     }

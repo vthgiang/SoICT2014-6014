@@ -35,7 +35,7 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
-        console.log("data: ", req.body);
+        await RoleService.editRelationshiopUserRole(req.params.id, req.body.users);
         var role = await RoleService.edit(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
         
         res.status(200).json(role);
@@ -48,6 +48,17 @@ exports.edit = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         var role = await RoleService.delete(req.params.id);
+        
+        res.status(200).json(role);
+    } catch (error) {
+        
+        res.status(400).json(error);
+    }
+};
+
+exports.test = async (req, res) => {
+    try {
+        var role = await RoleService.editRelationshiopUserRole( req.params.id, req.body.users );
         
         res.status(200).json(role);
     } catch (error) {

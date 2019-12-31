@@ -2,52 +2,35 @@ import React, { Component } from 'react';
 import Item from './Item';
 import { connect } from 'react-redux';
 
-const menu = [
-    {
-        name: 'Home',
-        path: '/',
-        icon: 'fa fa-home'
-    },{
-        name: 'Manage Company',
-        path: '/manage-company',
-        icon: 'fa fa-building'
-    },{
-        name: 'Manage User',
-        path: '/manage-user',
-        icon: 'fa fa-users'
-    },{
-        name: 'Manage Role',
-        path: '/manage-role',
-        icon: 'fa fa-lock'
-    },{
-        name: 'Manage Link',
-        path: '/manage-link',
-        icon: 'fa fa-link'
-    },{
-        name: 'Manage Department',
-        path: '/manage-department',
-        icon: 'fa fa-object-group'
-    },{
-        name: 'Manage Form-Document',
-        path: '/manage-form-document',
-        icon: 'fa fa-folder-open'
-    }
-    // ,{
-    //     name: 'Manage ComponentUI',
-    //     path: '/manage-component-ui',
-    //     icon: 'fa fa-simplybuilt'
-    // },
-];
+// ,{
+//     name: 'Manage ComponentUI',
+//     path: '/manage-component-ui',
+//     icon: 'fa fa-simplybuilt'
+// },
 
 class SideBar extends Component {
 
     constructor(props) {
         super(props);
         this.state = {}
+        this.checkURL = this.checkURL.bind(this);
+    }
+
+    checkURL = (urlName, linkArr) => {
+        var result = false;
+        if (linkArr !== undefined) {
+            linkArr.forEach(link => {
+                if (link.url === urlName) {
+                    result = true;
+                }
+            });
+        }
+
+        return result;
     }
 
     render() {
-
+        const { links } = this.props.auth;
         return (
             <React.Fragment>
                 <aside className="main-sidebar">
@@ -72,15 +55,74 @@ class SideBar extends Component {
                         </form>
                         <ul className="sidebar-menu" data-widget="tree">
                             <li className="header">MENU</li>
+                            <Item
+                                key='home'
+                                name='home'
+                                path='/'
+                                icon='fa fa-home'
+                            />
                             {
-                                menu.map( item => 
-                                    <Item
-                                        key={ item.name }
-                                        name={ item.name }
-                                        path={ item.path }
-                                        icon={ item.icon }
-                                    />
-                                )
+                                this.checkURL('/manage-company', links) === true &&
+                                <Item
+                                    key='manageCompany'
+                                    name='manageCompany'
+                                    path='/manage-company'
+                                    icon='fa fa-building'
+                                />
+                            }
+                            {
+                                this.checkURL('/manage-department', links) === true &&
+                                <Item
+                                    key='manageDepartment'
+                                    name='manageDepartment'
+                                    path='/manage-department'
+                                    icon='fa fa-sitemap'
+                                />
+                            }
+                            {
+                                this.checkURL('/manage-user', links) === true &&
+                                <Item
+                                    key='manageUser'
+                                    name='manageUser'
+                                    path='/manage-user'
+                                    icon='fa fa-users'
+                                />
+                            }
+                            {
+                                this.checkURL('/manage-role', links) === true &&
+                                <Item
+                                    key='manageRole'
+                                    name='manageRole'
+                                    path='/manage-role'
+                                    icon='fa fa-lock'
+                                />
+                            }
+                            {
+                                this.checkURL('/manage-link', links) === true &&
+                                <Item
+                                    key='manageLink'
+                                    name='manageLink'
+                                    path='/manage-link'
+                                    icon='fa fa-link'
+                                />
+                            }
+                            {
+                                this.checkURL('/manage-component', links) === true &&
+                                <Item
+                                    key='manageComponent'
+                                    name='manageComponent'
+                                    path='/manage-component'
+                                    icon='fa fa-object-group'
+                                />
+                            }
+                            {
+                                this.checkURL('/manage-form-document', links) === true &&
+                                <Item
+                                    key='manageFormDocument'
+                                    name='manageFormDocument'
+                                    path='/manage-form-document'
+                                    icon='fa fa-folder-open'
+                                />
                             }
                         </ul>
                     </section>

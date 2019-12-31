@@ -52,6 +52,12 @@ export function auth(state = initState, action) {
                 user: action.payload
             };
 
+        case AuthConstants.REFRESH_DATA_USER_SUCCESS:
+            return {
+                ...state,
+                user: action.payload
+            };
+
         case AuthConstants.GET_LINKS_OF_ROLE_SUCCESS:
             return {
                 ...state,

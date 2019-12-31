@@ -68,3 +68,19 @@ export const getLinksOfRole = (idRole) => {
             })
     }
 }
+
+export const refresh = () => {
+    return dispatch => {
+        dispatch({ type: AuthConstants.REFRESH_DATA_USER_REQUEST});
+        AuthService.refresh()
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.REFRESH_DATA_USER_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}

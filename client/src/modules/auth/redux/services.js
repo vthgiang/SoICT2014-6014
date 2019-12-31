@@ -4,7 +4,8 @@ import { LOCAL_SERVER_API } from '../../../config';
 export const AuthService = {
     login,
     editProfile,
-    getLinksOfRole
+    getLinksOfRole,
+    refresh
 };
 
 function login(user) {
@@ -31,6 +32,16 @@ function editProfile(data) {
 function getLinksOfRole(idRole) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/privilege/get-links-of-role/${idRole}`,
+        method: 'GET'
+    };
+
+    return axios(requestOptions);
+}
+
+function refresh() {
+    const id = localStorage.getItem('id');
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'GET'
     };
 

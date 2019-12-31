@@ -44,13 +44,12 @@ class UserEditForm extends Component {
     render() { 
         const { userEditID, translate } = this.props;
         const { email, name, active, status } = this.state;
-
         return ( 
             <React.Fragment>
                 <div className="modal fade" id={ `edit-user-modal-${userEditID}` }>
                     <div className="modal-dialog">
                         <div className="modal-content">
-                        <div className="modal-header bg bg-purple">
+                        <div className="modal-header bg bg-blue">
                             <h4 className="modal-title">{ translate('manageUser.info') }</h4>
                         </div>
                         <div className="modal-body">

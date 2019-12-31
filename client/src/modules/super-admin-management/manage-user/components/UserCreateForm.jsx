@@ -45,7 +45,7 @@ class UserCreateForm extends Component {
                 <div className="modal fade" id="modal-id">
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header bg bg-purple">
+                            <div className="modal-header bg bg-green">
                                 <h4 className="modal-title">{ translate('manageUser.create') }</h4>
                             </div>
                             <div className="modal-body">
@@ -81,9 +81,6 @@ const mapDispatchToProps = (dispatch, props) => {
         create: (user) => {
             dispatch(create(user));
         },
-        // destroy: (id) => {
-        //     dispatch(destroy(id));
-        // }
     }
 }
 

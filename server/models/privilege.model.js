@@ -5,18 +5,20 @@ const Action = require('./action.model');
 
 // Create Schema
 const PrivilegeSchema = new Schema({
-    resource: {
+    resourceId: {
         type: Schema.Types.ObjectId,
-        refPath: 'resource_type'
+        refPath: 'resourceType',
+        required: true
     },
-    resource_type: {
+    resourceType: {
         type: String,
         enum: ['Link', 'TaskTemplate','Component'],
     },
-    role: [{
+    roleId: {
         type: Schema.Types.ObjectId,
-        ref: Role
-    }],
+        ref: Role,
+        required: true
+    },
     action: { //luu id cua hanh dong tuong ung
         type: Schema.Types.ObjectId,
         ref: Action

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get, edit, destroy } from '../redux/actions';
+import { edit, destroy } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import UserEditForm from './UserEditForm';
 import DeleteNotificationModal from './DeleteNotificationModal';
@@ -12,10 +12,6 @@ class ManageUserTable extends Component {
         }
         this.editUser = this.editUser.bind(this);
         this.delete = this.delete.bind(this);
-    }
-
-    componentDidMount(){
-        this.props.getUser();
     }
 
     editUser = (data) => {
@@ -86,12 +82,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return{
-        getUser: () => {
-            dispatch(get()); 
-        },
         edit: (user) => {
             dispatch(edit(user)); 
         },
+<<<<<<< HEAD:client/src/modules/manage-user/components/ManageUserTable.jsx
+        edit: (user) => {
+            dispatch(edit(user)); 
+        },
+=======
+>>>>>>> master:client/src/modules/super-admin-management/manage-user/components/ManageUserTable.jsx
         destroy: (id) => {
             dispatch(destroy(id));
         }
