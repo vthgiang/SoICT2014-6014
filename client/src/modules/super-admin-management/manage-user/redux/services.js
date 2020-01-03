@@ -6,7 +6,8 @@ export const UserServices = {
     get,
     edit,
     create,
-    destroy
+    destroy,
+    searchByName
 };
 
 function get() {
@@ -49,6 +50,18 @@ function destroy(id) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'DELETE',
+        headers: {'auth-token': token}
+    };
+
+    return axios(requestOptions);
+}
+
+function searchByName(username) {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/user/search-by-name`,
+        method: 'POST',
+        data: {username},
         headers: {'auth-token': token}
     };
 

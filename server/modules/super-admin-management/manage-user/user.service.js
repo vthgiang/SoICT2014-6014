@@ -105,3 +105,20 @@ exports.relationshipUserRole = async (userId, roleId) => {
     
     return relationship;
 }
+
+//search user with name
+exports.searchByName = async (companyId, name) => {
+    console.log("data: ",name);
+    var user = await User
+        .find({
+            company: companyId,
+            name: new RegExp(name, "i")
+        })
+        .select('-password -status -delete_soft')
+        .populate([
+            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+            { path: 'company' }
+        ]);
+    
+    return user;
+}

@@ -105,11 +105,11 @@ class RoleTable extends Component {
                             <div className="pagination">
                                 <button className="btn btn-default" disabled={!role.hasPrevPage} onClick={() => this.setPage(role.prevPage)} >&laquo;</button>
                                 {
-                                    role.prevPage !== null && <button className="btn btn-default" onClick={() => this.setPage(role.prevPage)} >{role.prevPage}</button>
+                                    role.hasPrevPage && <button className="btn btn-default" onClick={() => this.setPage(role.prevPage)} >{role.prevPage}</button>
                                 }
                                 <button className="btn btn-primary">{role.page}</button>
                                 {
-                                    role.nextPage !== null && <button className="btn btn-default" onClick={() => this.setPage(role.nextPage)} >{role.nextPage}</button>
+                                    role.hasNextPage && <button className="btn btn-default" onClick={() => this.setPage(role.nextPage)} >{role.nextPage}</button>
                                 }
                                 <button className="btn btn-default" disabled={!role.hasNextPage} onClick={() => this.setPage(role.nextPage)} >&raquo;</button>
                             </div>

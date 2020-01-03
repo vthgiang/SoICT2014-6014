@@ -52,3 +52,13 @@ exports.delete = async (req, res) => {
         res.status(400).json(error)
     }
 };
+
+exports.searchByName = async (req, res) => {
+    try {
+        var users = await UserService.searchByName(req.user.company._id, req.body.username);
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(400).json(error)
+    }
+};

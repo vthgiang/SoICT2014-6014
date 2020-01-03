@@ -13,15 +13,15 @@ var findIndex = (array, id) => {
 const initState = {
     list: [],
     listPaginate: [],
-    totalDocs: null,
-    limit: null,
-    totalPages: null,
-    page: null,
-    pagingCounter: null,
+    totalDocs: 0,
+    limit: 0,
+    totalPages: 0,
+    page: 0,
+    pagingCounter: 0,
     hasPrevPage: false,
     hasNextPage: false,
-    prevPage: null,
-    nextPage: null,
+    prevPage: 0,
+    nextPage: 0,
     error: null,
     isLoading: true
 }

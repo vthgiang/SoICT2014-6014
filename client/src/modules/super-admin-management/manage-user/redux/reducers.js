@@ -12,7 +12,16 @@ var findIndex = (array, id) => {
 
 const initState = {
     list: [],
-    item: null,
+    listPaginate: [],
+    totalDocs: 0,
+    limit: 0,
+    totalPages: 0,
+    page: 0,
+    pagingCounter: 0,
+    hasPrevPage: false,
+    hasNextPage: false,
+    prevPage: 0,
+    nextPage: 0,
     error: null,
     isLoading: true
 }
@@ -24,6 +33,7 @@ export function user(state = initState, action) {
         case UserConstants.CREATE_USER_REQUEST:
         case UserConstants.EDIT_USER_REQUEST:
         case UserConstants.DELETE_USER_REQUEST:
+        case UserConstants.SEARCH_USER_BY_NAME_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -65,6 +75,23 @@ export function user(state = initState, action) {
 
             return {
                 ...state,
+                isLoading: false
+            };
+
+        case UserConstants.SEARCH_USER_BY_NAME_SUCCESS:
+
+            return {
+                ...state,
+                listPaginate: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
+                limit: action.payload.limit,
+                totalPages: action.payload.totalPages,
+                page: action.payload.page,
+                pagingCounter: action.payload.pagingCounter,
+                hasPrevPage: action.payload.hasPrevPage,
+                hasNextPage: action.payload.hasNextPage,
+                prevPage: action.payload.prevPage,
+                nextPage: action.payload.nextPage,
                 isLoading: false
             };
 
