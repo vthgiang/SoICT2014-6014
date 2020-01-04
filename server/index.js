@@ -10,7 +10,7 @@ const link = require('./modules/system-admin-management/manage-link/link.route')
 const department = require('./modules/super-admin-management/manage-department/department.route');
 const privilege = require('./modules/super-admin-management/manage-privilege/privilege.route');
 const component = require('./modules/system-admin-management/manage-component/component.route');
-const educationProgram = require('./modules/trainning-Course/educationProgram/educationProgram.route');
+const educationProgram = require('./modules/trainning-Course/education-program/educationProgram.route');
 const employee = require('./modules/employees-manager/employee/employee.route');
 const sample = require('./modules/_sample-module/_sample.route');
 

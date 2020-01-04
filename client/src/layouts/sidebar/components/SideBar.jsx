@@ -124,6 +124,43 @@ class SideBar extends Component {
                                     icon='fa fa-folder-open'
                                 />
                             }
+
+                            {/* Quan ly nhan su */}
+                            {
+                                this.checkURL('/manage-company', links) === true &&
+                                <li className="treeview">
+                                    <a href="#abc">
+                                        <i className="fa fa-dashboard" /> <span>Quản lý nhân sự</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        <li><a href="/dashboardemployees">DashBoard quản lý nhân sự </a></li>
+                                        <li><a href="/addemployee">Thêm nhân viên </a></li>
+                                        <li><a href="/listemployee">Quản lý thông tin nhân viên</a></li>
+                                        <li><a href="/salaryemployee">Lương nhân viên</a></li>
+                                        <li><a href="/timekeeping">Chấm công nhân viên</a></li>
+                                        <li><a href="/discipline">Quản lý khen thưởng - kỷ luật</a></li>
+                                        <li><a href="/sabbatical">Quản lý nghỉ phép</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            {
+                                 this.checkURL('/manage-company', links) === true &&
+                                <li className="treeview">
+                                    <a href="#abc">
+                                        <i className="fa fa-dashboard" /> <span>Tài khoản</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        <li><a href="/detailemployee">Thông tin cá nhân</a></li>
+                                        <li><a href="/updateemployee">Cập nhật thông tin nhân viên</a></li>
+                                    </ul>
+                                </li>
+                            }
                         </ul>
                     </section>
                 </aside>

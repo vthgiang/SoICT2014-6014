@@ -1,0 +1,43 @@
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow: 0px 0px 0px 0px #000;
+    box-shadow: 0px 0px 0px 0px #000;
+}
+
+legend.scheduler-border {
+    font-size: 1em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    width: auto;
+    padding: 0 10px;
+    border-bottom: none;
+}
+
+.userSelected {
+    background-color: #d2d6de;
+}
+
+.display {
+    display: none;
+}
+
+li.select2-selection__choice {
+    min-width: 47% !important;
+    /* height: 25px !important; */
+}
+
+.select2-selection__rendered {
+    padding-left: 13px !important;
+}
+
+.select2-search--inline {
+    display: none !important;
+}
+
+.lockscreen-item {
+    background: #cecece !important;
+}
+
+/* background: #3c8dbc; */

@@ -7,7 +7,7 @@ exports.get = async (req, res) => {
         var allEmployee = await Employee.find();
 
         res.json({
-            message: "Lấy danh sách nhân viên của tất cả các phòng ban thành công",
+            message: "success",
             content: {
                 allEmployee
             }
@@ -64,7 +64,7 @@ exports.getBydepartment = async (req, res) => {
             }
         }).populate('employeeContact');
         res.json({
-            message: "Lấy thông tin nhân viên theo phong ban thành công",
+            message: "success",
             content: {
                 chiefDepartment,
                 deputyDepartment,
@@ -88,7 +88,7 @@ exports.getByEmployeeNumber = async (req, res) => {
             employeeNumber: req.params.id
         });
         res.json({
-            message: "Lấy thông tin nhân viên thành công",
+            message: "success",
             content: {
                 employee,
                 employeeContact
@@ -104,6 +104,7 @@ exports.getByEmployeeNumber = async (req, res) => {
 // add a new employee
 exports.create = async (req, res) => {
     try {
+        console.log("abcd"+req.body);
         var employees = await Employee.create({
             avatar: req.body.avatar,
             fullName: req.body.fullName,
@@ -239,7 +240,7 @@ exports.updateByEmployeeNumber = async (req, res) => {
             employeeUpdate
         }
         res.json({
-            message: "Cập nhật thông tin nhân viên thành công",
+            message: "success",
             content: content
         })
 

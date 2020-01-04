@@ -13,7 +13,7 @@ router.get('/:nameDepartment/:chief/:deputy', EmployeeController.getBydepartment
 router.get('/:id', EmployeeController.getByEmployeeNumber);
 
 // create a new employee
-router.post('/create', EmployeeController.create);
+router.post('/', EmployeeController.create);
 
 // update information employee
 router.put('/:id', EmployeeController.updateInformationEmployee);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Route } from "react-router-dom";
 import { PrivateRoute, AuthRoute } from './route-export';
 
 import Layout from '../layouts/Layout';
@@ -12,6 +13,8 @@ import ManageLink from '../modules/system-admin-management/manage-link/component
 import ManageDepartment from '../modules/super-admin-management/manage-department/components';
 import ManageComponent from '../modules/system-admin-management/manage-component/components';
 import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
+import { AddEmployee, DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
+import { ListEmployee} from '../modules/employees-manager/employee-manager/components/ListEmployee';
 
 class Routes extends Component {
 
@@ -107,6 +110,51 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ ManageFormDocument }
                 />
+                <PrivateRoute 
+                    key={ 'manage-form-document' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-form-document' }
+                    path={ '/manage-form-document' }
+                    pageName={ 'manageFormDocument' }
+                    layout={ Layout }
+                    component={ ManageFormDocument }
+                />
+                {/* Quan ly nhan su */}
+                {/* <PrivateRoute 
+                    key={ 'manage-company' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-company' }
+                    path={ '/addemployee' }
+                    pageName={'manage-company' }
+                    layout={ Layout }
+                    component={ AddEmployee }
+                />
+                <PrivateRoute 
+                    key={ 'manage-company' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-company' }
+                    path={ '/detailemployee' }
+                    pageName={'manage-company' }
+                    layout={ Layout }
+                    component={ DetailEmployee }
+                />
+                <PrivateRoute 
+                    key={ 'manage-company' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/manage-company' }
+                    path={ '/updateemployee' }
+                    pageName={'manage-company' }
+                    layout={ Layout }
+                    component={ UpdateEmployee }
+                /> */}
+                <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} />
+                <Route exact path="/detailemployee" layout={ Layout } component={DetailEmployee} />
+                <Route exact path="/updateemployee" layout={ Layout } component={UpdateEmployee} />
+                <Route exact path="/listemployee" layout={ Layout } component={ListEmployee} />
             </React.Fragment>
         );
     }
