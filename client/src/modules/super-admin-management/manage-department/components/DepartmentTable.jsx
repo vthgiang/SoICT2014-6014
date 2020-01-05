@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { get } from '../redux/actions';
+import { get, destroy } from '../redux/actions';
 
 class DepartmentTable extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
+        this.deleteDepartment = this.deleteDepartment.bind(this);
     }
 
     componentDidMount(){
         this.props.get();
+    }
+
+    deleteDepartment = (id) => {
+        this.props.destroy(id);
     }
 
     render() { 
@@ -32,8 +37,42 @@ class DepartmentTable extends Component {
                                 >
                                     <td>{ u.name }</td>
                                     <td>
-                                        <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#edit-deparment-modal-${u._id}` }><i className="fa fa-edit"></i></a>{' '}
-                                        
+                                        <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#department-detail-${u._id}` }><i className="fa fa-edit"></i></a>{' '}
+                                        <a className="btn btn-sm btn-danger" data-toggle="modal" href={ `#department-delete-${u._id}` }><i className="fa fa-trash"></i></a>{' '}
+                                        <div className="modal fade" id={`department-detail-${u._id}`}>
+                                            <div className="modal-dialog">
+                                                <div className="modal-content">
+                                                    <div className="modal-header bg-blue">
+                                                        <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 className="modal-title">{ u.name }</h4>
+                                                    </div>
+                                                    <div className="modal-body">
+
+                                                    </div>
+                                                    <div className="modal-footer">
+                                                        <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+                                                        <button type="button" className="btn btn-success">Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="modal fade" id={`department-delete-${u._id}`}>
+                                            <div className="modal-dialog" style={{ width: '30%'}}>
+                                                <div className="modal-content">
+                                                    <div className="modal-header bg-red">
+                                                        <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 className="modal-title">Xóa phòng ban</h4>
+                                                    </div>
+                                                    <div className="modal-body">
+                                                        { u.name }
+                                                    </div>
+                                                    <div className="modal-footer">
+                                                        <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">Không</button>
+                                                        <button type="button" className="btn btn-success" onClick={() => this.deleteDepartment(u._id)} data-dismiss="modal">Có</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -50,6 +89,9 @@ const getState = (dispatch, props) => {
     return {
         get: () => {
             dispatch(get());
+        },
+        destroy: (id) => {
+            dispatch(destroy(id));
         },
     }
 }

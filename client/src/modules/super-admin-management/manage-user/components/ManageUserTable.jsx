@@ -9,9 +9,29 @@ class ManageUserTable extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            limit: '5',
+            page: '1',
+            username: null
         }
+        this.inputChange = this.inputChange.bind(this);
+        this.setPage = this.setPage.bind(this);
         this.editUser = this.editUser.bind(this);
         this.delete = this.delete.bind(this);
+    }
+
+    inputChange = (e) => {
+        const target = e.target;
+        const name = target.name;
+        const value = target.value;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    setPage = (pageNumber) => {
+        this.setState({ page: pageNumber });
+        const data = { limit: this.state.limit, page: pageNumber };
+        this.props.getPaginate(data);
     }
 
     editUser = (data) => {
@@ -22,13 +42,40 @@ class ManageUserTable extends Component {
         this.props.destroy(id)
     }
 
+    searchByName = () => {
+        const { username } = this.state;
+        this.props.searchByName( username );
+    }
+
     render() { 
         const { user, translate } = this.props;
         return ( 
             <React.Fragment>
+                
+                <div className="row" style={{ marginBottom: '5px'}}>
+                    <div className="col-xs-6 col-sm-6 col-md-2 col-lg-2">
+                        <div>
+                            <select name="limit" className="form-control" onChange={ this.inputChange }>
+                                <option key='1' value={5}>5</option>
+                                <option key='2' value={10}>10</option>
+                                <option key='3' value={15}>15</option>
+                                <option key='4' value={20}>20</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6"></div>
+                    <div className="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+                        <div className="input-group">
+                            <input type="text" className="form-control" placeholder={ translate('searchByName') }/>
+                            <span className="input-group-btn">
+                                <button type="button" className="btn btn-primary btn-flat">{ translate('search') }</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
                 {
                     user.list.length > 0 &&
-                    <table className="table table-bordered table-hover" style={{ marginTop: '50px'}}>
+                    <table className="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{ translate('table.name') }</th>
@@ -70,6 +117,26 @@ class ManageUserTable extends Component {
                         </tbody>
                     </table>
                 }
+                <div className="row">
+                    <div className="col-sm-3">
+                        <p style={{ marginTop: '25px'}}>{ translate('page') }{ `${user.page}/${user.totalPages}` }</p>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="center">
+                            <div className="pagination">
+                                <button className="btn btn-default" disabled={!user.hasPrevPage} onClick={() => this.setPage(user.prevPage)} >&laquo;</button>
+                                {
+                                    user.hasPrevPage && <button className="btn btn-default" onClick={() => this.setPage(user.prevPage)} >{user.prevPage}</button>
+                                }
+                                <button className="btn btn-primary">{user.page}</button>
+                                {
+                                    user.hasNextPage && <button className="btn btn-default" onClick={() => this.setPage(user.nextPage)} >{user.nextPage}</button>
+                                }
+                                <button className="btn btn-default" disabled={!user.hasNextPage} onClick={() => this.setPage(user.nextPage)} >&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </React.Fragment>
         );
     }

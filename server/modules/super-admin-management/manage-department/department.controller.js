@@ -50,9 +50,16 @@ exports.edit = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        var role = await DepartmentService.delete(req, res);
-        
-        res.status(200).json(role);
+        console.log("KK:");
+        var role = await DepartmentService.delete(req.params.id);
+        console.log("KK2:", role);
+        var tree = await DepartmentService.getTree(req.user.company._id);
+        console.log("KK3:", tree);
+
+        res.status(200).json({
+            role,
+            tree
+        });
     } catch (error) {
         
         res.status(400).json(error);

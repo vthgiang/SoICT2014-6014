@@ -3,6 +3,13 @@ export default {
         locale: 'vn',
         messages: {
             hello: 'Xin chào {name}',
+            page: 'Trang : ',
+            show: 'Hiển thị / trang',
+            add: 'Thêm',
+            search: 'Tìm kiếm',
+            searchByName: 'Nhập vào tên ... ',
+            edit: 'Sửa',
+            delete: 'Xóa',
             loading: 'Đang xử lý dữ liệu...Xin vui lòng đợi',
             question: {
                 yes: 'Có',
@@ -124,6 +131,13 @@ export default {
         locale: 'en-US',
         messages: {
             hello: 'how are you {name}',
+            page: 'Page : ',
+            show: 'Show value / page',
+            add: 'Add',
+            search: 'Search',
+            searchByName: 'Input name ... ',
+            edit: 'Edit',
+            delete: 'Delete',
             loading: 'Loading...Please wait',
             question: {
                 yes: 'Yes',

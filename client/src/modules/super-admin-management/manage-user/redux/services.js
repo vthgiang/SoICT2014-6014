@@ -6,44 +6,63 @@ export const UserServices = {
     get,
     edit,
     create,
-    destroy
+    destroy,
+    searchByName
 };
 
 function get() {
-    const company = reactLocalStorage.getObject('company');
+    const token = localStorage.getItem('token');
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/user/company/${company._id}`,
+        url: `${ LOCAL_SERVER_API }/user`,
         method: 'GET',
-        data: { company: company._id }
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function edit(data) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${data.id}`,
         method: 'PATCH',
-        data: data
+        data: data,
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function create(data) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user`,
         method: 'POST',
-        data: data
+        data: data,
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function destroy(id) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {'auth-token': token}
+    };
+
+    return axios(requestOptions);
+}
+
+function searchByName(username) {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/user/search-by-name`,
+        method: 'POST',
+        data: {username},
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);

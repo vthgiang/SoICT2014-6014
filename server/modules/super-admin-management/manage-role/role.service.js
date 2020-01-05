@@ -5,11 +5,16 @@ const Company = require('../../../models/company.model');
 
 //lay tat ca role cua 1 cong ty
 exports.get = async (company) => {
+    return await Role.find({company});
+}
 
+exports.getPaginate = async (company, limit, page) => {
     return await Role
-        .find({ company }) //id cua cong ty 
-        .limit(10)
-        .populate({ path: 'users', model: UserRole });
+        .paginate({company}, { 
+            page, 
+            limit,
+            populate: { path: 'users', model: UserRole}
+        });
 }
 
 exports.getById = async (id) => {
@@ -19,7 +24,6 @@ exports.getById = async (id) => {
         .populate([
             { path: 'users', model: UserRole },
             { path: 'company', model: Company },
-            // { path: 'abstract', model: Role }
         ]);
 }
 

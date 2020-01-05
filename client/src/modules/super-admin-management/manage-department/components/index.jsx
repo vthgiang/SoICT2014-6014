@@ -4,7 +4,7 @@ import DepartmentCreateForm from './DepartmentCreateForm';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { get } from '../redux/actions';
-// import DepartmentTable from './DepartmentTable';
+import DepartmentTable from './DepartmentTable';
 
 class ManageDepartment extends Component {
     constructor(props) {
@@ -26,9 +26,9 @@ class ManageDepartment extends Component {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <DepartmentTreeView/>
                     </div>
-                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <DepartmentTable />
-                    </div> */}
+                    </div>
                 </div>
             </React.Fragment>
          );

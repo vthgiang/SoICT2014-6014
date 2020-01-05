@@ -52,7 +52,18 @@ exports.edit = async(req, res) => {
     return department;
 }
 
-exports.delete = async(req, res) => {
-    
-    return await Department.deleteOne({ _id: req.params.id });
+exports.delete = async(departmentId) => {
+    var department = await Department.findById(departmentId); //tìm phòng ban hiện tại
+    console.log("Phong hien tai: ", department.name);
+    if(department.parent !== undefined || department.parent !== null){
+        await Department.updateMany({ 
+            parent: department._id
+        },{
+            $set :{ parent: department.parent }
+        }); 
+        console.log("update xong")
+        return await Department.deleteOne({ _id: departmentId });
+    }
+
+    return {};
 }
