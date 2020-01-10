@@ -63,7 +63,7 @@ exports.delete = async (req, res) => {
 /* ------manage links of 1 company ------------------*/
 exports.getLinksOfCompany = async (req, res) => {
     try {
-        var links = await LinkService.getLinksOfCompany(req.params.idCompany);
+        var links = await LinkService.getLinksOfCompany(req.user.company._id);
 
         res.status(200).json(links);
     } catch (error) {

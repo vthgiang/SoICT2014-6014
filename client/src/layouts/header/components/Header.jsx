@@ -61,7 +61,7 @@ class Header extends Component {
                         <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 className="modal-title">{ translate('profile') }</h4>
+                            <h4 className="modal-title">{ translate('profileTitle') }</h4>
                         </div>
                         <div className="modal-body">
                             {

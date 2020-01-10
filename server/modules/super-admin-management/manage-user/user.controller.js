@@ -13,7 +13,7 @@ exports.get = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        var user = await UserService.create(req.body);
+        var user = await UserService.create(req.body, req.user.company._id);
 
         res.status(200).json(user);
     } catch (error) {

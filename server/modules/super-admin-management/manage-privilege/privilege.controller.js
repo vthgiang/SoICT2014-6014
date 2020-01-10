@@ -73,6 +73,6 @@ exports.getLinksOfRole = async (req, res) => {
         res.status(200).json(links);
     } catch (error) {
         
-        res.status(400).json(error);
+        res.status(400).send(error);
     }
 };

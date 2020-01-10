@@ -36,26 +36,29 @@ class DepartmentTreeView extends Component {
     }
 
     displayTreeView = (data) => {
-        if(typeof(data.children) === 'undefined') 
+        if(data !== undefined){
+            if(typeof(data.children) === 'undefined') 
+                return (
+                    <li key={data.id}>
+                        { this.showNodeContent(data) }
+                    </li>
+                )
             return (
                 <li key={data.id}>
                     { this.showNodeContent(data) }
+                    <ul>
+                        {
+                            data.children.map( tag => this.displayTreeView(tag))
+                        }
+                    </ul>  
                 </li>
             )
-        return (
-            <li key={data.id}>
-                { this.showNodeContent(data) }
-                <ul>
-                    {
-                        data.children.map( tag => this.displayTreeView(tag))
-                    }
-                </ul>  
-            </li>
-        )
+        }
+        else return null
     } 
 
     render() { 
-        const { tree, list } = this.props.department;
+        const { tree } = this.props.department;
 
         return ( 
             <React.Fragment>

@@ -51,8 +51,9 @@ exports.delete = async(id) => {
 
 exports.getLinksOfCompany = async(id) => {
 
-    return await Link.find({ company: id })
-    .populate({ path: 'roles', model: Privilege });
+    return await Link
+        .find({ company: id })
+        .populate({ path: 'roles', model: Privilege });
 } 
 
 exports.relationshipLinkRole = async(linkId, roleArr) => {

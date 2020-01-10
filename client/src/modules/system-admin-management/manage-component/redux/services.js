@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../config';
-import {reactLocalStorage} from 'reactjs-localstorage';
 
 export const ComponentServices = {
     get,
@@ -12,9 +11,8 @@ export const ComponentServices = {
 
 function get() {
     const token = localStorage.getItem('token');
-    const company = reactLocalStorage.getObject('company');
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/component/company/${ company._id }`,
+        url: `${ LOCAL_SERVER_API }/component`,
         method: 'GET',
         headers: {'auth-token': token}
     };

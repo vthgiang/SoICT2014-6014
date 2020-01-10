@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var role = await RoleService.getById(req.params.id);
+        var role = await RoleService.getById(req.user.company._id, req.params.id);
         
         res.status(200).json(role);
     } catch (error) {

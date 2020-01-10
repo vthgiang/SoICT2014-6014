@@ -1,17 +1,11 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
-import {reactLocalStorage} from 'reactjs-localstorage';
 
 export const login = (user) => {
     return dispatch => {
         AuthService.login(user)
             .then(res => {
-                localStorage.setItem('id', res.data.user._id);
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('name', res.data.user.name);
-                localStorage.setItem('email', res.data.user.email);
-                reactLocalStorage.setObject('roles', res.data.user.roles);
-                reactLocalStorage.setObject('company', res.data.user.company);
                 if(res.data.user.roles.length > 0) localStorage.setItem('currentRole', res.data.user.roles[0].roleId._id);
 
                 dispatch({
@@ -29,12 +23,32 @@ export const login = (user) => {
 }
 
 export const logout = () => {
-    localStorage.clear();
-
     return dispatch => {
-        dispatch({
-            type: 'RESET_APP'
-        })
+        AuthService.logout()
+            .then(res => {
+                localStorage.clear();
+                dispatch({
+                    type: 'RESET_APP'
+                })
+            })
+            .catch(err => {
+                console.log("logout error");
+            })
+    }
+}
+
+export const logoutAllAccount = () => {
+    return dispatch => {
+        AuthService.logoutAllAccount()
+            .then(res => {
+                localStorage.clear();
+                dispatch({
+                    type: 'RESET_APP'
+                })
+            })
+            .catch(err => {
+                console.log("logout error");
+            })
     }
 }
 
@@ -80,7 +94,15 @@ export const refresh = () => {
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
+                var { msg } = err.response.data;
+                if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
+                    localStorage.clear();
+                    dispatch({
+                        type: 'RESET_APP'
+                    })
+                }else{
+                    console.log("Error: ", err.response.data);
+                }
             })
     }
 }

@@ -23,7 +23,8 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     error: null,
-    isLoading: true
+    isLoading: true,
+    item: null
 }
 
 export function role(state = initState, action) {
@@ -32,6 +33,7 @@ export function role(state = initState, action) {
     switch (action.type) {
         case RoleConstants.GET_ROLES_REQUEST:
         case RoleConstants.CREATE_ROLE_REQUEST:
+        case RoleConstants.SHOW_ROLE_REQUEST:
         case RoleConstants.EDIT_ROLE_REQUEST:
         case RoleConstants.GET_ROLES_PAGINATE_REQUEST:
         case RoleConstants.DELETE_ROLE_REQUEST:
@@ -115,7 +117,7 @@ export function role(state = initState, action) {
                 isLoading: false
             };
 
-        case 'RESET_APP':
+        case 'LOGOUT':
             return initState;
 
         default:

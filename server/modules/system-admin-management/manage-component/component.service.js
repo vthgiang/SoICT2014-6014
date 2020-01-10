@@ -1,17 +1,12 @@
 const Component = require('../../../models/component.model');
 const Privilege = require('../../../models/privilege.model');
 
-exports.get = async () => {
-
-    return await Component.find();
-}
-
-exports.getComponentOfCompany = async(id) => {
+exports.get = async (id) => {
 
     return await Component
         .find({ company: id })
         .populate({ path: 'roles', model: Privilege });
-} 
+}
 
 exports.getById = async (id) => {
 

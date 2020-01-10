@@ -16,11 +16,22 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
     try {
-        var logout = await AuthService.logout(req, res);
-        if(isLog) authLogger.info("Logout :" + req.body.email);
+        var logout = await AuthService.logout(req.user._id, req.token);
+        if(isLog) authLogger.info("Logout :" + req.user.email);
         res.status(200).json(logout);
     } catch (error) {
-        if(isLog) authLogger.error("Logout :" + req.body.email);
+        if(isLog) authLogger.error("Logout :" + req.user.email);
+        res.status(400).json(error);
+    }
+};
+
+exports.logoutAllAccount = async (req, res) => {
+    try {
+        var logout = await AuthService.logoutAllAccount(req.user._id);
+        if(isLog) authLogger.info("LogoutAllAccount :" + req.user.email);
+        res.status(200).json(logout);
+    } catch (error) {
+        if(isLog) authLogger.error("LogoutAllAccount :" + req.user.email);
         res.status(400).json(error);
     }
 };

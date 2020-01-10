@@ -2,18 +2,7 @@ const ComponentService = require('./component.service');
 
 exports.get = async (req, res) => {
     try {
-        var roles = await ComponentService.get();
-        
-        res.status(200).json(roles);
-    } catch (error) {
-        
-        res.status(400).json(error);
-    }
-};
-
-exports.getComponentOfCompany = async (req, res) => {
-    try {
-        var roles = await ComponentService.getComponentOfCompany(req.params.id);
+        var roles = await ComponentService.get(req.user.company._id);
         
         res.status(200).json(roles);
     } catch (error) {
@@ -24,7 +13,7 @@ exports.getComponentOfCompany = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        console.log("Create component")
+        req.body.company = req.user.company._id;
         var createComponent = await ComponentService.create(req.body);
         await ComponentService.relationshipComponentRole(createComponent._id, req.body.roles);
         var component = await ComponentService.getById(createComponent._id);

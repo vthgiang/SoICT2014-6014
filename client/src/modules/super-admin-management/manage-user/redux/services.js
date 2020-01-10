@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../config';
-import {reactLocalStorage} from 'reactjs-localstorage';
 
 export const UserServices = {
     get,

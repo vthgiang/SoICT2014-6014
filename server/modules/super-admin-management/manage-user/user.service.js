@@ -8,7 +8,7 @@ const generator = require("generate-password");
 exports.get = async (company) => { //id cua cong ty do
     const users = await User
         .find({ company })
-        .select('-password -status -delete_soft')
+        .select('-password -status -delete_soft -token')
         .populate([
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
@@ -21,7 +21,7 @@ exports.get = async (company) => { //id cua cong ty do
 exports.getById = async (id) => { //tim user theo id
     var user = await User
         .findById(id)
-        .select('-password -status -delete_soft')
+        .select('-password -status -delete_soft -token')
         .populate([
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
@@ -31,7 +31,7 @@ exports.getById = async (id) => { //tim user theo id
 }
 
 //tao mot tai khoan cho nguoi dung moi trong cong ty
-exports.create = async (data) => {
+exports.create = async (data, company) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({ length: 10, numbers: true });
     var hash = bcrypt.hashSync(password, salt);
@@ -62,7 +62,7 @@ exports.create = async (data) => {
         name: data.name,
         email: data.email,
         password: hash,
-        company: data.company ? data.company : null //company for user
+        company: company
     });
     var mail = await transporter.sendMail(mainOptions);
     

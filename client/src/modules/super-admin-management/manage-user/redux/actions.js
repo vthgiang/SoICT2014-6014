@@ -1,6 +1,5 @@
 import { UserServices } from "./services";
 import { UserConstants } from "./constants";
-import { IntlActions } from "react-redux-multilingual";
 
 export const get = () => {
     return dispatch => {
@@ -73,7 +72,7 @@ export const searchByName = (name) => {
             .then(res => {
                 dispatch({
                     type: UserConstants.SEARCH_USER_BY_NAME_SUCCESS,
-                    payload: action.payload
+                    payload: res.data
                 })
             })
             .catch(err => {

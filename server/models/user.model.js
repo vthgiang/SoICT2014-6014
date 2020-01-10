@@ -34,6 +34,12 @@ const UserSchema = new Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    token: [{
+        type: String
+    }],
+    reset_password_token: {
+        type: String
     }
 },{
     timestamps: true,

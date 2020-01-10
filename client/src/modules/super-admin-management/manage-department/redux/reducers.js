@@ -59,7 +59,7 @@ export function department(state = initState, action) {
                 isLoading: false
             };
 
-        case 'RESET_APP':
+        case 'LOGOUT':
             return initState;
 
         default:

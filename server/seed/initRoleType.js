@@ -1,4 +1,4 @@
-const Log = require('../models/log.model');
+const Log = require('../models/role_type.model');
 const mongoose = require("mongoose");
 
 // DB Config
@@ -13,9 +13,16 @@ mongoose
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
 
-Log.create({
-    name: "log",
-    status: true
-})
+RoleType.insertMany([
+    {
+        name: 'abstract'
+    },
+    {
+        name: 'chucdanh'
+    },
+    {
+        name: 'tutao'
+    }
+])
 .then(data => console.log(data))
 .catch(err => console.log(err));

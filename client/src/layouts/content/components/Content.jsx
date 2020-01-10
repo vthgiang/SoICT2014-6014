@@ -38,7 +38,7 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, isLoading, pageName } = this.props;
+        const { pageName } = this.props;
         return ( 
             <React.Fragment>
                 <div className="content-wrapper">

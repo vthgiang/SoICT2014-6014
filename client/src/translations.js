@@ -15,8 +15,10 @@ export default {
                 yes: 'Có',
                 no: 'Không'
             },
-            profile: 'Thông tin tài khoản người dùng',
+            profile: 'Tài khoản',
+            profileTitle: "Thông tin tài khoản người dùng",
             logout: 'Đăng xuất',
+            logoutAll: 'Đăng xuất khỏi tất cả các thiết bị',
             manageCompany: {
                 name: 'Quản lý thông tin các công ty',
                 create: 'Thêm công ty mới'
@@ -144,7 +146,9 @@ export default {
                 no: 'No'
             },
             profile: 'Profile',
+            profileTitle: "Information of profile user",
             logout: 'Log out',
+            logoutAll: 'Logout of all devices',
             manageCompany: {
                 name: 'Manage Company',
                 create: 'Add new company'
