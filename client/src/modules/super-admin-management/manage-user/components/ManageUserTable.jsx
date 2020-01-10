@@ -42,14 +42,19 @@ class ManageUserTable extends Component {
         this.props.destroy(id)
     }
 
+<<<<<<< HEAD
     searchByName = () => {
         const { username } = this.state;
         this.props.searchByName( username );
     }
 
     render() { 
+=======
+    render() {
+>>>>>>> 5bc51c100aa32ca1f7c2a52380a21df218a3a664
         const { user, translate } = this.props;
-        return ( 
+        console.log("RENDER USER TABLE");
+        return (
             <React.Fragment>
                 
                 <div className="row" style={{ marginBottom: '5px'}}>
@@ -75,33 +80,37 @@ class ManageUserTable extends Component {
                 </div>
                 {
                     user.list.length > 0 &&
+<<<<<<< HEAD
                     <table className="table table-bordered table-hover">
+=======
+                    <table className="table table-bordered table-hover" style={{ marginTop: '50px' }}>
+>>>>>>> 5bc51c100aa32ca1f7c2a52380a21df218a3a664
                         <thead>
                             <tr>
-                                <th>{ translate('table.name') }</th>
-                                <th>{ translate('table.email') }</th>
-                                <th>{ translate('table.status') }</th>
-                                <th style={{ width: '120px' }}>{ translate('table.action') }</th>
+                                <th>{translate('table.name')}</th>
+                                <th>{translate('table.email')}</th>
+                                <th>{translate('table.status')}</th>
+                                <th style={{ width: '120px' }}>{translate('table.action')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                user.list.map( u => (
-                                    <tr 
-                                        key={ u._id }
+                                user.list.map(u => (
+                                    <tr
+                                        key={u._id}
                                         style={{ backgroundColor: u.active ? "white" : "#E2DFE7" }}
                                     >
-                                        <td>{ u.name }</td>
-                                        <td>{ u.email }</td>
-                                        <td>{ u.active ? <p><i className="fa fa-circle text-success" /> Enable</p> : <p><i className="fa fa-circle text-danger" /> Disable</p> }</td>
+                                        <td>{u.name}</td>
+                                        <td>{u.email}</td>
+                                        <td>{u.active ? <p><i className="fa fa-circle text-success" /> Enable</p> : <p><i className="fa fa-circle text-danger" /> Disable</p>}</td>
                                         <td>
-                                            <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#edit-user-modal-${u._id}` }><i className="fa fa-edit"></i></a>{' '}
-                                            <a className="btn btn-sm btn-danger" data-toggle="modal" href={ `#modal-delete-${u._id}` }><i className="fa fa-trash"></i></a>
-                                            <UserEditForm 
-                                                userEditID={ u._id } 
-                                                email={ u.email }
-                                                username={ u.name }
-                                                active={ u.active }
+                                            <a className="btn btn-sm btn-primary" data-toggle="modal" href={`#edit-user-modal-${u._id}`}><i className="fa fa-edit"></i></a>{' '}
+                                            <a className="btn btn-sm btn-danger" data-toggle="modal" href={`#modal-delete-${u._id}`}><i className="fa fa-trash"></i></a>
+                                            <UserEditForm
+                                                userEditID={u._id}
+                                                email={u.email}
+                                                username={u.name}
+                                                active={u.active}
                                                 editUser={this.editUser}
                                             />
                                             <DeleteNotificationModal
@@ -109,7 +118,7 @@ class ManageUserTable extends Component {
                                                 userEmail={u.email}
                                                 delete={this.delete}
                                             />
-                                            
+
                                         </td>
                                     </tr>
                                 ))
@@ -141,15 +150,15 @@ class ManageUserTable extends Component {
         );
     }
 }
- 
+
 const mapStateToProps = state => {
     return state;
 }
 
 const mapDispatchToProps = (dispatch, props) => {
-    return{
+    return {
         edit: (user) => {
-            dispatch(edit(user)); 
+            dispatch(edit(user));
         },
         destroy: (id) => {
             dispatch(destroy(id));
@@ -157,4 +166,4 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(ManageUserTable) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManageUserTable));

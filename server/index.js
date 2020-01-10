@@ -10,6 +10,8 @@ const link = require('./modules/system-admin-management/manage-link/link.route')
 const department = require('./modules/super-admin-management/manage-department/department.route');
 const privilege = require('./modules/super-admin-management/manage-privilege/privilege.route');
 const component = require('./modules/system-admin-management/manage-component/component.route');
+const educationProgram = require('./modules/trainning-Course/education-program/educationProgram.route');
+const employee = require('./modules/employees-manager/employee/employee.route');
 const sample = require('./modules/_sample-module/_sample.route');
 
 require('dotenv').config();
@@ -30,16 +32,15 @@ const db = process.env.DATABASE;
 
 // Connect to MongoDB
 mongoose
-.connect(
-    db,
-    { 
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-    }
-)
-.then(() => console.log("MongoDB successfully connected"))
-.catch(err => console.log(err));
+    .connect(
+        db, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        }
+    )
+    .then(() => console.log("MongoDB successfully connected"))
+    .catch(err => console.log(err));
 
 global.isLog = false;
 const Logger = require('./models/log.model');
@@ -57,6 +58,8 @@ app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
 app.use("/privilege", privilege);
+app.use("/educationProgram", educationProgram);
+app.use("/employee", employee);
 app.use("/sample", sample);
 app.use("/component", component);
 

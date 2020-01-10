@@ -1,0 +1,26 @@
+.keeping td {
+    height: 74px;
+    max-height: 74px !important;
+}
+
+.timekeeping th {
+    height: 42px;
+}
+
+.table {
+    table-layout: fixed !important;
+}
+
+table.timekeeping td i {
+    font-size: 12px !important;
+}
+
+.timekeeping th,
+td {
+    width: 45px;
+    border-collapse: collapse !important;
+}
+
+.timekeeping {
+    overflow-x: scroll !important;
+}

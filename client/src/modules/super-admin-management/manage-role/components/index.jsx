@@ -5,16 +5,16 @@ import RoleCreateForm from './RoleCreateForm';
 class ManageRole extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
-    render() { 
-        return ( 
+    render() {
+        return (
             <React.Fragment>
-                <RoleCreateForm/>
-                <RoleTable/>
+                <RoleCreateForm />
+                <RoleTable />
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 export default ManageRole;
