@@ -9,10 +9,12 @@ class ManageRole extends Component {
     }
     render() {
         return (
-            <React.Fragment>
-                <RoleCreateForm />
-                <RoleTable />
-            </React.Fragment>
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <RoleCreateForm />
+                    <RoleTable />
+                </div>
+            </div>
         );
     }
 }

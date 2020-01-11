@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import ReactLoading from 'react-loading';
 
 class Content extends Component {
     constructor(props) {
@@ -38,26 +37,29 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, isLoading, pageName } = this.props;
+        const { translate, isLoading, pageName, arrPage } = this.props;
         console.log("ISLOAIND: ", isLoading)
         return (
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
                         <h1> {pageName} </h1>
-                        {/* <ol className="breadcrumb">
-                            <li><a href="/admin"><i className="fa fa-dashboard" /> Menu1 </a></li> 
-                            <li className="active"> Pagename </li>
-                        </ol> */}
+                        <ol className="breadcrumb">
+                            {
+                                arrPage !== undefined && arrPage.map( page => 
+                                    <li>
+                                        <a href={page.link}>
+                                            <i className={ page.icon }/>
+                                            { translate(`mainSideBar.${page.name}`) }
+                                        </a>
+                                    </li> )
+                            }
+                        </ol>
                     </section>
                     <section className="content">
-                        <div className="box" style={{ minHeight: '400px' }}>
-                            <div className="box-body">
-                                {
-                                    this.props.children
-                                }
-                            </div>
-                        </div>
+                        {
+                            this.props.children
+                        }
                     </section>
                 </div>
             </React.Fragment>

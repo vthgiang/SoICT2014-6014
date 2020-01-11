@@ -18,11 +18,12 @@ class ManageUser extends Component {
 
     render() { 
         return ( 
-            <React.Fragment>
-                <UserCreateForm/>
-                <br></br><br></br>
-                <ManageUserTable/>
-            </React.Fragment>
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <UserCreateForm/>
+                    <ManageUserTable/>
+                </div>
+            </div>
         );
     }
 }
