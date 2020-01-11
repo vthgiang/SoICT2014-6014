@@ -121,6 +121,7 @@ export default {
                 taskmanagement: 'Quản Lý Công Việc',
                 manageDocument: 'Quản lý văn bản',
                 manageDocumentType: 'Quản lý loại văn bản',
+                manageEmployee: 'Quản lý nhân sự',
             },
             footer: {
                 copyRight: 'Bản quyền thuộc về',

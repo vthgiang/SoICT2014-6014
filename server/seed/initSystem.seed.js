@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 // DB Config
-const db = 'mongodb://localhost/qlcv';
+const db = 'mongodb://localhost/test';
 
 // Connect to MongoDB
 mongoose

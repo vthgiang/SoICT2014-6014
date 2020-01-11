@@ -127,7 +127,7 @@ class SideBar extends Component {
 
                             {/* Quan ly nhan su */}
                             {
-                                this.checkURL('/manage-company', links) === true &&
+                                this.checkURL('/', links) === true &&
                                 <li className="treeview">
                                     <a href="#abc">
                                         <i className="fa fa-dashboard" /> <span>Quản lý nhân sự</span>

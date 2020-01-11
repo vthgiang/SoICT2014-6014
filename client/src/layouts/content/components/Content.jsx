@@ -39,17 +39,17 @@ class Content extends Component {
 
     render() {
         const { pageName } = this.props;
-        return (
+        return ( 
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
-                        <h1> {pageName} </h1>
+                        <h1> { pageName } </h1>
                     </section>
                     <section className="content">
                         <div className="box" style={{ minHeight: '400px' }}>
                             <div className="box-body">
                                 {
-                                    this.props.children
+                                    this.props.children 
                                 }
                             </div>
                         </div>

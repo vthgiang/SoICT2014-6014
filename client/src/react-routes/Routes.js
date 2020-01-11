@@ -121,40 +121,40 @@ class Routes extends Component {
                     component={ ManageFormDocument }
                 />
                 {/* Quan ly nhan su */}
-                {/* <PrivateRoute 
-                    key={ 'manage-company' }
+                <PrivateRoute 
+                    key={ 'manage-Employee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-company' }
+                    link={ '/manage-Employee' }
                     path={ '/addemployee' }
                     pageName={'manage-company' }
                     layout={ Layout }
                     component={ AddEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'manage-company' }
+                    key={ 'manage-Employee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-company' }
+                    link={ '/manage-Employee' }
                     path={ '/detailemployee' }
                     pageName={'manage-company' }
                     layout={ Layout }
                     component={ DetailEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'manage-company' }
+                    key={ 'manage-Employee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-company' }
+                    link={ '/manage-Employee' }
                     path={ '/updateemployee' }
                     pageName={'manage-company' }
                     layout={ Layout }
                     component={ UpdateEmployee }
-                /> */}
-                <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} />
+                />
+                {/* <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} />
                 <Route exact path="/detailemployee" layout={ Layout } component={DetailEmployee} />
                 <Route exact path="/updateemployee" layout={ Layout } component={UpdateEmployee} />
-                <Route exact path="/listemployee" layout={ Layout } component={ListEmployee} />
+                <Route exact path="/listemployee" layout={ Layout } component={ListEmployee} /> */}
             </React.Fragment>
         );
     }
