@@ -3,20 +3,28 @@ const Department = require('../../../models/department.model');
 const arrayToTree = require('array-to-tree');
 
 exports.get = async (id) => {
-
-    return await Department.find({ company: id });
+    var departments = await Department.find({ company: id });
+    return departments;
 }
 
 exports.getTree = async (id) => {
     var data = await Department.find({ company: id });
+    console.log("data goc cua cac phong ban: ",data);
     var newData = data.map( department => {
+        var departmentID = department._id.toString();
+        var departmentName = department.name;
+        var departmentParent = department.parent !== null ? department.parent.toString() : null;
+
+        console.log("DULIEU MOI", departmentID, departmentName, departmentParent);
         return {
-            id: department._id.toString(),
-            name: department.name,
-            parent_id: department.parent.toString()
+            id: departmentID,
+            name: departmentName,
+            parent_id: departmentParent
         }
-    })
+    });
+    console.log("cau truc du lieu moi: ", newData)
     var tree = await arrayToTree(newData);
+    console.log("tree: ",tree);
 
     return tree;
 }
@@ -52,7 +60,18 @@ exports.edit = async(req, res) => {
     return department;
 }
 
-exports.delete = async(req, res) => {
-    
-    return await Department.deleteOne({ _id: req.params.id });
+exports.delete = async(departmentId) => {
+    var department = await Department.findById(departmentId); //tìm phòng ban hiện tại
+    console.log("Phong hien tai: ", department.name);
+    if(department.parent !== undefined || department.parent !== null){
+        await Department.updateMany({ 
+            parent: department._id
+        },{
+            $set :{ parent: department.parent }
+        }); 
+        console.log("update xong")
+        return await Department.deleteOne({ _id: departmentId });
+    }
+
+    return {};
 }

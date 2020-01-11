@@ -12,7 +12,7 @@ export const get = () => {
             })
         })
         .catch(err => {
-            console.log("Error: ", err);
+            console.log("Error: ", err.response);
         })
     }
 }
@@ -57,6 +57,22 @@ export const destroy = (id) => {
                 dispatch({
                     type: UserConstants.DELETE_USER_SUCCESS,
                     payload: id
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+export const searchByName = (name) => {
+    return dispatch => {
+        dispatch({ type: UserConstants.SEARCH_USER_BY_NAME_REQUEST});
+        UserServices.searchByName(name)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.SEARCH_USER_BY_NAME_SUCCESS,
+                    payload: res.data
                 })
             })
             .catch(err => {

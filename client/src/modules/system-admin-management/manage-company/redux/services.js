@@ -6,19 +6,23 @@ export const companyServices = {
 };
 
 function get() {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: 'http://localhost:8000/company',
-        method: 'GET'
+        method: 'GET',
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function create(company) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: 'http://localhost:8000/company',
         method: 'POST',
-        data: company
+        data: company,
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);

@@ -8,7 +8,7 @@ class DepartmentTreeView extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            zoom: 14.4
+            zoom: 14.8
         }
         this.displayTreeView = this.displayTreeView.bind(this);
         this.showNodeContent = this.showNodeContent.bind(this);
@@ -36,57 +36,39 @@ class DepartmentTreeView extends Component {
     }
 
     displayTreeView = (data) => {
-        if(typeof(data.children) === 'undefined') 
+        if(data !== undefined){
+            if(typeof(data.children) === 'undefined') 
+                return (
+                    <li key={data.id}>
+                        { this.showNodeContent(data) }
+                    </li>
+                )
             return (
                 <li key={data.id}>
                     { this.showNodeContent(data) }
+                    <ul>
+                        {
+                            data.children.map( tag => this.displayTreeView(tag))
+                        }
+                    </ul>  
                 </li>
             )
-        return (
-            <li key={data.id}>
-                { this.showNodeContent(data) }
-                <ul>
-                    {
-                        data.children.map( tag => this.displayTreeView(tag))
-                    }
-                </ul>  
-            </li>
-        )
+        }
+        else return null
     } 
 
     render() { 
-        const { tree, list } = this.props.department;
+        const { tree } = this.props.department;
 
         return ( 
             <React.Fragment>
-                <i className="btn btn-sm fa fa-plus" onClick={ this.zoomIn }></i>
-                <i className="btn btn-sm fa fa-minus" onClick={ this.zoomOut }></i>
+                <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn }></i>
+                <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut }></i>
                 <div className="tf-tree example" style={{ textAlign: 'center', fontSize: `${this.state.zoom}px` }}>
                     <ul>
                         {tree !== null && this.displayTreeView(tree[0])}
                     </ul>
                 </div>
-                {
-                    list.map( u => (
-                        <div className="modal fade" id={`department-detail-${u._id}`}>
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                        <h4 className="modal-title">{ u.name }</h4>
-                                    </div>
-                                    <div className="modal-body">
-
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">Close</button>
-                                        <button type="button" className="btn btn-success">Save</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                }
             </React.Fragment>
          );
     }

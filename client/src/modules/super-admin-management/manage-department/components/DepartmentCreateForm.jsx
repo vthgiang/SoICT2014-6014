@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { create } from '../redux/actions';
-import { reactLocalStorage } from 'reactjs-localstorage';
 
 class DepartmentCreateForm extends Component {
     constructor(props) {
@@ -30,8 +29,7 @@ class DepartmentCreateForm extends Component {
 
     save = (e) => {
         const { name, description, dean, vice_dean, employee, parent } = this.state;
-        const com = reactLocalStorage.getObject('company');
-        this.props.create({name, description, dean, vice_dean, employee, company: com._id, parent});
+        this.props.create({name, description, dean, vice_dean, employee, parent});
     }
 
     render() { 

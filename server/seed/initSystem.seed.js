@@ -1,4 +1,5 @@
 const Role = require('../models/role.model');
+const RoleType = require('../models/role_type.model');
 const User = require('../models/user.model');
 const Link = require('../models/link.model');
 const Company = require('../models/company.model');
@@ -8,7 +9,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 // DB Config
-const db = 'mongodb+srv://qlcv:thai135@cluster0-zqzcq.mongodb.net/test?retryWrites=true&w=majority';
+const db = 'mongodb://localhost/qlcv';
 
 // Connect to MongoDB
 mongoose
@@ -42,9 +43,12 @@ initSystem = async () => {
     });
 
     //Tao role System Admin 
+    var roleType = await RoleType.find({ name: 'abstract' });
     var role = await Role.create({
         name: "System Admin",
         company: company._id,
+        type: roleType._id
+        //abstract không có
     });
 
     //phan quyen system admin cho tai khoan

@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../config';
-import {reactLocalStorage} from 'reactjs-localstorage';
 
 export const RoleServices = {
     get,
+    getPaginate,
     show,
     create,
     edit,
@@ -11,48 +11,69 @@ export const RoleServices = {
 };
 
 function get() {  
-    const company = reactLocalStorage.getObject('company');
+    const token = localStorage.getItem('token');
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/role/company/${company._id}`,
-        method: 'GET'
+        url: `${ LOCAL_SERVER_API }/role`,
+        method: 'GET',
+        headers: {'auth-token': token}
+    };
+
+    return axios(requestOptions);
+}
+
+function getPaginate(data) {  
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/role/paginate`,
+        method: 'POST',
+        data,
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function show(id) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/role/${id}`,
-        method: 'GET'
+        method: 'GET',
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function create(role) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/role`,
         method: 'POST',
-        data: role
+        data: role,
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function edit(role) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/role/${role.id}`,
         method: 'PATCH',
-        data: role
+        data: role,
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);
 }
 
 function destroy(roleId) {
+    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/role/${roleId}`,
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {'auth-token': token}
     };
 
     return axios(requestOptions);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import ReactLoading from 'react-loading';
+// import ReactLoading from 'react-loading';
 
 class Content extends Component {
     constructor(props) {
@@ -38,37 +38,19 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, isLoading, pageName } = this.props;
-        console.log("ISLOAIND: ", isLoading)
+        const { pageName } = this.props;
         return (
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
                         <h1> {pageName} </h1>
-                        {/* <ol className="breadcrumb">
-                            <li><a href="/admin"><i className="fa fa-dashboard" /> Menu1 </a></li> 
-                            <li className="active"> Pagename </li>
-                        </ol> */}
                     </section>
                     <section className="content">
                         <div className="box" style={{ minHeight: '400px' }}>
                             <div className="box-body">
                                 {
-                                    isLoading &&
-                                    <div>
-                                        <p style={{ textAlign: 'center', color: '#605CA8', marginTop: '120px' }}>
-                                            <strong>{translate('loading')}</strong>
-                                        </p>
-                                        <div style={{ marginLeft: '46%', width: '8%' }}>
-                                            <ReactLoading type={"bars"} color={"#605CA8"} width={'100%'} />
-                                        </div>
-                                    </div>
+                                    this.props.children
                                 }
-                                <div hidden={isLoading}>
-                                    {
-                                        this.props.children
-                                    }
-                                </div>
                             </div>
                         </div>
                     </section>

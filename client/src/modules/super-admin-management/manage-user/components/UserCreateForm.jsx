@@ -41,7 +41,7 @@ class UserCreateForm extends Component {
         const{ translate } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href='#modal-id'>{ translate('manageUser.create') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href='#modal-id' title={ translate('manageUser.create') }>{ translate('add') }</a>
                 <div className="modal fade" id="modal-id">
                     <div className="modal-dialog">
                         <div className="modal-content">

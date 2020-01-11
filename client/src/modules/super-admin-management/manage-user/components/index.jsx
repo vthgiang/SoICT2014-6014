@@ -20,6 +20,7 @@ class ManageUser extends Component {
         return ( 
             <React.Fragment>
                 <UserCreateForm/>
+                <br></br><br></br>
                 <ManageUserTable/>
             </React.Fragment>
         );

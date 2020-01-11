@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../css/MainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
-import { logout } from '../../../modules/auth/redux/actions';
+import { logout, logoutAllAccount } from '../../../modules/auth/redux/actions';
 import { IntlActions } from 'react-redux-multilingual';
 import { getLinksOfRole, refresh } from '../../../modules/auth/redux/actions';
 
@@ -28,7 +28,7 @@ class MainHeaderMenu extends Component {
     }
 
     render() {
-        const { auth } = this.props;
+        const { auth, translate } = this.props;
         const { currentRole } = this.state;
         return (
             <React.Fragment>
@@ -70,10 +70,13 @@ class MainHeaderMenu extends Component {
                                 </li>
                                 <li className="user-footer">
                                     <div className="pull-left">
-                                        <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat">Profile</a>
+                                        <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat" title={ translate('profileTitle') }><i className="fa fa-info-circle"></i> { translate('profile') } </a>
                                     </div>
                                     <div className="pull-right">
-                                        <button type="button" className="btn btn-default btn-flat" onClick={this.props.logout}>Logout</button>
+                                        <button type="button" className="btn btn-default btn-flat" onClick={this.props.logout}><i className="fa fa-sign-out"></i> { translate('logout') } </button>
+                                    </div>
+                                    <div style={{ marginTop: '45px'}}>
+                                        <button style={{ width: '100%'}} type="button" className="btn btn-default btn-flat" onClick={this.props.logoutAllAccount}><i className="fa fa-power-off"></i> { translate('logoutAll') } </button>
                                     </div>
                                 </li>
                             </ul>
@@ -117,6 +120,9 @@ const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
     return {
         logout: () => {
             dispatch(logout()); //dispatch đến action getUsers trong file index của action và lưu dữ liệu users trên store
+        },
+        logoutAllAccount: () => {
+            dispatch(logoutAllAccount()); //dispatch đến action getUsers trong file index của action và lưu dữ liệu users trên store
         },
         setLanguageVietNam: () => {
             localStorage.setItem('lang', 'vn');

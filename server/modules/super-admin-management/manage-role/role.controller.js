@@ -2,7 +2,18 @@ const RoleService = require('./role.service');
 
 exports.get = async (req, res) => {
     try {
-        var roles = await RoleService.get(req.params.idCompany); //truyen vao id cua cong ty
+        var roles = await RoleService.get(req.user.company._id); //truyen vao id cua cong ty
+        
+        res.status(200).json(roles);
+    } catch (error) {
+        
+        res.status(400).json(error);
+    }
+};
+
+exports.getPaginate = async (req, res) => {
+    try {
+        var roles = await RoleService.getPaginate(req.user.company._id, req.body.limit, req.body.page); //truyen vao id cua cong ty
         
         res.status(200).json(roles);
     } catch (error) {
@@ -24,7 +35,7 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var role = await RoleService.getById(req.params.id);
+        var role = await RoleService.getById(req.user.company._id, req.params.id);
         
         res.status(200).json(role);
     } catch (error) {

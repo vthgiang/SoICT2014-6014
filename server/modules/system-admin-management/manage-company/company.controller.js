@@ -28,7 +28,7 @@ exports.create = async (req, res) => {
         var employee = await RoleSerVice.createAbstract({ name: "Employee", company: company._id });
         
         //add tai khoan superadmin cho cong ty do
-        const superAdminUser = await UserService.create({ name: `Super Admin - ${company.short_name}`, email: req.body.email, company: company._id });
+        const superAdminUser = await UserService.create({ name: `Super Admin - ${company.short_name}`, email: req.body.email }, company._id );
         //add quyen superadmin cho tai khoan do
         const user_role = await UserService.relationshipUserRole(superAdminUser._id, superAdmin._id);
 

@@ -8,11 +8,22 @@ const initState = {
     isLoading: false
 }
 
-export function department(state = initState, action) {
+var findIndex = (array, id) => {
+    var result = -1;
+    array.forEach((value, index) => {
+        if(value._id === id){
+            result = index;
+        }
+    });
+    return result;
+}
 
+export function department(state = initState, action) {
+    var index = -1;
     switch (action.type) {
         case DepartmentConstants.GET_DEPARTMENTS_REQUEST:
         case DepartmentConstants.CREATE_DEPARTMENT_REQUEST:
+        case DepartmentConstants.DELETE_DEPARTMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -37,7 +48,18 @@ export function department(state = initState, action) {
                 isLoading: false
             };
 
-        case 'RESET_APP':
+        case DepartmentConstants.DELETE_DEPARTMENT_SUCCESS:
+            index = findIndex(state.list, action.payload.id);
+            if(index !== -1){
+                state.list.splice(index, 1);
+            }
+            return {
+                ...state,
+                tree: action.payload.data.tree,
+                isLoading: false
+            };
+
+        case 'LOGOUT':
             return initState;
 
         default:

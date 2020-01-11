@@ -32,3 +32,22 @@ export const create = (data) => {
             })
     }
 }
+
+export const destroy = (departmentId) => {
+    return dispatch => {
+        dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_REQUEST});
+        DepartmentServices.destroy(departmentId)
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.DELETE_DEPARTMENT_SUCCESS,
+                    payload: {
+                        data: res.data,
+                        id: departmentId
+                    }
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}

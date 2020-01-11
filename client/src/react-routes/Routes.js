@@ -100,7 +100,7 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ ManageComponent }
                 />
-                <PrivateRoute 
+                {/* <PrivateRoute 
                     key={ 'manage-form-document' }
                     auth={ auth }
                     exact={ true }
@@ -109,7 +109,7 @@ class Routes extends Component {
                     pageName={ 'manageFormDocument' }
                     layout={ Layout }
                     component={ ManageFormDocument }
-                />
+                /> */}
                 <PrivateRoute 
                     key={ 'manage-form-document' }
                     auth={ auth }

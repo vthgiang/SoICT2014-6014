@@ -1,61 +1,76 @@
 const Role = require('../../../models/role.model');
+const RoleType = require('../../../models/role_type.model');
 const User = require('../../../models/user.model');
 const UserRole = require('../../../models/user_role.model');
 const Company = require('../../../models/company.model');
 
 //lay tat ca role cua 1 cong ty
 exports.get = async (company) => {
-
-    return await Role
-        .find({ company }) //id cua cong ty 
-        .limit(10)
-        .populate({ path: 'users', model: UserRole });
+    return await Role.find({company});
 }
 
-exports.getById = async (id) => {
+exports.getPaginate = async (company, limit, page) => {
+    return await Role
+        .paginate({company}, { 
+            page, 
+            limit,
+            populate: { path: 'users', model: UserRole}
+        });
+}
+
+exports.getById = async (company, roleId) => {
 
     return await Role
-        .findById(id)
+        .findOne({
+            company,
+            _id: roleId
+        })
         .populate([
             { path: 'users', model: UserRole },
             { path: 'company', model: Company },
-            // { path: 'abstract', model: Role }
+            { path: 'type', model: RoleType }
         ]);
 }
 
 exports.create = async(data) => {
-
+    var roleTuTao = await RoleType.find({ name: 'tutao' });
     return await Role.create({
         name: data.name,
         company: data.company,
         abstract: data.abstract,
-        isAbstract: false
+        type: roleTuTao._id
     });
 }
 
 exports.createAbstract = async(data) => {
+    var roleAbstract = await RoleType.find({ name: 'abstract' });
 
     return await Role.create({
         name: data.name,
         company: data.company,
+        type: roleAbstract._id,
         abstract: data.abstract
     });
 }
 
 exports.crt_rolesOfDepartment = async(data) => {
+    var roleChucDanh = await RoleType.find({ name: 'chucdanh' });
     var employee = await Role.create({
         name: data.employee,
         company: data.company,
+        type: roleChucDanh._id,
         abstract: []
     });
     var vice_dean = await Role.create({
         name: data.vice_dean,
         company: data.company,
+        type: roleChucDanh._id,
         abstract: [employee._id]
     });
     var dean = await Role.create({
         name: data.dean,
         company: data.company,
+        type: roleChucDanh._id,
         abstract: [employee._id, vice_dean._id]
     });
 

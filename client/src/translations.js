@@ -3,13 +3,22 @@ export default {
         locale: 'vn',
         messages: {
             hello: 'Xin chào {name}',
+            page: 'Trang : ',
+            show: 'Hiển thị / trang',
+            add: 'Thêm',
+            search: 'Tìm kiếm',
+            searchByName: 'Nhập vào tên ... ',
+            edit: 'Sửa',
+            delete: 'Xóa',
             loading: 'Đang xử lý dữ liệu...Xin vui lòng đợi',
             question: {
                 yes: 'Có',
                 no: 'Không'
             },
-            profile: 'Thông tin tài khoản người dùng',
+            profile: 'Tài khoản',
+            profileTitle: "Thông tin tài khoản người dùng",
             logout: 'Đăng xuất',
+            logoutAll: 'Đăng xuất khỏi tất cả các thiết bị',
             manageCompany: {
                 name: 'Quản lý thông tin các công ty',
                 create: 'Thêm công ty mới'
@@ -124,13 +133,22 @@ export default {
         locale: 'en-US',
         messages: {
             hello: 'how are you {name}',
+            page: 'Page : ',
+            show: 'Show value / page',
+            add: 'Add',
+            search: 'Search',
+            searchByName: 'Input name ... ',
+            edit: 'Edit',
+            delete: 'Delete',
             loading: 'Loading...Please wait',
             question: {
                 yes: 'Yes',
                 no: 'No'
             },
             profile: 'Profile',
+            profileTitle: "Information of profile user",
             logout: 'Log out',
+            logoutAll: 'Logout of all devices',
             manageCompany: {
                 name: 'Manage Company',
                 create: 'Add new company'

@@ -42,6 +42,15 @@ mongoose
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
 
+global.isLog = false;
+const Logger = require('./models/log.model');
+Logger.findOne({name: 'log'})
+    .then(result => {
+        result.status ? isLog = true : isLog = false;
+        console.log("Logger status: ", isLog);
+    })
+    .catch(err => console.log("msg: ", err));
+
 app.use("/user", user);
 app.use("/auth", auth);
 app.use("/company", company);
