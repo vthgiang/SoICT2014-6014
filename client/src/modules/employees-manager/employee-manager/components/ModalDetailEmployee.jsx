@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { employeeInfoActions } from '../../employee-info/redux/actions';
 class ModalDetailEmployee extends Component {
     constructor(props) {
         super(props);
@@ -6,33 +8,35 @@ class ModalDetailEmployee extends Component {
         };
     }
     render() {
-        var employee = this.props.employee;
-        var employeeContact = this.props.employeeContact;
+
+        var list = this.props.list;
+        console.log(list);
         return (
-            <div className="modal modal-full fade" id="modal-viewEmployee" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div className="modal-dialog-full">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Chi tiết khoá đào tạo</h4>
-                        </div>
-                        <div className="modal-body" style={{ paddingTop: 0 }}>
-                            <div className="nav-tabs-custom">
-                                <ul className="nav nav-tabs">
-                                    <li className="active"><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin chung của nhân viên" data-toggle="tab" href="#thongtinchung">Thông tin chung</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin liên hệ của nhân viên" data-toggle="tab" href="#thongtinlienhe">Thông tin liên hệ</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Trình độ học vấn - Khinh nghiệm làm việc" data-toggle="tab" href="#kinhnghiem"> Học vấn - Kinh nghiệm</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Bằng cấp - Chứng chỉ" data-toggle="tab" href="#bangcap">Bằng cấp - Chứng chỉ</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Tài khoản ngân hành - Thuế thu nhập các nhân" data-toggle="tab" href="#taikhoan">Tài khoản - Thuế</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin bảo hiểm" data-toggle="tab" href="#baohiem">Thông tin bảo hiểm</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Hợp đồng lao động - Quá trình đào tạo" data-toggle="tab" href="#hopdong">Hợp đồng - Đào tạo</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Khen thưởng - kỷ luật" data-toggle="tab" href="#khenthuong">Khen thưởng - Kỷ luật</a></li>
-                                    <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Lịch sử tăng giảm lương" data-toggle="tab" href="#historySalary">Lịch sử tăng giảm lương</a></li>
-                                    <li><a style={{ paddingLeft: 5, }} title="Tài liệu đính kèm" data-toggle="tab" href="#tailieu">Tài liệu đính kèm</a></li>
-                                </ul>
-                                {employee && employee.map((x, index) => (
-                                    <div className="tab-content" key={index}>
+            <div style={{display:"inline"}}>
+                <a href={`#modal-viewEmployee-${list.employeeNumber}`} title="Xem chi tiết nhân viên" data-toggle="modal"><i className="material-icons">visibility</i></a>
+                <div className="modal modal-full fade" id={`modal-viewEmployee-${list.employeeNumber}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div className="modal-dialog-full">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span></button>
+                                <h4 className="modal-title">Chi tiết nhân viên:  {list.fullName} - {list.employeeNumber} </h4>
+                            </div>
+                            <div className="modal-body" style={{ paddingTop: 0 }}>
+                                <div className="nav-tabs-custom">
+                                    <ul className="nav nav-tabs">
+                                        <li className="active"><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin chung của nhân viên" data-toggle="tab" href="#thongtinchung">Thông tin chung</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin liên hệ của nhân viên" data-toggle="tab" href="#thongtinlienhe">Thông tin liên hệ</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Trình độ học vấn - Khinh nghiệm làm việc" data-toggle="tab" href="#kinhnghiem"> Học vấn - Kinh nghiệm</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Bằng cấp - Chứng chỉ" data-toggle="tab" href="#bangcap">Bằng cấp - Chứng chỉ</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Tài khoản ngân hành - Thuế thu nhập các nhân" data-toggle="tab" href="#taikhoan">Tài khoản - Thuế</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin bảo hiểm" data-toggle="tab" href="#baohiem">Thông tin bảo hiểm</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Hợp đồng lao động - Quá trình đào tạo" data-toggle="tab" href="#hopdong">Hợp đồng - Đào tạo</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Khen thưởng - kỷ luật" data-toggle="tab" href="#khenthuong">Khen thưởng - Kỷ luật</a></li>
+                                        <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Lịch sử tăng giảm lương" data-toggle="tab" href="#historySalary">Lịch sử tăng giảm lương</a></li>
+                                        <li><a style={{ paddingLeft: 5, }} title="Tài liệu đính kèm" data-toggle="tab" href="#tailieu">Tài liệu đính kèm</a></li>
+                                    </ul>
+                                    <div className="tab-content">
                                         <div id="thongtinchung" className="tab-pane active">
                                             <div className="box-body">
                                                 <div className="col-sm-12">
@@ -44,44 +48,44 @@ class ModalDetailEmployee extends Component {
                                                     <div className="col-sm-4">
                                                         <div className="form-group" style={{ marginTop: 20 }}>
                                                             <strong>Mã nhân viên:&emsp; </strong>
-                                                            {x.employeeNumber}
+                                                            {list.employeeNumber}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Họ và tên:&emsp; </strong>
-                                                            {x.fullName}
+                                                            {list.fullName}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Giới tính:&emsp; </strong>
-                                                            {x.gender}
+                                                            {list.gender}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Ngày sinh:&emsp; </strong>
-                                                            {x.brithday}
+                                                            {list.brithday}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Nơi sinh:&emsp; </strong>
-                                                            {x.birthplace}
+                                                            {list.birthplace}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Dân tộc:&emsp; </strong>
-                                                            {x.national}
+                                                            {list.national}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Tôn giáo:&emsp; </strong>
-                                                            {x.religion}
+                                                            {list.religion}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Quốc tịch:&emsp; </strong>
-                                                            {x.nation}
+                                                            {list.nation}
                                                         </div>
                                                     </div>
                                                     <div className="col-sm-5">
                                                         <div className="form-group" style={{ marginTop: 20 }}>
                                                             <strong>Mã số chấm công:&emsp; </strong>
-                                                            {x.MSCC}
+                                                            {list.MSCC}
                                                         </div>
                                                         {
-                                                            x.department && x.department.map((department, keys) => (
+                                                            list.department && list.department.map((department, keys) => (
                                                                 <div className="form-group" key={keys}>
                                                                     <strong>Đơn vị:&emsp; </strong>
                                                                     {department.nameDepartment}
@@ -90,7 +94,7 @@ class ModalDetailEmployee extends Component {
                                                         }
 
                                                         {
-                                                            x.department && x.department.map((department, key) => (
+                                                            list.department && list.department.map((department, key) => (
                                                                 <div className="form-group" key={key}>
                                                                     <strong>Chức vụ:&emsp;</strong>
                                                                     {department.position}
@@ -99,137 +103,134 @@ class ModalDetailEmployee extends Component {
                                                         }
                                                         <div className="form-group" >
                                                             <strong>Số CMND/Hộ chiếu:&emsp; </strong>
-                                                            {x.CMND}
+                                                            {list.CMND}
 
                                                         </div>
                                                         <div className="form-group" >
                                                             <strong>Ngày cấp:&emsp; </strong>
-                                                            {x.dateCMND}
+                                                            {list.dateCMND}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Nơi cấp:&emsp; </strong>
-                                                            {x.addressCMND}
+                                                            {list.addressCMND}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Tình trạng hôn nhân:&emsp; </strong>
-                                                            {x.relationship}
+                                                            {list.relationship}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Email công ty:&emsp; </strong>
-                                                            {x.emailCompany}
+                                                            {list.emailCompany}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        {employeeContact && employeeContact.map((y, indexs) => (
-                                            <div id="thongtinlienhe" className="tab-pane" key={indexs}>
-                                                <div className="box-body">
-                                                    <div className="col-sm-12">
-                                                        <div className="form-group col-md-4" style={{ marginTop: 20 }}>
-                                                            <strong>Điện thoại di động:&emsp; </strong>
-                                                            {x.phoneNumber ? "0" + x.phoneNumber : ""}
+                                        <div id="thongtinlienhe" className="tab-pane">
+                                            <div className="box-body">
+                                                <div className="col-sm-12">
+                                                    <div className="form-group col-md-4" style={{ marginTop: 20 }}>
+                                                        <strong>Điện thoại di động:&emsp; </strong>
+                                                        {list.phoneNumber ? "0" + list.phoneNumber : ""}
+                                                    </div>
+                                                    <div className="col-md-12" style={{ padding: 0 }}>
+                                                        <div className="form-group col-md-4">
+                                                            <strong>Điện thoại nhà riêng:&emsp; </strong>
+                                                            {list.phoneNumberAddress ? "0" + list.phoneNumberAddress : ""}
                                                         </div>
-                                                        <div className="col-md-12" style={{ padding: 0 }}>
-                                                            <div className="form-group col-md-4">
+                                                        <div className="form-group col-md-8">
+                                                            <strong>Email cá nhân:&emsp; </strong>
+                                                            {list.emailPersonal}
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <div className="col-sm-12">
+                                                    <fieldset className="scheduler-border">
+                                                        <legend className="scheduler-border"><h4 className="box-title">Liên hệ khẩn cấp với ai</h4></legend>
+                                                        <div className="col-sm-6" style={{ padding: 0 }}>
+                                                            <div className="form-group" >
+                                                                <strong>Họ và tên:&emsp; </strong>
+                                                                {list.friendName}
+                                                            </div>
+                                                            <div className="form-group" >
+                                                                <strong>Quan hệ:&emsp; </strong>
+                                                                {list.relation}
+                                                            </div>
+                                                            <div className="form-group" >
+                                                                <strong>Điện Thoại di động:&emsp; </strong>
+                                                                {list.friendPhone ? "0" + list.friendPhone : ""}
+                                                            </div>
+                                                            <div className="form-group" >
                                                                 <strong>Điện thoại nhà riêng:&emsp; </strong>
-                                                                {y.phoneNumberAddress ? "0" + y.phoneNumberAddress : ""}
+                                                                {list.friendPhoneAddress ? "0" + list.phoneNumberAddress : ""}
                                                             </div>
-                                                            <div className="form-group col-md-8">
-                                                                <strong>Email cá nhân:&emsp; </strong>
-                                                                {y.emailPersonal}
-                                                            </div>
-
                                                         </div>
-
-                                                    </div>
-                                                    <div className="col-sm-12">
-                                                        <fieldset className="scheduler-border">
-                                                            <legend className="scheduler-border"><h4 className="box-title">Liên hệ khẩn cấp với ai</h4></legend>
-                                                            <div className="col-sm-6" style={{ padding: 0 }}>
-                                                                <div className="form-group" >
-                                                                    <strong>Họ và tên:&emsp; </strong>
-                                                                    {y.friendName}
-                                                                </div>
-                                                                <div className="form-group" >
-                                                                    <strong>Quan hệ:&emsp; </strong>
-                                                                    {y.relation}
-                                                                </div>
-                                                                <div className="form-group" >
-                                                                    <strong>Điện Thoại di động:&emsp; </strong>
-                                                                    {y.friendPhone ? "0" + y.friendPhone : ""}
-                                                                </div>
-                                                                <div className="form-group" >
-                                                                    <strong>Điện thoại nhà riêng:&emsp; </strong>
-                                                                    {y.friendPhoneAddress ? "0" + y.phoneNumberAddress : ""}
-                                                                </div>
+                                                        <div className="col-sm-6" style={{ paddingLeft: 35 }}>
+                                                            <div className="form-group" >
+                                                                <strong>Email:&emsp; </strong>
+                                                                {list.friendEmail}
                                                             </div>
-                                                            <div className="col-sm-6" style={{ paddingLeft: 35 }}>
-                                                                <div className="form-group" >
-                                                                    <strong>Email:&emsp; </strong>
-                                                                    {y.friendEmail}
-                                                                </div>
-                                                                <div className="form-group" >
-                                                                    <strong>Địa chỉ:&emsp; </strong>
-                                                                    {y.friendAddress}
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <fieldset className="scheduler-border">
-                                                            <legend className="scheduler-border"><h4 className="box-title">Hộ khẩu thường trú</h4></legend>
                                                             <div className="form-group" >
                                                                 <strong>Địa chỉ:&emsp; </strong>
-                                                                {y.localAddress}
+                                                                {list.friendAddress}
                                                             </div>
-                                                            <div className="form-group" >
-                                                                <strong>Xã/Phường:&emsp; </strong>
-                                                                {y.localCommune}
-                                                            </div>
-                                                            <div className="form-group" >
-                                                                <strong>Quận/Huyện:&emsp; </strong>
-                                                                {y.localDistrict}
-                                                            </div>
-                                                            <div className="form-group" >
-                                                                <strong>Tỉnh/Thành phố:&emsp; </strong>
-                                                                {y.localCity}
-                                                            </div>
-                                                            <div className="form-group" >
-                                                                <strong>Quốc gia:&emsp; </strong>
-                                                                {y.localNational}
-                                                            </div>
-                                                        </fieldset>
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <fieldset className="scheduler-border">
-                                                            <legend className="scheduler-border"><h4 className="box-title">Chỗ ở hiện tại</h4></legend>
-                                                            <div className="form-group" >
-                                                                <strong>Địa chỉ:&emsp; </strong>
-                                                                {y.nowAddress}
-                                                            </div>
-                                                            <div className="form-group" >
-                                                                <strong>Xã/Phường:&emsp; </strong>
-                                                                {y.nowCommune}
-                                                            </div>
-                                                            <div className="form-group" >
-                                                                <strong>Quận/Huyện:&emsp; </strong>
-                                                                {y.nowDistrict}
-                                                            </div>
-                                                            <div className="form-group" >
-                                                                <strong>Tỉnh/Thành phố:&emsp; </strong>
-                                                                {y.nowCity}
-                                                            </div>
-                                                            <div className="form-group" >
-                                                                <strong>Quốc gia:&emsp; </strong>
-                                                                {y.nowNational}
-                                                            </div>
-                                                        </fieldset>
-                                                    </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <fieldset className="scheduler-border">
+                                                        <legend className="scheduler-border"><h4 className="box-title">Hộ khẩu thường trú</h4></legend>
+                                                        <div className="form-group" >
+                                                            <strong>Địa chỉ:&emsp; </strong>
+                                                            {list.localAddress}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Xã/Phường:&emsp; </strong>
+                                                            {list.localCommune}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Quận/Huyện:&emsp; </strong>
+                                                            {list.localDistrict}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Tỉnh/Thành phố:&emsp; </strong>
+                                                            {list.localCity}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Quốc gia:&emsp; </strong>
+                                                            {list.localNational}
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <fieldset className="scheduler-border">
+                                                        <legend className="scheduler-border"><h4 className="box-title">Chỗ ở hiện tại</h4></legend>
+                                                        <div className="form-group" >
+                                                            <strong>Địa chỉ:&emsp; </strong>
+                                                            {list.nowAddress}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Xã/Phường:&emsp; </strong>
+                                                            {list.nowCommune}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Quận/Huyện:&emsp; </strong>
+                                                            {list.nowDistrict}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Tỉnh/Thành phố:&emsp; </strong>
+                                                            {list.nowCity}
+                                                        </div>
+                                                        <div className="form-group" >
+                                                            <strong>Quốc gia:&emsp; </strong>
+                                                            {list.nowNational}
+                                                        </div>
+                                                    </fieldset>
                                                 </div>
                                             </div>
-                                        ))}
-
+                                        </div>
                                         <div id="taikhoan" className="tab-pane">
                                             <div className="box-body">
                                                 <div className="col-sm-12">
@@ -237,43 +238,57 @@ class ModalDetailEmployee extends Component {
                                                         <legend className="scheduler-border"><h4 className="box-title">Tài khoản ngân hàng</h4></legend>
                                                         <div className="form-group col-md-4" style={{ marginLeft: 20 }}>
                                                             <strong>Số tài khoản :&emsp; </strong>
-                                                            {x.ATM}
+                                                            {list.ATM}
                                                         </div>
                                                         <div className="form-group col-md-4" style={{ marginLeft: 20 }}>
                                                             <strong>Tên ngân hàng:&emsp; </strong>
-                                                            {x.nameBank}
+                                                            {list.nameBank}
                                                         </div>
                                                         <div className="form-group col-md-4" style={{ marginLeft: 20 }}>
                                                             <strong>Chi nhánh:&emsp; </strong>
-                                                            {x.addressBank}
+                                                            {list.addressBank}
                                                         </div>
                                                     </fieldset>
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <fieldset className="scheduler-border">
                                                         <legend className="scheduler-border"><h4 className="box-title">Thuế thu nhập cá nhân</h4></legend>
-                                                        {x.Tax && x.Tax.map((x, index) => (
-                                                            <div key={index}>
-                                                                <div className="form-group" style={{ marginLeft: 20 }}>
-                                                                    <strong>Mã số thuế:&emsp; </strong>
-                                                                    {x.numberTax}
-                                                                </div>
-                                                                <div className="form-group" style={{ marginLeft: 20 }}>
-                                                                    <strong>Người đại diện:&emsp; </strong>
-                                                                    {x.userTax}
-                                                                </div>
-                                                                <div className="form-group" style={{ marginLeft: 20 }}>
-                                                                    <strong>Ngày hoạt động:&emsp; </strong>
-                                                                    {x.startDate}
-                                                                </div>
-                                                                <div className="form-group" style={{ marginLeft: 20 }}>
-                                                                    <strong>Quản lý bởi:&emsp; </strong>
-                                                                    {x.unitTax}
-                                                                </div>
-                                                            </div>
-
-                                                        ))}
-
+                                                        {
+                                                            (typeof list.Tax !== 'undefined' && list.Tax.length !== 0) ?
+                                                                list.Tax.map((x, index) => (
+                                                                    <div key={index}>
+                                                                        <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                            <strong>Mã số thuế:&emsp; </strong>
+                                                                            {x.numberTax}
+                                                                        </div>
+                                                                        <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                            <strong>Người đại diện:&emsp; </strong>
+                                                                            {x.userTax}
+                                                                        </div>
+                                                                        <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                            <strong>Ngày hoạt động:&emsp; </strong>
+                                                                            {x.startDate}
+                                                                        </div>
+                                                                        <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                            <strong>Quản lý bởi:&emsp; </strong>
+                                                                            {x.unitTax}
+                                                                        </div>
+                                                                    </div>
+                                                                )) : 
+                                                                <div>
+                                                                    <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                        <strong>Mã số thuế:&emsp; </strong>
+                                                                    </div>
+                                                                    <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                        <strong>Người đại diện:&emsp; </strong>
+                                                                    </div>
+                                                                    <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                        <strong>Ngày hoạt động:&emsp; </strong>
+                                                                    </div>
+                                                                    <div className="form-group" style={{ marginLeft: 20 }}>
+                                                                        <strong>Quản lý bởi:&emsp; </strong>
+                                                                    </div>
+                                                                </div>}
                                                     </fieldset>
                                                 </div>
                                             </div>
@@ -295,8 +310,8 @@ class ModalDetailEmployee extends Component {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    (typeof x.certificate === 'undefined' || x.certificate.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
-                                                                        x.certificate.map((x, index) => (
+                                                                    (typeof list.certificate === 'undefined' || list.certificate.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                                        list.certificate.map((x, index) => (
                                                                             <tr key={index}>
                                                                                 <td>{x.nameCertificate}</td>
                                                                                 <td>{x.addressCertificate}</td>
@@ -325,8 +340,8 @@ class ModalDetailEmployee extends Component {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    (typeof x.certificateShort === 'undefined' || x.certificateShort.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
-                                                                        x.certificateShort.map((x, index) => (
+                                                                    (typeof list.certificateShort === 'undefined' || list.certificateShort.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                                        list.certificateShort.map((x, index) => (
                                                                             <tr key={index}>
                                                                                 <td>{x.nameCertificateShort}</td>
                                                                                 <td>{x.unit}</td>
@@ -350,15 +365,15 @@ class ModalDetailEmployee extends Component {
                                                         <legend className="scheduler-border"><h4 className="box-title">Trình độ học vấn</h4></legend>
                                                         <div className="form-group">
                                                             <strong>Trình độ văn hoá:&emsp; </strong>
-                                                            {x.cultural}
+                                                            {list.cultural}
                                                         </div>
                                                         <div className="form-group" >
                                                             <strong>Trình độ ngoại ngữ:&emsp; </strong>
-                                                            {x.foreignLanguage}
+                                                            {list.foreignLanguage}
                                                         </div>
                                                         <div className="form-group">
                                                             <strong>Trình độ chuyên môn:&emsp; </strong>
-                                                            {x.educational}
+                                                            {list.educational}
                                                         </div>
                                                     </fieldset>
                                                 </div>
@@ -376,8 +391,8 @@ class ModalDetailEmployee extends Component {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    (typeof x.experience === 'undefined' || x.experience.length === 0) ? <tr><td colSpan={4}><center> Không có dữ liệu</center></td></tr> :
-                                                                        x.experience.map((x, index) => (
+                                                                    (typeof list.experience === 'undefined' || list.experience.length === 0) ? <tr><td colSpan={4}><center> Không có dữ liệu</center></td></tr> :
+                                                                        list.experience.map((x, index) => (
                                                                             <tr key={index}>
                                                                                 <td>{x.startDate}</td>
                                                                                 <td>{x.endDate}</td>
@@ -414,8 +429,8 @@ class ModalDetailEmployee extends Component {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    (typeof x.contract === 'undefined' || x.contract.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
-                                                                        x.contract.map((x, index) => (
+                                                                    (typeof list.contract === 'undefined' || list.contract.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                                        list.contract.map((x, index) => (
                                                                             <tr key={index}>
                                                                                 <td>{x.nameContract}</td>
                                                                                 <td>{x.typeContract}</td>
@@ -445,8 +460,8 @@ class ModalDetailEmployee extends Component {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    (typeof x.course === 'undefined' || x.course.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
-                                                                        x.course.map((x, index) => (
+                                                                    (typeof list.course === 'undefined' || list.course.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                                        list.course.map((x, index) => (
                                                                             <tr key={index}>
                                                                                 <td>{x.nameCourse}</td>
                                                                                 <td>{x.startDate}</td>
@@ -470,15 +485,15 @@ class ModalDetailEmployee extends Component {
                                                         <legend className="scheduler-border"><h4 className="box-title">Bảo hiểm y tế</h4></legend>
                                                         <div className="form-group col-md-4" >
                                                             <strong>Mã số BHYT:&emsp; </strong>
-                                                            {x.numberBHXH}
+                                                            {list.numberBHXH}
                                                         </div>
                                                         <div className="form-group col-md-4" >
                                                             <strong>Ngày có hiệu lực:&emsp; </strong>
-                                                            {x.startDateBHYT}
+                                                            {list.startDateBHYT}
                                                         </div>
                                                         <div className="form-group col-md-4" >
                                                             <strong>Ngày hết hạn:&emsp; </strong>
-                                                            {x.endDateBHYT}
+                                                            {list.endDateBHYT}
                                                         </div>
                                                     </fieldset>
                                                 </div>
@@ -487,7 +502,7 @@ class ModalDetailEmployee extends Component {
                                                         <legend className="scheduler-border"><h4 className="box-title">Bảo hiểm xã hội</h4></legend>
                                                         <div className="form-group">
                                                             <strong>Mã số BHXH:&emsp; </strong>
-                                                            {x.numberBHXH}
+                                                            {list.numberBHXH}
                                                         </div>
                                                         <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>Quá trình đóng bảo hiểm xã hội:</h4>
                                                         <table className="table table-bordered " >
@@ -501,8 +516,8 @@ class ModalDetailEmployee extends Component {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    (typeof x.BHXH === 'undefined' || x.BHXH.length === 0) ? <tr><td colSpan={4}><center> Không có dữ liệu</center></td></tr> :
-                                                                        x.BHXH.map((x, index) => (
+                                                                    (typeof list.BHXH === 'undefined' || list.BHXH.length === 0) ? <tr><td colSpan={4}><center> Không có dữ liệu</center></td></tr> :
+                                                                        list.BHXH.map((x, index) => (
                                                                             <tr key={index}>
                                                                                 <td>{x.startDate}</td>
                                                                                 <td>{x.endDate}</td>
@@ -599,7 +614,7 @@ class ModalDetailEmployee extends Component {
                                             <div className="box-body">
                                                 <div className="form-group" style={{ paddingLeft: 15 }}>
                                                     <strong>Mã hồ sơ:&emsp;</strong>
-                                                    {x.numberFile}
+                                                    {list.numberFile}
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <h4 style={{ paddingLeft: 0, fontSize: 16 }}>Danh sách tài liệu đính kèm:</h4>
@@ -615,8 +630,8 @@ class ModalDetailEmployee extends Component {
                                                         </thead>
                                                         <tbody>
                                                             {
-                                                                (typeof x.file === 'undefined' || x.file.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
-                                                                    x.file.map((x, index) => (
+                                                                (typeof list.file === 'undefined' || list.file.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                                    list.file.map((x, index) => (
                                                                         <tr key={index}>
                                                                             <td>{x.nameFile}</td>
                                                                             <td>{x.discFile}</td>
@@ -632,12 +647,11 @@ class ModalDetailEmployee extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                ))}
-
+                                </div>
                             </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button style={{ marginRight: 45 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                            <div className="modal-footer">
+                                <button style={{ marginRight: 45 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -645,5 +659,6 @@ class ModalDetailEmployee extends Component {
         );
     };
 }
+
 
 export { ModalDetailEmployee };

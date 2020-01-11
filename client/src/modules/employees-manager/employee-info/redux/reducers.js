@@ -2,7 +2,7 @@ import {
     constants
 } from './constants';
 
-export function employees(state = {}, action) {
+export function employeesInfo(state = {}, action) {
     switch (action.type) {
         case constants.ADDEMPLOYEE_REQUEST:
             return {

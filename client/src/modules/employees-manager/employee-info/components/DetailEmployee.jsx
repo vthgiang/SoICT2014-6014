@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeActions } from '../redux/actions';
+import { employeeInfoActions } from '../redux/actions';
 class DetailEmployee extends Component {
     constructor(props) {
         super(props);
@@ -18,11 +18,11 @@ class DetailEmployee extends Component {
         })
     }
     render() {
-        console.log(this.props.employees);
+        console.log(this.props.employeesInfo);
         var employee, employeeContact;
-        const { employees } = this.props;
-        if (employees.employee) employee = employees.employee;
-        if (employees.employeeContact) employeeContact = employees.employeeContact
+        const { employeesInfo } = this.props;
+        if (employeesInfo.employee) employee = employeesInfo.employee;
+        if (employeesInfo.employeeContact) employeeContact = employeesInfo.employeeContact
 
         return (
             <div className="content-wrapper">
@@ -714,11 +714,11 @@ class DetailEmployee extends Component {
 }
 
 function mapState(state) {
-    const { employees } = state;
-    return { employees };
+    const { employeesInfo } = state;
+    return { employeesInfo };
 }
 const actionCreators = {
-    getInformationEmployee: employeeActions.getInformationEmployee,
+    getInformationEmployee: employeeInfoActions.getInformationEmployee,
 };
 
 const connectDetaiEmployee = connect(mapState, actionCreators)(DetailEmployee);

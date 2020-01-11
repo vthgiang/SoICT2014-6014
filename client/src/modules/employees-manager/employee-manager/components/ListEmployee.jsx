@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeActions } from '../redux/actions';
+import { employeeManagerActions } from '../redux/actions';
+import { employeeInfoActions } from '../../employee-info/redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalEditOrganizational } from './ModalEditOrganizational ';
 import { ModalAddEmployee } from './ModalAddEmployee';
@@ -11,16 +12,13 @@ class ListEmployee extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: "display",
-            view: "display",
+            showView: "",
+            showEdit: "",
             department: "các đơn vị",
-            chiefSelected: "",
-            deputySelected: [],
-            unit: "Đơn vị",
         }
         this.handleChangeUnit = this.handleChangeUnit.bind(this);
-        // this.handleChangeChief = this.handleChangeChief.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleResizeColumn();
+
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -31,12 +29,43 @@ class ListEmployee extends Component {
         this.props.getAllEmployee();
 
     }
+
+    handleResizeColumn = () => {
+        window.$(function () {
+            var pressed = false;
+            var start = undefined;
+            var startX, startWidth;
+
+            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
+                start = window.$(this);
+                pressed = true;
+                startX = e.pageX;
+                startWidth = window.$(this).width();
+                window.$(start).addClass("resizing");
+            });
+
+            window.$(document).mousemove(function (e) {
+                if (pressed) {
+                    window.$(start).width(startWidth + (e.pageX - startX));
+                }
+            });
+
+            window.$(document).mouseup(function () {
+                if (pressed) {
+                    window.$(start).removeClass("resizing");
+                    pressed = false;
+                }
+            });
+        });
+    }
     // function click a employee in table list employee
-    view = (employeeNumber) => {
-        this.props.getInformationEmployee(employeeNumber);
-        this.setState({
-            view: "",
+    view = async (employeeNumber) => {
+        //this.props.getInformationEmployee(employeeNumber);
+        await this.setState({
+            showView: employeeNumber
         })
+
+
     }
     edit = (employeeNumber) => {
         this.props.getInformationEmployee(employeeNumber);
@@ -67,40 +96,22 @@ class ListEmployee extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
-    click = () => {
-        var { employees } = this.props;
-        this.setState({
-            chiefSelected: employees.chiefDepartment,
-        })
-    }
-    handleSubmit(event) {
-        var { employees } = this.props;
-        this.setState({
-            chiefSelected: employees.chiefDepartment,
-        })
-    }
     render() {
         console.log(this.state)
-        var lists, chief = "", deputy = "", listAll;
-        var { employees } = this.props;
+        var lists, listAll;
+        var { employeesManager } = this.props;
         var { department } = this.state;
-        if (employees.allEmployee) {
-            listAll = employees.allEmployee;
+        if (employeesManager.allEmployee) {
+            listAll = employeesManager.allEmployee;
         }
-        if (employees.listEmployee && employees.listEmployee !== []) {
-            lists = employees.listEmployee;
+        if (employeesManager.listEmployee && employeesManager.listEmployee !== []) {
+            lists = employeesManager.listEmployee;
         } else {
-            if (employees.allEmployee) {
-                lists = employees.allEmployee;
+            if (employeesManager.allEmployee) {
+                lists = employeesManager.allEmployee;
             }
         }
-        if (employees.chiefDepartment && employees.chiefDepartment !== []) {
-            chief = employees.chiefDepartment;
-        }
-        if (employees.deputyDepartment && employees.deputyDepartment !== []) {
-            deputy = employees.deputyDepartment;
-        }
-        var { employee, employeeContact } = this.props.employees;
+        var { employee, employeeContact } = this.props.employeesManager;
         console.log(employee);
         return (
             <div className="content-wrapper">
@@ -206,86 +217,10 @@ class ListEmployee extends Component {
                                         <div className="col-md-3" style={{ paddingRight: 0 }}>
                                             <button type="submit" className="btn btn-success pull-right" id="" title="Thêm nhân viên mới" data-toggle="modal" data-target="#modal-addEmployee">Thêm nhân viên</button>
                                         </div>
-                                        {/* <div className={this.state.show} >
-                                            <div className="col-md-12">
-                                                <div className="col-md-4" style={{ paddingLeft: 0, paddingRight: 20 }}>
-                                                    <div className="form-group" style={{ marginBottom: 0 }}>
-                                                        <label style={{ marginBottom: 0 }}>Trưởng {department.toLowerCase()}:</label>
-                                                    </div>
-                                                    {(typeof chief === 'undefined' || chief.length === 0) ?
-                                                        <div className="user-panel" style={{ paddingTop: 5, marginTop: 5, background: "#eaeae8" }}>
-                                                            <div className="pull-left image">
-                                                                <img src="adminLTE/dist/img/avatar5.png" className="img-circle" alt="User " />
-                                                            </div>
-                                                            <div className="pull-left info">
-                                                                <p style={{ fontSize: 14, height: 20, marginTop: 10 }}>Thêm trưởng {department.toLocaleLowerCase()}</p>
-                                                            </div>
-                                                            <div className="pull-right" style={{ marginTop: 10 }}>
-                                                                <a href="#abc" className="delete" title="Thêm nhân sự" style={{ fontSize: 20, color: "#008d4c" }} >
-                                                                    <i className="glyphicon glyphicon-plus-sign"></i>
-                                                                </a>
-                                                            </div>
-                                                        </div> :
-                                                        chief.map((x, index) => (
-                                                            <div key={index} className="user-panel" style={{ paddingTop: 5, marginTop: 5, background: "#eaeae8" }}>
-                                                                <div className="pull-left image">
-                                                                    <img src="adminLTE/dist/img/avatar5.png" className="img-circle" alt="User " />
-                                                                </div>
-                                                                <div className="pull-left info">
-                                                                    <p style={{ fontSize: 16, height: 20 }}>{x.fullName}</p>
-                                                                    <span>Mã NV:{x.employeeNumber}</span>
-                                                                </div>
-                                                                <div className="pull-right" style={{ marginTop: 15 }}>
-                                                                    <a href="#abc" className="edit" title="Thay đổi chức vụ" ><i className="material-icons"></i></a>
-                                                                </div>
-                                                            </div>
-                                                        ))
-                                                    }
-
-                                                </div>
-                                                <div className="col-md-8" style={{ paddingRight: 0 }}>
-                                                    <div className="form-group" style={{ marginBottom: 0, marginLeft: 15 }}>
-                                                        <label style={{ marginBottom: 0 }}>Phó {department.toLowerCase()}:</label>
-                                                    </div>
-                                                    {deputy && deputy.map((x, index) => (
-                                                        <div key={index} className="col-md-6" style={{ paddingRight: 0, marginTop: 5 }}>
-                                                            <div className="user-panel" style={{ paddingTop: 5, background: "#eaeae8" }}>
-                                                                <div className="pull-left image">
-                                                                    <img src="adminLTE/dist/img/avatar5.png" className="img-circle" alt="User " />
-                                                                </div>
-                                                                <div className="pull-left info">
-                                                                    <p style={{ fontSize: 16, height: 20 }}>{x.fullName}</p>
-                                                                    <span>Mã NV:{x.employeeNumber}</span>
-                                                                </div>
-                                                                <div className="pull-right" style={{ marginTop: 15 }}>
-                                                                    <a href="#abc" className="delete" title="Xoá chức vụ" style={{ color: "#E34724" }}><i className="material-icons"></i></a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    <div className="col-md-6" style={{ paddingRight: 0, marginTop: 5 }}>
-                                                        <div className="user-panel" style={{ paddingTop: 5, background: "#eaeae8" }}>
-                                                            <div className="pull-left image">
-                                                                <img src="adminLTE/dist/img/avatar5.png" className="img-circle" alt="User " />
-                                                            </div>
-                                                            <div className="pull-left info">
-                                                                <p style={{ fontSize: 14, height: 20, marginTop: 10 }}>Thêm phó {department.toLocaleLowerCase()}</p>
-                                                            </div>
-                                                            <div className="pull-right" style={{ marginTop: 10 }}>
-                                                                <a href="#abc" className="delete" title="Thêm nhân sự" style={{ fontSize: 20, color: "#008d4c" }} ><i className="glyphicon glyphicon-plus-sign"></i></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {/* <div className="col-md-6 pull-right" style={{ paddingRight: 0, marginTop: 5 }}>
-                                                        <button type="submit" className="btn btn-success pull-right" id="" title={"Thêm phó " + department.toLowerCase()}><i className="glyphicon glyphicon-plus"></i></button>
-                                                    </div> */}
-                                        {/* </div>
-                                            </div>
-                                        </div> */}
                                     </div>
                                     <div className="col-md-12">
 
-                                        <table className="table table-bordered" >
+                                        <table className="table table-striped table-bordered table-resizable" id="myTable" >
                                             <thead>
                                                 <tr>
                                                     <th style={{ width: "15%" }}>Mã nhân viên</th>
@@ -306,21 +241,21 @@ class ListEmployee extends Component {
                                                             <td>{x.gender}</td>
                                                             <td>{x.brithday}</td>
                                                             {
-                                                                x.department && x.department.map((department, key) => (
-                                                                    <td key={{ key }}>{department.position}</td>
-                                                                ))
+                                                                (typeof x.department !== 'undefined' && x.department.length !== 0) ?
+                                                                    x.department.map((department, key) => (
+                                                                        <td key={{ key }}>{department.position}</td>
+                                                                    )) : <td></td>
                                                             }
                                                             {
-                                                                x.department && x.department.map((department, keys) => (
-                                                                    <td key={{ keys }}>{department.nameDepartment}</td>
-                                                                ))
+                                                                (typeof x.department !== 'undefined' && x.department.length !== 0) ?
+                                                                    x.department.map((department, keys) => (
+                                                                        <td key={{ keys }}>{department.nameDepartment}</td>
+                                                                    )) : <td></td>
                                                             }
                                                             < td >
-                                                                <center>
-                                                                    <a href="#view" title="Xem chi tiết nhân viên" data-toggle="modal" data-target="#modal-viewEmployee" onClick={() => this.view(x.employeeNumber)}><i className="material-icons">visibility</i></a>
-                                                                    <a href="#abc" className="edit" title="Chỉnh sửa thông tin nhân viên " data-toggle="modal" data-target="#modal-editEmployee" onClick={() => this.edit(x.employeeNumber)} ><i className="material-icons"></i></a>
-                                                                    <a href="#abc" className="delete" title="Xoá nhân viên khỏi đơn vị" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                                </center>
+                                                                <ModalDetailEmployee list={x} />
+                                                                <ModalEditEmployee list={x} />
+                                                                <a href="#abc" className="delete" title="Xoá nhân viên khỏi đơn vị" data-toggle="tooltip"><i className="material-icons"></i></a>
                                                             </td>
                                                         </tr>
                                                     )
@@ -338,7 +273,21 @@ class ListEmployee extends Component {
                                                 </tr>
                                             </tfoot>
                                         </table>
+                                        <div>
+                                            <ul class="pagination pagination-sm m-0 pull-right" style={{marginTop:0}}>
+                                                <li class="page-item"><a class="page-link" href="#">«</a></li>
+                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                <li class="page-item"><a class="page-link" href="#">»</a></li>
+                                            </ul>
+                                            <div id="search-page" className="col-sm-12 collapse" style={{ width: "26%" }}>
+                                                <input className="col-sm-6 form-control" type="number" min="1" style={{ width: "60%" }} ref={input => this.newCurrentPage = input} />
+                                                <button className="col-sm-4 btn btn-success" style={{ width: "35%", marginLeft: "5%" }} onClick={() => this.handleSearchPage()}>Tìm kiếm</button>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
                                 {/* /.box-body */}
                             </div>
@@ -346,12 +295,8 @@ class ListEmployee extends Component {
                         </div>
                         {/* /.col */}
                     </div>
-
-                    <ModalDetailEmployee employee={employee} employeeContact={employeeContact} />
-
                     <ModalEditOrganizational department={department} listAll={listAll} />
                     <ModalAddEmployee state={this.state} department={department} />
-                    <ModalEditEmployee employee={employee} employeeContact={employeeContact} />
                 </section>
             </div >
         );
@@ -359,14 +304,14 @@ class ListEmployee extends Component {
 }
 
 function mapState(state) {
-    const { employees } = state;
-    return { employees };
+    const { employeesManager } = state;
+    return { employeesManager };
 }
 
 const actionCreators = {
-    getAllEmployee: employeeActions.getAllEmployee,
-    getInformationEmployee: employeeActions.getInformationEmployee,
-    getListEmployee: employeeActions.getListEmployee,
+    getAllEmployee: employeeManagerActions.getAllEmployee,
+    getInformationEmployee: employeeInfoActions.getInformationEmployee,
+    getListEmployee: employeeManagerActions.getListEmployee,
 };
 const connectedEmplyee = connect(mapState, actionCreators)(ListEmployee);
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeActions } from '../redux/actions';
+import { employeeInfoActions } from '../redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 class UpdateEmployee extends Component {
@@ -24,8 +24,8 @@ class UpdateEmployee extends Component {
     // bắt sự kiện thay đổi các trường thông tin nhân viên
     handleChange(event) {
         // lấy thông tin nhân viên đã tồn tại
-        const content1 = this.props.employees.employee;
-        const content2 = this.props.employees.employeeContact;
+        const content1 = this.props.employeesInfo.employee;
+        const content2 = this.props.employeesInfo.employeeContact;
         var old = {
             national: (content1.map(x => x.national)).toString(),
             nation: (content1.map(x => x.nation)).toString(),
@@ -101,10 +101,10 @@ class UpdateEmployee extends Component {
     }
 
     render() {
-        const { employees } = this.props;
+        const { employeesInfo } = this.props;
         var employee, employeeContact;
-        if (employees.employee) employee = employees.employee;
-        if (employees.employeeContact) employeeContact = employees.employeeContact;
+        if (employeesInfo.employee) employee = employeesInfo.employee;
+        if (employeesInfo.employeeContact) employeeContact = employeesInfo.employeeContact;
         return (
             <div className="content-wrapper">
                 {/* Content Header (Page header) */}
@@ -354,13 +354,13 @@ class UpdateEmployee extends Component {
 }
 
 function mapState(state) {
-    const { employees } = state;
-    return { employees };
+    const { employeesInfo } = state;
+    return { employeesInfo };
 };
 
 const actionCreator = {
-    updateInformationEmployee: employeeActions.updateInformationEmployee,
-    getInformationEmployee: employeeActions.getInformationEmployee,
+    updateInformationEmployee: employeeInfoActions.updateInformationEmployee,
+    getInformationEmployee: employeeInfoActions.getInformationEmployee,
 };
 const connectUpdateEmployee = connect(mapState, actionCreator)(UpdateEmployee);
 export { connectUpdateEmployee as UpdateEmployee };

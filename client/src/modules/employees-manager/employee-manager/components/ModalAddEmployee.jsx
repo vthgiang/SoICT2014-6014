@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeActions } from '../redux/actions';
+import { employeeInfoActions } from '../../employee-info/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import '../../employee-info/components/addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -558,7 +558,7 @@ class ModalAddEmployee extends Component {
     // function add new employee
     handleSubmitAdd(events) {
         events.preventDefault();
-        var { employee } = this.props.employees;
+        var { employee } = this.props.employeesInfoInfo;
         var employeeNumber;
         if (employee) {
             employeeNumber = employee.map(x => x.employeeNumber).toString();
@@ -1301,15 +1301,15 @@ class ModalAddEmployee extends Component {
     }
 };
 function mapState(state) {
-    const { employees } = state;
-    return { employees };
+    const { employeesInfo } = state;
+    return { employeesInfo };
 };
 
 const actionCreators = {
-    addNewEmployee: employeeActions.addNewEmployee,
-    getInformationEmployee: employeeActions.getInformationEmployee,
-    getListEmployee: employeeActions.getListEmployee,
-    getAllEmployee: employeeActions.getAllEmployee,
+    addNewEmployee: employeeInfoActions.addNewEmployee,
+    getInformationEmployee: employeeInfoActions.getInformationEmployee,
+    getListEmployee: employeeInfoActions.getListEmployee,
+    getAllEmployee: employeeInfoActions.getAllEmployee,
 };
 
 const connectedAddEmplyee = connect(mapState, actionCreators)(ModalAddEmployee);

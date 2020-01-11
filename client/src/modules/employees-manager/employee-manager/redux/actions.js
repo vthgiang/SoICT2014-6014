@@ -5,7 +5,7 @@ import {
 import {
     employeeService
 } from "./services";
-export const employeeActions = {
+export const employeeManagerActions = {
     getAllEmployee,
     getListEmployee,
 };

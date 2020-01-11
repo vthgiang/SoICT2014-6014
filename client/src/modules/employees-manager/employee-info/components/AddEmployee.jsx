@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeActions } from '../redux/actions';
+import { employeeInfoActions } from '../redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import './addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -462,7 +462,7 @@ class AddEmployee extends Component {
     // function add new employee
     handleSubmit(events) {
         events.preventDefault();
-        var { employee } = this.props.employees;
+        var { employee } = this.props.employeesInfo;
         var employeeNumber;
         if (employee) {
             employeeNumber = employee.map(x => x.employeeNumber).toString();
@@ -1359,13 +1359,13 @@ class AddEmployee extends Component {
 }
 
 function mapState(state) {
-    const { employees } = state;
-    return { employees };
+    const { employeesInfo } = state;
+    return { employeesInfo };
 };
 
 const actionCreators = {
-    addNewEmployee: employeeActions.addNewEmployee,
-    getInformationEmployee: employeeActions.getInformationEmployee,
+    addNewEmployee: employeeInfoActions.addNewEmployee,
+    getInformationEmployee: employeeInfoActions.getInformationEmployee,
 };
 
 const connectedAddEmplyee = connect(mapState, actionCreators)(AddEmployee);
