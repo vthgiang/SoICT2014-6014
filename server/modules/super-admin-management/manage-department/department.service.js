@@ -9,22 +9,17 @@ exports.get = async (id) => {
 
 exports.getTree = async (id) => {
     var data = await Department.find({ company: id });
-    console.log("data goc cua cac phong ban: ",data);
     var newData = data.map( department => {
         var departmentID = department._id.toString();
         var departmentName = department.name;
         var departmentParent = department.parent !== null ? department.parent.toString() : null;
-
-        console.log("DULIEU MOI", departmentID, departmentName, departmentParent);
         return {
             id: departmentID,
             name: departmentName,
             parent_id: departmentParent
         }
     });
-    console.log("cau truc du lieu moi: ", newData)
     var tree = await arrayToTree(newData);
-    console.log("tree: ",tree);
 
     return tree;
 }

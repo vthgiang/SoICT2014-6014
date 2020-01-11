@@ -5,6 +5,7 @@ const UserRole = require('../../models/user_role.model');
 const {loginValidation} = require('./auth.validation');
 
 exports.login = async (data) => { // data bao gom email va password
+
     const {error} = loginValidation(data);
     if(error) throw {msg: error.details[0].message};
 

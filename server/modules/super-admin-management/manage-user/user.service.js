@@ -85,6 +85,8 @@ exports.edit = async (id, data) => {
         user.password = hash;
     }
     if(data.active !== undefined && data.active !== null) user.active = data.active;
+    if(user.active === false) 
+        user.token = [];
     user.save();
 
     return user;

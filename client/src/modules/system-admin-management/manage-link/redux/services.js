@@ -12,9 +12,8 @@ export const LinkServices = {
 
 function get() {
     const token = localStorage.getItem('token');
-    const company = reactLocalStorage.getObject('company');
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/company/${ company._id }`,
+        url: `${ LOCAL_SERVER_API }/link`,
         method: 'GET',
         headers: {'auth-token': token}
     };

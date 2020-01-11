@@ -12,13 +12,9 @@ import ManageRole from '../modules/super-admin-management/manage-role/components
 import ManageLink from '../modules/system-admin-management/manage-link/components';
 import ManageDepartment from '../modules/super-admin-management/manage-department/components';
 import ManageComponent from '../modules/system-admin-management/manage-component/components';
-<<<<<<< HEAD
-// import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
-=======
 import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
 import { AddEmployee, DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee} from '../modules/employees-manager/employee-manager/components/ListEmployee';
->>>>>>> 5bc51c100aa32ca1f7c2a52380a21df218a3a664
 
 class Routes extends Component {
 
@@ -104,19 +100,6 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ ManageComponent }
                 />
-                {/* <PrivateRoute 
-                    key={ 'manage-form-document' }
-                    auth={ auth }
-                    exact={ true }
-                    link={ '/manage-form-document' }
-                    path={ '/manage-form-document' }
-                    pageName={ 'manageFormDocument' }
-                    layout={ Layout }
-                    component={ ManageFormDocument }
-<<<<<<< HEAD
-                /> */}
-=======
-                />
                 <PrivateRoute 
                     key={ 'manage-form-document' }
                     auth={ auth }
@@ -128,28 +111,28 @@ class Routes extends Component {
                     component={ ManageFormDocument }
                 />
                 {/* Quan ly nhan su */}
-                {/* <PrivateRoute 
-                    key={ 'manage-company' }
+                <PrivateRoute 
+                    key={ 'addemployee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-company' }
+                    link={ '/addemployee' }
                     path={ '/addemployee' }
-                    pageName={'manage-company' }
+                    pageName={'addemployee' }
                     layout={ Layout }
                     component={ AddEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'manage-company' }
+                    key={ 'detailemployee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-company' }
+                    link={ '/detailemployee' }
                     path={ '/detailemployee' }
-                    pageName={'manage-company' }
+                    pageName={'detailemployee' }
                     layout={ Layout }
                     component={ DetailEmployee }
                 />
-                <PrivateRoute 
-                    key={ 'manage-company' }
+                {/* <PrivateRoute 
+                    key={ 'updateemployee' }
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-company' }
@@ -158,11 +141,20 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ UpdateEmployee }
                 /> */}
-                <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} />
-                <Route exact path="/detailemployee" layout={ Layout } component={DetailEmployee} />
+                <PrivateRoute 
+                    key={ 'listemployee' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/listemployee' }
+                    path={ '/listemployee' }
+                    pageName={'listemployee' }
+                    layout={ Layout }
+                    component={ ListEmployee }
+                />
+                {/* <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} />
+                <Route exact path="/detailemployee" layout={ Layout } component={DetailEmployee} /> */}
                 <Route exact path="/updateemployee" layout={ Layout } component={UpdateEmployee} />
-                <Route exact path="/listemployee" layout={ Layout } component={ListEmployee} />
->>>>>>> 5bc51c100aa32ca1f7c2a52380a21df218a3a664
+                {/* <Route exact path="/listemployee" layout={ Layout } component={ListEmployee} /> */}
             </React.Fragment>
         );
     }

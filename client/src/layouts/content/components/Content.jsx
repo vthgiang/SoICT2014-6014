@@ -54,21 +54,8 @@ class Content extends Component {
                         <div className="box" style={{ minHeight: '400px' }}>
                             <div className="box-body">
                                 {
-                                    isLoading &&
-                                    <div>
-                                        <p style={{ textAlign: 'center', color: '#605CA8', marginTop: '120px' }}>
-                                            <strong>{translate('loading')}</strong>
-                                        </p>
-                                        <div style={{ marginLeft: '46%', width: '8%' }}>
-                                            <ReactLoading type={"bars"} color={"#605CA8"} width={'100%'} />
-                                        </div>
-                                    </div>
+                                    this.props.children
                                 }
-                                <div hidden={isLoading}>
-                                    {
-                                        this.props.children
-                                    }
-                                </div>
                             </div>
                         </div>
                     </section>

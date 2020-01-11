@@ -56,7 +56,6 @@ export const editProfile = (data) => {
     return dispatch => {
         AuthService.editProfile(data)
             .then(res => {
-                localStorage.setItem('name', res.data.name);
                 dispatch({
                     type: AuthConstants.EDIT_PROFILE_SUCCESS,
                     payload: res.data

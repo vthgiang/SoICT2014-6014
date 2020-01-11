@@ -2,9 +2,9 @@ const LinkService = require('./link.service');
 
 exports.get = async (req, res) => {
     try {
-        var roles = await LinkService.get();
+        var links = await LinkService.get(req.user.company._id);
         
-        res.status(200).json(roles);
+        res.status(200).json(links);
     } catch (error) {
         
         res.status(400).json(error);
@@ -13,7 +13,8 @@ exports.get = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        var createLink = await LinkService.create(req.body);
+        var createLink = await LinkService.create(req.body, req.user.company._id);
+        console.log("create link: ", createLink)
         await LinkService.relationshipLinkRole(createLink._id, req.body.roles);
         var link = await LinkService.getById(createLink._id);
 

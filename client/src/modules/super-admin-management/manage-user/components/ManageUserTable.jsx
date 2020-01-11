@@ -42,16 +42,12 @@ class ManageUserTable extends Component {
         this.props.destroy(id)
     }
 
-<<<<<<< HEAD
     searchByName = () => {
         const { username } = this.state;
         this.props.searchByName( username );
     }
 
     render() { 
-=======
-    render() {
->>>>>>> 5bc51c100aa32ca1f7c2a52380a21df218a3a664
         const { user, translate } = this.props;
         console.log("RENDER USER TABLE");
         return (
@@ -80,11 +76,7 @@ class ManageUserTable extends Component {
                 </div>
                 {
                     user.list.length > 0 &&
-<<<<<<< HEAD
                     <table className="table table-bordered table-hover">
-=======
-                    <table className="table table-bordered table-hover" style={{ marginTop: '50px' }}>
->>>>>>> 5bc51c100aa32ca1f7c2a52380a21df218a3a664
                         <thead>
                             <tr>
                                 <th>{translate('table.name')}</th>

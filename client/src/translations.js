@@ -113,7 +113,7 @@ export default {
                 manageDepartment: 'Quản lý cơ cấu tổ chức',
                 manageRole: 'Quản lý phân quyền',
                 manageResource: 'Quản lý tài nguyên',
-                manageLink: 'Quản lý links',
+                manageLink: 'Quản lý trang',
                 manageComponent: 'Quản lý ComponentUI',
                 manageFormDocument: 'Quản lý tài liệu biểu mẫu',
                 tasktemplate: 'Mẫu Công Việc',
@@ -121,6 +121,8 @@ export default {
                 taskmanagement: 'Quản Lý Công Việc',
                 manageDocument: 'Quản lý văn bản',
                 manageDocumentType: 'Quản lý loại văn bản',
+                addemployee: 'Thêm nhân viên',
+                listemployee: 'Quản lý thông tin nhân viên'
             },
             footer: {
                 copyRight: 'Bản quyền thuộc về',
@@ -242,13 +244,15 @@ export default {
                 manageDepartment: 'Manage Departments',
                 manageRole: 'Manage Roles',
                 manageResource: 'Manage Resources',
-                manageLink: 'Manage Links',
+                manageLink: 'Manage Pages',
                 manageComponent: 'Manage ComponentUI',
                 manageFormDocument: 'Manage Form-Document',
                 tasktemplate: 'Task Template',
                 cocautochuc: 'Organizational Structure',
                 taskmanagement: 'Task Management',
                 manageDocument: 'Manage Document',
+                addemployee: 'Add Employees',
+                listemployee: 'Management Employee Information'
             },
             footer: {
                 copyRight: 'Copyright',
