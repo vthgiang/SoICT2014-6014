@@ -4,7 +4,7 @@ const router = express.Router();
 const EducationProgramController = require("./educationProgram.controller");
 
 // get all list educationProgram
-router.get('/', EducationProgramController.get);
+router.post('/paginate', EducationProgramController.get);
 
 // create a new a educationProgram
 router.post('/', EducationProgramController.create);

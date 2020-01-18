@@ -1,9 +1,13 @@
 const Link = require('../../../models/link.model');
 const Privilege = require('../../../models/privilege.model');
 
-exports.get = async () => {
-
-    return await Link.find();
+exports.get = async (company) => {
+    console.log("GET LINKS OF COMPANY: ", company)
+    
+    
+    return await Link
+        .find({ company })
+        .populate({ path: 'roles', model: Privilege });
 }
 
 exports.getById = async (id) => {
@@ -13,12 +17,12 @@ exports.getById = async (id) => {
         .populate({ path: 'roles', model: Privilege });
 }
 
-exports.create = async(data) => {
-
+exports.create = async(data, companyId) => {
+    console.log("dư lieu : ", data, companyId)
     return await Link.create({
         url: data.url,
         description: data.description,
-        company: data.company
+        company: companyId
     });
 }
 

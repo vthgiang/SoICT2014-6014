@@ -15,6 +15,13 @@ import ManageComponent from '../modules/system-admin-management/manage-component
 import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
 import { AddEmployee, DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee} from '../modules/employees-manager/employee-manager/components/ListEmployee';
+import { DashBoardEmployees} from '../modules/employees-manager/dashBoard-employeesManagement/components/DashBoardEmployees';
+import { Discipline} from '../modules/employees-manager/discipline/components/Discipline';
+import { Sabbatical} from '../modules/employees-manager/sabbatical/components/Sabbatical';
+import { SalaryEmployee} from '../modules/employees-manager/salary-employee/components/SalaryEmployee';
+import { Timekeeping} from '../modules/employees-manager/timekeeping/components/Timekeeping';
+import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
+import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
 
 class Routes extends Component {
 
@@ -100,16 +107,6 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ ManageComponent }
                 />
-                {/* <PrivateRoute 
-                    key={ 'manage-form-document' }
-                    auth={ auth }
-                    exact={ true }
-                    link={ '/manage-form-document' }
-                    path={ '/manage-form-document' }
-                    pageName={ 'manageFormDocument' }
-                    layout={ Layout }
-                    component={ ManageFormDocument }
-                /> */}
                 <PrivateRoute 
                     key={ 'manage-form-document' }
                     auth={ auth }
@@ -122,39 +119,115 @@ class Routes extends Component {
                 />
                 {/* Quan ly nhan su */}
                 <PrivateRoute 
-                    key={ 'manage-Employee' }
+                    key={ 'addemployee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-Employee' }
-                    path={ '/addemployee' }
-                    pageName={'manage-company' }
+                    link={ '/add-employee' }
+                    path={ '/add-employee' }
+                    pageName={'addemployee' }
                     layout={ Layout }
                     component={ AddEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'manage-Employee' }
+                    key={ 'detailemployee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-Employee' }
-                    path={ '/detailemployee' }
-                    pageName={'manage-company' }
+                    link={ '/detail-employee' }
+                    path={ '/detail-employee' }
+                    pageName={'detailemployee' }
                     layout={ Layout }
                     component={ DetailEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'manage-Employee' }
+                    key={ 'updateemployee' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-Employee' }
-                    path={ '/updateemployee' }
-                    pageName={'manage-company' }
+                    link={ '/update-employee' }
+                    path={ '/update-employee' }
+                    pageName={'updateemployee' }
                     layout={ Layout }
                     component={ UpdateEmployee }
                 />
-                {/* <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} />
-                <Route exact path="/detailemployee" layout={ Layout } component={DetailEmployee} />
-                <Route exact path="/updateemployee" layout={ Layout } component={UpdateEmployee} />
-                <Route exact path="/listemployee" layout={ Layout } component={ListEmployee} /> */}
+                <PrivateRoute 
+                    key={ 'listemployee' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/list-employee' }
+                    path={ '/list-employee' }
+                    pageName={'listemployee' }
+                    layout={ Layout }
+                    component={ ListEmployee }
+                />
+                <PrivateRoute 
+                    key={ 'dashBoardEmployee' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/dashboard-employee' }
+                    path={ '/dashboard-employee' }
+                    pageName={'dashboardemployee' }
+                    layout={ Layout }
+                    component={ DashBoardEmployees }
+                />
+                <PrivateRoute 
+                    key={ 'discipline' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/discipline' }
+                    path={ '/discipline' }
+                    pageName={'discipline' }
+                    layout={ Layout }
+                    component={ Discipline }
+                />
+                <PrivateRoute 
+                    key={ 'sabbatical' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/sabbatical' }
+                    path={ '/sabbatical' }
+                    pageName={'sabbatical' }
+                    layout={ Layout }
+                    component={ Sabbatical }
+                />
+                <PrivateRoute 
+                    key={ 'salaryemployee' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/salary-employee' }
+                    path={ '/salary-employee' }
+                    pageName={'salaryemployee' }
+                    layout={ Layout }
+                    component={ SalaryEmployee }
+                />
+                <PrivateRoute 
+                    key={ 'timekeeping' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/time-keeping' }
+                    path={ '/time-keeping' }
+                    pageName={'timekeeping' }
+                    layout={ Layout }
+                    component={ Timekeeping }
+                />
+                <PrivateRoute 
+                    key={ 'listCourse' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/list-course' }
+                    path={ '/list-course' }
+                    pageName={'listCourse' }
+                    layout={ Layout }
+                    component={ ListCourse }
+                />
+                <PrivateRoute 
+                    key={ 'trainingplan' }
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/training-plan' }
+                    path={ '/training-plan' }
+                    pageName={'trainingplan' }
+                    layout={ Layout }
+                    component={ TrainingPlan }
+                />
             </React.Fragment>
         );
     }

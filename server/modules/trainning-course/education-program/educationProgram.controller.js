@@ -4,8 +4,7 @@ const EducationProgramService = require('./educationProgram.service');
 
 exports.get = async (req, res) => {
     try {
-        var allEducationProgram = await EducationProgramService.get();
-
+        var allEducationProgram = await EducationProgramService.get(req.body);
         res.status(200).json({
             message: "success",
             content: {
@@ -13,7 +12,7 @@ exports.get = async (req, res) => {
             }
         });
     } catch (error) {
-        rres.status(400).json({
+        res.status(400).json({
             message: error
         });
     }

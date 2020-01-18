@@ -8,8 +8,8 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            name: localStorage.getItem('name'),
-            email: localStorage.getItem('email'),
+            name: this.props.auth.user.name,
+            email: this.props.auth.user.email,
             password: null,
             confirm: null,
             confirmNotification: null
@@ -39,9 +39,15 @@ class Header extends Component {
         }
     }
 
+    componentDidMount(){
+        this.setState({
+            name: this.props.auth.user.name,
+            email: this.props.auth.user.email
+        })
+    }
+
     render() { 
         const { translate, auth } = this.props;
-
         return ( 
             <React.Fragment>
                 <header className="main-header">

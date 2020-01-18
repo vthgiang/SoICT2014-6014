@@ -104,7 +104,7 @@ exports.getByEmployeeNumber = async (req, res) => {
 // add a new employee
 exports.create = async (req, res) => {
     try {
-        console.log("abcd"+req.body);
+        console.log("abcd" + req.body);
         var employees = await Employee.create({
             avatar: req.body.avatar,
             fullName: req.body.fullName,
@@ -116,7 +116,6 @@ exports.create = async (req, res) => {
             CMND: req.body.CMND,
             dateCMND: req.body.dateCMND,
             addressCMND: req.body.addressCMND,
-            phoneNumber: req.body.phoneNumber,
             emailCompany: req.body.emailCompany,
             Tax: req.body.Tax,
             ATM: req.body.ATM,
@@ -147,7 +146,10 @@ exports.create = async (req, res) => {
         });
         var employeeContact = await EmployeeContact.create({
             employeeNumber: req.body.employeeNumber,
+            phoneNumber: req.body.phoneNumber,
             emailPersonal: req.body.emailPersonal,
+            phoneNumber2: req.body.phoneNumber2,
+            emailPersonal2: req.body.emailPersonal2,
             phoneNumberAddress: req.body.phoneNumberAddress,
             friendName: req.body.friendName,
             relation: req.body.relation,

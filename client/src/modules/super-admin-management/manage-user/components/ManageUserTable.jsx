@@ -8,7 +8,7 @@ import DeleteNotificationModal from './DeleteNotificationModal';
 class ManageUserTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = { 
             limit: '5',
             page: '1',
             username: null
@@ -47,7 +47,7 @@ class ManageUserTable extends Component {
         this.props.searchByName(username);
     }
 
-    render() {
+    render() { 
         const { user, translate } = this.props;
         console.log("RENDER USER TABLE");
         return (

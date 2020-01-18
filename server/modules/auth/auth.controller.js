@@ -1,9 +1,14 @@
 const AuthService = require('./auth.service');
 const { authLogger } = require('../../logs');
+const requestIp = require('request-ip');
 
 exports.login = async (req, res) => {
     try {
         var loginUser = await AuthService.login(req.body);
+        
+        const clientIp = requestIp.getClientIp(req); 
+        console.log("IP address: ", clientIp);
+
         
         if(isLog) authLogger.info("Login :" + req.body.email);
         res.header('auth-token', loginUser.token).status(200).json(loginUser);

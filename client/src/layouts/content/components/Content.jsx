@@ -38,21 +38,22 @@ class Content extends Component {
     }
 
     render() {
-        const { pageName } = this.props;
-        return ( 
+        const { translate, isLoading, pageName } = this.props;
+        console.log("ISLOAIND: ", isLoading)
+        return (
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
-                        <h1> { pageName } </h1>
+                        <h1> {pageName} </h1>
+                        {/* <ol className="breadcrumb">
+                            <li><a href="/admin"><i className="fa fa-dashboard" /> Menu1 </a></li> 
+                            <li className="active"> Pagename </li>
+                        </ol> */}
                     </section>
                     <section className="content">
-                        <div className="box" style={{ minHeight: '400px' }}>
-                            <div className="box-body">
-                                {
-                                    this.props.children 
-                                }
-                            </div>
-                        </div>
+                        {
+                            this.props.children
+                        }
                     </section>
                 </div>
             </React.Fragment>

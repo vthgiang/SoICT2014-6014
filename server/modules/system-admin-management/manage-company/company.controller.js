@@ -33,12 +33,12 @@ exports.create = async (req, res) => {
         const user_role = await UserService.relationshipUserRole(superAdminUser._id, superAdmin._id);
 
         //Create manage link for company------------------------------------------------
-        var homePage = await LinkService.create({ url: '/', description: `HomePage of ${company.name}`, company: company._id });
-        var manageUser = await LinkService.create({ url: '/manage-user', description: `Manage user of ${company.name}`, company: company._id });
-        var manageRole = await LinkService.create({ url: '/manage-role', description: `Manage role of ${company.name}`, company: company._id });
-        var manageDepartment = await LinkService.create({ url: '/manage-department', description: `Manage department of ${company.name}`, company: company._id });
-        var manageLink = await LinkService.create({ url: '/manage-link', description: `Manage link of ${company.name}`, company: company._id });
-        var manageComponentUI = await LinkService.create({ url: '/manage-component', description: `Manage component UI of ${company.name}`, company: company._id });
+        var homePage = await LinkService.create({ url: '/', description: `HomePage of ${company.name}`}, company._id);
+        var manageUser = await LinkService.create({ url: '/manage-user', description: `Manage user of ${company.name}`}, company._id);
+        var manageRole = await LinkService.create({ url: '/manage-role', description: `Manage role of ${company.name}`}, company._id);
+        var manageDepartment = await LinkService.create({ url: '/manage-department', description: `Manage department of ${company.name}`}, company._id);
+        var manageLink = await LinkService.create({ url: '/manage-link', description: `Manage link of ${company.name}`}, company._id);
+        var manageComponentUI = await LinkService.create({ url: '/manage-component', description: `Manage component UI of ${company.name}`}, company._id);
 
         await PrivilegeService.addRolesToLink( homePage._id, [ superAdmin._id, admin._id, dean._id, viceDean._id, employee._id ] );
         await PrivilegeService.addRolesToLink( manageUser._id, [ superAdmin._id, admin._id ] );

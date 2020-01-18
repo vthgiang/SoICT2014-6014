@@ -1,7 +1,7 @@
 const EducationProgram = require('../../../models/educationProgram.model');
 //get list educationProgram
-exports.get = async () => {
-    var allEducationProgram = await EducationProgram.find();
+exports.get = async (data) => {
+    var allEducationProgram = await EducationProgram.find().skip(data.page).limit(data.limit);
     return allEducationProgram;
 }
 

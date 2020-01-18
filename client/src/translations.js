@@ -113,7 +113,7 @@ export default {
                 manageDepartment: 'Quản lý cơ cấu tổ chức',
                 manageRole: 'Quản lý phân quyền',
                 manageResource: 'Quản lý tài nguyên',
-                manageLink: 'Quản lý links',
+                manageLink: 'Quản lý trang',
                 manageComponent: 'Quản lý ComponentUI',
                 manageFormDocument: 'Quản lý tài liệu biểu mẫu',
                 tasktemplate: 'Mẫu Công Việc',
@@ -121,7 +121,17 @@ export default {
                 taskmanagement: 'Quản Lý Công Việc',
                 manageDocument: 'Quản lý văn bản',
                 manageDocumentType: 'Quản lý loại văn bản',
-                manageEmployee: 'Quản lý nhân sự',
+                addemployee: 'Thêm nhân viên',
+                listemployee: 'Quản lý thông tin nhân viên',
+                detailemployee: 'Thông tin cá nhân',
+                updateemployee: 'Cập nhật thông tin cá nhân',
+                dashboardemployee: 'DashBoard quản lý nhân sự',
+                discipline: 'Quản lý khen thưởng - kỷ luật',
+                sabbatical: 'Quản lý nghỉ phép',
+                salaryemployee: 'Lương nhân viên',
+                timekeeping: 'Chấm công nhân viên',
+                listCourse: 'Chương trình đào tạo bắt buộc',
+                trainingplan: 'Quản lý khoá đào tạo',
             },
             footer: {
                 copyRight: 'Bản quyền thuộc về',
@@ -129,7 +139,7 @@ export default {
             }
         }
     },
-    
+
     en: {
         locale: 'en-US',
         messages: {
@@ -243,13 +253,24 @@ export default {
                 manageDepartment: 'Manage Departments',
                 manageRole: 'Manage Roles',
                 manageResource: 'Manage Resources',
-                manageLink: 'Manage Links',
+                manageLink: 'Manage Pages',
                 manageComponent: 'Manage ComponentUI',
                 manageFormDocument: 'Manage Form-Document',
                 tasktemplate: 'Task Template',
                 cocautochuc: 'Organizational Structure',
                 taskmanagement: 'Task Management',
                 manageDocument: 'Manage Document',
+                addemployee: 'Add Employees',
+                listemployee: 'Management Employee Information',
+                detailemployee: 'Personal Information',
+                updateemployee: 'Update Personal Information',
+                dashboardemployee: 'DashBoard',
+                discipline: 'Management Reward And Discipline',
+                sabbatical: 'Managing Leave',
+                salaryemployee: 'Salary Of Employees',
+                timekeeping: 'Attendance Staff',
+                listCourse: 'Education Program',
+                trainingplan: 'Managing Training Courses',
             },
             footer: {
                 copyRight: 'Copyright',

@@ -36,8 +36,23 @@ class ModalEditSalary extends Component {
                                         <input type="text" className="form-control" name="month" id="datepickerEmployee3" data-date-format="mm-yyyy" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">Lương:<span className="required">&#42;</span></label>
+                                        <label htmlFor="employeeNumber">Tiền lương chính:<span className="required">&#42;</span></label>
                                         <input type="number" className="form-control" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Các loại lương thưởng khác:<a href="#abc" title="Thêm lương thưởng khác"><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} /></a></label>
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tên lương thưởng</th>
+                                                    <th style={{ width: "30%" }}>Số tiền</th>
+                                                    <th>Hành động</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

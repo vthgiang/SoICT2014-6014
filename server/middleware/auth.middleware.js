@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
+const requestIp = require('request-ip');
 
 exports.auth = async (req, res, next) => {
     const token = req.header('auth-token');
+    const clientIp = requestIp.getClientIp(req); 
+    console.log("IP address: ", clientIp);
     if(!token) return res.status(400).json({ msg: 'ACCESS_DENIED' });
     try {
         const verified = await jwt.verify(token, process.env.TOKEN_SECRET);

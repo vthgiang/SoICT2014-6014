@@ -7,7 +7,17 @@ const EmployeeContactSchema = new Schema({
         type: String,
         required: true
     },
+    phoneNumber: {
+        type: Number,
+        required: true
+    },
     emailPersonal: {
+        type: String,
+    },
+    phoneNumber2: {
+        type: Number,
+    },
+    emailPersonal2: {
         type: String,
     },
     phoneNumberAddress: {
