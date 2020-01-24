@@ -7,27 +7,27 @@ const ActionSchema = new Schema({
         type: String
     },
     see: {
-        type: String,
+        type: Boolean,
         required: true
     },   
     open: {
-        type: String,
+        type: Boolean,
         required: true
     },  
     edit: {
-        type: String,
+        type: Boolean,
         required: true
     },  
     delete: {
-        type: String,
+        type: Boolean,
         required: true
     },  
     enable: {
-        type: String,
+        type: Boolean,
         required: true
     },  
     disable: {
-        type: String,
+        type: Boolean,
         required: true
     }
 });

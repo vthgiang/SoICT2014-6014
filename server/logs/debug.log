@@ -126,3 +126,15 @@
 2020-01-11T08:55:08.015Z [Authenticate] info: LogoutAllAccount :nguyenvietthai1351997@gmail.com
 2020-01-11T08:55:14.411Z [Authenticate] error: Login :nguyenvietthai1351997@gmail.com
 2020-01-11T09:17:42.799Z [Authenticate] info: Login :nguyenvietthai1351997@gmail.com
+2020-01-11T11:02:47.117Z [Authenticate] info: Login :systemAdmin@gmail.com
+2020-01-11T11:05:21.447Z [Authenticate] info: Login :systemAdmin@gmail.com
+2020-01-17T14:01:13.369Z [Authenticate] info: LogoutAllAccount :systemAdmin@gmail.com
+2020-01-17T14:01:30.480Z [Authenticate] error: Login :nguyenvietthai1351997@gmail.com
+2020-01-17T14:01:41.285Z [Authenticate] info: Login :systemAdmin@gmail.com
+2020-01-17T14:02:49.578Z [Authenticate] info: LogoutAllAccount :systemAdmin@gmail.com
+2020-01-17T14:03:10.631Z [Authenticate] error: Login :systemAdmin@gmail.com
+2020-01-17T14:07:43.052Z [Authenticate] info: Login :systemAdmin@gmail.com
+2020-01-17T14:08:33.493Z [Authenticate] info: Login :systemAdmin@gmail.com
+2020-01-17T14:09:56.584Z [Authenticate] info: Login :systemAdmin@gmail.com
+2020-01-17T15:22:07.071Z [Authenticate] info: Login :systemAdmin@gmail.com
+2020-01-17T15:54:03.385Z [Authenticate] info: Login :systemAdmin@gmail.com

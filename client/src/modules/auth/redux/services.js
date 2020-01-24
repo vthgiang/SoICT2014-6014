@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../config';
+import { LOCAL_SERVER_API, TOKEN_SECRET, AuthenticateHeader } from '../../../config';
 import jwt from 'jsonwebtoken';
 
 export const AuthService = {
@@ -62,7 +62,7 @@ function getLinksOfRole(idRole) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/privilege/get-links-of-role/${idRole}`,
         method: 'GET',
-        headers: {'auth-token': token}
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
@@ -76,7 +76,7 @@ function refresh() {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'GET',
-        headers: {'auth-token': token}
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);

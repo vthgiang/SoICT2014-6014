@@ -6,7 +6,11 @@ const Company = require('../../../models/company.model');
 
 //lay tat ca role cua 1 cong ty
 exports.get = async (company) => {
-    return await Role.find({company});
+    return await Role
+        .find({company})
+        .populate([
+            { path: 'type', model: RoleType }
+        ]);
 }
 
 exports.getPaginate = async (company, limit, page) => {
@@ -14,7 +18,10 @@ exports.getPaginate = async (company, limit, page) => {
         .paginate({company}, { 
             page, 
             limit,
-            populate: { path: 'users', model: UserRole}
+            populate: [
+                { path: 'users', model: UserRole},
+                { path: 'type', model: RoleType }
+            ]
         });
 }
 
@@ -33,7 +40,7 @@ exports.getById = async (company, roleId) => {
 }
 
 exports.create = async(data) => {
-    var roleTuTao = await RoleType.find({ name: 'tutao' });
+    var roleTuTao = await RoleType.findOne({ name: 'tutao' });
     return await Role.create({
         name: data.name,
         company: data.company,
@@ -43,7 +50,7 @@ exports.create = async(data) => {
 }
 
 exports.createAbstract = async(data) => {
-    var roleAbstract = await RoleType.find({ name: 'abstract' });
+    var roleAbstract = await RoleType.findOne({ name: 'abstract' });
 
     return await Role.create({
         name: data.name,
@@ -54,7 +61,7 @@ exports.createAbstract = async(data) => {
 }
 
 exports.crt_rolesOfDepartment = async(data) => {
-    var roleChucDanh = await RoleType.find({ name: 'chucdanh' });
+    var roleChucDanh = await RoleType.findOne({ name: 'chucdanh' });
     var employee = await Role.create({
         name: data.employee,
         company: data.company,

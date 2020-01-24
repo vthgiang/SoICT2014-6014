@@ -43,13 +43,16 @@ initSystem = async () => {
     });
 
     //Tao role System Admin 
-    var roleType = await RoleType.find({ name: 'abstract' });
+    var roleType = await RoleType.findOne({ name: 'abstract' });
+
     var role = await Role.create({
         name: "System Admin",
         company: company._id,
         type: roleType._id
         //abstract không có
     });
+
+    console.log("ROLE SYSTEM: ", role);
 
     //phan quyen system admin cho tai khoan
     var user_role = await UserRole.create({
