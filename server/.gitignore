@@ -2,7 +2,4 @@
 
 .env
 
-/logs/combined.log
-/logs/debug.log
-/logs/error.log
-/logs/info.log
+/logs/history

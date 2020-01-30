@@ -14,10 +14,10 @@ const authLogger = createLogger({
       myFormat
     ),
     transports: [
-    new transports.File({ filename: './logs/error.log', level: 'error' }),
-    new transports.File({ filename: './logs/info.log', level: 'info' }),
-    new transports.File({ filename: './logs/debug.log', level: 'debug' }),
-    new transports.File({ filename: './logs/combined.log' })
+    new transports.File({ filename: './logs/history/error.log', level: 'error' }),
+    new transports.File({ filename: './logs/history/info.log', level: 'info' }),
+    new transports.File({ filename: './logs/history/debug.log', level: 'debug' }),
+    new transports.File({ filename: './logs/history/combined.log' })
     ]
 });
 
@@ -29,10 +29,10 @@ const adminLogger = createLogger({
     myFormat
   ),
   transports: [
-  new transports.File({ filename: './logs/error.log', level: 'error' }),
-  new transports.File({ filename: './logs/info.log', level: 'info' }),
-  new transports.File({ filename: './logs/debug.log', level: 'debug' }),
-  new transports.File({ filename: './logs/combined.log' })
+  new transports.File({ filename: './logs/history/error.log', level: 'error' }),
+  new transports.File({ filename: './logs/history/info.log', level: 'info' }),
+  new transports.File({ filename: './logs/history/debug.log', level: 'debug' }),
+  new transports.File({ filename: './logs/history/combined.log' })
   ]
 });
 
