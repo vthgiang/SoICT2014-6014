@@ -41,4 +41,27 @@ exports.logoutAllAccount = async (req, res) => {
     }
 };
 
+exports.forgotPassword = async (req, res) => {
+    try {
+        var forgotPassword = await AuthService.forgotPassword(req.body.email);
+        if(isLog) authLogger.info("Forgot Password :" + req.body.email);
+        res.status(200).json(forgotPassword);
+    } catch (error) {
+        if(isLog) authLogger.error("Forgot Password :" + req.body.email);
+        res.status(400).json(error);
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        var resetPassword = await AuthService.resetPassword(req.body.otp, req.body.email, req.body.password);
+        if(isLog) authLogger.info("Reset Password :" + req.body.email);
+        res.status(200).json(resetPassword);
+    } catch (error) {
+        if(isLog) authLogger.error("Reset Password :" + req.body.email);
+        res.status(400).json(error);
+    }
+};
+
+
  

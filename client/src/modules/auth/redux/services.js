@@ -8,7 +8,9 @@ export const AuthService = {
     getLinksOfRole,
     refresh,
     logout,
-    logoutAllAccount
+    logoutAllAccount,
+    forgotPassword,
+    resetPassword
 };
 
 function login(user) {
@@ -26,7 +28,7 @@ function logout() {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/logout`,
         method: 'GET',
-        headers: {'auth-token': token}
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
@@ -37,7 +39,7 @@ function logoutAllAccount() {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/logout-all-account`,
         method: 'GET',
-        headers: {'auth-token': token}
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
@@ -51,7 +53,7 @@ function editProfile(data) {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
         data: data,
-        headers: {'auth-token': token}
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
@@ -77,6 +79,32 @@ function refresh() {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function forgotPassword(email) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/auth/forgot-password`,
+        method: 'POST',
+        data: {
+            email
+        }
+    };
+
+    return axios(requestOptions);
+}
+
+function resetPassword(otp, email, password) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/auth/reset-password`,
+        method: 'POST',
+        data : {
+            otp,
+            email,
+            password
+        }
     };
 
     return axios(requestOptions);

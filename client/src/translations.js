@@ -124,6 +124,20 @@ export default {
                 addemployee: 'Thêm nhân viên',
                 listemployee: 'Quản lý thông tin nhân viên'
             },
+            form: {
+                email: 'Email',
+                password: 'Mật khẩu',
+                newPassword: 'Mật khẩu mới',
+                confirm: 'Xác thực mật khẩu',
+                description: 'Mô tả',
+                save: 'Lưu',
+                close: 'Đóng',
+                resetPassword: 'Thiết lập lại mật khẩu',
+                forgotPassword: 'Quên mật khẩu ?',
+                signin: 'Đăng nhập',
+                otp: 'Mã xác thực',
+                next: 'Tiếp tục'
+            },
             footer: {
                 copyRight: 'Bản quyền thuộc về',
                 version: 'Phiên bản'
@@ -253,6 +267,20 @@ export default {
                 manageDocument: 'Manage Document',
                 addemployee: 'Add Employees',
                 listemployee: 'Management Employee Information'
+            },
+            form: {
+                email: 'Email',
+                password: 'Password',
+                newPassword: 'New password',
+                confirm: 'Confirm password',
+                description: 'Description',
+                save: 'Save',
+                close: 'Close',
+                resetPassword: 'Reset password user account',
+                forgotPassword: 'I forgot my password ?',
+                signin: 'Sign In',
+                otp: 'OTP',
+                next: 'Next'
             },
             footer: {
                 copyRight: 'Copyright',

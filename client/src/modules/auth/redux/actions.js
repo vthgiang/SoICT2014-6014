@@ -105,3 +105,41 @@ export const refresh = () => {
             })
     }
 }
+
+export const forgotPassword = (email) => {
+    return dispatch => {
+        AuthService.forgotPassword(email)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.FORGOT_PASSWORD_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+export const resetPassword = (otp, email, password) => {
+    return dispatch => {
+        AuthService.resetPassword(otp, email, password)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.RESET_PASSWORD_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+export const reset = () => {
+    return dispatch => {
+        dispatch({
+            type: 'RESET_APP'
+        });
+    }
+}
