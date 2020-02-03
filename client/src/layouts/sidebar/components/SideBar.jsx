@@ -55,6 +55,15 @@ class SideBar extends Component {
                         </form>
                         <ul className="sidebar-menu" data-widget="tree">
                             <li className="header">MENU</li>
+                            {
+                                this.checkURL('/system', links) === true &&
+                                <Item
+                                    key='system'
+                                    name='system'
+                                    path='/system'
+                                    icon='fa fa-gears'
+                                />
+                            }
                             <Item
                                 key='home'
                                 name='home'
@@ -127,7 +136,7 @@ class SideBar extends Component {
 
                             {/* Quan ly nhan su */}
                             {
-                                // this.checkURL('/manage-department', links) === true &&
+                                // this.checkURL('/addemployee', links) === true &&
                                 <li className="treeview">
                                     <a href="#abc">
                                         <i className="fa fa-dashboard" /> <span>Quản lý nhân sự</span>
@@ -147,7 +156,7 @@ class SideBar extends Component {
                                 </li>
                             }
                             {
-                                 this.checkURL('/manage-company', links) === true &&
+                                //  this.checkURL('/addemployee', links) === true &&
                                 <li className="treeview">
                                     <a href="#abc">
                                         <i className="fa fa-dashboard" /> <span>Tài khoản</span>

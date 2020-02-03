@@ -19,6 +19,11 @@ export default {
             profileTitle: "Thông tin tài khoản người dùng",
             logout: 'Đăng xuất',
             logoutAll: 'Đăng xuất khỏi tất cả các thiết bị',
+            system: {
+                logState: 'Ghi lại log - lịch sử các request từ người dùng',
+                turnOn: 'Bật',
+                turnOff: 'Tắt'
+            },
             manageCompany: {
                 name: 'Quản lý thông tin các công ty',
                 create: 'Thêm công ty mới'
@@ -104,6 +109,7 @@ export default {
             },
             mainSideBar: {
                 search: 'Tìm kiếm ...',
+                system: 'Quản lý cấu hình hệ thống',
                 home: 'Trang chủ',
                 dashboard: 'Bảng điều khiển',
                 adminManage: 'Quản lý trang admin',
@@ -165,6 +171,11 @@ export default {
             profileTitle: "Information of profile user",
             logout: 'Log out',
             logoutAll: 'Logout of all devices',
+            system: {
+                logState: 'Log State',
+                turnOn: 'Turn On',
+                turnOff: 'Turn Off'
+            },
             manageCompany: {
                 name: 'Manage Company',
                 create: 'Add new company'
@@ -249,6 +260,7 @@ export default {
             },
             mainSideBar: {
                 search: 'Search ...',
+                system: 'Manage System Config',
                 home: 'Home',
                 dashboard: 'Dashboard',
                 adminManage: 'Admin manager',

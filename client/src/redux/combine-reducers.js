@@ -1,5 +1,6 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual'
 import { combineReducers } from 'redux';
+import { system } from '../modules/system/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin-management/manage-company/redux/reducers';
 import { user } from '../modules/super-admin-management/manage-user/redux/reducers';
@@ -11,6 +12,7 @@ import {employees} from '../modules/employees-manager/employee-info/redux/reduce
 import {employeesManager} from '../modules/employees-manager/employee-manager/redux/reducers';
 
 const rootReducer = combineReducers(Object.assign({
+    system,
     auth,
     company,
     user,

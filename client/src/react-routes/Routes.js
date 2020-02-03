@@ -5,6 +5,7 @@ import { PrivateRoute, AuthRoute } from './route-export';
 
 import Layout from '../layouts/Layout';
 import Login from '../modules/auth/components/Login';
+import System from '../modules/system/components';
 import Home from '../modules/home/components';
 import ManageCompany from '../modules/system-admin-management/manage-company/components';
 import ManageUser from '../modules/super-admin-management/manage-user/components';
@@ -23,6 +24,20 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <AuthRoute exact auth={ auth } path="/login" component={ Login } />
+                <PrivateRoute 
+                    isLoading={ company.isLoading }
+                    key={ 'system' }
+                    arrPage={[
+                        { link: '/system', name:'system', icon: 'fa fa-gears'}
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/system' }
+                    path={ '/system' }
+                    pageName={ 'system' }
+                    layout={ Layout }
+                    component={ System }
+                />
                 <PrivateRoute 
                     isLoading={ auth.isLoading }
                     key={ 'home' }

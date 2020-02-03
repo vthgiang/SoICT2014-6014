@@ -5,6 +5,7 @@ const token = localStorage.getItem('token');
 
 const initState = {
     logged: token ? true : false,
+    user: {},
     links: [],
     error: null,
     forgotPassword: false
