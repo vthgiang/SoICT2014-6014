@@ -18,10 +18,12 @@ class ManageComponent extends Component {
 
     render() { 
         return ( 
-            <React.Fragment>
-                <ComponentCreateForm />
-                <TableComponent />
-            </React.Fragment>
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <ComponentCreateForm />
+                    <TableComponent />
+                </div>
+            </div>
          );
     }
 }

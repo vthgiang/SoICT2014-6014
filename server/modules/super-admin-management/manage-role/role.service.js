@@ -39,44 +39,44 @@ exports.getById = async (company, roleId) => {
         ]);
 }
 
-exports.create = async(data) => {
+exports.create = async(data, companyID) => {
     var roleTuTao = await RoleType.findOne({ name: 'tutao' });
     return await Role.create({
         name: data.name,
-        company: data.company,
+        company: companyID,
         abstract: data.abstract,
         type: roleTuTao._id
     });
 }
 
-exports.createAbstract = async(data) => {
+exports.createAbstract = async(data, companyID) => {
     var roleAbstract = await RoleType.findOne({ name: 'abstract' });
 
     return await Role.create({
         name: data.name,
-        company: data.company,
+        company: companyID,
         type: roleAbstract._id,
         abstract: data.abstract
     });
 }
 
-exports.crt_rolesOfDepartment = async(data) => {
+exports.crt_rolesOfDepartment = async(data, companyID) => {
     var roleChucDanh = await RoleType.findOne({ name: 'chucdanh' });
     var employee = await Role.create({
         name: data.employee,
-        company: data.company,
+        company: companyID,
         type: roleChucDanh._id,
         abstract: []
     });
     var vice_dean = await Role.create({
         name: data.vice_dean,
-        company: data.company,
+        company: companyID,
         type: roleChucDanh._id,
         abstract: [employee._id]
     });
     var dean = await Role.create({
         name: data.dean,
-        company: data.company,
+        company: companyID,
         type: roleChucDanh._id,
         abstract: [employee._id, vice_dean._id]
     });

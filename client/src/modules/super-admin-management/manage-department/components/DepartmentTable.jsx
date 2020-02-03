@@ -24,7 +24,7 @@ class DepartmentTable extends Component {
             <React.Fragment>
                 <table className="table table-bordered table-hover" style={{ marginTop: '50px'}}>
                     <thead>
-                        <tr className="bg bg-gray">
+                        <tr>
                             <th>{ translate('table.name') }</th>
                             <th style={{ width: '120px' }}>{ translate('table.action') }</th>
                         </tr>

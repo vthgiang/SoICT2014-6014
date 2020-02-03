@@ -19,15 +19,19 @@ class ManageDepartment extends Component {
     render() { 
         return ( 
             <React.Fragment>
-                <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <DepartmentCreateForm/>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <DepartmentTreeView/>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <DepartmentTable />
+                <div className="box" style={{ minHeight: '450px' }}>
+                    <div className="box-body">
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <DepartmentCreateForm/>
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <DepartmentTreeView/>
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <DepartmentTable />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </React.Fragment>

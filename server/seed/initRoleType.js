@@ -13,16 +13,3 @@ mongoose
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
 
-RoleType.insertMany([
-    {
-        name: 'abstract'
-    },
-    {
-        name: 'chucdanh'
-    },
-    {
-        name: 'tutao'
-    }
-])
-.then(data => console.log(data))
-.catch(err => console.log(err));

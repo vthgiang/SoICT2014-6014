@@ -24,7 +24,7 @@ exports.getPaginate = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        var role = await RoleService.create(req.body);
+        var role = await RoleService.create(req.body, req.user.company._id);
         
         res.status(200).json(role);
     } catch (error) {

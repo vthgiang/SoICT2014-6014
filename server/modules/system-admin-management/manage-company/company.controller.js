@@ -21,11 +21,11 @@ exports.create = async (req, res) => {
         const company = await CompanyService.create(req.body);
 
         //Tao 5 role abstract cho cong ty 
-        const superAdmin = await RoleSerVice.createAbstract({ name: "Super Admin", company: company._id });
-        var admin = await RoleSerVice.createAbstract({ name: "Admin", company: company._id });
-        var dean = await RoleSerVice.createAbstract({ name: "Dean", company: company._id });
-        var viceDean = await RoleSerVice.createAbstract({ name: "Vice Dean", company: company._id });
-        var employee = await RoleSerVice.createAbstract({ name: "Employee", company: company._id });
+        const superAdmin = await RoleSerVice.createAbstract({ name: "Super Admin" }, company._id);
+        var admin = await RoleSerVice.createAbstract({ name: "Admin" }, company._id );
+        var dean = await RoleSerVice.createAbstract({ name: "Dean" }, company._id );
+        var viceDean = await RoleSerVice.createAbstract({ name: "Vice Dean" }, company._id );
+        var employee = await RoleSerVice.createAbstract({ name: "Employee" }, company._id );
         
         //add tai khoan superadmin cho cong ty do
         const superAdminUser = await UserService.create({ name: `Super Admin - ${company.short_name}`, email: req.body.email }, company._id );

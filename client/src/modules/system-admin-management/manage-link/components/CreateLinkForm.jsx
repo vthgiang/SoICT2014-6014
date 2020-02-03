@@ -44,7 +44,7 @@ class CreateLinkForm extends Component {
         const { translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-link">{ translate('manageResource.createLink') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-link" title={ translate('manageResource.createLink') }>{ translate('add') }</a>
                 <div className="modal fade" id="modal-create-link">
                 <div className="modal-dialog">
                     <div className="modal-content">

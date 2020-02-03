@@ -13,10 +13,12 @@ class Company extends Component {
     render() { 
         console.log("manage company index")
         return ( 
-            <React.Fragment>
-                <CompanyCreateForm/>
-                <CompanyTable/>
-            </React.Fragment>
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <CompanyCreateForm/>
+                    <CompanyTable/>
+                </div>
+            </div>
          );
     }
 }

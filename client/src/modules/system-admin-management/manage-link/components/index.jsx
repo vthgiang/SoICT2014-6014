@@ -38,43 +38,47 @@ class ManageLink extends Component {
     render() { 
         const { translate, link } = this.props;
         return ( 
-            <React.Fragment>
-                <CreateLinkForm/>
-                <table 
-                    style={{marginTop: '50px'}}
-                    className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>{ translate('table.url') }</th>
-                            <th>{ translate('table.description') }</th>
-                            <th style={{width: "15%"}}>{ translate('table.action') }</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            link.list.map( link => 
-                                <tr key={link._id}>
-                                    <td>{ link.url }</td>
-                                    <td>{ link.description }</td>
-                                    <td>
-                                        <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#modal-link-${link._id}` }><i className="fa fa-edit"></i></a>
-                                        <a className="btn btn-sm btn-danger" data-toggle="modal" href={`#modal-delete-${link.id}`}><i className="fa fa-trash"></i></a>
-                                        <DeleteLinkModal linkId={link._id} linkName={ link.url } deleteLink={this.deleteLink}/>
-                                        <LinkInfoForm 
-                                            linkId={ link._id }
-                                            linkName={ link.url }
-                                            linkDescription={ link.description }
-                                            linkRoles={ link.roles.map(role => role.roleId) }
-                                        />
-                                        
-                                    </td>
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <React.Fragment>
+                        <CreateLinkForm/>
+                        <table 
+                            style={{marginTop: '50px'}}
+                            className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{ translate('table.url') }</th>
+                                    <th>{ translate('table.description') }</th>
+                                    <th style={{width: "15%"}}>{ translate('table.action') }</th>
                                 </tr>
-                            )
-                        }
-                    </tbody>
-                </table>
-            </React.Fragment>
-         );
+                            </thead>
+                            <tbody>
+                                {
+                                    link.list.map( link => 
+                                        <tr key={link._id}>
+                                            <td>{ link.url }</td>
+                                            <td>{ link.description }</td>
+                                            <td>
+                                                <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#modal-link-${link._id}` }><i className="fa fa-edit"></i></a>
+                                                <a className="btn btn-sm btn-danger" data-toggle="modal" href={`#modal-delete-${link.id}`}><i className="fa fa-trash"></i></a>
+                                                <DeleteLinkModal linkId={link._id} linkName={ link.url } deleteLink={this.deleteLink}/>
+                                                <LinkInfoForm 
+                                                    linkId={ link._id }
+                                                    linkName={ link.url }
+                                                    linkDescription={ link.description }
+                                                    linkRoles={ link.roles.map(role => role.roleId) }
+                                                />
+                                                
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                    </React.Fragment>
+                </div>
+            </div>
+        );
 
     }
 }

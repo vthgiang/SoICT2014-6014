@@ -52,7 +52,7 @@ class RoleInfoForm extends Component {
                 <div className="modal fade" id={`role-info-${roleInfo._id}`}>
                 <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header bg-blue">
+                            <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
                                 <h4 className="modal-title">{ translate('manageRole.roleInfo') }</h4>
                             </div>
@@ -98,8 +98,8 @@ class RoleInfoForm extends Component {
                                     </React.Fragment>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={ this.save }>{ translate('table.save') }</button>
+                                <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={ this.save }>{ translate('table.save') }</button>
                             </div>
                         </div>
                     </div>

@@ -49,11 +49,11 @@ class RoleCreateForm extends Component {
         const{ translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-add-role">{ translate('manageRole.add') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-add-role" title={ translate('manageRole.add') }>{ translate('add') }</a>
                 <div className="modal fade" id="modal-add-role">
                     <div className="modal-dialog">
                     <div className="modal-content">
-                        <div className="modal-header bg-green">
+                        <div className="modal-header">
                         <h4 className="modal-title">{ translate('manageRole.create') }</h4>
                         </div>
                         <div className="modal-body">
@@ -86,8 +86,8 @@ class RoleCreateForm extends Component {
                         </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                            <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
                         </div>
                     </div>
                     </div>
