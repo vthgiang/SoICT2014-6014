@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { edit, destroy } from '../redux/actions';
+import { edit } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import UserEditForm from './UserEditForm';
-import DeleteNotificationModal from './DeleteNotificationModal';
+import UserDelete from './UserDelete';
 
 class ManageUserTable extends Component {
     constructor(props) {
@@ -97,7 +97,6 @@ class ManageUserTable extends Component {
                                         <td>{u.active ? <p><i className="fa fa-circle text-success" /> Enable</p> : <p><i className="fa fa-circle text-danger" /> Disable</p>}</td>
                                         <td>
                                             <a className="btn btn-sm btn-primary" data-toggle="modal" href={`#edit-user-modal-${u._id}`}><i className="fa fa-edit"></i></a>{' '}
-                                            <a className="btn btn-sm btn-danger" data-toggle="modal" href={`#modal-delete-${u._id}`}><i className="fa fa-trash"></i></a>
                                             <UserEditForm
                                                 userEditID={u._id}
                                                 email={u.email}
@@ -105,12 +104,10 @@ class ManageUserTable extends Component {
                                                 active={u.active}
                                                 editUser={this.editUser}
                                             />
-                                            <DeleteNotificationModal
+                                            <UserDelete
                                                 userId={u._id}
                                                 userEmail={u.email}
-                                                delete={this.delete}
                                             />
-
                                         </td>
                                     </tr>
                                 ))
@@ -151,9 +148,6 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         edit: (user) => {
             dispatch(edit(user));
-        },
-        destroy: (id) => {
-            dispatch(destroy(id));
         }
     }
 }

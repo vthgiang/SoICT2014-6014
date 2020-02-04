@@ -70,7 +70,7 @@ export default {
             manageResource: {
                 name: 'Quản lý tài nguyên',
                 url: 'Đường link',
-                urlDescription: 'Mô tả về URL',
+                urlDescription: 'Mô tả về trang',
                 roleTo: 'Cấp quyền cho',
                 selectRole: '--- chọn role ---',
                 createLink: 'Thêm link',
@@ -80,7 +80,7 @@ export default {
                 component: 'Thành phần UI'
             },
             manageLink: {
-                linkInfo: 'Thông tin LINK',
+                linkInfo: 'Thông tin trang',
                 add: 'Thêm link mới',
                 delete: 'Xóa link ?',
             },
@@ -221,7 +221,7 @@ export default {
             manageResource: {
                 name: 'Manage Resource',
                 url: 'URL',
-                urlDescription: 'Description of URL',
+                urlDescription: 'Description of page',
                 roleTo: 'Permisstion to',
                 selectRole: '--- select role ---',
                 createLink: 'Create',
@@ -231,7 +231,7 @@ export default {
                 component: 'Components UI'
             },
             manageLink: {
-                linkInfo: 'Link information',
+                linkInfo: 'Page information',
                 add: 'Add new link',
                 delete: 'Delete link ?',
             },

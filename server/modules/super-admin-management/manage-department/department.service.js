@@ -29,12 +29,12 @@ exports.getById = async (req, res) => {
     return await Department.findById(req.params.id);
 }
 
-exports.create = async(data, deanId, vice_deanId, employeeId) => {
+exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
 
     return await Department.create({
         name: data.name,
         description: data.description,
-        company: data.company,
+        company: companyID,
         dean: deanId,
         vice_dean: vice_deanId,
         employee: employeeId,

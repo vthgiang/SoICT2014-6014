@@ -16,7 +16,7 @@ exports.get = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         var roles = await RoleService.crt_rolesOfDepartment(req.body, req.user.company._id);
-        var department = await DepartmentService.create( req.body, roles.dean, roles.vice_dean, roles.employee );
+        var department = await DepartmentService.create( req.body, roles.dean, roles.vice_dean, roles.employee, req.user.company._id );
         var tree = await DepartmentService.getTree(req.user.company._id);
         
         res.status(200).json({department, tree});

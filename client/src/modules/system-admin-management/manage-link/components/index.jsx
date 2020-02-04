@@ -49,7 +49,7 @@ class ManageLink extends Component {
                                 <tr>
                                     <th>{ translate('table.url') }</th>
                                     <th>{ translate('table.description') }</th>
-                                    <th style={{width: "15%"}}>{ translate('table.action') }</th>
+                                    <th style={{width: "110px"}}>{ translate('table.action') }</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,15 +60,15 @@ class ManageLink extends Component {
                                             <td>{ link.description }</td>
                                             <td>
                                                 <a className="btn btn-sm btn-primary" data-toggle="modal" href={ `#modal-link-${link._id}` }><i className="fa fa-edit"></i></a>
-                                                <a className="btn btn-sm btn-danger" data-toggle="modal" href={`#modal-delete-${link.id}`}><i className="fa fa-trash"></i></a>
-                                                <DeleteLinkModal linkId={link._id} linkName={ link.url } deleteLink={this.deleteLink}/>
                                                 <LinkInfoForm 
                                                     linkId={ link._id }
                                                     linkName={ link.url }
                                                     linkDescription={ link.description }
                                                     linkRoles={ link.roles.map(role => role.roleId) }
                                                 />
-                                                
+                                                <DeleteLinkModal 
+                                                    pageInfo={link}
+                                                />
                                             </td>
                                         </tr>
                                     )
@@ -88,10 +88,7 @@ const getState = (dispatch, props) => {
     return {
         getLinks: () => {
             dispatch(get());
-        },
-        destroy: (id) => {
-            dispatch(destroy(id));
-        },
+        }
     }
 }
  

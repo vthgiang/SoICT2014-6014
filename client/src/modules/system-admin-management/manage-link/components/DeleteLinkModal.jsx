@@ -2,32 +2,50 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { destroy } from '../redux/actions';
+import Swal from 'sweetalert2';
 
 class DeleteLinkModal extends Component {
     state = {  }
+
+    deletePage = (pageId, pageName, pageDescription, deleteConfirm, no) => {
+        Swal.fire({
+            title: deleteConfirm,
+            // text: pageName,
+            html: 
+            `
+                <h4>${pageName}</h4>
+                <h4>${pageDescription}</h4>
+            ` ,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: no, //Không
+            confirmButtonText: deleteConfirm //Xóa
+        }).then((result) => {
+            if (result.value) {
+                this.props.deletePage(pageId) //xóa trang với tham số là Id
+            }
+        })
+    } 
+
     render() { 
-        const { linkId, translate } = this.props;
+        const { pageInfo, translate } = this.props;
+        console.log("Page delete: ", pageInfo);
         return ( 
-            <React.Fragment>
-                
-                <div className="modal fade" id={`modal-delete-${linkId}`}>
-                    <div className="modal-dialog" style={{ width: '30%'}}> 
-                        <div className="modal-content">
-                            <div className="modal-header bg bg-red">
-                                <h4 className="modal-title" style={{color: 'white', textAlign: 'center'}}>{ translate('manageLink.delete') }</h4>
-                            </div>
-                            <div className="modal-body">
-                                <p style={{color: 'red', textAlign: 'center'}}><b>{ this.props.linkName }</b></p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-success pull-left" data-dismiss="modal" onClick={ () =>this.props.deleteLink(this.props.linkId) }>{ translate('question.yes') }</button>
-                                <button type="button" className="btn btn-danger" data-dismiss="modal">{ translate('question.no') }</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </React.Fragment>
+            <button
+                className="btn btn-sm btn-danger"
+                title={translate('delete')}
+                onClick={() => this.deletePage(
+                    pageInfo._id,
+                    pageInfo.url,
+                    pageInfo.description,
+                    translate('delete'),
+                    translate('question.no')
+                )}
+            >
+                <i className="fa fa-trash"></i>
+            </button>
          );
     }
 }
@@ -35,7 +53,7 @@ class DeleteLinkModal extends Component {
 const mapState = state => state;
 const getState = (dispatch, props) => {
     return {
-        deleteLink: (id) => {
+        deletePage: (id) => {
             dispatch( destroy(id));
         }
     }

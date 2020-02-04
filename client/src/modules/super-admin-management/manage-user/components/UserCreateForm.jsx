@@ -45,7 +45,8 @@ class UserCreateForm extends Component {
                 <div className="modal fade" id="modal-id">
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header bg bg-green">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
                                 <h4 className="modal-title">{ translate('manageUser.create') }</h4>
                             </div>
                             <div className="modal-body">
@@ -61,8 +62,8 @@ class UserCreateForm extends Component {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                                <button className="btn btn-success" onClick={ this.save } data-dismiss="modal">{ translate('table.save') }</button>
+                                <button className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                                <button className="btn btn-primary" onClick={ this.save } data-dismiss="modal">{ translate('table.save') }</button>
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 // import './css/TreeView.css';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { get } from '../redux/actions';
+import { destroy } from '../redux/actions';
+import Swal from 'sweetalert2';
 
 class DepartmentTreeView extends Component {
     constructor(props) {
@@ -12,43 +13,120 @@ class DepartmentTreeView extends Component {
         }
         this.displayTreeView = this.displayTreeView.bind(this);
         this.showNodeContent = this.showNodeContent.bind(this);
-        this.zoomIn = this.zoomIn.bind(this);
-        this.zoomOut = this.zoomOut.bind(this);
+        // this.zoomIn = this.zoomIn.bind(this);
+        // this.zoomOut = this.zoomOut.bind(this);
+        this.configName = this.configName.bind(this);
     }
 
-    zoomIn = () => {
-        if(this.state.zoom < 24)
-        this.setState({ zoom : this.state.zoom + 0.2});
+    deleteDepartment = (departmentId, departmentName, deleteConfirm, no) =>{
+        Swal.fire({
+            title: deleteConfirm,
+            html: `<h4>${departmentName}</h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: no, //Không
+            confirmButtonText: deleteConfirm //Xóa
+        }).then((result) => {
+            if (result.value) {
+                this.props.destroy(departmentId) //xóa user với tham số truyền vào là id của user
+            }
+        })
     }
 
-    zoomOut = () => {
-        if(this.state.zoom > 0)
-            this.setState({ zoom : this.state.zoom - 0.2});
+    configName = (name) => {
+        const room = name.slice(0, 5);
+        if(room === 'Phòng' || room  === 'phòng' || room === 'Phong' || room === "phong"){
+            const newName = name.slice(5, 20);
+            return "P."+ newName + "...";
+        }
+        return "P." + name.slice(0, 7) + "...";
     }
 
-    showNodeContent = (data) => {
+    // zoomIn = () => {
+    //     if(this.state.zoom < 24)
+    //     this.setState({ zoom : this.state.zoom + 0.2});
+    // }
+
+    // zoomOut = () => {
+    //     if(this.state.zoom > 0)
+    //         this.setState({ zoom : this.state.zoom - 0.2});
+    // }
+
+    showNodeContent = (data, translate) => {
         return (
-            <span className="tf-nc bg-gray" style={{ borderRadius: '2px'}}>
-                <p style={{ marginBottom: '10px'}}>{ data.name }</p>
-                <a className="pull-right" data-toggle="modal" href={`#department-detail-${data.id}`}><i className="fa fa-edit"></i></a>
+            <span 
+                className="tf-nc pull-left" 
+                title={ data.name }
+                style={{ 
+                    borderRadius: '10px',
+                    width: '120px'
+                }}
+            >
+                <p style={{ marginBottom: '10px', fontSize: '12px' }}>{ this.configName(data.name) }</p>
+                <a 
+                    className="btn pull-right" 
+                    data-toggle="modal" 
+                    href={`#modal-create-department-with-parent-${data.id}`}
+                    title={`Thêm phòng ban mới có phòng ban cha là ${data.name}`}
+                    style={{
+                        borderRadius: '5px',
+                        border: '1px solid lightgray',
+                        width: '26px',
+                        marginLeft: '2px',
+                        color: 'blue'
+                    }}
+                ><i className="fa fa-plus"></i></a>
+                <a 
+                    className="btn pull-right" 
+                    data-toggle="modal" 
+                    href={`#department-detail-${data.id}`}
+                    title="Chi tiết"
+                    style={{
+                        borderRadius: '5px',
+                        border: '1px solid lightgray',
+                        width: '26px',
+                        marginLeft: '2px',
+                        color: 'orange'
+                    }}
+                ><i className="fa fa-pencil"></i></a>
+                <a 
+                    className="btn pull-right" 
+                    data-toggle="modal" 
+                    onClick={() => this.deleteDepartment(
+                        data.id, 
+                        data.name, 
+                        translate('delete'),
+                        translate('question.no')
+                    )}
+                    title="Xóa phòng ban"
+                    style={{
+                        borderRadius: '5px',
+                        border: '1px solid lightgray',
+                        width: '26px',
+                        marginLeft: '2px',
+                        color: 'red'
+                    }}
+                ><i className="fa fa-trash"></i></a>
             </span>
         )
     }
 
-    displayTreeView = (data) => {
+    displayTreeView = (data, translate) => {
         if(data !== undefined){
             if(typeof(data.children) === 'undefined') 
                 return (
                     <li key={data.id}>
-                        { this.showNodeContent(data) }
+                        { this.showNodeContent(data, translate) }
                     </li>
                 )
             return (
                 <li key={data.id}>
-                    { this.showNodeContent(data) }
+                    { this.showNodeContent(data, translate) }
                     <ul>
                         {
-                            data.children.map( tag => this.displayTreeView(tag))
+                            data.children.map( tag => this.displayTreeView(tag, translate))
                         }
                     </ul>  
                 </li>
@@ -59,14 +137,14 @@ class DepartmentTreeView extends Component {
 
     render() { 
         const { tree } = this.props.department;
-
+        const { translate } = this.props;
         return ( 
             <React.Fragment>
-                <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn }></i>
-                <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut }></i>
-                <div className="tf-tree example" style={{ textAlign: 'center', fontSize: `${this.state.zoom}px` }}>
+                {/* <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn }></i>
+                <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut }></i> */}
+                <div className="tf-tree example" style={{ textAlign: 'center' }}>
                     <ul>
-                        {tree !== null && this.displayTreeView(tree[0])}
+                        {tree !== null && this.displayTreeView(tree[0], translate)}
                     </ul>
                 </div>
             </React.Fragment>
@@ -77,8 +155,8 @@ class DepartmentTreeView extends Component {
 const mapState = state => state;
 const getState = (dispatch, props) => {
     return {
-        get: () => {
-            dispatch(get());
+        destroy: (id) => {
+            dispatch(destroy(id));
         },
     }
 }

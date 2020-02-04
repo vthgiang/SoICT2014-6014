@@ -54,7 +54,8 @@ class RoleCreateForm extends Component {
                     <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                        <h4 className="modal-title">{ translate('manageRole.create') }</h4>
+                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 className="modal-title">{ translate('manageRole.create') }</h4>
                         </div>
                         <div className="modal-body">
                         <form>

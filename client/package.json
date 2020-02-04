@@ -29,6 +29,7 @@
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "sweetalert2": "^9.7.1",
     "treeflex": "^2.0.1"
   },
   "scripts": {

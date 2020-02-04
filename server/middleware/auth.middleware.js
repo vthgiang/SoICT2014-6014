@@ -1,13 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
-// var address = require('address');
+const UserRole = require('../models/user_role.model');
 
 exports.auth = async (req, res, next) => {
     const token = req.header('auth-token');
-    // address(function (err, addrs) {
-    //     console.log(addrs);
-    //     // '192.168.0.2', 'fe80::7aca:39ff:feb0:e67d', '78:ca:39:b0:e6:7d'
-    //   });
       
     if(!token) return res.status(400).json({ msg: 'ACCESS_DENIED' });
     try {
@@ -19,8 +15,22 @@ exports.auth = async (req, res, next) => {
         if(logged === null) return res.status(400).send({ msg: 'ACC_LOGGED_OUT'}) 
 
         next();
-
     } catch (error) {
         res.status(400).json({ msg: 'TOKEN_INVALID' });
+    }   
+}
+
+exports.role = async (req, res, next) => {
+    try {
+        const role = req.params.idRole;
+        const user = req.user;
+        const check = await UserRole.findOne({
+            userId: user._id,
+            roleId: role
+        });
+        if(check === null) return res.status(400).send({ msg: 'ROLE INVALID WITH USER'}) 
+        next();
+    } catch (error) {
+        res.status(400).json({ msg: 'ACCESS DENIED!' });
     }   
 }

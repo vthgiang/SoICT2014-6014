@@ -72,7 +72,6 @@ function getLinksOfRole(idRole) {
 
 function refresh() {
     const token = localStorage.getItem('token');
-    console.log("refresh user")
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id; 
     const requestOptions = {

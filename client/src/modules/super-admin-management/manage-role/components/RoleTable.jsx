@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get, getPaginate, destroy } from '../redux/actions';
+import { get, getPaginate } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { get as getUser } from '../../manage-user/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
@@ -60,10 +60,10 @@ class RoleTable extends Component {
                 {
                     role.list.length > 0 && 
                     <table className="table table-bordered table-hover">
-                        <thead className="bg bg-gray">
+                        <thead>
                             <tr>
                                 <th>{ translate('manageRole.roleName') }</th>
-                                <th style={{ width: '120px' }}>{ translate('table.action') }</th>
+                                <th style={{ width: '105px' }}>{ translate('table.action') }</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,16 +73,15 @@ class RoleTable extends Component {
                                     <tr key={ `roleList${role._id}` }>
                                         <td> { role.name } </td>
                                         <td>
-                                            <a className="btn btn-sm btn-primary" data-toggle="modal" href={`#role-info-${role._id}`}><i className="fa fa-edit"></i></a>
-                                            <RoleInfoForm roleInfo={ role }/>
+                                            <RoleInfoForm 
+                                                roleInfo={ role }
+                                            />
                                             {
-                                                (
-                                                    !role.isAbstract && 
-                                                    <React.Fragment>
-                                                        <a className="btn btn-sm btn-danger" data-toggle="modal" href={`#modal-delete-${role._id}`}><i className="fa fa-trash"></i></a>
-                                                        <DeleteRoleNotification roleId={ role._id } roleName={ role.name } deleteRole={ this.deleteRole }/>
-                                                    </React.Fragment>
-                                                )
+                                                role.type.name !== 'abstract' && 
+                                                <DeleteRoleNotification 
+                                                    roleId={ role._id } 
+                                                    roleName={ role.name }
+                                                />
                                             }
                                         </td>
                                     </tr>       
@@ -135,9 +134,6 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         getUser: () => {
             dispatch( getUser() );
-        },
-        destroy: (id) => {
-            dispatch( destroy(id) );
         }
     }
 }

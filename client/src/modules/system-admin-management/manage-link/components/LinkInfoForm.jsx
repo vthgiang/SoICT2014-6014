@@ -53,7 +53,7 @@ class LinkInfoForm extends Component {
             <div className="modal fade" id={`modal-link-${this.props.linkId}`}>
                 <div className="modal-dialog">
                     <div className="modal-content">
-                        <div className="modal-header bg-blue">
+                        <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 className="modal-title">{ translate('manageLink.linkInfo') }</h4>
                         </div>
@@ -92,8 +92,8 @@ class LinkInfoForm extends Component {
                                 
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                            <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
                         </div>
                     </div>
                 </div>
