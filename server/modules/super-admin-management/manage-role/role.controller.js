@@ -13,8 +13,10 @@ exports.get = async (req, res) => {
 
 exports.getPaginate = async (req, res) => {
     try {
-        var roles = await RoleService.getPaginate(req.user.company._id, req.body.limit, req.body.page); //truyen vao id cua cong ty
-        
+        var { limit, page } = req.body;
+        delete req.body.limit;
+        delete req.body.page;
+        var roles = await RoleService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
         res.status(200).json(roles);
     } catch (error) {
         

@@ -46,6 +46,7 @@ class UserEditForm extends Component {
         const { email, name, active, status } = this.state;
         return ( 
             <React.Fragment>
+                <a className="edit" data-toggle="modal" href={`#edit-user-modal-${userEditID}`}><i className="material-icons">edit</i></a>
                 <div className="modal fade" id={ `edit-user-modal-${userEditID}` }>
                     <div className="modal-dialog">
                         <div className="modal-content">

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get, getPaginate } from '../redux/actions';
+import { get, getPaginate, destroy } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { get as getUser } from '../../manage-user/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
-import DeleteRoleNotification from './DeleteRoleNotification';
 import './css/Pagination.css';
+import SearchBar from '../../../../common-components/SearchBar';
+import RoleCreateForm from './RoleCreateForm';
+import DeleteNotification from '../../../../common-components/DeleteNotification';
+import PaginateBar from '../../../../common-components/PaginateBar';
+import ActionColumn from '../../../../common-components/ActionColumn';
 
 class RoleTable extends Component {
     constructor(props) {
@@ -45,25 +49,29 @@ class RoleTable extends Component {
 
     render() { 
         const { role, translate } = this.props;
-        console.log("PAGE: ", this.state);
         return ( 
             <React.Fragment>
-                <div className="pagination">
-                    <label>{ translate('show') }</label>
-                    <select name="limit" className="form-control" onChange={ this.inputChange }>
-                        <option key='1' value={5}>5</option>
-                        <option key='2' value={10}>10</option>
-                        <option key='3' value={15}>15</option>
-                        <option key='4' value={20}>20</option>
-                    </select>
+                <div className="row">
+                    <SearchBar 
+                        columns={[
+                            { title: translate('manageRole.roleName'), value:'name' }
+                        ]}
+                        func={this.props.getPaginate}
+                    />
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <RoleCreateForm />
+                    </div>
                 </div>
+                
                 {
                     role.list.length > 0 && 
                     <table className="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{ translate('manageRole.roleName') }</th>
-                                <th style={{ width: '105px' }}>{ translate('table.action') }</th>
+                                <th style={{ width: '120px' }}>
+                                    <ActionColumn columnName={translate('table.action')} hideColumn={false}/>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,16 +80,24 @@ class RoleTable extends Component {
                                 role.listPaginate.map( role => 
                                     <tr key={ `roleList${role._id}` }>
                                         <td> { role.name } </td>
-                                        <td>
+                                        <td style={{ textAlign: 'center' }}>
                                             <RoleInfoForm 
                                                 roleInfo={ role }
                                             />
                                             {
                                                 role.type.name !== 'abstract' && 
-                                                <DeleteRoleNotification 
-                                                    roleId={ role._id } 
-                                                    roleName={ role.name }
-                                                />
+                                                <DeleteNotification 
+                                                content={{
+                                                    title: translate('delete'),
+                                                    btnNo: translate('question.no'),
+                                                    btnYes: translate('delete'),
+                                                }}
+                                                data={{
+                                                    id: role._id,
+                                                    info: role.name
+                                                }}
+                                                func={this.props.destroy}
+                                            />
                                             }
                                         </td>
                                     </tr>       
@@ -95,7 +111,9 @@ class RoleTable extends Component {
                         </tbody>
                     </table>
                 }   
-                <div className="row">
+                {/* PaginateBar */}
+                <PaginateBar pageTotal={role.totalPages} currentPage={role.page} func={this.setPage}/>
+                {/* <div className="row">
                     <div className="col-sm-3">
                         <p style={{ marginTop: '25px'}}>{ translate('page') }{ `${role.page}/${role.totalPages}` }</p>
                     </div>
@@ -114,7 +132,7 @@ class RoleTable extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </React.Fragment>
          );
     }
@@ -134,6 +152,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         getUser: () => {
             dispatch( getUser() );
+        },
+        destroy: (id) => {
+            dispatch( destroy(id))
         }
     }
 }

@@ -37,8 +37,15 @@ class CompanyCreateForm extends Component {
 
         return ( 
             <React.Fragment>
-                <div>
-                    <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-company" title={ translate('manageCompany.create') }>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <a 
+                        className="btn btn-success pull-right" 
+                        data-backdrop="static" 
+                        data-keyboard="false" 
+                        data-toggle="modal" 
+                        href="#modal-create-company" 
+                        title={ translate('manageCompany.create') }
+                    >
                         { translate('add') }
                     </a>
                     <div className="modal fade" id="modal-create-company">

@@ -51,11 +51,16 @@ class Header extends Component {
         return ( 
             <React.Fragment>
                 <header className="main-header">
+                    {/* Logo */}
                     <a href="index2.html" className="logo">
-                        <span className="logo-mini">QLCV</span>
-                        <span className="logo-lg"><b>QLCV-</b>VNIST</span>
+                        {/* mini logo for sidebar mini 50x50 pixels */}
+                        <span className="logo-mini"><img src="/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img></span>
+                        {/* logo for regular state and mobile devices */}
+                        <span className="logo-lg"><img src="/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img>VNIST-Việc</span>
                     </a>
+                    {/* Header Navbar: style can be found in header.less */}
                     <nav className="navbar navbar-static-top">
+                        {/* Sidebar toggle button*/}
                         <a href="#abc" className="sidebar-toggle" data-toggle="push-menu" role="button">
                             <span className="sr-only">Toggle navigation</span>
                         </a>
