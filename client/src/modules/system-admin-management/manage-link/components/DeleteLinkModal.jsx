@@ -31,7 +31,7 @@ class DeleteLinkModal extends Component {
 
     render() { 
         const { pageInfo, translate } = this.props;
-        console.log("Page delete: ", pageInfo);
+       
         return ( 
             <button
                 className="btn btn-sm btn-danger"

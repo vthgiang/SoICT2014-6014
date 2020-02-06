@@ -1,7 +1,17 @@
 import { RoleServices } from "./services";
 import { RoleConstants } from "./constants";
 
-export const get = () => {
+export const RoleActions = {
+    get,
+    getPaginate,
+    edit,
+    create,
+    show,
+    destroy,
+    setFilter
+}
+
+function get(){
     return dispatch => {
         dispatch({ type: RoleConstants.GET_ROLES_REQUEST});
         RoleServices.get()
@@ -17,7 +27,7 @@ export const get = () => {
     }
 }
 
-export const getPaginate = (data) => {
+function getPaginate(data){
     return dispatch => {
         dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_REQUEST});
         RoleServices.getPaginate(data)
@@ -33,7 +43,7 @@ export const getPaginate = (data) => {
     }
 }
 
-export const show = (id) => {
+function show(id){
     return dispatch => {
         dispatch({ type: RoleConstants.SHOW_ROLE_REQUEST});
         RoleServices.show(id)
@@ -49,7 +59,7 @@ export const show = (id) => {
     }
 }
 
-export const create = (role) => {
+function create(role){
     return dispatch => {
         dispatch({ type: RoleConstants.CREATE_ROLE_REQUEST});
         RoleServices.create(role)
@@ -65,7 +75,7 @@ export const create = (role) => {
     }
 }
 
-export const edit = (role) => {
+function edit(role){
     return dispatch => {
         dispatch({ type: RoleConstants.EDIT_ROLE_REQUEST});
         RoleServices.edit(role)
@@ -81,7 +91,7 @@ export const edit = (role) => {
     }
 }
 
-export const destroy = (roleId) => {
+function destroy(roleId){
     return dispatch => {
         dispatch({ type: RoleConstants.DELETE_ROLE_REQUEST});
         RoleServices.destroy(roleId)
@@ -94,5 +104,14 @@ export const destroy = (roleId) => {
             .catch(err => {
                 console.log("Error: ", err);
             })
+    }
+}
+
+function setFilter(value){
+    return dispatch => {
+        dispatch({ 
+            type: RoleConstants.SET_FILTER,
+            payload: value
+        });
     }
 }

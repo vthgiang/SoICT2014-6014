@@ -17,6 +17,22 @@ exports.get = async (company) => { //id cua cong ty do
     return users;
 }
 
+//Lay danh sach nguoi dung theo phân trang
+exports.getPaginate = async (company, limit, page, data={}) => {
+    const newData = await Object.assign({ company }, data );
+    console.log("DATA-user-paginate: ", newData);
+    return await User
+        .paginate( newData , { 
+            page, 
+            limit,
+            select: '-token -status',
+            populate: [
+                { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+                { path: 'company' }
+            ]
+        });
+}
+
 //lay thong tin nguoi dung theo id
 exports.getById = async (id) => { //tim user theo id
     var user = await User

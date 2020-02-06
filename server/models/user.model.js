@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Company = require('./company.model');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const UserSchema = new Schema({
@@ -14,7 +15,8 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -33,13 +35,15 @@ const UserSchema = new Schema({
     delete_soft: {
         type: Boolean,
         required: true,
-        default: false
+        default: false,
+        select: false
     },
     token: [{
-        type: String
+        type: String,
     }],
     reset_password_token: {
-        type: String
+        type: String,
+        select: false
     }
 },{
     timestamps: true,
@@ -51,5 +55,7 @@ UserSchema.virtual('roles', {
     localField: '_id',
     foreignField: 'userId'
 });
+
+UserSchema.plugin(mongoosePaginate);
 
 module.exports = User = mongoose.model("User", UserSchema);

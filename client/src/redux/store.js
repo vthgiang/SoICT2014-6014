@@ -9,7 +9,10 @@ const loggerMiddleware = createLogger();
 var store = createStore(
     rootReducer,
     composeEnhancers(
-        applyMiddleware(thunkMiddleware, loggerMiddleware)
+        applyMiddleware(
+            thunkMiddleware, 
+            loggerMiddleware
+        )
     )
 );
 

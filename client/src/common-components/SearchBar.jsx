@@ -7,42 +7,25 @@ class SearchBar extends Component {
         super(props);
         this.opt = React.createRef();
         this.value = React.createRef();
-        this.state = {
-            limit: 5,
-            page: 1
-        }
-    }
-
-    search = async (e) =>{
-        e.preventDefault();
-        const { func } = this.props;
-        if(this.opt.current !== null){
-            var value = this.opt.current.value;
-            await this.setState({
-                [value]: this.value.current.value
-            });
-            var data = this.state;
-            console.log("data: ", data);
-            await func(data);
-        }
+        this.state = { }
     }
 
     render() { 
-        const { columns, translate } = this.props;
-
+        const { columns, translate, option, setOption, search } = this.props;
+        
         return ( 
             <React.Fragment>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
                     <select style={{
                         backgroundColor: "#ECF0F5",
                         border: '1px solid lightgray'
-                    }} defaultValue={ columns[0].value } ref={this.opt}>
+                    }} defaultValue={ option } ref={this.opt} onChange={() => setOption("option", this.opt.current.value)}>
                         {
                             columns !== undefined && columns.map( column => <option key={column.value} value={column.value}>{column.title}</option>)
                         }
                     </select>
-                    <input className="form-control" type="text" placeholder={translate('searchByValue')} ref={this.value}/>
-                    <button type="button" className="btn btn-success" onClick={this.search}>{translate('search')}</button>
+                    <input className="form-control" type="text" placeholder={translate('searchByValue')} ref={this.value} onChange={() => setOption("value", { $regex: this.value.current.value, $options: 'i' })}/>
+                    <button type="button" className="btn btn-success" onClick={search}>{translate('search')}</button>
                 </div>
             </React.Fragment>
          );

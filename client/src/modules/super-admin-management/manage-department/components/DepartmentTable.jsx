@@ -26,7 +26,7 @@ class DepartmentTable extends Component {
             <React.Fragment>
                 {
                     department.list.map( u => (
-                        <React.Fragment>
+                        <React.Fragment key={u._id}>
                             <DepartmentCreateWithParent parentId={u._id}/>
                             <DepartmentEditForm departmentInfo={u}/>
                             <div className="modal fade" id={`department-delete-${u._id}`}>

@@ -30,6 +30,7 @@ export function user(state = initState, action) {
     var index = -1;
     switch (action.type) {
         case UserConstants.GET_USERS_REQUEST:
+        case UserConstants.GET_USERS_PAGINATE_REQUEST:
         case UserConstants.CREATE_USER_REQUEST:
         case UserConstants.EDIT_USER_REQUEST:
         case UserConstants.DELETE_USER_REQUEST:
@@ -44,6 +45,22 @@ export function user(state = initState, action) {
             return {
                 ...state,
                 list: action.payload,
+                isLoading: false
+            };
+
+        case UserConstants.GET_USERS_PAGINATE_SUCCESS:
+            return {
+                ...state,
+                listPaginate: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
+                limit: action.payload.limit,
+                totalPages: action.payload.totalPages,
+                page: action.payload.page,
+                pagingCounter: action.payload.pagingCounter,
+                hasPrevPage: action.payload.hasPrevPage,
+                hasNextPage: action.payload.hasNextPage,
+                prevPage: action.payload.prevPage,
+                nextPage: action.payload.nextPage,
                 isLoading: false
             };
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { forgotPassword, resetPassword, reset} from '../redux/actions';
+import { forgotPassword, resetPassword } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 
 class ForgotPassword extends Component {

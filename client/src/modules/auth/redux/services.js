@@ -24,7 +24,6 @@ function login(user) {
 }
 
 function logout() {
-    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/logout`,
         method: 'GET',
@@ -35,7 +34,6 @@ function logout() {
 }
 
 function logoutAllAccount() {
-    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/logout-all-account`,
         method: 'GET',
@@ -60,7 +58,6 @@ function editProfile(data) {
 }
 
 function getLinksOfRole(idRole) {
-    const token = localStorage.getItem('token');
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/privilege/get-links-of-role/${idRole}`,
         method: 'GET',

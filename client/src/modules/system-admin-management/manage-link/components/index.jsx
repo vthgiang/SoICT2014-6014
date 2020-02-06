@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { get, destroy } from '../redux/actions';
+import { get } from '../redux/actions';
 import DeleteLinkModal from './DeleteLinkModal';
 import LinkInfoForm from './LinkInfoForm';
 import CreateLinkForm from './CreateLinkForm';

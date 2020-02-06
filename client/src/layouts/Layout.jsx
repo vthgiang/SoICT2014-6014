@@ -14,7 +14,7 @@ class Layout extends Component {
     }
     render() { 
         const { translate } = this.props;
-        console.log("ISLOADING LAYOUT: ", this.props.isLoading)
+        
         return ( 
             <React.Fragment>
                 <Header />

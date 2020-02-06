@@ -47,7 +47,7 @@ class UserEditForm extends Component {
         return ( 
             <React.Fragment>
                 <a className="edit" data-toggle="modal" href={`#edit-user-modal-${userEditID}`}><i className="material-icons">edit</i></a>
-                <div className="modal fade" id={ `edit-user-modal-${userEditID}` }>
+                <div className="modal fade" id={ `edit-user-modal-${userEditID}` } style={{textAlign: 'left'}}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                         <div className="modal-header">
@@ -95,9 +95,7 @@ class UserEditForm extends Component {
     }
 }
  
-const mapStateToProps = state => {
-    return state;
-}
+const mapStateToProps = state => state;
 
 
 export default connect( mapStateToProps, null )( withTranslate(UserEditForm) );

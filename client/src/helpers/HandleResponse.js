@@ -1,4 +1,3 @@
-import {logout} from '../modules/auth/redux/actions';
 export function handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);

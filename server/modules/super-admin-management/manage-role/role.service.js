@@ -15,6 +15,7 @@ exports.get = async (company) => {
 
 exports.getPaginate = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
+    console.log("DATA: ", newData);
     return await Role
         .paginate( newData , { 
             page, 

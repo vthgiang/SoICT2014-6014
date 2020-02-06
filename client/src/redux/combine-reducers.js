@@ -9,7 +9,7 @@ import { link } from '../modules/system-admin-management/manage-link/redux/reduc
 import { component } from '../modules/system-admin-management/manage-component/redux/reducers';
 import { department } from '../modules/super-admin-management/manage-department/redux/reducers';
 import {employees} from '../modules/employees-manager/employee-info/redux/reducers';
-import {employeesManager} from '../modules/employees-manager/employee-manager/redux/reducers';
+// import {employeesManager} from '../modules/employees-manager/employee-manager/redux/reducers';
 
 const rootReducer = combineReducers(Object.assign({
     system,

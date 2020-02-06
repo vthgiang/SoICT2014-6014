@@ -33,6 +33,7 @@ class DeleteNotification extends Component {
         const { content, data, func } = this.props;
         return ( 
             <a 
+                href="#abc"
                 className="delete" 
                 title={ content.title }
                 onClick={() => this.notification(

@@ -1,5 +1,4 @@
 import { AuthConstants } from "./constants";
-import {reactLocalStorage} from 'reactjs-localstorage';
 
 const token = localStorage.getItem('token');
 

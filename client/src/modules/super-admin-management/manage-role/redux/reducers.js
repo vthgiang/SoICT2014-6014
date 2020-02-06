@@ -116,6 +116,12 @@ export function role(state = initState, action) {
                 ...state,
                 isLoading: false
             };
+        
+        case RoleConstants.SET_FILTER:
+            return {
+                ...state,
+                filter: action.payload
+            };
 
         case 'LOGOUT':
             return initState;

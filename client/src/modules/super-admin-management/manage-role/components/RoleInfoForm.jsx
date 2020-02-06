@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { edit } from '../redux/actions';
+import { RoleActions } from '../redux/actions';
 
 class RoleInfoForm extends Component {
     constructor(props) {
@@ -50,7 +50,7 @@ class RoleInfoForm extends Component {
         return ( 
             <React.Fragment>
                 <a className="edit" data-toggle="modal" href={`#role-info-${roleInfo._id}`}><i className="material-icons">edit</i></a>
-                <div className="modal fade" id={`role-info-${roleInfo._id}`}>
+                <div className="modal fade" id={`role-info-${roleInfo._id}`}  style={{ textAlign: 'left' }}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -112,12 +112,8 @@ class RoleInfoForm extends Component {
  
 const mapState = state => state;
 
-const dispatchStateToProps = (dispatch, props) => {
-    return {
-        editRole: ( role ) => {
-            dispatch(edit( role )); 
-        },
-    }
+const dispatchStateToProps =  {
+    edit: RoleActions.edit
 }
 
 export default connect(mapState, dispatchStateToProps)(withTranslate( RoleInfoForm ));

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from "react-router-dom";
+// import { Route } from "react-router-dom";
 import { PrivateRoute, AuthRoute } from './route-export';
 
 import Layout from '../layouts/Layout';
@@ -13,9 +13,9 @@ import ManageRole from '../modules/super-admin-management/manage-role/components
 import ManageLink from '../modules/system-admin-management/manage-link/components';
 import ManageDepartment from '../modules/super-admin-management/manage-department/components';
 import ManageComponent from '../modules/system-admin-management/manage-component/components';
-import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
-import { AddEmployee, DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
-import { ListEmployee} from '../modules/employees-manager/employee-manager/components/ListEmployee';
+// import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
+// import { AddEmployee, DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
+// import { ListEmployee} from '../modules/employees-manager/employee-manager/components/ListEmployee';
 
 class Routes extends Component {
 
@@ -142,7 +142,7 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ ManageComponent }
                 />
-                <PrivateRoute 
+                {/* <PrivateRoute 
                     key={ 'manage-form-document' }
                     auth={ auth }
                     exact={ true }
@@ -151,9 +151,9 @@ class Routes extends Component {
                     pageName={ 'manageFormDocument' }
                     layout={ Layout }
                     component={ ManageFormDocument }
-                />
+                /> */}
                 {/* Quan ly nhan su */}
-                <PrivateRoute 
+                {/* <PrivateRoute 
                     key={ 'addemployee' }
                     auth={ auth }
                     exact={ true }
@@ -172,7 +172,7 @@ class Routes extends Component {
                     pageName={'detailemployee' }
                     layout={ Layout }
                     component={ DetailEmployee }
-                />
+                /> */}
                 {/* <PrivateRoute 
                     key={ 'updateemployee' }
                     auth={ auth }
@@ -183,7 +183,7 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ UpdateEmployee }
                 /> */}
-                <PrivateRoute 
+                {/* <PrivateRoute 
                     key={ 'listemployee' }
                     auth={ auth }
                     exact={ true }
@@ -192,10 +192,10 @@ class Routes extends Component {
                     pageName={'listemployee' }
                     layout={ Layout }
                     component={ ListEmployee }
-                />
-                {/* <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} />
-                <Route exact path="/detailemployee" layout={ Layout } component={DetailEmployee} /> */}
-                <Route exact path="/updateemployee" layout={ Layout } component={UpdateEmployee} />
+                /> */}
+                {/* <Route exact path="/addemployee" layout={ Layout } component={AddEmployee} /> */}
+                {/* <Route exact path="/detailemployee" layout={ Layout } component={DetailEmployee} /> */}
+                {/* <Route exact path="/updateemployee" layout={ Layout } component={UpdateEmployee} /> */}
                 {/* <Route exact path="/listemployee" layout={ Layout } component={ListEmployee} /> */}
             </React.Fragment>
         );

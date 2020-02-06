@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { get as getRole } from '../../../super-admin-management/manage-role/redux/actions';
+import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
 import { create } from '../redux/actions';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
@@ -103,7 +103,7 @@ const mapState = state => state;
 const getState = (dispatch, props) => {
     return {
         getRole: () => {
-            dispatch(getRole());
+            dispatch(RoleActions.get());
         },
         createComponet: (component) => {
             dispatch(create(component));

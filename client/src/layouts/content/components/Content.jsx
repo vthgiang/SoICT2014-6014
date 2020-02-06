@@ -37,8 +37,8 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, isLoading, pageName, arrPage } = this.props;
-        console.log("ISLOAIND: ", isLoading)
+        const { translate, pageName, arrPage } = this.props;
+        
         return (
             <React.Fragment>
                 <div className="content-wrapper">
@@ -47,7 +47,7 @@ class Content extends Component {
                         <ol className="breadcrumb">
                             {
                                 arrPage !== undefined && arrPage.map( page => 
-                                    <li>
+                                    <li key={page.name}> 
                                         <a href={page.link}>
                                             <i className={ page.icon }/>
                                             { translate(`mainSideBar.${page.name}`) }

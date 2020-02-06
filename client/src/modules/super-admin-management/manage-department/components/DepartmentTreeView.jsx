@@ -92,6 +92,7 @@ class DepartmentTreeView extends Component {
                     }}
                 ><i className="fa fa-pencil"></i></a>
                 <a 
+                    href="#abc"
                     className="btn pull-right" 
                     data-toggle="modal" 
                     onClick={() => this.deleteDepartment(

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { create } from '../redux/actions';
+import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { reactLocalStorage } from 'reactjs-localstorage';
 // import Swal from 'sweetalert2';
@@ -73,16 +73,10 @@ class UserCreateForm extends Component {
     }
 }
  
-const mapStateToProps = state => {
-    return state;
-}
+const mapStateToProps = state => state;
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        create: (user) => {
-            dispatch(create(user));
-        },
-    }
+const mapDispatchToProps = {
+    create: UserActions.create
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(UserCreateForm) );
