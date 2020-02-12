@@ -1,16 +1,9 @@
 # qlcv
 # SETUP & RUN PROJECT
 -----------------------------------------
-#client
-npm install & npm start
-
-------------------------------------------
-
-#server
-npm install 
-
-##server
-npm start
-
-##develop
-npm run dev
+Thông tin chi tiết được mô tả trong file project_description.docx, bao gồm cả :
+1. Giới thiệu
+2. Cấu trúc dữ liệu
+3. Demo
+4. Cách cài đặt
+5. Tài liệu tham khảo
