@@ -7,8 +7,7 @@ export const RoleActions = {
     edit,
     create,
     show,
-    destroy,
-    setFilter
+    destroy
 }
 
 function get(){
@@ -104,14 +103,5 @@ function destroy(roleId){
             .catch(err => {
                 console.log("Error: ", err);
             })
-    }
-}
-
-function setFilter(value){
-    return dispatch => {
-        dispatch({ 
-            type: RoleConstants.SET_FILTER,
-            payload: value
-        });
     }
 }

@@ -25,7 +25,7 @@ exports.getPaginate = async (company, limit, page, data={}) => {
         .paginate( newData , { 
             page, 
             limit,
-            select: '-token -status',
+            select: '-token -status -password -delete_soft',
             populate: [
                 { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
                 { path: 'company' }

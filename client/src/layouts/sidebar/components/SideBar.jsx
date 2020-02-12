@@ -124,7 +124,7 @@ class SideBar extends Component {
                                     icon='fa fa-object-group'
                                 />
                             }
-                            {/* {
+                            {
                                 this.checkURL('/manage-form-document', links) === true &&
                                 <Item
                                     key='manageFormDocument'
@@ -132,7 +132,7 @@ class SideBar extends Component {
                                     path='/manage-form-document'
                                     icon='fa fa-folder-open'
                                 />
-                            } */}
+                            }
 
                             {/* Quan ly nhan su */}
                             {

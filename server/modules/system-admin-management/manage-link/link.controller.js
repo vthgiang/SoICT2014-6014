@@ -11,6 +11,20 @@ exports.get = async (req, res) => {
     }
 };
 
+exports.getPaginate = async (req, res) => {
+    try {
+        var { limit, page } = req.body;
+        console.log("GET LINK PAGINATE")
+        delete req.body.limit;
+        delete req.body.page;
+        var links = await LinkService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
+        res.status(200).json(links);
+    } catch (error) {
+        
+        res.status(400).json(error);
+    }
+};
+
 exports.create = async (req, res) => {
     try {
         var createLink = await LinkService.create(req.body, req.user.company._id);

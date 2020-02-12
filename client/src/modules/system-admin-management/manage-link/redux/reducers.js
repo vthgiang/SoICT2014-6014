@@ -12,9 +12,19 @@ var findIndex = (array, id) => {
 
 const initState = {
     list: [],
-    item: null,
+    listPaginate: [],
+    totalDocs: 0,
+    limit: 0,
+    totalPages: 0,
+    page: 0,
+    pagingCounter: 0,
+    hasPrevPage: false,
+    hasNextPage: false,
+    prevPage: 0,
+    nextPage: 0,
     error: null,
-    isLoading: true
+    isLoading: true,
+    item: null
 }
 
 export function link (state = initState, action) {
@@ -22,6 +32,7 @@ export function link (state = initState, action) {
     switch (action.type) {
 
         case LinkConstants.GET_LINKS_REQUEST:
+        case LinkConstants.GET_LINKS_PAGINATE_REQUEST:
         case LinkConstants.SHOW_LINK_REQUEST:
         case LinkConstants.CREATE_LINK_REQUEST:
         case LinkConstants.EDIT_LINK_REQUEST:
@@ -35,6 +46,22 @@ export function link (state = initState, action) {
             return {
                 ...state,
                 list: action.payload,
+                isLoading: false
+            };
+
+        case LinkConstants.GET_LINKS_PAGINATE_SUCCESS:
+            return {
+                ...state,
+                listPaginate: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
+                limit: action.payload.limit,
+                totalPages: action.payload.totalPages,
+                page: action.payload.page,
+                pagingCounter: action.payload.pagingCounter,
+                hasPrevPage: action.payload.hasPrevPage,
+                hasNextPage: action.payload.hasNextPage,
+                prevPage: action.payload.prevPage,
+                nextPage: action.payload.nextPage,
                 isLoading: false
             };
 

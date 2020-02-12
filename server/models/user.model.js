@@ -15,8 +15,7 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
-        select: false
+        required: true
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -35,15 +34,13 @@ const UserSchema = new Schema({
     delete_soft: {
         type: Boolean,
         required: true,
-        default: false,
-        select: false
+        default: false
     },
     token: [{
         type: String,
     }],
     reset_password_token: {
-        type: String,
-        select: false
+        type: String
     }
 },{
     timestamps: true,

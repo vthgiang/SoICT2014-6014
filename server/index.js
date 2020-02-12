@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
+const cookieParser = require("cookie-parser");
 const system = require('./modules/system/system.route');
 const user = require('./modules/super-admin-management/manage-user/user.route');
 const auth = require('./modules/auth/auth.route');
@@ -27,6 +28,7 @@ app.use(
     })
 );
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // DB Config
 const db = process.env.DATABASE;

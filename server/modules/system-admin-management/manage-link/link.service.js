@@ -2,12 +2,22 @@ const Link = require('../../../models/link.model');
 const Privilege = require('../../../models/privilege.model');
 
 exports.get = async (company) => {
-    console.log("GET LINKS OF COMPANY: ", company)
-    
-    
     return await Link
         .find({ company })
         .populate({ path: 'roles', model: Privilege });
+}
+
+exports.getPaginate = async (company, limit, page, data={}) => {
+    const newData = await Object.assign({ company }, data );
+    console.log("DATA Link: ", newData, limit, page);
+    return await Link
+        .paginate( newData , { 
+            page, 
+            limit,
+            populate: [
+                { path: 'roles', model: Privilege}
+            ]
+        });
 }
 
 exports.getById = async (id) => {

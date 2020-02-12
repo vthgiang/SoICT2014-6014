@@ -3,6 +3,7 @@ import { LOCAL_SERVER_API, AuthenticateHeader } from '../../../../config';
 
 export const LinkServices = {
     get,
+    getPaginate,
     show,
     create,
     edit,
@@ -13,6 +14,17 @@ function get() {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/link`,
         method: 'GET',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function getPaginate(data) {  
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/link/paginate`,
+        method: 'POST',
+        data,
         headers: AuthenticateHeader()
     };
 
@@ -40,11 +52,11 @@ function create(link) {
     return axios(requestOptions);
 }
 
-function edit(id, link) {
+function edit(id, data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/link/${id}`,
         method: 'PATCH',
-        data: link,
+        data: data,
         headers: AuthenticateHeader()
     };
 

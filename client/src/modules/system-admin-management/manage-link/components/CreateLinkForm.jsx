@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
-import { create } from '../redux/actions';
+import { LinkActions } from '../redux/actions';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
 class CreateLinkForm extends Component {
@@ -45,7 +45,7 @@ class CreateLinkForm extends Component {
         return ( 
             <React.Fragment>
                 <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-link" title={ translate('manageResource.createLink') }>{ translate('add') }</a>
-                <div className="modal fade" id="modal-create-link">
+                <div className="modal fade" id="modal-create-link"  style={{ textAlign: 'left' }}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -99,15 +99,9 @@ class CreateLinkForm extends Component {
 }
  
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        getRole: () => {
-            dispatch(RoleActions.get());
-        },
-        createLink: (link) => {
-            dispatch(create(link));
-        },
-    }
+const getState = {
+    getRole: RoleActions.get,
+    createLink: LinkActions.create
 }
  
 export default connect(mapState, getState) (withTranslate(CreateLinkForm));

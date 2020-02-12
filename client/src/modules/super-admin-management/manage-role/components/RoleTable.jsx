@@ -67,17 +67,17 @@ class RoleTable extends Component {
                                             {
                                                 role.type.name !== 'abstract' && 
                                                 <DeleteNotification 
-                                                content={{
-                                                    title: translate('delete'),
-                                                    btnNo: translate('question.no'),
-                                                    btnYes: translate('delete'),
-                                                }}
-                                                data={{
-                                                    id: role._id,
-                                                    info: role.name
-                                                }}
-                                                func={this.props.destroy}
-                                            />
+                                                    content={{
+                                                        title: translate('delete'),
+                                                        btnNo: translate('question.no'),
+                                                        btnYes: translate('delete'),
+                                                    }}
+                                                    data={{
+                                                        id: role._id,
+                                                        info: role.name
+                                                    }}
+                                                    func={this.props.destroy}
+                                                />
                                             }
                                         </td>
                                     </tr>       

@@ -1,7 +1,16 @@
 import { LinkServices } from "./services";
 import { LinkConstants } from "./constants";
 
-export const get = () => {
+export const LinkActions = {
+    get,
+    getPaginate,
+    show,
+    create,
+    edit,
+    destroy
+};
+
+function get(){
     return dispatch => {
         dispatch({ type: LinkConstants.GET_LINKS_REQUEST});
         LinkServices.get()
@@ -17,7 +26,23 @@ export const get = () => {
     }
 }
 
-export const show = (id) => {
+function getPaginate(data){
+    return dispatch => {
+        dispatch({ type: LinkConstants.GET_LINKS_PAGINATE_REQUEST});
+        LinkServices.getPaginate(data)
+            .then(res => {
+                dispatch({
+                    type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+function show(id){
     return dispatch => {
         dispatch({ type: LinkConstants.SHOW_LINK_REQUEST});
         LinkServices.show(id)
@@ -33,7 +58,7 @@ export const show = (id) => {
     }
 }
 
-export const create = (link) => {
+function create(link){
     return dispatch => {
         dispatch({ type: LinkConstants.CREATE_LINK_REQUEST});
         LinkServices.create(link)
@@ -49,7 +74,7 @@ export const create = (link) => {
     }
 }
 
-export const edit = (id, link) => {
+function edit(id, link){
     return dispatch => {
         dispatch({ type: LinkConstants.EDIT_LINK_REQUEST});
         LinkServices.edit(id, link)
@@ -65,7 +90,7 @@ export const edit = (id, link) => {
     }
 }
 
-export const destroy = (id, link) => {
+function destroy(id, link){
     return dispatch => {
         dispatch({ type: LinkConstants.DELETE_LINK_REQUEST});
         LinkServices.destroy(id, link)

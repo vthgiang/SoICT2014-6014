@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API, TOKEN_SECRET, AuthenticateHeader } from '../../../config';
+import { LOCAL_SERVER_API, TOKEN_SECRET, AuthenticateHeader, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
 
 export const AuthService = {
@@ -44,7 +44,8 @@ function logoutAllAccount() {
 }
 
 function editProfile(data) {
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    const token = getStorage('auth-tokem');
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id; 
     const requestOptions = {
@@ -67,9 +68,10 @@ function getLinksOfRole(idRole) {
     return axios(requestOptions);
 }
 
-function refresh() {
-    const token = localStorage.getItem('token');
-    const verified = jwt.verify(token, TOKEN_SECRET);
+async function refresh() {
+    const token = getStorage('auth-token');
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    
     var id = verified._id; 
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,

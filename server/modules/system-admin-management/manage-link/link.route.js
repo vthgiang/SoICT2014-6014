@@ -4,6 +4,7 @@ const LinkController = require('./link.controller');
 const { auth } = require('../../../middleware/auth.middleware');
 
 router.get("/", auth, LinkController.get);
+router.post("/paginate", auth, LinkController.getPaginate);
 router.post("/", auth, LinkController.create);
 router.get("/:id", auth, LinkController.show);
 router.patch("/:id", auth, LinkController.edit);

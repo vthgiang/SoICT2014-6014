@@ -13,7 +13,7 @@ import ManageRole from '../modules/super-admin-management/manage-role/components
 import ManageLink from '../modules/system-admin-management/manage-link/components';
 import ManageDepartment from '../modules/super-admin-management/manage-department/components';
 import ManageComponent from '../modules/system-admin-management/manage-component/components';
-// import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
+import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
 // import { AddEmployee, DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 // import { ListEmployee} from '../modules/employees-manager/employee-manager/components/ListEmployee';
 
@@ -142,7 +142,7 @@ class Routes extends Component {
                     layout={ Layout }
                     component={ ManageComponent }
                 />
-                {/* <PrivateRoute 
+                <PrivateRoute 
                     key={ 'manage-form-document' }
                     auth={ auth }
                     exact={ true }
@@ -151,7 +151,7 @@ class Routes extends Component {
                     pageName={ 'manageFormDocument' }
                     layout={ Layout }
                     component={ ManageFormDocument }
-                /> */}
+                />
                 {/* Quan ly nhan su */}
                 {/* <PrivateRoute 
                     key={ 'addemployee' }

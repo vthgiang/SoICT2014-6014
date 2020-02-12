@@ -1,11 +1,13 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
+import { setStorage, clearStorage } from '../../../config';
 
 export const login = (user) => {
     return dispatch => {
         AuthService.login(user)
             .then(res => {
-                localStorage.setItem('token', res.data.token);
+                // localStorage.setItem('token', res.data.token);
+                setStorage('auth-token', res.data.token);
                 if(res.data.user.roles.length > 0) localStorage.setItem('currentRole', res.data.user.roles[0].roleId._id);
 
                 dispatch({
@@ -27,6 +29,7 @@ export const logout = () => {
         AuthService.logout()
             .then(res => {
                 localStorage.clear();
+                clearStorage('auth-token');
                 dispatch({
                     type: 'RESET_APP'
                 })
@@ -42,6 +45,7 @@ export const logoutAllAccount = () => {
         AuthService.logoutAllAccount()
             .then(res => {
                 localStorage.clear();
+                clearStorage('auth-token');
                 dispatch({
                     type: 'RESET_APP'
                 })
@@ -93,14 +97,23 @@ export const refresh = () => {
                 })
             })
             .catch(err => {
-                var { msg } = err.response.data;
-                if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
-                    localStorage.clear();
+                if(err.response !== undefined){
+                    var { msg } = err.response.data;
+                    if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
+                        // localStorage.clear();
+                        // clearStorage('auth-token');
+                        dispatch({
+                            type: 'RESET_APP'
+                        })
+                    }
+                }else{
+                    console.log(err)
+                    alert("ERROR")
+                    // localStorage.clear();
+                    // clearStorage('auth-token');
                     dispatch({
                         type: 'RESET_APP'
                     })
-                }else{
-                    console.log("Error: ", err.response.data);
                 }
             })
     }
