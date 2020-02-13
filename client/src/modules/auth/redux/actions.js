@@ -6,7 +6,6 @@ export const login = (user) => {
     return dispatch => {
         AuthService.login(user)
             .then(res => {
-                // localStorage.setItem('token', res.data.token);
                 setStorage('auth-token', res.data.token);
                 if(res.data.user.roles.length > 0) localStorage.setItem('currentRole', res.data.user.roles[0].roleId._id);
 

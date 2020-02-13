@@ -45,7 +45,7 @@ function logoutAllAccount() {
 
 function editProfile(data) {
     // const token = localStorage.getItem('token');
-    const token = getStorage('auth-tokem');
+    const token = getStorage('auth-token');
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id; 
     const requestOptions = {
