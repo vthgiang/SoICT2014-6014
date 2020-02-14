@@ -9,13 +9,13 @@ class DepartmentTreeView extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            zoom: 14.8
+            zoom: 13
         }
         this.displayTreeView = this.displayTreeView.bind(this);
         this.showNodeContent = this.showNodeContent.bind(this);
-        // this.zoomIn = this.zoomIn.bind(this);
-        // this.zoomOut = this.zoomOut.bind(this);
-        this.configName = this.configName.bind(this);
+        this.zoomIn = this.zoomIn.bind(this);
+        this.zoomOut = this.zoomOut.bind(this);
+        // this.configName = this.configName.bind(this);
     }
 
     deleteDepartment = (departmentId, departmentName, deleteConfirm, no) =>{
@@ -35,24 +35,24 @@ class DepartmentTreeView extends Component {
         })
     }
 
-    configName = (name) => {
-        const room = name.slice(0, 5);
-        if(room === 'Phòng' || room  === 'phòng' || room === 'Phong' || room === "phong"){
-            const newName = name.slice(5, 20);
-            return "P."+ newName + "...";
-        }
-        return "P." + name.slice(0, 7) + "...";
+    // configName = (name) => {
+    //     const room = name.slice(0, 5);
+    //     if(room === 'Phòng' || room  === 'phòng' || room === 'Phong' || room === "phong"){
+    //         const newName = name.slice(5, 20);
+    //         return "P."+ newName + "...";
+    //     }
+    //     return "P." + name.slice(0, 7) + "...";
+    // }
+
+    zoomIn = () => {
+        if(this.state.zoom < 30)
+        this.setState({ zoom : this.state.zoom + 1});
     }
 
-    // zoomIn = () => {
-    //     if(this.state.zoom < 24)
-    //     this.setState({ zoom : this.state.zoom + 0.2});
-    // }
-
-    // zoomOut = () => {
-    //     if(this.state.zoom > 0)
-    //         this.setState({ zoom : this.state.zoom - 0.2});
-    // }
+    zoomOut = () => {
+        if(this.state.zoom > 13)
+            this.setState({ zoom : this.state.zoom - 1});
+    }
 
     showNodeContent = (data, translate) => {
         return (
@@ -61,10 +61,10 @@ class DepartmentTreeView extends Component {
                 title={ data.name }
                 style={{ 
                     borderRadius: '10px',
-                    width: '120px'
+                    width: '150px'
                 }}
             >
-                <p style={{ marginBottom: '10px', fontSize: '12px' }}>{ this.configName(data.name) }</p>
+                <p style={{ marginBottom: '10px', fontSize: '12px' }}>{ data.name }</p>
                 <a 
                     className="btn pull-right" 
                     data-toggle="modal" 
@@ -75,7 +75,7 @@ class DepartmentTreeView extends Component {
                         border: '1px solid lightgray',
                         width: '26px',
                         marginLeft: '2px',
-                        color: 'blue'
+                        color: '#333333'
                     }}
                 ><i className="fa fa-plus"></i></a>
                 <a 
@@ -88,7 +88,7 @@ class DepartmentTreeView extends Component {
                         border: '1px solid lightgray',
                         width: '26px',
                         marginLeft: '2px',
-                        color: 'orange'
+                        color: '#333333'
                     }}
                 ><i className="fa fa-pencil"></i></a>
                 <a 
@@ -107,7 +107,7 @@ class DepartmentTreeView extends Component {
                         border: '1px solid lightgray',
                         width: '26px',
                         marginLeft: '2px',
-                        color: 'red'
+                        color: '#333333'
                     }}
                 ><i className="fa fa-trash"></i></a>
             </span>
@@ -141,9 +141,9 @@ class DepartmentTreeView extends Component {
         const { translate } = this.props;
         return ( 
             <React.Fragment>
-                {/* <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn }></i>
-                <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut }></i> */}
-                <div className="tf-tree example" style={{ textAlign: 'center' }}>
+                <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn }></i>
+                <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut }></i>
+                <div className="tf-tree example" style={{ textAlign: 'center', fontSize: this.state.zoom }}>
                     <ul>
                         {tree !== null && this.displayTreeView(tree[0], translate)}
                     </ul>

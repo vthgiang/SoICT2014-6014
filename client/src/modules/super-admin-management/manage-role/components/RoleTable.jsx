@@ -23,6 +23,7 @@ class RoleTable extends Component {
         this.setPage = this.setPage.bind(this);
         this.setOption = this.setOption.bind(this);
         this.searchWithOption = this.searchWithOption.bind(this);
+        this.setLimit = this.setLimit.bind(this);
     }
 
     render() { 
@@ -50,7 +51,11 @@ class RoleTable extends Component {
                             <tr>
                                 <th>{ translate('manageRole.roleName') }</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>
-                                    <ActionColumn columnName={translate('table.action')} hideColumn={false}/>
+                                    <ActionColumn 
+                                        columnName={translate('table.action')} 
+                                        hideColumn={false}
+                                        setLimit={this.setLimit}
+                                    />
                                 </th>
                             </tr>
                         </thead>
@@ -116,6 +121,15 @@ class RoleTable extends Component {
         this.props.getPaginate(data);
     }
 
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { limit: number, page: this.state.page };
+        if(this.state.value !== null){
+            data[this.state.option] = this.state.value;
+        }
+        this.props.getPaginate(data);
+    }
+
     componentDidMount(){
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
         this.props.get();
@@ -125,6 +139,7 @@ class RoleTable extends Component {
     deleteRole = (roleId) => {
         this.props.destroy(roleId);
     }
+
 }
  
 const mapStateToProps = state => state;

@@ -28,6 +28,7 @@ const initState = {
 
 export function user(state = initState, action) {
     var index = -1;
+    var indexPaginate = -1;
     switch (action.type) {
         case UserConstants.GET_USERS_REQUEST:
         case UserConstants.GET_USERS_PAGINATE_REQUEST:
@@ -66,10 +67,15 @@ export function user(state = initState, action) {
 
         case UserConstants.EDIT_USER_SUCCESS:
             index = findIndex(state.list, action.payload._id);
+            indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
                 state.list[index].name = action.payload.name;
                 state.list[index].active = action.payload.active;
             };
+            if(indexPaginate !== -1){
+                state.listPaginate[index].name = action.payload.name;
+                state.listPaginate[index].active = action.payload.active;
+            }
             return {
                 ...state,
                 isLoading: false
@@ -83,13 +89,18 @@ export function user(state = initState, action) {
                     ...state.list,
                     action.payload
                 ],
+                listPaginate: [
+                    ...state.listPaginate,
+                    action.payload
+                ],
                 isLoading: false
             };
 
         case UserConstants.DELETE_USER_SUCCESS:
             index = findIndex(state.list, action.payload);
-            state.list.splice(index, 1);
-
+            indexPaginate = findIndex(state.listPaginate, action.payload);
+            if(index !== -1) state.list.splice(index, 1);
+            if(indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
             return {
                 ...state,
                 isLoading: false

@@ -1,27 +1,29 @@
-import cookies from 'js-cookie';
+import getBrowserFingerprint from 'get-browser-fingerprint';
 
 export const LOCAL_SERVER_API = 'http://localhost:8000';
 export const TOKEN_SECRET = 'qlcv';
 
-export const clearStorage = (name) => {
-    cookies.remove(name);
+export const clearStorage = () => {
+    localStorage.clear();
+    localStorage.clear();
+
+    return true;
 };
 
-export const setStorage = (name, value) => {
-
-    cookies.set(name, value, {
-        expires: 2
-    });
+export const setStorage = (name='jwt', value) => {
+    return localStorage.setItem(name, value);
 };
 
-export const getStorage = (name) => {
-    return cookies.get(name);
+export const getStorage = (name='jwt') => {
+    return localStorage.getItem(name);
 }
 
-export const AuthenticateHeader = () => {
-    // const token = localStorage.getItem('token');
-    const token = cookies.get('auth-token');
+export const AuthenticateHeader = (name='jwt') => {
+    const token = getStorage(name);
+    const browserFinger = getBrowserFingerprint();
+    console.log(browserFinger);
     return {
-        'auth-token': token
+        'auth-token': token,
+        'browser-finger': browserFinger
     }
 }

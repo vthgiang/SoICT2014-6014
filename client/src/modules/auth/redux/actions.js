@@ -1,13 +1,15 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
 import { setStorage, clearStorage } from '../../../config';
+import Fingerprint2 from 'fingerprintjs2';
 
 export const login = (user) => {
     return dispatch => {
         AuthService.login(user)
             .then(res => {
-                setStorage('auth-token', res.data.token);
-                if(res.data.user.roles.length > 0) localStorage.setItem('currentRole', res.data.user.roles[0].roleId._id);
+                setStorage('jwt', res.data.token);
+                if(res.data.user.roles.length > 0) 
+                    setStorage('currentRole', res.data.user.roles[0].roleId._id);
 
                 dispatch({
                     type: AuthConstants.LOGIN_SUCCESS,
@@ -27,8 +29,7 @@ export const logout = () => {
     return dispatch => {
         AuthService.logout()
             .then(res => {
-                localStorage.clear();
-                clearStorage('auth-token');
+                clearStorage();
                 dispatch({
                     type: 'RESET_APP'
                 })
@@ -43,8 +44,7 @@ export const logoutAllAccount = () => {
     return dispatch => {
         AuthService.logoutAllAccount()
             .then(res => {
-                localStorage.clear();
-                clearStorage('auth-token');
+                clearStorage();
                 dispatch({
                     type: 'RESET_APP'
                 })
@@ -86,7 +86,21 @@ export const getLinksOfRole = (idRole) => {
 }
 
 export const refresh = () => {
+
     return dispatch => {
+        if (window.requestIdleCallback) {
+            requestIdleCallback(function () {
+                Fingerprint2.get(function (components) {
+                  console.log("COMPONENT:", components) // an array of components: {key: ..., value: ...}
+                })
+            })
+        } else {
+            setTimeout(function () {
+                Fingerprint2.get(function (components) {
+                    console.log("COMPONENT:", components) // an array of components: {key: ..., value: ...}
+                })  
+            }, 500)
+        }
         dispatch({ type: AuthConstants.REFRESH_DATA_USER_REQUEST});
         AuthService.refresh()
             .then(res => {
@@ -99,20 +113,11 @@ export const refresh = () => {
                 if(err.response !== undefined){
                     var { msg } = err.response.data;
                     if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
-                        // localStorage.clear();
-                        // clearStorage('auth-token');
+                        clearStorage();
                         dispatch({
                             type: 'RESET_APP'
                         })
                     }
-                }else{
-                    console.log(err)
-                    alert("ERROR")
-                    // localStorage.clear();
-                    // clearStorage('auth-token');
-                    dispatch({
-                        type: 'RESET_APP'
-                    })
                 }
             })
     }

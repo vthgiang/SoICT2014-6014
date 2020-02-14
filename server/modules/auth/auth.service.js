@@ -6,7 +6,7 @@ const {loginValidation} = require('./auth.validation');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
 
-exports.login = async (data) => { // data bao gom email va password
+exports.login = async (browserFinger, data) => { // data bao gom email va password
 
     const {error} = loginValidation(data);
     if(error) throw {msg: error.details[0].message};
@@ -37,10 +37,10 @@ exports.login = async (data) => { // data bao gom email va password
     }
     if(!user.active) throw { msg: ' Cannot login! The account has been locked !'};
     const token = await jwt.sign(
-        {_id: user._id, email: user.email, company: user.company}, 
+        {_id: user._id, email: user.email, company: user.company, browserFinger: browserFinger}, 
         process.env.TOKEN_SECRET,
         {
-            expiresIn: '2d'
+            expiresIn: '1d' //giới hạn thời gian khả dụng của jwt là 1 ngày
         }
     );
     user.status = 0; 

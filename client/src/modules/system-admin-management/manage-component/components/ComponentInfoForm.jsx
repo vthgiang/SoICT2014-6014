@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { reactLocalStorage } from 'reactjs-localstorage';
-import { edit } from '../redux/actions';
+import { ComponentActions } from '../redux/actions';
 
 class ComponentInfoForm extends Component {
     constructor(props) {
@@ -48,7 +48,8 @@ class ComponentInfoForm extends Component {
         const { componentId, componentName, componentDescription, componentRoles, translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <div className="modal fade" id={`modal-component-${componentId}`}>
+                <a className="edit" data-toggle="modal" href={ `#modal-component-${componentId}` }><i className="material-icons">edit</i></a>
+                <div className="modal fade" id={`modal-component-${componentId}`}  style={{ textAlign: 'left'}}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header bg-blue">
@@ -102,15 +103,8 @@ class ComponentInfoForm extends Component {
 }
  
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        editComponent: (id, data) => {
-            dispatch(edit(id, data));
-        },
-        // destroy: (id) => {
-        //     dispatch(destroy(id));
-        // },
-    }
+const getState = {
+    editComponent: ComponentActions.edit
 }
  
 export default connect(mapState, getState) (withTranslate(ComponentInfoForm));

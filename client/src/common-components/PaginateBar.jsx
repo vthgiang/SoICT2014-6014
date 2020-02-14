@@ -63,9 +63,9 @@ class PaginateBar extends Component {
                     pageTotal !== 0 && 
                     <div className="row pagination-new">
                         <ul className="pagination" style={{ marginTop: '20px'}}>
-                            { currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>«</a></li>}
+                            { currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
                             {items}
-                            { currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>»</a></li>}
+                            { currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
                         </ul>
                         <div id="search-page" className="col-sm-12 collapse" style={{ width: "26%" }}>
                             <input className="col-sm-6 form-control" type="number" min="1" max={pageTotal} style={{ width: "60%" }} name='page' onChange={this.inputChange}/>

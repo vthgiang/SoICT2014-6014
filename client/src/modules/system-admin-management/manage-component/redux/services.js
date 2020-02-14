@@ -3,6 +3,7 @@ import { LOCAL_SERVER_API, AuthenticateHeader } from '../../../../config';
 
 export const ComponentServices = {
     get,
+    getPaginate,
     show,
     create,
     edit,
@@ -13,6 +14,17 @@ function get() {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/component`,
         method: 'GET',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function getPaginate(data) {  
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/component/paginate`,
+        method: 'POST',
+        data,
         headers: AuthenticateHeader()
     };
 

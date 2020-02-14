@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 class ActionColumn extends Component {
     constructor(props) {
         super(props);
+        this.record = React.createRef();
         this.state = {  }
     }
     render() { 
-        const { columnName, hideColumn } = this.props;
+        const { columnName, hideColumn, translate } = this.props;
         return ( 
             <React.Fragment>
                 { columnName }
                 <button type="button" data-toggle="collapse" data-target="#setting-table" style={{ border: "none", background: "none" }}><i className="fa fa-gear"></i></button>
-                <div id="setting-table" className="row collapse" style={{ width: "26%" }}>
+                <div id="setting-table" className="row collapse">
                     <span className="pop-arw arwTop L-auto" style={{ right: "13px" }}></span>
                     {
                         hideColumn && 
@@ -28,11 +31,11 @@ class ActionColumn extends Component {
                         </div>
                     }
                     <div className="col-xs-12" style={{ marginTop: "10px" }}>
-                        <label style={{ marginRight: "15px" }}>Số dòng/trang:</label>
-                        <input className="form-control" type="text" defaultValue={1} />
+                        <label style={{ marginRight: "15px" }}>{`${translate('record')}/${translate('page')}`}:</label>
+                        <input className="form-control" type="text" defaultValue={5} ref={this.record}/>
                     </div>
                     <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
-                        <button type="button" className="btn btn-success">Cập nhật</button>
+                        <button type="button" className="btn btn-success" onClick={() => this.props.setLimit(this.record.current.value)}>{ translate('update') }</button>
                     </div>
                 </div>
             </React.Fragment>
@@ -40,4 +43,6 @@ class ActionColumn extends Component {
     }
 }
  
-export default ActionColumn;
+const mapStateToProps = state => state;
+
+export default connect( mapStateToProps, null )( withTranslate(ActionColumn) );

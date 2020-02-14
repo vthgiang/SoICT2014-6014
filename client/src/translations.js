@@ -9,6 +9,9 @@ export default {
             search: 'Tìm kiếm',
             searchByValue: 'Nhập vào ... ',
             edit: 'Sửa',
+            update: 'Cập nhật',
+            record: 'Số dòng',
+            page: 'Trang',
             delete: 'Xóa',
             loading: 'Đang xử lý dữ liệu...Xin vui lòng đợi',
             question: {
@@ -161,6 +164,9 @@ export default {
             search: 'Search',
             searchByValue: 'Input value ... ',
             edit: 'Edit',
+            update: 'Update',
+            record: 'Record',
+            page: 'Page',
             delete: 'Delete',
             loading: 'Loading...Please wait',
             question: {

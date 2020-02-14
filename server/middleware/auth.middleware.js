@@ -3,11 +3,14 @@ const User = require('../models/user.model');
 const UserRole = require('../models/user_role.model');
 
 exports.auth = async (req, res, next) => {
-    const token = req.header('auth-token');
+    const token = req.header('auth-token');//token jwt nhận từ người dùng
+    const browserFinger = req.header('browser-finger'); //chữ ký của trình duyệt người dùng
       
     if(!token) return res.status(400).json({ msg: 'ACCESS_DENIED' });
     try {
         const verified = await jwt.verify(token, process.env.TOKEN_SECRET);
+        console.log(`KEY: ${verified.browserFinger} - ${browserFinger}`);
+        if(verified.browserFinger !== browserFinger) return res.status(400).json({ msg: 'ACCESS_DENIED' });
         req.user = verified; 
         req.token = token;
 

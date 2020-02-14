@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API, TOKEN_SECRET, AuthenticateHeader, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
+import getBrowserFingerprint from 'get-browser-fingerprint';
 
 export const AuthService = {
     login,
@@ -17,7 +18,10 @@ function login(user) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
-        data: user
+        data: user,
+        headers: {
+            'browser-finger': getBrowserFingerprint()
+        }
     };
 
     return axios(requestOptions);
@@ -69,7 +73,8 @@ function getLinksOfRole(idRole) {
 }
 
 async function refresh() {
-    const token = getStorage('auth-token');
+    const token = getStorage();
+    console.log("TOKEN:", token)
     const verified = await jwt.verify(token, TOKEN_SECRET);
     
     var id = verified._id; 

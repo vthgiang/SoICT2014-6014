@@ -8,6 +8,19 @@ exports.get = async (id) => {
         .populate({ path: 'roles', model: Privilege });
 }
 
+exports.getPaginate = async (company, limit, page, data={}) => {
+    const newData = await Object.assign({ company }, data );
+    console.log("DATA: ", newData);
+    return await Component
+        .paginate( newData , { 
+            page, 
+            limit,
+            populate: [
+                { path: 'roles', model: Privilege},
+            ]
+        });
+}
+
 exports.getById = async (id) => {
 
     return await Component

@@ -3,7 +3,7 @@ const { authLogger } = require('../../logs');
 
 exports.login = async (req, res) => {
     try {
-        var loginUser = await AuthService.login(req.body);
+        var loginUser = await AuthService.login(req.header('browser-finger'), req.body);
         if(isLog) authLogger.info("Login :" + req.body.email);
         res.cookie('jwt', loginUser.token).status(200).json(loginUser);
     } catch (error) {

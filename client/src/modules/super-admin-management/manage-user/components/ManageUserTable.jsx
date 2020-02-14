@@ -22,6 +22,7 @@ class ManageUserTable extends Component {
         this.setOption = this.setOption.bind(this);
         this.searchWithOption = this.searchWithOption.bind(this);
         this.checkSuperRole = this.checkSuperRole.bind(this);
+        this.setLimit = this.setLimit.bind(this);
     }
 
     render() { 
@@ -50,7 +51,11 @@ class ManageUserTable extends Component {
                             <th>{translate('table.email')}</th>
                             <th>{translate('table.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
-                                <ActionColumn columnName={translate('table.action')} hideColumn={false} />
+                                <ActionColumn 
+                                    columnName={translate('table.action')} 
+                                    hideColumn={false}
+                                    setLimit={this.setLimit} 
+                                />
                             </th>
                         </tr>
                     </thead>
@@ -127,6 +132,15 @@ class ManageUserTable extends Component {
     setPage = (pageNumber) => {
         this.setState({ page: pageNumber });
         const data = { limit: this.state.limit, page: pageNumber };
+        if(this.state.value !== null){
+            data[this.state.option] = this.state.value;
+        }
+        this.props.getPaginate(data);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { limit: number, page: this.state.page };
         if(this.state.value !== null){
             data[this.state.option] = this.state.value;
         }

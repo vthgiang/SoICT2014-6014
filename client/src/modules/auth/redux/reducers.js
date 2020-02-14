@@ -1,8 +1,7 @@
 import { AuthConstants } from "./constants";
 import { getStorage } from '../../../config';
 
-// const token = localStorage.getItem('token');
-const token = getStorage('auth-token');
+const token = getStorage();
 
 const initState = {
     logged: token ? true : false,

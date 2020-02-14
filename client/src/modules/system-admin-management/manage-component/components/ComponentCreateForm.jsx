@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
-import { create } from '../redux/actions';
+import { ComponentActions } from '../redux/actions';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
 class ComponentCreateForm extends Component {
@@ -100,15 +100,9 @@ class ComponentCreateForm extends Component {
 }
  
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        getRole: () => {
-            dispatch(RoleActions.get());
-        },
-        createComponet: (component) => {
-            dispatch(create(component));
-        },
-    }
+const getState = {
+    getRole: RoleActions.get,
+    createComponet: ComponentActions.create
 }
  
 export default connect(mapState, getState) (withTranslate(ComponentCreateForm));
