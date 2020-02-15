@@ -8,9 +8,10 @@ const User = require('../models/user.model');
 const UserRole = require('../models/user_role.model');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+require('dotenv').config({path: '../.env'});
 
 // DB Config
-const db = 'mongodb://localhost/qlcv';
+const db = process.env.DATABASE;
 
 // Connect to MongoDB
 mongoose
@@ -18,7 +19,9 @@ mongoose
     db,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
-  .then(() => console.log("MongoDB successfully connected"))
+  .then(() => {
+    console.log("MongoDB successfully connected");
+  })
   .catch(err => console.log(err));
 
 const initLog = async() => {
