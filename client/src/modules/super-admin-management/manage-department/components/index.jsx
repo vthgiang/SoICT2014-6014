@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import DepartmentTreeView from './DepartmentTreeView';
-import DepartmentCreateForm from './DepartmentCreateForm';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { get } from '../redux/actions';
@@ -22,9 +21,6 @@ class ManageDepartment extends Component {
                 <div className="box" style={{ minHeight: '450px' }}>
                     <div className="box-body">
                         <div className="row">
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <DepartmentCreateForm/>
-                            </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <DepartmentTreeView/>
                             </div>
