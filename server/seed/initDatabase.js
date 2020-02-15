@@ -114,8 +114,21 @@ initLog()
         initRoleType()
             .then(() => {
                 initSystemData()
-                .catch(err => console.log(err));
+                .then(() => {
+                    process.exit(1);
+                })
+                .catch(err => {
+                    console.log(err);
+                    process.exit(1);
+                });
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                process.exit(1);
+            });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        console.log(err);
+        process.exit(1);
+    });
+
