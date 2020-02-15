@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const SampleController = require('./_sample.controller');
+const DocumentController = require('./document.controller');
+const { auth } = require('../../middleware/auth.middleware');
 
-router.get("/item", SampleController.get);
-router.get("/item/:id", SampleController.show);
-router.post("/item", SampleController.create);
-router.patch("/item", SampleController.edit);
-router.delete("/item", SampleController.delete);
+router.get("/document", auth, DocumentController.get);
+router.get("/document/:id", auth, DocumentController.show);
+router.post("/document", auth, DocumentController.create);
+router.patch("/document", auth, DocumentController.edit);
+router.delete("/document", auth, DocumentController.delete);
 
 module.exports = router;

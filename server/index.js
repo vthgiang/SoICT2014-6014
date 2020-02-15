@@ -14,7 +14,7 @@ const privilege = require('./modules/super-admin-management/privileges/privilege
 const component = require('./modules/system-admin-management/components-management/component.route');
 const educationProgram = require('./modules/trainning-Course/education-program/educationProgram.route');
 const employee = require('./modules/employees-manager/employee/employee.route');
-const sample = require('./modules/_sample-module/_sample.route');
+const document = require('./modules/documents-management/document.route');
 
 require('dotenv').config();
 
@@ -54,6 +54,8 @@ Logger.findOne({name: 'log'})
     })
     .catch(err => console.log("msg: ", err));
 
+
+
 app.use("/system", system);
 app.use("/user", user);
 app.use("/auth", auth);
@@ -64,7 +66,7 @@ app.use("/department", department);
 app.use("/privilege", privilege);
 app.use("/educationProgram", educationProgram);
 app.use("/employee", employee);
-app.use("/sample", sample);
+app.use("/document", document);
 app.use("/component", component);
 
 
