@@ -22,10 +22,10 @@ class ManageLink extends Component {
             role: null
         }
         this.inputChange = this.inputChange.bind(this);
-        this.deleteLink = this.deleteLink.bind(this);
         this.setPage = this.setPage.bind(this);
         this.setOption = this.setOption.bind(this);
         this.searchWithOption = this.searchWithOption.bind(this);
+        this.setLimit = this.setLimit.bind(this);
     }
 
     render() { 
@@ -56,7 +56,11 @@ class ManageLink extends Component {
                                     <th>{ translate('table.url') }</th>
                                     <th>{ translate('table.description') }</th>
                                     <th style={{width: "120px"}}>
-                                        <ActionColumn columnName={translate('table.action')} hideColumn={false}/> 
+                                        <ActionColumn 
+                                            columnName={translate('table.action')} 
+                                            hideColumn={false}
+                                            setLimit={this.setLimit}
+                                        /> 
                                     </th>
                                 </tr>
                             </thead>
@@ -137,9 +141,14 @@ class ManageLink extends Component {
         this.props.getLinks();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
-
-    deleteLink = (id) => {
-        this.props.destroy(id);
+    
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { limit: number, page: this.state.page };
+        if(this.state.value !== null){
+            data[this.state.option] = this.state.value;
+        }
+        this.props.getPaginate(data);
     }
 }
  

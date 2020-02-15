@@ -1,7 +1,6 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
 import { setStorage, clearStorage } from '../../../config';
-import Fingerprint2 from 'fingerprintjs2';
 
 export const login = (user) => {
     return dispatch => {
@@ -88,19 +87,6 @@ export const getLinksOfRole = (idRole) => {
 export const refresh = () => {
 
     return dispatch => {
-        if (window.requestIdleCallback) {
-            requestIdleCallback(function () {
-                Fingerprint2.get(function (components) {
-                  console.log("COMPONENT:", components) // an array of components: {key: ..., value: ...}
-                })
-            })
-        } else {
-            setTimeout(function () {
-                Fingerprint2.get(function (components) {
-                    console.log("COMPONENT:", components) // an array of components: {key: ..., value: ...}
-                })  
-            }, 500)
-        }
         dispatch({ type: AuthConstants.REFRESH_DATA_USER_REQUEST});
         AuthService.refresh()
             .then(res => {
