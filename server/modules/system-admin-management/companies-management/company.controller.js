@@ -1,8 +1,8 @@
 const CompanyService = require('./company.service');
-const RoleSerVice = require('../../super-admin-management/manage-role/role.service');
-const UserService = require('../../super-admin-management/manage-user/user.service');
-const LinkService = require('../manage-link/link.service');
-const PrivilegeService = require('../../super-admin-management/manage-privilege/privilege.service');
+const RoleSerVice = require('../../super-admin-management/roles-management/role.service');
+const UserService = require('../../super-admin-management/users-management/user.service');
+const LinkService = require('../links-management/link.service');
+const PrivilegeService = require('../../super-admin-management/privileges/privilege.service');
 
 exports.get = async (req, res) => {
     try {
