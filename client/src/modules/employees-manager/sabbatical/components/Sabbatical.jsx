@@ -1,10 +1,95 @@
 import React, { Component } from 'react';
-import { ModalAddEmployeeSabbatical } from './ModalAddEmployeeSabbatical';
-import { ModalEditEmployeeSabbatical } from './ModalEditEmployeeSabbatical';
-import { ModalDeleteEmployeeSabbatical } from './ModalDeleteEmployeeSabbatical';
+import { connect } from 'react-redux';
+import { SabbaticalActions } from '../redux/actions';
+import { ModalAddSabbatical } from './ModalAddSabbatical';
+import { ModalEditSabbatical } from './ModalEditSabbatical';
+import { ModalDeleteSabbatical } from './ModalDeleteSabbatical';
+import '../../employee-manager/components/listemployee.css';
 
 class Sabbatical extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            position: "",
+            month: "",
+            employeeNumber: "",
+            department: "All",
+            status: "",
+            page: 0,
+            limit: 10,
+
+        }
+        this.handleResizeColumn();
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
+
+    }
+    componentDidMount() {
+        let script = document.createElement('script');
+        script.src = 'main/js/AddEmployee.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+        this.props.getListSabbatical(this.state);
+    }
+    handleResizeColumn = () => {
+        window.$(function () {
+            var pressed = false;
+            var start = undefined;
+            var startX, startWidth;
+
+            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
+                start = window.$(this);
+                pressed = true;
+                startX = e.pageX;
+                startWidth = window.$(this).width();
+                window.$(start).addClass("resizing");
+            });
+
+            window.$(document).mousemove(function (e) {
+                if (pressed) {
+                    window.$(start).width(startWidth + (e.pageX - startX));
+                }
+            });
+
+            window.$(document).mouseup(function () {
+                if (pressed) {
+                    window.$(start).removeClass("resizing");
+                    pressed = false;
+                }
+            });
+        });
+    }
+    formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
+    handleChange(event) {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    handleSunmitSearch(event) {
+        this.props.getListSabbatical(this.state);
+    }
     render() {
+        var listSabbatical = "";
+        if (this.props.Sabbatical.isLoading === false) {
+            listSabbatical = this.props.Sabbatical.listSabbatical;
+        }
+        console.log(listSabbatical)
         return (
             <React.Fragment>
                 <div className="row">
@@ -67,47 +152,52 @@ class Sabbatical extends Component {
                                         <label style={{ paddingTop: 5 }}>Trạng thái:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-control">
-                                            <option>--Tất cả--</option>
-                                            <option>Đã chấp nhận</option>
-                                            <option>Chờ phê duyệt</option>
-                                            <option>Không chấp nhận</option>
+                                        <select className="form-control" name="status" onChange={this.handleChange}>
+                                            <option value="">--Tất cả--</option>
+                                            <option value="Đã chấp nhận">Đã chấp nhận</option>
+                                            <option value="Chờ phê duyệt">Chờ phê duyệt</option>
+                                            <option value="Không chấp nhận">Không chấp nhận</option>
                                         </select>
                                     </div>
                                 </div></div>
                             <div className="col-md-12">
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="fullname" style={{ paddingTop: 5 }}>Mã NV:</label>
+                                        <label htmlFor="employeeNumber" style={{ paddingTop: 5 }}>Mã NV:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <input type="text" className="form-control" name="employeeNumber" />
+                                        <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
                                     </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="fullname" style={{ paddingTop: 5 }}>Tháng:</label>
+                                        <label htmlFor="month" style={{ paddingTop: 5 }}>Tháng:</label>
                                     </div>
-                                    <input type="text" style={{ width: "66%" }} className="form-control" name="month" id="datepicker2" data-date-format="mm-yyyy" />
+                                    <div className={'input-group date has-feedback'}>
+                                        <div className="input-group-addon">
+                                            <i className="fa fa-calendar" />
+                                        </div>
+                                        <input type="text" className="form-control" name="month" id="employeedatepicker4" defaultValue={this.formatDate(Date.now())} ref="month" placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
+                                    </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <center>
-                                            <button type="submit" className="btn btn-success" title="Tìm kiếm" >Tìm kiếm</button></center>
+                                            <button type="submit" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button></center>
                                     </div>
                                 </div>
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addEmployeeSabbatical">Thêm đơn xin nghỉ</button>
+                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewSabbatical">Thêm đơn xin nghỉ</button>
                                 </div>
                             </div>
                             <div className="col-md-12">
-                                <table className="table table-bordered">
+                                <table className="table table-striped table-bordered table-resizable">
                                     <thead>
                                         <tr>
                                             <th style={{ width: "8%" }}>Mã NV</th>
                                             <th style={{ width: "16%" }}>Tên nhân viên</th>
-                                            <th style={{ width: "8%" }}>Từ ngày</th>
-                                            <th style={{ width: "8%" }}>Đến ngày</th>
+                                            <th style={{ width: "9%" }}>Từ ngày</th>
+                                            <th style={{ width: "9%" }}>Đến ngày</th>
                                             <th>Lý do</th>
                                             <th style={{ width: "12%" }}>Đơn vị</th>
                                             <th style={{ width: "10%" }}>Chức vụ</th>
@@ -117,50 +207,43 @@ class Sabbatical extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>102566</td>
-                                            <td>Nguyễn Hoàng Quân</td>
-                                            <td>20/5/2019</td>
-                                            <td>22/5/2019</td>
-                                            <td>Về quê</td>
-                                            <td>P KTTT ViaVet</td>
-                                            <td>Nhân viên</td>
-                                            <td>Được chấp nhận</td>
-                                            <td>
-                                                <center>
-                                                    <a href="#abc" className="edit" title="Chỉnh sửa đơn xin nghi" data-toggle="modal" data-target="#modal-editEmployeeSabbatical" ><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title="Xoá đơn xin nghỉ" data-toggle="modal" data-target="#modal-deleteemployeeSabbatical"><i className="material-icons"></i></a>
-                                                </center>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>102567</td>
-                                            <td>Lê Thị Phúc</td>
-                                            <td>20/5/2019</td>
-                                            <td>22/5/2019</td>
-                                            <td>Đi du lịch</td>
-                                            <td>PKD ViaVet</td>
-                                            <td>Nhân viên</td>
-                                            <td>Được chấp nhận</td>
-                                            <td>
-                                                <center>
-                                                    <a href="#abc" className="edit" title="Chỉnh sửa đơn xin nghi" data-toggle="modal" data-target="#modal-editEmployeeSabbatical"><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title="Xoá đơn xin nghỉ" data-toggle="modal" data-target="#modal-deleteemployeeSabbatical"><i className="material-icons"></i></a>
-                                                </center>
-                                            </td>
-                                        </tr>
+                                        {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><td colSpan={9}><center> Không có dữ liệu</center></td></tr> :
+                                            listSabbatical.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{x.employee.employeeNumber}</td>
+                                                    <td>{x.employee.fullName}</td>
+                                                    <td>{x.startDate}</td>
+                                                    <td>{x.endDate}</td>
+                                                    <td>{x.reason}</td>
+                                                    <td>P KTTT ViaVet</td>
+                                                    <td>Nhân viên</td>
+                                                    <td>{x.status}</td>
+                                                    <td>
+                                                        <ModalEditSabbatical data={x} />
+                                                        <ModalDeleteSabbatical data={x} />
+                                                    </td>
+                                                </tr>))
+                                        }
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ModalAddEmployeeSabbatical />
-                <ModalEditEmployeeSabbatical />
-                <ModalDeleteEmployeeSabbatical />
+                <ModalAddSabbatical />
             </React.Fragment>
         );
     }
 };
 
-export { Sabbatical };
+function mapState(state) {
+    const { Sabbatical } = state;
+    return { Sabbatical };
+};
+
+const actionCreators = {
+    getListSabbatical: SabbaticalActions.getListSabbatical,
+};
+
+const connectedListSabbatical = connect(mapState, actionCreators)(Sabbatical);
+export { connectedListSabbatical as Sabbatical };

@@ -1,23 +1,58 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { ModalDetailCourse } from './ModalDetailCourse';
 import { ModalDeleteCourse } from './ModalDeleteCourse';
 import { ModalEditCourse } from './ModalEditCourse';
 import { ModalAddCourse } from './ModalAddCourse';
+import { CourseActions } from '../redux/actions';
+import '../../../employees-manager/employee-manager/components/listemployee.css';
 
 class ListCourse extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: "display",
-        }
-    }
-    view = () => {
-        this.setState({
-            show: ""
-        })
+            page: 0,
+            limit: 10,
+        };
+        this.handleResizeColumn();
 
     }
+    componentDidMount() {
+        this.props.getListCourse(this.state);
+    }
+
+    handleResizeColumn = () => {
+        window.$(function () {
+            var pressed = false;
+            var start = undefined;
+            var startX, startWidth;
+
+            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
+                start = window.$(this);
+                pressed = true;
+                startX = e.pageX;
+                startWidth = window.$(this).width();
+                window.$(start).addClass("resizing");
+            });
+
+            window.$(document).mousemove(function (e) {
+                if (pressed) {
+                    window.$(start).width(startWidth + (e.pageX - startX));
+                }
+            });
+
+            window.$(document).mouseup(function () {
+                if (pressed) {
+                    window.$(start).removeClass("resizing");
+                    pressed = false;
+                }
+            });
+        });
+    }
     render() {
+        var { Course } = this.props;
+        var lists = Course.listCourse;
+        console.log(lists);
         return (
             <React.Fragment>
                 <div className="row">
@@ -83,7 +118,7 @@ class ListCourse extends Component {
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
                                     <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addCourse">Thêm chương trình đào tạo</button>
                                 </div>
-                                <table className="table table-bordered table-hover listcourse">
+                                <table className="table table-striped table-bordered table-resizable">
                                     <thead>
                                         <tr>
                                             <th>Tên chương trình đào tạo</th>
@@ -94,58 +129,24 @@ class ListCourse extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>An toàn lao động</td>
-                                            <td>ITM789</td>
-                                            <td>Phòng sản xuất, Phòng kinh doanh</td>
-                                            <td>Nhân viên, Phó phòng</td>
-                                            <td>
-                                                <center>
-                                                    <a href="#view" className="" title="Xem chi tiết chương trình đào tạo" data-toggle="modal" data-target="#modal-viewCourse" style={{ fontSize: 14 }} onClick={() => this.view()}><i className="material-icons">visibility</i></a>
-                                                    <a href="#abc" className="edit" title="Chỉnh sửa chương trình đào tạo " data-toggle="modal" data-target="#modal-editCourse"><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title="Xoá chương trình đào tạo" data-toggle="modal" data-target="#modal-deleteCourse"><i className="material-icons"></i></a>
-                                                </center>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kinh nghiệm làm viêc</td>
-                                            <td>ITM789</td>
-                                            <td>Phòng hành chính</td>
-                                            <td>Nhân viên</td>
-                                            <td>
-                                                <center>
-                                                    <a href="#view" className="" title="Xem chi tiết chương trình đào tạo" data-toggle="modal" data-target="#modal-viewCourse" style={{ fontSize: 14 }} onClick={() => this.view()}><i className="material-icons">visibility</i></a>
-                                                    <a href="#abc" className="edit" title="Chỉnh sửa chương trình đào tạo " data-toggle="modal" data-target="#modal-editCourse" ><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title="Xoá chương trình đào tạo" data-toggle="modal" data-target="#modal-deleteCourse"><i className="material-icons"></i></a>
-                                                </center>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kỹ năng giao tiếp</td>
-                                            <td>ITM789</td>
-                                            <td>Phòng hành chính</td>
-                                            <td>Nhân viên</td>
-                                            <td>
-                                                <center>
-                                                    <a href="#view" title="Xem chi tiết chương trình đào tạo" data-toggle="modal" data-target="#modal-viewCourse" style={{ fontSize: 14 }} onClick={() => this.view()}><i className="material-icons">visibility</i></a>
-                                                    <a href="#abc" className="edit" title="Chỉnh sửa chương trình đào tạo " data-toggle="modal" data-target="#modal-editCourse"><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title="Xoá chương trình đào tạo" data-toggle="modal" data-target="#modal-deleteCourse"><i className="material-icons"></i></a>
-                                                </center>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kỹ năng đàm phán</td>
-                                            <td>ITM789</td>
-                                            <td>Phòng marketing</td>
-                                            <td>Nhân viên</td>
-                                            <td>
-                                                <center>
-                                                    <a href="#view" title="Xem chi tiết chương trình đào tạo" data-toggle="modal" data-target="#modal-viewCourse" style={{ fontSize: 14 }} onClick={() => this.view()}><i className="material-icons">visibility</i></a>
-                                                    <a href="#abc" className="edit" title="Chỉnh sửa chương trình đào tạo " data-toggle="modal" data-target="#modal-editCourse"><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title="Xoá chương trình đào tạo" data-toggle="modal" data-target="#modal-deleteCourse"><i className="material-icons"></i></a>
-                                                </center>
-                                            </td>
-                                        </tr>
+                                        {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                            lists.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{x.nameEducation}</td>
+                                                    <td>{x.numberEducation}</td>
+                                                    <td>{(typeof x.unitEducation === 'undefined' || x.unitEducation.length === 0) ? "" :
+                                                        x.unitEducation.map(y => y + ", ")}
+                                                    </td>
+                                                    <td>{(typeof x.positionEducation === 'undefined' || x.positionEducation.length === 0) ? "" :
+                                                        x.positionEducation.map(y => y + ", ")}
+                                                    </td>
+                                                    <td>
+                                                        <ModalDetailCourse data={x} />
+                                                        <ModalEditCourse data={x} />
+                                                        <ModalDeleteCourse data={x} />
+                                                    </td>
+                                                </tr>))
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -155,13 +156,20 @@ class ListCourse extends Component {
                     </div>
                     {/* /.col */}
                 </div>
-                <ModalDetailCourse />
-                <ModalDeleteCourse />
-                <ModalEditCourse />
                 <ModalAddCourse />
-            </React.Fragment>
+            </React.Fragment >
         );
     };
 };
 
-export { ListCourse };
+function mapState(state) {
+    const { Course } = state;
+    return { Course };
+};
+
+const actionCreators = {
+    getListCourse: CourseActions.getListCourse,
+};
+
+const connectedListCourse = connect(mapState, actionCreators)(ListCourse);
+export { connectedListCourse as ListCourse };

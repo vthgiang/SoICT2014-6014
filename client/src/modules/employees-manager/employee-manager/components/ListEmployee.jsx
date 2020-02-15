@@ -12,12 +12,17 @@ class ListEmployee extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showView: "",
-            showEdit: "",
-            department: "các đơn vị",
+            position: "",
+            gender: "Nam",
+            employeeNumber: "",
+            department: "All",
+            page: 0,
+            limit: 10,
+
         }
-        this.handleChangeUnit = this.handleChangeUnit.bind(this);
         this.handleResizeColumn();
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
 
     }
     componentDidMount() {
@@ -26,7 +31,7 @@ class ListEmployee extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-        this.props.getAllEmployee();
+        this.props.getAllEmployee(this.state);
 
     }
 
@@ -58,58 +63,27 @@ class ListEmployee extends Component {
             });
         });
     }
-    // function click a employee in table list employee
-    view = async (employeeNumber) => {
-        //this.props.getInformationEmployee(employeeNumber);
-        await this.setState({
-            showView: employeeNumber
-        })
 
-
-    }
-    edit = (employeeNumber) => {
-        this.props.getInformationEmployee(employeeNumber);
-    }
-
-    // function click edit information a employee
-
-    // function change unit show 
-    handleChangeUnit(event) {
-        var { value } = event.target;
+    handleChange(event) {
+        const { name, value } = event.target;
         this.setState({
-            department: value
-        })
-        if (value !== "các đơn vị") {
-            this.props.getListEmployee(value, "Trưởng phòng", "Phó phòng");
-            this.setState({
-                show: ""
-            })
-        } else {
-            this.props.getListEmployee("", "", "");
-            this.setState({
-                show: "display"
-            })
-        }
-        let script = document.createElement('script');
-        script.src = 'main/js/ListEmployee.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+            [name]: value
+        });
+
     }
+
+    handleSunmitSearch(event) {
+        event.preventDefault();
+        this.props.getAllEmployee(this.state);
+    }
+
     render() {
         console.log(this.state)
-        var lists, listAll;
+        var lists;
         var { employeesManager } = this.props;
         var { department } = this.state;
         if (employeesManager.allEmployee) {
-            listAll = employeesManager.allEmployee;
-        }
-        if (employeesManager.listEmployee && employeesManager.listEmployee !== []) {
-            lists = employeesManager.listEmployee;
-        } else {
-            if (employeesManager.allEmployee) {
-                lists = employeesManager.allEmployee;
-            }
+            lists = employeesManager.allEmployee;
         }
         var { employee, employeeContact } = this.props.employeesManager;
         console.log(employee);
@@ -127,11 +101,11 @@ class ListEmployee extends Component {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="fullname" style={{ paddingTop: 5 }}>Đơn vị:</label>
+                                        <label htmlFor="department" style={{ paddingTop: 5 }}>Đơn vị:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-group" id="department" style={{ height: 32, width: "100%" }} onChange={this.handleChangeUnit}>
-                                            <option value="các đơn vị">-- Tất cả --</option>
+                                        <select className="form-group" id="department" style={{ height: 32, width: "100%" }} name="department" onChange={this.handleChange}>
+                                            <option value="All">-- Tất cả --</option>
                                             <optgroup label="MARKETING & NCPT sản phẩm">
                                                 <option value="Phòng MARKETING">Phòng MARKETING</option>
                                                 <option value="Phòng nghiên cứu phát triển sản phẩm">Phòng nghiên cứu phát triển sản phẩm</option>
@@ -162,10 +136,10 @@ class ListEmployee extends Component {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="fullname" style={{ paddingTop: 5 }}>Chức vụ:</label>
+                                        <label htmlFor="position" style={{ paddingTop: 5 }}>Chức vụ:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-group" defaultValue="1" style={{ height: 32, width: "99%" }}>
+                                        <select className="form-group" defaultValue="1" style={{ height: 32, width: "99%" }} name="position" onChange={this.handleChange}>
                                             <option value="1">--Tất cả--</option>
                                             <option value="2">Nhân viên</option>
                                             <option value="4">Trưởng phòng</option>
@@ -178,21 +152,27 @@ class ListEmployee extends Component {
                             <div className="col-md-12">
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="fullname" style={{ paddingTop: 5 }}>Mã NV:</label>
+                                        <label htmlFor="employeeNumber" style={{ paddingTop: 5 }}>Mã NV:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <input type="text" className="form-control" name="employeeNumber" />
+                                        <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
                                     </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="fullname" style={{ paddingTop: 5 }}>Giới tính:</label>
+                                        <label htmlFor="gender" style={{ paddingTop: 5 }}>Giới tính:</label>
                                     </div>
-                                    <input type="text" style={{ width: "66%" }} className="form-control" name="month" />
+                                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                        <select className="form-group" defaultValue="1" style={{ height: 32, width: "99%" }} name="gender" onChange={this.handleChange}>
+                                            <option value="">Null</option>
+                                            <option value="Nam">Nam</option>
+                                            <option value="Nữ">Nữ</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group" style={{ paddingLeft: 0 }}>
-                                        <button type="submit" className="btn btn-success" title="Tìm kiếm" >Tìm kiếm</button>
+                                        <button type="submit" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
                                     </div>
                                 </div>
                                 <div className="col-md-12">
@@ -207,7 +187,7 @@ class ListEmployee extends Component {
                                                 <th style={{ width: "12%" }}>Chức vụ</th>
                                                 <th style={{ width: "13%" }}>Đơn vị</th>
                                                 <th style={{ width: "13%" }}>Hành động
-                                                
+
                                                 </th>
                                             </tr>
                                         </thead>
@@ -273,7 +253,7 @@ class ListEmployee extends Component {
                     </div>
                     {/* /.box */}
                 </div>
-                <ModalEditOrganizational department={department} listAll={listAll} />
+                <ModalEditOrganizational department={department} listAll={lists} />
                 <ModalAddEmployee state={this.state} department={department} />
             </div >
         );

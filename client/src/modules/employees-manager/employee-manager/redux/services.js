@@ -8,12 +8,16 @@ export const employeeService = {
 }
 
 // get all imformaltion employee
-function getAll() {
+function getAll(data) {
     const requestOptions = {
-        method: 'GET',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     }
 
-    return fetch(`/employee/`, requestOptions).then(handleResponse);
+    return fetch(`/employee/paginate`, requestOptions).then(handleResponse);
 }
 
 // get list employee by namedepartment and position

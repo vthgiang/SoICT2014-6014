@@ -37,5 +37,5 @@ exports.update = async (numberEducation, data) => {
     }, {
         $set: eduacationChange
     });
-    return educationUpdate;
+    return eduacationChange;
 }

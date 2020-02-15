@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Employee = require("./employee.model");
 
 // Create Schema
 const EmployeeContactSchema = new Schema({
-    employeeNumber: {
-        type: String,
-        required: true
+    employee: {
+        type: Schema.Types.ObjectId,
+        ref: Employee,
+        require: true,
     },
     phoneNumber: {
         type: Number,

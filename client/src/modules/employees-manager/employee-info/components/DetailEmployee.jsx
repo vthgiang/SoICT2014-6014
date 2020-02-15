@@ -10,7 +10,7 @@ class DetailEmployee extends Component {
         //this.handleClickMenu = this.handleClickMenu.bind(this);
     }
     componentDidMount() {
-        this.props.getInformationEmployee("123653");
+        this.props.getInformationEmployee("5e47748961dc0925d0e54cba");
     }
     handleClickMenu = (event) => {
         this.setState({
@@ -18,12 +18,10 @@ class DetailEmployee extends Component {
         })
     }
     render() {
-        console.log(this.props.employeesInfo);
         var employee, employeeContact;
         const { employeesInfo } = this.props;
         if (employeesInfo.employee) employee = employeesInfo.employee;
-        if (employeesInfo.employeeContact) employeeContact = employeesInfo.employeeContact
-
+        if (employeesInfo.employeeContact) employeeContact = employeesInfo.employeeContact;
         return (
             <React.Fragment>
                 <div className="row">

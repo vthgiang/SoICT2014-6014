@@ -11,11 +11,11 @@ export const employeeManagerActions = {
 };
 
 // get all list employee
-function getAllEmployee() {
+function getAllEmployee(data) {
     return dispatch => {
         dispatch(request());
 
-        employeeService.getAll()
+        employeeService.getAll(data)
             .then(
                 employees => dispatch(success(employees)),
                 error => dispatch(failure(error.toString()))

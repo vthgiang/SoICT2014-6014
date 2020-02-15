@@ -12,7 +12,12 @@ const privilege = require('./modules/super-admin-management/manage-privilege/pri
 const component = require('./modules/system-admin-management/manage-component/component.route');
 const educationProgram = require('./modules/trainning-Course/education-program/educationProgram.route');
 const employee = require('./modules/employees-manager/employee/employee.route');
+const salary = require('./modules/employees-manager/salary/salary.route');
+const discipline = require('./modules/employees-manager/discipline/discipline.route');
+const praise = require('./modules/employees-manager/praise/praise.route');
+const sabbatical = require('./modules/employees-manager/sabbatical/sabbatical.route');
 const sample = require('./modules/_sample-module/_sample.route');
+
 
 require('dotenv').config();
 
@@ -44,7 +49,9 @@ mongoose
 
 global.isLog = false;
 const Logger = require('./models/log.model');
-Logger.findOne({name: 'log'})
+Logger.findOne({
+        name: 'log'
+    })
     .then(result => {
         result.status ? isLog = true : isLog = false;
         console.log("Logger status: ", isLog);
@@ -60,6 +67,10 @@ app.use("/department", department);
 app.use("/privilege", privilege);
 app.use("/educationProgram", educationProgram);
 app.use("/employee", employee);
+app.use("/salary",salary);
+app.use("/discipline",discipline);
+app.use("/praise",praise);
+app.use("/sabbatical",sabbatical);
 app.use("/sample", sample);
 app.use("/component", component);
 

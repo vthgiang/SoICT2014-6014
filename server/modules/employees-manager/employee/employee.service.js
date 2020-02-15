@@ -1,254 +1,170 @@
 const Employee = require('../../../models/employee.model');
 const EmployeeContact = require('../../../models/employeeContact.model');
 
-// get all list employee
-exports.get = async (req, res) => {
-    try {
-        var allEmployee = await Employee.find();
 
-        res.json({
-            message: "success",
-            content: {
-                allEmployee
-            }
-        });
-    } catch (error) {
-
-        res.json({
-            message: error
-        });
-    }
+// lấy dánh sách nhân viên
+exports.get = async (data) => {
+    var keySearch = {};
+    if (data.employeeNumber !== "") {
+        keySearch = {
+            ...keySearch,
+            employeeNumber: data.employeeNumber
+        }
+    };
+    // if(data.department!=="All") {
+    //     keySearch={department:data.department}
+    // };
+    if (data.gender !== "") {
+        keySearch = {
+            ...keySearch,
+            gender: data.gender
+        }
+    };
+    var allEmployee = await Employee.find(keySearch).populate({
+        path: 'employeeContact',
+        model: EmployeeContact
+    }).sort({
+        'createDate': 'desc'
+    }).skip(data.page).limit(data.limit);
+    return allEmployee;
 }
 
-// get list employee by nameDepartment and position
-exports.getBydepartment = async (req, res) => {
-
-    try {
-        var chiefDepartment = await Employee.find({
-            $and: [{
-                department: {
-                    $elemMatch: {
-                        nameDepartment: req.params.nameDepartment,
-                    },
-                }
-            }, {
-                department: {
-                    $elemMatch: {
-                        position: req.params.chief,
-                    },
-                }
-
-            }]
-        });
-        var deputyDepartment = await Employee.find({
-            $and: [{
-                department: {
-                    $elemMatch: {
-                        nameDepartment: req.params.nameDepartment,
-                    },
-                }
-            }, {
-                department: {
-                    $elemMatch: {
-                        position: req.params.deputy,
-                    },
-                }
-
-            }]
-        });
-        var listEmployee = await Employee.find({
-            department: {
-                $elemMatch: {
-                    nameDepartment: req.params.nameDepartment
-                }
-            }
-        }).populate('employeeContact');
-        res.json({
-            message: "success",
-            content: {
-                chiefDepartment,
-                deputyDepartment,
-                listEmployee
-            }
-        });
-    } catch (error) {
-        res.json({
-            message: error
-        });
+// lấy thông tin nhân viên theo id
+exports.getById = async (id) => {
+    var infoEmployee = await Employee.find({
+        _id: id
+    });
+    var infoEmployeeContact = await EmployeeContact.find({
+        employee: id
+    });
+    var infoEmployee = {
+        employee: infoEmployee,
+        employeeContact: infoEmployeeContact
     }
+    return infoEmployee
 }
 
-// get imformation employee by employeeNumber
-exports.getByEmployeeNumber = async (req, res) => {
-    try {
-        var employee = await Employee.find({
-            employeeNumber: req.params.id
-        });
-        var employeeContact = await EmployeeContact.find({
-            employeeNumber: req.params.id
-        });
-        res.json({
-            message: "success",
-            content: {
-                employee,
-                employeeContact
-            }
-        });
-    } catch (error) {
-        res.json({
-            message: error
-        });
-    }
+// Thêm mới nhân viên
+exports.create = async (data) => {
+    var employees = await Employee.create({
+        avatar: data.avatar,
+        fullName: data.fullName,
+        employeeNumber: data.employeeNumber,
+        MSCC: data.MSCC,
+        gender: data.gender,
+        brithday: data.brithday,
+        birthplace: data.birthplace,
+        CMND: data.CMND,
+        dateCMND: data.dateCMND,
+        addressCMND: data.addressCMND,
+        emailCompany: data.emailCompany,
+        Tax: data.Tax,
+        ATM: data.ATM,
+        nameBank: data.nameBank,
+        addressBank: data.addressBank,
+        BHYT: data.BHYT,
+        numberBHYT: data.numberBHYT,
+        startDateBHYT: data.startDateBHYT,
+        endDateBHYT: data.endDateBHYT,
+        numberBHXH: data.numberBHXH,
+        BHXH: data.BHXH,
+        national: data.national,
+        religion: data.religion,
+        relationship: data.relationship,
+        cultural: data.cultural,
+        foreignLanguage: data.foreignLanguage,
+        educational: data.educational,
+        experience: data.experience,
+        certificate: data.certificate,
+        certificateShort: data.certificateShort,
+        contract: data.contract,
+        insurrance: data.insurrance,
+        course: data.course,
+        nation: data.nation,
+        numberFile: data.numberFile,
+        file: data.file,
+    });
+    var employeeContact = await EmployeeContact.create({
+        employee: employees._id,
+        phoneNumber: data.phoneNumber,
+        emailPersonal: data.emailPersonal,
+        phoneNumber2: data.phoneNumber2,
+        emailPersonal2: data.emailPersonal2,
+        phoneNumberAddress: data.phoneNumberAddress,
+        friendName: data.friendName,
+        relation: data.relation,
+        friendPhone: data.friendPhone,
+        friendEmail: data.friendEmail,
+        friendPhoneAddress: data.friendPhoneAddress,
+        friendAddress: data.friendAddress,
+        localAddress: data.localAddress,
+        localNational: data.localNational,
+        localCity: data.localCity,
+        localDistrict: data.localDistrict,
+        localCommune: data.localCommune,
+        nowAddress: data.nowAddress,
+        nowNational: data.nowNational,
+        nowCity: data.nowCity,
+        nowDistrict: data.nowDistrict,
+        nowCommune: data.nowCommune,
+    });
+    var content = {
+        employees,
+        employeeContact
+    };
+    return content;
 }
 
-// add a new employee
-exports.create = async (req, res) => {
-    try {
-        console.log("abcd" + req.body);
-        var employees = await Employee.create({
-            avatar: req.body.avatar,
-            fullName: req.body.fullName,
-            employeeNumber: req.body.employeeNumber,
-            MSCC: req.body.MSCC,
-            gender: req.body.gender,
-            brithday: req.body.brithday,
-            birthplace: req.body.birthplace,
-            CMND: req.body.CMND,
-            dateCMND: req.body.dateCMND,
-            addressCMND: req.body.addressCMND,
-            emailCompany: req.body.emailCompany,
-            Tax: req.body.Tax,
-            ATM: req.body.ATM,
-            nameBank: req.body.nameBank,
-            addressBank: req.body.addressBank,
-            BHYT: req.body.BHYT,
-            numberBHYT: req.body.numberBHYT,
-            startDateBHYT: req.body.startDateBHYT,
-            endDateBHYT: req.body.endDateBHYT,
-            numberBHXH: req.body.numberBHXH,
-            BHXH: req.body.BHXH,
-            national: req.body.national,
-            religion: req.body.religion,
-            relationship: req.body.relationship,
-            cultural: req.body.cultural,
-            foreignLanguage: req.body.foreignLanguage,
-            educational: req.body.educational,
-            experience: req.body.experience,
-            certificate: req.body.certificate,
-            certificateShort: req.body.certificateShort,
-            contract: req.body.contract,
-            insurrance: req.body.insurrance,
-            course: req.body.course,
-            nation: req.body.nation,
-            numberFile: req.body.numberFile,
-            file: req.body.file,
-            createDate: req.body.createDate,
-        });
-        var employeeContact = await EmployeeContact.create({
-            employeeNumber: req.body.employeeNumber,
-            phoneNumber: req.body.phoneNumber,
-            emailPersonal: req.body.emailPersonal,
-            phoneNumber2: req.body.phoneNumber2,
-            emailPersonal2: req.body.emailPersonal2,
-            phoneNumberAddress: req.body.phoneNumberAddress,
-            friendName: req.body.friendName,
-            relation: req.body.relation,
-            friendPhone: req.body.friendPhone,
-            friendEmail: req.body.friendEmail,
-            friendPhoneAddress: req.body.friendPhoneAddress,
-            friendAddress: req.body.friendAddress,
-            localAddress: req.body.localAddress,
-            localNational: req.body.localNational,
-            localCity: req.body.localCity,
-            localDistrict: req.body.localDistrict,
-            localCommune: req.body.localCommune,
-            nowAddress: req.body.nowAddress,
-            nowNational: req.body.nowNational,
-            nowCity: req.body.nowCity,
-            nowDistrict: req.body.nowDistrict,
-            nowCommune: req.body.nowCommune,
-            createDate: req.body.createDate,
-        })
-        var content = {
-            employees,
-            employeeContact
-        }
-        res.json({
-            message: "Thêm mới thông tin nhân viên thành công",
-            content: content
-        });
-    } catch (error) {
-        res.json({
-            message: error
-        });
-
+// Cập nhật thông tin cá nhân
+exports.updateById = async (id, data) => {
+    // thông tin cần cập nhật của thông tin liên hệ 
+    var employeeContactUpdate = {
+        emailPersonal: data.emailPersonal,
+        phoneNumberAddress: data.phoneNumberAddress,
+        friendName: data.friendName,
+        relation: data.relation,
+        friendPhone: data.friendPhone,
+        friendEmail: data.friendEmail,
+        friendPhoneAddress: data.friendPhoneAddress,
+        friendAddress: data.friendAddress,
+        localAddress: data.localAddress,
+        localNational: data.localNational,
+        localCity: data.localCity,
+        localDistrict: data.localDistrict,
+        localCommune: data.localCommune,
+        nowAddress: data.nowAddress,
+        nowNational: data.nowNational,
+        nowCity: data.nowCity,
+        nowDistrict: data.nowDistrict,
+        nowCommune: data.nowCommune,
+        updateDate: data.updateDate
     }
-}
-
-// update information employee by employeeNumber
-
-exports.updateByEmployeeNumber = async (req, res) => {
-    try {
-        // new information employee contact 
-        var employeeContactUpdate = {
-            emailPersonal: req.body.emailPersonal,
-            phoneNumberAddress: req.body.phoneNumberAddress,
-            friendName: req.body.friendName,
-            relation: req.body.relation,
-            friendPhone: req.body.friendPhone,
-            friendEmail: req.body.friendEmail,
-            friendPhoneAddress: req.body.friendPhoneAddress,
-            friendAddress: req.body.friendAddress,
-            localAddress: req.body.localAddress,
-            localNational: req.body.localNational,
-            localCity: req.body.localCity,
-            localDistrict: req.body.localDistrict,
-            localCommune: req.body.localCommune,
-            nowAddress: req.body.nowAddress,
-            nowNational: req.body.nowNational,
-            nowCity: req.body.nowCity,
-            nowDistrict: req.body.nowDistrict,
-            nowCommune: req.body.nowCommune,
-            updateDate: req.body.updateDate
-        }
-
-        // new information employee
-        var employeeUpdate = {
-            gender: req.body.gender,
-            phoneNumber: req.body.phoneNumber,
-            national: req.body.national,
-            nation: req.body.nation,
-            religion: req.body.religion,
-            relationship: req.body.relationship,
-            updateDate: req.body.updateDate
-        }
-
-        // update information employee contact
-        var employeeContact = await EmployeeContact.findOneAndUpdate({
-            employeeNumber: req.params.id
-        }, {
-            $set: employeeContactUpdate
-        });
-
-        // update information employee
-        var employee = await Employee.findOneAndUpdate({
-            employeeNumber: req.params.id
-        }, {
-            $set: employeeUpdate
-        });
-
-        var content = {
-            employeeContactUpdate,
-            employeeUpdate
-        }
-        res.json({
-            message: "success",
-            content: content
-        })
-
-    } catch (error) {
-        res.json({
-            message: error
-        });
+    // thông tin cần cập nhật của thông tin cơ bản của nhân viên
+    var employeeUpdate = {
+        gender: data.gender,
+        phoneNumber: data.phoneNumber,
+        national: data.national,
+        nation: data.nation,
+        religion: data.religion,
+        relationship: data.relationship,
+        updateDate: data.updateDate
     }
+    // cập nhật thông tin liên hệ vào database
+    await EmployeeContact.findOneAndUpdate({
+        employee: id
+    }, {
+        $set: employeeContactUpdate
+    });
+    //cập nhật thông tin cơ bản vào database
+    await Employee.findOneAndUpdate({
+        _id: id
+    }, {
+        $set: employeeUpdate
+    });
+
+    var content = {
+        employeeContactUpdate,
+        employeeUpdate
+    }
+    return content;
 }

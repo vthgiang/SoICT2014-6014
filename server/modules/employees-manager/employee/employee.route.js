@@ -3,14 +3,14 @@ const router = express.Router();
 
 const EmployeeController = require("./employee.controller");
 
-// get all list employee
-router.get('/', EmployeeController.get);
 
-// get list employee by namedepartment ang position
-router.get('/:nameDepartment/:chief/:deputy', EmployeeController.getBydepartment);
+// 
+router.post('/avatar', EmployeeController.uploadFile, EmployeeController.getInforFile);
+// get all list employee
+router.post('/paginate', EmployeeController.get);
 
 // get imformation employee by employeeNumber
-router.get('/:id', EmployeeController.getByEmployeeNumber);
+router.get('/:id', EmployeeController.getById);
 
 // create a new employee
 router.post('/', EmployeeController.create);

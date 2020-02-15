@@ -17,7 +17,7 @@ class UpdateEmployee extends Component {
     }
 
     componentDidMount() {
-        this.props.getInformationEmployee("123653");
+        this.props.getInformationEmployee("5e47748961dc0925d0e54cba");
 
     }
 
@@ -85,7 +85,7 @@ class UpdateEmployee extends Component {
             this.notifywarning("Không có thông tin nào được thay đổi");
         } else {
             if (check === true) {
-                this.props.updateInformationEmployee("123653", informationEmployee)
+                this.props.updateInformationEmployee("5e47748961dc0925d0e54cba", informationEmployee)
                 this.notifysuccess("Cập nhật thông tin thành công");
             } else {
                 this.notifyerror("Thất bại! Xin hãy xác nhận thông tin");

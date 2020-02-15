@@ -10,6 +10,7 @@ class AddEmployee extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            img: 'adminLTE/dist/img/avatar5.png',
             show: "",
             defaulte: "display",
             adding: false,
@@ -55,14 +56,18 @@ class AddEmployee extends Component {
     // function upload avatar 
     handleUpload(event) {
         var file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        this.props.uploadAvatar(formData);
         var fileLoad = new FileReader();
         const { employeeNew } = this.state;
         fileLoad.readAsDataURL(file);
         fileLoad.onload = () => {
             this.setState({
+                img: fileLoad.result,
                 employeeNew: {
                     ...employeeNew,
-                    avatar: fileLoad.result
+                    avatar: file
                 }
             })
         };
@@ -461,6 +466,7 @@ class AddEmployee extends Component {
 
     // function add new employee
     handleSubmit(events) {
+        console.log(this.state);
         events.preventDefault();
         var { employee } = this.props.employeesInfo;
         var employeeNumber;
@@ -468,7 +474,6 @@ class AddEmployee extends Component {
             employeeNumber = employee.map(x => x.employeeNumber).toString();
         }
         const { employeeNew } = this.state;
-
         // kiểm tra việc nhập các trường bắt buộc
         if (!employeeNew.employeeNumber) {
             this.notifyerror("Bạn chưa nhập mã nhân viên");
@@ -505,7 +510,7 @@ class AddEmployee extends Component {
     }
 
     render() {
-        console.log(this.state)
+        console.log(this.props.employeesInfo);
         return (
             <React.Fragment>
                 <div className="row">
@@ -532,7 +537,7 @@ class AddEmployee extends Component {
                                             <div className="col-md-12">
                                                 <div className="col-md-4">
                                                     <div className="form-group">
-                                                        <img className="attachment-img avarta" src={this.state.employeeNew.avatar} alt="Attachment" />
+                                                        <img className="attachment-img avarta" src={this.state.img} alt="Attachment" />
                                                         <div className="upload btn btn-default" style={{ marginLeft: 55 }}>
                                                             Chọn ảnh
                                                     <input className="upload" type="file" name="file" onChange={this.handleUpload} />
@@ -1369,6 +1374,7 @@ function mapState(state) {
 const actionCreators = {
     addNewEmployee: employeeInfoActions.addNewEmployee,
     getInformationEmployee: employeeInfoActions.getInformationEmployee,
+    uploadAvatar: employeeInfoActions.uploadAvatar,
 };
 
 const connectedAddEmplyee = connect(mapState, actionCreators)(AddEmployee);

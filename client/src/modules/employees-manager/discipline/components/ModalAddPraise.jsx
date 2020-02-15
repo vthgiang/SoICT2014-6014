@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { DisciplineActions } from '../redux/actions';
 class ModalAddPraise extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            employeeNumber: " ",
+            number: " ",
+            unit: " ",
+            startDate: " ",
+            type: " ",
+            reason: " ",
+        };
+        this.handleChange = this.handleChange.bind(this);
+    }
     componentDidMount() {
         let script = document.createElement('script');
         script.src = 'main/js/AddEmployee.js';
@@ -8,7 +21,21 @@ class ModalAddPraise extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+    handleChange(event) {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
+    handleSunmit = async () => {
+        await this.setState({
+            startDate: this.refs.startDate.value,
+        })
+        this.props.createNewPraise(this.state);
+        window.$(`#modal-addPraise`).modal("hide");
+    }
     render() {
+        console.log(this.state);
         return (
             <div className="modal fade" id="modal-addPraise" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
@@ -27,33 +54,38 @@ class ModalAddPraise extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" placeholder="Mã số nhân viên" />
+                                    <input type="text" className="form-control" onChange={this.handleChange} name="employeeNumber" placeholder="Mã số nhân viên" />
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                     <label htmlFor="number">Số quyết định:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" />
+                                    <input type="text" className="form-control" name="number" onChange={this.handleChange} autoComplete="off" placeholder="Số ra quyết định" />
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
                                     <label htmlFor="unit">Cấp ra quyết định:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" />
+                                    <input type="text" className="form-control" name="unit" onChange={this.handleChange} autoComplete="off" placeholder="Cấp ra quyết định" />
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                     <label htmlFor="startDate">Ngày ra quyết định:<span className="required">&#42;</span></label>
-                                    <input type="date" className="form-control" name="startDate" />
+                                    <div className={'input-group date has-feedback'}>
+                                        <div className="input-group-addon">
+                                            <i className="fa fa-calendar" />
+                                        </div>
+                                        <input type="text" className="form-control datepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                    </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                    <label htmlFor="hinhthuc">Hình thức khen thưởng:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="hinhthuc" />
+                                    <label htmlFor="type">Hình thức khen thưởng:<span className="required">&#42;</span></label>
+                                    <input type="text" className="form-control" name="type" onChange={this.handleChange} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="thanhtich">Thành tích (Lý do):<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="thanhtich" style={{ height: 78 }} />
+                                    <label htmlFor="reason">Thành tích (Lý do):<span className="required">&#42;</span></label>
+                                    <textarea className="form-control" rows="3" name="reason" placeholder="Enter ..." onChange={this.handleChange}></textarea>
                                 </div>
                             </div>
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title="Thêm mới khen thưởng" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={()=>this.handleSunmit()} title="Thêm mới khen thưởng" >Thêm mới</button>
                         </div>
                     </div>
                 </div>
@@ -62,5 +94,14 @@ class ModalAddPraise extends Component {
     }
 };
 
+function mapState(state) {
+    const { Discipline } = state;
+    return { Discipline };
+};
 
-export { ModalAddPraise };
+const actionCreators = {
+    createNewPraise: DisciplineActions.createNewPraise,
+};
+
+const connectedAddPraise = connect(mapState, actionCreators)(ModalAddPraise);
+export { connectedAddPraise as ModalAddPraise };

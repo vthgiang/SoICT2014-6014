@@ -27,7 +27,7 @@ export function employeesInfo(state = {}, action) {
             return {
                 ...state,
                 employee: action.employee.content.employee,
-                employeeContact: action.employee.content.employeeContact
+                    employeeContact: action.employee.content.employeeContact
             };
         case constants.GETINFORMATIONEMPLOYEE_FAILURE:
             return {
@@ -41,9 +41,23 @@ export function employeesInfo(state = {}, action) {
         case constants.UPDATE_INFORMATION_SUCCESS:
             return {
                 ...state,
-                content: action.informationEmployee.content
+                infoEmployeeUpdate: action.informationEmployee.content
             };
         case constants.UPDATE_INFORMATION_FAILURE:
+            return {
+                error: action.error
+            };
+        case constants.ULOAD_AVATAR_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case constants.ULOAD_AVATAR_SUCCESS:
+            return {
+                ...state,
+                avatarfile: action.file
+            };
+        case constants.ULOAD_AVATAR_FAILURE:
             return {
                 error: action.error
             };

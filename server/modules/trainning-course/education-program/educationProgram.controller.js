@@ -7,9 +7,7 @@ exports.get = async (req, res) => {
         var allEducationProgram = await EducationProgramService.get(req.body);
         res.status(200).json({
             message: "success",
-            content: {
-                ...allEducationProgram
-            }
+            content: allEducationProgram
         });
     } catch (error) {
         res.status(400).json({
@@ -58,15 +56,11 @@ exports.delete = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         var educationUpdate = await EducationProgramService.update(req.params.numberEducation, req.body)
-        if (educationUpdate !== null) {
-            res.status(200).json({
-                message: "success",
-            });
-        } else {
-            res.status(400).json({
-                message: "Not find",
-            });
-        }
+        res.status(200).json({
+            message: "success",
+            content: educationUpdate
+        });
+
     } catch (error) {
         res.status(400).json({
             message: error

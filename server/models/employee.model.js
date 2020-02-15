@@ -49,15 +49,12 @@ const EmployeeSchema = new Schema({
     },
     ATM: {
         type: String,
-        required: true
     },
     nameBank: {
         type: String,
-        required: true
     },
     addressBank: {
         type: String,
-        required: true
     },
     national: {
         type: String

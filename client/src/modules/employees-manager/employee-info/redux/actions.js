@@ -9,14 +9,47 @@ export const employeeInfoActions = {
     addNewEmployee,
     getInformationEmployee,
     updateInformationEmployee,
+    uploadAvatar,
 };
 
-// get information employee by employeeNumber
-function getInformationEmployee(employeeNumber) {
+// upload ảnh đại diện
+function uploadAvatar(file) {
+    return dispatch => {
+        dispatch(request());
+        employeeService.uploadAvatar(file)
+            .then(
+                file => dispatch(success(file)),
+                error => dispatch(failure(error.toString()))
+            );
+    }
+
+    function request() {
+        return {
+            type: constants.ULOAD_AVATAR_REQUEST,
+        };
+    };
+
+    function success(fileUpload) {
+        return {
+            type: constants.ULOAD_AVATAR_SUCCESS,
+            fileUpload
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: constants.ULOAD_AVATAR_FAILURE,
+            error
+        };
+    };
+}
+
+// lấy thông tin nhân viên theo mã nhân viên
+function getInformationEmployee(id) {
     return dispatch => {
         dispatch(request());
 
-        employeeService.getByEmployeeNumber(employeeNumber)
+        employeeService.getByEmployeeNumber(id)
             .then(
                 employee => dispatch(success(employee)),
                 error => dispatch(failure(error.toString()))
@@ -45,7 +78,7 @@ function getInformationEmployee(employeeNumber) {
     };
 }
 
-// create a new employee
+// Tạo mới một nhân viên mới
 function addNewEmployee(employee) {
     return dispatch => {
         dispatch(request(employee));
@@ -83,7 +116,7 @@ function addNewEmployee(employee) {
     };
 }
 
-// update information employee
+// update thông tin của một nhân viên
 
 function updateInformationEmployee(id, informationEmployee) {
     return dispatch => {

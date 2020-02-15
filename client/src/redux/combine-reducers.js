@@ -9,6 +9,10 @@ import { component } from '../modules/system-admin-management/manage-component/r
 import { department } from '../modules/super-admin-management/manage-department/redux/reducers';
 import {employeesInfo} from '../modules/employees-manager/employee-info/redux/reducers';
 import {employeesManager} from '../modules/employees-manager/employee-manager/redux/reducers';
+import {Course} from '../modules/training-course/list-course/redux/reducers';
+import {Salary} from '../modules/employees-manager/salary-employee/redux/reducers';
+import {Discipline} from '../modules/employees-manager/discipline/redux/reducers';
+import {Sabbatical} from '../modules/employees-manager/sabbatical/redux/reducers';
 
 const rootReducer = combineReducers(Object.assign({
     auth,
@@ -19,7 +23,12 @@ const rootReducer = combineReducers(Object.assign({
     component,
     department,
     employeesInfo,
-    employeesManager
+    employeesManager,
+    Course,
+    Salary,
+    Discipline,
+    Sabbatical
+
 }, { Intl }));
 
 export default rootReducer;

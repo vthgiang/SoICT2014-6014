@@ -5,10 +5,23 @@ export const employeeService = {
     addNewEmployee,
     getByEmployeeNumber,
     updateInformationEmpoyee,
+    uploadAvatar,
+    
 
 }
 
-// get information employee by employeeNumber
+// upload ảnh đại diện của nhân viên
+function uploadAvatar(file){
+    const requestOptions = {
+        method: 'POST',
+        body: file
+    };
+    return fetch(`/employee/avatar`, requestOptions).then(handleResponse);
+
+}
+
+
+// lấy thông tin nhân viên theo id
 function getByEmployeeNumber(id) {
     const requestOptions = {
         method: 'GET',
