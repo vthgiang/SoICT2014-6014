@@ -14,124 +14,89 @@ require('dotenv').config({path: '../.env'});
 const db = process.env.DATABASE;
 
 // Connect to MongoDB
-mongoose
-  .connect(
-    db,
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
-  .then(() => {
-    console.log("MongoDB successfully connected");
-  })
-  .catch(err => console.log(err));
+mongoose.connect( db, { 
+        useNewUrlParser: true, 
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }).then(() => {
+        console.log("Kết nối thành công đến MongoDB!\n");
+    }).catch(err => console.log("ERROR! :(\n", err));
 
-const initLog = async() => {
-    await Log.create({
-        name: "log",
-        status: true
-    });
-}
+const seedDatabase = async () => {
+    await console.log("Đang khởi tạo dữ liệu mẫu ...");
+    //Tạo bản ghi trạng thái log
+    await Log.create({ name: 'log', status: true });
 
-const initRoleType = async() => {
+    //Tạo các roletype trong hệ thống
     await RoleType.insertMany([
-        {
-            name: 'abstract'
-        },
-        {
-            name: 'chucdanh'
-        },
-        {
-            name: 'tutao'
-        }
+        { name: 'abstract' }, 
+        { name: 'chucdanh' },
+        { name: 'tutao' }
     ]);
-}
 
-const initSystemData = async() => {
-    var company = await Company.create({
-        name: 'VNIST',
+    //Tạo dữ liệu cho công ty vnist
+    var vnist = await Company.create({
+        name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
         short_name: 'vnist',
-        description: 'Cty VNIST'
+        description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
     });
 
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync('123456', salt);
-
-    //Tao tai khoan system admin cho he thong
-    var user = await User.create({
-        name: "System Admin",
+    //Tạo tài khoản systemadmin cho hệ thống quản lý công việc
+    var salt = await bcrypt.genSaltSync(10);
+    var hash = await bcrypt.hashSync('123456', salt);
+    var systemAdmin = await User.create({
+        name: 'System Admin',
         email: 'systemAdmin@gmail.com',
         password: hash,
-        company: company._id
+        company: vnist._id
     });
 
-    //Tao role System Admin 
-    var roleType = await RoleType.findOne({ name: 'abstract' });
-
-    var role = await Role.create({
-        name: "System Admin",
-        company: company._id,
-        type: roleType._id
-        //abstract không có
+    //Tạo role System Admin 
+    var roleAbstract = await RoleType.findOne({ name: 'abstract' });
+    var roleSystemAdmin = await Role.create({
+        name: 'System Admin',
+        company: vnist._id,
+        type: roleAbstract._id
     });
 
-    console.log("ROLE SYSTEM: ", role);
+    //Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
+    await UserRole.create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id });
 
-    //phan quyen system admin cho tai khoan
-    var user_role = await UserRole.create({
-        userId: user._id,
-        roleId: role._id
-    });
-
-    //Tao link quan ly thong tin cac cong ty
-    var links = await Link.insertMany([
-        {
+    //Tạo link của trang quản lý system và thông tin các công ty và gán quyền cho role System Admin
+    var links = await Link.insertMany([{
             url: '/system',
-            description: 'System',
-            company:company._id
-        },
-        {
+            description: 'System Management',
+            company: vnist._id
+        },{
             url: '/manage-company',
             description: 'Manage companies information',
-            company:company._id
+            company: vnist._id
         }
     ]);
-
-    //Gan link quan ly thong tin cac cong ty cho system admin
-    var privilege = await Privilege.insertMany([
+    await Privilege.insertMany([
         {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: role._id
+            roleId: roleSystemAdmin._id
         },
         {
             resourceId: links[1]._id,
             resourceType: 'Link',
-            roleId: role._id
+            roleId: roleSystemAdmin._id
         }
     ]);
 
-    console.log("success: ", user, role, user_role, links, privilege );
-}
+    //Kết thúc việc khởi tạo dữ liệu mẫu
+    await console.log("Đã tạo xong dữ liệu mẫu");
+} 
 
-initLog()
+//Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//
+seedDatabase()
     .then(() => {
-        initRoleType()
-            .then(() => {
-                initSystemData()
-                .then(() => {
-                    process.exit(1);
-                })
-                .catch(err => {
-                    console.log(err);
-                    process.exit(1);
-                });
-            })
-            .catch(err => {
-                console.log(err);
-                process.exit(1);
-            });
-    })
-    .catch(err => {
-        console.log(err);
+        console.log("DONE! :)\n")
+        process.exit(1);
+    }).catch(err => {
+        console.log("ERROR! :(\n", err);
         process.exit(1);
     });
-
