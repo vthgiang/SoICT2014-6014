@@ -10,10 +10,13 @@ import { ModalAddCertificateShort } from './ModalAddCertificateShort';
 import { ModalAddContract } from './ModalAddContract';
 import { ModalAddExperience } from './ModalAddExperience';
 import { ModalAddBHXH } from './ModalAddBHXH';
+import { ModalAddDiscipline } from './ModalAddDiscipline';
+import { ModalAddPraise } from './ModalAddPraise';
+import {ModalAddSalary} from './ModalAddSalary';
+import {ModalAddSabbatical} from './ModalAddSabbatical';
+import {ModalAddFile} from './ModalAddFile';
+import '../../employee-manager/components/listemployee.css';
 
-
-
-// import { OutTable, ExcelRenderer } from 'react-excel-renderer';
 class AddEmployee extends Component {
     constructor(props) {
         super(props);
@@ -40,6 +43,7 @@ class AddEmployee extends Component {
             }
 
         };
+        this.handleResizeColumn();
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeTax = this.handleChangeTax.bind(this);
@@ -56,6 +60,34 @@ class AddEmployee extends Component {
         this.defaulteClick = this.defaulteClick.bind(this);
     }
 
+    handleResizeColumn = () => {
+        window.$(function () {
+            var pressed = false;
+            var start = undefined;
+            var startX, startWidth;
+
+            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
+                start = window.$(this);
+                pressed = true;
+                startX = e.pageX;
+                startWidth = window.$(this).width();
+                window.$(start).addClass("resizing");
+            });
+
+            window.$(document).mousemove(function (e) {
+                if (pressed) {
+                    window.$(start).width(startWidth + (e.pageX - startX));
+                }
+            });
+
+            window.$(document).mouseup(function () {
+                if (pressed) {
+                    window.$(start).removeClass("resizing");
+                    pressed = false;
+                }
+            });
+        });
+    }
     // function: notification the result of an action
     notifysuccess = (message) => toast(message);
     notifyerror = (message) => toast.error(message);
@@ -812,7 +844,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Bằng cấp:</h4></legend>
                                             <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewCertificate">Thêm mới</button>
-                                            <table className="table table-bordered " >
+                                            <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "18%" }}>Tên bằng</th>
@@ -848,7 +880,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">Chứng chỉ:</h4></legend>
                                             <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewCertificateShort">Thêm mới</button>
-                                            <table className="table table-bordered " >
+                                            <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "22%" }}>Tên chứng chỉ</th>
@@ -911,7 +943,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kinh nghiệm làm việc</h4></legend>
                                             <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewExperience">Thêm mới</button>
-                                            <table className="table table-bordered" >
+                                            <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: '14%' }}>Từ tháng/năm</th>
@@ -966,7 +998,7 @@ class AddEmployee extends Component {
                                                 <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>Quá trình đóng bảo hiểm xã hội:</h4>
                                                 <button style={{ marginBottom: 5, marginLeft: 10 }} type="submit" className="btn btn-primary pull-right" id="editBHXH" data-toggle="modal" data-target="#modal-importFileBHXH" title="Thêm mới bằng file excel" onClick={this.handleAddNew}>Import file</button>
                                                 <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewBHXH">Thêm mới</button>
-                                                <table className="table table-bordered " >
+                                                <table className="table table-striped table-bordered table-resizable " >
                                                     <thead>
                                                         <tr>
                                                             <th style={{ width: "15%" }}>Từ tháng</th>
@@ -1000,7 +1032,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Hợp đồng lao động</h4></legend>
                                             <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewContract">Thêm mới</button>
-                                            <table className="table table-bordered " >
+                                            <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "25%" }}>Tên hợp đồng</th>
@@ -1030,17 +1062,18 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Quá trình đào tạo</h4></legend>
                                             <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" id="course" title="Thêm mới quá trình đào tạo" onClick={this.handleAddNew}>Thêm mới</button>
-                                            <table className="table table-bordered" >
+                                            <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: '18%' }}>Tên khoá học</th>
-                                                        <th style={{ width: '9%' }}>Ngày bắt đầu</th>
-                                                        <th style={{ width: '10%' }}>Ngày kết thúc</th>
-                                                        <th style={{ width: '17%' }}>Nơi đào tạo</th>
-                                                        <th style={{ width: '12%' }}>Loại đào tạo</th>
+                                                        <th style={{ width: '11%' }}>Ngày bắt đầu</th>
+                                                        <th style={{ width: '11%' }}>Ngày kết thúc</th>
+                                                        <th style={{ width: '15%' }}>Nơi đào tạo</th>
+                                                        <th style={{ width: '11%' }}>Loại đào tạo</th>
                                                         <th style={{ width: '10%' }}>Chi phí</th>
-                                                        <th style={{ width: '12%' }}>Thời gian cam kết</th>
+                                                        {/* <th style={{ width: '12%' }}>Thời gian cam kết</th> */}
                                                         <th style={{ width: '12%' }}>Trạng thái</th>
+                                                        <th style={{ width: '10%' }}>Hành động</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1054,15 +1087,15 @@ class AddEmployee extends Component {
                                                                 <option>Nội bộ</option>
                                                                 <option>Ngoài</option>
                                                             </select></td>
-                                                            <td><input type="text" style={{ width: "100%" }} /></td>
+                                                            {/* <td><input type="text" style={{ width: "100%" }} /></td> */}
                                                             <td><input type="text" style={{ width: "100%" }} /></td>
                                                             <td><select className={index} style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status" onChange={this.handleChangeCourse}>
                                                                 <option>Chưa hoàn thành</option>
                                                                 <option>Hoàn thành</option>
                                                             </select></td>
-                                                            {/* <td style={{ textAlign: "center" }}>
+                                                            <td style={{ textAlign: "center" }}>
                                                                         <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("course", index)}><i className="material-icons"></i></a>
-                                                                    </td> */}
+                                                                    </td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -1075,8 +1108,8 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Khen thưởng</h4></legend>
-                                            <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới khen thưởng" >Thêm mới</button>
-                                            <table className="table table-bordered" >
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addPraise">Thêm mới</button>
+                                            <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
                                                         <th>Số quyết định</th>
@@ -1095,8 +1128,8 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kỷ luật</h4></legend>
-                                            <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới khen thưởng" >Thêm mới</button>
-                                            <table className="table table-bordered" >
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewDiscipline">Thêm mới</button>
+                                            <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
                                                         <th>Số quyết định</th>
@@ -1121,8 +1154,8 @@ class AddEmployee extends Component {
                                         <div className="col-sm-12">
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Lịch sử tăng giảm lương</h4></legend>
-                                                <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới bảng lương" >Thêm mới</button>
-                                                <table className="table table-bordered" >
+                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewSalary">Thêm mới</button>
+                                                <table className="table table-striped table-bordered table-resizable" >
                                                     <thead>
                                                         <tr>
                                                             <th>Tháng</th>
@@ -1137,8 +1170,8 @@ class AddEmployee extends Component {
                                             </fieldset>
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thông tin nghỉ phép</h4></legend>
-                                                <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới nghỉ phép" >Thêm mới</button>
-                                                <table className="table table-bordered">
+                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewSabbatical">Thêm mới</button>
+                                                <table className="table table-striped table-bordered table-resizable">
                                                     <thead>
                                                         <tr>
                                                             <th >Từ ngày</th>
@@ -1168,9 +1201,9 @@ class AddEmployee extends Component {
                                         </div>
                                         <div className="col-md-12">
                                             <h4 className="col-md-6" style={{ paddingLeft: 0 }}>Danh sách tài liệu đính kèm:</h4>
-                                            <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" id="file" title="Thêm mới bảo hiểm" onClick={this.handleAddNew}>Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewFile">Thêm mới</button>
                                             <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title="Thêm các tài liệu mặc định">Mặc định</button>
-                                            <table className="table table-bordered " >
+                                            <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "22%" }}>Tên tài liệu</th>
@@ -1371,6 +1404,11 @@ class AddEmployee extends Component {
                 <ModalAddContract />
                 <ModalAddExperience />
                 <ModalAddBHXH />
+                <ModalAddDiscipline />
+                <ModalAddPraise />
+                <ModalAddSalary/>
+                <ModalAddSabbatical/>
+                <ModalAddFile/>
             </React.Fragment>
         );
     };
