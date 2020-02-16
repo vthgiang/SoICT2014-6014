@@ -1,12 +1,14 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
+import { setStorage, clearStorage } from '../../../config';
 
 export const login = (user) => {
     return dispatch => {
         AuthService.login(user)
             .then(res => {
-                localStorage.setItem('token', res.data.token);
-                if(res.data.user.roles.length > 0) localStorage.setItem('currentRole', res.data.user.roles[0].roleId._id);
+                setStorage('jwt', res.data.token);
+                if(res.data.user.roles.length > 0) 
+                    setStorage('currentRole', res.data.user.roles[0].roleId._id);
 
                 dispatch({
                     type: AuthConstants.LOGIN_SUCCESS,
@@ -26,7 +28,7 @@ export const logout = () => {
     return dispatch => {
         AuthService.logout()
             .then(res => {
-                localStorage.clear();
+                clearStorage();
                 dispatch({
                     type: 'RESET_APP'
                 })
@@ -41,7 +43,7 @@ export const logoutAllAccount = () => {
     return dispatch => {
         AuthService.logoutAllAccount()
             .then(res => {
-                localStorage.clear();
+                clearStorage();
                 dispatch({
                     type: 'RESET_APP'
                 })
@@ -83,6 +85,7 @@ export const getLinksOfRole = (idRole) => {
 }
 
 export const refresh = () => {
+
     return dispatch => {
         dispatch({ type: AuthConstants.REFRESH_DATA_USER_REQUEST});
         AuthService.refresh()
@@ -93,15 +96,53 @@ export const refresh = () => {
                 })
             })
             .catch(err => {
-                var { msg } = err.response.data;
-                if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
-                    localStorage.clear();
-                    dispatch({
-                        type: 'RESET_APP'
-                    })
-                }else{
-                    console.log("Error: ", err.response.data);
+                if(err.response !== undefined){
+                    var { msg } = err.response.data;
+                    if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
+                        clearStorage();
+                        dispatch({
+                            type: 'RESET_APP'
+                        })
+                    }
                 }
             })
+    }
+}
+
+export const forgotPassword = (email) => {
+    return dispatch => {
+        AuthService.forgotPassword(email)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.FORGOT_PASSWORD_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+export const resetPassword = (otp, email, password) => {
+    return dispatch => {
+        AuthService.resetPassword(otp, email, password)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.RESET_PASSWORD_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+export const reset = () => {
+    return dispatch => {
+        dispatch({
+            type: 'RESET_APP'
+        });
     }
 }

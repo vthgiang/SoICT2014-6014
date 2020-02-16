@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Company = require('./company.model');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const LinkSchema = new Schema({
@@ -25,5 +26,7 @@ LinkSchema.virtual('roles', {
     localField: '_id',
     foreignField: 'resourceId'
 });
+
+LinkSchema.plugin(mongoosePaginate);
 
 module.exports = Link = mongoose.model("links", LinkSchema);

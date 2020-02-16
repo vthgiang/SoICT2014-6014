@@ -2,14 +2,16 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
-const user = require('./modules/super-admin-management/manage-user/user.route');
+const cookieParser = require("cookie-parser");
+const system = require('./modules/system/system.route');
+const user = require('./modules/super-admin-management/users-management/user.route');
 const auth = require('./modules/auth/auth.route');
-const company = require('./modules/system-admin-management/manage-company/company.route');
-const role = require('./modules/super-admin-management/manage-role/role.route');
-const link = require('./modules/system-admin-management/manage-link/link.route');
-const department = require('./modules/super-admin-management/manage-department/department.route');
-const privilege = require('./modules/super-admin-management/manage-privilege/privilege.route');
-const component = require('./modules/system-admin-management/manage-component/component.route');
+const company = require('./modules/system-admin-management/companies-management/company.route');
+const role = require('./modules/super-admin-management/roles-management/role.route');
+const link = require('./modules/system-admin-management/links-management/link.route');
+const department = require('./modules/super-admin-management/departments-management/department.route');
+const privilege = require('./modules/super-admin-management/privileges/privilege.route');
+const component = require('./modules/system-admin-management/components-management/component.route');
 const educationProgram = require('./modules/trainning-Course/education-program/educationProgram.route');
 const employee = require('./modules/employees-manager/employee/employee.route');
 const salary = require('./modules/employees-manager/salary/salary.route');
@@ -17,6 +19,7 @@ const discipline = require('./modules/employees-manager/discipline/discipline.ro
 const praise = require('./modules/employees-manager/praise/praise.route');
 const sabbatical = require('./modules/employees-manager/sabbatical/sabbatical.route');
 const sample = require('./modules/_sample-module/_sample.route');
+const document = require('./modules/documents-management/document.route');
 
 
 require('dotenv').config();
@@ -31,6 +34,7 @@ app.use(
     })
 );
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // DB Config
 const db = process.env.DATABASE;
@@ -58,6 +62,9 @@ Logger.findOne({
     })
     .catch(err => console.log("msg: ", err));
 
+
+
+app.use("/system", system);
 app.use("/user", user);
 app.use("/auth", auth);
 app.use("/company", company);
@@ -72,6 +79,7 @@ app.use("/discipline",discipline);
 app.use("/praise",praise);
 app.use("/sabbatical",sabbatical);
 app.use("/sample", sample);
+app.use("/document", document);
 app.use("/component", component);
 
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { get as getRole } from '../../../super-admin-management/manage-role/redux/actions';
-import { create } from '../redux/actions';
+import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
+import { LinkActions } from '../redux/actions';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
 class CreateLinkForm extends Component {
@@ -44,11 +44,11 @@ class CreateLinkForm extends Component {
         const { translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-link">{ translate('manageResource.createLink') }</a>
-                <div className="modal fade" id="modal-create-link">
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-link" title={ translate('manageResource.createLink') }>{ translate('add') }</a>
+                <div className="modal fade" id="modal-create-link"  style={{ textAlign: 'left' }}>
                 <div className="modal-dialog">
                     <div className="modal-content">
-                        <div className="modal-header bg-green">
+                        <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 className="modal-title">{ translate('manageLink.add') }</h4>
                         </div>
@@ -86,8 +86,8 @@ class CreateLinkForm extends Component {
                                 
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                            <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
                         </div>
                     </div>
                 </div>
@@ -99,15 +99,9 @@ class CreateLinkForm extends Component {
 }
  
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        getRole: () => {
-            dispatch(getRole());
-        },
-        createLink: (link) => {
-            dispatch(create(link));
-        },
-    }
+const getState = {
+    getRole: RoleActions.get,
+    createLink: LinkActions.create
 }
  
 export default connect(mapState, getState) (withTranslate(CreateLinkForm));

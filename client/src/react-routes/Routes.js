@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from "react-router-dom";
+// import { Route } from "react-router-dom";
 import { PrivateRoute, AuthRoute } from './route-export';
 
 import Layout from '../layouts/Layout';
 import Login from '../modules/auth/components/Login';
+import System from '../modules/system/components';
 import Home from '../modules/home/components';
 import ManageCompany from '../modules/system-admin-management/manage-company/components';
 import ManageUser from '../modules/super-admin-management/manage-user/components';
@@ -31,8 +32,25 @@ class Routes extends Component {
             <React.Fragment>
                 <AuthRoute exact auth={ auth } path="/login" component={ Login } />
                 <PrivateRoute 
+                    isLoading={ company.isLoading }
+                    key={ 'system' }
+                    arrPage={[
+                        { link: '/system', name:'system', icon: 'fa fa-gears'}
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/system' }
+                    path={ '/system' }
+                    pageName={ 'system' }
+                    layout={ Layout }
+                    component={ System }
+                />
+                <PrivateRoute 
                     isLoading={ auth.isLoading }
                     key={ 'home' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'}
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/' }
@@ -44,6 +62,10 @@ class Routes extends Component {
                 <PrivateRoute 
                     isLoading={ company.isLoading }
                     key={ 'manage-company' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/manage-company', name: 'manageCompany', icon:'fa fa-building' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-company' }
@@ -55,6 +77,10 @@ class Routes extends Component {
                 <PrivateRoute 
                     isLoading={ user.isLoading }
                     key={ 'manage-user' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/manage-user', name: 'manageUser', icon:'fa fa-users' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-user' }
@@ -65,6 +91,10 @@ class Routes extends Component {
                 />
                 <PrivateRoute 
                     isLoading={ role.isLoading }
+                    arrPage={[
+                        { link: '/', name:'home', icon:'fa fa-home' },
+                        { link: '/manage-role', name: 'manageRole', icon:'fa fa-lock'}
+                    ]}
                     key={ 'manage-role' }
                     auth={ auth }
                     exact={ true }
@@ -77,6 +107,10 @@ class Routes extends Component {
                 <PrivateRoute 
                     isLoading={ link.isLoading }
                     key={ 'manage-link' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/manage-link', name: 'manageLink', icon:'fa fa-link' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-link' }
@@ -88,6 +122,10 @@ class Routes extends Component {
                 <PrivateRoute 
                     isLoading={ department.isLoading }
                     key={ 'manage-department' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/manage-department', name: 'manageDepartment', icon:'fa fa-sitemap' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-department' }
@@ -99,6 +137,10 @@ class Routes extends Component {
                 <PrivateRoute 
                     isLoading={ component.isLoading }
                     key={ 'manage-component' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/manage-component', name: 'manageComponent', icon:'fa fa-object-group' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-component' }

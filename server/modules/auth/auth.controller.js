@@ -1,20 +1,15 @@
 const AuthService = require('./auth.service');
-const { authLogger } = require('../../logs');
-const requestIp = require('request-ip');
+const { Logger } = require('../../logs');
 
 exports.login = async (req, res) => {
     try {
-        var loginUser = await AuthService.login(req.body);
-        
-        const clientIp = requestIp.getClientIp(req); 
-        console.log("IP address: ", clientIp);
+        var loginUser = await AuthService.login(req.header('browser-finger'), req.body);
 
-        
-        if(isLog) authLogger.info("Login :" + req.body.email);
-        res.header('auth-token', loginUser.token).status(200).json(loginUser);
+        isLog && Logger.info(`[LOGIN]` + req.body.email);
+        res.cookie('jwt', loginUser.token).status(200).json(loginUser);
     } catch (error) {
 
-        if(isLog) authLogger.error("Login :" + req.body.email);
+        isLog && Logger.error(`[LOGIN]` + req.body.email);
         res.status(400).json(error);
     }
 };
@@ -22,10 +17,12 @@ exports.login = async (req, res) => {
 exports.logout = async (req, res) => {
     try {
         var logout = await AuthService.logout(req.user._id, req.token);
-        if(isLog) authLogger.info("Logout :" + req.user.email);
+
+        isLog && Logger.info(`[LOGOUT]` + req.body.email);
         res.status(200).json(logout);
     } catch (error) {
-        if(isLog) authLogger.error("Logout :" + req.user.email);
+
+        isLog && Logger.error(`[LOGOUT]` + req.body.email);
         res.status(400).json(error);
     }
 };
@@ -33,12 +30,41 @@ exports.logout = async (req, res) => {
 exports.logoutAllAccount = async (req, res) => {
     try {
         var logout = await AuthService.logoutAllAccount(req.user._id);
-        if(isLog) authLogger.info("LogoutAllAccount :" + req.user.email);
+        
+        isLog && Logger.info(`[LOGOUT_ALL_ACCOUNT]` + req.body.email);
         res.status(200).json(logout);
     } catch (error) {
-        if(isLog) authLogger.error("LogoutAllAccount :" + req.user.email);
+
+        isLog && Logger.error(`[LOGOUT_ALL_ACCOUNT]` + req.body.email);
         res.status(400).json(error);
     }
 };
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        var forgotPassword = await AuthService.forgotPassword(req.body.email);
+
+        isLog && Logger.info(`[FORGOT_PASSWORD]` + req.body.email);
+        res.status(200).json(forgotPassword);
+    } catch (error) {
+
+        isLog && Logger.error(`[FORGOT_PASSWORD]` + req.body.email);
+        res.status(400).json(error);
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        var resetPassword = await AuthService.resetPassword(req.body.otp, req.body.email, req.body.password);
+
+        isLog && Logger.error(`[RESET_PASSWORD]` + req.body.email);
+        res.status(200).json(resetPassword);
+    } catch (error) {
+
+        isLog && Logger.error(`[RESET_PASSWORD]` + req.body.email);
+        res.status(400).json(error);
+    }
+};
+
 
  

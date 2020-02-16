@@ -1,7 +1,15 @@
 import { UserServices } from "./services";
 import { UserConstants } from "./constants";
 
-export const get = () => {
+export const UserActions = {
+    get,
+    getPaginate,
+    edit,
+    create,
+    destroy
+};
+
+function get(){
     return dispatch => {
         dispatch({ type: UserConstants.GET_USERS_REQUEST});
         UserServices.get()
@@ -17,7 +25,23 @@ export const get = () => {
     }
 }
 
-export const edit = (data) => {
+function getPaginate(data){
+    return dispatch => {
+        dispatch({ type: UserConstants.GET_USERS_PAGINATE_REQUEST});
+        UserServices.getPaginate(data)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GET_USERS_PAGINATE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+function edit(data){
     return dispatch => {
         dispatch({ type: UserConstants.EDIT_USER_REQUEST});
         UserServices.edit(data)
@@ -33,7 +57,7 @@ export const edit = (data) => {
     }
 }
 
-export const create = (data) => {
+function create(data){
     return dispatch => {
         dispatch({ type: UserConstants.CREATE_USER_REQUEST});
         UserServices.create(data)
@@ -49,7 +73,7 @@ export const create = (data) => {
     }
 }
 
-export const destroy = (id) => {
+function destroy(id){
     return dispatch => {
         dispatch({ type: UserConstants.DELETE_USER_REQUEST});
         UserServices.destroy(id)
@@ -57,22 +81,6 @@ export const destroy = (id) => {
                 dispatch({
                     type: UserConstants.DELETE_USER_SUCCESS,
                     payload: id
-                })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
-    }
-}
-
-export const searchByName = (name) => {
-    return dispatch => {
-        dispatch({ type: UserConstants.SEARCH_USER_BY_NAME_REQUEST});
-        UserServices.searchByName(name)
-            .then(res => {
-                dispatch({
-                    type: UserConstants.SEARCH_USER_BY_NAME_SUCCESS,
-                    payload: res.data
                 })
             })
             .catch(err => {

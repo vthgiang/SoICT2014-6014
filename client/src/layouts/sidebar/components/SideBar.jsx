@@ -55,6 +55,15 @@ class SideBar extends Component {
                         </form>
                         <ul className="sidebar-menu" data-widget="tree">
                             <li className="header">MENU</li>
+                            {
+                                this.checkURL('/system', links) === true &&
+                                <Item
+                                    key='system'
+                                    name='system'
+                                    path='/system'
+                                    icon='fa fa-gears'
+                                />
+                            }
                             <Item
                                 key='home'
                                 name='home'
@@ -184,13 +193,10 @@ class SideBar extends Component {
     }
 }
 
-const mapStates = state => {
-    return state;
-}
+const mapStates = state => state;
 
-const dispatchStateToProps = (dispatch, props) => {
-    return {
-    }
+const dispatchStateToProps = {
+
 }
 
 export default connect(mapStates, dispatchStateToProps)(SideBar);

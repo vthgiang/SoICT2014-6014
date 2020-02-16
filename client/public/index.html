@@ -37,13 +37,15 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="%PUBLIC_URL%/main/css/datatableedit.css">
-  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/tablecrollcolumn.css">
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/datatable.css">
   <!-- Modal css -->
   <link rel="stylesheet" href="%PUBLIC_URL%/main/css/modal.css">
   <!-- fieldset -->
   <link rel="stylesheet" href="%PUBLIC_URL%/main/css/fieldset.css">
   <!-- tree grid table data -->
   <link rel="stylesheet" href="%PUBLIC_URL%/main/css/gridtable.css">
+  <!-- css for modal perform task -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/main/css/performtask.css">
   <!-- BEGIN CO CAU TO CHUC-->
   <!-- daterange picker -->
   <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css">
@@ -66,19 +68,23 @@
   <!-- Kpi member-->
   <link rel="stylesheet" href="%PUBLIC_URL%/main/css/kpimember.css">
   <!-- Organization Structure-->
-  <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+  <!-- <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css"> -->
   <link href="%PUBLIC_URL%/main/css/jquery.orgchart.css" media="all" rel="stylesheet" type="text/css" />
   <!-- fullCalendar -->
   <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/fullcalendar/dist/fullcalendar.min.css">
   <link rel="stylesheet" href="%PUBLIC_URL%/adminLTE/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
     media="print">
+  <!-- Task Management -->
+  <!-- Upload file -->
+  <link href="%PUBLIC_URL%/main/css/uploadfile/jquery.filer.css" rel="stylesheet">
+  <link href="%PUBLIC_URL%/main/css/uploadfile/themes/jquery.filer-dragdropbox-theme.css" rel="stylesheet">
   <link href="https://unpkg.com/treeflex/dist/css/treeflex.css" rel="stylesheet">
-  <title>QLCV</title>
+  <title>Quản lý công việc</title>
 </head>
 
-<body class="hold-transition skin-purple sidebar-mini">
-  <div id="root" style="background-color: #222D32"></div>
-  
+<body class="hold-transition skin-purple sidebar-mini" style="background-color: #222D32;">
+  <div id="root"></div>
+
   <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -100,7 +106,7 @@
   <script type="text/babel" src="%PUBLIC_URL%/adminLTE/bower_components/jquery-ui/jquery-ui.min.js"></script>
   <!-- BEGIN JS DASHBOARD-->
   <!-- Table Edit -->
-  <script type="text/javascript" src="%PUBLIC_URL%/main/js/TableEdit.js"></script>
+  <script src="%PUBLIC_URL%/main/js/TableEdit.js"></script>
   <!-- Morris.js charts -->
   <script src="%PUBLIC_URL%/adminLTE/bower_components/raphael/raphael.min.js"></script>
   <script src="%PUBLIC_URL%/adminLTE/bower_components/morris.js/morris.min.js"></script>
@@ -143,8 +149,16 @@
   <!-- <script src="%PUBLIC_URL%/adminLTE/dist/js/pages/dashboard.js"></script> -->
   <!-- AdminLTE for demo purposes -->
   <script src="%PUBLIC_URL%/adminLTE/dist/js/demo.js"></script>
+  <!-- CK Editor -->
+  <script src="%PUBLIC_URL%/adminLTE/bower_components/ckeditor/ckeditor.js"></script>
+  <script>
+    $(function () {
+      //bootstrap WYSIHTML5 - text editor
+      $('.textarea').wysihtml5()
+    })
+  </script>
   <!-- Page script -->
-  <!-- <script src="%PUBLIC_URL%/main/js/cocautochuc.js"></script> -->
+  <!-- <script src="%PUBLIC_URL%/main/js/CoCauToChuc.js"></script> -->
   <!-- END JS CO CAU TO CHUC-->
   <!---Begin Calender Home-->
   <!-- fullCalendar -->
@@ -154,7 +168,7 @@
   <!-- <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> -->
   <script type="text/javascript" src="%PUBLIC_URL%/main/js/jquery.orgchart.js"></script>
   <!-- End Organization Structure-->
-  <script>
+  <!-- <script>
     $(function () {
       $('#example1').DataTable()
       $('#example2').DataTable({
@@ -166,7 +180,7 @@
         'autoWidth': false
       })
     })
-  </script>
+  </script> -->
   <!-- KPI JS -->
   <!-- ChartJS -->
   <script src="%PUBLIC_URL%/adminLTE/bower_components/chart.js/Chart.js"></script>
@@ -183,6 +197,17 @@
   <!-- Task Management -->
   <!-- Grid Table Data -->
   <!-- <script src="%PUBLIC_URL%/main/js/GridTable.js"></script> -->
+  <!-- Multiselect  -->
+  <script src="%PUBLIC_URL%/main/js/SelectMulti.js"></script>
+  <!-- Task Management -->
+  <!-- Upload File -->
+  <script src="%PUBLIC_URL%/main/js/uploadfile/jquery.filer.min.js" type="text/javascript"></script>
+  <!-- <script src="%PUBLIC_URL%/main/js/uploadfile/custom.js" type="text/javascript"></script> -->
+  <script>
+    $(document).ready(function () {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
 </body>
 
 </html>

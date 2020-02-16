@@ -5,20 +5,21 @@ import { withTranslate } from 'react-redux-multilingual';
 import { logout, logoutAllAccount } from '../../../modules/auth/redux/actions';
 import { IntlActions } from 'react-redux-multilingual';
 import { getLinksOfRole, refresh } from '../../../modules/auth/redux/actions';
+import { setStorage, getStorage } from '../../../config';
 
 class MainHeaderMenu extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentRole: localStorage.getItem('currentRole') ? localStorage.getItem('currentRole') : null
+            currentRole: getStorage('currentRole') ? getStorage('currentRole') : null
         }
         this.selectHandle = this.selectHandle.bind(this);
     }
 
     selectHandle(e) {
         this.setState({ currentRole: e.target.value });
-        localStorage.setItem('currentRole', e.target.value);
+        setStorage('currentRole', e.target.value);
         this.props.getLinksOfRole(e.target.value);
     }
 
@@ -125,11 +126,11 @@ const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
             dispatch(logoutAllAccount()); //dispatch đến action getUsers trong file index của action và lưu dữ liệu users trên store
         },
         setLanguageVietNam: () => {
-            localStorage.setItem('lang', 'vn');
+            sessionStorage.setItem('lang', 'vn');
             dispatch(IntlActions.setLocale('vn'));
         },
         setLanguageEnglish: () => {
-            localStorage.setItem('lang', 'en');
+            sessionStorage.setItem('lang', 'en');
             dispatch(IntlActions.setLocale('en'));
         },
         getLinksOfRole: (idRole) => {

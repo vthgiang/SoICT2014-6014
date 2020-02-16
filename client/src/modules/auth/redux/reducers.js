@@ -1,24 +1,14 @@
 import { AuthConstants } from "./constants";
-import {reactLocalStorage} from 'reactjs-localstorage';
+import { getStorage } from '../../../config';
 
-const token = localStorage.getItem('token');
-const _id = localStorage.getItem('_id');
-const name = localStorage.getItem('name');
-const email = localStorage.getItem('email');
-const roles = reactLocalStorage.getObject('roles');
-const company = reactLocalStorage.getObject('company');
+const token = getStorage();
 
 const initState = {
     logged: token ? true : false,
-    user: {
-        _id: _id ? _id : null,
-        name: name ? name : null,
-        email: email ? email : null,
-        roles: roles ? roles : null,
-        company: company ? company : null,
-    },
+    user: {},
     links: [],
-    error: null
+    error: null,
+    forgotPassword: false
 }
 
 export function auth(state = initState, action) {
@@ -74,8 +64,20 @@ export function auth(state = initState, action) {
                     roles: null,
                     company: null
                 },
-                error: null
+                links: [],
+                error: null,
+                forgotPassword: false
             };
+
+        case AuthConstants.FORGOT_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                forgotPassword: action.payload
+            };
+
+        case AuthConstants.RESET_PASSWORD_SUCCESS:
+            alert("Thay đổi mật khẩu thành công!\nChange password successfully!")
+            return initState;
 
         default:
             return state;

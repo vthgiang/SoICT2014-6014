@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Company = require('./company.model');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const UserSchema = new Schema({
@@ -36,7 +37,7 @@ const UserSchema = new Schema({
         default: false
     },
     token: [{
-        type: String
+        type: String,
     }],
     reset_password_token: {
         type: String
@@ -51,5 +52,7 @@ UserSchema.virtual('roles', {
     localField: '_id',
     foreignField: 'userId'
 });
+
+UserSchema.plugin(mongoosePaginate);
 
 module.exports = User = mongoose.model("User", UserSchema);

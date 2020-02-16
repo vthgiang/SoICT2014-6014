@@ -14,13 +14,13 @@ const checkURL = (urlName, linkArr) => {
     return result;
 }
 
-export const PrivateRoute = ({ auth, isLoading, pageName, link, component: Component, layout: Layout, ...rest }) => (
+export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => (
     <Route {...rest} render={props => {
         if(auth.logged){
             if(link !== '/' && checkURL(link, auth.links) !== true){
                 return <Layout pageName={ pageName }></Layout>
             } 
-            return <Layout pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
+            return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{
             return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
         }

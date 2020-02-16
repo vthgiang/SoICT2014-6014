@@ -43,13 +43,16 @@ initSystem = async () => {
     });
 
     //Tao role System Admin 
-    var roleType = await RoleType.find({ name: 'abstract' });
+    var roleType = await RoleType.findOne({ name: 'abstract' });
+
     var role = await Role.create({
         name: "System Admin",
         company: company._id,
         type: roleType._id
         //abstract không có
     });
+
+    console.log("ROLE SYSTEM: ", role);
 
     //phan quyen system admin cho tai khoan
     var user_role = await UserRole.create({
@@ -58,20 +61,34 @@ initSystem = async () => {
     });
 
     //Tao link quan ly thong tin cac cong ty
-    var link = await Link.create({
-        url: '/manage-company',
-        description: 'Manage companies information',
-        company:company._id
-    });
+    var links = await Link.insertMany([
+        {
+            url: '/system',
+            description: 'System',
+            company:company._id
+        },
+        {
+            url: '/manage-company',
+            description: 'Manage companies information',
+            company:company._id
+        }
+    ]);
 
     //Gan link quan ly thong tin cac cong ty cho system admin
-    var privilege = await Privilege.create({
-        resourceId: link._id,
-        resourceType: 'Link',
-        roleId: role._id
-    });
+    var privilege = await Privilege.insertMany([
+        {
+            resourceId: links[0]._id,
+            resourceType: 'Link',
+            roleId: role._id
+        },
+        {
+            resourceId: links[1]._id,
+            resourceType: 'Link',
+            roleId: role._id
+        }
+    ]);
 
-    console.log("success: ", user, role, user_role, link, privilege );
+    console.log("success: ", user, role, user_role, links, privilege );
 }
 
 try {

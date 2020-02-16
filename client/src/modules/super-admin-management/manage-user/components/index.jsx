@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import ManageUserTable from './ManageUserTable';
-import UserCreateForm from './UserCreateForm';
-import { get } from '../redux/actions';
 
 class ManageUser extends Component {
     constructor(props) {
@@ -12,31 +10,17 @@ class ManageUser extends Component {
         }
     }
 
-    componentDidMount(){
-        this.props.getUser();
-    }
-
     render() { 
         return ( 
-            <React.Fragment>
-                <UserCreateForm/>
-                <br></br><br></br>
-                <ManageUserTable/>
-            </React.Fragment>
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <ManageUserTable/>
+                </div>
+            </div>
         );
     }
 }
  
-const mapStateToProps = state => {
-    return state;
-}
+const mapStateToProps = state => state;
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        getUser: () => {
-            dispatch(get()); 
-        },
-    }
-}
-
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(ManageUser) );
+export default connect( mapStateToProps, null )( withTranslate(ManageUser) );

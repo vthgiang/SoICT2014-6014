@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get, create } from '../redux/actions';
+import { RoleActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
@@ -49,12 +49,13 @@ class RoleCreateForm extends Component {
         const{ translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-add-role">{ translate('manageRole.add') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-add-role" title={ translate('manageRole.add') }>{ translate('add') }</a>
                 <div className="modal fade" id="modal-add-role">
                     <div className="modal-dialog">
                     <div className="modal-content">
-                        <div className="modal-header bg-green">
-                        <h4 className="modal-title">{ translate('manageRole.create') }</h4>
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 className="modal-title">{ translate('manageRole.create') }</h4>
                         </div>
                         <div className="modal-body">
                         <form>
@@ -86,8 +87,8 @@ class RoleCreateForm extends Component {
                         </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                            <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
                         </div>
                     </div>
                     </div>
@@ -97,22 +98,11 @@ class RoleCreateForm extends Component {
     }
 }
  
-const mapStateToProps = state => {
-    return state;
-}
+const mapStateToProps = state => state;
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        get: () => {
-            dispatch(get()); 
-        },
-        create: (role) => {
-            dispatch(create(role));
-        },
-        // destroy: (id) => {
-        //     dispatch(destroy(id));
-        // }
-    }
+const mapDispatchToProps =  {
+    get: RoleActions.get,
+    create: RoleActions.create
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(RoleCreateForm) );

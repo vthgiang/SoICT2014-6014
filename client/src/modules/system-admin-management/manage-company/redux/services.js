@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LOCAL_SERVER_API, AuthenticateHeader } from '../../../../config';
 
 export const companyServices = {
     get,
@@ -6,23 +7,21 @@ export const companyServices = {
 };
 
 function get() {
-    const token = localStorage.getItem('token');
     const requestOptions = {
-        url: 'http://localhost:8000/company',
+        url: `${LOCAL_SERVER_API}/company`,
         method: 'GET',
-        headers: {'auth-token': token}
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
 }
 
 function create(company) {
-    const token = localStorage.getItem('token');
     const requestOptions = {
-        url: 'http://localhost:8000/company',
+        url: `${LOCAL_SERVER_API}/company`,
         method: 'POST',
         data: company,
-        headers: {'auth-token': token}
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);

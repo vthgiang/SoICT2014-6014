@@ -46,10 +46,12 @@ class UserEditForm extends Component {
         const { email, name, active, status } = this.state;
         return ( 
             <React.Fragment>
-                <div className="modal fade" id={ `edit-user-modal-${userEditID}` }>
+                <a className="edit" data-toggle="modal" href={`#edit-user-modal-${userEditID}`}><i className="material-icons">edit</i></a>
+                <div className="modal fade" id={ `edit-user-modal-${userEditID}` } style={{textAlign: 'left'}}>
                     <div className="modal-dialog">
                         <div className="modal-content">
-                        <div className="modal-header bg bg-blue">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
                             <h4 className="modal-title">{ translate('manageUser.info') }</h4>
                         </div>
                         <div className="modal-body">
@@ -80,8 +82,8 @@ class UserEditForm extends Component {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.save}>{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.save}>{ translate('table.save') }</button>
                         </div>
                         </div>
                     </div>
@@ -93,9 +95,7 @@ class UserEditForm extends Component {
     }
 }
  
-const mapStateToProps = state => {
-    return state;
-}
+const mapStateToProps = state => state;
 
 
 export default connect( mapStateToProps, null )( withTranslate(UserEditForm) );

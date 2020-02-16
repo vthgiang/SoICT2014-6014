@@ -1,7 +1,17 @@
 import { ComponentServices } from "./services";
 import { ComponentConstants } from "./constants";
 
-export const get = () => {
+export const ComponentActions = {
+    get,
+    getPaginate,
+    edit,
+    create,
+    show,
+    destroy
+}
+
+
+function get(){
     return dispatch => {
         dispatch({ type: ComponentConstants.GET_COMPONENTS_REQUEST});
         ComponentServices.get()
@@ -17,7 +27,23 @@ export const get = () => {
     }
 }
 
-export const show = (id) => {
+function getPaginate(data){
+    return dispatch => {
+        dispatch({ type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST});
+        ComponentServices.getPaginate(data)
+            .then(res => {
+                dispatch({
+                    type: ComponentConstants.GET_COMPONENTS_PAGINATE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
+    }
+}
+
+function show(id){
     return dispatch => {
         dispatch({ type: ComponentConstants.SHOW_COMPONENT_REQUEST});
         ComponentServices.show(id)
@@ -33,7 +59,7 @@ export const show = (id) => {
     }
 }
 
-export const create = (component) => {
+function create(component){
     return dispatch => {
         dispatch({ type: ComponentConstants.CREATE_COMPONENT_REQUEST});
         ComponentServices.create(component)
@@ -49,7 +75,7 @@ export const create = (component) => {
     }
 }
 
-export const edit = (id, component) => {
+function edit(id, component){
     return dispatch => {
         dispatch({ type: ComponentConstants.EDIT_COMPONENT_REQUEST});
         ComponentServices.edit(id, component)
@@ -65,7 +91,7 @@ export const edit = (id, component) => {
     }
 }
 
-export const destroy = (id, component) => {
+function destroy(id, component){
     return dispatch => {
         dispatch({ type: ComponentConstants.DELETE_COMPONENT_REQUEST});
         ComponentServices.destroy(id, component)

@@ -7,8 +7,11 @@ export default {
             show: 'Hiển thị / trang',
             add: 'Thêm',
             search: 'Tìm kiếm',
-            searchByName: 'Nhập vào tên ... ',
+            searchByValue: 'Nhập vào ... ',
             edit: 'Sửa',
+            update: 'Cập nhật',
+            record: 'Số dòng',
+            page: 'Trang',
             delete: 'Xóa',
             loading: 'Đang xử lý dữ liệu...Xin vui lòng đợi',
             question: {
@@ -19,6 +22,11 @@ export default {
             profileTitle: "Thông tin tài khoản người dùng",
             logout: 'Đăng xuất',
             logoutAll: 'Đăng xuất khỏi tất cả các thiết bị',
+            system: {
+                logState: 'Ghi lại log - lịch sử các request từ người dùng',
+                turnOn: 'Bật',
+                turnOff: 'Tắt'
+            },
             manageCompany: {
                 name: 'Quản lý thông tin các công ty',
                 create: 'Thêm công ty mới'
@@ -65,7 +73,7 @@ export default {
             manageResource: {
                 name: 'Quản lý tài nguyên',
                 url: 'Đường link',
-                urlDescription: 'Mô tả về URL',
+                urlDescription: 'Mô tả về trang',
                 roleTo: 'Cấp quyền cho',
                 selectRole: '--- chọn role ---',
                 createLink: 'Thêm link',
@@ -75,7 +83,7 @@ export default {
                 component: 'Thành phần UI'
             },
             manageLink: {
-                linkInfo: 'Thông tin LINK',
+                linkInfo: 'Thông tin trang',
                 add: 'Thêm link mới',
                 delete: 'Xóa link ?',
             },
@@ -104,6 +112,7 @@ export default {
             },
             mainSideBar: {
                 search: 'Tìm kiếm ...',
+                system: 'Quản lý cấu hình hệ thống',
                 home: 'Trang chủ',
                 dashboard: 'Bảng điều khiển',
                 adminManage: 'Quản lý trang admin',
@@ -133,6 +142,20 @@ export default {
                 listCourse: 'Chương trình đào tạo bắt buộc',
                 trainingplan: 'Quản lý khoá đào tạo',
             },
+            form: {
+                email: 'Email',
+                password: 'Mật khẩu',
+                newPassword: 'Mật khẩu mới',
+                confirm: 'Xác thực mật khẩu',
+                description: 'Mô tả',
+                save: 'Lưu',
+                close: 'Đóng',
+                resetPassword: 'Thiết lập lại mật khẩu',
+                forgotPassword: 'Quên mật khẩu ?',
+                signin: 'Đăng nhập',
+                otp: 'Mã xác thực',
+                next: 'Tiếp tục'
+            },
             footer: {
                 copyRight: 'Bản quyền thuộc về',
                 version: 'Phiên bản'
@@ -148,8 +171,11 @@ export default {
             show: 'Show value / page',
             add: 'Add',
             search: 'Search',
-            searchByName: 'Input name ... ',
+            searchByValue: 'Input value ... ',
             edit: 'Edit',
+            update: 'Update',
+            record: 'Record',
+            page: 'Page',
             delete: 'Delete',
             loading: 'Loading...Please wait',
             question: {
@@ -160,6 +186,11 @@ export default {
             profileTitle: "Information of profile user",
             logout: 'Log out',
             logoutAll: 'Logout of all devices',
+            system: {
+                logState: 'Log State',
+                turnOn: 'Turn On',
+                turnOff: 'Turn Off'
+            },
             manageCompany: {
                 name: 'Manage Company',
                 create: 'Add new company'
@@ -205,7 +236,7 @@ export default {
             manageResource: {
                 name: 'Manage Resource',
                 url: 'URL',
-                urlDescription: 'Description of URL',
+                urlDescription: 'Description of page',
                 roleTo: 'Permisstion to',
                 selectRole: '--- select role ---',
                 createLink: 'Create',
@@ -215,7 +246,7 @@ export default {
                 component: 'Components UI'
             },
             manageLink: {
-                linkInfo: 'Link information',
+                linkInfo: 'Page information',
                 add: 'Add new link',
                 delete: 'Delete link ?',
             },
@@ -244,6 +275,7 @@ export default {
             },
             mainSideBar: {
                 search: 'Search ...',
+                system: 'Manage System Config',
                 home: 'Home',
                 dashboard: 'Dashboard',
                 adminManage: 'Admin manager',
@@ -271,6 +303,20 @@ export default {
                 timekeeping: 'Attendance Staff',
                 listCourse: 'Education Program',
                 trainingplan: 'Managing Training Courses',
+            },
+            form: {
+                email: 'Email',
+                password: 'Password',
+                newPassword: 'New password',
+                confirm: 'Confirm password',
+                description: 'Description',
+                save: 'Save',
+                close: 'Close',
+                resetPassword: 'Reset password user account',
+                forgotPassword: 'I forgot my password ?',
+                signin: 'Sign In',
+                otp: 'OTP',
+                next: 'Next'
             },
             footer: {
                 copyRight: 'Copyright',

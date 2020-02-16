@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { get as getCompanies } from '../redux/actions';
+import { withTranslate } from 'react-redux-multilingual';
 import CompanyEditForm from './CompanyEditForm';
+import CompanyCreateForm from './CompanyCreateForm';
+import PaginateBar from '../../../../common-components/PaginateBar';
+import ActionColumn from '../../../../common-components/ActionColumn';
+import SearchBar from '../../../../common-components/SearchBar';
 
 class CompanyTable extends Component {
     constructor(props) {
@@ -15,17 +20,30 @@ class CompanyTable extends Component {
     }
 
     render() { 
-        console.log("TAO DANG RENDER")
-        const { company } = this.props;
+        const { company, translate } = this.props;
+
         return ( 
             <React.Fragment>
-                <table className="table table-bordered table-hover" style={{ marginTop: '50px'}}>
+                <div class="row">
+                    <SearchBar 
+                        columns={[
+                            { title: 'Name', name: 'name' },
+                            { title: 'Short Name', name: 'short_name' },
+                            { title: 'Description', name: 'description' },
+                        ]}
+                    />
+                    <CompanyCreateForm/>
+                </div>
+                
+                <table className="table table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Short name</th>
                             <th>Description</th>
-                            <th>Action</th>
+                            <th style={{ width: "120px" }}>
+                                <ActionColumn columnName={ translate('table.action') }/>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,6 +63,7 @@ class CompanyTable extends Component {
                                                     companyShortName={ com.short_name }
                                                     companyDescription={ com.description }
                                                 />
+                                                <a href="#abc" className="lock" title="Xóa mẫu công việc này"><i className="material-icons">lock</i></a>
                                             </td>
                                         </tr>    
                                     )
@@ -56,6 +75,8 @@ class CompanyTable extends Component {
                         }
                     </tbody>
                 </table>
+                {/* Paginate Bar */}
+                <PaginateBar pageTotal={50} currentPage={3}/>
             </React.Fragment>
          );
     }
@@ -68,10 +89,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, props) => {
     return{
         getCompanies: () => {
-            console.log("THUC HIEN LAY DU LIEU CAC CONG TY");
             dispatch(getCompanies()); 
         }
     }
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( CompanyTable );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CompanyTable));

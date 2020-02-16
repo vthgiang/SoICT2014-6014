@@ -1,0 +1,1 @@
+Đây thư module thực hiện vai trò quản lý văn bản, biểu mẫu,... trong hệ thống.

@@ -14,12 +14,12 @@ class Layout extends Component {
     }
     render() { 
         const { translate } = this.props;
-        console.log("ISLOADING LAYOUT: ", this.props.isLoading)
+        
         return ( 
             <React.Fragment>
                 <Header />
                 <Sidebar />
-                <Content pageName={ translate(`mainSideBar.${this.props.pageName}`) } isLoading={this.props.isLoading}>{ this.props.children }</Content>
+                <Content arrPage={this.props.arrPage} pageName={ translate(`mainSideBar.${this.props.pageName}`) } isLoading={this.props.isLoading}>{ this.props.children }</Content>
                 <Footer />
             </React.Fragment>
          );
