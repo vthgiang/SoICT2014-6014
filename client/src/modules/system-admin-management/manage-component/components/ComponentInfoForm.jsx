@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { reactLocalStorage } from 'reactjs-localstorage';
 import { ComponentActions } from '../redux/actions';
 
 class ComponentInfoForm extends Component {
@@ -29,9 +28,8 @@ class ComponentInfoForm extends Component {
         e.preventDefault();
         let select = this.refs.roles;
         let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        var com = reactLocalStorage.getObject('company');
         const { id, name, description } = this.state;
-        const component = { name, description, company: com._id, roles };
+        const component = { name, description, roles };
 
         this.props.editComponent(id, component);
     }

@@ -21,7 +21,6 @@ export const getStorage = (name='jwt') => {
 export const AuthenticateHeader = (name='jwt') => {
     const token = getStorage(name);
     const browserFinger = getBrowserFingerprint();
-    console.log(browserFinger);
     return {
         'auth-token': token,
         'browser-finger': browserFinger

@@ -57,13 +57,13 @@ class MainHeaderMenu extends Component {
                         </li>
                         <li className="dropdown user user-menu">
                             <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/adminLTE/dist/img/user2-160x160.jpg" className="user-image" alt="User Avatar" />
+                                <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" className="user-image" alt="User Avatar" />
                                 <span className="hidden-xs">{auth.user.name}</span>
                             </a>
                             <ul className="dropdown-menu">
                                 {/* User image */}
                                 <li className="user-header">
-                                    <img src="/adminLTE/dist/img/user2-160x160.jpg" className="img-circle" alt="User Avatar" />
+                                    <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" className="img-circle" alt="User Avatar" />
                                     <p>
                                         {auth.user.name}
                                         <small>{auth.user.email}</small>
@@ -99,11 +99,11 @@ class MainHeaderMenu extends Component {
                     <div className="control-sidebar control-sidebar-light" style={{ display: 'none', marginTop: '52px', width: '135px' }}>
                         <div style={{ marginTop: '-40px' }}>
                             <i onClick={this.props.setLanguageEnglish}>
-                                <img src="/en.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
+                                <img src="/lib/en.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
                                 <span className="badge">EN</span>
                             </i>
                             <i onClick={this.props.setLanguageVietNam}>
-                                <img src="/vn.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
+                                <img src="/lib/vn.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
                                 <span className="badge">VN</span>
                             </i>
                         </div>

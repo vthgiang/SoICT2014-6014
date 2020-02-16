@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
 import { ComponentActions } from '../redux/actions';
-import { reactLocalStorage } from 'reactjs-localstorage';
 
 class ComponentCreateForm extends Component {
     constructor(props) {
@@ -29,9 +28,8 @@ class ComponentCreateForm extends Component {
         e.preventDefault();
         let select = this.refs.roles;
         let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        var com = reactLocalStorage.getObject('company');
         const { name, description } = this.state;
-        const component = { name, description, company: com._id, roles };
+        const component = { name, description, roles };
 
         this.props.createComponet(component);
     }

@@ -66,13 +66,13 @@ exports.create = async (data, company) => {
                     '<li>Tài khoản :' + data.email + '</li>' +
                     '<li>Mật khẩu :' + password + '</li>' + 
                 '</ul>' + 
-                `<p>Đăng nhập ngay tại : <a href="${process.env.SERVER}/login">${process.env.SERVER}/login</a></p>` + '<br>' +
+                `<p>Đăng nhập ngay tại : <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>` + '<br>' +
                 '<p>Your account use to login in system : </p' + 
                 '<ul>' + 
                     '<li>Account :' + data.email + '</li>' +
                     '<li>Password :' + password + '</li>' + 
                 '</ul>' + 
-                `<p>Login in: <a href="${process.env.SERVER}/login">${process.env.SERVER}/login</a></p>`
+                `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
     }
     var user = await User.create({
         name: data.name,

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ComponentCreateForm from './ComponentCreateForm';
 import TableComponent from './TableComponent';
 
 class ManageComponent extends Component {
