@@ -1,8 +1,5 @@
 import getBrowserFingerprint from 'get-browser-fingerprint';
 
-export const LOCAL_SERVER_API = 'http://localhost:8000';
-export const TOKEN_SECRET = 'qlcv';
-
 export const clearStorage = () => {
     localStorage.clear();
     localStorage.clear();

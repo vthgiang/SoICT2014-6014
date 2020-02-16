@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API } from '../../../config';
+import { LOCAL_SERVER_API } from '../../../env';
 
 export const SystemServices = {
     getLogState,

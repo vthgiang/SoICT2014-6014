@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API, TOKEN_SECRET, AuthenticateHeader, getStorage } from '../../../config';
+import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
+import { AuthenticateHeader, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 

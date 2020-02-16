@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API, AuthenticateHeader } from '../../../../config';
+import { LOCAL_SERVER_API } from '../../../../env';
+import { AuthenticateHeader } from '../../../../config';
 
 export const RoleServices = {
     get,
