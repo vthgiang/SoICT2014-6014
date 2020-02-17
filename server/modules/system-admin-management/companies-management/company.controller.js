@@ -18,6 +18,23 @@ exports.get = async (req, res) => {
     }
 };
 
+
+exports.getPaginate = async (req, res) => {
+    try {
+        var { limit, page } = req.body;
+        delete req.body.limit;
+        delete req.body.page;
+        var companies = await CompanyService.getPaginate(limit, page, req.body);
+
+        isLog && Logger.info(`[GET_LINKS_PAGINATE]`+req.user.email);
+        res.status(200).json(companies);
+    } catch (error) {
+        
+        isLog && Logger.error(`[GET_LINKS_PAGINATE]`+req.user.email);
+        res.status(400).json(error);
+    }
+};
+
 exports.create = async (req, res) => {
     try {
         //tao cong ty
@@ -74,7 +91,9 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
+        console.log("REQ", req.body);
         const company = await CompanyService.edit(req.params.id, req.body);
+        console.log("RES", company);
         
         isLog && Logger.info(`[EDIT_COMPANY]`+req.user.email);
         res.status(200).json(company);

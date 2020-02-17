@@ -9,7 +9,6 @@ exports.auth = async (req, res, next) => {
     if(!token) return res.status(400).json({ msg: 'ACCESS_DENIED' });
     try {
         const verified = await jwt.verify(token, process.env.TOKEN_SECRET);
-        console.log(`KEY: ${verified.browserFinger} - ${browserFinger}`);
         if(verified.browserFinger !== browserFinger) return res.status(400).json({ msg: 'ACCESS_DENIED' });
         req.user = verified; 
         req.token = token;

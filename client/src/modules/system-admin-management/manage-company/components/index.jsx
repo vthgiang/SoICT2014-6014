@@ -3,35 +3,23 @@ import { connect } from 'react-redux';
 import CompanyTable from './CompanyTable';
 
 class Company extends Component {
-    componentDidMount() {
-        // this.props.getDepartment(localStorage.getItem('id'));
-        // this.props.getTaskTemplateByUser(localStorage.getItem('id'), 1, "[]");
-        //get department of current user
-        this.loadJSMultiSelect();
-        let script = document.createElement('script');
-        script.src = 'main/js/defindMultiSelect.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-        this.handleResizeColumn();
-    }
-
     constructor(props) {
         super(props);
         this.state = { 
          }
     }
 
-    loadJSMultiSelect = () => {
-        window.$(document).ready(function () {
-            window.$('#multiSelectShowColumn').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn cột muốn ẩn'
-            });
-        });
+    render() { 
+        console.log("manage company index")
+        return ( 
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <CompanyTable/>
+                </div>
+            </div>
+         );
     }
-
+    
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -61,15 +49,13 @@ class Company extends Component {
         });
     }
 
-    render() { 
-        console.log("manage company index")
-        return ( 
-            <div className="box" style={{ minHeight: '450px' }}>
-                <div className="box-body">
-                    <CompanyTable/>
-                </div>
-            </div>
-         );
+    componentDidMount() {
+        let script = document.createElement('script');
+        script.src = '/lib/main/js/defindMultiSelect.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+        this.handleResizeColumn();
     }
 }
  

@@ -1,4 +1,5 @@
 const LinkService = require('./link.service');
+const { Logger } = require('../../../logs');
 
 exports.get = async (req, res) => {
     try {

@@ -29,7 +29,6 @@ exports.getById = async (id) => {
 }
 
 exports.create = async(data) => {
-    console.log("data com: ", data);
     return await Component.create({
         name: data.name,
         description: data.description,
