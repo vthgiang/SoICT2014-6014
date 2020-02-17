@@ -44,10 +44,10 @@ const seedDatabase = async () => {
 
     //Tạo tài khoản systemadmin cho hệ thống quản lý công việc
     var salt = await bcrypt.genSaltSync(10);
-    var hash = await bcrypt.hashSync('123456', salt);
+    var hash = await bcrypt.hashSync(process.env.SYSTEM_ADMIN_PASSWORD, salt);
     var systemAdmin = await User.create({
-        name: 'System Admin',
-        email: 'systemAdmin@gmail.com',
+        name: process.env.SYSTEM_ADMIN_NAME,
+        email: process.env.SYSTEM_ADMIN_EMAIL,
         password: hash,
         company: vnist._id
     });
