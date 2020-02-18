@@ -40,16 +40,16 @@ function createNewDiscipline(data) {
 }
 
 // Xoá thông tin kỷ luật của nhân viên
-function deleteDiscipline(employeeNumber, number) {
+function deleteDiscipline(id) {
     const requestOptions = {
         method: 'DELETE',
     };
 
-    return fetch(`/discipline/${employeeNumber}/${number}`, requestOptions).then(handleResponse);
+    return fetch(`/discipline/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin kỷ luật của nhân viên
-function updateDiscipline(employeeNumber, number, data) {
+function updateDiscipline(id, data) {
     const requestOptions = {
         method: 'PUT',
         headers: {
@@ -57,7 +57,7 @@ function updateDiscipline(employeeNumber, number, data) {
         },
         body: JSON.stringify(data)
     };
-    return fetch(`/discipline/${employeeNumber}/${number}`, requestOptions).then(handleResponse);
+    return fetch(`/discipline/${id}`, requestOptions).then(handleResponse);
 }
 
 
@@ -91,16 +91,16 @@ function createNewPraise(data) {
 }
 
 // Xoá thông tin khen thưởng
-function deletePraise(employeeNumber,number) {
+function deletePraise(id) {
     const requestOptions = {
         method: 'DELETE',
     };
 
-    return fetch(`/praise/${employeeNumber}/${number}`, requestOptions).then(handleResponse);
+    return fetch(`/praise/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin khen thưởng
-function updatePraise(employeeNumber,number, data) {
+function updatePraise(id, data) {
     const requestOptions ={
         method: 'PUT',
         headers: {
@@ -108,5 +108,5 @@ function updatePraise(employeeNumber,number, data) {
         },
         body: JSON.stringify(data)
     };
-    return fetch(`/praise/${employeeNumber}/${number}`, requestOptions).then(handleResponse);
+    return fetch(`/praise/${id}`, requestOptions).then(handleResponse);
 }

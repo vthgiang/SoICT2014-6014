@@ -10,9 +10,9 @@ router.post('/paginate', DisciplineController.get);
 router.post('/create', DisciplineController.create);
 
 // Xoá bẳng thông tin kỷ luật
-router.delete('/:employeeNumber/:number', DisciplineController.delete);
+router.delete('/:id', DisciplineController.delete);
 
 // update thông tin kyt luật
-router.put('/:employeeNumber/:number', DisciplineController.update);
+router.put('/:id', DisciplineController.update);
 
 module.exports = router;

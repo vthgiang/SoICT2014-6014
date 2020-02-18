@@ -22,7 +22,9 @@ exports.get = async (data) => {
     var allSalary = await Salary.find(keySearch).populate({
             path: 'employee',
             model: Employee
-        }).sort({ 'createDate': 'desc' })
+        }).sort({
+            'createDate': 'desc'
+        })
         .skip(data.page)
         .limit(data.limit);
     return allSalary;
@@ -34,7 +36,7 @@ exports.create = async (data) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber
     });
-    var salary =data.mainSalary+data.unit;
+    var salary = data.mainSalary + data.unit;
     //console.log(employeeinfo.map(x=x._id));
     var newSalary = await Salary.create({
         employee: employeeinfo._id,
@@ -43,7 +45,7 @@ exports.create = async (data) => {
         bonus: data.bonus
     });
     var content = {
-        _id:newSalary._id,
+        _id: newSalary._id,
         employee: employeeinfo,
         month: data.month,
         mainSalary: salary,
@@ -53,39 +55,33 @@ exports.create = async (data) => {
 }
 
 // Xoá bẳng lương
-exports.delete = async (employeeNumber, month) => {
-    var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
-    });
-
+exports.delete = async (id) => {
     return await Salary.findOneAndDelete({
-        employee: employeeinfo._id,
-        month: month
+        _id: id
     });
 }
 
 // Update thông tin bảng lương
-exports.update = async (employeeNumber, month, data) => {
+exports.update = async (id, data) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
+        employeeNumber: data.employeeNumber
     });
     var salaryChange = {
         employee: employeeinfo._id,
-        month: month,
-        mainSalary: data.mainSalary+data.unit,
+        month: data.month,
+        mainSalary: data.mainSalary + data.unit,
         bonus: data.bonus
     };
-    var salaryInfo=await Salary.findOneAndUpdate({
-        employee: employeeinfo._id,
-        month: month
+    await Salary.findOneAndUpdate({
+        _id: id
     }, {
         $set: salaryChange
     });
     var updateSalary = {
-        _id:salaryInfo._id,
+        _id: id,
         employee: employeeinfo,
-        month: month,
-        mainSalary: data.mainSalary+data.unit,
+        month: data.month,
+        mainSalary: data.mainSalary + data.unit,
         bonus: data.bonus
     }
     return updateSalary;

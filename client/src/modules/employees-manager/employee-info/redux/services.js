@@ -1,7 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
-export const employeeService = {
+export const EmployeeService = {
     addNewEmployee,
     getByEmployeeNumber,
     updateInformationEmpoyee,
@@ -11,12 +11,12 @@ export const employeeService = {
 }
 
 // upload ảnh đại diện của nhân viên
-function uploadAvatar(file){
+function uploadAvatar(employeeNumber,file){
     const requestOptions = {
-        method: 'POST',
+        method: 'PATCH',
         body: file
     };
-    return fetch(`/employee/avatar`, requestOptions).then(handleResponse);
+    return fetch(`/employee/avatar/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 

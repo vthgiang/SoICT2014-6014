@@ -31,7 +31,7 @@ class ModalEditPraise extends Component {
     }
     handleSunmit(event) {
         var startDate = this.refs.startDate.value;
-        this.props.updatePraise(this.state.employeeNumber, this.state.number, { ...this.state, startDate });
+        this.props.updatePraise(this.state.id, { ...this.state, startDate });
         window.$(`#modal-viewPraise-${this.state.id}`).modal("hide");
     }
     render() {
@@ -64,7 +64,7 @@ class ModalEditPraise extends Component {
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
                                         <label htmlFor="unit">Cấp ra quyết định:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" defaultValue={data.unit} onChange={this.handleChange} />
+                                        <input type="text" className="form-control" name="unit" defaultValue={data.unit} onChange={this.handleChange} />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                         <label htmlFor="startDate">Ngày ra quyết định:<span className="required">&#42;</span></label>

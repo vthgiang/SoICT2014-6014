@@ -53,7 +53,7 @@ class ModalEditSalary extends Component {
         })
     };
     handleSunmit(event) {
-        this.props.updateSalary(this.state.employeeNumber, this.state.month, this.state);
+        this.props.updateSalary(this.state.id, this.state);
         window.$(`#modal-editSalary-${this.props.data._id}`).modal("hide");
     }
 
@@ -90,7 +90,7 @@ class ModalEditSalary extends Component {
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
                                                 </div>
-                                                <input type="text" style={{height:33}} className="form-control" name="month" id="datepicker5" defaultValue={data.month} data-date-format="mm-yyyy" disabled />
+                                                <input type="text" style={{height:33}} className="form-control employeedatepicker" name="month" defaultValue={data.month} data-date-format="mm-yyyy" disabled />
                                             </div>
                                         </div>
                                         <div className="form-group">
@@ -116,7 +116,7 @@ class ModalEditSalary extends Component {
                                                         data.bonus.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
-                                                                <td><input className={index} type="text" value={x.number} name="number" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
+                                                                <td><input className={index} type="number" value={x.number} name="number" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                                                 </td>

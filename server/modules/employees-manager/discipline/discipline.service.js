@@ -57,40 +57,35 @@ exports.create = async (data) => {
 }
 
 // Xoá thông tin kỷ luật
-exports.delete = async (employeeNumber, number) => {
-    var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
-    });
+exports.delete = async (id) => {
     return await Discipline.findOneAndDelete({
-        employee: employeeinfo._id,
-        number: number
+        _id: id
     });
 }
 
 // Update thông tin kỷ luật
-exports.update = async (employeeNumber, number, data) => {
+exports.update = async (id, data) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
+        employeeNumber: data.employeeNumber
     });
     var DisciplineChange = {
         employee: employeeinfo._id,
-        number: number,
+        number: data.number,
         unit: data.unit,
         startDate: data.startDate,
         endDate: data.endDate,
         type: data.type,
         reason: data.reason,
     };
-    var disciplineInfo = await Discipline.findOneAndUpdate({
-        employee: employeeinfo._id,
-        number: number
+    await Discipline.findOneAndUpdate({
+        _id: id
     }, {
         $set: DisciplineChange
     });
     var updateDiscipline = {
-        _id: disciplineInfo._id,
+        _id: id,
         employee: employeeinfo,
-        number: number,
+        number: data.number,
         unit: data.unit,
         startDate: data.startDate,
         endDate: data.endDate,

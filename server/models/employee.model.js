@@ -87,25 +87,33 @@ const EmployeeSchema = new Schema({
     numberBHXH: {
         type: String,
     },
-    Tax: [{
-        numberTax: String,
-        userTax: String,
-        startDate: String,
-        unitTax: String,
-    }],
+    numberTax: {
+        type: String,
+    },
+    userTax: {
+        type: String,
+    },
+    startTax: {
+        type: String,
+    },
+    unitTax: {
+        type: String,
+    },
     certificate: [{
         nameCertificate: String,
         addressCertificate: String,
         yearCertificate: String,
         typeCertificate: String,
-        urlCertificate: String
+        file: String,
+        urlFile: String
     }],
     certificateShort: [{
         nameCertificateShort: String,
         unit: String,
         startDate: String,
         endDate: String,
-        urlCertificateShort: String
+        file: String,
+        urlFile: String
     }],
     experience: [{
         startDate: String,
@@ -118,7 +126,8 @@ const EmployeeSchema = new Schema({
         typeContract: String,
         startDate: String,
         endDate: String,
-        urlContract: String
+        file: String,
+        urlFile: String
     }],
     BHXH: [{
         startDate: String,
@@ -146,6 +155,7 @@ const EmployeeSchema = new Schema({
         discFile: String,
         number: String,
         status: String,
+        file: String,
         urlFile: String
     }],
     createDate: {

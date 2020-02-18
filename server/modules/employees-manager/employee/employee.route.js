@@ -5,7 +5,7 @@ const EmployeeController = require("./employee.controller");
 
 
 // 
-router.post('/avatar', EmployeeController.uploadFile, EmployeeController.getInforFile);
+router.patch('/avatar/:employeeNumber', EmployeeController.uploadFile, EmployeeController.updateAvatar);
 // get all list employee
 router.post('/paginate', EmployeeController.get);
 

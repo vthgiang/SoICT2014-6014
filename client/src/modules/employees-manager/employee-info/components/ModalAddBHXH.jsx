@@ -20,6 +20,18 @@ class ModalAddBHXH extends Component {
             [name]: value
         });
     }
+    handleSubmit = async () => {
+        await this.setState({
+            startDate: this.refs.startDate.value,
+            endDate: this.refs.endDate.value
+        })
+        this.props.handleChange(this.state);
+        this.setState ({
+            unit: "",
+            position: "",
+        })
+        window.$(`#modal-addNewBHXH`).modal("hide");
+    }
     render() {
         return (
             <div className="modal fade" id="modal-addNewBHXH" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -30,6 +42,7 @@ class ModalAddBHXH extends Component {
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới quá trình đóng BHXH:</h4>
                         </div>
+                        <form>
                         <div className="modal-body">
                             <div className="col-md-12">
                                 <div className="checkbox" style={{ marginTop: 0 }}>
@@ -48,7 +61,7 @@ class ModalAddBHXH extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" className="form-control employeedatepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" className="form-control employeedatepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
@@ -57,7 +70,7 @@ class ModalAddBHXH extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" className="form-control employeedatepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" className="form-control employeedatepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -68,8 +81,9 @@ class ModalAddBHXH extends Component {
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={()=>this.handleSubmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
                         </div>
+                        </form>
                     </div>
                 </div >
             </div>

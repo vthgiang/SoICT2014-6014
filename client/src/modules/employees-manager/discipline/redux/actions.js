@@ -83,22 +83,20 @@ function createNewDiscipline(newDiscipline) {
 }
 
 // Xoá thông tin kỷ luật của nhân viên
-function deleteDiscipline(employeeNumber, number) {
+function deleteDiscipline(id) {
     return dispatch => {
-        dispatch(request(employeeNumber, number));
+        dispatch(request());
 
-        DisciplineService.deleteDiscipline(employeeNumber, number)
+        DisciplineService.deleteDiscipline(id)
             .then(
                 disciplineDelete => dispatch(success(disciplineDelete)),
                 error => dispatch(failure(error.toString()))
             );
     }
 
-    function request(employeeNumber, number) {
+    function request() {
         return {
             type: DisciplineConstants.DELETE_DISCIPLINE_REQUEST,
-            employeeNumber,
-            number
         };
     };
 
@@ -118,22 +116,20 @@ function deleteDiscipline(employeeNumber, number) {
 }
 
 // cập nhật thông tin kỷ luật của nhân viên
-function updateDiscipline(employeeNumber, number, infoDiscipline) {
+function updateDiscipline(id, infoDiscipline) {
     return dispatch => {
-        dispatch(request(employeeNumber, number));
+        dispatch(request());
 
-        DisciplineService.updateDiscipline(employeeNumber, number, infoDiscipline)
+        DisciplineService.updateDiscipline(id, infoDiscipline)
             .then(
                 infoDiscipline => dispatch(success(infoDiscipline)),
                 error => dispatch(failure(error.toString()))
             );
     }
 
-    function request(employeeNumber, number) {
+    function request() {
         return {
             type: DisciplineConstants.UPDATE_DISCIPLINE_REQUEST,
-            employeeNumber,
-            number
         };
     };
 
@@ -224,22 +220,20 @@ function createNewPraise(newPraise) {
 }
 
 // Xoá một chương trình đào tạo
-function deletePraise(employeeNumber, number) {
+function deletePraise(id) {
     return dispatch => {
-        dispatch(request(employeeNumber, number));
+        dispatch(request());
 
-        DisciplineService.deletePraise(employeeNumber, number)
+        DisciplineService.deletePraise(id)
             .then(
                 praiseDelete => dispatch(success(praiseDelete)),
                 error => dispatch(failure(error.toString()))
             );
     }
 
-    function request(employeeNumber, number) {
+    function request() {
         return {
             type: DisciplineConstants.DELETE_PRAISE_REQUEST,
-            employeeNumber,
-            number
         };
     };
 
@@ -259,22 +253,20 @@ function deletePraise(employeeNumber, number) {
 }
 
 // cập nhật thông tin của chương trình đào tạo
-function updatePraise(employeeNumber, number, infoPraise) {
+function updatePraise(id, infoPraise) {
     return dispatch => {
-        dispatch(request(employeeNumber, number));
+        dispatch(request());
 
-        DisciplineService.updatePraise(employeeNumber, number, infoPraise)
+        DisciplineService.updatePraise(id, infoPraise)
             .then(
                 infoPraise => dispatch(success(infoPraise)),
                 error => dispatch(failure(error.toString()))
             );
     }
 
-    function request(employeeNumber, number) {
+    function request() {
         return {
             type: DisciplineConstants.UPDATE_PRAISE_REQUEST,
-            employeeNumber,
-            number
         };
     };
 

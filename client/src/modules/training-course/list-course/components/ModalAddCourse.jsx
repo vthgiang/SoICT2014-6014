@@ -55,6 +55,12 @@ class ModalAddCourse extends Component {
         } else if (positionEducation.length <= 0) {
             this.notifyerror("Bạn chưa nhập chức vụ được áp dụng");
         } else {
+            const formData = new FormData();
+            formData.append('numberEducation', newCourse.numberEducation);
+            formData.append('nameEducation', newCourse.nameEducation);
+            formData.append('unitEducation', []);
+            formData.append('positionEducation', []);
+            //this.props.addNewCourse(formData);
             this.props.addNewCourse({ ...this.state.newCourse, unitEducation, positionEducation });
             window.$(`#modal-addCourse`).modal("hide");
         }

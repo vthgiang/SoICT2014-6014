@@ -3,9 +3,6 @@ class ModalAddSabbatical extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: " ",
-            startDate: " ",
-            endDate: " ",
             status: "Đã chấp nhận",
             reason: " ",
         };
@@ -25,12 +22,16 @@ class ModalAddSabbatical extends Component {
         });
     }
     handleSunmit = async () => {
-        // await this.setState({
-        //     startDate: this.refs.startDate.value,
-        //     endDate:this.refs.endDate.value
-        // })
-        // this.props.createNewSabbatical(this.state);
-        // window.$(`#modal-addNewSabbatical`).modal("hide");
+        await this.setState({
+            startDate: this.refs.startDate.value,
+            endDate: this.refs.endDate.value
+        })
+        this.props.handleChange(this.state);
+        this.setState({
+            status: "Đã chấp nhận",
+            reason: " ",
+        })
+        window.$(`#modal-addNewSabbatical`).modal("hide");
     }
     render() {
         return (
@@ -55,7 +56,7 @@ class ModalAddSabbatical extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="startDate"  ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
@@ -64,7 +65,7 @@ class ModalAddSabbatical extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="endDate"  ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -83,7 +84,7 @@ class ModalAddSabbatical extends Component {
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={()=>this.handleSunmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
                         </div>
                     </div>
                 </div>

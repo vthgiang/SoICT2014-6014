@@ -2,7 +2,7 @@ import {
     SabbaticalConstants
 } from './constants';
 
-export function Sabbatical(state = {}, action) {
+export function Sabbatical(state = {listSabbatical:[]}, action) {
     switch (action.type) {
         case SabbaticalConstants.GET_SABBATICAL_REQUEST:
             return {

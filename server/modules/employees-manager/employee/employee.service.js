@@ -58,7 +58,10 @@ exports.create = async (data) => {
         dateCMND: data.dateCMND,
         addressCMND: data.addressCMND,
         emailCompany: data.emailCompany,
-        Tax: data.Tax,
+        numberTax: data.numberTax,
+        userTax: data.userTax,
+        startTax: data.startTax,
+        unitTax: data.unitTax,
         ATM: data.ATM,
         nameBank: data.nameBank,
         addressBank: data.addressBank,
@@ -112,6 +115,26 @@ exports.create = async (data) => {
         employees,
         employeeContact
     };
+    return content;
+}
+
+// Cập nhật Avatar nhân viên
+exports.updateAvatar = async (employeeNumber, url) => {
+    var employeeinfo = await Employee.findOne({
+        employeeNumber: employeeNumber
+    });
+    avatarUpdate = {
+        avatar: "fileEmployee/" + url
+    }
+    await Employee.findOneAndUpdate({
+        _id: employeeinfo._id
+    }, {
+        $set: avatarUpdate
+    });
+    var content = {
+        _id: employeeinfo._id,
+        avatar: "uploadAvatar" + url
+    }
     return content;
 }
 

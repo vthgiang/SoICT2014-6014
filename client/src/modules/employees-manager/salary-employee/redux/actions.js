@@ -79,21 +79,20 @@ function createNewSalary(newSalary){
 }
 
 // Xoá một chương trình đào tạo
-function deleteSalary(employeeNumber,month){
+function deleteSalary(id){
     return dispatch => {
-        dispatch(request(employeeNumber,month));
+        dispatch(request());
 
-        SalaryService.deleteSalary(employeeNumber,month)
+        SalaryService.deleteSalary(id)
             .then(
                 salaryDelete => dispatch(success(salaryDelete)),
                 error => dispatch(failure(error.toString()))
             );
     }
 
-    function request(employeeNumber,month) {
+    function request() {
         return {
-            type: SalaryConstants.DELETE_SALARY_REQUEST,
-            employeeNumber,month
+            type: SalaryConstants.DELETE_SALARY_REQUEST
         };
     };
 
@@ -113,21 +112,20 @@ function deleteSalary(employeeNumber,month){
 }
 
 // cập nhật thông tin của chương trình đào tạo
-function updateSalary(employeeNumber,month,infoSalary){
+function updateSalary(id,infoSalary){
     return dispatch => {
-        dispatch(request(employeeNumber,month));
+        dispatch(request());
 
-        SalaryService.updateSalary(employeeNumber,month,infoSalary)
+        SalaryService.updateSalary(id,infoSalary)
             .then(
                 infoSalary => dispatch(success(infoSalary)),
                 error => dispatch(failure(error.toString()))
             );
     }
 
-    function request(employeeNumber,month) {
+    function request() {
         return {
-            type: SalaryConstants.UPDATE_SALARY_REQUEST,
-            employeeNumber,month
+            type: SalaryConstants.UPDATE_SALARY_REQUEST
         };
     };
 

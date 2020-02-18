@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeInfoActions } from '../../employee-info/redux/actions';
+import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 class ModalDetailEmployee extends Component {
     constructor(props) {
         super(props);
@@ -42,7 +42,7 @@ class ModalDetailEmployee extends Component {
                                                 <div className="col-sm-12">
                                                     <div className="col-sm-3">
                                                         <div className="form-group">
-                                                            <img className="attachment-img avarta" src="adminLTE/dist/img/avatar5.png" alt="Attachment" />
+                                                            <img className="attachment-img avarta" src={list.avatar} alt="Attachment" />
                                                         </div>
                                                     </div>
                                                     <div className="col-sm-4">

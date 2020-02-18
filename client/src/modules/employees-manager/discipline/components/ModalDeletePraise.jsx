@@ -8,7 +8,7 @@ class ModalDeletePraise extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     handleSubmit(event) {
-        this.props.deletePraise(this.props.data.employee.employeeNumber, this.props.data.number);
+        this.props.deletePraise(this.props.data._id);
         window.$(`#modal-deletePraise-${this.props.data._id}`).modal("hide");
     }
     render() {

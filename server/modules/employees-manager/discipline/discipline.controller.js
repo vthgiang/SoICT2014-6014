@@ -33,7 +33,7 @@ exports.create = async (req, res) => {
 // delete thông tin kỷ luật
 exports.delete = async (req, res) => {
     try {
-        var disciplineDelete = await DisciplineService.delete(req.params.employeeNumber, req.params.number);
+        var disciplineDelete = await DisciplineService.delete(req.params.id);
         res.status(200).json({
             message: "success",
             content: disciplineDelete
@@ -48,7 +48,7 @@ exports.delete = async (req, res) => {
 // update thông tin kỷ luật
 exports.update = async (req, res) => {
     try {
-        var disciplineUpdate = await DisciplineService.update(req.params.employeeNumber,req.params.number,req.body);
+        var disciplineUpdate = await DisciplineService.update(req.params.id,req.body);
         res.status(200).json({
             message: "success",
             content: disciplineUpdate

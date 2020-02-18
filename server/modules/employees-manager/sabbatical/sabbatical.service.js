@@ -79,13 +79,13 @@ exports.update = async (id, data) => {
         status: data.status,
         reason: data.reason,
     };
-    var SabbaticalInfo = await Sabbatical.findOneAndUpdate({
+    await Sabbatical.findOneAndUpdate({
         _id: id,
     }, {
         $set: SabbaticalChange
     });
     var updateSabbatical = {
-        _id: SabbaticalInfo._id,
+        _id: id,
         employee: employeeinfo,
         startDate: data.startDate,
         endDate: data.endDate,

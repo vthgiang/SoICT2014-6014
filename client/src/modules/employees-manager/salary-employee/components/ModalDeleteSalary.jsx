@@ -8,7 +8,7 @@ class ModalDeleteSalary extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     handleSubmit(event) {
-        this.props.deleteSalary(this.props.data.employee.employeeNumber,this.props.data.month);
+        this.props.deleteSalary(this.props.data._id);
         window.$(`#modal-deleteSalary-${this.props.data._id}`).modal("hide");
     }
     render() {

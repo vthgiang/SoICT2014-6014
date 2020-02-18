@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeInfoActions } from '../redux/actions';
+import { EmployeeInfoActions } from '../redux/actions';
 class DetailEmployee extends Component {
     constructor(props) {
         super(props);
@@ -703,7 +703,7 @@ function mapState(state) {
     return { employeesInfo };
 }
 const actionCreators = {
-    getInformationEmployee: employeeInfoActions.getInformationEmployee,
+    getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
 };
 
 const connectDetaiEmployee = connect(mapState, actionCreators)(DetailEmployee);

@@ -3,9 +3,13 @@ class ModalAddContract extends Component {
     constructor(props){
         super(props);
         this.state={
-            
+            nameContract: "",
+            typeContract: "",
+            file:"",
+            urlFile:""
         }
-        this.handleChange= this.handleChange.bind(this)
+        this.handleChange= this.handleChange.bind(this);
+        this.handleChangeFile = this.handleChangeFile.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -14,11 +18,38 @@ class ModalAddContract extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+    handleChangeFile(event) {
+        const { name } = event.target;
+        var file = event.target.files[0];
+        var url = URL.createObjectURL(file);
+        var fileLoad = new FileReader();
+        fileLoad.readAsDataURL(file);
+        fileLoad.onload = () => {
+            this.setState({
+                [name]: file.name,
+                urlFile: url
+            })
+        };
+    }
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
+    }
+    handleSubmit = async () => {
+        await this.setState({
+            startDate: this.refs.startDate.value,
+            endDate: this.refs.endDate.value
+        })
+        this.props.handleChange(this.state);
+        this.setState ({
+            nameContract: "",
+            typeContract: "",
+            file:"",
+            urlFile:""
+        })
+        window.$(`#modal-addNewContract`).modal("hide");
     }
     render() {
         return (
@@ -30,6 +61,7 @@ class ModalAddContract extends Component {
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới hợp đồng lao động:</h4>
                         </div>
+                        <form>
                         <div className="modal-body">
                             <div className="col-md-12">
                                 <div className="checkbox" style={{ marginTop: 0 }}>
@@ -64,16 +96,17 @@ class ModalAddContract extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="urlContract">Chọn file đính kèm:</label>
-                                    <input type="file" className="form-control" name="urlContract" onChange={this.handleChange} />
+                                    <label htmlFor="file">Chọn file đính kèm:</label>
+                                    <input type="file" className="form-control" name="file" onChange={this.handleChangeFile} />
                                 </div>
                             </div>
                         </div>
                         
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={()=>this.handleSubmit()} title="Thêm mới hợp đồng lao động" >Thêm mới</button>
                         </div>
+                        </form>
                     </div>
                 </div >
             </div>

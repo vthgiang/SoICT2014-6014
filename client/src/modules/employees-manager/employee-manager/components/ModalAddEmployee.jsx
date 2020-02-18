@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeInfoActions } from '../../employee-info/redux/actions';
+import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import '../../employee-info/components/addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -1306,10 +1306,10 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    addNewEmployee: employeeInfoActions.addNewEmployee,
-    getInformationEmployee: employeeInfoActions.getInformationEmployee,
-    getListEmployee: employeeInfoActions.getListEmployee,
-    getAllEmployee: employeeInfoActions.getAllEmployee,
+    addNewEmployee: EmployeeInfoActions.addNewEmployee,
+    getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
+    getListEmployee: EmployeeInfoActions.getListEmployee,
+    getAllEmployee: EmployeeInfoActions.getAllEmployee,
 };
 
 const connectedAddEmplyee = connect(mapState, actionCreators)(ModalAddEmployee);

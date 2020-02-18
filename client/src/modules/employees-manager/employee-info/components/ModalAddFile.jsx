@@ -3,9 +3,16 @@ class ModalAddFile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            nameFile:"",
+            discFile:"",
+            number:"",
+            status:"Đã nộp",
+            file:"",
+            urlFile:""
         }
-        this.handleChange = this.handleChange.bind(this)
+        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeFile = this.handleChangeFile.bind(this);
+        this.handleSunmit = this.handleSunmit.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -14,11 +21,36 @@ class ModalAddFile extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+    handleChangeFile(event) {
+        const { name } = event.target;
+        var file = event.target.files[0];
+        var url = URL.createObjectURL(file);
+        var fileLoad = new FileReader();
+        fileLoad.readAsDataURL(file);
+        fileLoad.onload = () => {
+            this.setState({
+                [name]: file.name,
+                urlFile: url
+            })
+        };
+    }
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
+    }
+    handleSunmit(){
+        this.props.handleChange(this.state);
+        this.setState({
+            nameFile:"",
+            discFile:"",
+            number:"",
+            status:"Đã nộp",
+            urlFile:"",
+            file:""
+        })
+        window.$(`#modal-addNewFile`).modal("hide");
     }
     render() {
         return (
@@ -30,6 +62,7 @@ class ModalAddFile extends Component {
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới tài liệu đính kèm:</h4>
                         </div>
+                        <form>
                         <div className="modal-body">
                             <div className="col-md-12">
                                 <div className="checkbox" style={{ marginTop: 0 }}>
@@ -51,22 +84,23 @@ class ModalAddFile extends Component {
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
                                     <label htmlFor="status">Trạng thái:<span className="required">&#42;</span></label>
-                                    <select className="form-control" defaultValue="Đã chấp nhận" name="status" onChange={this.handleChange}>
-                                        <option>Chưa nộp</option>
-                                        <option>Đã nộp</option>
-                                        <option>Đã trả</option>
+                                    <select className="form-control" defaultValue="Đã nộp" name="status" onChange={this.handleChange}>
+                                        <option value="Chưa nộp">Chưa nộp</option>
+                                        <option value="Đã nộp">Đã nộp</option>
+                                        <option value="Đã trả">Đã trả</option>
                                     </select>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="urlFile">Chọn file đính kèm:</label>
-                                    <input type="file" className="form-control" name="urlFile" onChange={this.handleChange} />
+                                    <label htmlFor="file">Chọn file đính kèm:</label>
+                                    <input type="file" className="form-control" name="file" onChange={this.handleChangeFile} />
                                 </div>
                             </div>
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={this.handleSunmit} title="Thêm mới tài liệu đính kèm" >Thêm mới</button>
                         </div>
+                        </form>
                     </div>
                 </div >
             </div>

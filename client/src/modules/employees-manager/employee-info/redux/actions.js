@@ -1,11 +1,11 @@
 import {
-    constants
+    Constants
 } from "./constants";
 //import { alerActions } from "./AlertActions";
 import {
-    employeeService
+    EmployeeService
 } from "./services";
-export const employeeInfoActions = {
+export const EmployeeInfoActions = {
     addNewEmployee,
     getInformationEmployee,
     updateInformationEmployee,
@@ -13,10 +13,10 @@ export const employeeInfoActions = {
 };
 
 // upload ảnh đại diện
-function uploadAvatar(file) {
+function uploadAvatar(employeeNumber,file) {
     return dispatch => {
         dispatch(request());
-        employeeService.uploadAvatar(file)
+        EmployeeService.uploadAvatar(employeeNumber,file)
             .then(
                 file => dispatch(success(file)),
                 error => dispatch(failure(error.toString()))
@@ -25,20 +25,20 @@ function uploadAvatar(file) {
 
     function request() {
         return {
-            type: constants.ULOAD_AVATAR_REQUEST,
+            type: Constants.ULOAD_AVATAR_REQUEST,
         };
     };
 
-    function success(fileUpload) {
+    function success(file) {
         return {
-            type: constants.ULOAD_AVATAR_SUCCESS,
-            fileUpload
+            type: Constants.ULOAD_AVATAR_SUCCESS,
+            file
         };
     };
 
     function failure(error) {
         return {
-            type: constants.ULOAD_AVATAR_FAILURE,
+            type: Constants.ULOAD_AVATAR_FAILURE,
             error
         };
     };
@@ -49,7 +49,7 @@ function getInformationEmployee(id) {
     return dispatch => {
         dispatch(request());
 
-        employeeService.getByEmployeeNumber(id)
+        EmployeeService.getByEmployeeNumber(id)
             .then(
                 employee => dispatch(success(employee)),
                 error => dispatch(failure(error.toString()))
@@ -59,20 +59,20 @@ function getInformationEmployee(id) {
 
     function request() {
         return {
-            type: constants.GETINFORMATIONEMPLOYEE_REQUEST,
+            type: Constants.GETINFORMATIONEMPLOYEE_REQUEST,
         };
     };
 
     function success(employee) {
         return {
-            type: constants.GETINFORMATIONEMPLOYEE_SUCCESS,
+            type: Constants.GETINFORMATIONEMPLOYEE_SUCCESS,
             employee
         };
     };
 
     function failure(error) {
         return {
-            type: constants.GETINFORMATIONEMPLOYEE_FAILURE,
+            type: Constants.GETINFORMATIONEMPLOYEE_FAILURE,
             error
         };
     };
@@ -83,7 +83,7 @@ function addNewEmployee(employee) {
     return dispatch => {
         dispatch(request(employee));
 
-        employeeService.addNewEmployee(employee)
+        EmployeeService.addNewEmployee(employee)
             .then(
                 employee => {
                     dispatch(success(employee));
@@ -96,21 +96,21 @@ function addNewEmployee(employee) {
 
     function request(employee) {
         return {
-            type: constants.ADDEMPLOYEE_REQUEST,
+            type: Constants.ADDEMPLOYEE_REQUEST,
             employee
         }
     };
 
     function success(employee) {
         return {
-            type: constants.ADDEMPLOYEE_SUCCESS,
+            type: Constants.ADDEMPLOYEE_SUCCESS,
             employee
         }
     };
 
     function failure(error) {
         return {
-            type: constants.ADDEMPLOYEE_FAILURE,
+            type: Constants.ADDEMPLOYEE_FAILURE,
             error
         }
     };
@@ -122,7 +122,7 @@ function updateInformationEmployee(id, informationEmployee) {
     return dispatch => {
         dispatch(request(informationEmployee));
 
-        employeeService.updateInformationEmpoyee(id, informationEmployee)
+        EmployeeService.updateInformationEmpoyee(id, informationEmployee)
             .then(
                 informationEmployee => {
                     dispatch(success(informationEmployee));
@@ -135,21 +135,21 @@ function updateInformationEmployee(id, informationEmployee) {
 
     function request(informationEmployee) {
         return {
-            type: constants.UPDATE_INFORMATION_REQUEST,
+            type: Constants.UPDATE_INFORMATION_REQUEST,
             informationEmployee
         }
     };
 
     function success(informationEmployee) {
         return {
-            type: constants.UPDATE_INFORMATION_SUCCESS,
+            type: Constants.UPDATE_INFORMATION_SUCCESS,
             informationEmployee
         }
     };
 
     function failure(error) {
         return {
-            type: constants.GETINFORMATIONEMPLOYEE_FAILURE,
+            type: Constants.GETINFORMATIONEMPLOYEE_FAILURE,
             error
         }
     };

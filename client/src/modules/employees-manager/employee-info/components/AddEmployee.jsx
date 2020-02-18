@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeInfoActions } from '../redux/actions';
+import { EmployeeInfoActions } from '../redux/actions';
+import { SalaryActions } from '../../salary-employee/redux/actions';
+import { SabbaticalActions } from '../../sabbatical/redux/actions';
+import { DisciplineActions } from '../../discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import './addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,9 +15,9 @@ import { ModalAddExperience } from './ModalAddExperience';
 import { ModalAddBHXH } from './ModalAddBHXH';
 import { ModalAddDiscipline } from './ModalAddDiscipline';
 import { ModalAddPraise } from './ModalAddPraise';
-import {ModalAddSalary} from './ModalAddSalary';
-import {ModalAddSabbatical} from './ModalAddSabbatical';
-import {ModalAddFile} from './ModalAddFile';
+import { ModalAddSalary } from './ModalAddSalary';
+import { ModalAddSabbatical } from './ModalAddSabbatical';
+import { ModalAddFile } from './ModalAddFile';
 import '../../employee-manager/components/listemployee.css';
 
 class AddEmployee extends Component {
@@ -22,9 +25,8 @@ class AddEmployee extends Component {
         super(props);
         this.state = {
             img: 'adminLTE/dist/img/avatar5.png',
-            show: "",
-            defaulte: "display",
-            adding: false,
+            //adding: false,
+            avatar: "",
             employeeNew: {
                 avatar: 'adminLTE/dist/img/avatar5.png',
                 gender: "Nam",
@@ -40,26 +42,21 @@ class AddEmployee extends Component {
                 BHXH: [],
                 course: [],
                 file: []
-            }
-
+            },
+            disciplineNew: [],
+            praiseNew: [],
+            salaryNew: [],
+            sabbaticalNew: [],
         };
         this.handleResizeColumn();
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleChangeTax = this.handleChangeTax.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleChangeEmployeeNumber = this.handleChangeEmployeeNumber.bind(this);
-        this.handleAddNew = this.handleAddNew.bind(this);
-        this.handleChangeCertificate = this.handleChangeCertificate.bind(this);
-        this.handleChangeCertificateShort = this.handleChangeCertificateShort.bind(this);
-        this.handleChangeExperience = this.handleChangeExperience.bind(this);
-        this.handleChangeContract = this.handleChangeContract.bind(this);
-        this.handleChangeBHXH = this.handleChangeBHXH.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
-        this.handleChangeFile = this.handleChangeFile.bind(this);
         this.defaulteClick = this.defaulteClick.bind(this);
     }
-
+    // function tuỳ chỉnh kích thước cột của bảng
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -96,23 +93,16 @@ class AddEmployee extends Component {
     // function upload avatar 
     handleUpload(event) {
         var file = event.target.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-        this.props.uploadAvatar(formData);
         var fileLoad = new FileReader();
-        const { employeeNew } = this.state;
         fileLoad.readAsDataURL(file);
         fileLoad.onload = () => {
             this.setState({
                 img: fileLoad.result,
-                employeeNew: {
-                    ...employeeNew,
-                    avatar: file
-                }
+                avatar: file
             })
         };
     }
-    // function save data of all fields of the target of employee
+    // function lưu các trường thông tin vào state
     handleChange(event) {
         const { name, value } = event.target;
         const { employeeNew } = this.state;
@@ -120,20 +110,6 @@ class AddEmployee extends Component {
             employeeNew: {
                 ...employeeNew,
                 [name]: value
-            }
-        });
-    }
-    // function save data of Tax fields of the target of employee
-    handleChangeTax(event) {
-        const { name, value } = event.target;
-        const { employeeNew } = this.state;
-        this.setState({
-            employeeNew: {
-                ...employeeNew,
-                Tax: {
-                    ...employeeNew.Tax,
-                    [name]: value
-                },
             }
         });
     }
@@ -150,277 +126,134 @@ class AddEmployee extends Component {
         });
 
     }
-    // function add new fields certificate, experience, contract, BHXH, course,File
-    handleAddNew(event) {
-        var check;
-        const { employeeNew } = this.state;
-        event.preventDefault();
-        if (event.target.id === "certificate") {
-            if (this.state.employeeNew.certificate !== []) {
-                check = this.state.employeeNew.certificate.map(function (x, check) {
-                    if (x.nameCertificate === "" || x.urlCertificate === "" || x.addressCertificate === "" || x.yearCertificate === "" || x.typeCertificate === "") check = true;
-                    return check;
-                })
-                if (check.toString() !== 'true') {
-                    this.setState({
-                        employeeNew: {
-                            ...employeeNew,
-                            certificate: [...employeeNew.certificate, { nameCertificate: "", addressCertificate: "", yearCertificate: "", typeCertificate: "Xuất sắc", urlCertificate: "" }]
-                        }
-                    })
-                } else this.notifywarning("Hãy nhập đủ các trường Bằng cấp");
-            } else {
-                this.setState({
-                    employeeNew: {
-                        ...employeeNew,
-                        certificate: [...employeeNew.certificate, { nameCertificate: "", addressCertificate: "", yearCertificate: "", typeCertificate: "Xuất sắc", urlCertificate: "" }]
-                    }
-                })
-            }
-        }
-        if (event.target.id === "certificateShort") {
-            if (this.state.employeeNew.certificateShort !== []) {
-                check = this.state.employeeNew.certificateShort.map(function (x, check) {
-                    if (x.nameCertificateShort === "" || x.urlCertificateShort === "" || x.unit === "" || x.startDate === "" || x.endDate === "") check = true;
-                    return check;
-                })
-                if (check.toString() !== 'true') {
-                    this.setState({
-                        employeeNew: {
-                            ...employeeNew,
-                            certificateShort: [...employeeNew.certificateShort, { nameCertificateShort: "", urlCertificateShort: "", unit: "", startDate: "", endDate: "" }]
-                        }
-                    })
-                } else this.notifywarning("Hãy nhập đủ các trường Chứng chỉ");
-            } else {
-                this.setState({
-                    employeeNew: {
-                        ...employeeNew,
-                        certificateShort: [...employeeNew.certificateShort, { nameCertificateShort: "", urlCertificateShort: "", unit: "", startDate: "", endDate: "" }]
-                    }
-                })
-            }
-        }
-        if (event.target.id === "experience") {
-            if (this.state.employeeNew.experience !== []) {
-                check = this.state.employeeNew.experience.map(function (x, check) {
-                    if (x.startDate === "" || x.endDate === "" || x.unit === "" || x.position === "") check = true;
-                    return check;
-                })
-                if (check.toString() !== 'true') {
-                    this.setState({
-                        employeeNew: {
-                            ...employeeNew,
-                            experience: [...employeeNew.experience, { startDate: "", endDate: "", unit: "", position: "" }]
-                        }
-                    })
-                } else this.notifywarning("Hãy nhập đủ các trường Kinh nghiệm làm việc");
-            } else {
-                this.setState({
-                    employeeNew: {
-                        ...employeeNew,
-                        experience: [...employeeNew.experience, { startDate: "", endDate: "", unit: "", position: "" }]
-                    }
-                })
-            }
-        }
-        if (event.target.id === "contract") {
-            if (this.state.employeeNew.contract !== []) {
-                check = this.state.employeeNew.contract.map(function (x, check) {
-                    if (x.nameContract === "" || x.typeContract === "" || x.startDate === "" || x.endDate === "" || x.urlContract === "") check = true;
-                    return check;
-                })
-                if (check.toString() !== 'true') {
-                    this.setState({
-                        employeeNew: {
-                            ...employeeNew,
-                            contract: [...employeeNew.contract, { nameContract: "", typeContract: "", startDate: "", endDate: "", urlContract: "" }]
-                        }
-                    })
-                } else this.notifywarning("Hãy nhập đủ các trường Hợp đồng lao động");
-            } else {
-                this.setState({
-                    employeeNew: {
-                        ...employeeNew,
-                        contract: [...employeeNew.contract, { nameContract: "", typeContract: "", startDate: "", endDate: "", urlContract: "" }]
-                    }
-                })
-            }
-        }
-        if (event.target.id === "BHXH") {
-            if (this.state.employeeNew.BHXH !== []) {
-                check = this.state.employeeNew.BHXH.map(function (x, check) {
-                    if (x.startDate === "" || x.endDate === "" || x.position === "" || x.unit === "") check = true;
-                    return check;
-                })
-                if (check.toString() !== 'true') {
-                    this.setState({
-                        employeeNew: {
-                            ...employeeNew,
-                            BHXH: [...employeeNew.BHXH, { startDate: "", endDate: "", position: "", unit: "" }]
-                        }
-                    })
-                } else this.notifywarning("Hãy nhập đủ các trường Bảo hiểm y tế");
-            } else {
-                this.setState({
-                    employeeNew: {
-                        ...employeeNew,
-                        BHXH: [...employeeNew.BHXH, { startDate: "", endDate: "", position: "", unit: "" }]
-                    }
-                })
-            }
-        }
-        if (event.target.id === "course") {
-            if (this.state.employeeNew.course !== []) {
-                check = this.state.employeeNew.course.map(function (x, check) {
-                    if (x.nameCourse === "" || x.startDate === "" || x.endDate === "" || x.unit === "" || x.status === "" || x.typeCourse === "") check = true;
-                    return check;
-                })
-                if (check.toString() !== 'true') {
-                    this.setState({
-                        employeeNew: {
-                            ...employeeNew,
-                            course: [...employeeNew.course, { nameCourse: "", startDate: "", endDate: "", unit: "", status: "Chưa hoàn thành", typeCourse: "Nội bộ" }]
-                        }
-                    })
-                } else this.notifywarning("Hãy nhập đủ các trường Quá trình đào tạo");
-            } else {
-                this.setState({
-                    employeeNew: {
-                        ...employeeNew,
-                        course: [...employeeNew.course, { nameCourse: "", startDate: "", endDate: "", unit: "", status: "Chưa hoàn thành", typeCourse: "Nội bộ" }]
-                    }
-                })
-            }
-        }
-        if (event.target.id === "file") {
-            if (this.state.employeeNew.file !== []) {
-                check = this.state.employeeNew.file.map(function (x, check) {
-                    if (x.nameFile === "" || x.discFile === "" || x.number === "" || x.status === "") check = true;
-                    return check;
-                })
-                if (check.toString() !== 'true') {
-                    this.setState({
-                        employeeNew: {
-                            ...employeeNew,
-                            file: [...employeeNew.file, { nameFile: "", urlFile: "", discFile: "", number: "", status: "Chưa nộp" }]
-                        }
-                    })
-                } else this.notifywarning("Hãy nhập đủ các trường Tài liệu đính kèm");
-            } else {
-                this.setState({
-                    employeeNew: {
-                        ...employeeNew,
-                        file: [...employeeNew.file, { nameFile: "", urlFile: "", discFile: "", number: "", status: "Chưa nộp" }]
-                    }
-                })
-            }
-        }
-    }
-
-    // function save change certificate
-    handleChangeCertificate(event) {
-        var { name, value, className, type } = event.target;
-        if (type === "file") {
-            value = value.slice(12);
-        }
+    // function thêm thông tin bằng cấp
+    handleChangeCertificate = (data) => {
         const { employeeNew } = this.state;
         var certificate = employeeNew.certificate;
-        certificate[className] = { ...certificate[className], [name]: value }
         this.setState({
             employeeNew: {
                 ...employeeNew,
-                certificate: certificate
+                certificate: [...certificate, {
+                    ...data
+                }]
             }
         })
     }
-    // function save change certificate
-    handleChangeCertificateShort(event) {
-        var { name, value, className, type } = event.target;
-        if (type === "file") {
-            value = value.slice(12);
-        }
+    // function thêm thông tin chứng chỉ
+    handleChangeCertificateShort = (data) => {
         const { employeeNew } = this.state;
         var certificateShort = employeeNew.certificateShort;
-        certificateShort[className] = { ...certificateShort[className], [name]: value }
         this.setState({
             employeeNew: {
                 ...employeeNew,
-                certificateShort: certificateShort
+                certificateShort: [...certificateShort, {
+                    ...data
+                }]
             }
         })
     }
-    // function save change experience
-    handleChangeExperience(event) {
-        var { name, value, className } = event.target;
+    // function thêm mới kinh nghiệm làm việc
+    handleChangeExperience = (data) => {
         const { employeeNew } = this.state;
         var experience = employeeNew.experience;
-        experience[className] = { ...experience[className], [name]: value }
         this.setState({
             employeeNew: {
                 ...employeeNew,
-                experience: experience
+                experience: [...experience, {
+                    ...data
+                }]
             }
         })
     }
-    // function save change contract
-    handleChangeContract(event) {
-        var { name, value, className, type } = event.target;
-        if (type === "file") {
-            value = value.slice(12);
-        }
+    // function thêm thông tin hợp đồng lao động
+    handleChangeContract = (data) => {
         const { employeeNew } = this.state;
         var contract = employeeNew.contract;
-        contract[className] = { ...contract[className], [name]: value }
         this.setState({
             employeeNew: {
                 ...employeeNew,
-                contract: contract
+                contract: [...contract, {
+                    ...data
+                }]
             }
         })
     }
-    // function save change BHXH
-    handleChangeBHXH(event) {
-        var { name, value, className } = event.target;
+    // function thêm thông tin quá trình đóng BHXH
+    handleChangeBHXH = (data) => {
         const { employeeNew } = this.state;
         var BHXH = employeeNew.BHXH;
-        BHXH[className] = { ...BHXH[className], [name]: value }
         this.setState({
             employeeNew: {
                 ...employeeNew,
-                BHXH: BHXH
+                BHXH: [...BHXH, {
+                    ...data
+                }]
             }
         })
     }
-    //function save change course 
-    handleChangeCourse(event) {
-        var { name, value, className } = event.target;
+    //function thêm thông tin quá trình đào tạo
+    handleChangeCourse = (data) => {
         const { employeeNew } = this.state;
         var course = employeeNew.course;
-        course[className] = { ...course[className], [name]: value }
         this.setState({
             employeeNew: {
                 ...employeeNew,
-                course: course
+                course: [...course, {
+                    ...data
+                }]
             }
         })
     }
-    handleChangeFile(event) {
-        var { name, value, className, type } = event.target;
-        if (type === "file") {
-            value = value.slice(12);
-        }
+    // function thêm thông tin khen thưởng
+    handleChangePraise = (data) => {
+        const { praiseNew } = this.state;
+        this.setState({
+            praiseNew: [...praiseNew, {
+                ...data
+            }]
+        })
+    }
+    // function thêm thông tin kỷ luật
+    handleChangeDiscipline = (data) => {
+        const { disciplineNew } = this.state;
+        this.setState({
+            disciplineNew: [...disciplineNew, {
+                ...data
+            }]
+        })
+    }
+    // function thêm thông tin lịch sử lương
+    handleChangeSalary = (data) => {
+        const { salaryNew } = this.state;
+        this.setState({
+            salaryNew: [...salaryNew, {
+                ...data
+            }]
+        })
+    }
+    // function thêm thông tin nghỉ phép
+    handleChangeSabbatical = (data) => {
+        const { sabbaticalNew } = this.state;
+        this.setState({
+            sabbaticalNew: [...sabbaticalNew, {
+                ...data
+            }]
+        })
+    }
+    //function thêm thông tin tài liệu đính kèm
+    handleChangeFile = (data) => {
         const { employeeNew } = this.state;
         var file = employeeNew.file;
-        file[className] = { ...file[className], [name]: value }
         this.setState({
             employeeNew: {
                 ...employeeNew,
-                file: file
+                file: [...file, {
+                    ...data
+                }]
             }
         })
     }
-    // function delete fields certificate, experience, contract, BHXH, course
+    // function xoá các thông tin certificate, experience, contract, BHXH, course
     delete = (key, index) => {
         const { employeeNew } = this.state;
         if (key === "certificate") {
@@ -483,6 +316,34 @@ class AddEmployee extends Component {
                 }
             })
         };
+        if (key === "praiseNew") {
+            const { praiseNew } = this.state;
+            praiseNew.splice(index, 1);
+            this.setState({
+                praiseNew: [...praiseNew]
+            })
+        };
+        if (key === "disciplineNew") {
+            const { disciplineNew } = this.state;
+            disciplineNew.splice(index, 1);
+            this.setState({
+                disciplineNew: [...disciplineNew]
+            })
+        };
+        if (key === "salaryNew") {
+            const { salaryNew } = this.state;
+            salaryNew.splice(index, 1);
+            this.setState({
+                salaryNew: [...salaryNew]
+            })
+        };
+        if (key === "sabbaticalNew") {
+            const { sabbaticalNew } = this.state;
+            sabbaticalNew.splice(index, 1);
+            this.setState({
+                sabbaticalNew: [...sabbaticalNew]
+            })
+        };
         if (key === "file") {
             var file = employeeNew.file;
             file.splice(index, 1);
@@ -495,29 +356,55 @@ class AddEmployee extends Component {
         };
     }
 
+    // function thêm tài liệu đính kèm mặc định
     defaulteClick(event) {
         event.preventDefault();
+        const defaulteFile = [
+            { nameFile: "Bằng cấp", discFile: "Bằng tốt nghiệp trình độ học vấn cao nhất", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Sơ yếu lý lịch", discFile: "Sơ yếu lý lịch có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Ảnh", discFile: "Ảnh 4X6", number: "3", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Bản sao CMND/Hộ chiếu", discFile: "Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Giấy khám sức khoẻ", discFile: "Giấy khám sức khoẻ có dấu đỏ", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Giấy khai sinh", discFile: "Giấy khái sinh có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Đơn xin việc", discFile: "Đơn xin việc viết tay", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "CV", discFile: "CV của nhân viên", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: "" },
+            { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: "" }
+        ]
+        const { employeeNew } = this.state;
+        var file = employeeNew.file;
         this.setState({
-            show: "display",
-            defaulte: "",
-
+            employeeNew: {
+                ...employeeNew,
+                file: defaulteFile
+            }
         })
     }
 
-    // function add new employee
-    handleSubmit(events) {
-        console.log(this.state);
-        events.preventDefault();
+    // function thêm mới thông tin nhân viên
+    handleSubmit = async () => {
+        var newEmployee = this.state.employeeNew;
+        // cập nhật lại state trước khi add employee
+        await this.setState({
+            employeeNew: {
+                ...newEmployee,
+                brithday: this.refs.brithday.value,
+                dateCMND: this.refs.dateCMND.value,
+                startTax: this.refs.startTax.value,
+                startDateBHYT: this.refs.startDateBHYT.value,
+                endDateBHYT: this.refs.endDateBHYT.value,
+            }
+        })
         var { employee } = this.props.employeesInfo;
-        var employeeNumber;
+        var check;
         if (employee) {
-            employeeNumber = employee.map(x => x.employeeNumber).toString();
+            check = employee.map(x => x.employeeNumber).toString();
         }
         const { employeeNew } = this.state;
         // kiểm tra việc nhập các trường bắt buộc
         if (!employeeNew.employeeNumber) {
             this.notifyerror("Bạn chưa nhập mã nhân viên");
-        } else if (employeeNumber) {
+        } else if (check) {
             this.notifyerror("Mã nhân viên đã tồn tại");
         } else if (!employeeNew.fullName) {
             this.notifyerror("Bạn chưa nhập tên nhân viên");
@@ -539,18 +426,51 @@ class AddEmployee extends Component {
             this.notifyerror("Bạn chưa nhập nơi ở hiện tại");
             // } else if (!employeeNew.ATM || !employeeNew.nameBank || !employeeNew.addressBank) {
             //     this.notifyerror("Bạn chưa nhập đủ thông tin tài khoản ngân hàng");
-        } else if (!employeeNew.Tax) {
-            this.notifyerror("Bạn chưa nhập mã số thuế");
-        } else if (!employeeNew.Tax.numberTax || !employeeNew.Tax.userTax || !employeeNew.Tax.startDate || !employeeNew.Tax.unitTax) {
+        } else if (!employeeNew.numberTax || !employeeNew.userTax || !employeeNew.startTax || !employeeNew.unitTax) {
             this.notifyerror("Bạn chưa nhập đủ thông tin thuế");
         } else {
-            this.props.addNewEmployee(employeeNew);
+            await this.props.addNewEmployee(employeeNew);
+            // lưu avatar
+            if (this.state.avatar !== "") {
+                const formData = new FormData();
+                formData.append('file', this.state.avatar);
+                this.props.uploadAvatar(this.state.employeeNew.employeeNumber, formData);
+            };
+            // lưu lịch sử tăng giảm lương
+            if (this.state.salaryNew.length !== 0) {
+                let employeeNumber = this.state.employeeNew.employeeNumber;
+                this.state.salaryNew.map((x, index) => {
+                    this.props.createNewSalary({ ...x, employeeNumber })
+                })
+            }
+            // lưu thông tin nghỉ phép
+            if (this.state.sabbaticalNew.length !== 0) {
+                let employeeNumber = this.state.employeeNew.employeeNumber;
+                this.state.sabbaticalNew.map((x, index) => {
+                    this.props.createNewSabbatical({ ...x, employeeNumber })
+                })
+            }
+            // lưu thông tin khen thưởng
+            if (this.state.praiseNew.length !== 0) {
+                let employeeNumber = this.state.employeeNew.employeeNumber;
+                this.state.praiseNew.map((x, index) => {
+                    this.props.createNewPraise({ ...x, employeeNumber })
+                })
+            }
+            // lưu thông tin kỷ luật
+            if (this.state.disciplineNew.length !== 0) {
+                let employeeNumber = this.state.employeeNew.employeeNumber;
+                this.state.disciplineNew.map((x, index) => {
+                    this.props.createNewDiscipline({ ...x, employeeNumber })
+                })
+            }
             this.notifysuccess("Thêm thành công");
         }
     }
 
     render() {
-        console.log(this.props.employeesInfo);
+        var formatter = new Intl.NumberFormat();
+        console.log(this.state);
         return (
             <React.Fragment>
                 <div className="row">
@@ -599,7 +519,13 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="brithday">Ngày sinh:<span className="required">&#42;</span></label>
-                                                    <input type="Date" className="form-control" id="brithday" name="brithday" onChange={this.handleChange} autoComplete="off" />
+                                                    <div className={'input-group date has-feedback'}>
+                                                        <div className="input-group-addon">
+                                                            <i className="fa fa-calendar" />
+                                                        </div>
+                                                        <input type="text" className="form-control datepicker" name="brithday" ref="brithday" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                                    </div>
+                                                    {/* <input type="Date" className="form-control" id="brithday" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="emailCompany">Email:<span className="required">&#42;</span></label>
@@ -645,7 +571,13 @@ class AddEmployee extends Component {
                                             <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label htmlFor="dateCMND">Ngày cấp:<span className="required">&#42;</span></label>
-                                                    <input type="Date" className="form-control" id="dateCMND" name="dateCMND" onChange={this.handleChange} />
+                                                    <div className={'input-group date has-feedback'}>
+                                                        <div className="input-group-addon">
+                                                            <i className="fa fa-calendar" />
+                                                        </div>
+                                                        <input type="text" className="form-control datepicker" name="dateCMND" ref="dateCMND" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                                    </div>
+                                                    {/* <input type="Date" className="form-control" id="dateCMND" name="dateCMND" onChange={this.handleChange} /> */}
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="religion">Tôn giáo:</label>
@@ -822,19 +754,24 @@ class AddEmployee extends Component {
                                         <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thuế thu nhập cá nhân:</h4></legend>
                                         <div className="form-group">
                                             <label htmlFor="numberTax">Mã số thuế:<span className="required">&#42;</span></label>
-                                            <input type="number" className="form-control" id="numberTax" name="numberTax" onChange={this.handleChangeTax} />
+                                            <input type="number" className="form-control" id="numberTax" name="numberTax" onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="userTax">Người đại diện:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" id="userTax" name="userTax" onChange={this.handleChangeTax} />
+                                            <input type="text" className="form-control" id="userTax" name="userTax" onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="startDate">Ngày hoạt động:<span className="required">&#42;</span></label>
-                                            <input type="date" className="form-control" id="startDate" name="startDate" onChange={this.handleChangeTax} />
+                                            <div className={'input-group date has-feedback'}>
+                                                <div className="input-group-addon">
+                                                    <i className="fa fa-calendar" />
+                                                </div>
+                                                <input type="text" className="form-control datepicker" name="startTax" ref="startTax" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="unitTax">Quản lý bởi:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" id="unitTax" name="unitTax" onChange={this.handleChangeTax} />
+                                            <input type="text" className="form-control" id="unitTax" name="unitTax" onChange={this.handleChange} />
                                         </div>
                                     </fieldset>
 
@@ -856,24 +793,20 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {this.state.employeeNew.certificate !== [] && this.state.employeeNew.certificate.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td><input className={index} type="text" value={x.nameCertificate} name="nameCertificate" style={{ width: "100%" }} onChange={this.handleChangeCertificate} /></td>
-                                                            <td><input className={index} type="text" value={x.addressCertificate} name="addressCertificate" style={{ width: "100%" }} onChange={this.handleChangeCertificate} /></td>
-                                                            <td><input className={index} type="text" value={x.yearCertificate} name="yearCertificate" style={{ width: "100%" }} onChange={this.handleChangeCertificate} /></td>
-                                                            <td><select className={index} style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="typeCertificate" onChange={this.handleChangeCertificate}>
-                                                                <option>Xuất sắc</option>
-                                                                <option>Giỏi</option>
-                                                                <option>Khá</option>
-                                                                <option>Trung bình khá</option>
-                                                                <option>Trung bình</option>
-                                                            </select></td>
-                                                            <td><div style={{ height: 26, paddingTop: 2 }} className="upload btn btn-default">Chọn tệp<input className={index} type="file" name="urlCertificate" id="file" onChange={this.handleChangeCertificate} /></div> {x.urlCertificate === "" ? "Chưa có tệp nào được chọn" : x.urlCertificate}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("certificate", index)}><i className="material-icons"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
+                                                    {(typeof this.state.employeeNew.certificate === 'undefined' || this.state.employeeNew.certificate.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.employeeNew.certificate.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.nameCertificate}</td>
+                                                                <td>{x.addressCertificate}</td>
+                                                                <td>{x.yearCertificate}</td>
+                                                                <td>{x.typeCertificate}</td>
+                                                                <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
+                                                                    <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("certificate", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </fieldset>
@@ -892,18 +825,20 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {this.state.employeeNew.certificateShort !== [] && this.state.employeeNew.certificateShort.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td><input className={index} type="text" value={x.nameCertificateShort} name="nameCertificateShort" style={{ width: "100%" }} onChange={this.handleChangeCertificateShort} /></td>
-                                                            <td><input className={index} type="text" value={x.unit} name="unit" style={{ width: "100%" }} onChange={this.handleChangeCertificateShort} /></td>
-                                                            <td><input className={index} type="text" value={x.startDate} name="startDate" style={{ width: "100%" }} onChange={this.handleChangeCertificateShort} /></td>
-                                                            <td><input className={index} type="text" value={x.endDate} name="endDate" style={{ width: "100%" }} onChange={this.handleChangeCertificateShort} /></td>
-                                                            <td><div style={{ height: 26, paddingTop: 2 }} className="upload btn btn-default">Chọn tệp<input className={index} type="file" name="urlCertificateShort" id="file" onChange={this.handleChangeCertificateShort} /></div> {x.urlCertificateShort === "" ? "Chưa có tệp nào được chọn" : x.urlCertificateShort}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("certificateShort", index)}><i className="material-icons"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
+                                                    {(typeof this.state.employeeNew.certificateShort === 'undefined' || this.state.employeeNew.certificateShort.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.employeeNew.certificateShort.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.nameCertificateShort}</td>
+                                                                <td>{x.unit}</td>
+                                                                <td>{x.startDate}</td>
+                                                                <td>{x.endDate}</td>
+                                                                <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
+                                                                    <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("certificateShort", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </fieldset>
@@ -954,17 +889,18 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {this.state.employeeNew.experience !== "" && this.state.employeeNew.experience.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td><input className={index} value={x.startDate} type="text" name="startDate" style={{ width: "100%" }} id="datepicker2" data-date-format="mm-yyyy" onChange={this.handleChangeExperience} /></td>
-                                                            <td><input className={index} value={x.endDate} type="text" name="endDate" style={{ width: "100%" }} id="datepicker2" data-date-format="mm-yyyy" onChange={this.handleChangeExperience} /></td>
-                                                            <td><input className={index} value={x.unit} type="text" name="unit" style={{ width: "100%" }} onChange={this.handleChangeExperience} /></td>
-                                                            <td><input className={index} value={x.position} type="text" name="position" style={{ width: "100%" }} onChange={this.handleChangeExperience} /></td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("experience", index)}><i className="material-icons"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
+                                                    {(typeof this.state.employeeNew.experience === 'undefined' || this.state.employeeNew.experience.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.employeeNew.experience.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.startDate}</td>
+                                                                <td>{x.endDate}</td>
+                                                                <td>{x.unit}</td>
+                                                                <td>{x.position}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("experience", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </fieldset>
@@ -981,11 +917,21 @@ class AddEmployee extends Component {
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="startDateBHYT">Ngày có hiệu lực:</label>
-                                                <input type="text" className="form-control" name="startDateBHYT" onChange={this.handleChange} />
+                                                <div className={'input-group date has-feedback'}>
+                                                    <div className="input-group-addon">
+                                                        <i className="fa fa-calendar" />
+                                                    </div>
+                                                    <input type="text" className="form-control datepicker" name="startDateBHYT" ref="startDateBHYT" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                                </div>
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="endDateBHYT">Ngày hết hạn:</label>
-                                                <input type="text" className="form-control" name="endDateBHYT" onChange={this.handleChange} />
+                                                <div className={'input-group date has-feedback'}>
+                                                    <div className="input-group-addon">
+                                                        <i className="fa fa-calendar" />
+                                                    </div>
+                                                    <input type="text" className="form-control datepicker" name="endDateBHYT" ref="endDateBHYT" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                                </div>
                                             </div>
                                         </fieldset>
                                         <fieldset className="scheduler-border">
@@ -1009,17 +955,18 @@ class AddEmployee extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {this.state.employeeNew.BHXH !== "" && this.state.employeeNew.BHXH.map((x, index) => (
-                                                            <tr key={index}>
-                                                                <td><input className={index} value={x.startDate} type="text" name="startDate" style={{ width: "100%", height: 26 }} onChange={this.handleChangeBHXH} /></td>
-                                                                <td><input className={index} value={x.endDate} type="text" name="endDate" style={{ width: "100%", height: 26 }} onChange={this.handleChangeBHXH} /></td>
-                                                                <td><input className={index} value={x.position} type="text" name="position" style={{ width: "100%", height: 26 }} onChange={this.handleChangeBHXH} /></td>
-                                                                <td><input className={index} value={x.unit} type="text" name="unit" style={{ width: "100%", height: 26 }} onChange={this.handleChangeBHXH} /></td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("BHXH", index)}><i className="material-icons"></i></a>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
+                                                        {(typeof this.state.employeeNew.BHXH === 'undefined' || this.state.employeeNew.BHXH.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                            this.state.employeeNew.BHXH.map((x, index) => (
+                                                                <tr key={index}>
+                                                                    <td>{x.startDate}</td>
+                                                                    <td>{x.endDate}</td>
+                                                                    <td>{x.position}</td>
+                                                                    <td>{x.unit}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("BHXH", index)}><i className="material-icons"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -1044,18 +991,20 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {this.state.employeeNew.contract !== "" && this.state.employeeNew.contract.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td><input className={index} value={x.nameContract} type="text" name="nameContract" style={{ width: "100%" }} onChange={this.handleChangeContract} /></td>
-                                                            <td><input className={index} value={x.typeContract} type="text" name="typeContract" style={{ width: "100%" }} onChange={this.handleChangeContract} /></td>
-                                                            <td><input className={index} value={x.startDate} type="date" name="startDate" style={{ width: "100%" }} onChange={this.handleChangeContract} /></td>
-                                                            <td><input className={index} value={x.endDate} type="date" name="endDate" style={{ width: "100%" }} onChange={this.handleChangeContract} /></td>
-                                                            <td><div style={{ height: 26, paddingTop: 2 }} className="upload btn btn-default">Chọn tệp<input className={index} type="file" name="urlContract" id="file1" onChange={this.handleChangeContract} /></div> {x.urlContract === "" ? "Chưa có tệp nào được chọn" : x.urlContract}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("contract", index)}><i className="material-icons"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
+                                                    {(typeof this.state.employeeNew.contract === 'undefined' || this.state.employeeNew.contract.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.employeeNew.contract.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.nameContract}</td>
+                                                                <td>{x.typeContract}</td>
+                                                                <td>{x.startDate}</td>
+                                                                <td>{x.endDate}</td>
+                                                                <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
+                                                                    <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("contract", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </fieldset>
@@ -1077,27 +1026,21 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {this.state.employeeNew.course !== "" && this.state.employeeNew.course.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td><input className={index} value={x.nameCourse} type="text" name="nameCourse" style={{ width: "100%" }} onChange={this.handleChangeCourse} /></td>
-                                                            <td><input className={index} value={x.startDate} type="date" name="startDate" style={{ width: "100%" }} onChange={this.handleChangeCourse} /></td>
-                                                            <td><input className={index} value={x.endDate} type="date" name="endDate" style={{ width: "100%" }} onChange={this.handleChangeCourse} /></td>
-                                                            <td><input className={index} value={x.unit} type="text" name="unit" style={{ width: "100%" }} onChange={this.handleChangeCourse} /></td>
-                                                            <td><select className={index} style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="typeCourse" onChange={this.handleChangeCourse}>
-                                                                <option>Nội bộ</option>
-                                                                <option>Ngoài</option>
-                                                            </select></td>
-                                                            {/* <td><input type="text" style={{ width: "100%" }} /></td> */}
-                                                            <td><input type="text" style={{ width: "100%" }} /></td>
-                                                            <td><select className={index} style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status" onChange={this.handleChangeCourse}>
-                                                                <option>Chưa hoàn thành</option>
-                                                                <option>Hoàn thành</option>
-                                                            </select></td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                        <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("course", index)}><i className="material-icons"></i></a>
-                                                                    </td>
-                                                        </tr>
-                                                    ))}
+                                                    {(typeof this.state.employeeNew.course === 'undefined' || this.state.employeeNew.course.length === 0) ? <tr><td colSpan={8}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.employeeNew.course.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.nameCourse}</td>
+                                                                <td>{x.startDate}</td>
+                                                                <td>{x.endDate}</td>
+                                                                <td>{x.unit}</td>
+                                                                <td>{x.typeCourse}></td>
+                                                                <td><input type="text" style={{ width: "100%" }} /></td>
+                                                                <td>{x.status}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("course", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </fieldset>
@@ -1122,6 +1065,19 @@ class AddEmployee extends Component {
 
                                                 </thead>
                                                 <tbody>
+                                                    {(typeof this.state.praiseNew === 'undefined' || this.state.praiseNew.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.praiseNew.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.number}</td>
+                                                                <td>{x.startDate}</td>
+                                                                <td>{x.unit}</td>
+                                                                <td>{x.type}</td>
+                                                                <td>{x.reason}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("praiseNew", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
 
                                                 </tbody>
                                             </table>
@@ -1142,6 +1098,20 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    {(typeof this.state.disciplineNew === 'undefined' || this.state.disciplineNew.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.disciplineNew.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.number}</td>
+                                                                <td>{x.startDate}</td>
+                                                                <td>{x.endDate}</td>
+                                                                <td>{x.unit}</td>
+                                                                <td>{x.type}</td>
+                                                                <td>{x.reason}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("disciplineNew", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
 
                                                 </tbody>
                                             </table>
@@ -1159,11 +1129,30 @@ class AddEmployee extends Component {
                                                     <thead>
                                                         <tr>
                                                             <th>Tháng</th>
-                                                            <th style={{ width: "50%" }}>Lương</th>
+                                                            <th style={{ width: "30%" }}>Lương chính</th>
+                                                            <th style={{ width: "30%" }}>Tổng lương</th>
                                                             <th>Hành động</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        {(typeof this.state.salaryNew === 'undefined' || this.state.salaryNew.length === 0) ? <tr><td colSpan={4}><center> Không có dữ liệu</center></td></tr> :
+                                                            this.state.salaryNew.map((x, index) => {
+                                                                return (
+                                                                    <tr key={index}>
+                                                                        <td>{x.month}</td>
+                                                                        <td>{formatter.format(parseInt(x.mainSalary))} {x.unit}</td>
+                                                                        <td>
+                                                                            {(typeof x.bonus === 'undefined' || x.bonus.length === 0) ? formatter.format(parseInt(x.mainSalary)) :
+                                                                                x.bonus.map(y => formatter.format(parseInt(x.mainSalary) + parseInt(y.number)))
+                                                                            } {x.unit}
+                                                                        </td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("salaryNew", index)}><i className="material-icons"></i></a>
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        }
 
                                                     </tbody>
                                                 </table>
@@ -1179,11 +1168,21 @@ class AddEmployee extends Component {
                                                             <th>Lý do</th>
                                                             <th>Trạng thái</th>
                                                             <th >Hành động</th>
-
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-
+                                                        {(typeof this.state.sabbaticalNew === 'undefined' || this.state.sabbaticalNew.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                            this.state.sabbaticalNew.map((x, index) => (
+                                                                <tr key={index}>
+                                                                    <td>{x.startDate}</td>
+                                                                    <td>{x.startDate}</td>
+                                                                    <td>{x.reason}</td>
+                                                                    <td>{x.status}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("sabbaticalNew", index)}><i className="material-icons"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
                                                     </tbody>
                                                 </table>
                                             </fieldset>
@@ -1206,185 +1205,31 @@ class AddEmployee extends Component {
                                             <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ width: "22%" }}>Tên tài liệu</th>
-                                                        <th style={{ width: "22%" }}>Mô tả</th>
-                                                        <th style={{ width: "9%" }}>Số lượng</th>
-                                                        <th style={{ width: "12%" }}>Trạng thái</th>
-                                                        <th style={{ width: "30%" }}>File đính kèm</th>
+                                                        <th style={{ width: "18%" }}>Tên tài liệu</th>
+                                                        <th style={{ width: "42%" }}>Mô tả</th>
+                                                        <th style={{ width: "8%" }}>Số lượng</th>
+                                                        <th style={{ width: "10%" }}>Trạng thái</th>
+                                                        <th style={{ width: "12%" }}>File đính kèm</th>
                                                         <th style={{ width: '10%' }}>Hành động</th>
                                                     </tr>
 
                                                 </thead>
-                                                <tbody className={this.state.show}>
-                                                    {this.state.employeeNew.file !== "" && this.state.employeeNew.file.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td><input className={index} value={x.nameFile} type="text" name="nameFile" style={{ width: "100%", height: 26 }} onChange={this.handleChangeFile} /></td>
-                                                            <td><input className={index} value={x.discFile} type="text" name="discFile" style={{ width: "100%", height: 26 }} onChange={this.handleChangeFile} /></td>
-                                                            <td><input className={index} value={x.number} type="number" name="number" style={{ width: "100%", height: 26 }} onChange={this.handleChangeFile} /></td>
-                                                            <td><select className={index} style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status" onChange={this.handleChangeFile}>
-                                                                <option>Chưa nộp</option>
-                                                                <option>Đã nộp</option>
-                                                                <option>Đã trả</option>
-                                                            </select></td>
-                                                            <td><div style={{ height: 26, paddingTop: 2 }} className="upload btn btn-default">Chọn tệp<input className={index} type="file" name="urlFile" id="file" onChange={this.handleChangeFile} /></div> {x.urlFile === "" ? "Chưa có tệp nào được chọn" : x.urlFile}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                                <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("file", index)}><i className="material-icons"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                                <tbody className={this.state.defaulte}>
-                                                    <tr>
-                                                        <td>Bằng cấp</td>
-                                                        <td>Bằng tốt nghiệp trình độ học vấn cao nhất</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Sơ yếu lý lịch</td>
-                                                        <td>Sơ yếu lý lịch có công chứng</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Ảnh</td>
-                                                        <td>Ảnh 4X6 </td>
-                                                        <td>3</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Bản sao CMND/Hộ chiếu</td>
-                                                        <td>Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Giấy khám sức khoẻ</td>
-                                                        <td>Giấy khám sức khoẻ có dấu đỏ</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Giấy khai sinh</td>
-                                                        <td>Giấy khái sinh có công chứng</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Đơn xin việc</td>
-                                                        <td>Đơn xin việc viết tay</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td> CV</td>
-                                                        <td> CV của nhân viên</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Cam kết</td>
-                                                        <td> Giấy cam kết làm việc</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" ><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Tạm trú tạm vắng</td>
-                                                        <td>Giấy xác nhận tạm trú tạm vắng</td>
-                                                        <td>1</td>
-                                                        <td><select style={{ width: "100%", height: 26, paddingTop: 0, paddingLeft: 0 }} name="status">
-                                                            <option>Đã nộp</option>
-                                                            <option>Chưa nộp</option>
-                                                            <option>Đã trả</option>
-                                                        </select></td>
-                                                        <td></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
+                                                <tbody>
+                                                    {(typeof this.state.employeeNew.file === 'undefined' || this.state.employeeNew.file.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.employeeNew.file.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td>{x.nameFile}</td>
+                                                                <td>{x.discFile}</td>
+                                                                <td>{x.number}</td>
+                                                                <td>{x.status}</td>
+                                                                <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
+                                                                    <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
+                                                                    <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("file", index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -1398,31 +1243,36 @@ class AddEmployee extends Component {
                         <ToastContainer />
                     </div>
                 </div>
-                <ModalAddCertificate />
+                <ModalAddCertificate handleChange={this.handleChangeCertificate} />
                 <ModalImportFileBHXH />
-                <ModalAddCertificateShort />
-                <ModalAddContract />
-                <ModalAddExperience />
-                <ModalAddBHXH />
-                <ModalAddDiscipline />
-                <ModalAddPraise />
-                <ModalAddSalary/>
-                <ModalAddSabbatical/>
-                <ModalAddFile/>
+                <ModalAddCertificateShort handleChange={this.handleChangeCertificateShort} />
+                <ModalAddContract handleChange={this.handleChangeContract} />
+                <ModalAddExperience handleChange={this.handleChangeExperience} />
+                <ModalAddBHXH handleChange={this.handleChangeBHXH} />
+                <ModalAddDiscipline handleChange={this.handleChangeDiscipline} />
+                <ModalAddPraise handleChange={this.handleChangePraise} />
+                <ModalAddSalary handleChange={this.handleChangeSalary} />
+                <ModalAddSabbatical handleChange={this.handleChangeSabbatical} />
+                <ModalAddFile handleChange={this.handleChangeFile} />
             </React.Fragment>
         );
     };
 }
 
 function mapState(state) {
-    const { employeesInfo } = state;
-    return { employeesInfo };
+    const { employeesInfo, Salary, Discipline, Sabbatical } = state;
+    return { employeesInfo, Salary, Discipline, Sabbatical };
 };
 
 const actionCreators = {
-    addNewEmployee: employeeInfoActions.addNewEmployee,
-    getInformationEmployee: employeeInfoActions.getInformationEmployee,
-    uploadAvatar: employeeInfoActions.uploadAvatar,
+    addNewEmployee: EmployeeInfoActions.addNewEmployee,
+    getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
+    uploadAvatar: EmployeeInfoActions.uploadAvatar,
+    createNewSalary: SalaryActions.createNewSalary,
+    createNewSabbatical: SabbaticalActions.createNewSabbatical,
+    createNewPraise: DisciplineActions.createNewPraise,
+    createNewDiscipline: DisciplineActions.createNewDiscipline,
+
 };
 
 const connectedAddEmplyee = connect(mapState, actionCreators)(AddEmployee);

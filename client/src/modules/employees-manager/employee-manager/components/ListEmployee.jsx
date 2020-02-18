@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { employeeManagerActions } from '../redux/actions';
-import { employeeInfoActions } from '../../employee-info/redux/actions';
+import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalEditOrganizational } from './ModalEditOrganizational ';
 import { ModalAddEmployee } from './ModalAddEmployee';
@@ -267,7 +267,7 @@ function mapState(state) {
 
 const actionCreators = {
     getAllEmployee: employeeManagerActions.getAllEmployee,
-    getInformationEmployee: employeeInfoActions.getInformationEmployee,
+    getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
     getListEmployee: employeeManagerActions.getListEmployee,
 };
 const connectedEmplyee = connect(mapState, actionCreators)(ListEmployee);

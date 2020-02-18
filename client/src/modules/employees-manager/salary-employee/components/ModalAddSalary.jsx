@@ -99,7 +99,7 @@ class ModalAddSalary extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" className="form-control" name="month" id="employeedatepicker4" defaultValue={this.formatDate(Date.now())} ref="month" onChange={this.handleChange} placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
+                                        <input type="text" className="form-control employeedatepicker" name="month" defaultValue={this.formatDate(Date.now())} ref="month" onChange={this.handleChange} placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -125,7 +125,7 @@ class ModalAddSalary extends Component {
                                                 data.bonus.map((x, index) => (
                                                     <tr key={index}>
                                                         <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
-                                                        <td><input className={index} type="text" value={x.number} name="number" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
+                                                        <td><input className={index} type="number" value={x.number} name="number" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                                         </td>

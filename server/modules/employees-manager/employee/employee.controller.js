@@ -1,6 +1,6 @@
 const EmployeeService = require('./employee.service');
 const multer = require('multer');
-const DIR = '../client/public/uploadAvatar';
+const DIR = '../client/public/fileEmployee';
 
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -19,12 +19,19 @@ const upload = multer({
 });
 
 exports.uploadFile = upload.single("file");
-
-exports.getInforFile = (req, res) => {
-    res.status(200).json({
-        message: "success",
-        content: req.body
-    });
+exports.updateAvatar = async (req, res) => {
+    try {
+        var updateAvatar = await EmployeeService.updateAvatar(req.params.employeeNumber, req.file.filename);
+        res.status(200).json({
+            message: "success",
+            content: updateAvatar
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+    console.log(req.file.filename);
 }
 // get all list employee
 exports.get = async (req, res) => {

@@ -10,9 +10,9 @@ router.post('/paginate', PraiseController.get);
 router.post('/create', PraiseController.create);
 
 // Xoá bẳng thông tin kỷ luật
-router.delete('/:employeeNumber/:number', PraiseController.delete);
+router.delete('/:id', PraiseController.delete);
 
 // update thông tin kyt luật
-router.put('/:employeeNumber/:number', PraiseController.update);
+router.put('/:id', PraiseController.update);
 
 module.exports = router;

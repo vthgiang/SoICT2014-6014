@@ -32,7 +32,7 @@ class ModalEditDiscipline extends Component {
     handleSunmit(event) {
         var startDate = this.refs.startDate.value;
         var endDate = this.refs.endDate.value;
-        this.props.updateDiscipline(this.state.employeeNumber, this.state.number, { ...this.state, startDate, endDate });
+        this.props.updateDiscipline(this.state.id, { ...this.state, startDate, endDate });
         window.$(`#modal-viewDiscipline-${this.state.id}`).modal("hide");
     }
     render() {
@@ -65,7 +65,7 @@ class ModalEditDiscipline extends Component {
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
                                         <label htmlFor="unit">Cấp ra quyết định:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" defaultValue={data.unit} onChange={this.handleChange} />
+                                        <input type="text" className="form-control" name="unit" defaultValue={data.unit} onChange={this.handleChange} />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                         <label htmlFor="startDate">Ngày có hiệu lực:<span className="required">&#42;</span></label>

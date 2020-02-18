@@ -2,7 +2,12 @@ import {
     DisciplineConstants
 } from './constants';
 
-export function Discipline(state = {}, action) {
+const initState = {
+    listDiscipline:[],
+    listPraise:[]
+}
+
+export function Discipline(state = initState, action) {
     switch (action.type) {
         case DisciplineConstants.GET_DISCIPLINE_REQUEST:
             return {
@@ -64,8 +69,7 @@ export function Discipline(state = {}, action) {
             return {
                 ...state,
                 listDiscipline: state.listDiscipline.map(Discipline =>
-                        (Discipline.employee.employeeNumber === action.infoDiscipline.content.employee.employeeNumber &&
-                            Discipline.number === action.infoDiscipline.content.number) ?
+                        (Discipline._id === action.infoDiscipline.content._id) ?
                         action.infoDiscipline.content : Discipline
                     ),
                     isLoading: false,
@@ -136,8 +140,7 @@ export function Discipline(state = {}, action) {
             return {
                 ...state,
                 listPraise: state.listPraise.map(Praise =>
-                        (Praise.employee.employeeNumber === action.infoPraise.content.employee.employeeNumber &&
-                            Praise.number === action.infoPraise.content.number) ?
+                        (Praise._id === action.infoPraise.content._id) ?
                         action.infoPraise.content : Praise
                     ),
                     isLoading: false,

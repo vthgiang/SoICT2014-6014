@@ -33,7 +33,7 @@ exports.create = async (req, res) => {
 // delete thông tin kỷ luật
 exports.delete = async (req, res) => {
     try {
-        var praiseDelete = await PraiseService.delete(req.params.employeeNumber, req.params.number);
+        var praiseDelete = await PraiseService.delete(req.params.id);
         res.status(200).json({
             message: "success",
             content: praiseDelete
@@ -48,7 +48,7 @@ exports.delete = async (req, res) => {
 // update thông tin kỷ luật
 exports.update = async (req, res) => {
     try {
-        var praiseUpdate = await PraiseService.update(req.params.employeeNumber,req.params.number,req.body);
+        var praiseUpdate = await PraiseService.update(req.params.id,req.body);
         res.status(200).json({
             message: "success",
             content: praiseUpdate

@@ -36,16 +36,16 @@ function createNewSalary(data) {
 }
 
 // Xoá bảng lương  theo mã nhân viên và tháng lương
-function deleteSalary(employeeNumber,month) {
+function deleteSalary(id) {
     const requestOptions = {
         method: 'DELETE',
     };
 
-    return fetch(`/salary/${employeeNumber}/${month}`, requestOptions).then(handleResponse);
+    return fetch(`/salary/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin bảng lương theo mã nhân viên và tháng lương
-function updateSalary(employeeNumber,month, data) {
+function updateSalary(id,data) {
     const requestOptions ={
         method: 'PUT',
         headers: {
@@ -53,5 +53,5 @@ function updateSalary(employeeNumber,month, data) {
         },
         body: JSON.stringify(data)
     };
-    return fetch(`/salary/${employeeNumber}/${month}`, requestOptions).then(handleResponse);
+    return fetch(`/salary/${id}`, requestOptions).then(handleResponse);
 }

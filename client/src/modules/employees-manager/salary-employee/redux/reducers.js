@@ -2,7 +2,7 @@ import {
     SalaryConstants
 } from './constants';
 
-export function Salary(state = {}, action) {
+export function Salary(state = {listSalary:[]}, action) {
     switch (action.type) {
         case SalaryConstants.GET_SALARY_REQUEST:
             return {
@@ -64,8 +64,7 @@ export function Salary(state = {}, action) {
             return {
                 ...state,
                 listSalary: state.listSalary.map(Salary =>
-                        (Salary.employee.employeeNumber === action.infoSalary.content.employee.employeeNumber
-                        && Salary.month === action.infoSalary.content.month)?
+                        Salary._id === action.infoSalary.content._id ?
                         action.infoSalary.content : Salary
                     ),
                     isLoading: false,

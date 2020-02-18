@@ -29,6 +29,7 @@ class MainHeaderMenu extends Component {
     }
 
     render() {
+        console.log(this.state);
         const { auth, translate } = this.props;
         const { currentRole } = this.state;
         return (

@@ -8,7 +8,7 @@ class ModalDeleteDiscipline extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     handleSubmit(event) {
-        this.props.deleteDiscipline(this.props.data.employee.employeeNumber, this.props.data.number);
+        this.props.deleteDiscipline(this.props.data._id);
         window.$(`#modal-deleteDiscipline-${this.props.data._id}`).modal("hide");
     }
     render() {

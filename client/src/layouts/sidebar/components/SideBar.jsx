@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Item from './Item';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 // ,{
 //     name: 'Manage ComponentUI',
@@ -146,7 +147,7 @@ class SideBar extends Component {
                                     </a>
                                     <ul className="treeview-menu">
                                         <li><a href="/dashboard-employee"><i className="fa fa-dashboard" />DashBoard quản lý nhân sự </a></li>
-                                        <li><a href="/add-employee"><i className="fa fa-user-plus" />Thêm nhân viên </a></li>
+                                        <li><Link to="/add-employee"><i className="fa fa-user-plus" />Thêm nhân viên </Link></li>
                                         <li><a href="/list-employee"><i className="fa fa-address-card" />Quản lý thông tin nhân viên</a></li>
                                         <li><a href="/salary-employee"><i className="fa fa-line-chart" />Lương nhân viên</a></li>
                                         <li><a href="/time-keeping"><i className="fa fa-calculator" />Chấm công nhân viên</a></li>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { employeeInfoActions } from '../redux/actions';
+import { EmployeeInfoActions } from '../redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 class UpdateEmployee extends Component {
@@ -347,8 +347,8 @@ function mapState(state) {
 };
 
 const actionCreator = {
-    updateInformationEmployee: employeeInfoActions.updateInformationEmployee,
-    getInformationEmployee: employeeInfoActions.getInformationEmployee,
+    updateInformationEmployee: EmployeeInfoActions.updateInformationEmployee,
+    getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
 };
 const connectUpdateEmployee = connect(mapState, actionCreator)(UpdateEmployee);
 export { connectUpdateEmployee as UpdateEmployee };

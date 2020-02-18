@@ -33,7 +33,7 @@ exports.create = async (req, res) => {
 // delete a educationProgram
 exports.delete = async (req, res) => {
     try {
-        var saralyDelete = await SalaryService.delete(req.params.employeeNumber, req.params.month);
+        var saralyDelete = await SalaryService.delete(req.params.id);
         res.status(200).json({
             message: "success",
             content: saralyDelete
@@ -48,7 +48,7 @@ exports.delete = async (req, res) => {
 // update thông tin bảng lương
 exports.update = async (req, res) => {
     try {
-        var saralyUpdate = await SalaryService.update(req.params.employeeNumber,req.params.month,req.body);
+        var saralyUpdate = await SalaryService.update(req.params.id,req.body);
         res.status(200).json({
             message: "success",
             content: saralyUpdate

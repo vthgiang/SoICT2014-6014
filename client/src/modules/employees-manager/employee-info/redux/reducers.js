@@ -1,63 +1,63 @@
 import {
-    constants
+    Constants
 } from './constants';
 
 export function employeesInfo(state = {}, action) {
     switch (action.type) {
-        case constants.ADDEMPLOYEE_REQUEST:
+        case Constants.ADDEMPLOYEE_REQUEST:
             return {
                 ...state,
                 adding: true
             };
-        case constants.ADDEMPLOYEE_SUCCESS:
+        case Constants.ADDEMPLOYEE_SUCCESS:
             return {
                 ...state,
-                items: action.employee
+                newEmployee: action.employee
             };
-        case constants.ADDEMPLOYEE_FAILURE:
+        case Constants.ADDEMPLOYEE_FAILURE:
             return {
                 error: action.error
             };
-        case constants.GETINFORMATIONEMPLOYEE_REQUEST:
+        case Constants.GETINFORMATIONEMPLOYEE_REQUEST:
             return {
                 ...state,
                 loadding: true
             };
-        case constants.GETINFORMATIONEMPLOYEE_SUCCESS:
+        case Constants.GETINFORMATIONEMPLOYEE_SUCCESS:
             return {
                 ...state,
                 employee: action.employee.content.employee,
                     employeeContact: action.employee.content.employeeContact
             };
-        case constants.GETINFORMATIONEMPLOYEE_FAILURE:
+        case Constants.GETINFORMATIONEMPLOYEE_FAILURE:
             return {
                 error: action.error
             };
-        case constants.UPDATE_INFORMATION_REQUEST:
+        case Constants.UPDATE_INFORMATION_REQUEST:
             return {
                 ...state,
                 updatting: true
             };
-        case constants.UPDATE_INFORMATION_SUCCESS:
+        case Constants.UPDATE_INFORMATION_SUCCESS:
             return {
                 ...state,
                 infoEmployeeUpdate: action.informationEmployee.content
             };
-        case constants.UPDATE_INFORMATION_FAILURE:
+        case Constants.UPDATE_INFORMATION_FAILURE:
             return {
                 error: action.error
             };
-        case constants.ULOAD_AVATAR_REQUEST:
+        case Constants.ULOAD_AVATAR_REQUEST:
             return {
                 ...state,
                 isloading: true
             };
-        case constants.ULOAD_AVATAR_SUCCESS:
+        case Constants.ULOAD_AVATAR_SUCCESS:
             return {
                 ...state,
-                avatarfile: action.file
+                avatarfile: action.file.content
             };
-        case constants.ULOAD_AVATAR_FAILURE:
+        case Constants.ULOAD_AVATAR_FAILURE:
             return {
                 error: action.error
             };
