@@ -38,7 +38,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img src="/adminLTE/dist/img/user2-160x160.jpg" className="img-circle" alt="User avatar" />
+                                <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>User</p>
@@ -56,6 +56,12 @@ class SideBar extends Component {
                         </form>
                         <ul className="sidebar-menu" data-widget="tree">
                             <li className="header">MENU</li>
+                            <Item
+                                key='home'
+                                name='home'
+                                path='/'
+                                icon='fa fa-home'
+                            />
                             {
                                 this.checkURL('/system', links) === true &&
                                 <Item
@@ -65,12 +71,6 @@ class SideBar extends Component {
                                     icon='fa fa-gears'
                                 />
                             }
-                            <Item
-                                key='home'
-                                name='home'
-                                path='/'
-                                icon='fa fa-home'
-                            />
                             {
                                 this.checkURL('/manage-company', links) === true &&
                                 <Item

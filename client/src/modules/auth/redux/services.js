@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API, TOKEN_SECRET, AuthenticateHeader, getStorage } from '../../../config';
+import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
+import { AuthenticateHeader, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 
@@ -49,7 +50,7 @@ function logoutAllAccount() {
 
 function editProfile(data) {
     // const token = localStorage.getItem('token');
-    const token = getStorage('auth-token');
+    const token = getStorage();
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id; 
     const requestOptions = {
@@ -74,7 +75,6 @@ function getLinksOfRole(idRole) {
 
 async function refresh() {
     const token = getStorage();
-    console.log("TOKEN:", token)
     const verified = await jwt.verify(token, TOKEN_SECRET);
     
     var id = verified._id; 

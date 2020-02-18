@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { create } from '../redux/actions';
+import { CompanyActions } from '../redux/actions';
 
 class CompanyCreateForm extends Component {
     constructor(props) {
@@ -29,7 +29,7 @@ class CompanyCreateForm extends Component {
         e.preventDefault();
         const { name, short_name, description, email } = this.state;
         const company = { name, short_name, description, email };
-        this.props.addCompany( company );
+        this.props.create( company );
     }
 
     render() { 
@@ -92,12 +92,8 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        addCompany: (company) => {
-            dispatch(create(company)); 
-        },
-    }
+const mapDispatchToProps = {
+    create: CompanyActions.create
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyCreateForm) );

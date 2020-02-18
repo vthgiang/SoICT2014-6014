@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { CompanyActions } from '../redux/actions';
 
 class CompanyEditForm extends Component {
     constructor(props) {
@@ -8,8 +9,8 @@ class CompanyEditForm extends Component {
         this.state = { 
             id: this.props.companyID,
             name: this.props.companyName,
-            shortName: this.props.companyShortName,
-            description: this.props.companyDescription,
+            short_name: this.props.companyShortName,
+            description: this.props.companyDescription
         }
         this.inputChange = this.inputChange.bind(this);
         this.save = this.save.bind(this);
@@ -26,13 +27,14 @@ class CompanyEditForm extends Component {
 
     save = (e) => {
         e.preventDefault();
-        const { id, name, shortName, description } = this.state;
-        const company = { id, name, shortName, description };
-        this.props.edit( this.props.companyID, company );
+        const { id, name, short_name, description } = this.state;
+        const data = { id, name, short_name, description, active:null };
+        this.props.edit( this.props.companyID, data );
     }
 
     render() { 
         const { translate, companyID, companyName, companyShortName, companyDescription } = this.props;
+       
         return ( 
             <React.Fragment>
                 <a className="edit" data-toggle="modal" href={ `#modal-company-${companyID}` } ><i className="material-icons">edit</i></a>
@@ -51,7 +53,7 @@ class CompanyEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>{ translate('table.shortName') }</label>
-                                    <input type="text" className="form-control" name="shortName" onChange={ this.inputChange } defaultValue={ companyShortName }/>
+                                    <input type="text" className="form-control" name="short_name" onChange={ this.inputChange } defaultValue={ companyShortName }/>
                                 </div>
                                 <div className="form-group">
                                     <label>{ translate('table.description') }</label>
@@ -71,16 +73,10 @@ class CompanyEditForm extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return state;
-}
+const mapStateToProps = state => state;
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        // edit: (id, company) => {
-        //     dispatch(edit(id, company)); 
-        // },
-    }
+const mapDispatchToProps =  {
+    edit: CompanyActions.edit
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyEditForm) );

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RoleActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { reactLocalStorage } from 'reactjs-localstorage';
 
 class RoleCreateForm extends Component {
     constructor(props) {
@@ -27,7 +26,7 @@ class RoleCreateForm extends Component {
         this.props.get();
 
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -37,11 +36,9 @@ class RoleCreateForm extends Component {
         e.preventDefault();
         let select = this.refs.abstract;
         let abstract = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        const com = reactLocalStorage.getObject('company');
-        const company = com._id;
 
         const { name } = this.state;
-        const role = { name, company, abstract };
+        const role = { name, abstract };
         this.props.create(role);
     }
 

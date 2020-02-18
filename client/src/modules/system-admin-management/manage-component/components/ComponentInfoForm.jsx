@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { reactLocalStorage } from 'reactjs-localstorage';
 import { ComponentActions } from '../redux/actions';
 
 class ComponentInfoForm extends Component {
@@ -29,16 +28,15 @@ class ComponentInfoForm extends Component {
         e.preventDefault();
         let select = this.refs.roles;
         let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        var com = reactLocalStorage.getObject('company');
         const { id, name, description } = this.state;
-        const component = { name, description, company: com._id, roles };
+        const component = { name, description, roles };
 
         this.props.editComponent(id, component);
     }
 
     componentDidMount(){
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -52,7 +50,7 @@ class ComponentInfoForm extends Component {
                 <div className="modal fade" id={`modal-component-${componentId}`}  style={{ textAlign: 'left'}}>
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header bg-blue">
+                            <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                 <h4 className="modal-title">{ translate('manageComponent.componentInfo') }</h4>
                             </div>
@@ -91,8 +89,8 @@ class ComponentInfoForm extends Component {
                                     
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-danger pull-left" data-dismiss="modal">{ translate('table.close') }</button>
-                                <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                                <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
+                                <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
                             </div>
                         </div>
                     </div>

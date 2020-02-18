@@ -1,9 +1,12 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API, AuthenticateHeader } from '../../../../config';
+import { LOCAL_SERVER_API } from '../../../../env';
+import { AuthenticateHeader } from '../../../../config';
 
-export const companyServices = {
+export const CompanyServices = {
     get,
-    create
+    getPaginate,
+    create,
+    edit
 };
 
 function get() {
@@ -16,11 +19,34 @@ function get() {
     return axios(requestOptions);
 }
 
+function getPaginate(data) {  
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/company/paginate`,
+        method: 'POST',
+        data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
 function create(company) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/company`,
         method: 'POST',
         data: company,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+
+function edit(id, data) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${id}`,
+        method: 'PATCH',
+        data,
         headers: AuthenticateHeader()
     };
 

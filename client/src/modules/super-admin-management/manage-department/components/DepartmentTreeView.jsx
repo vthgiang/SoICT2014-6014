@@ -42,7 +42,8 @@ class DepartmentTreeView extends Component {
                                 defaultValue={department.list[0]._id}
                                 style={{
                                     backgroundColor: "#ECF0F5",
-                                    border: '1px solid lightgray'
+                                    border: '1px solid lightgray',
+                                    width: '50%'
                             }}>
                                 {
                                     department.list.map( department => <option key={department._id} value={department._id}>{department.name}</option>)
@@ -105,7 +106,8 @@ class DepartmentTreeView extends Component {
                 title={ data.name }
                 style={{ 
                     width: '150px',
-                    height: '80px'
+                    height: 'auto',
+                    textAlign: 'center'
                 }}
             >
                 <p style={{ marginBottom: '10px', fontSize: '12px' }}>{ data.name }</p>
@@ -170,7 +172,7 @@ class DepartmentTreeView extends Component {
 
     componentDidMount(){
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);

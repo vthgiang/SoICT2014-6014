@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
 import { LinkActions } from '../redux/actions';
-import { reactLocalStorage } from 'reactjs-localstorage';
 
 class LinkInfoForm extends Component {
     constructor(props) {
@@ -30,16 +29,15 @@ class LinkInfoForm extends Component {
         e.preventDefault();
         let select = this.refs.roles;
         let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        var com = reactLocalStorage.getObject('company');
         const { id, url, description } = this.state;
-        const link = { url, description, company: com._id, roles };
+        const link = { url, description, roles };
 
         this.props.editLink(id, link);
     }
 
     componentDidMount(){
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);

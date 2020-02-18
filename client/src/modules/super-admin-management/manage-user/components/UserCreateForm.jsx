@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { reactLocalStorage } from 'reactjs-localstorage';
 // import Swal from 'sweetalert2';
 // import ReactLoading from 'react-loading';
 
@@ -29,10 +28,8 @@ class UserCreateForm extends Component {
     save = (e) => {
         e.preventDefault();
         const { name, email } = this.state;
-        const company = reactLocalStorage.getObject('company');
         const user = {
-            name, email,
-            company: company._id
+            name, email
         };
         this.props.create(user);
     }

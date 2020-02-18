@@ -54,9 +54,9 @@ class Header extends Component {
                     {/* Logo */}
                     <a href="index2.html" className="logo">
                         {/* mini logo for sidebar mini 50x50 pixels */}
-                        <span className="logo-mini"><img src="/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img></span>
+                        <span className="logo-mini"><img src="/lib/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img></span>
                         {/* logo for regular state and mobile devices */}
-                        <span className="logo-lg"><img src="/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img>VNIST-Việc</span>
+                        <span className="logo-lg"><img src="/lib/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img>VNIST-Việc</span>
                     </a>
                     {/* Header Navbar: style can be found in header.less */}
                     <nav className="navbar navbar-static-top">

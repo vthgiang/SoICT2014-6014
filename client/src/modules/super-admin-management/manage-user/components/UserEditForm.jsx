@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
+import { UserActions } from '../redux/actions';
 
 class UserEditForm extends Component {
     constructor(props) {
@@ -37,8 +38,7 @@ class UserEditForm extends Component {
             name,
             active
         };
-
-        this.props.editUser(user);
+        this.props.edit(user);
     }
 
     render() { 
@@ -96,6 +96,9 @@ class UserEditForm extends Component {
 }
  
 const mapStateToProps = state => state;
+const action = {
+    edit: UserActions.edit
+}
 
 
-export default connect( mapStateToProps, null )( withTranslate(UserEditForm) );
+export default connect( mapStateToProps, action )( withTranslate(UserEditForm) );

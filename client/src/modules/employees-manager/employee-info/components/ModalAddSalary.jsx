@@ -13,7 +13,7 @@ class ModalAddSalary extends Component {
     }
     componentDidMount() {
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);

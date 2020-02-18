@@ -29,6 +29,7 @@ const initState = {
 
 export function link (state = initState, action) {
     var index = -1;
+    var indexPaginate = -1;
     switch (action.type) {
 
         case LinkConstants.GET_LINKS_REQUEST:
@@ -79,15 +80,25 @@ export function link (state = initState, action) {
                     ...state.list,
                     action.payload
                 ],
+                listPaginate: [
+                    ...state.listPaginate,
+                    action.payload
+                ],
                 isLoading: false
             };
 
         case LinkConstants.EDIT_LINK_SUCCESS:
             index = findIndex(state.list, action.payload._id);
+            indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
                 state.list[index].url = action.payload.url;
                 state.list[index].description = action.payload.description;
                 state.list[index].roles = action.payload.roles;
+            }
+            if(indexPaginate !== -1){
+                state.listPaginate[indexPaginate].url = action.payload.url;
+                state.listPaginate[indexPaginate].description = action.payload.description;
+                state.listPaginate[indexPaginate].roles = action.payload.roles;
             }
             return {
                 ...state,

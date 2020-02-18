@@ -31,14 +31,13 @@ class RoleInfoForm extends Component {
         let users = [].filter.call(selectUsers.options, o => o.selected).map(o => o.value);
 
         const { name } = this.state;
-        var role = { id: this.props.roleInfo._id, name, abstract, users }; // IDrole, tên , abstract roles, những người có role này
-        console.log("Dữ liệu ROLE cập nhật: ", role);
-        this.props.editRole(role);
+        var role = { id: this.props.roleInfo._id, name, abstract, users };
+        this.props.edit(role);
     }
 
     componentDidMount(){
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);

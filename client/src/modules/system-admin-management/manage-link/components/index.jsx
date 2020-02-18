@@ -30,6 +30,8 @@ class ManageLink extends Component {
 
     render() { 
         const { translate, link } = this.props;
+
+        console.log("LINK STATE:", this.state);
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
@@ -136,11 +138,6 @@ class ManageLink extends Component {
             [name]: value
         });
     }
-
-    componentDidMount(){
-        this.props.getLinks();
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
-    }
     
     setLimit = (number) => {
         this.setState({ limit: number });
@@ -149,6 +146,46 @@ class ManageLink extends Component {
             data[this.state.option] = this.state.value;
         }
         this.props.getPaginate(data);
+    }
+            
+    handleResizeColumn = () => {
+        window.$(function () {
+            var pressed = false;
+            var start = undefined;
+            var startX, startWidth;
+
+            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
+                start = window.$(this);
+                pressed = true;
+                startX = e.pageX;
+                startWidth = window.$(this).width();
+                window.$(start).addClass("resizing");
+            });
+
+            window.$(document).mousemove(function (e) {
+                if (pressed) {
+                    window.$(start).width(startWidth + (e.pageX - startX));
+                }
+            });
+
+            window.$(document).mouseup(function () {
+                if (pressed) {
+                    window.$(start).removeClass("resizing");
+                    pressed = false;
+                }
+            });
+        });
+    }
+
+    componentDidMount(){
+        this.props.getLinks();
+        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+        let script = document.createElement('script');
+        script.src = '/lib/main/js/defindMultiSelect.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+        this.handleResizeColumn();
     }
 }
  

@@ -3,3 +3,5 @@
 .env
 
 /logs/history
+
+package-lock.json
