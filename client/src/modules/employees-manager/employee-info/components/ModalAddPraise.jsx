@@ -13,7 +13,7 @@ class ModalAddPraise extends Component {
     }
     componentDidMount() {
         let script = document.createElement('script');
-        script.src = 'main/js/AddEmployee.js';
+        script.src = 'lib/main/js/AddEmployee.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);

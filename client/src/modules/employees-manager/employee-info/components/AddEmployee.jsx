@@ -24,11 +24,11 @@ class AddEmployee extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: 'adminLTE/dist/img/avatar5.png',
+            img: 'lib/adminLTE/dist/img/avatar5.png',
             //adding: false,
             avatar: "",
             employeeNew: {
-                avatar: 'adminLTE/dist/img/avatar5.png',
+                avatar: 'lib/adminLTE/dist/img/avatar5.png',
                 gender: "Nam",
                 relationship: "Độc thân",
                 department: "Phòng nhân sự",
