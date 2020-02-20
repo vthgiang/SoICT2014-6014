@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Company = require('./company.model');
-const RoleType = require('./role_type.model');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
@@ -12,7 +10,7 @@ const RoleSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: 'companies'
     },
     parents: [{ //có tất cả các quyền của những role bên trong mảng này
         type: Schema.Types.ObjectId,
@@ -20,7 +18,7 @@ const RoleSchema = new Schema({
     }],
     type: {
         type: Schema.Types.ObjectId,
-        ref: RoleType
+        ref: 'role_type'
     }
 },{
     timestamps: true,
@@ -28,19 +26,19 @@ const RoleSchema = new Schema({
 });
 
 RoleSchema.virtual('users', {
-    ref: 'UserRole',
+    ref: 'user_role',
     localField: '_id',
     foreignField: 'roleId'
 });
 
 RoleSchema.virtual('links', {
-    ref: 'Privilege',
+    ref: 'privileges',
     localField: '_id',
     foreignField: 'roleId'
 });
 
 RoleSchema.virtual('components', {
-    ref: 'Privilege',
+    ref: 'privileges',
     localField: '_id',
     foreignField: 'roleId'
 });
