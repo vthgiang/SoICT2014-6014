@@ -55,7 +55,6 @@ class AddEmployee extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
-        this.handleChangeEmployeeNumber = this.handleChangeEmployeeNumber.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.defaulteClick = this.defaulteClick.bind(this);
     }
@@ -115,19 +114,6 @@ class AddEmployee extends Component {
                 [name]: value
             }
         });
-    }
-    // function kiểm tra MSNV đã tồn tại hay chưa
-    handleChangeEmployeeNumber(event) {
-        const { name, value } = event.target;
-        const { employeeNew } = this.state;
-        this.props.getInformationEmployee(value);
-        this.setState({
-            employeeNew: {
-                ...employeeNew,
-                [name]: value
-            }
-        });
-
     }
     // function thêm thông tin bằng cấp
     handleChangeCertificate = (data) => {
@@ -349,7 +335,6 @@ class AddEmployee extends Component {
             { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
             { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " }
         ]
-        const { file } = this.state;
         this.setState({
             file: defaulteFile
         })
@@ -374,18 +359,10 @@ class AddEmployee extends Component {
                 file: file.filter(file => (file.fileUpload === " "))
             }
         })
-        // kiểm tra sự tồn tại của mã nhân viên
-        var { employee } = this.props.employeesInfo;
-        var check;
-        if (employee) {
-            check = employee.map(x => x.employeeNumber).toString();
-        }
         const { employeeNew } = this.state;
         // kiểm tra việc nhập các trường bắt buộc
         if (!employeeNew.employeeNumber) {
             this.notifyerror("Bạn chưa nhập mã nhân viên");
-        } else if (check) {
-            this.notifyerror("Mã nhân viên đã tồn tại");
         } else if (!employeeNew.fullName) {
             this.notifyerror("Bạn chưa nhập tên nhân viên");
         } else if (!employeeNew.MSCC) {
@@ -548,7 +525,7 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChangeEmployeeNumber} />
+                                                    <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChange} />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="fullname">Họ và tên:<span className="required">&#42;</span></label>
@@ -560,7 +537,7 @@ class AddEmployee extends Component {
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
                                                         </div>
-                                                        <input type="text" className="form-control datepicker" name="brithday" ref="brithday" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" autoComplete="off" />
+                                                        <input type="text" className="form-control datepicker" name="brithday" ref="brithday" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" autoComplete="off" />
                                                     </div>
                                                     {/* <input type="Date" className="form-control" id="brithday" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                 </div>
@@ -838,7 +815,8 @@ class AddEmployee extends Component {
                                                                 <td>{x.yearCertificate}</td>
                                                                 <td>{x.typeCertificate}</td>
                                                                 <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
-                                                                    <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                                    <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}
+                                                                </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("certificate", index)}><i className="material-icons"></i></a>
                                                                 </td>
@@ -1303,7 +1281,6 @@ function mapState(state) {
 
 const actionCreators = {
     addNewEmployee: EmployeeInfoActions.addNewEmployee,
-    getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
     uploadAvatar: EmployeeInfoActions.uploadAvatar,
     createNewSalary: SalaryActions.createNewSalary,
     createNewSabbatical: SabbaticalActions.createNewSabbatical,

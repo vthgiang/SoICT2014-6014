@@ -11,6 +11,7 @@ const multerStorage = multer.diskStorage({
         cb(null, Date.now() + '-' + fileName)
     }
 });
+
 const upload = multer({
     storage: multerStorage,
     fileFilter: (req, file, cb) => {
@@ -18,7 +19,72 @@ const upload = multer({
     }
 });
 
+// upload file lên server
 exports.uploadFile = upload.single("fileUpload");
+
+// Lấy danh sách nhân viên
+exports.get = async (req, res) => {
+    try {
+        var allEmployee = await EmployeeService.get(req.body);
+        res.status(200).json({
+            message: "success",
+            content: {
+                allEmployee
+            }
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// get imformation employee by id
+exports.getInforPersonal = async (req, res) => {
+    try {
+        var inforEmployee = await EmployeeService.getInforPersonal(req.params.email);
+        res.status(200).json({
+            message: "success",
+            content: inforEmployee
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// Tạo nhân viên mới
+exports.create = async (req, res) => {
+    try {
+        var data = await EmployeeService.create(req.body);
+        res.status(200).json({
+            message: "success",
+            content: data
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// Cập nhật thông tin cá nhân
+exports.updateInforPersonal = async (req, res) => {
+    try {
+        var data = await EmployeeService.updateInforPersonal(req.params.email, req.body);
+        res.status(200).json({
+            message: "success",
+            content: data
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// Cập nhật avater nhân viên
 exports.updateAvatar = async (req, res) => {
     try {
         var updateAvatar = await EmployeeService.updateAvatar(req.params.employeeNumber, req.file.filename);
@@ -83,68 +149,6 @@ exports.updateFile = async (req, res) => {
         res.status(200).json({
             message: "success",
             content: updateFile
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// get all list employee
-exports.get = async (req, res) => {
-    try {
-        var allEmployee = await EmployeeService.get(req.body);
-        res.status(200).json({
-            message: "success",
-            content: {
-                allEmployee
-            }
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// get imformation employee by id
-exports.getById = async (req, res) => {
-    try {
-        var inforEmployee = await EmployeeService.getById(req.params.id);
-        res.status(200).json({
-            message: "success",
-            content: inforEmployee
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// create a new employee
-exports.create = async (req, res) => {
-    try {
-        var data = await EmployeeService.create(req.body);
-        res.status(200).json({
-            message: "success",
-            content: data
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
-
-// update information employee
-exports.updateInformationEmployee = async (req, res) => {
-    try {
-        var data = await EmployeeService.updateById(req.params.id, req.body);
-        res.status(200).json({
-            message: "success",
-            content: data
         });
     } catch (error) {
         res.status(400).json({

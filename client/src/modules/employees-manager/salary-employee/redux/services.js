@@ -1,6 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import { AuthenticateHeader } from '../../../../config';
 export const SalaryService = {
     getListSalary,
     createNewSalary,
@@ -12,9 +13,7 @@ export const SalaryService = {
 function getListSalary(data) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -26,9 +25,7 @@ function getListSalary(data) {
 function createNewSalary(data) {
     const requestOptions ={
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -48,9 +45,7 @@ function deleteSalary(id) {
 function updateSalary(id,data) {
     const requestOptions ={
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
     return fetch(`/salary/${id}`, requestOptions).then(handleResponse);

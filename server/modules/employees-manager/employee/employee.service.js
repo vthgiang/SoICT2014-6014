@@ -1,8 +1,12 @@
 const Employee = require('../../../models/employee.model');
 const EmployeeContact = require('../../../models/employeeContact.model');
+const Discipline = require('../../../models/discipline.model');
+const Praise = require('../../../models/praise.model');
+const Sabbatical = require('../../../models/sabbatical.model');
+const Salary = require('../../../models/salary.model');
 
 
-// lấy dánh sách nhân viên
+// Lấy dánh sách nhân viên
 exports.get = async (data) => {
     var keySearch = {};
     if (data.employeeNumber !== "") {
@@ -29,19 +33,38 @@ exports.get = async (data) => {
     return allEmployee;
 }
 
-// lấy thông tin nhân viên theo id
-exports.getById = async (id) => {
-    var infoEmployee = await Employee.find({
-        _id: id
+// Lấy thông tin cá nhân
+exports.getInforPersonal= async (email) => {
+    var employeeinfo = await Employee.findOne({
+        emailCompany: email
+    });
+    var infoPersonal = await Employee.find({
+        _id: employeeinfo._id
     });
     var infoEmployeeContact = await EmployeeContact.find({
-        employee: id
+        employee: employeeinfo._id
     });
-    var infoEmployee = {
-        employee: infoEmployee,
-        employeeContact: infoEmployeeContact
+    var salary = await Salary.find({
+        employee:employeeinfo._id
+    })
+    var sabbatical = await Sabbatical.find({
+        employee:employeeinfo._id
+    })
+    var praise = await Praise.find({
+        employee:employeeinfo._id
+    })
+    var discipline = await Discipline.find({
+        employee:employeeinfo._id
+    })
+    var employee = {
+        salary:salary,
+        employee: infoPersonal,
+        employeeContact: infoEmployeeContact,
+        sabbatical:sabbatical,
+        praise:praise,
+        discipline:discipline
     }
-    return infoEmployee
+    return employee
 }
 
 // Thêm mới nhân viên
@@ -118,6 +141,65 @@ exports.create = async (data) => {
     return content;
 }
 
+// Cập nhật thông tin cá nhân
+exports.updateInforPersonal = async (email, data) => {
+    var infoEmployee = await Employee.findOne({
+        emailCompany: email
+    });
+    // thông tin cần cập nhật của thông tin liên hệ 
+    var employeeContactUpdate = {
+        phoneNumber: data.phoneNumber,
+        phoneNumber2: data.phoneNumber2,
+        emailPersonal: data.emailPersonal,
+        emailPersonal2: data.emailPersonal2,
+        phoneNumberAddress: data.phoneNumberAddress,
+        friendName: data.friendName,
+        relation: data.relation,
+        friendPhone: data.friendPhone,
+        friendEmail: data.friendEmail,
+        friendPhoneAddress: data.friendPhoneAddress,
+        friendAddress: data.friendAddress,
+        localAddress: data.localAddress,
+        localNational: data.localNational,
+        localCity: data.localCity,
+        localDistrict: data.localDistrict,
+        localCommune: data.localCommune,
+        nowAddress: data.nowAddress,
+        nowNational: data.nowNational,
+        nowCity: data.nowCity,
+        nowDistrict: data.nowDistrict,
+        nowCommune: data.nowCommune,
+        updateDate: data.updateDate
+    }
+    // thông tin cần cập nhật của thông tin cơ bản của nhân viên
+    var employeeUpdate = {
+        gender: data.gender,
+        national: data.national,
+        nation: data.nation,
+        religion: data.religion,
+        relationship: data.relationship,
+        updateDate: data.updateDate
+    }
+    // cập nhật thông tin liên hệ vào database
+    await EmployeeContact.findOneAndUpdate({
+        employee: infoEmployee._id
+    }, {
+        $set: employeeContactUpdate
+    });
+    //cập nhật thông tin cơ bản vào database
+    await Employee.findOneAndUpdate({
+        _id: infoEmployee._id
+    }, {
+        $set: employeeUpdate
+    });
+
+    var content = {
+        employeeContactUpdate,
+        employeeUpdate
+    }
+    return content;
+}
+
 // Cập nhật Avatar nhân viên
 exports.updateAvatar = async (employeeNumber, url) => {
     var employeeinfo = await Employee.findOne({
@@ -147,6 +229,8 @@ exports.updateContract = async (employeeNumber, data, url) => {
         contract: [...employeeinfo.contract, {
             nameContract: data.nameContract,
             typeContract: data.typeContract,
+            startDate:data.startDate,
+            endDate:data.endDate,
             file: data.file,
             urlFile: url
         }]
@@ -266,60 +350,6 @@ exports.updateFile = async (employeeNumber, data, url) => {
             file: data.file,
             urlFile: url,
         }]
-    }
-    return content;
-}
-
-// Cập nhật thông tin cá nhân
-exports.updateById = async (id, data) => {
-    // thông tin cần cập nhật của thông tin liên hệ 
-    var employeeContactUpdate = {
-        emailPersonal: data.emailPersonal,
-        phoneNumberAddress: data.phoneNumberAddress,
-        friendName: data.friendName,
-        relation: data.relation,
-        friendPhone: data.friendPhone,
-        friendEmail: data.friendEmail,
-        friendPhoneAddress: data.friendPhoneAddress,
-        friendAddress: data.friendAddress,
-        localAddress: data.localAddress,
-        localNational: data.localNational,
-        localCity: data.localCity,
-        localDistrict: data.localDistrict,
-        localCommune: data.localCommune,
-        nowAddress: data.nowAddress,
-        nowNational: data.nowNational,
-        nowCity: data.nowCity,
-        nowDistrict: data.nowDistrict,
-        nowCommune: data.nowCommune,
-        updateDate: data.updateDate
-    }
-    // thông tin cần cập nhật của thông tin cơ bản của nhân viên
-    var employeeUpdate = {
-        gender: data.gender,
-        phoneNumber: data.phoneNumber,
-        national: data.national,
-        nation: data.nation,
-        religion: data.religion,
-        relationship: data.relationship,
-        updateDate: data.updateDate
-    }
-    // cập nhật thông tin liên hệ vào database
-    await EmployeeContact.findOneAndUpdate({
-        employee: id
-    }, {
-        $set: employeeContactUpdate
-    });
-    //cập nhật thông tin cơ bản vào database
-    await Employee.findOneAndUpdate({
-        _id: id
-    }, {
-        $set: employeeUpdate
-    });
-
-    var content = {
-        employeeContactUpdate,
-        employeeUpdate
     }
     return content;
 }

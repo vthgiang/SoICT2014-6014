@@ -18,32 +18,36 @@ export function employeesInfo(state = {}, action) {
             return {
                 error: action.error
             };
-        case Constants.GETINFORMATIONEMPLOYEE_REQUEST:
+        case Constants.GET_INFOR_PERSONAL_REQUEST:
             return {
                 ...state,
                 loadding: true
             };
-        case Constants.GETINFORMATIONEMPLOYEE_SUCCESS:
+        case Constants.GET_INFOR_PERSONAL_SUCCESS:
             return {
                 ...state,
                 employee: action.employee.content.employee,
-                    employeeContact: action.employee.content.employeeContact
+                    employeeContact: action.employee.content.employeeContact,
+                    salary: action.employee.content.salary,
+                    sabbatical: action.employee.content.sabbatical,
+                    praise: action.employee.content.praise,
+                    discipline: action.employee.content.discipline
             };
-        case Constants.GETINFORMATIONEMPLOYEE_FAILURE:
+        case Constants.GET_INFOR_PERSONAL_FAILURE:
             return {
                 error: action.error
             };
-        case Constants.UPDATE_INFORMATION_REQUEST:
+        case Constants.UPDATE_INFOR_PERSONAL_REQUEST:
             return {
                 ...state,
                 updatting: true
             };
-        case Constants.UPDATE_INFORMATION_SUCCESS:
+        case Constants.UPDATE_INFOR_PERSONAL_SUCCESS:
             return {
                 ...state,
                 infoEmployeeUpdate: action.informationEmployee.content
             };
-        case Constants.UPDATE_INFORMATION_FAILURE:
+        case Constants.UPDATE_INFOR_PERSONAL_FAILURE:
             return {
                 error: action.error
             };

@@ -20,6 +20,7 @@ export const AuthenticateHeader = (name='jwt') => {
     const browserFinger = getBrowserFingerprint();
     return {
         'auth-token': token,
-        'browser-finger': browserFinger
+        'browser-finger': browserFinger,
+        'Content-Type': 'application/json'
     }
 }

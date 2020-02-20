@@ -29,7 +29,6 @@ class MainHeaderMenu extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { auth, translate } = this.props;
         const { currentRole } = this.state;
         return (
@@ -72,13 +71,13 @@ class MainHeaderMenu extends Component {
                                 </li>
                                 <li className="user-footer">
                                     <div className="pull-left">
-                                        <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat" title={ translate('profileTitle') }><i className="fa fa-info-circle"></i> { translate('profile') } </a>
+                                        <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat" title={translate('profileTitle')}><i className="fa fa-info-circle"></i> {translate('profile')} </a>
                                     </div>
                                     <div className="pull-right">
-                                        <button type="button" className="btn btn-default btn-flat" onClick={this.props.logout}><i className="fa fa-sign-out"></i> { translate('logout') } </button>
+                                        <button type="button" className="btn btn-default btn-flat" onClick={this.props.logout}><i className="fa fa-sign-out"></i> {translate('logout')} </button>
                                     </div>
-                                    <div style={{ marginTop: '45px'}}>
-                                        <button style={{ width: '100%'}} type="button" className="btn btn-default btn-flat" onClick={this.props.logoutAllAccount}><i className="fa fa-power-off"></i> { translate('logoutAll') } </button>
+                                    <div style={{ marginTop: '45px' }}>
+                                        <button style={{ width: '100%' }} type="button" className="btn btn-default btn-flat" onClick={this.props.logoutAllAccount}><i className="fa fa-power-off"></i> {translate('logoutAll')} </button>
                                     </div>
                                 </li>
                             </ul>

@@ -7,8 +7,8 @@ import {
 } from "./services";
 export const EmployeeInfoActions = {
     addNewEmployee,
-    getInformationEmployee,
-    updateInformationEmployee,
+    getInformationPersonal,
+    updateInformationPersonal,
     uploadAvatar,
     updateContract,
     updateCertificate,
@@ -49,11 +49,11 @@ function uploadAvatar(employeeNumber,fileUpload) {
 }
 
 // lấy thông tin nhân viên theo mã nhân viên
-function getInformationEmployee(id) {
+function getInformationPersonal() {
     return dispatch => {
         dispatch(request());
 
-        EmployeeService.getByEmployeeNumber(id)
+        EmployeeService.getInformationPersonal()
             .then(
                 employee => dispatch(success(employee)),
                 error => dispatch(failure(error.toString()))
@@ -63,20 +63,20 @@ function getInformationEmployee(id) {
 
     function request() {
         return {
-            type: Constants.GETINFORMATIONEMPLOYEE_REQUEST,
+            type: Constants.GET_INFOR_PERSONAL_REQUEST,
         };
     };
 
     function success(employee) {
         return {
-            type: Constants.GETINFORMATIONEMPLOYEE_SUCCESS,
+            type: Constants.GET_INFOR_PERSONAL_SUCCESS,
             employee
         };
     };
 
     function failure(error) {
         return {
-            type: Constants.GETINFORMATIONEMPLOYEE_FAILURE,
+            type: Constants.GET_INFOR_PERSONAL_FAILURE,
             error
         };
     };
@@ -120,12 +120,12 @@ function addNewEmployee(employee) {
     };
 }
 
-// update thông tin của một nhân viên
-function updateInformationEmployee(id, informationEmployee) {
+// update thông tin cá nhân
+function updateInformationPersonal(informationEmployee) {
     return dispatch => {
         dispatch(request(informationEmployee));
 
-        EmployeeService.updateInformationEmpoyee(id, informationEmployee)
+        EmployeeService.updateInformationPersonal(informationEmployee)
             .then(
                 informationEmployee => {
                     dispatch(success(informationEmployee));
@@ -138,21 +138,21 @@ function updateInformationEmployee(id, informationEmployee) {
 
     function request(informationEmployee) {
         return {
-            type: Constants.UPDATE_INFORMATION_REQUEST,
+            type: Constants.UPDATE_INFOR_PERSONAL_REQUEST,
             informationEmployee
         }
     };
 
     function success(informationEmployee) {
         return {
-            type: Constants.UPDATE_INFORMATION_SUCCESS,
+            type: Constants.UPDATE_INFOR_PERSONAL_SUCCESS,
             informationEmployee
         }
     };
 
     function failure(error) {
         return {
-            type: Constants.GETINFORMATIONEMPLOYEE_FAILURE,
+            type: Constants.UPDATE_INFOR_PERSONAL_FAILURE,
             error
         }
     };

@@ -1,6 +1,12 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
-import { AuthenticateHeader, getStorage } from '../../../config';
+import {
+    LOCAL_SERVER_API,
+    TOKEN_SECRET
+} from '../../../env';
+import {
+    AuthenticateHeader,
+    getStorage
+} from '../../../config';
 import jwt from 'jsonwebtoken';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 
@@ -52,7 +58,7 @@ function editProfile(data) {
     // const token = localStorage.getItem('token');
     const token = getStorage();
     const verified = jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id; 
+    var id = verified._id;
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
@@ -76,8 +82,8 @@ function getLinksOfRole(idRole) {
 async function refresh() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
     
-    var id = verified._id; 
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'GET',
@@ -103,7 +109,7 @@ function resetPassword(otp, email, password) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/reset-password`,
         method: 'POST',
-        data : {
+        data: {
             otp,
             email,
             password

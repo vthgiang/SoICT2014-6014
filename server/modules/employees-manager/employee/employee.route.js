@@ -3,6 +3,24 @@ const router = express.Router();
 
 const EmployeeController = require("./employee.controller");
 
+// Cập nhật Avatar của nhân viên theo mã nhân viên
+router.patch('/avatar/:employeeNumber', EmployeeController.uploadFile, EmployeeController.updateAvatar);
+
+// Lấy danh sách nhân viên
+router.post('/paginate', EmployeeController.get);
+
+// Lấy thông tin cá nhân
+router.get('/:email', EmployeeController.getInforPersonal);
+
+// Thêm mới một nhân viên
+router.post('/', EmployeeController.create);
+
+// Cập nhật thông tin cá nhân
+router.put('/:email', EmployeeController.updateInforPersonal);
+
+// Cập nhật Avatar của nhân viên theo mã nhân viên
+router.patch('/avatar/:employeeNumber', EmployeeController.uploadFile, EmployeeController.updateAvatar);
+
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
 router.patch('/contract/:employeeNumber', EmployeeController.uploadFile, EmployeeController.updateContract);
 
@@ -14,19 +32,5 @@ router.patch('/certificate/:employeeNumber', EmployeeController.uploadFile, Empl
 
 // Cập nhật(thêm) thông tin bằng cấp theo MSNV
 router.patch('/file/:employeeNumber', EmployeeController.uploadFile, EmployeeController.updateFile);
-
-// update avartar of employee
-router.patch('/avatar/:employeeNumber', EmployeeController.uploadFile, EmployeeController.updateAvatar);
-// get all list employee
-router.post('/paginate', EmployeeController.get);
-
-// get imformation employee by employeeNumber
-router.get('/:id', EmployeeController.getById);
-
-// create a new employee
-router.post('/', EmployeeController.create);
-
-// update information employee
-router.put('/:id', EmployeeController.updateInformationEmployee);
 
 module.exports = router;
