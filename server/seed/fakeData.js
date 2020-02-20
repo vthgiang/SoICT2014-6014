@@ -101,17 +101,19 @@ const fakeData = async () => {
 
     console.log("Tạo role mặc định của công ty...");
     const roleAbstract = await RoleType.findOne({ name: 'abstract' });
-
+    const admin = await Role.create({
+        name: "Admin",
+        company: xyz._id,
+        type: roleAbstract._id
+    });
+    const superAdmin = await Role.create({
+        name: "Super Admin",
+        company: xyz._id,
+        type: roleAbstract._id,
+        parents: [admin._id]
+    })
     const roles = await Role.insertMany([
         {
-            name: "Super Admin",
-            company: xyz._id,
-            type: roleAbstract._id
-        },{
-            name: "Admin",
-            company: xyz._id,
-            type: roleAbstract._id
-        },{
             name: "Dean",
             company: xyz._id,
             type: roleAbstract._id
@@ -129,7 +131,7 @@ const fakeData = async () => {
     //END
     await UserRole.create({ //gán tài khoản super.admin.xyz có role là Super Admin của công ty xyz
         userId: users[0]._id,
-        roleId: roles[0]._id
+        roleId: superAdmin._id
     });
 
     /*---------------------------------------------------------------------------------------------
@@ -241,151 +243,121 @@ const fakeData = async () => {
     console.log("Xong! Đã tạo links: ", links);
     //END
     const privileges = await Privilege.insertMany([
-        //gán 7 link trên cho super admin
+        //gán 7 link trên cho admin, super admin sẽ kế thừa lại
         {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id
+            roleId: admin._id
         },{
             resourceId: links[1]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },{
             resourceId: links[2]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },{
             resourceId: links[3]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },{
             resourceId: links[4]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },{
             resourceId: links[5]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },{
             resourceId: links[6]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },{
             resourceId: links[7]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[8]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[9]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[10]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[11]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[12]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[13]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[14]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[15]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[16]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[17]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[18]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[19]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[20]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: admin._id
         },
         //end
-        //gán 7 link trên cho admin
-        {
-            resourceId: links[0]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id
-        },{
-            resourceId: links[1]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id._id
-        },{
-            resourceId: links[2]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id._id
-        },{
-            resourceId: links[3]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id._id
-        },{
-            resourceId: links[4]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id._id
-        },{
-            resourceId: links[5]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id._id
-        },{
-            resourceId: links[6]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id._id
-        },//end
+        
         //gán quyền vào trang home '/' cho role Dean, Vice Dean và Employee
         {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[2]._id //Dean
+            roleId: roles[0]._id //Dean
         },{
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id._id //Vice Dean
+            roleId: roles[1]._id._id //Vice Dean
         },{
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[4]._id._id //Employee
+            roleId: roles[2]._id._id //Employee
         }
-        
     ]);
     console.log("Gán quyền cho các role: ", privileges);
 } 
