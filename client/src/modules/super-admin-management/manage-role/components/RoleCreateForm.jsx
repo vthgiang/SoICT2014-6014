@@ -34,11 +34,11 @@ class RoleCreateForm extends Component {
 
     save(e){
         e.preventDefault();
-        let select = this.refs.abstract;
-        let abstract = [].filter.call(select.options, o => o.selected).map(o => o.value);
+        let select = this.refs.parents;
+        let parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
 
         const { name } = this.state;
-        const role = { name, abstract };
+        const role = { name, parents };
         this.props.create(role);
     }
 
@@ -63,11 +63,11 @@ class RoleCreateForm extends Component {
                             <div className="form-group">
                                 <label>{ translate('manageRole.abstract') }</label>
                                 <select 
-                                    name="abstract" 
+                                    name="parents" 
                                     className="form-control select2" 
                                     multiple="multiple" 
                                     style={{ width: '100%' }} 
-                                    ref="abstract"
+                                    ref="parents"
                                 >
                                     {
                                         role.list !== undefined ?

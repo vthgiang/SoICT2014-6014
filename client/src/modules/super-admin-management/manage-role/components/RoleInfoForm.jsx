@@ -24,14 +24,14 @@ class RoleInfoForm extends Component {
 
     save(e){
         e.preventDefault();
-        let select = this.refs.abstract;
-        let abstract = [].filter.call(select.options, o => o.selected).map(o => o.value);
+        let select = this.refs.parents;
+        let parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
 
         let selectUsers = this.refs.users;
         let users = [].filter.call(selectUsers.options, o => o.selected).map(o => o.value);
 
         const { name } = this.state;
-        var role = { id: this.props.roleInfo._id, name, abstract, users };
+        var role = { id: this.props.roleInfo._id, name, parents, users };
         this.props.edit(role);
     }
 
@@ -65,13 +65,13 @@ class RoleInfoForm extends Component {
                                     <div className="form-group">
                                         <label>{ translate('manageRole.abstract') }</label>
                                         <select 
-                                            name="abstract" 
+                                            name="parents" 
                                             className="form-control select2" 
                                             multiple="multiple" 
                                             onChange={ this.inputChange }
                                             style={{ width: '100%' }} 
-                                            value={ roleInfo.abstract }
-                                            ref="abstract"
+                                            value={ roleInfo.parents }
+                                            ref="parents"
                                         >
                                             {   
                                                 role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
