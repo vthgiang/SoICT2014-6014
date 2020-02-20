@@ -14,7 +14,7 @@ const RoleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Company
     },
-    abstract: [{ //có tất cả các quyền của những role bên trong mảng này
+    parents: [{ //có tất cả các quyền của những role bên trong mảng này
         type: Schema.Types.ObjectId,
         replies: this
     }],
@@ -47,4 +47,4 @@ RoleSchema.virtual('components', {
 
 RoleSchema.plugin(mongoosePaginate);
 
-module.exports = Role = mongoose.model("Role", RoleSchema);
+module.exports = Role = mongoose.model("roles", RoleSchema);

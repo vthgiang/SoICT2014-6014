@@ -10,4 +10,4 @@ const RoleTypeSchema = new Schema({
 },{
     timestamps: true
 });
-module.exports = RoleType = mongoose.model("RoleType", RoleTypeSchema);
+module.exports = RoleType = mongoose.model("role_type", RoleTypeSchema);

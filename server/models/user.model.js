@@ -55,4 +55,4 @@ UserSchema.virtual('roles', {
 
 UserSchema.plugin(mongoosePaginate);
 
-module.exports = User = mongoose.model("User", UserSchema);
+module.exports = User = mongoose.model("users", UserSchema);
