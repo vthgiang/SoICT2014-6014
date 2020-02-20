@@ -6,6 +6,7 @@ const Salary = require('../models/salary.model');
 const Sabbatical = require('../models/sabbatical.model');
 const Discipline = require('../models/discipline.model');
 const Praise = require('../models/praise.model');
+const EducationProgram = require('../models/educationProgram.model');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 require('dotenv').config({
@@ -192,7 +193,7 @@ const fakeDataEmployee = async () => {
         nowCity: "Hà Nội",
         nowDistrict: "Hai Bà Trưng",
         nowCommune: "Bạch Mai",
-    },{
+    }, {
         employee: listEmployee[1]._id,
         phoneNumber: 962586290,
         emailPersonal: "tranhungcuong703@gmail.com",
@@ -404,6 +405,34 @@ const fakeDataEmployee = async () => {
         endDate: "06-02-2020",
         type: "Phạt tiền",
         reason: "Không đủ doanh số",
+    }])
+    console.log(`Xong! Thông tin kỷ luật đã được tạo`);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU KỶ LUẬT NHÂN VIÊN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+
+    console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
+    var educationProgram = await EducationProgram.insertMany([{
+        unitEducation: [
+            "Phòng Kinh doanh"
+        ],
+        positionEducation: [
+            "Trưởng phòng"
+        ],
+        nameEducation: "An toan lao dong",
+        numberEducation: "M123",
+    }, {
+        unitEducation: [
+            "Phòng Kinh doanh"
+        ],
+        positionEducation: [
+            "Trưởng phòng"
+        ],
+        nameEducation: "kỹ năng giao tiếp",
+        numberEducation: "M1234",
     }])
     console.log(`Xong! Thông tin kỷ luật đã được tạo`);
 

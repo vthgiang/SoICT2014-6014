@@ -129,7 +129,7 @@ class ListCourse extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                        {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
                                             lists.map((x, index) => (
                                                 <tr key={index}>
                                                     <td>{x.nameEducation}</td>

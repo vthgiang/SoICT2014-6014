@@ -10,7 +10,7 @@ const PrivilegeSchema = new Schema({
     },
     resourceType: {
         type: String,
-        enum: ['links', 'task_templates','components'],
+        enum: ['Link', 'TaskTemplate', 'Component'],
     },
     roleId: {
         type: Schema.Types.ObjectId,
