@@ -41,8 +41,8 @@ exports.create = async (req, res) => {
         const company = await CompanyService.create(req.body);
 
         //Tao 5 role abstract cho cong ty 
-        const superAdmin = await RoleSerVice.createAbstract({ name: "Super Admin" }, company._id);
         var admin = await RoleSerVice.createAbstract({ name: "Admin" }, company._id );
+        var superAdmin = await RoleSerVice.createAbstract({ name: "Super Admin", parents: [admin._id] }, company._id); //Superadmin sẽ kế thừa admin
         var dean = await RoleSerVice.createAbstract({ name: "Dean" }, company._id );
         var viceDean = await RoleSerVice.createAbstract({ name: "Vice Dean" }, company._id );
         var employee = await RoleSerVice.createAbstract({ name: "Employee" }, company._id );
@@ -59,13 +59,15 @@ exports.create = async (req, res) => {
         var manageDepartment = await LinkService.create({ url: '/manage-department', description: `Manage department of ${company.name}`}, company._id);
         var manageLink = await LinkService.create({ url: '/manage-link', description: `Manage link of ${company.name}`}, company._id);
         var manageComponentUI = await LinkService.create({ url: '/manage-component', description: `Manage component UI of ${company.name}`}, company._id);
+        var manageDocument = await LinkService.create({ url: '/manage-document', description: `Manage Documents of ${company.name}`}, company._id);
 
-        await PrivilegeService.addRolesToLink( homePage._id, [ superAdmin._id, admin._id, dean._id, viceDean._id, employee._id ] );
-        await PrivilegeService.addRolesToLink( manageUser._id, [ superAdmin._id, admin._id ] );
-        await PrivilegeService.addRolesToLink( manageRole._id, [ superAdmin._id, admin._id ] );
-        await PrivilegeService.addRolesToLink( manageDepartment._id, [ superAdmin._id, admin._id ] );
-        await PrivilegeService.addRolesToLink( manageLink._id, [ superAdmin._id, admin._id ] );
-        await PrivilegeService.addRolesToLink( manageComponentUI._id, [ superAdmin._id, admin._id ] );
+        await PrivilegeService.addRolesToLink( homePage._id, [ admin._id, dean._id, viceDean._id, employee._id ] );
+        await PrivilegeService.addRolesToLink( manageUser._id, [ admin._id ] );
+        await PrivilegeService.addRolesToLink( manageRole._id, [ admin._id ] );
+        await PrivilegeService.addRolesToLink( manageDepartment._id, [ admin._id ] );
+        await PrivilegeService.addRolesToLink( manageLink._id, [ admin._id ] );
+        await PrivilegeService.addRolesToLink( manageComponentUI._id, [ admin._id ] );
+        await PrivilegeService.addRolesToLink( manageDocument._id, [ admin._id ] );
 
         isLog && Logger.info(`[CREATE_COMPANY]`+req.user.email);
         res.status(200).json(company);
