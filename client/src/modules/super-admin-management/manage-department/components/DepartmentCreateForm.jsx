@@ -36,14 +36,14 @@ class DepartmentCreateForm extends Component {
         const { translate,department } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-department" title={ translate('manageDepartment.create') }>{ translate('add') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-department" title={ translate('manage_department.add_title') }>{ translate('manage_department.add') }</a>
                 <div className="modal modal-full fade" id="modal-create-department">
                     <div className="modal-dialog-full">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">{ translate('manageDepartment.create') }</h4>
+                                <h4 className="modal-title">{ translate('manage_department.add_title') }</h4>
                             </div>
                             <div className="modal-body">
                                 <form style={{ marginTop: '50px', marginBottom: '20px' }}>
@@ -51,23 +51,23 @@ class DepartmentCreateForm extends Component {
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                             <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border">{ translate('manageDepartment.info') }</legend>
+                                                <legend className="scheduler-border">{ translate('manage_department.info') }</legend>
                                                 <div className="form-group">
-                                                    <label>{ translate('manageDepartment.nameDepartment')  }</label>
+                                                    <label>{ translate('manage_department.name')  }</label>
                                                     <input type="text" className="form-control" name="name" onChange={ this.inputChange }/><br/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('manageDepartment.description') }</label>
+                                                    <label>{ translate('manage_department.description') }</label>
                                                     <textarea type="text" className="form-control" name="description" onChange={ this.inputChange }/><br/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('manageDepartment.departmentParent') }</label>
+                                                    <label>{ translate('manage_department.parent') }</label>
                                                     <select 
                                                         className="form-control" 
                                                         style={{width: '100%'}} 
                                                         name="parent" 
                                                         onChange={this.inputChange}>
-                                                            <option>{ translate('manageDepartment.selectDepartment') }</option>
+                                                            <option>{ translate('manage_department.select_parent') }</option>
                                                         {   
                                                             department.list.map(department => 
                                                                 <option key={department._id} value={department._id}>{department.name}</option>    
@@ -79,18 +79,18 @@ class DepartmentCreateForm extends Component {
                                         </div>
                                         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                             <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border">{ translate('manageDepartment.rolesOfDepartment') }</legend>
+                                                <legend className="scheduler-border">{ translate('manage_department.roles_of_department') }</legend>
                                                 <div className="form-group">
-                                                    <label>{ translate('manageDepartment.dean') }</label>
-                                                    <input type="text" className="form-control" name="dean" onChange={ this.inputChange } placeholder={ translate('manageDepartment.sub_dean') }/><br/>
+                                                    <label>{ translate('manage_department.dean_name') }</label>
+                                                    <input type="text" className="form-control" name="dean" onChange={ this.inputChange } placeholder={ translate('manage_department.dean_example') }/><br/>
                                                 </div> 
                                                 <div className="form-group">
-                                                    <label>{ translate('manageDepartment.vicedean') }</label>
-                                                    <input type="text" className="form-control" name="vice_dean" onChange={ this.inputChange } placeholder={ translate('manageDepartment.sub_vicedean') }/><br/>
+                                                    <label>{ translate('manage_department.vice_dean_name') }</label>
+                                                    <input type="text" className="form-control" name="vice_dean" onChange={ this.inputChange } placeholder={ translate('manage_department.vice_dean_example') }/><br/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('manageDepartment.employee') }</label>
-                                                    <input type="text" className="form-control" name="employee" onChange={ this.inputChange } placeholder={ translate('manageDepartment.sub_employee') }/><br/>
+                                                    <label>{ translate('manage_department.employee_name') }</label>
+                                                    <input type="text" className="form-control" name="employee" onChange={ this.inputChange } placeholder={ translate('manage_department.employee_example') }/><br/>
                                                 </div>
                                             </fieldset>
                                         </div>
@@ -98,8 +98,8 @@ class DepartmentCreateForm extends Component {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default pull-right" style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('table.close') }</button>
-                                <button type="button" className="btn btn-primary" onClick={ this.save } style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('table.save') }</button>
+                                <button type="button" className="btn btn-primary pull-right" style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.close') }</button>
+                                <button type="button" className="btn btn-success" onClick={ this.save } style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.save') }</button>
                             </div>
                         </div>
                     </div>

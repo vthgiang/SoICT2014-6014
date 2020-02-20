@@ -41,8 +41,8 @@ class DepartmentEditForm extends Component {
 
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">{translate('form.close')}</button>
-                                <button type="button" className="btn btn-primary">{translate('form.save')}</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal">{translate('form.close')}</button>
+                                <button type="button" className="btn btn-success">{translate('form.save')}</button>
                             </div>
                         </div>
                     </div>

@@ -25,8 +25,8 @@ class DepartmentTreeView extends Component {
         return ( 
             <React.Fragment>
                 <div className="pull-left">
-                    <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn }></i>
-                    <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut }></i>
+                    <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
+                    <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut } title={translate('manage_department.zoom_out')}></i>
                 </div>
                 <div className="pull-right">
                     <DepartmentCreateForm />
@@ -71,16 +71,16 @@ class DepartmentTreeView extends Component {
     }
 
     
-    deleteDepartment = (departmentId, departmentName, deleteConfirm, no) =>{
+    deleteDepartment = (title, departmentId, departmentName, yes, no) =>{
         Swal.fire({
-            title: deleteConfirm,
-            html: `<h4>${departmentName}</h4>`,
+            title,
+            html: `<h4>[ ${departmentName} ]</h4>`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             cancelButtonText: no, //Không
-            confirmButtonText: deleteConfirm //Xóa
+            confirmButtonText: yes //Xóa
         }).then((result) => {
             if (result.value) {
                 this.props.destroy(departmentId) //xóa user với tham số truyền vào là id của user
@@ -115,7 +115,7 @@ class DepartmentTreeView extends Component {
                     className="btn pull-right btn-create" 
                     data-toggle="modal" 
                     href={`#modal-create-department-with-parent-${data.id}`}
-                    title={`Thêm phòng ban mới có phòng ban cha là ${data.name}`}
+                    title={`${translate('manage_department.add_with_parent')} [${data.name}]`}
                     style={{
                         width: '26px'
                     }}
@@ -124,7 +124,7 @@ class DepartmentTreeView extends Component {
                     className="btn pull-right btn-edit" 
                     data-toggle="modal" 
                     href={`#department-detail-${data.id}`}
-                    title="Chi tiết"
+                    title={translate('manage_department.info')}
                     style={{
                         width: '26px'
                     }}
@@ -134,12 +134,13 @@ class DepartmentTreeView extends Component {
                     className="btn pull-right btn-delete" 
                     data-toggle="modal" 
                     onClick={() => this.deleteDepartment(
+                        translate('manage_department.delete'),
                         data.id, 
                         data.name, 
-                        translate('delete'),
-                        translate('question.no')
+                        translate('confirm.yes'),
+                        translate('confirm.no')
                     )}
-                    title="Xóa phòng ban"
+                    title={translate('manage_department.delete')}
                     style={{
                         width: '26px'
                     }}
