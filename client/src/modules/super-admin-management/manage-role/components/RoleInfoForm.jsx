@@ -54,16 +54,16 @@ class RoleInfoForm extends Component {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 className="modal-title">{ translate('manageRole.roleInfo') }</h4>
+                                <h4 className="modal-title">{ translate('manage_role.info') }</h4>
                             </div>
                             <div className="modal-body">
                                 <React.Fragment>
                                     <div className="form-group">
-                                        <label>{ translate('manageRole.roleName') }</label>
+                                        <label>{ translate('manage_role.name') }</label>
                                         <input className="form-control" name="name" defaultValue={ roleInfo.name } onChange={ this.inputChange }></input>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('manageRole.abstract') }</label>
+                                        <label>{ translate('manage_role.extends') }</label>
                                         <select 
                                             name="parents" 
                                             className="form-control select2" 
@@ -79,7 +79,7 @@ class RoleInfoForm extends Component {
                                         </select>
                                     </div>
                                     <div className="form-group">
-                                        <label>{ translate('manageRole.users') } { roleInfo.name }</label>
+                                        <label>{ translate('manage_role.users') } { roleInfo.name }</label>
                                         <select 
                                             name="users"
                                             className="form-control select2" 
@@ -98,8 +98,8 @@ class RoleInfoForm extends Component {
                                 </React.Fragment>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={ this.save }>{ translate('table.save') }</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={ this.save }>{ translate('form.save') }</button>
                             </div>
                         </div>
                     </div>

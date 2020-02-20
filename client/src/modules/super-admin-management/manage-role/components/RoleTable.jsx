@@ -34,7 +34,7 @@ class RoleTable extends Component {
                 <div className="row">
                     <SearchBar 
                         columns={[
-                            { title: translate('manageRole.roleName'), value:'name' }
+                            { title: translate('table.name'), value:'name' }
                         ]}
                         option={this.state.option}
                         setOption={this.setOption}
@@ -49,7 +49,7 @@ class RoleTable extends Component {
                     <table className="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>{ translate('manageRole.roleName') }</th>
+                                <th>{ translate('table.name') }</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                     <ActionColumn 
                                         columnName={translate('table.action')} 
@@ -73,9 +73,9 @@ class RoleTable extends Component {
                                                 role.type.name !== 'abstract' && 
                                                 <DeleteNotification 
                                                     content={{
-                                                        title: translate('delete'),
-                                                        btnNo: translate('question.no'),
-                                                        btnYes: translate('delete'),
+                                                        title: translate('manage_role.delete'),
+                                                        btnNo: translate('confirm.no'),
+                                                        btnYes: translate('confirm.yes'),
                                                     }}
                                                     data={{
                                                         id: role._id,
@@ -86,7 +86,7 @@ class RoleTable extends Component {
                                             }
                                         </td>
                                     </tr>       
-                                ): <tr><td colSpan={'3'}>no data</td></tr>
+                                ): <tr><td colSpan={'3'}>{translate('confirm.no_data')}</td></tr>
                             }
                         </tbody>
                     </table>

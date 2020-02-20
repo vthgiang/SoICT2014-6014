@@ -46,22 +46,22 @@ class RoleCreateForm extends Component {
         const{ translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-add-role" title={ translate('manageRole.add') }>{ translate('add') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-add-role" title={ translate('manage_role.add_title') }>{ translate('manage_role.add') }</a>
                 <div className="modal fade" id="modal-add-role">
                     <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 className="modal-title">{ translate('manageRole.create') }</h4>
+                            <h4 className="modal-title">{ translate('manage_role.add_title') }</h4>
                         </div>
                         <div className="modal-body">
                         <form>
                             <div className="form-group">
-                                <label>{ translate('manageRole.roleName') }</label>
+                                <label>{ translate('manage_role.name') }</label>
                                 <input className="form-control" name="name" onChange={this.inputChange} type="text"/>
                             </div>
                             <div className="form-group">
-                                <label>{ translate('manageRole.abstract') }</label>
+                                <label>{ translate('manage_role.extends') }</label>
                                 <select 
                                     name="parents" 
                                     className="form-control select2" 
@@ -84,8 +84,8 @@ class RoleCreateForm extends Component {
                         </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                            <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('form.save') }</button>
                         </div>
                     </div>
                     </div>
