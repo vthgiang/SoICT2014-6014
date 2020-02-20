@@ -27,7 +27,7 @@ exports.addRoleToLink = async (idLink, arrRole) => {
 exports.getLinksOfRole = async (idRole) => {
     const role = await Role.findById(idRole); //lay duoc role hien tai
     var roles = [role._id];
-    roles = roles.concat(role.abstract); //thêm các role children vào mảng-> roles luc nay la 1 arr role can tim link tuong ung
+    roles = roles.concat(role.parents);
     const privilege = await Privilege.find({ 
         roleId: { $in: roles },
         resourceType: 'Link'

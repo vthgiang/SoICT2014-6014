@@ -47,7 +47,7 @@ exports.create = async(data, companyID) => {
     return await Role.create({
         name: data.name,
         company: companyID,
-        abstract: data.abstract,
+        parents: data.parents,
         type: roleTuTao._id
     });
 }
@@ -59,29 +59,32 @@ exports.createAbstract = async(data, companyID) => {
         name: data.name,
         company: companyID,
         type: roleAbstract._id,
-        abstract: data.abstract
+        parents: data.parents
     });
 }
 
 exports.crt_rolesOfDepartment = async(data, companyID) => {
     var roleChucDanh = await RoleType.findOne({ name: 'chucdanh' });
+    var deanAb = await Role.findOne({ name: 'Dean' }); //lấy role dean abstract
+    var viceDeanAb = await Role.findOne({ name: 'Vice Dean' }); //lấy role vice dean abstract
+    var employeeAb = await Role.findOne({ name: 'Employee' }); //lấy role employee abstract
     var employee = await Role.create({
         name: data.employee,
         company: companyID,
         type: roleChucDanh._id,
-        abstract: []
+        parents: [employeeAb._id]
     });
     var vice_dean = await Role.create({
         name: data.vice_dean,
         company: companyID,
         type: roleChucDanh._id,
-        abstract: [employee._id]
+        parents: [employee._id, employeeAb._id, viceDeanAb._id]
     });
     var dean = await Role.create({
         name: data.dean,
         company: companyID,
         type: roleChucDanh._id,
-        abstract: [employee._id, vice_dean._id]
+        parents: [employee._id, vice_dean._id, employeeAb._id, viceDeanAb._id, deanAb._id]
     });
 
     return {
@@ -94,10 +97,10 @@ exports.edit = async(id, data) => {
         .populate([
             { path: 'users', model: UserRole },
             { path: 'company', model: Company },
-            // { path: 'abstract', model: Role }
+            // { path: 'parents', model: Role }
         ]);
     role.name = data.name;
-    role.abstract = data.abstract;
+    role.parents = data.parents;
     role.save();
 
     return role;

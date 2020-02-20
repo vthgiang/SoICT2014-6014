@@ -112,22 +112,22 @@ const fakeData = async () => {
             company: xyz._id,
             type: roleAbstract._id
         },{
-            name: "Trưởng đơn vị",
+            name: "Dean",
             company: xyz._id,
             type: roleAbstract._id
         },{
-            name: "Phó đơn vị",
+            name: "Vice Dean",
             company: xyz._id,
             type: roleAbstract._id
         },{
-            name: "Nhân viên đơn vị",
+            name: "Employee",
             company: xyz._id,
             type: roleAbstract._id
         }
     ]);
-    console.log("Đã tạo xong roles: ", roles);
+    console.log("Đã tạo xong các role mặc định của công ty: ", roles);
     //END
-    await UserRole.create({
+    await UserRole.create({ //gán tài khoản super.admin.xyz có role là Super Admin của công ty xyz
         userId: users[0]._id,
         roleId: roles[0]._id
     });
@@ -171,6 +171,7 @@ const fakeData = async () => {
     console.log("Xong! Đã tạo links: ", links);
     //END
     const privileges = await Privilege.insertMany([
+        //gán 7 link trên cho super admin
         {
             resourceId: links[0]._id,
             resourceType: 'Link',
@@ -199,9 +200,54 @@ const fakeData = async () => {
             resourceId: links[6]._id,
             resourceType: 'Link',
             roleId: roles[0]._id._id
-        },
+        }, //end
+        //gán 7 link trên cho admin
+        {
+            resourceId: links[0]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id
+        },{
+            resourceId: links[1]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id._id
+        },{
+            resourceId: links[2]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id._id
+        },{
+            resourceId: links[3]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id._id
+        },{
+            resourceId: links[4]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id._id
+        },{
+            resourceId: links[5]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id._id
+        },{
+            resourceId: links[6]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id._id
+        },//end
+        //gán quyền vào trang home '/' cho role Dean, Vice Dean và Employee
+        {
+            resourceId: links[0]._id,
+            resourceType: 'Link',
+            roleId: roles[2]._id //Dean
+        },{
+            resourceId: links[0]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id._id //Vice Dean
+        },{
+            resourceId: links[0]._id,
+            resourceType: 'Link',
+            roleId: roles[4]._id._id //Employee
+        }
+        
     ]);
-    console.log("Gán quyền super admin cho các trang: ", privileges);
+    console.log("Gán quyền cho các role: ", privileges);
 } 
 
 //Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//
