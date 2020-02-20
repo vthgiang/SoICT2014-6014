@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-class ModalAddContract extends Component {
-    constructor(props){
+class ModalEditFile extends Component {
+    constructor(props) {
         super(props);
-        this.state={
-            nameContract: "",
-            typeContract: "",
+        this.state = {
+            nameFile:"",
+            discFile:"",
+            number:"",
+            status:"Đã nộp",
             file:"",
             urlFile:"",
             fileUpload:" "
         }
-        this.handleChange= this.handleChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.handleChangeFile = this.handleChangeFile.bind(this);
+        this.handleSunmit = this.handleSunmit.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -39,30 +42,28 @@ class ModalAddContract extends Component {
             [name]: value
         });
     }
-    handleSubmit = async () => {
-        await this.setState({
-            startDate: this.refs.startDate.value,
-            endDate: this.refs.endDate.value
-        })
+    handleSunmit(){
         this.props.handleChange(this.state);
-        this.setState ({
-            nameContract: "",
-            typeContract: "",
-            file:"",
+        this.setState({
+            nameFile:"",
+            discFile:"",
+            number:"",
+            status:"Đã nộp",
             urlFile:"",
+            file:"",
             fileUpload:" "
         })
-        window.$(`#modal-addNewContract`).modal("hide");
+        window.$(`#modal-addNewFile`).modal("hide");
     }
     render() {
         return (
-            <div className="modal fade" id="modal-addNewContract" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div className="modal fade" id="modal-addNewFile" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Thêm mới hợp đồng lao động:</h4>
+                            <h4 className="modal-title">Thêm mới tài liệu đính kèm:</h4>
                         </div>
                         <form>
                         <div className="modal-body">
@@ -73,30 +74,24 @@ class ModalAddContract extends Component {
                                                         </label>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nameContract">Tên hợp đồng:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="nameContract" onChange={this.handleChange} autoComplete="off" />
+                                    <label htmlFor="nameFile">Tên tài liệu đính kèm:<span className="required">&#42;</span></label>
+                                    <input type="text" className="form-control" name="nameFile" onChange={this.handleChange} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="typeContract">Loại hợp đồng:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="typeContract" onChange={this.handleChange} autoComplete="off" />
+                                    <label htmlFor="discFile">Mô tả:<span className="required">&#42;</span></label>
+                                    <textarea className="form-control" rows="3" name="discFile" placeholder="Enter ..." onChange={this.handleChange}></textarea>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                    <label htmlFor="startDate">Ngày có hiệu lực:<span className="required">&#42;</span></label>
-                                    <div className={'input-group date has-feedback'}>
-                                        <div className="input-group-addon">
-                                            <i className="fa fa-calendar" />
-                                        </div>
-                                        <input type="text" className="form-control datepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
-                                    </div>
+                                    <label htmlFor="number">Số lượng:<span className="required">&#42;</span></label>
+                                    <input type="number" className="form-control" name="number" onChange={this.handleChange} autoComplete="off" />
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                    <label htmlFor="endDate">Ngày hết hạn:<span className="required">&#42;</span></label>
-                                    <div className={'input-group date has-feedback'}>
-                                        <div className="input-group-addon">
-                                            <i className="fa fa-calendar" />
-                                        </div>
-                                        <input type="text" className="form-control datepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
-                                    </div>
+                                    <label htmlFor="status">Trạng thái:<span className="required">&#42;</span></label>
+                                    <select className="form-control" defaultValue="Đã nộp" name="status" onChange={this.handleChange}>
+                                        <option value="Chưa nộp">Chưa nộp</option>
+                                        <option value="Đã nộp">Đã nộp</option>
+                                        <option value="Đã trả">Đã trả</option>
+                                    </select>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="file">Chọn file đính kèm:</label>
@@ -104,10 +99,9 @@ class ModalAddContract extends Component {
                                 </div>
                             </div>
                         </div>
-                        
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={()=>this.handleSubmit()} title="Thêm mới hợp đồng lao động" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={this.handleSunmit} title="Thêm mới tài liệu đính kèm" >Thêm mới</button>
                         </div>
                         </form>
                     </div>
@@ -116,4 +110,4 @@ class ModalAddContract extends Component {
         );
     }
 };
-export { ModalAddContract };
+export { ModalEditFile };

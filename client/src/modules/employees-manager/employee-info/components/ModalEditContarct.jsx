@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-class ModalAddContract extends Component {
+class ModalEditContract extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -116,4 +116,4 @@ class ModalAddContract extends Component {
         );
     }
 };
-export { ModalAddContract };
+export { ModalEditContract };

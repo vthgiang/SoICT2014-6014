@@ -124,7 +124,7 @@ exports.updateAvatar = async (employeeNumber, url) => {
         employeeNumber: employeeNumber
     });
     avatarUpdate = {
-        avatar: "fileEmployee/" + url
+        avatar: "lib/fileEmployee/" + url
     }
     await Employee.findOneAndUpdate({
         _id: employeeinfo._id
@@ -133,7 +133,139 @@ exports.updateAvatar = async (employeeNumber, url) => {
     });
     var content = {
         _id: employeeinfo._id,
-        avatar: "uploadAvatar" + url
+        avatar: "lib/fileEmployee/" + url
+    }
+    return content;
+}
+
+// Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
+exports.updateContract = async (employeeNumber, data, url) => {
+    var employeeinfo = await Employee.findOne({
+        employeeNumber: employeeNumber
+    });
+    var contractUpdate = {
+        contract: [...employeeinfo.contract, {
+            nameContract: data.nameContract,
+            typeContract: data.typeContract,
+            file: data.file,
+            urlFile: url
+        }]
+    };
+    await Employee.findOneAndUpdate({
+        _id: employeeinfo._id
+    }, {
+        $set: contractUpdate
+    });
+    var content = {
+        _id: employeeinfo._id,
+        contract: [...employeeinfo.contract, {
+            nameContract: data.nameContract,
+            typeContract: data.typeContract,
+            file: data.file,
+            urlFile: url
+        }]
+    }
+    return content;
+}
+
+// Cập nhật(thêm) thông tin bằng cấp theo MSNV
+exports.updateCertificate = async (employeeNumber, data, url) => {
+    var employeeinfo = await Employee.findOne({
+        employeeNumber: employeeNumber
+    });
+    var updateCertificate = {
+        certificate: [...employeeinfo.certificate, {
+            nameCertificate: data.nameCertificate,
+            addressCertificate: data.addressCertificate,
+            yearCertificate: data.yearCertificate,
+            typeCertificate: data.typeCertificate,
+            file: data.file,
+            urlFile: url,
+        }]
+    };
+    await Employee.findOneAndUpdate({
+        _id: employeeinfo._id
+    }, {
+        $set: updateCertificate
+    });
+    var content = {
+        _id: employeeinfo._id,
+        certificate: [...employeeinfo.certificate, {
+            nameCertificate: data.nameCertificate,
+            addressCertificate: data.addressCertificate,
+            yearCertificate: data.yearCertificate,
+            typeCertificate: data.typeCertificate,
+            file: data.file,
+            urlFile: url,
+        }]
+    }
+    return content;
+}
+
+// Cập nhật(thêm) thông tin chứng chỉ theo MSNV
+exports.updateCertificateShort = async (employeeNumber, data, url) => {
+    var employeeinfo = await Employee.findOne({
+        employeeNumber: employeeNumber
+    });
+    var updateCertificateShort = {
+        certificateShort: [...employeeinfo.certificateShort, {
+            nameCertificateShort: data.nameCertificateShort,
+            unit: data.unit,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            file: data.file,
+            urlFile: url,
+        }]
+    };
+    await Employee.findOneAndUpdate({
+        _id: employeeinfo._id
+    }, {
+        $set: updateCertificateShort
+    });
+    var content = {
+        _id: employeeinfo._id,
+        certificateShort: [...employeeinfo.certificateShort, {
+            nameCertificateShort: data.nameCertificateShort,
+            unit: data.unit,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            file: data.file,
+            urlFile: url,
+        }]
+    }
+    return content;
+}
+
+// Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
+exports.updateFile = async (employeeNumber, data, url) => {
+    var employeeinfo = await Employee.findOne({
+        employeeNumber: employeeNumber
+    });
+    var updateFile = {
+        file: [...employeeinfo.file, {
+            nameFile: data.nameFile,
+            discFile: data.discFile,
+            number: data.number,
+            status: data.status,
+            file: data.file,
+            urlFile: url,
+        }]
+    };
+    await Employee.findOneAndUpdate({
+        _id: employeeinfo._id
+    }, {
+        $set: updateFile
+    });
+    var content = {
+        _id: employeeinfo._id,
+        file: [...employeeinfo.file, {
+            nameFile: data.nameFile,
+            discFile: data.discFile,
+            number: data.number,
+            status: data.status,
+            file: data.file,
+            urlFile: url,
+        }]
     }
     return content;
 }

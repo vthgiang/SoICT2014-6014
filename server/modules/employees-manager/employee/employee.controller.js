@@ -1,6 +1,6 @@
 const EmployeeService = require('./employee.service');
 const multer = require('multer');
-const DIR = '../client/public/fileEmployee';
+const DIR = '../client/public/lib/fileEmployee';
 
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -18,7 +18,7 @@ const upload = multer({
     }
 });
 
-exports.uploadFile = upload.single("file");
+exports.uploadFile = upload.single("fileUpload");
 exports.updateAvatar = async (req, res) => {
     try {
         var updateAvatar = await EmployeeService.updateAvatar(req.params.employeeNumber, req.file.filename);
@@ -31,8 +31,66 @@ exports.updateAvatar = async (req, res) => {
             message: error
         });
     }
-    console.log(req.file.filename);
 }
+// Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
+exports.updateContract = async (req, res) => {
+    try {
+        var updateContract = await EmployeeService.updateContract(req.params.employeeNumber,req.body, req.file.filename);
+        res.status(200).json({
+            message: "success",
+            content: updateContract
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+// Cập nhật(thêm) thông tin bằng cấp theo MSNV
+exports.updateCertificate = async (req, res) => {
+    try {
+        var updateCertificate = await EmployeeService.updateCertificate(req.params.employeeNumber,req.body, req.file.filename);
+        res.status(200).json({
+            message: "success",
+            content: updateCertificate
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// Cập nhật(thêm) thông tin chứng chỉ theo MSNV
+exports.updateCertificateShort = async (req, res) => {
+    try {
+        var updateCertificateShort = await EmployeeService.updateCertificateShort(req.params.employeeNumber,req.body, req.file.filename);
+        res.status(200).json({
+            message: "success",
+            content: updateCertificateShort
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
+exports.updateFile = async (req, res) => {
+    try {
+        var updateFile = await EmployeeService.updateFile(req.params.employeeNumber,req.body, req.file.filename);
+        res.status(200).json({
+            message: "success",
+            content: updateFile
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
 // get all list employee
 exports.get = async (req, res) => {
     try {

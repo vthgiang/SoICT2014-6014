@@ -4,6 +4,9 @@ class ModalAddCertificateShort extends Component {
         super(props);
         this.state = {
             urlFile: "",
+            fileUpload: " ",
+            file:"",
+
         }
         this.handleChangeFile = this.handleChangeFile.bind(this);
     }
@@ -23,7 +26,8 @@ class ModalAddCertificateShort extends Component {
         fileLoad.onload = () => {
             this.setState({
                 [name]: file.name,
-                urlFile: url
+                urlFile: url,
+                fileUpload:file
             })
         };
     }
@@ -37,7 +41,8 @@ class ModalAddCertificateShort extends Component {
         this.props.handleChange(this.state);
         await this.setState({
             file:"",
-            urlFile:""
+            urlFile:"",
+            fileUpload:" "
         })
         window.$(`#modal-addNewCertificateShort`).modal("hide");
 

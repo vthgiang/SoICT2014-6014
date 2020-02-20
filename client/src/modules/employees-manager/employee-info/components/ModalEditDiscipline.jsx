@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-class ModalAddContract extends Component {
-    constructor(props){
+class ModalEditDiscipline extends Component {
+    constructor(props) {
         super(props);
-        this.state={
-            nameContract: "",
-            typeContract: "",
-            file:"",
-            urlFile:"",
-            fileUpload:" "
-        }
-        this.handleChange= this.handleChange.bind(this);
-        this.handleChangeFile = this.handleChangeFile.bind(this);
+        this.state = {
+            number: "",
+            unit: "",
+            type: "",
+            reason: "",
+        };
+        this.handleChange = this.handleChange.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -19,50 +17,35 @@ class ModalAddContract extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
-    handleChangeFile(event) {
-        const { name } = event.target;
-        var file = event.target.files[0];
-        var url = URL.createObjectURL(file);
-        var fileLoad = new FileReader();
-        fileLoad.readAsDataURL(file);
-        fileLoad.onload = () => {
-            this.setState({
-                [name]: file.name,
-                urlFile: url,
-                fileUpload:file
-            })
-        };
-    }
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
     }
-    handleSubmit = async () => {
+    handleSunmit = async () => {
         await this.setState({
             startDate: this.refs.startDate.value,
             endDate: this.refs.endDate.value
         })
         this.props.handleChange(this.state);
-        this.setState ({
-            nameContract: "",
-            typeContract: "",
-            file:"",
-            urlFile:"",
-            fileUpload:" "
+        this.setState({
+            number: "",
+            unit: "",
+            type: "",
+            reason: "",
         })
-        window.$(`#modal-addNewContract`).modal("hide");
+        window.$(`#modal-addNewDiscipline`).modal("hide");
     }
     render() {
         return (
-            <div className="modal fade" id="modal-addNewContract" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div className="modal fade" id="modal-addNewDiscipline" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Thêm mới hợp đồng lao động:</h4>
+                            <h4 className="modal-title">Thêm mới kỷ luật:</h4>
                         </div>
                         <form>
                         <div className="modal-body">
@@ -70,15 +53,15 @@ class ModalAddContract extends Component {
                                 <div className="checkbox" style={{ marginTop: 0 }}>
                                     <label style={{ paddingLeft: 0 }}>
                                         (<span style={{ color: "red" }}>*</span>): là các trường bắt buộc phải nhập.
-                                                        </label>
+                                    </label>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="nameContract">Tên hợp đồng:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="nameContract" onChange={this.handleChange} autoComplete="off" />
+                                <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
+                                    <label htmlFor="number">Số quyết định:<span className="required">&#42;</span></label>
+                                    <input type="text" className="form-control" name="number" onChange={this.handleChange} autoComplete="off" placeholder="Số ra quyết định" />
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="typeContract">Loại hợp đồng:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="typeContract" onChange={this.handleChange} autoComplete="off" />
+                                <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
+                                    <label htmlFor="unit">Cấp ra quyết định:<span className="required">&#42;</span></label>
+                                    <input type="text" className="form-control" name="unit" onChange={this.handleChange} autoComplete="off" placeholder="Cấp ra quyết định" />
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                     <label htmlFor="startDate">Ngày có hiệu lực:<span className="required">&#42;</span></label>
@@ -90,7 +73,7 @@ class ModalAddContract extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                    <label htmlFor="endDate">Ngày hết hạn:<span className="required">&#42;</span></label>
+                                    <label htmlFor="endDate">Ngày hết hiệu lực:<span className="required">&#42;</span></label>
                                     <div className={'input-group date has-feedback'}>
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
@@ -99,21 +82,24 @@ class ModalAddContract extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="file">Chọn file đính kèm:</label>
-                                    <input type="file" className="form-control" name="file" onChange={this.handleChangeFile} />
+                                    <label htmlFor="type">Hình thức kỷ luật:<span className="required">&#42;</span></label>
+                                    <input type="text" className="form-control" name="type" onChange={this.handleChange} autoComplete="off" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="reason">Lý do kỷ luật:<span className="required">&#42;</span></label>
+                                    <textarea className="form-control" rows="3" name="reason" placeholder="Enter ..." onChange={this.handleChange}></textarea>
                                 </div>
                             </div>
                         </div>
-                        
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={()=>this.handleSubmit()} title="Thêm mới hợp đồng lao động" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới kỷ luật" >Thêm mới</button>
                         </div>
                         </form>
                     </div>
-                </div >
+                </div>
             </div>
         );
     }
 };
-export { ModalAddContract };
+export { ModalEditDiscipline };

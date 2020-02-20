@@ -8,7 +8,8 @@ class ModalAddFile extends Component {
             number:"",
             status:"Đã nộp",
             file:"",
-            urlFile:""
+            urlFile:"",
+            fileUpload:" "
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeFile = this.handleChangeFile.bind(this);
@@ -30,7 +31,8 @@ class ModalAddFile extends Component {
         fileLoad.onload = () => {
             this.setState({
                 [name]: file.name,
-                urlFile: url
+                urlFile: url,
+                fileUpload:file
             })
         };
     }
@@ -48,7 +50,8 @@ class ModalAddFile extends Component {
             number:"",
             status:"Đã nộp",
             urlFile:"",
-            file:""
+            file:"",
+            fileUpload:" "
         })
         window.$(`#modal-addNewFile`).modal("hide");
     }

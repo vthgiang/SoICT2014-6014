@@ -25,7 +25,6 @@ class AddEmployee extends Component {
         super(props);
         this.state = {
             img: 'lib/adminLTE/dist/img/avatar5.png',
-            //adding: false,
             avatar: "",
             employeeNew: {
                 avatar: 'lib/adminLTE/dist/img/avatar5.png',
@@ -37,12 +36,16 @@ class AddEmployee extends Component {
                 educational: "Không có",
                 certificate: [],
                 certificateShort: [],
-                experience: [],
                 contract: [],
+                file: [],
+                experience: [],
                 BHXH: [],
-                course: [],
-                file: []
+                course: []
             },
+            certificate: [],
+            certificateShort: [],
+            contract: [],
+            file: [],
             disciplineNew: [],
             praiseNew: [],
             salaryNew: [],
@@ -113,7 +116,7 @@ class AddEmployee extends Component {
             }
         });
     }
-    // function save EmployeeNumber
+    // function kiểm tra MSNV đã tồn tại hay chưa
     handleChangeEmployeeNumber(event) {
         const { name, value } = event.target;
         const { employeeNew } = this.state;
@@ -128,28 +131,21 @@ class AddEmployee extends Component {
     }
     // function thêm thông tin bằng cấp
     handleChangeCertificate = (data) => {
-        const { employeeNew } = this.state;
-        var certificate = employeeNew.certificate;
+        const { certificate } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                certificate: [...certificate, {
-                    ...data
-                }]
-            }
+            certificate: [...certificate, {
+                ...data
+            }]
         })
+
     }
     // function thêm thông tin chứng chỉ
     handleChangeCertificateShort = (data) => {
-        const { employeeNew } = this.state;
-        var certificateShort = employeeNew.certificateShort;
+        const { certificateShort } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                certificateShort: [...certificateShort, {
-                    ...data
-                }]
-            }
+            certificateShort: [...certificateShort, {
+                ...data
+            }]
         })
     }
     // function thêm mới kinh nghiệm làm việc
@@ -167,15 +163,11 @@ class AddEmployee extends Component {
     }
     // function thêm thông tin hợp đồng lao động
     handleChangeContract = (data) => {
-        const { employeeNew } = this.state;
-        var contract = employeeNew.contract;
+        const { contract } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                contract: [...contract, {
-                    ...data
-                }]
-            }
+            contract: [...contract, {
+                ...data
+            }]
         })
     }
     // function thêm thông tin quá trình đóng BHXH
@@ -225,11 +217,17 @@ class AddEmployee extends Component {
     // function thêm thông tin lịch sử lương
     handleChangeSalary = (data) => {
         const { salaryNew } = this.state;
-        this.setState({
-            salaryNew: [...salaryNew, {
-                ...data
-            }]
-        })
+        let check = [];
+        check = salaryNew.filter(salary => (salary.month === data.month));
+        if (check.length !== 0) {
+            this.notifyerror("Tháng lương đã tồn tại")
+        } else {
+            this.setState({
+                salaryNew: [...salaryNew, {
+                    ...data
+                }]
+            })
+        }
     }
     // function thêm thông tin nghỉ phép
     handleChangeSabbatical = (data) => {
@@ -242,38 +240,26 @@ class AddEmployee extends Component {
     }
     //function thêm thông tin tài liệu đính kèm
     handleChangeFile = (data) => {
-        const { employeeNew } = this.state;
-        var file = employeeNew.file;
+        const { file } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                file: [...file, {
-                    ...data
-                }]
-            }
+            file: [...file, {
+                ...data
+            }]
         })
     }
     // function xoá các thông tin certificate, experience, contract, BHXH, course
     delete = (key, index) => {
-        const { employeeNew } = this.state;
+        const { employeeNew, file, contract, certificate, certificateShort } = this.state;
         if (key === "certificate") {
-            var certificate = employeeNew.certificate;
             certificate.splice(index, 1);
             this.setState({
-                employeeNew: {
-                    ...employeeNew,
-                    certificate: [...certificate]
-                }
+                certificate: [...certificate]
             })
         };
         if (key === "certificateShort") {
-            var certificateShort = employeeNew.certificateShort;
             certificateShort.splice(index, 1);
             this.setState({
-                employeeNew: {
-                    ...employeeNew,
-                    certificateShort: [...certificateShort]
-                }
+                certificateShort: [...certificateShort]
             })
         };
         if (key === "experience") {
@@ -287,13 +273,9 @@ class AddEmployee extends Component {
             })
         };
         if (key === "contract") {
-            var contract = employeeNew.contract;
             contract.splice(index, 1);
             this.setState({
-                employeeNew: {
-                    ...employeeNew,
-                    contract: [...contract]
-                }
+                contract: [...contract]
             })
         };
         if (key === "BHXH") {
@@ -345,13 +327,9 @@ class AddEmployee extends Component {
             })
         };
         if (key === "file") {
-            var file = employeeNew.file;
             file.splice(index, 1);
             this.setState({
-                employeeNew: {
-                    ...employeeNew,
-                    file: [...file]
-                }
+                file: [...file]
             })
         };
     }
@@ -360,30 +338,27 @@ class AddEmployee extends Component {
     defaulteClick(event) {
         event.preventDefault();
         const defaulteFile = [
-            { nameFile: "Bằng cấp", discFile: "Bằng tốt nghiệp trình độ học vấn cao nhất", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Sơ yếu lý lịch", discFile: "Sơ yếu lý lịch có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Ảnh", discFile: "Ảnh 4X6", number: "3", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Bản sao CMND/Hộ chiếu", discFile: "Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Giấy khám sức khoẻ", discFile: "Giấy khám sức khoẻ có dấu đỏ", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Giấy khai sinh", discFile: "Giấy khái sinh có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Đơn xin việc", discFile: "Đơn xin việc viết tay", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "CV", discFile: "CV của nhân viên", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: "" },
-            { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: "" }
+            { nameFile: "Bằng cấp", discFile: "Bằng tốt nghiệp trình độ học vấn cao nhất", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Sơ yếu lý lịch", discFile: "Sơ yếu lý lịch có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Ảnh", discFile: "Ảnh 4X6", number: "3", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Bản sao CMND/Hộ chiếu", discFile: "Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Giấy khám sức khoẻ", discFile: "Giấy khám sức khoẻ có dấu đỏ", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Giấy khai sinh", discFile: "Giấy khái sinh có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Đơn xin việc", discFile: "Đơn xin việc viết tay", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "CV", discFile: "CV của nhân viên", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " },
+            { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: "", fileUpload: " " }
         ]
-        const { employeeNew } = this.state;
-        var file = employeeNew.file;
+        const { file } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                file: defaulteFile
-            }
+            file: defaulteFile
         })
     }
 
     // function thêm mới thông tin nhân viên
     handleSubmit = async () => {
-        var newEmployee = this.state.employeeNew;
+        let newEmployee = this.state.employeeNew;
+        let { file, contract, certificate, certificateShort } = this.state;
         // cập nhật lại state trước khi add employee
         await this.setState({
             employeeNew: {
@@ -393,8 +368,13 @@ class AddEmployee extends Component {
                 startTax: this.refs.startTax.value,
                 startDateBHYT: this.refs.startDateBHYT.value,
                 endDateBHYT: this.refs.endDateBHYT.value,
+                certificate: certificate.filter(certificate => (certificate.fileUpload === " ")),
+                certificateShort: certificateShort.filter(certificateShort => (certificateShort.fileUpload === " ")),
+                contract: contract.filter(contract => (contract.fileUpload === " ")),
+                file: file.filter(file => (file.fileUpload === " "))
             }
         })
+        // kiểm tra sự tồn tại của mã nhân viên
         var { employee } = this.props.employeesInfo;
         var check;
         if (employee) {
@@ -424,43 +404,101 @@ class AddEmployee extends Component {
             this.notifyerror("Bạn chưa nhập số điện thoại");
         } else if (!employeeNew.nowAddress) {
             this.notifyerror("Bạn chưa nhập nơi ở hiện tại");
-            // } else if (!employeeNew.ATM || !employeeNew.nameBank || !employeeNew.addressBank) {
-            //     this.notifyerror("Bạn chưa nhập đủ thông tin tài khoản ngân hàng");
         } else if (!employeeNew.numberTax || !employeeNew.userTax || !employeeNew.startTax || !employeeNew.unitTax) {
             this.notifyerror("Bạn chưa nhập đủ thông tin thuế");
         } else {
             await this.props.addNewEmployee(employeeNew);
             // lưu avatar
             if (this.state.avatar !== "") {
-                const formData = new FormData();
-                formData.append('file', this.state.avatar);
+                let formData = new FormData();
+                formData.append('fileUpload', this.state.avatar);
                 this.props.uploadAvatar(this.state.employeeNew.employeeNumber, formData);
             };
+            // lưu hợp đồng lao động
+            if (this.state.contract.length !== 0) {
+                let listContract = this.state.contract;
+                listContract.filter(contract => (contract.fileUpload !== " "))
+                listContract.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameContract', x.nameContract);
+                    formData.append('typeContract', x.typeContract);
+                    formData.append('file', x.file);
+                    formData.append('startDate', x.startDate);
+                    formData.append('endDate', x.endDate);
+                    this.props.updateContract(this.state.employeeNew.employeeNumber, formData)
+                })
+            }
+            // lưu thông tin bằng cấp
+            if (this.state.certificate.length !== 0) {
+                let listCertificate = this.state.certificate;
+                listCertificate.filter(certificate => (certificate.fileUpload !== " "))
+                listCertificate.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameCertificate', x.nameCertificate);
+                    formData.append('addressCertificate', x.addressCertificate);
+                    formData.append('file', x.file);
+                    formData.append('yearCertificate', x.yearCertificate);
+                    formData.append('typeCertificate', x.typeCertificate);
+                    this.props.updateCertificate(this.state.employeeNew.employeeNumber, formData)
+                })
+            }
+            // lưu thông tin chứng chỉ
+            if (this.state.certificateShort.length !== 0) {
+                let listCertificateShort = this.state.certificateShort;
+                listCertificateShort.filter(certificateShort => (certificateShort.fileUpload !== " "))
+                listCertificateShort.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameCertificateShort', x.nameCertificateShort);
+                    formData.append('unit', x.unit);
+                    formData.append('file', x.file);
+                    formData.append('startDate', x.startDate);
+                    formData.append('endDate', x.endDate);
+                    this.props.updateCertificateShort(this.state.employeeNew.employeeNumber, formData)
+                })
+            }
+            // lưu thông tin tài liệu đính kèm
+            if (this.state.file.length !== 0) {
+                let listFile = this.state.file;
+                listFile.filter(file => (file.fileUpload !== " "))
+                listFile.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameFile', x.nameFile);
+                    formData.append('discFile', x.discFile);
+                    formData.append('file', x.file);
+                    formData.append('number', x.number);
+                    formData.append('status', x.status);
+                    this.props.updateFile(this.state.employeeNew.employeeNumber, formData)
+                })
+            }
             // lưu lịch sử tăng giảm lương
             if (this.state.salaryNew.length !== 0) {
                 let employeeNumber = this.state.employeeNew.employeeNumber;
-                this.state.salaryNew.map((x, index) => {
+                this.state.salaryNew.map(x => {
                     this.props.createNewSalary({ ...x, employeeNumber })
                 })
             }
             // lưu thông tin nghỉ phép
             if (this.state.sabbaticalNew.length !== 0) {
                 let employeeNumber = this.state.employeeNew.employeeNumber;
-                this.state.sabbaticalNew.map((x, index) => {
+                this.state.sabbaticalNew.map(x => {
                     this.props.createNewSabbatical({ ...x, employeeNumber })
                 })
             }
             // lưu thông tin khen thưởng
             if (this.state.praiseNew.length !== 0) {
                 let employeeNumber = this.state.employeeNew.employeeNumber;
-                this.state.praiseNew.map((x, index) => {
+                this.state.praiseNew.map(x => {
                     this.props.createNewPraise({ ...x, employeeNumber })
                 })
             }
             // lưu thông tin kỷ luật
             if (this.state.disciplineNew.length !== 0) {
                 let employeeNumber = this.state.employeeNew.employeeNumber;
-                this.state.disciplineNew.map((x, index) => {
+                this.state.disciplineNew.map(x => {
                     this.props.createNewDiscipline({ ...x, employeeNumber })
                 })
             }
@@ -488,7 +526,6 @@ class AddEmployee extends Component {
                                 <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Khen thưởng - Kỷ luật" data-toggle="tab" href="#khenthuong">Khen thưởng - kỷ luật</a></li>
                                 <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Lịch sử tăng giảm lương - Thông tin nghỉ phép" data-toggle="tab" href="#historySalary">Lịch sử lương - Nghỉ phép</a></li>
                                 <li><a style={{ paddingLeft: 5, }} title="Tài liệu đính kèm" data-toggle="tab" href="#tailieu">Tài liệu đính kèm</a></li>
-
                             </ul>
                             < div className="tab-content">
                                 <div id="thongtinchung" className="tab-pane active">
@@ -511,11 +548,11 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" placeholder="Mã số nhân viên" onChange={this.handleChangeEmployeeNumber} />
+                                                    <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChangeEmployeeNumber} />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="fullname">Họ và tên:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" name="fullName" id="fullname" placeholder="Họ và tên" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" name="fullName" id="fullname" placeholder="Họ và tên" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="brithday">Ngày sinh:<span className="required">&#42;</span></label>
@@ -523,19 +560,19 @@ class AddEmployee extends Component {
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
                                                         </div>
-                                                        <input type="text" className="form-control datepicker" name="brithday" ref="brithday" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                                        <input type="text" className="form-control datepicker" name="brithday" ref="brithday" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" autoComplete="off" />
                                                     </div>
                                                     {/* <input type="Date" className="form-control" id="brithday" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="emailCompany">Email:<span className="required">&#42;</span></label>
-                                                    <input type="email" className="form-control" id="emailCompany" placeholder="Email công ty" name="emailCompany" onChange={this.handleChange} />
+                                                    <input type="email" className="form-control" id="emailCompany" placeholder="Email công ty" name="emailCompany" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className=" col-md-4 " style={{ marginTop: 30 }}>
                                                 <div className="form-group">
                                                     <label htmlFor="MSCC">Mã số chấm công:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" id="MSCC" placeholder="Mã số chấm công" name="MSCC" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" id="MSCC" placeholder="Mã số chấm công" name="MSCC" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label style={{ display: 'block', paddingBottom: 4 }}>Giới tính:<span className="required">&#42;</span></label>
@@ -546,7 +583,7 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="birthplace">Nơi sinh:</label>
-                                                    <input type="text" className="form-control" id="birthplace" name="birthplace" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" id="birthplace" name="birthplace" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label style={{ display: 'block', paddingBottom: 7 }}>Tình trạng hôn nhân:</label>
@@ -561,11 +598,11 @@ class AddEmployee extends Component {
                                             <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label htmlFor="CMND">Số CMND/Hộ chiếu:<span className="required">&#42;</span></label>
-                                                    <input type="number" className="form-control" id="CMND" name="CMND" onChange={this.handleChange} />
+                                                    <input type="number" className="form-control" id="CMND" name="CMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="national">Dân tộc:</label>
-                                                    <input type="text" className="form-control" id="national" name="national" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" id="national" name="national" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
@@ -581,18 +618,18 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="religion">Tôn giáo:</label>
-                                                    <input type="text" className="form-control" id="religion" name="religion" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" id="religion" name="religion" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
 
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label htmlFor="addressCMND">Nơi cấp:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" id="addressCMND" name="addressCMND" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" id="addressCMND" name="addressCMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nation">Quốc tịch:</label>
-                                                    <input type="text" className="form-control" id="nation" name="nation" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" id="nation" name="nation" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                         </div>
@@ -604,32 +641,32 @@ class AddEmployee extends Component {
                                             <div className="col-md-4">
                                                 <div className="form-group" style={{ paddingTop: 3 }}>
                                                     <label htmlFor="phoneNumber">Điện thoại đi động 1:<span className="required">&#42;</span></label>
-                                                    <input type="number" className="form-control" id="phoneNumber" name="phoneNumber" onChange={this.handleChange} />
+                                                    <input type="number" className="form-control" id="phoneNumber" name="phoneNumber" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label htmlFor="emailPersonal">Email cá nhân 1</label>
-                                                    <input type="text" className="form-control" id="emailPersonal" name="emailPersonal" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" id="emailPersonal" name="emailPersonal" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group" style={{ paddingTop: 3 }}>
                                                 <label htmlFor="phoneNumber2">Điện thoại đi động 2:</label>
-                                                <input type="number" className="form-control" id="phoneNumber2" name="phoneNumber2" onChange={this.handleChange} />
+                                                <input type="number" className="form-control" id="phoneNumber2" name="phoneNumber2" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="emailPersonal2">Email cá nhân 2</label>
-                                                <input type="text" className="form-control" id="emailPersonal2" name="emailPersonal2" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" id="emailPersonal2" name="emailPersonal2" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="phoneNumberAddress">Điện thoại nhà riêng:</label>
-                                                <input type="text" className="form-control" id="phoneNumberAddress" name="phoneNumberAddress" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" id="phoneNumberAddress" name="phoneNumberAddress" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
@@ -640,32 +677,32 @@ class AddEmployee extends Component {
                                                 <div className="col-md-4">
                                                     <div className="form-group">
                                                         <label htmlFor="friendName">Họ và tên:</label>
-                                                        <input type="text" className="form-control" id="friendName" name="friendName" onChange={this.handleChange} />
+                                                        <input type="text" className="form-control" id="friendName" name="friendName" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="friendPhone">Điện thoại di động:</label>
-                                                        <input type="text" className="form-control" id="friendPhone" name="friendPhone" onChange={this.handleChange} />
+                                                        <input type="text" className="form-control" id="friendPhone" name="friendPhone" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
 
                                                 </div>
                                                 <div className="col-md-4">
                                                     <div className="form-group">
                                                         <label htmlFor="relation">Quan hệ:</label>
-                                                        <input type="text" className="form-control" id="relation" name="relation" onChange={this.handleChange} />
+                                                        <input type="text" className="form-control" id="relation" name="relation" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="friendPhoneAddress">Điện thoại nhà riêng:</label>
-                                                        <input type="text" className="form-control" id="friendPhoneAddress" name="friendPhoneAddress" onChange={this.handleChange} />
+                                                        <input type="text" className="form-control" id="friendPhoneAddress" name="friendPhoneAddress" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                 </div>
                                                 <div className="col-md-4">
                                                     <div className="form-group">
                                                         <label htmlFor="friendAddress">Địa chỉ:</label>
-                                                        <input type="text" className="form-control" id="friendAddress" name="friendAddress" onChange={this.handleChange} />
+                                                        <input type="text" className="form-control" id="friendAddress" name="friendAddress" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="friendEmail">Email:</label>
-                                                        <input type="text" className="form-control" id="friendEmail" name="friendEmail" onChange={this.handleChange} />
+                                                        <input type="text" className="form-control" id="friendEmail" name="friendEmail" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -675,26 +712,26 @@ class AddEmployee extends Component {
                                                 <legend className="scheduler-border"><h4 className="box-title">Hộ khẩu thường trú</h4></legend>
                                                 <div className="form-group">
                                                     <label htmlFor="localAddress">Địa chỉ:</label>
-                                                    <input type="text" className="form-control " name="localAddress" id="localAddress" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="localAddress" id="localAddress" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCommune">
                                                         Xã/Phường:</label>
-                                                    <input type="text" className="form-control " name="localCommune" id="localCommune" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="localCommune" id="localCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localDistrict">
                                                         Quận/Huyện:</label>
-                                                    <input type="text" className="form-control " name="localDistrict" id="localDistrict" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="localDistrict" id="localDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCity">
                                                         Tỉnh/Thành phố:</label>
-                                                    <input type="text" className="form-control " name="localCity" id="localCity" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="localCity" id="localCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localNational">Quốc gia:</label>
-                                                    <input type="text" className="form-control " name="localNational" id="localNational" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="localNational" id="localNational" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
                                         </div>
@@ -705,27 +742,27 @@ class AddEmployee extends Component {
                                                 <div className="form-group">
                                                     <label htmlFor="nowAddress">
                                                         Địa chỉ:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control " name="nowAddress" id="nowAddress" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="nowAddress" id="nowAddress" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCommune">
                                                         Xã/Phường:</label>
-                                                    <input type="text" className="form-control " name="nowCommune" id="nowCommune" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="nowCommune" id="nowCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowDistrict">
                                                         Quận/Huyện:</label>
-                                                    <input type="text" className="form-control " name="nowDistrict" id="nowDistrict" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="nowDistrict" id="nowDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCity">
                                                         Tỉnh/Thành phố:</label>
-                                                    <input type="text" className="form-control " name="nowCity" id="nowCity" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="nowCity" id="nowCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowNational">
                                                         Quốc gia:</label>
-                                                    <input type="text" className="form-control " name="nowNational" id="nowNational" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control " name="nowNational" id="nowNational" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
                                         </div>
@@ -738,15 +775,15 @@ class AddEmployee extends Component {
                                         <div className="box-body">
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="ATM">Số tài khoản:</label>
-                                                <input type="text" className="form-control" id="ATM" name="ATM" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" id="ATM" name="ATM" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="nameBank">Tên ngân hàng:</label>
-                                                <input type="text" className="form-control" id="nameBank" name="nameBank" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" id="nameBank" name="nameBank" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="addressBank">Chi nhánh:</label>
-                                                <input type="text" className="form-control" id="addressBank" name="addressBank" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" id="addressBank" name="addressBank" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                     </fieldset>
@@ -754,11 +791,11 @@ class AddEmployee extends Component {
                                         <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thuế thu nhập cá nhân:</h4></legend>
                                         <div className="form-group">
                                             <label htmlFor="numberTax">Mã số thuế:<span className="required">&#42;</span></label>
-                                            <input type="number" className="form-control" id="numberTax" name="numberTax" onChange={this.handleChange} />
+                                            <input type="number" className="form-control" id="numberTax" name="numberTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="userTax">Người đại diện:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" id="userTax" name="userTax" onChange={this.handleChange} />
+                                            <input type="text" className="form-control" id="userTax" name="userTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="startDate">Ngày hoạt động:<span className="required">&#42;</span></label>
@@ -771,7 +808,7 @@ class AddEmployee extends Component {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="unitTax">Quản lý bởi:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" id="unitTax" name="unitTax" onChange={this.handleChange} />
+                                            <input type="text" className="form-control" id="unitTax" name="unitTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                     </fieldset>
 
@@ -793,8 +830,8 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.employeeNew.certificate === 'undefined' || this.state.employeeNew.certificate.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
-                                                        this.state.employeeNew.certificate.map((x, index) => (
+                                                    {(typeof this.state.certificate === 'undefined' || this.state.certificate.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.certificate.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameCertificate}</td>
                                                                 <td>{x.addressCertificate}</td>
@@ -825,8 +862,8 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.employeeNew.certificateShort === 'undefined' || this.state.employeeNew.certificateShort.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
-                                                        this.state.employeeNew.certificateShort.map((x, index) => (
+                                                    {(typeof this.state.certificateShort === 'undefined' || this.state.certificateShort.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.certificateShort.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameCertificateShort}</td>
                                                                 <td>{x.unit}</td>
@@ -860,7 +897,7 @@ class AddEmployee extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="foreignLanguage ">Trình độ ngoại ngữ:</label>
-                                                <input type="text" className="form-control" id="foreignLanguage" name="foreignLanguage" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" id="foreignLanguage" name="foreignLanguage" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="educational ">Trình độ chuyên môn:</label>
@@ -913,7 +950,7 @@ class AddEmployee extends Component {
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Bảo hiểm y tế</h4></legend>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="numberBHYT">Mã số BHYT:</label>
-                                                <input type="text" className="form-control" name="numberBHYT" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" name="numberBHYT" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="startDateBHYT">Ngày có hiệu lực:</label>
@@ -938,7 +975,7 @@ class AddEmployee extends Component {
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Bảo hiểm xã hội</h4></legend>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="numberBHXH">Mã số BHXH:</label>
-                                                <input type="text" className="form-control" name="numberBHXH" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" name="numberBHXH" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="col-md-12">
                                                 <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>Quá trình đóng bảo hiểm xã hội:</h4>
@@ -991,8 +1028,8 @@ class AddEmployee extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.employeeNew.contract === 'undefined' || this.state.employeeNew.contract.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
-                                                        this.state.employeeNew.contract.map((x, index) => (
+                                                    {(typeof this.state.contract === 'undefined' || this.state.contract.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.contract.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameContract}</td>
                                                                 <td>{x.typeContract}</td>
@@ -1060,7 +1097,7 @@ class AddEmployee extends Component {
                                                         <th>Cấp ra quyết định</th>
                                                         <th>Hình thức khen thưởng</th>
                                                         <th style={{ width: "15%" }}>Thành tích (lý do)</th>
-                                                        <th>Hành động</th>
+                                                        <th style={{ width: "10%" }}>Hành động</th>
                                                     </tr>
 
                                                 </thead>
@@ -1094,7 +1131,7 @@ class AddEmployee extends Component {
                                                         <th>Cấp ra quyết định</th>
                                                         <th>Hình thức Kỷ luật</th>
                                                         <th>Lý do kỷ luật</th>
-                                                        <th>Hành động</th>
+                                                        <th style={{ width: "10%" }}>Hành động</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1131,7 +1168,7 @@ class AddEmployee extends Component {
                                                             <th>Tháng</th>
                                                             <th style={{ width: "30%" }}>Lương chính</th>
                                                             <th style={{ width: "30%" }}>Tổng lương</th>
-                                                            <th>Hành động</th>
+                                                            <th style={{ width: "10%" }}>Hành động</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -1167,7 +1204,7 @@ class AddEmployee extends Component {
                                                             <th >Đến ngày</th>
                                                             <th>Lý do</th>
                                                             <th>Trạng thái</th>
-                                                            <th >Hành động</th>
+                                                            <th style={{ width: "10%" }} >Hành động</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -1195,7 +1232,7 @@ class AddEmployee extends Component {
                                         <div className="col-md-4">
                                             <div className="form-group" style={{ paddingTop: 3 }}>
                                                 <label htmlFor="numberFile">Nơi lưu trữ bản cứng:</label>
-                                                <input type="text" className="form-control" id="numberFile" name="numberFile" onChange={this.handleChange} />
+                                                <input type="text" className="form-control" id="numberFile" name="numberFile" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
@@ -1215,8 +1252,8 @@ class AddEmployee extends Component {
 
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.employeeNew.file === 'undefined' || this.state.employeeNew.file.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
-                                                        this.state.employeeNew.file.map((x, index) => (
+                                                    {(typeof this.state.file === 'undefined' || this.state.file.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                        this.state.file.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameFile}</td>
                                                                 <td>{x.discFile}</td>
@@ -1235,7 +1272,7 @@ class AddEmployee extends Component {
                                         </div>
                                     </div>
                                     <div className=" box-footer">
-                                        <button type="submit" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={this.handleSubmit} htmlFor="form">Thêm nhân viên</button>
+                                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={this.handleSubmit}>Thêm nhân viên</button>
                                     </div>
                                 </div>
                             </div>
@@ -1272,7 +1309,10 @@ const actionCreators = {
     createNewSabbatical: SabbaticalActions.createNewSabbatical,
     createNewPraise: DisciplineActions.createNewPraise,
     createNewDiscipline: DisciplineActions.createNewDiscipline,
-
+    updateContract: EmployeeInfoActions.updateContract,
+    updateCertificate: EmployeeInfoActions.updateCertificate,
+    updateCertificateShort: EmployeeInfoActions.updateCertificateShort,
+    updateFile: EmployeeInfoActions.updateFile,
 };
 
 const connectedAddEmplyee = connect(mapState, actionCreators)(AddEmployee);
