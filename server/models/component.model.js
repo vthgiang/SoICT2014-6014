@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Company = require('./company.model');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
@@ -14,7 +13,7 @@ const ComponentSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: 'companies'
     }
 },{
     timestamps: true,
@@ -22,7 +21,7 @@ const ComponentSchema = new Schema({
 });
 
 ComponentSchema.virtual('roles', {
-    ref: 'Privilege',
+    ref: 'privileges',
     localField: '_id',
     foreignField: 'resourceId'
 });

@@ -26,4 +26,4 @@ const DocumentCategorySchema = new Schema({
 
 DocumentCategorySchema.plugin(mongoosePaginate);
 
-module.exports = DocumentCategory = mongoose.model("DocumentCategory", DocumentCategorySchema);
+module.exports = DocumentCategory = mongoose.model("document_categories", DocumentCategorySchema);

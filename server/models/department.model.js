@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Role = require('./role.model');
-const Company = require('./company.model');
 
 // Create Schema
 const DepartmentSchema = new Schema({
@@ -11,22 +9,22 @@ const DepartmentSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: 'companies'
     },
     description: {
         type: String
     },
     dean: {
         type: Schema.Types.ObjectId,
-        ref: Role   
+        ref: 'roles'   
     },
     vice_dean: {
         type: Schema.Types.ObjectId,
-        ref: Role 
+        ref: 'roles' 
     },
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Role 
+        ref: 'roles' 
     },
     parent: {
         type: Schema.Types.ObjectId,

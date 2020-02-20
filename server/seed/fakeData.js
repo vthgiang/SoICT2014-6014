@@ -174,76 +174,7 @@ const fakeData = async () => {
             url: '/manage-form-document',
             description: 'Quản lý tài liệu biểu mẫu',
             company: xyz._id
-        }, {
-            url: '/manage-Employee',
-            description: 'Quản lý nhân sự',
-            company: xyz._id
-        },
-        {
-            url: '/add-employee',
-            description: 'Thêm mới nhân viên',
-            company: xyz._id
-        },
-        {
-            url: '/list-employee',
-            description: 'Danh sách nhân viên',
-            company: xyz._id
-        },
-        {
-            url: '/update-employee',
-            description: 'Cập nhật thông tin cá nhân của nhân viên',
-            company: xyz._id
-        },
-        {
-            url: '/detail-employee',
-            description: 'Thông tin cá nhân của nhân viên',
-            company: xyz._id
-        },
-        {
-            url: '/salary-employee',
-            description: 'Quản lý lương nhân viên',
-            company: xyz._id
-        },
-        {
-            url: '/sabbatical',
-            description: 'Quản lý nghỉ phép của nhân viên',
-            company: xyz._id
-        },
-        {
-            url: '/discipline',
-            description: 'Quản lý khen thưởng, kỷ luật',
-            company: xyz._id
-        },
-        {
-            url: '/dashboard-employee',
-            description: 'Dashboard nhân sự',
-            company: xyz._id
-        },
-        {
-            url: '/time-keeping',
-            description: 'Quản lý chấm công',
-            company: xyz._id
-        },
-        {
-            url: '/trainning-course',
-            description: 'Quản lý đào tạo',
-            company: xyz._id
-        },
-        {
-            url: '/account',
-            description: 'Thông tin tài khoản ',
-            company: xyz._id
-        },
-        {
-            url: '/training-plan',
-            description: 'Kế hoạch đào tạo',
-            company: xyz._id
-        },
-        {
-            url: '/list-course',
-            description: 'Chương trình đào tạo bắt buộc',
-            company: xyz._id
-        }]);
+        },]);
     console.log("Xong! Đã tạo links: ", links);
     //END
     const privileges = await Privilege.insertMany([{
@@ -274,77 +205,7 @@ const fakeData = async () => {
             resourceId: links[6]._id,
             resourceType: 'Link',
             roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[7]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[8]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[9]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[10]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[11]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[12]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[13]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[14]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[15]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[16]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[17]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[18]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[19]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        },
-        {
-            resourceId: links[20]._id,
-            resourceType: 'Link',
-            roleId: roles[0]._id._id
-        }]);
+        },]);
     console.log("Gán quyền super admin cho các trang: ", privileges);
 }
 

@@ -25,4 +25,4 @@ const TaskHistory = new Schema({
     }
 });
 
-module.exports = User = mongoose.model("User", TaskHistory);
+module.exports = User = mongoose.model("task_histories", TaskHistory);

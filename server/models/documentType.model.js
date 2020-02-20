@@ -26,4 +26,4 @@ const DocumentTypeSchema = new Schema({
 
 DocumentTypeSchema.plugin(mongoosePaginate);
 
-module.exports = DocumentType = mongoose.model("DocumentType", DocumentTypeSchema);
+module.exports = DocumentType = mongoose.model("document_types", DocumentTypeSchema);
