@@ -472,6 +472,8 @@ const sampleCompanyData = async () => {
         contract: [{
             nameContract: "Thực tập",
             typeContract: "Phụ thuộc",
+            startDate : "28-01-2020",
+            endDate : "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
@@ -539,6 +541,8 @@ const sampleCompanyData = async () => {
         contract: [{
             nameContract: "Thực tập",
             typeContract: "Phụ thuộc",
+            startDate : "28-01-2020",
+            endDate : "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
@@ -607,7 +611,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "tranhungcuong703@gmail.com",
+        emailCompany: "admin.xyz@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -656,13 +660,22 @@ const sampleCompanyData = async () => {
         contract: [{
             nameContract: "Thực tập",
             typeContract: "Phụ thuộc",
+            startDate : "28-01-2019",
+            endDate : "28-02-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courst: [],
         nation: "Việt Nam",
         numberFile: "T3 - 123698",
-        file: [],
+        file: [{
+            nameFile : "Ảnh",
+            discFile : "Ảnh 3x4",
+            number : "1",
+            status : "Đã nộp",
+            file : "3.5.1.PNG",
+            urlFile : "1582212624054-3.5.1.png"
+        }],
     });
 
     var employeeContact = await EmployeeContact.create({

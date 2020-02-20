@@ -1,10 +1,19 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import {
+    TOKEN_SECRET
+} from '../../../../env';
+import {
+    AuthenticateHeader,
+    getStorage
+} from '../../../../config';
+import jwt from 'jsonwebtoken';
+
 export const EmployeeService = {
     addNewEmployee,
-    getByEmployeeNumber,
-    updateInformationEmpoyee,
+    getInformationPersonal,
+    updateInformationPersonal,
     uploadAvatar,
     updateContract,
     updateCertificate,
@@ -13,11 +22,14 @@ export const EmployeeService = {
 }
 
 // lấy thông tin nhân viên theo id
-function getByEmployeeNumber(id) {
+async function getInformationPersonal(){
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var email = verified.email;
     const requestOptions = {
         method: 'GET',
     }
-    return fetch(`/employee/${id}`, requestOptions).then(handleResponse);
+    return fetch(`/employee/${email}`, requestOptions).then(handleResponse);
 }
 
 // Thêm mới thông tin nhân viên
@@ -34,8 +46,11 @@ function addNewEmployee(newEmployee) {
 
 }
 
-// Cập nhật thông tin nhân viên
-function updateInformationEmpoyee(id, information) {
+// Cập nhật thông tin cá nhân
+async function updateInformationPersonal(information) {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var email = verified.email;
     const requestOptions = {
         method: 'PUT',
         headers: {
@@ -43,7 +58,7 @@ function updateInformationEmpoyee(id, information) {
         },
         body: JSON.stringify(information)
     };
-    return fetch(`employee/${id}`, requestOptions).then(handleResponse)
+    return fetch(`employee/${email}`, requestOptions).then(handleResponse);
 }
 
 // upload ảnh đại diện của nhân viên
