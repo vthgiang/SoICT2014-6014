@@ -60,12 +60,19 @@ class DepartmentTreeView extends Component {
                         </div>
                     </React.Fragment>
                 }
+                {
+                    tree !== null &&
+                    tree.map(tree => 
+                        <div className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px'}}>
+                            <ul>
+                                {
+                                    this.displayTreeView(tree, translate)
+                                }
+                            </ul>
+                        </div>
+                    )
+                }
                 
-                <div className="tf-tree example" style={{ textAlign: 'center', fontSize: this.state.zoom, marginTop: '50px'}}>
-                    <ul>
-                        {tree !== null && this.displayTreeView(tree[0], translate)}
-                    </ul>
-                </div>
             </React.Fragment>
          );
     }
@@ -169,14 +176,6 @@ class DepartmentTreeView extends Component {
             )
         }
         else return null
-    }
-
-    componentDidMount(){
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
     }
 }
  

@@ -16,11 +16,11 @@ class System extends Component {
     render() { 
         const { translate } = this.props;
         var type = this.props.system.log ? 'danger' : 'success';
-        var toggleButton = this.props.system.log ? translate('system.turnOff') : translate('system.turnOn');
+        var toggleButton = this.props.system.log ? translate('manage_system.turn_off') : translate('manage_system.turn_on');
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
-                    <p>{ translate('system.logState') }</p>
+                    <p>{ translate('manage_system.log') }</p>
                     <button className={`btn btn-${type}`} onClick={ this.props.toggleLogState }>{ toggleButton }</button>
                 </div>
             </div>

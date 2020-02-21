@@ -65,6 +65,7 @@ class TableComponent extends Component {
                     </thead>
                     <tbody>
                         {
+                            component.listPaginate.length > 0 ?
                             component.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
@@ -78,9 +79,9 @@ class TableComponent extends Component {
                                         />
                                         <DeleteNotification 
                                             content={{
-                                                title: translate('delete'),
-                                                btnNo: translate('question.no'),
-                                                btnYes: translate('delete'),
+                                                title: translate('manage_component.delete'),
+                                                btnNo: translate('confirm.no'),
+                                                btnYes: translate('confirm.yes'),
                                             }}
                                             data={{
                                                 id: component._id,
@@ -90,13 +91,7 @@ class TableComponent extends Component {
                                         />
                                     </td>
                                 </tr>
-                            )
-                        }
-                        {
-                            component.list.length === 0 &&
-                            <tr>
-                                <td colSpan={"3"}>No data</td>
-                            </tr>
+                            ):<tr><td colSpan={"3"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

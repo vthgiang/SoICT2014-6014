@@ -61,7 +61,7 @@ class RoleTable extends Component {
                         </thead>
                         <tbody>
                             {
-                                role.listPaginate !== undefined ? 
+                                role.listPaginate.length > 0 ? 
                                 role.listPaginate.map( role => 
                                     <tr key={ `roleList${role._id}` }>
                                         <td> { role.name } </td>

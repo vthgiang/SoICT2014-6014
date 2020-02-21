@@ -31,7 +31,6 @@ class ManageLink extends Component {
     render() { 
         const { translate, link } = this.props;
 
-        console.log("LINK STATE:", this.state);
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
@@ -39,7 +38,7 @@ class ManageLink extends Component {
                         <div className="row">
                             <SearchBar 
                                 columns={[
-                                    { title: translate('manageResource.url'), value:'url' },
+                                    { title: translate('table.url'), value:'url' },
                                     { title: translate('table.description'), value:'description' },
                                 ]}
                                 option={this.state.option}
@@ -81,9 +80,9 @@ class ManageLink extends Component {
                                                 />
                                                 <DeleteNotification 
                                                     content={{
-                                                        title: translate('delete'),
-                                                        btnNo: translate('question.no'),
-                                                        btnYes: translate('delete'),
+                                                        title: translate('manage_page.delete'),
+                                                        btnNo: translate('confirm.no'),
+                                                        btnYes: translate('confirm.yes'),
                                                     }}
                                                     data={{
                                                         id: link._id,
@@ -93,7 +92,7 @@ class ManageLink extends Component {
                                                 />
                                             </td>
                                         </tr> 
-                                    ): <tr><td colSpan={3}>No data</td></tr>
+                                    ): <tr><td colSpan={3}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>

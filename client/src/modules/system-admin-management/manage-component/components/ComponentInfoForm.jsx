@@ -34,25 +34,17 @@ class ComponentInfoForm extends Component {
         this.props.editComponent(id, component);
     }
 
-    componentDidMount(){
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-
     render() { 
         const { componentId, componentName, componentDescription, componentRoles, translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="edit" data-toggle="modal" href={ `#modal-component-${componentId}` }><i className="material-icons">edit</i></a>
+                <a className="edit" data-toggle="modal" href={ `#modal-component-${componentId}` } title={ translate('manage_component.edit') }><i className="material-icons">edit</i></a>
                 <div className="modal fade" id={`modal-component-${componentId}`}  style={{ textAlign: 'left'}}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 className="modal-title">{ translate('manageComponent.componentInfo') }</h4>
+                                <h4 className="modal-title">{ translate('manage_component.info') }</h4>
                             </div>
                             <div className="modal-body">
                             <div className="box-body">
@@ -65,7 +57,7 @@ class ComponentInfoForm extends Component {
                                     <input name="description" type="text" className="form-control" defaultValue={componentDescription} onChange={this.inputChange} />
                                 </div>
                                 <div className="form-group">
-                                    <label>{ translate('manageResource.roleTo') }</label>
+                                    <label>{ translate('manage_component.roles') }</label>
                                     <select 
                                         name="roles"
                                         className="form-control select2" 
@@ -89,8 +81,8 @@ class ComponentInfoForm extends Component {
                                     
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                                <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                                <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('form.save') }</button>
                             </div>
                         </div>
                     </div>
