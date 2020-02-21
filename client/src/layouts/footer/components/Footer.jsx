@@ -10,7 +10,7 @@ class Footer extends Component {
                 <div className="pull-right hidden-xs">
                     <b>{ translate('footer.version')}</b> 2019.1
                 </div>
-                <strong>{ translate('footer.copyRight')}<span style={{color: 'blue'}}>Quản Lý Công Việc</span></strong>
+                <strong>{ translate('footer.copyright')}<span style={{color: 'blue'}}> {translate('footer.vnist')} </span></strong>
             </footer>
         );
     }

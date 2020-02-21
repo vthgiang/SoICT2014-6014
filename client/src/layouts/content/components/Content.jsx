@@ -50,7 +50,7 @@ class Content extends Component {
                                     <li key={page.name}> 
                                         <a href={page.link}>
                                             <i className={ page.icon }/>
-                                            { translate(`mainSideBar.${page.name}`) }
+                                            { translate(`menu.${page.name}`) }
                                         </a>
                                     </li> )
                             }
