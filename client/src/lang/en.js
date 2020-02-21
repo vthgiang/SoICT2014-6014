@@ -125,6 +125,8 @@ export default {
             users: 'Users has role',
             edit: 'Edit role \'s information',
             delete: 'Delete role ?',
+            add_success: 'Add new role successfully',
+            edit_success: 'Edit role successfully'
         },
 
         manage_user: {
@@ -135,6 +137,8 @@ export default {
             disable: 'Disable',
             enable: 'Enable',
             delete: 'Delete user ?',
+            add_success: "Add new account successfully",
+            edit_success: "Edit account successfully"
         },
 
         manage_page: {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { get, destroy } from '../redux/actions';
+import { DepartmentActions } from '../redux/actions';
 import DepartmentCreateWithParent from './DepartmentCreateWithParent';
 import DepartmentEditForm from './DepartmentEditForm';
 
@@ -38,15 +38,9 @@ class DepartmentTable extends Component {
 }
  
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        get: () => {
-            dispatch(get());
-        },
-        destroy: (id) => {
-            dispatch(destroy(id));
-        },
-    }
+const getState = {
+    get: DepartmentActions.get,
+    destroy: DepartmentActions.destroy
 }
  
 export default connect(mapState, getState) (withTranslate(DepartmentTable)); 

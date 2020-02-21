@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DepartmentTreeView from './DepartmentTreeView';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { get } from '../redux/actions';
+import { DepartmentActions } from '../redux/actions';
 import DepartmentTable from './DepartmentTable';
 
 class ManageDepartment extends Component {
@@ -46,12 +46,8 @@ class ManageDepartment extends Component {
 }
  
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        get: () => {
-            dispatch(get());
-        },
-    }
+const getState = {
+    get: DepartmentActions.get
 }
  
 export default connect(mapState, getState) (withTranslate(ManageDepartment)); 

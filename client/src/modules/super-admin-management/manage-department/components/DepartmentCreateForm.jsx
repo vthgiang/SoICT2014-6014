@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { create } from '../redux/actions';
+import { DepartmentActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 
 class DepartmentCreateForm extends Component {
@@ -28,9 +28,18 @@ class DepartmentCreateForm extends Component {
         });
     }
 
-    save = (e) => {
+    save = (message) => {
         const { name, description, dean, vice_dean, employee, parent } = this.state;
-        this.props.create({name, description, dean, vice_dean, employee, parent});
+        this.props
+            .create({name, description, dean, vice_dean, employee, parent})
+            .then(res => {
+                Swal.fire({
+                    icon: 'success',
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 5000
+                }) 
+            })
             
     }
 
@@ -106,7 +115,14 @@ class DepartmentCreateForm extends Component {
                                 <button type="button" className="btn btn-primary pull-right" style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.close') }</button>
                                 {
                                     (name !== '' && description !== '' && dean !== '' && vice_dean != '' && employee != '') &&
-                                    <button type="button" className="btn btn-success" onClick={ this.save } style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.save') }</button>
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-success" 
+                                        onClick={() => this.save(
+                                            translate('manage_department.add_success')
+                                        )} 
+                                        style={{ marginRight: '8px' }} data-dismiss="modal"
+                                    > { translate('form.save') }</button>
                                 }
                             </div>
                         </div>
@@ -118,12 +134,8 @@ class DepartmentCreateForm extends Component {
 }
 
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        create: (data) => {
-            dispatch(create(data));
-        },
-    }
+const getState = {
+    create: DepartmentActions.create
 }
  
 export default connect(mapState, getState) (withTranslate(DepartmentCreateForm)); 

@@ -114,7 +114,8 @@ export default {
             employee_name: 'Tên chức danh cho nhân viên đơn vị',
             employee_example: 'Nhân viên phòng tài chính',
             add_with_parent: 'Tạo đơn vị mới với đơn vị cha là',
-            delete: 'Xóa đơn vị ?'
+            delete: 'Xóa đơn vị ?',
+            add_success: 'Đã thêm thành công đơn vị mới',
         },
         
         manage_role: {
@@ -126,6 +127,8 @@ export default {
             users: 'Những người dùng có phân quyền',
             edit: 'Chỉnh sửa thông tin phân quyền',
             delete: 'Xóa phân quyền ?',
+            add_success: 'Đã tạo thành công phân quyền',
+            edit_success: 'Đã chỉnh sửa lại thông tin phân quyền'
         },
 
         manage_user: {
@@ -136,6 +139,8 @@ export default {
             disable: 'Ngưng hoạt động',
             enable: 'Hoạt động',
             delete: 'Xóa tài khoản ?',
+            add_success: "Đã thêm thành công tài khoản người dùng mới",
+            edit_success: "Đã chỉnh sửa thành công thông tin tài khoản"
         },
 
         manage_page: {

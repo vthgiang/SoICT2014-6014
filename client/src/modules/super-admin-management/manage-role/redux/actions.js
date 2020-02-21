@@ -61,32 +61,40 @@ function show(id){
 function create(role){
     return dispatch => {
         dispatch({ type: RoleConstants.CREATE_ROLE_REQUEST});
-        RoleServices.create(role)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.CREATE_ROLE_SUCCESS,
-                    payload: res.data
+        return new Promise((resolve, reject) => {
+            RoleServices
+                .create(role)
+                .then(res => {
+                    dispatch({
+                        type: RoleConstants.CREATE_ROLE_SUCCESS,
+                        payload: res.data
+                    });
+                    resolve(res.data);
                 })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
+                .catch(err => {
+                    reject(err);
+                })
+        })
     }
 }
 
 function edit(role){
     return dispatch => {
         dispatch({ type: RoleConstants.EDIT_ROLE_REQUEST});
-        RoleServices.edit(role)
+        return new Promise((resolve, reject) => {
+            RoleServices.edit(role)
             .then(res => {
                 dispatch({
                     type: RoleConstants.EDIT_ROLE_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res.data);
             })
             .catch(err => {
                 console.log("Error: ", err);
+                reject(err);
             })
+        })
     }
 }
 

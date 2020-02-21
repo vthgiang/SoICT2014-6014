@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './department.css';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { destroy } from '../redux/actions';
+import { DepartmentActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 import DepartmentCreateForm from './DepartmentCreateForm';
 
@@ -56,7 +56,8 @@ class DepartmentTreeView extends Component {
                                     this.departmentId.current.value :
                                     department.list[0]._id
                                 }`}
-                            ><i className="fa fa-search"></i></a>
+                                title={translate('form.search')}
+                            >{translate('form.search')}</a>
                         </div>
                     </React.Fragment>
                 }
@@ -180,12 +181,8 @@ class DepartmentTreeView extends Component {
 }
  
 const mapState = state => state;
-const getState = (dispatch, props) => {
-    return {
-        destroy: (id) => {
-            dispatch(destroy(id));
-        },
-    }
+const getState = {
+    destroy: DepartmentActions.destroy
 }
  
 export default connect(mapState, getState) (withTranslate(DepartmentTreeView)); 

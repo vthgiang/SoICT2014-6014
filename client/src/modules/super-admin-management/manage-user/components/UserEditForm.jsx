@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
+import Swal from 'sweetalert2';
 
 class UserEditForm extends Component {
     constructor(props) {
@@ -29,16 +30,21 @@ class UserEditForm extends Component {
         });
     }
 
-    save = (e) => {
-
-        e.preventDefault();
+    save = (msg) => {
         const { id, name, active } = this.state;
         const user = {
             id,
             name,
             active
         };
-        this.props.edit(user);
+        this.props.edit(user).then(res => {
+            Swal.fire({
+                icon: 'success',
+                title: msg,
+                showConfirmButton: false,
+                timer: 5000
+            }) 
+        })
     }
 
     render() { 
@@ -83,7 +89,9 @@ class UserEditForm extends Component {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                            <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.save}>{ translate('form.save') }</button>
+                            <button type="button" className="btn btn-success" data-dismiss="modal" 
+                                onClick={() => this.save(translate('manage_user.edit_success'))}
+                            >{ translate('form.save') }</button>
                         </div>
                         </div>
                     </div>

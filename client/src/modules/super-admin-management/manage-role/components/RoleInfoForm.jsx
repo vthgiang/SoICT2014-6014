@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../redux/actions';
+import Swal from 'sweetalert2';
 
 class RoleInfoForm extends Component {
     constructor(props) {
@@ -22,8 +23,7 @@ class RoleInfoForm extends Component {
         });
     }
 
-    save(e){
-        e.preventDefault();
+    save(message){
         let select = this.refs.parents;
         let parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
 
@@ -32,7 +32,14 @@ class RoleInfoForm extends Component {
 
         const { name } = this.state;
         var role = { id: this.props.roleInfo._id, name, parents, users };
-        this.props.edit(role);
+        this.props.edit(role).then(res => {
+            Swal.fire({
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 5000
+            }) 
+        })
     }
 
     componentDidMount(){
@@ -99,7 +106,9 @@ class RoleInfoForm extends Component {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                                <button type="button" className="btn btn-success" data-dismiss="modal" onClick={ this.save }>{ translate('form.save') }</button>
+                                <button type="button" className="btn btn-success" data-dismiss="modal" 
+                                    onClick={()  => this.save(translate('manage_role.edit_success'))}
+                                >{ translate('form.save') }</button>
                             </div>
                         </div>
                     </div>

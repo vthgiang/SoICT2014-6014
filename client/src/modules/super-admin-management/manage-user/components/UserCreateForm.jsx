@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-// import Swal from 'sweetalert2';
-// import ReactLoading from 'react-loading';
+import Swal from 'sweetalert2';
 
 class UserCreateForm extends Component {
     constructor(props) {
@@ -25,13 +24,19 @@ class UserCreateForm extends Component {
         });
     }
 
-    save = (e) => {
-        e.preventDefault();
+    save = (msg) => {
         const { name, email } = this.state;
         const user = {
             name, email
         };
-        this.props.create(user);
+        this.props.create(user).then(res => {
+            Swal.fire({
+                icon: 'success',
+                title: msg,
+                showConfirmButton: false,
+                timer: 5000
+            }) 
+        });
     }
 
     render() { 
@@ -60,7 +65,9 @@ class UserCreateForm extends Component {
                             </div>
                             <div className="modal-footer">
                                 <button className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                                <button className="btn btn-success" onClick={ this.save } data-dismiss="modal">{ translate('form.save') }</button>
+                                <button className="btn btn-success" 
+                                    onClick={() => this.save(translate('manage_user.add_success'))} 
+                                    data-dismiss="modal">{ translate('form.save') }</button>
                             </div>
                         </div>
                     </div>

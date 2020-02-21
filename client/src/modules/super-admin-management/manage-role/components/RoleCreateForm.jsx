@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RoleActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 class RoleCreateForm extends Component {
     constructor(props) {
@@ -11,35 +12,6 @@ class RoleCreateForm extends Component {
         }
         this.inputChange = this.inputChange.bind(this);
         this.save = this.save.bind(this);
-    }
-
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-
-    componentDidMount(){
-        this.props.get();
-
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-
-    save(e){
-        e.preventDefault();
-        let select = this.refs.parents;
-        let parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
-
-        const { name } = this.state;
-        const role = { name, parents };
-        this.props.create(role);
     }
 
     render() { 
@@ -85,13 +57,50 @@ class RoleCreateForm extends Component {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                            <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('form.save') }</button>
+                            <button type="button" className="btn btn-success" 
+                                onClick={() => this.save(translate('manage_role.add_success'))} 
+                                data-dismiss="modal">{ translate('form.save') }</button>
                         </div>
                     </div>
                     </div>
                 </div>
             </React.Fragment>
          );
+    }
+    
+    inputChange = (e) => {
+        const target = e.target;
+        const name = target.name;
+        const value = target.value;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    componentDidMount(){
+        this.props.get();
+
+        let script = document.createElement('script');
+        script.src = '/lib/main/js/CoCauToChuc.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+    }
+
+    save(msg){
+        let select = this.refs.parents;
+        let parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
+
+        const { name } = this.state;
+        const role = { name, parents };
+        this.props.create(role).then(res => {
+            Swal.fire({
+                icon: 'success',
+                title: msg,
+                showConfirmButton: false,
+                timer: 5000 //2 giây
+            })     
+        });
     }
 }
  
