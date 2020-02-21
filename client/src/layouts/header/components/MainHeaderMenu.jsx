@@ -126,11 +126,11 @@ const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
             dispatch(logoutAllAccount()); //dispatch đến action getUsers trong file index của action và lưu dữ liệu users trên store
         },
         setLanguageVietNam: () => {
-            sessionStorage.setItem('lang', 'vn');
+            localStorage.setItem('lang', 'vn');
             dispatch(IntlActions.setLocale('vn'));
         },
         setLanguageEnglish: () => {
-            sessionStorage.setItem('lang', 'en');
+            localStorage.setItem('lang', 'en');
             dispatch(IntlActions.setLocale('en'));
         },
         getLinksOfRole: (idRole) => {

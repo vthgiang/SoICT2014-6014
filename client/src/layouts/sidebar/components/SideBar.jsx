@@ -65,8 +65,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/system', links) === true &&
                                 <Item
-                                    key='system'
-                                    name='system'
+                                    key='manage_system'
+                                    name='manage_system'
                                     path='/system'
                                     icon='fa fa-gears'
                                 />
@@ -74,8 +74,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/manage-company', links) === true &&
                                 <Item
-                                    key='manageCompany'
-                                    name='manageCompany'
+                                    key='manage_company'
+                                    name='manage_company'
                                     path='/manage-company'
                                     icon='fa fa-building'
                                 />
@@ -83,8 +83,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/manage-department', links) === true &&
                                 <Item
-                                    key='manageDepartment'
-                                    name='manageDepartment'
+                                    key='manage_department'
+                                    name='manage_department'
                                     path='/manage-department'
                                     icon='fa fa-sitemap'
                                 />
@@ -92,8 +92,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/manage-user', links) === true &&
                                 <Item
-                                    key='manageUser'
-                                    name='manageUser'
+                                    key='manage_user'
+                                    name='manage_user'
                                     path='/manage-user'
                                     icon='fa fa-users'
                                 />
@@ -101,8 +101,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/manage-role', links) === true &&
                                 <Item
-                                    key='manageRole'
-                                    name='manageRole'
+                                    key='manage_role'
+                                    name='manage_role'
                                     path='/manage-role'
                                     icon='fa fa-lock'
                                 />
@@ -110,8 +110,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/manage-link', links) === true &&
                                 <Item
-                                    key='manageLink'
-                                    name='manageLink'
+                                    key='manage_page'
+                                    name='manage_page'
                                     path='/manage-link'
                                     icon='fa fa-link'
                                 />
@@ -119,17 +119,17 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/manage-component', links) === true &&
                                 <Item
-                                    key='manageComponent'
-                                    name='manageComponent'
+                                    key='manage_component'
+                                    name='manage_component'
                                     path='/manage-component'
                                     icon='fa fa-object-group'
                                 />
                             }
                             {
-                                this.checkURL('/manage-form-document', links) === true &&
+                                this.checkURL('/manage-document', links) === true &&
                                 <Item
-                                    key='manageFormDocument'
-                                    name='manageFormDocument'
+                                    key='manage_document'
+                                    name='manage_document'
                                     path='/manage-form-document'
                                     icon='fa fa-folder-open'
                                 />

@@ -13,7 +13,7 @@ class Item extends Component {
         return ( 
             <li className={ window.location.pathname === path ? "active" : "" }>
                 <Link to={ path }>
-                    <i className={ icon } /> <span>{ translate(`mainSideBar.${name}`) }</span>
+                    <i className={ icon } /> <span>{ translate(`menu.${name}`) }</span>
                 </Link>
             </li>
         );
