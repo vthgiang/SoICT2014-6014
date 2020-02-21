@@ -31,11 +31,11 @@ class ActionColumn extends Component {
                         </div>
                     }
                     <div className="col-xs-12" style={{ marginTop: "10px" }}>
-                        <label style={{ marginRight: "15px" }}>{`${translate('record')}/${translate('page')}`}:</label>
+                        <label style={{ marginRight: "15px" }}>{translate('table.line_per_page')}</label>
                         <input className="form-control" type="text" defaultValue={5} ref={this.record}/>
                     </div>
                     <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
-                        <button type="button" className="btn btn-success" onClick={() => this.props.setLimit(this.record.current.value)}>{ translate('update') }</button>
+                        <button type="button" className="btn btn-success" onClick={() => this.props.setLimit(this.record.current.value)}>{ translate('table.update') }</button>
                     </div>
                 </div>
             </React.Fragment>

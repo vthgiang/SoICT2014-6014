@@ -1,11 +1,21 @@
 export default {
     locale: 'en',
     messages: {
+        auth: {
+            login: 'Login',
+            logout: 'Logout',
+            logout_all_account: 'Log out all account',
+            profile: 'Profile',
+        },
+
         confirm: {
             yes: 'YES',
             no: 'NO',
+            no_data: 'No data',
         },
+
         form: {
+            required: 'Information fields required',
             save: 'Save',
             close: 'Close',
             email: 'Email',
@@ -17,149 +27,36 @@ export default {
             forgotPassword: 'I forgot my password ?',
             signin: 'Sign In',
             otp: 'OTP',
-            next: 'Next'
-        },
-        manage_department: {
-            zoom_out: 'Zoom Out',
-            zoom_in: 'Zoom In',
-            add: 'Add',
-            add_title: 'Add new department',
-            info: 'Department Information',
-            name: 'Department \'s name',
-            description: 'Department \'s description',
-            parent: 'Parent of Department',
-            select_parent: 'Select parent of department',
-            roles_of_department: 'Roles in Department',
-            dean_name: 'Dean',
-            dean_example: 'VD: Dean of Financial Officer',
-            vice_dean_name: 'Vice Dean',
-            vice_dean_example: 'VD: Vice Dean of Financial Officer',
-            employee_name: 'Employee',
-            employee_example: 'Employee of Financial Officer',
-            add_with_parent: 'Add new department with parent is',
-            delete: 'Delete department ?'
+            next: 'Next',
+            search: 'Search'
         },
 
-        show: 'Show value / page',
-        add: 'Add',
-        search: 'Search',
-        searchByValue: 'Input value ... ',
-        edit: 'Edit',
-        update: 'Update',
-        record: 'Record',
-        page: 'Page',
-        delete: 'Delete',
-        loading: 'Loading...Please wait',
-        question: {
-            yes: 'Yes',
-            no: 'No'
-        },
-        profile: 'Profile',
-        profileTitle: "Information of profile user",
-        logout: 'Log out',
-        logoutAll: 'Logout of all devices',
-        system: {
-            logState: 'Log State',
-            turnOn: 'Turn On',
-            turnOff: 'Turn Off'
-        },
-        manageCompany: {
-            name: 'Manage Company',
-            create: 'Add new company'
-        },
-        manageUser: {
-            name: 'Manage User',
-            info: 'Information of user',
-            create: 'Create user',
-            delete: 'Delete account ?'
-        },
-        manageDepartment: {
-            name: 'Manage Department',
-            nameDepartment: 'Name of department',
-            create: 'Create',
-            dean: 'Dean of',
-            vicedean: 'ViceDean of',
-            employee: 'Employee of',
-            sub_dean: 'Example: Dean of financial department, ...',
-            sub_vicedean: 'Example: Vice Dean of financial department, ...',
-            sub_employee: 'Example: Employee of financial department, ...',
-            delete: 'Delete department',
-            description: 'Description of department',
-            departmentParent: 'Department Parent',
-            selectDepartment: '--Select parent department --',
-            relationDepartment: 'Relations between departments',
-            tableDepartment: 'Department Table',
-            info: 'Information of department',
-            rolesOfDepartment: "Roles of department"
-        },
-        manageRole: {
-            name: 'Manage Admin',
-            admins: 'Manage Super Admin',
-            roles: 'Manage Different Role Accounts',
-            add: 'Add new role',
-            delete: 'Delete role ?',
-            create: 'Create new role',
-            roleName: 'Name of role',
-            abstract: 'Select roles',
-            select: 'Select abstract role',
-            roleInfo: 'Infomation of role',
-            users: 'Users has role :',
-        },
-        manageResource: {
-            name: 'Manage Resource',
-            url: 'URL',
-            urlDescription: 'Description of page',
-            roleTo: 'Permisstion to',
-            selectRole: '--- select role ---',
-            createLink: 'Create',
-            infoLink: 'Link information',
-            createComponent: 'Create component',
-            link: 'Links',
-            component: 'Components UI'
-        },
-        manageLink: {
-            linkInfo: 'Page information',
-            add: 'Add new link',
-            delete: 'Delete link ?',
-        },
-        manageComponent: {
-            componentInfo: 'Component Information',
-            add: 'Add new component',
-            delete: 'Delete component ?',
-        },
-        input: 'Input here ...',
         table: {
-            id: 'ID',
             name: 'Name',
+            description: 'Description',
             email: 'Email',
             action: 'Action',
-            password: 'Password',
-            confirm: 'Confirm password',
-            back: 'Back',
-            close: 'Close',
-            save: 'Save',
-            url: 'URL',
-            label: 'Label',
-            description: 'Description',
+            line_per_page: 'Record/Page',
+            update: 'Update',
+            edit: 'Edit',
+            delete: 'Delete',
+            info: 'Information',
             status: 'Status',
-            shortName: 'Short name',
-            department: 'Department'
+            url: 'URL',
+            short_name: 'Short Name',
         },
-        mainSideBar: {
-            search: 'Search ...',
-            system: 'Manage System Config',
-            home: 'Home',
-            dashboard: 'Dashboard',
-            adminManage: 'Admin manager',
-            taskManage: 'Task manager',
-            manageUser: 'Manage Users',
-            manageCompany: 'Manage Companies',
-            manageDepartment: 'Manage Departments',
-            manageRole: 'Manage Roles',
-            manageResource: 'Manage Resources',
-            manageLink: 'Manage Pages',
-            manageComponent: 'Manage ComponentUI',
-            manageFormDocument: 'Manage Form-Document',
+
+        menu: {
+            home: 'Home page',
+            manage_system: 'Manage System',
+            manage_company: 'Manage Company',
+            manage_department: 'Manage Departments',
+            manage_user: 'Manage Users',
+            manage_role: 'Manage Roles',
+            manage_page: 'Manage Pages',
+            manage_component: 'Manage ComponentUI',
+            manage_document: 'Manage Documents',
+
             tasktemplate: 'Task Template',
             cocautochuc: 'Organizational Structure',
             taskmanagement: 'Task Management',
@@ -176,23 +73,94 @@ export default {
             listCourse: 'Education Program',
             trainingplan: 'Managing Training Courses',
         },
-        form: {
-            email: 'Email',
-            password: 'Password',
-            newPassword: 'New password',
-            confirm: 'Confirm password',
-            description: 'Description',
-            save: 'Save',
-            close: 'Close',
-            resetPassword: 'Reset password user account',
-            forgotPassword: 'I forgot my password ?',
-            signin: 'Sign In',
-            otp: 'OTP',
-            next: 'Next'
+
+        manage_system: {
+            turn_on: 'Turn on',
+            turn_off: 'Turn off',
+            log: 'Log state of user request'
         },
+
+        manage_company: {
+            add: 'Add',
+            add_title: 'Add new company',
+            name: 'Company \'s name',
+            short_name: 'Company \'s short name',
+            description: 'Company \'s description',
+            on_service: 'Turn on service',
+            off_service: 'Turn off service',
+            turning_on: 'Turning on the service',
+            turning_off: 'Turning off the service',
+            info: 'Company \'s information',
+            edit: 'Edit company \'s information',
+            super_admin: "SuperAdmin \'s email of company",
+        },
+
+        manage_department: {
+            zoom_out: 'Zoom Out',
+            zoom_in: 'Zoom In',
+            add: 'Add',
+            add_title: 'Add new department',
+            info: 'Department Information',
+            name: 'Department \'s name',
+            description: 'Department \'s description',
+            parent: 'Parent of Department',
+            select_parent: 'Select parent of department',
+            roles_of_department: 'Roles in Department',
+            dean_name: 'Dean',
+            dean_example: 'Ex: Dean of Financial Officer',
+            vice_dean_name: 'Vice Dean',
+            vice_dean_example: 'Ex: Vice Dean of Financial Officer',
+            employee_name: 'Employee',
+            employee_example: 'Ex: Employee of Financial Officer',
+            add_with_parent: 'Add new department with parent is',
+            delete: 'Delete department ?'
+        },
+   
+        manage_role: {
+            add: 'Add',
+            add_title: 'Add new role',
+            info: 'Role \'s information',
+            name: 'Role \'s name',
+            extends: 'Extends of',
+            users: 'Users has role',
+            edit: 'Edit role \'s information',
+            delete: 'Delete role ?',
+        },
+
+        manage_user: {
+            add: 'Add',
+            add_title: 'Add new user/account',
+            info: 'User/Account \'s information',
+            edit: 'Edit User/Account \'s information',
+            disable: 'Disable',
+            enable: 'Enable',
+            delete: 'Delete user ?',
+        },
+
+        manage_page: {
+            add: 'Add',
+            add_title: 'Add new link for page',
+            url: 'Link of page',
+            description: 'Description of page',
+            roles: 'Roles can access this page',
+            info: 'Page \'s information',
+            edit: 'Edit page \'s information',
+            delete: 'Delele link ?'
+        },
+
+        manage_component: {
+            add: 'Add',
+            add_title: 'Add new component',
+            info: 'Component \'s information',
+            edit: 'Edit component \'s information',
+            delete: 'Delete component ?',
+            roles: 'Roles have privilege to component',
+        },
+
         footer: {
-            copyRight: 'Copyright',
-            version: 'Version'
+            copyright: 'Copyright ',
+            vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
+            version: 'Version '
         }
     }
 }

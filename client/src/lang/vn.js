@@ -1,24 +1,101 @@
 export default {
     locale: 'vn',
     messages: {
+        auth: {
+            login: 'Đăng nhập',
+            logout: 'Đăng xuất',
+            logout_all_account: 'Đăng xuất khỏi tất cả các thiết bị',
+            profile: 'Thông tin tài khoản',
+        },
+
         confirm: {
             yes: 'CÓ',
             no: 'KHÔNG',
+            no_data: 'Không có dữ liệu',
         },
+
         form: {
+            required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',
             email: 'Email',
             password: 'Mật khẩu',
-            newPassword: 'Mật khẩu mới',
+            new_password: 'Mật khẩu mới',
             confirm: 'Xác thực mật khẩu',
             description: 'Mô tả',
-            resetPassword: 'Thiết lập lại mật khẩu',
-            forgotPassword: 'Quên mật khẩu ?',
+            reset_assword: 'Thiết lập lại mật khẩu',
+            forgot_password: 'Quên mật khẩu ?',
             signin: 'Đăng nhập',
             otp: 'Mã xác thực',
-            next: 'Tiếp tục'
+            next: 'Tiếp tục',
+            search: 'Tìm kiếm',
         },
+
+        table: {
+            name: 'Tên',
+            description: 'Mô tả',
+            email: 'Email',
+            action: 'Hành động',
+            line_per_page: 'Số dòng/Trang',
+            update: 'Cập nhật',
+            edit: 'Sửa',
+            delete: 'Xóa',
+            info: 'Thông tin chi tiết',
+            status: 'Trạng thái',
+            url: 'URL',
+            short_name: 'Tên viết tắt',
+        },
+
+        menu: {
+            home: 'Trang chủ',
+            manage_system: 'Quản lý hệ thống',
+            manage_company: 'Quản lý doanh nghiệp/công ty',
+            manage_department: 'Quản lý cơ cấu tổ chức',
+            manage_user: 'Quản lý người dùng',
+            manage_role: 'Quản lý phân quyền',
+            manage_page: 'Quản lý trang',
+            manage_component: 'Quản lý các componentUI',
+            manage_document: 'Quản lý tài liệu',
+
+            tasktemplate: 'Mẫu Công Việc',
+            cocautochuc: 'Cơ Cấu Tổ Chức',
+            taskmanagement: 'Quản Lý Công Việc',
+            manageDocument: 'Quản lý văn bản',
+            manageDocumentType: 'Quản lý loại văn bản',
+            addemployee: 'Thêm nhân viên',
+            listemployee: 'Quản lý thông tin nhân viên',
+            detailemployee: 'Thông tin cá nhân',
+            updateemployee: 'Cập nhật thông tin cá nhân',
+            dashboardemployee: 'DashBoard quản lý nhân sự',
+            discipline: 'Quản lý khen thưởng - kỷ luật',
+            sabbatical: 'Quản lý nghỉ phép',
+            salaryemployee: 'Lương nhân viên',
+            timekeeping: 'Chấm công nhân viên',
+            listCourse: 'Chương trình đào tạo bắt buộc',
+            trainingplan: 'Quản lý khoá đào tạo',
+        },
+
+        manage_system: {
+            turn_on: 'Bật',
+            turn_off: 'Tắt',
+            log: 'Trạng thái ghi lịch sử hoạt động'
+        },
+
+        manage_company: {
+            add: 'Thêm',
+            add_title: 'Thêm doanh nghiệp/công ty mới',
+            name: 'Tên doanh nghiệp/công ty',
+            short_name: 'Tên ngắn của công ty',
+            description: 'Mô tả thông tin về công ty',
+            on_service: 'Bật dịch vụ',
+            off_service: 'Tắt dịch vụ',
+            turning_on: 'Đang bật dịch vụ',
+            turning_off: 'Đang tắt dịch vụ',
+            info: 'Thông tin về doanh nghiệp/công ty',
+            edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
+            super_admin: 'Email tài khoản super admin của công ty',
+        },
+
         manage_department: {
             zoom_out: 'Thu nhỏ',
             zoom_in: 'Phóng to',
@@ -40,162 +117,57 @@ export default {
             delete: 'Xóa đơn vị ?'
         },
         
-        //Bản cũ---------------------------------------------------
-        show: 'Hiển thị / trang',
-        add: 'Thêm',
-        search: 'Tìm kiếm',
-        searchByValue: 'Nhập vào ... ',
-        edit: 'Sửa',
-        update: 'Cập nhật',
-        record: 'Số dòng',
-        page: 'Trang',
-        delete: 'Xóa',
-        loading: 'Đang xử lý dữ liệu...Xin vui lòng đợi',
-        question: {
-            yes: 'Có',
-            no: 'Không'
-        },
-        profile: 'Tài khoản',
-        profileTitle: "Thông tin tài khoản người dùng",
-        logout: 'Đăng xuất',
-        logoutAll: 'Đăng xuất khỏi tất cả các thiết bị',
-        system: {
-            logState: 'Ghi lại log - lịch sử các request từ người dùng',
-            turnOn: 'Bật',
-            turnOff: 'Tắt'
-        },
-        manageCompany: {
-            name: 'Quản lý thông tin các công ty',
-            create: 'Thêm công ty mới'
-        },
-        manageUser: {
-            name: 'Quản lý tài khoản người dùng',
-            info: 'Thông tin tài khoản',
-            create: 'Thêm tài khoản người dùng',
-            delete: 'Xóa tài khoản người dùng ?'
-        },
-        manageDepartment: {
-            name: 'Quản lý phòng ban',
-            nameDepartment: 'Tên đơn vị',
-            create: 'Tạo đơn vị mới',
-            dean: 'Tên chức danh cho trưởng đơn vị',
-            vicedean: 'Tên chức danh cho phó đơn vị',
-            employee: 'Tên chức danh cho nhân viên đơn vị',
-            sub_dean: 'VD: Trưởng phòng tài chính, ...',
-            sub_vicedean: 'VD: Phó phòng tài chính, ...',
-            sub_employee: 'VD: Nhân viên phòng tài chính, ...',
-            delete: 'Bạn muốn xóa phòng',
-            description: 'Mô tả về đơn vị',
-            departmentParent: 'Đơn vị cha',
-            selectDepartment: '--Chọn một đơn vị cha --',
-            relationDepartment: 'Xem mối quan hệ giữa các đơn vị',
-            tableDepartment: 'Bảng danh sách các đơn vị',
-            info: 'Thông tin về đơn vị',
-            rolesOfDepartment: "Các chức danh của đơn vị"
-
-        },
-        manageRole: {
-            name: 'Quản lý admin',
-            admins: 'Quản lý danh sách dmin',
-            roles: 'Quản lý các phân quyền khác',
-            add: 'Thêm phân quyền mới',
+        manage_role: {
+            add: 'Thêm',
+            add_title: 'Thêm phân quyền mới',
+            info: 'Thông tin về phân quyền',
+            name: 'Tên phân quyền',
+            extends: 'Kế thừa phân quyền',
+            users: 'Những người dùng có phân quyền',
+            edit: 'Chỉnh sửa thông tin phân quyền',
             delete: 'Xóa phân quyền ?',
-            create: 'Tạo thêm phân quyền mới',
-            roleName: 'Tên phân quyền',
-            abstract: 'Kế thừa các phân quyền',
-            select: 'Chọn role muốn kế thừa quyền',
-            roleInfo: 'Thông tin về phân quyền',
-            users: 'Những người dùng có phân quyền :',
         },
-        manageResource: {
-            name: 'Quản lý tài nguyên',
-            url: 'Đường link',
-            urlDescription: 'Mô tả về trang',
-            roleTo: 'Cấp quyền cho',
-            selectRole: '--- chọn role ---',
-            createLink: 'Thêm link',
-            infoLink: 'Thông tin về đường link',
-            createComponent: 'Tạo thêm thành phần',
-            link: 'Đường link',
-            component: 'Thành phần UI'
+
+        manage_user: {
+            add: 'Thêm',
+            add_title: 'Thêm tài khoản người dùng mới',
+            info: 'Thông tin về tài khoản người dùng',
+            edit: 'Chỉnh sửa thông tin tài khoản người dùng',
+            disable: 'Ngưng hoạt động',
+            enable: 'Hoạt động',
+            delete: 'Xóa tài khoản ?',
         },
-        manageLink: {
-            linkInfo: 'Thông tin trang',
-            add: 'Thêm link mới',
-            delete: 'Xóa link ?',
+
+        manage_page: {
+            add: 'Thêm',
+            add_title: 'Thêm link mới cho trang web',
+            url: 'Đường link của trang web',
+            description: 'Mô tả về trang web',
+            roles: 'Những role được truy cập vào trang này',
+            info: 'Thông tin về trang web',
+            edit: 'Chỉnh sửa thông tin',
+            delete: 'Xóa link ?'
         },
-        manageComponent: {
-            componentInfo: 'Thông tin Component',
-            add: 'Thêm component mới',
+
+        manage_component: {
+            add: 'Thêm',
+            add_title: 'Thêm component mới',
+            info: 'Thông tin về component',
+            edit: 'Chỉnh sửa thông tin về component',
             delete: 'Xóa component ?',
+            roles: 'Những role có component này',
         },
-        input: 'Nhập thông tin ... ',
-        table: {
-            id: 'ID',
-            name: 'Tên',
-            email: 'Email',
-            action: 'Hành động',
-            password: 'Mật khẩu',
-            confirm: 'Xác nhận mật khẩu',
-            back: 'Quay lại',
-            close: 'Đóng',
-            save: 'Lưu',
-            url: 'Đường link',
-            label: 'Nhãn',
-            description: 'Mô tả',
-            status: 'Trạng thái',
-            shortName: 'Tên viết tắt',
-            department: 'Phòng ban'
-        },
-        mainSideBar: {
-            search: 'Tìm kiếm ...',
-            system: 'Quản lý cấu hình hệ thống',
-            home: 'Trang chủ',
-            dashboard: 'Bảng điều khiển',
-            adminManage: 'Quản lý trang admin',
-            taskManage: 'Quản lý công việc',
-            manageUser: 'Quản lý người dùng',
-            manageCompany: 'Quản lý các doanh nghiệp',
-            manageDepartment: 'Quản lý cơ cấu tổ chức',
-            manageRole: 'Quản lý phân quyền',
-            manageResource: 'Quản lý tài nguyên',
-            manageLink: 'Quản lý trang',
-            manageComponent: 'Quản lý ComponentUI',
-            manageFormDocument: 'Quản lý tài liệu biểu mẫu',
-            tasktemplate: 'Mẫu Công Việc',
-            cocautochuc: 'Cơ Cấu Tổ Chức',
-            taskmanagement: 'Quản Lý Công Việc',
-            manageDocument: 'Quản lý văn bản',
-            manageDocumentType: 'Quản lý loại văn bản',
-            addemployee: 'Thêm nhân viên',
-            listemployee: 'Quản lý thông tin nhân viên',
-            detailemployee: 'Thông tin cá nhân',
-            updateemployee: 'Cập nhật thông tin cá nhân',
-            dashboardemployee: 'DashBoard quản lý nhân sự',
-            discipline: 'Quản lý khen thưởng - kỷ luật',
-            sabbatical: 'Quản lý nghỉ phép',
-            salaryemployee: 'Lương nhân viên',
-            timekeeping: 'Chấm công nhân viên',
-            listCourse: 'Chương trình đào tạo bắt buộc',
-            trainingplan: 'Quản lý khoá đào tạo',
-        },
-        form: {
-            email: 'Email',
-            password: 'Mật khẩu',
-            newPassword: 'Mật khẩu mới',
-            confirm: 'Xác thực mật khẩu',
-            description: 'Mô tả',
-            save: 'Lưu',
-            close: 'Đóng',
-            resetPassword: 'Thiết lập lại mật khẩu',
-            forgotPassword: 'Quên mật khẩu ?',
-            signin: 'Đăng nhập',
-            otp: 'Mã xác thực',
-            next: 'Tiếp tục'
-        },
+
         footer: {
-            copyRight: 'Bản quyền thuộc về',
-            version: 'Phiên bản'
+            copyright: 'Bản quyền thuộc về ',
+            vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
+            version: 'Phiên bản '
         }
     }
 }
+// canSave = () => {
+//     const {name, description, dean, vice_dean, employee } = this.state;
+//     if(name !== '' && description !== '' && dean !== '' && vice_dean !== '' && employee !== '')
+//         return true;
+//     else return false;
+// }

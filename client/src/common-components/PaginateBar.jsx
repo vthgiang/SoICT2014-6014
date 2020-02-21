@@ -73,7 +73,7 @@ class PaginateBar extends Component {
                                 className="col-sm-4 btn btn-success" 
                                 style={{ width: "35%", marginLeft: "5%" }} 
                                 onClick={()=>func(this.state.page)}
-                            >{translate('search')}</button>
+                            >{translate('form.search')}</button>
                         </div>
                     </div>
                 }
