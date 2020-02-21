@@ -32,15 +32,15 @@ class Routes extends Component {
                 <AuthRoute exact auth={ auth } path="/login" component={ Login } />
                 <PrivateRoute 
                     isLoading={ company.isLoading }
-                    key={ 'system' }
+                    key={ 'manage_system' }
                     arrPage={[
-                        { link: '/system', name:'system', icon: 'fa fa-gears'}
+                        { link: '/system', name:'manage_system', icon: 'fa fa-gears'}
                     ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/system' }
                     path={ '/system' }
-                    pageName={ 'system' }
+                    pageName={ 'manage_system' }
                     layout={ Layout }
                     component={ System }
                 />
@@ -63,13 +63,13 @@ class Routes extends Component {
                     key={ 'manage-company' }
                     arrPage={[
                         { link: '/', name:'home', icon: 'fa fa-home'},
-                        { link: '/manage-company', name: 'manageCompany', icon:'fa fa-building' }
+                        { link: '/manage-company', name: 'manage_company', icon:'fa fa-building' }
                     ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-company' }
                     path={ '/manage-company' }
-                    pageName={ 'manageCompany' }
+                    pageName={ 'manage_company' }
                     layout={ Layout }
                     component={ ManageCompany }
                 />
@@ -78,13 +78,13 @@ class Routes extends Component {
                     key={ 'manage-user' }
                     arrPage={[
                         { link: '/', name:'home', icon: 'fa fa-home'},
-                        { link: '/manage-user', name: 'manageUser', icon:'fa fa-users' }
+                        { link: '/manage-user', name: 'manage_user', icon:'fa fa-users' }
                     ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-user' }
                     path={ '/manage-user' }
-                    pageName={ 'manageUser' }
+                    pageName={ 'manage_user' }
                     layout={ Layout }
                     component={ ManageUser }
                 />
@@ -92,14 +92,14 @@ class Routes extends Component {
                     isLoading={ role.isLoading }
                     arrPage={[
                         { link: '/', name:'home', icon:'fa fa-home' },
-                        { link: '/manage-role', name: 'manageRole', icon:'fa fa-lock'}
+                        { link: '/manage-role', name: 'manage_role', icon:'fa fa-lock'}
                     ]}
                     key={ 'manage-role' }
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-role' }
                     path={ '/manage-role' }
-                    pageName={ 'manageRole' }
+                    pageName={ 'manage_role' }
                     layout={ Layout }
                     component={ ManageRole }
                 />
@@ -108,13 +108,13 @@ class Routes extends Component {
                     key={ 'manage-link' }
                     arrPage={[
                         { link: '/', name:'home', icon: 'fa fa-home'},
-                        { link: '/manage-link', name: 'manageLink', icon:'fa fa-link' }
+                        { link: '/manage-link', name: 'manage_page', icon:'fa fa-link' }
                     ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-link' }
                     path={ '/manage-link' }
-                    pageName={ 'manageLink' }
+                    pageName={ 'manage_page' }
                     layout={ Layout }
                     component={ ManageLink }
                 />
@@ -123,13 +123,13 @@ class Routes extends Component {
                     key={ 'manage-department' }
                     arrPage={[
                         { link: '/', name:'home', icon: 'fa fa-home'},
-                        { link: '/manage-department', name: 'manageDepartment', icon:'fa fa-sitemap' }
+                        { link: '/manage-department', name: 'manage_department', icon:'fa fa-sitemap' }
                     ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-department' }
                     path={ '/manage-department' }
-                    pageName={ 'manageDepartment' }
+                    pageName={ 'manage_department' }
                     layout={ Layout }
                     component={ ManageDepartment }
                 />
@@ -138,13 +138,13 @@ class Routes extends Component {
                     key={ 'manage-component' }
                     arrPage={[
                         { link: '/', name:'home', icon: 'fa fa-home'},
-                        { link: '/manage-component', name: 'manageComponent', icon:'fa fa-object-group' }
+                        { link: '/manage-component', name: 'manage_component', icon:'fa fa-object-group' }
                     ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/manage-component' }
                     path={ '/manage-component' }
-                    pageName={ 'manageComponent' }
+                    pageName={ 'manage_component' }
                     layout={ Layout }
                     component={ ManageComponent }
                 />
@@ -152,9 +152,9 @@ class Routes extends Component {
                     key={ 'manage-form-document' }
                     auth={ auth }
                     exact={ true }
-                    link={ '/manage-form-document' }
-                    path={ '/manage-form-document' }
-                    pageName={ 'manageFormDocument' }
+                    link={ '/manage-document' }
+                    path={ '/manage-document' }
+                    pageName={ 'manage_document' }
                     layout={ Layout }
                     component={ ManageFormDocument }
                 />

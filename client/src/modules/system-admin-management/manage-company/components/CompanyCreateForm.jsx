@@ -44,40 +44,40 @@ class CompanyCreateForm extends Component {
                         data-keyboard="false" 
                         data-toggle="modal" 
                         href="#modal-create-company" 
-                        title={ translate('manageCompany.create') }
+                        title={ translate('manage_company.add_title') }
                     >
-                        { translate('add') }
+                        { translate('manage_company.add') }
                     </a>
-                    <div className="modal fade" id="modal-create-company">
+                    <div className="modal fade" id="modal-create-company" style={{textAlign: 'left'}}>
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                    <h4 className="modal-title"> { translate('manageCompany.create')} </h4>
+                                    <h4 className="modal-title"> { translate('manage_company.add_title')} </h4>
                                 </div>
                                 <div className="modal-body">
                                     <form style={{ marginBottom: '20px' }} >
                                         <div className="form-group">
-                                            <label>{ translate('table.name') }</label>
+                                            <label>{ translate('manage_company.name') }</label>
                                             <input type="text" className="form-control" name="name" onChange={ this.inputChange }/>
                                         </div>
                                         <div className="form-group">
-                                            <label>{ translate('table.shortName') }</label>
+                                            <label>{ translate('manage_company.short_name') }</label>
                                             <input type="text" className="form-control" name="short_name" onChange={ this.inputChange }/>
                                         </div>
                                         <div className="form-group">
-                                            <label>{ translate('table.description') }</label>
+                                            <label>{ translate('manage_company.description') }</label>
                                             <textarea style={{ height: '150px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange }/>
                                         </div>
                                         <div className="form-group">
-                                            <label>{ translate('table.email') }</label>
+                                            <label>{ translate('manage_company.super_admin') }</label>
                                             <input type="email" className="form-control" name="email" onChange={ this.inputChange }/>
                                         </div>
                                     </form>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                                    <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={ this.save }>{ translate('table.save') }</button>
+                                    <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                                    <button type="button" className="btn btn-success" data-dismiss="modal" onClick={ this.save }>{ translate('form.save') }</button>
                                 </div>
                             </div>
                         </div>

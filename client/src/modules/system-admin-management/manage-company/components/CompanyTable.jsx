@@ -77,9 +77,9 @@ class CompanyTable extends Component {
                     <thead>
                         <tr>
                             <th>{translate('table.name')}</th>
-                            <th>{translate('table.shortName')}</th>
+                            <th>{translate('table.short_name')}</th>
                             <th>{translate('table.description')}</th>
-                            <th style={{ width: "120px" }}>
+                            <th style={{ width: "120px", textAlign: 'center' }}>
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     hideColumn={false}
@@ -94,11 +94,14 @@ class CompanyTable extends Component {
                             <React.Fragment>
                                 {
                                     company.listPaginate.map( com => 
-                                        <tr key={ com._id }>
+                                        <tr 
+                                            key={ com._id } 
+                                            className={com.active ? "bg bg-white" : "bg bg-gray"}
+                                        >
                                             <td>{ com.name }</td>
                                             <td>{ com.short_name }</td>
                                             <td>{ com.description }</td>
-                                            <td>
+                                            <td style={{ textAlign: 'center'}}>
                                                 <CompanyEditForm
                                                     companyID={ com._id }
                                                     companyName={ com.name }
@@ -109,13 +112,13 @@ class CompanyTable extends Component {
                                                     com.active === true ?
                                                     <a 
                                                         href="#abc" 
-                                                        title="Đang bật dịch vụ"
-                                                        onClick={() => this.toggle(com._id, "Tắt cung cấp dịch vụ?", com.name, translate('question.no'), translate('question.yes'), false)}
+                                                        title={translate('manage_company.turning_on')}
+                                                        onClick={() => this.toggle(com._id, translate('manage_company.off_service'), com.name, translate('confirm.no'), translate('confirm.yes'), false)}
                                                     ><i className="material-icons">lock_open</i></a> :
                                                     <a 
                                                         href="#abc"
-                                                        title="Đang tắt dịch vụ"
-                                                        onClick={() => this.toggle(com._id, "Bật cung cấp dịch vụ", com.name, translate('question.no'), translate('question.yes'), true)}
+                                                        title={translate('manage_company.turning_on')}
+                                                        onClick={() => this.toggle(com._id, translate('manage_company.on_service'), com.name, translate('confirm.no'), translate('confirm.yes'), true)}
                                                     ><i className="material-icons">lock</i></a>
                                                 }
                                             </td>
@@ -124,7 +127,7 @@ class CompanyTable extends Component {
                                 }
                             </React.Fragment> : 
                             <tr>
-                                <td colSpan='2'>No data</td>
+                                <td colSpan='2'>{translate('confirm.no_data')}</td>
                             </tr>
                         }
                     </tbody>

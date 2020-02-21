@@ -27,7 +27,7 @@ class ManageUserTable extends Component {
 
     render() { 
         const { user, translate } = this.props;
-        console.log(this.state);
+        
         return (
             <React.Fragment>
                 <div className="row">
@@ -68,7 +68,7 @@ class ManageUserTable extends Component {
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    <td>{u.active ? <p><i className="fa fa-circle text-success" /> Enable</p> : <p><i className="fa fa-circle text-danger" /> Disable</p>}</td>
+                                    <td>{u.active ? <p><i className="fa fa-circle text-success" />{translate('manage_user.enable')}</p> : <p><i className="fa fa-circle text-danger" />{translate('manage_user.disable')}</p>}</td>
                                     <td style={{textAlign: 'center'}}>
                                         <UserEditForm
                                             userEditID={u._id}
@@ -81,9 +81,9 @@ class ManageUserTable extends Component {
                                             !this.checkSuperRole(u.roles) && 
                                             <DeleteNotification 
                                                 content={{
-                                                    title: translate('delete'),
-                                                    btnNo: translate('question.no'),
-                                                    btnYes: translate('delete'),
+                                                    title: translate('manage_user.delete'),
+                                                    btnNo: translate('confirm.no'),
+                                                    btnYes: translate('confirm.yes'),
                                                 }}
                                                 data={{ id: u._id, info: u.email }}
                                                 func={this.props.destroy}
@@ -91,7 +91,7 @@ class ManageUserTable extends Component {
                                         }
                                     </td>
                                 </tr>
-                            )) : <tr><td colSpan={4}>No data</td></tr>
+                            )) : <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

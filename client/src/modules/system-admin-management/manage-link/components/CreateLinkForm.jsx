@@ -42,26 +42,26 @@ class CreateLinkForm extends Component {
         const { translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-link" title={ translate('manageResource.createLink') }>{ translate('add') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-link" title={ translate('manage_page.add_title') }>{ translate('manage_page.add') }</a>
                 <div className="modal fade" id="modal-create-link"  style={{ textAlign: 'left' }}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 className="modal-title">{ translate('manageLink.add') }</h4>
+                            <h4 className="modal-title">{ translate('manage_page.add_title') }</h4>
                         </div>
                         <div className="modal-body">
                         <div className="box-body">
                             <div className="form-group">
-                                <label>{ translate('manageResource.url') }</label>
+                                <label>{ translate('manage_page.url') }</label>
                                 <input name="url" type="text" className="form-control" onChange={this.inputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>{ translate('manageResource.urlDescription') }</label>
+                                <label>{ translate('manage_page.description') }</label>
                                 <input name="description" type="text" className="form-control" onChange={this.inputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>{ translate('manageResource.roleTo') }</label>
+                                <label>{ translate('manage_page.roles') }</label>
                                 <select 
                                     name="roles"
                                     className="form-control select2" 
@@ -84,8 +84,8 @@ class CreateLinkForm extends Component {
                                 
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                            <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('form.save') }</button>
                         </div>
                     </div>
                 </div>

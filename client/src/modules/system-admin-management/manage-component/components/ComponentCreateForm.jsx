@@ -14,42 +14,18 @@ class ComponentCreateForm extends Component {
         this.inputChange = this.inputChange.bind(this);
         this.save = this.save.bind(this);
     }
-    
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-
-    save(e){
-        e.preventDefault();
-        let select = this.refs.roles;
-        let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        const { name, description } = this.state;
-        const component = { name, description, roles };
-
-        this.props.createComponet(component);
-    }
-
-    componentDidMount(){
-        this.props.getRole();
-
-    }
 
     render() { 
         const { translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-component" title={ translate('manageComponent.add') }>{ translate('add') }</a>
+                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-component" title={ translate('manage_component.add_title') }>{ translate('manage_component.add') }</a>
                 <div className="modal fade" id="modal-create-component">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 className="modal-title">{ translate('manageComponent.add') }</h4>
+                                <h4 className="modal-title">{ translate('manage_component.add_title') }</h4>
                             </div>
                             <div className="modal-body">
                             <div className="box-body">
@@ -62,7 +38,7 @@ class ComponentCreateForm extends Component {
                                     <input name="description" type="text" className="form-control" onChange={this.inputChange}/>
                                 </div>
                                 <div className="form-group">
-                                    <label>{ translate('manageResource.roleTo') }</label>
+                                    <label>{ translate('manage_component.roles') }</label>
                                     <select 
                                         name="roles"
                                         className="form-control select2" 
@@ -85,8 +61,8 @@ class ComponentCreateForm extends Component {
                                     
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                                <button type="button" className="btn btn-primary" onClick={this.save} data-dismiss="modal">{ translate('table.save') }</button>
+                                <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                                <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('form.save') }</button>
                             </div>
                         </div>
                     </div>
@@ -94,6 +70,29 @@ class ComponentCreateForm extends Component {
                 
             </React.Fragment>
          );
+    }
+        
+    inputChange = (e) => {
+        const target = e.target;
+        const name = target.name;
+        const value = target.value;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    save(e){
+        e.preventDefault();
+        let select = this.refs.roles;
+        let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
+        const { name, description } = this.state;
+        const component = { name, description, roles };
+
+        this.props.createComponet(component);
+    }
+
+    componentDidMount(){
+        this.props.getRole();
     }
 }
  

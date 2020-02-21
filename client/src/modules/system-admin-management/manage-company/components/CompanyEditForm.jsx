@@ -37,33 +37,33 @@ class CompanyEditForm extends Component {
        
         return ( 
             <React.Fragment>
-                <a className="edit" data-toggle="modal" href={ `#modal-company-${companyID}` } ><i className="material-icons">edit</i></a>
-                <div className="modal fade" id={ `modal-company-${companyID}` }>
+                <a className="edit" data-toggle="modal" href={ `#modal-company-${companyID}` } title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
+                <div className="modal fade" id={ `modal-company-${companyID}` } style={{textAlign: 'left'}}>
                     <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                        <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 className="modal-title">Company - { companyID }</h4>
+                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 className="modal-title">{translate('manage_company.info')}</h4>
                         </div>
                         <div className="modal-body">
                             <form style={{ marginBottom: '20px' }} >
                                 <div className="form-group">
-                                    <label>{ translate('table.name') }</label>
+                                    <label>{ translate('manage_company.name') }</label>
                                     <input type="text" className="form-control" name="name" onChange={ this.inputChange } defaultValue={ companyName }/>
                                 </div>
                                 <div className="form-group">
-                                    <label>{ translate('table.shortName') }</label>
+                                    <label>{ translate('manage_company.short_name') }</label>
                                     <input type="text" className="form-control" name="short_name" onChange={ this.inputChange } defaultValue={ companyShortName }/>
                                 </div>
                                 <div className="form-group">
-                                    <label>{ translate('table.description') }</label>
+                                    <label>{ translate('manage_company.description') }</label>
                                     <textarea  style={{ height: '250px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange } defaultValue={ companyDescription }/>
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={ this.save }>{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                            <button type="button" className="btn btn-success" data-dismiss="modal" onClick={ this.save }>{ translate('form.save') }</button>
                         </div>
                     </div>
                     </div>

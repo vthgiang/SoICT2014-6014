@@ -48,7 +48,7 @@ class RoleInfoForm extends Component {
         const { roleInfo, role, user, translate } = this.props;
         return ( 
             <React.Fragment>
-                <a className="edit" data-toggle="modal" href={`#role-info-${roleInfo._id}`}><i className="material-icons">edit</i></a>
+                <a className="edit" data-toggle="modal" href={`#role-info-${roleInfo._id}`} title={translate('manage_role.edit')}><i className="material-icons">edit</i></a>
                 <div className="modal fade" id={`role-info-${roleInfo._id}`}  style={{ textAlign: 'left' }}>
                     <div className="modal-dialog">
                         <div className="modal-content">

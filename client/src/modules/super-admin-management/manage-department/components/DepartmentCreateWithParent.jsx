@@ -7,11 +7,11 @@ class DepartmentCreateWithParent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            name: null,
-            description: null,
-            dean: null,
-            vice_dean: null,
-            employee: null,
+            name: '',
+            description: '',
+            dean: '',
+            vice_dean: '',
+            employee: '',
             parent: this.props.parentId
          }
         this.inputChange = this.inputChange.bind(this);
@@ -34,6 +34,8 @@ class DepartmentCreateWithParent extends Component {
 
     render() { 
         const { translate, department, parentId } = this.props;
+        const { name, description, dean, vice_dean, employee } = this.state;
+
         return ( 
             <React.Fragment>
                 <div className="modal modal-full fade" id={`modal-create-department-with-parent-${parentId}`}>
@@ -52,11 +54,11 @@ class DepartmentCreateWithParent extends Component {
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border">{ translate('manage_department.info') }</legend>
                                                 <div className="form-group">
-                                                    <label>{ translate('manage_department.name') }</label>
+                                                    <label>{ translate('manage_department.name') }<span className="attention"> * </span></label>
                                                     <input type="text" className="form-control" name="name" onChange={ this.inputChange }/><br/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('manage_department.description') }</label>
+                                                    <label>{ translate('manage_department.description') }<span className="attention"> * </span></label>
                                                     <textarea type="text" className="form-control" name="description" onChange={ this.inputChange }/><br/>
                                                 </div>
                                                 <div className="form-group">
@@ -81,15 +83,15 @@ class DepartmentCreateWithParent extends Component {
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border">{ translate('manage_department.roles_of_department') }</legend>
                                                 <div className="form-group">
-                                                    <label>{ translate('manage_department.dean_name') }</label>
+                                                    <label>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
                                                     <input type="text" className="form-control" name="dean" onChange={ this.inputChange } placeholder={ translate('manage_department.dean_example') }/><br/>
                                                 </div> 
                                                 <div className="form-group">
-                                                    <label>{ translate('manage_department.vice_dean_name') }</label>
+                                                    <label>{ translate('manage_department.vice_dean_name') }<span className="attention"> * </span></label>
                                                     <input type="text" className="form-control" name="vice_dean" onChange={ this.inputChange } placeholder={ translate('manage_department.vice_dean_example') }/><br/>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>{ translate('manage_department.employee_name') }</label>
+                                                    <label>{ translate('manage_department.employee_name') }<span className="attention"> * </span></label>
                                                     <input type="text" className="form-control" name="employee" onChange={ this.inputChange } placeholder={ translate('manage_department.employee_example') }/><br/>
                                                 </div>
                                             </fieldset>
@@ -98,8 +100,12 @@ class DepartmentCreateWithParent extends Component {
                                 </form>
                             </div>
                             <div className="modal-footer">
+                                <p className="attention pull-left">(*): {translate('form.required')}</p>
                                 <button type="button" className="btn btn-primary pull-right" style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.close') }</button>
-                                <button type="button" className="btn btn-success" onClick={ this.save } style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.save') }</button>
+                                {
+                                    (name !== '' && description !== '' && dean !== '' && vice_dean != '' && employee != '') &&
+                                    <button type="button" className="btn btn-success" onClick={ this.save } style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.save') }</button>
+                                }
                             </div>
                         </div>
                     </div>

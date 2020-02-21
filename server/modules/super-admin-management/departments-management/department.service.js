@@ -9,6 +9,7 @@ exports.get = async (id) => {
 
 exports.getTree = async (id) => {
     var data = await Department.find({ company: id });
+    
     var newData = data.map( department => {
         var departmentID = department._id.toString();
         var departmentName = department.name;

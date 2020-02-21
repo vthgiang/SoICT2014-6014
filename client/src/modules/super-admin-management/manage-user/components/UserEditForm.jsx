@@ -12,8 +12,8 @@ class UserEditForm extends Component {
             name: this.props.username,
             active: this.props.active,
             status: [
-                { id: 1, name: "Disable", value: false },
-                { id: 2, name: "Enable", value: true }
+                { id: 1, name: "disable", value: false },
+                { id: 2, name: "enable", value: true }
             ]
         }
         this.inputChange = this.inputChange.bind(this);
@@ -46,13 +46,13 @@ class UserEditForm extends Component {
         const { email, name, active, status } = this.state;
         return ( 
             <React.Fragment>
-                <a className="edit" data-toggle="modal" href={`#edit-user-modal-${userEditID}`}><i className="material-icons">edit</i></a>
+                <a className="edit" data-toggle="modal" href={`#edit-user-modal-${userEditID}`} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
                 <div className="modal fade" id={ `edit-user-modal-${userEditID}` } style={{textAlign: 'left'}}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 className="modal-title">{ translate('manageUser.info') }</h4>
+                            <h4 className="modal-title">{ translate('manage_user.info') }</h4>
                         </div>
                         <div className="modal-body">
                             <form style={{ marginBottom: '20px' }} >
@@ -70,7 +70,7 @@ class UserEditForm extends Component {
                                             defaultValue={ active }
                                             onChange={this.inputChange}>
                                             {   
-                                                status.map(result => <option key={result.id} value={result.value}>{result.name}</option>)    
+                                                status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
                                             }
                                         </select>
                                     </div>
@@ -82,8 +82,8 @@ class UserEditForm extends Component {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('table.close') }</button>
-                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.save}>{ translate('table.save') }</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                            <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.save}>{ translate('form.save') }</button>
                         </div>
                         </div>
                     </div>

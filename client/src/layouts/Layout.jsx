@@ -19,7 +19,7 @@ class Layout extends Component {
             <React.Fragment>
                 <Header />
                 <Sidebar />
-                <Content arrPage={this.props.arrPage} pageName={ translate(`mainSideBar.${this.props.pageName}`) } isLoading={this.props.isLoading}>{ this.props.children }</Content>
+                <Content arrPage={this.props.arrPage} pageName={ translate(`menu.${this.props.pageName}`) } isLoading={this.props.isLoading}>{ this.props.children }</Content>
                 <Footer />
             </React.Fragment>
          );
