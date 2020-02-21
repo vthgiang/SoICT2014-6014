@@ -29,23 +29,6 @@ class DepartmentTable extends Component {
                         <React.Fragment key={u._id}>
                             <DepartmentCreateWithParent parentId={u._id}/>
                             <DepartmentEditForm departmentInfo={u}/>
-                            <div className="modal fade" id={`department-delete-${u._id}`}>
-                                <div className="modal-dialog" style={{ width: '30%'}}>
-                                    <div className="modal-content">
-                                        <div className="modal-header bg-red">
-                                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                            <h4 className="modal-title">Xóa phòng ban</h4>
-                                        </div>
-                                        <div className="modal-body">
-                                            { u.name }
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-default" data-dismiss="modal">{translate('question.yes')}</button>
-                                            <button type="button" className="btn btn-primary" onClick={() => this.deleteDepartment(u._id)} data-dismiss="modal">{translate('question.no')}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </React.Fragment>
                     ))
                 }
