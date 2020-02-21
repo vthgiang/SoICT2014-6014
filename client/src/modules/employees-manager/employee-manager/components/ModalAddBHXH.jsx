@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-class ModalAddSabbatical extends Component {
+class ModalAddBHXH extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: "Đã chấp nhận",
-            reason: " ",
-        };
-        this.handleChange = this.handleChange.bind(this);
+
+        }
+        this.handleChange = this.handleChange.bind(this)
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -21,28 +20,29 @@ class ModalAddSabbatical extends Component {
             [name]: value
         });
     }
-    handleSunmit = async () => {
+    handleSubmit = async () => {
         await this.setState({
             startDate: this.refs.startDate.value,
             endDate: this.refs.endDate.value
         })
         this.props.handleChange(this.state);
-        this.setState({
-            status: "Đã chấp nhận",
-            reason: " ",
+        this.setState ({
+            unit: "",
+            position: "",
         })
-        window.$(`#modal-addNewSabbatical`).modal("hide");
+        window.$(`#modal-addNewBHXH`).modal("hide");
     }
     render() {
         return (
-            <div className="modal fade" id="modal-addNewSabbatical" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div className="modal fade" id="modal-addNewBHXH" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Thêm mới đơn xin nghỉ:</h4>
+                            <h4 className="modal-title">Thêm mới quá trình đóng BHXH:</h4>
                         </div>
+                        <form>
                         <div className="modal-body">
                             <div className="col-md-12">
                                 <div className="checkbox" style={{ marginTop: 0 }}>
@@ -50,47 +50,44 @@ class ModalAddSabbatical extends Component {
                                         (<span style={{ color: "red" }}>*</span>): là các trường bắt buộc phải nhập.
                                                         </label>
                                 </div>
+                                <div className="form-group">
+                                    <label htmlFor="unit">Đơn vị công tác:<span className="required">&#42;</span></label>
+                                    <input type="text" className="form-control" name="unit" onChange={this.handleChange} autoComplete="off" />
+                                </div>
+                                
                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                    <label htmlFor="startDate">Ngày bắt đầu:<span className="required">&#42;</span></label>
+                                    <label htmlFor="startDate">Từ tháng/năm:<span className="required">&#42;</span></label>
                                     <div className={'input-group date has-feedback'}>
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" className="form-control employeedatepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                    <label htmlFor="endDate">Ngày kết thúc:<span className="required">&#42;</span></label>
+                                    <label htmlFor="endDate">Đến tháng/năm:<span className="required">&#42;</span></label>
                                     <div className={'input-group date has-feedback'}>
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" className="form-control employeedatepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="reason">Lý do:<span className="required">&#42;</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" onChange={this.handleChange}></textarea>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="employeeNumber">Trạng thái:<span className="required">&#42;</span></label>
-                                    <select className="form-control" defaultValue="Đã chấp nhận" name="status" onChange={this.handleChange}>
-                                        <option value="Đã chấp nhận">Đã chấp nhận</option>
-                                        <option value="Chờ phê duyệt">Chờ phê duyệt</option>
-                                        <option value="Không chấp nhận">Không chấp nhận</option>
-                                    </select>
+                                    <label htmlFor="position">chức vụ:<span className="required">&#42;</span></label>
+                                    <input type="text" className="form-control" name="position" onChange={this.handleChange} autoComplete="off" />
                                 </div>
                             </div>
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={()=>this.handleSubmit()} title="Thêm mới quá trình đóng BHXH" >Thêm mới</button>
                         </div>
+                        </form>
                     </div>
-                </div>
+                </div >
             </div>
         );
     }
 };
-
-export { ModalAddSabbatical };
+export { ModalAddBHXH };

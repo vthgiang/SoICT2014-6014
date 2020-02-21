@@ -3,7 +3,7 @@ const SabbaticalService = require('./sabbatical.service');
 // Lấy danh sách nghỉ phép
 exports.get = async (req, res) => {
     try {
-        var listSabbatical = await SabbaticalService.get(req.body);
+        var listSabbatical = await SabbaticalService.get(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: listSabbatical
@@ -18,7 +18,7 @@ exports.get = async (req, res) => {
 // Tạo mới thông tin nghỉ phép
 exports.create = async (req, res) => {
     try {
-        var newSabbatical = await SabbaticalService.create(req.body);
+        var newSabbatical = await SabbaticalService.create(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: newSabbatical

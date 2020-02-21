@@ -1,26 +1,21 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { SalaryActions } from '../redux/actions';
 class ModalEditSalary extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: this.props.data.mainSalary.slice(-3, this.props.data.mainSalary.length),
-            id: this.props.data._id,
-            fullName: this.props.data.employee.fullName,
-            employeeNumber: this.props.data.employee.employeeNumber,
-            month: this.props.data.month,
-            mainSalary: this.props.data.mainSalary.slice(0, this.props.data.mainSalary.length - 3),
+            index: this.props.index,
+            unit: this.props.data.unit,
+            mainSalary: this.props.data.mainSalary,
             bonus: this.props.data.bonus,
+            month:this.props.data.month,
         };
         this.handleAddBonus = this.handleAddBonus.bind(this);
         this.handleChangeBonus = this.handleChangeBonus.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleSunmit = this.handleSunmit.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
-        script.src = 'lib/main/js/AddEmployee.js';
+        script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -52,28 +47,27 @@ class ModalEditSalary extends Component {
             bonus: bonus
         })
     };
-    handleSunmit(event) {
-        this.props.updateSalary(this.state.id, this.state);
-        window.$(`#modal-editSalary-${this.props.data._id}`).modal("hide");
+    handleSunmit = async () => {
+        await this.setState({
+            month: this.refs.month.value,
+        })
+        this.props.handleChange(this.state);
+        window.$(`#modal-editNewSalary-${this.props.index}`).modal("hide");
     }
-
     render() {
-        var data = this.state;
-        console.log(data);
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editSalary-${data.id}`} title="Thông tin bảng lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
-                <div className="modal fade" id={`modal-editSalary-${data.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <a href={`#modal-editNewSalary-${this.props.index}`} title="Thông tin tăng giảm lương lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <div className="modal fade" id={`modal-editNewSalary-${this.props.index}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">Thông tin bảng lương: {data.fullName + "- tháng:" + data.month}</h4>
+                                <h4 className="modal-title">Thông tin tăng giảm lương bảng lương:</h4>
                             </div>
-                            <div className="modal-body">
-                                {/* /.box-header */}
-                                <div className="box-body">
+                            <form>
+                                <div className="modal-body">
                                     <div className="col-md-12">
                                         <div className="checkbox" style={{ marginTop: 0 }}>
                                             <label style={{ paddingLeft: 0 }}>
@@ -81,22 +75,18 @@ class ModalEditSalary extends Component {
                                                         </label>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" defaultValue={data.employeeNumber} name="employeeNumber" disabled />
-                                        </div>
-                                        <div className="form-group">
                                             <label htmlFor="month">Tháng:<span className="required">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
                                                 </div>
-                                                <input type="text" style={{height:33}} className="form-control employeedatepicker" name="month" defaultValue={data.month} data-date-format="mm-yyyy" disabled />
+                                                <input type="text" className="form-control" name="month" defaultValue={this.state.month} id="employeedatepicker4" ref="month" onChange={this.handleChange} data-date-format="mm-yyyy" disabled />
                                             </div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="mainSalary">Tiền lương chính:<span className="required">&#42;</span></label>
-                                            <input style={{ display: "inline", width: "85%" }} type="number" className="form-control" name="mainSalary" defaultValue={parseInt(data.mainSalary)} onChange={this.handleChange} autoComplete="off" />
-                                            <select name="unit" id="" className="form-control" defaultValue={data.unit} onChange={this.handleChange} style={{ height: 33, display: "inline", width: "15%" }}>
+                                            <input style={{ display: "inline", width: "85%" }} type="number" defaultValue={this.state.mainSalary} className="form-control" name="mainSalary" onChange={this.handleChange} autoComplete="off" />
+                                            <select name="unit" id="" className="form-control" defaultValue={this.state.unit} onChange={this.handleChange} style={{ height: 34, display: "inline", width: "15%" }}>
                                                 <option value="VND">VND</option>
                                                 <option value="USD">USD</option>
                                             </select>
@@ -107,13 +97,13 @@ class ModalEditSalary extends Component {
                                                 <thead>
                                                     <tr>
                                                         <th>Tên lương thưởng</th>
-                                                        <th style={{ width: "30%" }}>Số tiền({this.state.unit})</th>
-                                                        <th>Hành động</th>
+                                                        <th style={{ width: "30%" }}>Số tiền</th>
+                                                        <th style={{ width: "16%" }}>Hành động</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof data.bonus === 'undefined' || data.bonus.length === 0) ? <tr><td colSpan={3}><center> Không có lương thưởng khác</center></td></tr> :
-                                                        data.bonus.map((x, index) => (
+                                                    {(typeof this.state.bonus === 'undefined' || this.state.bonus.length === 0) ? <tr><td colSpan={3}><center> Không có lương thưởng khác</center></td></tr> :
+                                                        this.state.bonus.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
                                                                 <td><input className={index} type="number" value={x.number} name="number" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
@@ -127,27 +117,16 @@ class ModalEditSalary extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                {/* /.box-body */}
-                            </div>
-                            <div className="modal-footer">
-                                <button style={{ marginRight: 45 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                                <button style={{ marginRight: 15 }} type="button" title="Lưu lại các thay đổi" onClick={this.handleSunmit} className="btn btn-success pull-right">Lưu thay đổi</button>
-                            </div>
+                                <div className="modal-footer">
+                                    <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                                    <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={() => this.handleSunmit()} title="Lưu thay đổi" >Lưu lại</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </div >
+                </div>
             </div>
         );
     }
 };
-function mapState(state) {
-    const { Salary } = state;
-    return { Salary };
-};
-
-const actionCreators = {
-    updateSalary: SalaryActions.updateSalary,
-};
-
-const connectedEditSalary = connect(mapState, actionCreators)(ModalEditSalary);
-export { connectedEditSalary as ModalEditSalary };
+export { ModalEditSalary };

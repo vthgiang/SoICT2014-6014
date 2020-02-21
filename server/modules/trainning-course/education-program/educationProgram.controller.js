@@ -4,7 +4,7 @@ const EducationProgramService = require('./educationProgram.service');
 
 exports.get = async (req, res) => {
     try {
-        var allEducationProgram = await EducationProgramService.get(req.body);
+        var allEducationProgram = await EducationProgramService.get(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: allEducationProgram
@@ -18,7 +18,7 @@ exports.get = async (req, res) => {
 
 // create a new educationProgram
 exports.create = async (req, res) => {
-    var education = await EducationProgramService.create(req.body);
+    var education = await EducationProgramService.create(req.body,req.user.company._id);
     try {
         res.status(200).json({
             message: "success",

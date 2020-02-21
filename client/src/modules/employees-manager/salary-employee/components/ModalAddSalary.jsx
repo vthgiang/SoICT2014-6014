@@ -31,7 +31,7 @@ class ModalAddSalary extends Component {
     handleAddBonus(event) {
         var bonus = this.state.bonus;
         this.setState({
-            bonus: [...bonus, { nameBonus: "", number: "" }]
+            bonus: [...bonus, { nameBonus: " ", number: "" }]
         })
     }
     handleChangeBonus(event) {

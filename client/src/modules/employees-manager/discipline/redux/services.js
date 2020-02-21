@@ -1,6 +1,9 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import {
+    AuthenticateHeader
+} from '../../../../config';
 export const DisciplineService = {
     getListDiscipline,
     createNewDiscipline,
@@ -16,9 +19,7 @@ export const DisciplineService = {
 function getListDiscipline(data) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -30,9 +31,7 @@ function getListDiscipline(data) {
 function createNewDiscipline(data) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -52,9 +51,7 @@ function deleteDiscipline(id) {
 function updateDiscipline(id, data) {
     const requestOptions = {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
     return fetch(`/discipline/${id}`, requestOptions).then(handleResponse);
@@ -67,9 +64,7 @@ function updateDiscipline(id, data) {
 function getListPraise(data) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -81,9 +76,7 @@ function getListPraise(data) {
 function createNewPraise(data) {
     const requestOptions ={
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -103,9 +96,7 @@ function deletePraise(id) {
 function updatePraise(id, data) {
     const requestOptions ={
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers:AuthenticateHeader(),
         body: JSON.stringify(data)
     };
     return fetch(`/praise/${id}`, requestOptions).then(handleResponse);

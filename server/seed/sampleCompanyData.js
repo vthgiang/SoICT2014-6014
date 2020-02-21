@@ -416,6 +416,7 @@ const sampleCompanyData = async () => {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
         fullName: "Nguyễn Văn A",
         employeeNumber: "MS2015122",
+        company:xyz._id,
         MSCC: "123456",
         gender: "Nam",
         brithday: "17-04-1998",
@@ -459,7 +460,7 @@ const sampleCompanyData = async () => {
             yearCertificate: "2020",
             typeCertificate: "Khá",
             file: "Quản trị Hành chính Việt Anh.xlsm",
-            urlFile: "1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
+            urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificateShort: [{
             "nameCertificateShort": "PHP",
@@ -467,7 +468,7 @@ const sampleCompanyData = async () => {
             "startDate": "20-10-2019",
             "endDate": "22-02-2020",
             "file": "ViaVet Khoi San Xuat.xlsm",
-            "urlFile": "1582031878201-viavet-khoi-san-xuat.xlsm"
+            "urlFile": "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         contract: [{
             nameContract: "Thực tập",
@@ -475,7 +476,7 @@ const sampleCompanyData = async () => {
             startDate : "28-01-2020",
             endDate : "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
-            urlFile: "1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
+            urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courst: [],
         nation: "Việt Nam",
@@ -485,6 +486,7 @@ const sampleCompanyData = async () => {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
         fullName: "Nguyễn Văn B",
         employeeNumber: "MS2015124",
+        company:xyz._id,
         MSCC: "123456",
         gender: "Nam",
         brithday: "17-04-1998",
@@ -528,7 +530,7 @@ const sampleCompanyData = async () => {
             yearCertificate: "2020",
             typeCertificate: "Khá",
             file: "Quản trị Hành chính Việt Anh.xlsm",
-            urlFile: "1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
+            urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificateShort: [{
             "nameCertificateShort": "PHP",
@@ -536,7 +538,7 @@ const sampleCompanyData = async () => {
             "startDate": "20-10-2019",
             "endDate": "22-02-2020",
             "file": "ViaVet Khoi San Xuat.xlsm",
-            "urlFile": "1582031878201-viavet-khoi-san-xuat.xlsm"
+            "urlFile": "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         contract: [{
             nameContract: "Thực tập",
@@ -544,7 +546,7 @@ const sampleCompanyData = async () => {
             startDate : "28-01-2020",
             endDate : "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
-            urlFile: "1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
+            urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courst: [],
         nation: "Việt Nam",
@@ -604,6 +606,7 @@ const sampleCompanyData = async () => {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
         fullName: "Nguyễn Văn Hưng",
         employeeNumber: "MS2015123",
+        company:xyz._id,
         MSCC: "123456",
         gender: "Nam",
         brithday: "17-04-1998",
@@ -647,7 +650,7 @@ const sampleCompanyData = async () => {
             yearCertificate: "2020",
             typeCertificate: "Khá",
             file: "Quản trị Hành chính Việt Anh.xlsm",
-            urlFile: "1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
+            urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         certificateShort: [{
             "nameCertificateShort": "PHP",
@@ -655,7 +658,7 @@ const sampleCompanyData = async () => {
             "startDate": "20-10-2019",
             "endDate": "22-02-2020",
             "file": "ViaVet Khoi San Xuat.xlsm",
-            "urlFile": "1582031878201-viavet-khoi-san-xuat.xlsm"
+            "urlFile": "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         contract: [{
             nameContract: "Thực tập",
@@ -663,7 +666,7 @@ const sampleCompanyData = async () => {
             startDate : "28-01-2019",
             endDate : "28-02-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
-            urlFile: "1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
+            urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courst: [],
         nation: "Việt Nam",
@@ -674,7 +677,7 @@ const sampleCompanyData = async () => {
             number : "1",
             status : "Đã nộp",
             file : "3.5.1.PNG",
-            urlFile : "1582212624054-3.5.1.png"
+            urlFile : "lib/fileEmployee/1582212624054-3.5.1.png"
         }],
     });
 
@@ -713,12 +716,14 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu nghỉ phép!");
     var sabbatical = await Sabbatical.insertMany([{
         employee: employee._id,
+        company:xyz._id,
         startDate: "04-02-2020",
         endDate: "08-02-2020",
         status: "Đã chấp nhận",
         reason: "Về quê",
     }, {
         employee: employee._id,
+        company:xyz._id,
         startDate: "05-02-2020",
         endDate: "10-02-2020",
         status: "Chờ phê duyệt",
@@ -734,6 +739,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu lương nhân viên!");
     var salary = await Salary.insertMany([{
         employee: employee._id,
+        company:xyz._id,
         month: "02-2020",
         mainSalary: "10000000VND",
         bonus: [{
@@ -742,6 +748,7 @@ const sampleCompanyData = async () => {
         }],
     }, {
         employee: employee._id,
+        company:xyz._id,
         month: "01-2020",
         mainSalary: "10000000VND",
         bonus: [{
@@ -759,6 +766,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu khen thưởng!");
     var praise = await Praise.insertMany([{
         employee: employee._id,
+        company:xyz._id,
         number: "123",
         unit: "Phòng kinh doanh",
         startDate: "02-02-2020",
@@ -766,6 +774,7 @@ const sampleCompanyData = async () => {
         reason: "Vượt doanh số",
     }, {
         employee: employee._id,
+        company:xyz._id,
         number: "1234",
         unit: "Phòng kinh doanh",
         startDate: "02-02-2020",
@@ -782,6 +791,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu kỷ luật!");
     var discipline = await Discipline.insertMany([{
         employee: employee._id,
+        company:xyz._id,
         number: "1456",
         unit: "Phòng nhân sự",
         startDate: "02-02-2020",
@@ -790,6 +800,7 @@ const sampleCompanyData = async () => {
         reason: "Không làm đủ công",
     }, {
         employee: employee._id,
+        company:xyz._id,
         number: "1457",
         unit: "Phòng kinh doanh",
         startDate: "02-02-2020",
@@ -807,6 +818,7 @@ const sampleCompanyData = async () => {
 
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
     var educationProgram = await EducationProgram.insertMany([{
+        company:xyz._id,
         unitEducation: [
             "Phòng Kinh doanh"
         ],
@@ -816,6 +828,7 @@ const sampleCompanyData = async () => {
         nameEducation: "An toan lao dong",
         numberEducation: "M123",
     }, {
+        company:xyz._id,
         unitEducation: [
             "Phòng Kinh doanh"
         ],

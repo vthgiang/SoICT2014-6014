@@ -1,6 +1,9 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import {
+    AuthenticateHeader
+} from '../../../../config';
 export const CourseService = {
     getListCourse,
     createNewCourse,
@@ -12,9 +15,7 @@ export const CourseService = {
 function getListCourse(data) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -26,9 +27,7 @@ function getListCourse(data) {
 function createNewCourse(data) {
     const requestOptions ={
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 

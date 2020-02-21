@@ -1,37 +1,105 @@
 import {
-    employeeConstants
+    EmployeeConstants
 } from './constants';
 
 export function employeesManager(state = {}, action) {
     switch (action.type) {
-        case employeeConstants.GETALL_REQUEST:
+        case EmployeeConstants.GETALL_REQUEST:
             return {
                 ...state,
                 loadingMany: true
             };
-        case employeeConstants.GETALL_SUCCESS:
+        case EmployeeConstants.GETALL_SUCCESS:
             return {
                 ...state,
                 allEmployee: action.employees.content.allEmployee
             };
-        case employeeConstants.GETALL_FAILURE:
+        case EmployeeConstants.GETALL_FAILURE:
             return {
                 error: action.error
             };
-        case employeeConstants.GETLIST_EMPLOYEE_REQUEST:
+        case EmployeeConstants.ADDEMPLOYEE_REQUEST:
             return {
                 ...state,
-                loadingList: true
+                adding: true
             };
-        case employeeConstants.GETLIST_EMPLOYEE_SUCCESS:
+        case EmployeeConstants.ADDEMPLOYEE_SUCCESS:
             return {
                 ...state,
-                chiefDepartment: action.employees.content.chiefDepartment,
-                    deputyDepartment: action.employees.content.deputyDepartment,
-                    listEmployee: action.employees.content.listEmployee,
+                newEmployee: action.employee
+            };
+        case EmployeeConstants.ADDEMPLOYEE_FAILURE:
+            return {
+                error: action.error
+            };
+        case EmployeeConstants.UPLOAD_AVATAR_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case EmployeeConstants.UPLOAD_AVATAR_SUCCESS:
+            return {
+                ...state,
+                avatarfile: action.file.content
+            };
+        case EmployeeConstants.UPLOAD_AVATAR_FAILURE:
+            return {
+                error: action.error
+            };
+        case EmployeeConstants.UPDATE_CONTRACT_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case EmployeeConstants.UPDATE_CONTRACT_SUCCESS:
+            return {
+                ...state,
+                updateContract: action.file.content
+            };
+        case EmployeeConstants.UPDATE_CONTRACT_FAILURE:
+            return {
+                error: action.error
+            };
 
+        case EmployeeConstants.UPDATE_CERTIFICATE_REQUEST:
+            return {
+                ...state,
+                isloading: true
             };
-        case employeeConstants.GETLIST_EMPLOYEE_FAILURE:
+        case EmployeeConstants.UPDATE_CERTIFICATE_SUCCESS:
+            return {
+                ...state,
+                updateCertificate: action.file.content
+            };
+        case EmployeeConstants.UPDATE_CERTIFICATE_FAILURE:
+            return {
+                error: action.error
+            };
+        case EmployeeConstants.UPDATE_CERTIFICATESHORT_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case EmployeeConstants.UPDATE_CERTIFICATESHORT_SUCCESS:
+            return {
+                ...state,
+                updateCertificateShort: action.file.content
+            };
+        case EmployeeConstants.UPDATE_CERTIFICATESHORT_FAILURE:
+            return {
+                error: action.error
+            };
+        case EmployeeConstants.UPDATE_FILE_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case EmployeeConstants.UPDATE_FILE_SUCCESS:
+            return {
+                ...state,
+                updateFile: action.file.content
+            };
+        case EmployeeConstants.UPDATE_FILE_FAILURE:
             return {
                 error: action.error
             };

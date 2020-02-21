@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-class ModalEditExperience extends Component {
+class ModalEditBHXH extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: "",
-            startDate: "",
-            endDate: "",
-            position: "",
+            index:this.props.index,
+            unit: this.props.data.unit,
+            position:  this.props.data.position,
+            startDate:this.props.data.startDate,
+            endDate: this.props.data.endDate,
         }
         this.handleChange = this.handleChange.bind(this)
     }
@@ -31,23 +32,22 @@ class ModalEditExperience extends Component {
         this.props.handleChange(this.state);
         this.setState ({
             unit: "",
-            startDate: "",
-            endDate: "",
             position: "",
         })
-        window.$(`#modal-addNewExperience`).modal("hide");
+        window.$(`#modal-editNewBHXH-${this.props.index}`).modal("hide");
     }
     render() {
         return (
-            <div className="modal fade" id="modal-addNewExperience" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div style={{ display: "inline" }}>
+            <a href={`#modal-editNewBHXH-${this.props.index}`} className="edit" title="Thông tin quá trình đóng bảo hiểm xã hội" data-toggle="modal"><i className="material-icons"></i></a>
+            <div className="modal fade" id={`modal-editNewBHXH-${this.props.index}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Thêm mới kinh nghiệm làm việc:</h4>
+                            <h4 className="modal-title">Thêm mới quá trình đóng BHXH:</h4>
                         </div>
-                        <form>
                         <div className="modal-body">
                             <div className="col-md-12">
                                 <div className="checkbox" style={{ marginTop: 0 }}>
@@ -57,16 +57,16 @@ class ModalEditExperience extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="unit">Đơn vị công tác:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="unit" onChange={this.handleChange} autoComplete="off" />
+                                    <input type="text" className="form-control" name="unit" defaultValue={this.state.unit} onChange={this.handleChange} autoComplete="off" />
                                 </div>
-
+                                
                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                     <label htmlFor="startDate">Từ tháng/năm:<span className="required">&#42;</span></label>
                                     <div className={'input-group date has-feedback'}>
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" className="form-control employeedatepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
+                                        <input type="text" className="form-control employeedatepicker" defaultValue={this.state.startDate} name="startDate" ref="startDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
@@ -75,24 +75,24 @@ class ModalEditExperience extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" className="form-control employeedatepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
+                                        <input type="text" className="form-control employeedatepicker" defaultValue={this.state.endDate} name="endDate" ref="endDate" autoComplete="off" data-date-format="mm-yyyy" placeholder="mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="position">chức vụ:<span className="required">&#42;</span></label>
-                                    <input type="text" className="form-control" name="position" onChange={this.handleChange} autoComplete="off" />
+                                    <input type="text" className="form-control" name="position" defaultValue={this.state.position} onChange={this.handleChange} autoComplete="off" />
                                 </div>
                             </div>
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={() => this.handleSubmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={()=>this.handleSubmit()} title="Lưu thay đổi" >Lưu lại</button>
                         </div>
-                        </form>
                     </div>
                 </div >
+            </div>
             </div>
         );
     }
 };
-export { ModalEditExperience };
+export { ModalEditBHXH };

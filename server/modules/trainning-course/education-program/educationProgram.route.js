@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const { auth } = require('../../../middleware/auth.middleware');
 
 const EducationProgramController = require("./educationProgram.controller");
 
 // get all list educationProgram
-router.post('/paginate', EducationProgramController.get);
+router.post('/paginate',auth, EducationProgramController.get);
 
 // create a new a educationProgram
-router.post('/', EducationProgramController.create);
+router.post('/',auth, EducationProgramController.create);
 
 // delete a educationProgram
 router.delete('/:numberEducation', EducationProgramController.delete);

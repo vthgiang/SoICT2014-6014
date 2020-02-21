@@ -7,8 +7,10 @@ const Salary = require('../../../models/salary.model');
 
 
 // Lấy dánh sách nhân viên
-exports.get = async (data) => {
-    var keySearch = {};
+exports.get = async (data,company) => {
+    var keySearch = {
+        company:company
+    };
     if (data.employeeNumber !== "") {
         keySearch = {
             ...keySearch,
@@ -68,12 +70,13 @@ exports.getInforPersonal= async (email) => {
 }
 
 // Thêm mới nhân viên
-exports.create = async (data) => {
+exports.create = async (data,company) => {
     var employees = await Employee.create({
         avatar: data.avatar,
         fullName: data.fullName,
         employeeNumber: data.employeeNumber,
         MSCC: data.MSCC,
+        company: company,
         gender: data.gender,
         brithday: data.brithday,
         birthplace: data.birthplace,
@@ -201,9 +204,10 @@ exports.updateInforPersonal = async (email, data) => {
 }
 
 // Cập nhật Avatar nhân viên
-exports.updateAvatar = async (employeeNumber, url) => {
+exports.updateAvatar = async (employeeNumber, url,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
+        employeeNumber: employeeNumber,
+        company:company
     });
     avatarUpdate = {
         avatar: "lib/fileEmployee/" + url
@@ -221,9 +225,10 @@ exports.updateAvatar = async (employeeNumber, url) => {
 }
 
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-exports.updateContract = async (employeeNumber, data, url) => {
+exports.updateContract = async (employeeNumber, data, url,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
+        employeeNumber: employeeNumber,
+        company:company
     });
     var contractUpdate = {
         contract: [...employeeinfo.contract, {
@@ -232,7 +237,7 @@ exports.updateContract = async (employeeNumber, data, url) => {
             startDate:data.startDate,
             endDate:data.endDate,
             file: data.file,
-            urlFile: url
+            urlFile: "lib/fileEmployee/"+ url
         }]
     };
     await Employee.findOneAndUpdate({
@@ -246,16 +251,17 @@ exports.updateContract = async (employeeNumber, data, url) => {
             nameContract: data.nameContract,
             typeContract: data.typeContract,
             file: data.file,
-            urlFile: url
+            urlFile: "lib/fileEmployee/" + url
         }]
     }
     return content;
 }
 
 // Cập nhật(thêm) thông tin bằng cấp theo MSNV
-exports.updateCertificate = async (employeeNumber, data, url) => {
+exports.updateCertificate = async (employeeNumber, data, url,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
+        employeeNumber: employeeNumber,
+        company:company
     });
     var updateCertificate = {
         certificate: [...employeeinfo.certificate, {
@@ -264,7 +270,7 @@ exports.updateCertificate = async (employeeNumber, data, url) => {
             yearCertificate: data.yearCertificate,
             typeCertificate: data.typeCertificate,
             file: data.file,
-            urlFile: url,
+            urlFile:"lib/fileEmployee/" + url,
         }]
     };
     await Employee.findOneAndUpdate({
@@ -280,16 +286,17 @@ exports.updateCertificate = async (employeeNumber, data, url) => {
             yearCertificate: data.yearCertificate,
             typeCertificate: data.typeCertificate,
             file: data.file,
-            urlFile: url,
+            urlFile: "lib/fileEmployee/"+ url,
         }]
     }
     return content;
 }
 
 // Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-exports.updateCertificateShort = async (employeeNumber, data, url) => {
+exports.updateCertificateShort = async (employeeNumber, data, url,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
+        employeeNumber: employeeNumber,
+        company:company
     });
     var updateCertificateShort = {
         certificateShort: [...employeeinfo.certificateShort, {
@@ -298,7 +305,7 @@ exports.updateCertificateShort = async (employeeNumber, data, url) => {
             startDate: data.startDate,
             endDate: data.endDate,
             file: data.file,
-            urlFile: url,
+            urlFile: "lib/fileEmployee/" +url,
         }]
     };
     await Employee.findOneAndUpdate({
@@ -314,16 +321,17 @@ exports.updateCertificateShort = async (employeeNumber, data, url) => {
             startDate: data.startDate,
             endDate: data.endDate,
             file: data.file,
-            urlFile: url,
+            urlFile: "lib/fileEmployee/"+ url,
         }]
     }
     return content;
 }
 
 // Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
-exports.updateFile = async (employeeNumber, data, url) => {
+exports.updateFile = async (employeeNumber, data, url,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: employeeNumber
+        employeeNumber: employeeNumber,
+        company:company
     });
     var updateFile = {
         file: [...employeeinfo.file, {
@@ -332,7 +340,7 @@ exports.updateFile = async (employeeNumber, data, url) => {
             number: data.number,
             status: data.status,
             file: data.file,
-            urlFile: url,
+            urlFile: "lib/fileEmployee/" + url,
         }]
     };
     await Employee.findOneAndUpdate({
@@ -348,7 +356,7 @@ exports.updateFile = async (employeeNumber, data, url) => {
             number: data.number,
             status: data.status,
             file: data.file,
-            urlFile: url,
+            urlFile: "lib/fileEmployee/"+ url,
         }]
     }
     return content;

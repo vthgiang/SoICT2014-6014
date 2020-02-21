@@ -2,8 +2,10 @@ const Sabbatical = require('../../../models/sabbatical.model');
 const Employee = require('../../../models/employee.model');
 
 //lấy danh sách thông tin kỷ luật
-exports.get = async (data) => {
-    var keySearch = {};
+exports.get = async (data,company) => {
+    var keySearch = {
+        company:company
+    };
     if (data.employeeNumber !== "") {
         var employeeinfo = await Employee.findOne({
             employeeNumber: data.employeeNumber
@@ -38,12 +40,14 @@ exports.get = async (data) => {
 }
 
 // thêm mới thông tin nghỉ phép
-exports.create = async (data) => {
+exports.create = async (data,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber
+        employeeNumber: data.employeeNumber,
+        company:company
     });
     var newSabbatical = await Sabbatical.create({
         employee: employeeinfo._id,
+        company:company,
         startDate: data.startDate,
         endDate: data.endDate,
         status: data.status,
@@ -52,6 +56,7 @@ exports.create = async (data) => {
     var content = {
         _id: newSabbatical._id,
         employee: employeeinfo,
+        company:company,
         startDate: data.startDate,
         endDate: data.endDate,
         status: data.status,

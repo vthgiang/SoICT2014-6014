@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
-class ModalEditCertificate extends Component {
+class ModalEditFile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nameCertificate: "",
-            addressCertificate: "",
-            yearCertificate: "",
-            typeCertificate: "Xuất sắc",
-            file: "",
-            urlFile: "",
-            fileUpload: " ",
+            index:this.props.index,
+            nameFile: this.props.data.nameFile,
+            discFile: this.props.data.discFile,
+            number: this.props.data.number,
+            status: this.props.data.status,
+            file: this.props.data.file,
+            urlFile: this.props.data.urlFile,
+            fileUpload: this.props.data.fileUpload,
         }
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeFile = this.handleChangeFile.bind(this);
+        this.handleSunmit = this.handleSunmit.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -42,33 +43,22 @@ class ModalEditCertificate extends Component {
             [name]: value
         });
     }
-    handleSubmit() {
+    handleSunmit() {
         this.props.handleChange(this.state);
-        this.setState({
-            nameCertificate: "",
-            addressCertificate: "",
-            yearCertificate: "",
-            typeCertificate: "Xuất sắc",
-            file: "",
-            urlFile: "",
-            fileUpload: " "
-        })
-        window.$(`#modal-editNewCertificate`).modal("hide");
+        window.$(`#modal-editNewFile-${this.props.index}`).modal("hide");
     }
     render() {
-        var index = this.props.index;
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editNewCertificate-${index}`} title="Thông tin bảo hiểm xã hội" data-toggle="modal"><i className="material-icons">view_list</i></a>
-                <div className="modal fade" id={`modal-editNewCertificate-${index}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <a href={`#modal-editNewFile-${this.props.index}`} className="edit" title="Chỉnh sửa tài liệu đính kèm" data-toggle="modal"><i className="material-icons"></i></a>
+                <div className="modal fade" id={`modal-editNewFile-${this.props.index}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">Thêm mới bằng cấp:</h4>
+                                <h4 className="modal-title">Chỉnh sửa tài liệu đính kèm:</h4>
                             </div>
-                            <form>
                                 <div className="modal-body">
                                     <div className="col-md-12">
                                         <div className="checkbox" style={{ marginTop: 0 }}>
@@ -77,38 +67,35 @@ class ModalEditCertificate extends Component {
                                                         </label>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="nameCertificate">Tên bằng cấp:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" name="nameCertificate" onChange={this.handleChange} autoComplete="off" />
+                                            <label htmlFor="nameFile">Tên tài liệu đính kèm:<span className="required">&#42;</span></label>
+                                            <input type="text" className="form-control" name="nameFile" defaultValue={this.state.nameFile} onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="addressCertificate">Nơi đào tạo:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" name="addressCertificate" onChange={this.handleChange} autoComplete="off" />
+                                            <label htmlFor="discFile">Mô tả:<span className="required">&#42;</span></label>
+                                            <textarea className="form-control" rows="3" name="discFile" defaultValue={this.state.discFile} placeholder="Enter ..." onChange={this.handleChange}></textarea>
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                            <label htmlFor="yearCertificate">Năm tốt nghiệp:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" name="yearCertificate" onChange={this.handleChange} autoComplete="off" />
+                                            <label htmlFor="number">Số lượng:<span className="required">&#42;</span></label>
+                                            <input type="number" className="form-control" name="number" defaultValue={this.state.number} onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                            <label htmlFor="typeCertificate">Xếp loại:<span className="required">&#42;</span></label>
-                                            <select className="form-control" defaultValue="Đã chấp nhận" name="typeCertificate" onChange={this.handleChange}>
-                                                <option value="Xuất sắc">Xuất sắc</option>
-                                                <option value="Giỏi">Giỏi</option>
-                                                <option value="Khá">Khá</option>
-                                                <option value="Trung bình khá">Trung bình khá</option>
-                                                <option value="Trung bình">Trung bình</option>
+                                            <label htmlFor="status">Trạng thái:<span className="required">&#42;</span></label>
+                                            <select className="form-control" defaultValue={this.state.status} name="status" onChange={this.handleChange}>
+                                                <option value="Chưa nộp">Chưa nộp</option>
+                                                <option value="Đã nộp">Đã nộp</option>
+                                                <option value="Đã trả">Đã trả</option>
                                             </select>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="file">Chọn file đính kèm:</label>
-                                            <input type="file" className="form-control" name="file" onChange={this.handleChangeFile} />
+                                            <input type="file" style={{height:34,paddingTop:2}} className="form-control" name="file" onChange={this.handleChangeFile} />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="modal-footer">
                                     <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                                    <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={this.handleSubmit} title="Thêm mới bằng cấp" >Thêm mới</button>
+                                    <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={this.handleSunmit} title="Lưu thay đổi" >Lưu lại</button>
                                 </div>
-                            </form>
                         </div>
                     </div >
                 </div>
@@ -116,4 +103,4 @@ class ModalEditCertificate extends Component {
         );
     }
 };
-export { ModalEditCertificate };
+export { ModalEditFile };

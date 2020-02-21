@@ -13,8 +13,8 @@ import ManageLink from '../modules/system-admin-management/manage-link/component
 import ManageDepartment from '../modules/super-admin-management/manage-department/components';
 import ManageComponent from '../modules/system-admin-management/manage-component/components';
 import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
-import { AddEmployee, DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
-import { ListEmployee} from '../modules/employees-manager/employee-manager/components/ListEmployee';
+import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
+import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashBoard-employeesManagement/components/DashBoardEmployees';
 import { Discipline} from '../modules/employees-manager/discipline/components/Discipline';
 import { Sabbatical} from '../modules/employees-manager/sabbatical/components/Sabbatical';

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-class ModalEditSalary extends Component {
+class ModalAddSalary extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,7 +27,7 @@ class ModalEditSalary extends Component {
     handleAddBonus(event) {
         var bonus = this.state.bonus;
         this.setState({
-            bonus: [...bonus, { nameBonus: "", number: "" }]
+            bonus: [...bonus, { nameBonus: " ", number: "" }]
         })
     }
     handleChangeBonus(event) {
@@ -114,7 +114,7 @@ class ModalEditSalary extends Component {
                                                 <tr>
                                                     <th>Tên lương thưởng</th>
                                                     <th style={{ width: "30%" }}>Số tiền</th>
-                                                    <th>Hành động</th>
+                                                    <th style={{ width: "16%" }}>Hành động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -144,4 +144,4 @@ class ModalEditSalary extends Component {
         );
     }
 };
-export { ModalEditSalary };
+export { ModalAddSalary };

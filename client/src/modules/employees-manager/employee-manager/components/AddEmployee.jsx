@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { EmployeeInfoActions } from '../redux/actions';
+import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
 import { DisciplineActions } from '../../discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import './addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { ModalImportFileBHXH } from './ModalImportFileBHXH';
-import { ModalAddCertificate } from './ModalAddCertificate';
-import { ModalAddCertificateShort } from './ModalAddCertificateShort';
-import { ModalAddContract } from './ModalAddContract';
-import { ModalAddExperience } from './ModalAddExperience';
-import { ModalAddBHXH } from './ModalAddBHXH';
-import { ModalAddDiscipline } from './ModalAddDiscipline';
-import { ModalAddPraise } from './ModalAddPraise';
-import { ModalAddSalary } from './ModalAddSalary';
-import { ModalAddSabbatical } from './ModalAddSabbatical';
-import { ModalAddFile } from './ModalAddFile';
-import '../../employee-manager/components/listemployee.css';
+import { ModalImportFileBHXH,ModalAddCertificate,ModalAddCertificateShort,ModalAddContract,ModalAddExperience } from './CombineContent';
+import { ModalAddBHXH,ModalAddDiscipline,ModalAddPraise,ModalAddSalary,ModalAddSabbatical,ModalAddFile } from './CombineContent';
+import { ModalEditFile, ModalEditSabbatical, ModalEditSalary, ModalEditPraise, ModalEditDiscipline, ModalEditBHXH } from './CombineContent';
+import { ModalEditExperience, ModalEditContract, ModalEditCertificateShort, ModalEditCertificate } from './CombineContent';
+import './listemployee.css';
 
 class AddEmployee extends Component {
     constructor(props) {
@@ -125,6 +118,15 @@ class AddEmployee extends Component {
         })
 
     }
+    // function chỉnh sửa thông tin bằng cấp
+    handleEditCertificate = (data) => {
+        const { certificate } = this.state;
+        certificate[data.index] = data;
+        this.setState({
+            certificate: certificate
+        })
+
+    }
     // function thêm thông tin chứng chỉ
     handleChangeCertificateShort = (data) => {
         const { certificateShort } = this.state;
@@ -132,6 +134,14 @@ class AddEmployee extends Component {
             certificateShort: [...certificateShort, {
                 ...data
             }]
+        })
+    }
+    // function chỉnh sửa thông tin chứng chỉ
+    handleEditCertificateShort = (data) => {
+        const { certificateShort } = this.state;
+        certificateShort[data.index] = data;
+        this.setState({
+            certificateShort: certificateShort
         })
     }
     // function thêm mới kinh nghiệm làm việc
@@ -147,6 +157,18 @@ class AddEmployee extends Component {
             }
         })
     }
+    // function chỉnh sửa kinh nghiệm làm việc
+    handleEditExperience = (data) => {
+        const { employeeNew } = this.state;
+        var experience = employeeNew.experience;
+        experience[data.index] = data
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                experience: experience
+            }
+        })
+    }
     // function thêm thông tin hợp đồng lao động
     handleChangeContract = (data) => {
         const { contract } = this.state;
@@ -154,6 +176,14 @@ class AddEmployee extends Component {
             contract: [...contract, {
                 ...data
             }]
+        })
+    }
+    // function chỉnh sửa thông tin hợp đồng lao động
+    handleEditContract = (data) => {
+        const { contract } = this.state;
+        contract[data.index] = data;
+        this.setState({
+            contract: contract
         })
     }
     // function thêm thông tin quá trình đóng BHXH
@@ -166,6 +196,18 @@ class AddEmployee extends Component {
                 BHXH: [...BHXH, {
                     ...data
                 }]
+            }
+        })
+    }
+    // function chỉnh sửa thông tin quá trình đóng BHXH
+    handleEditBHXH = (data) => {
+        const { employeeNew } = this.state;
+        var BHXH = employeeNew.BHXH;
+        BHXH[data.index] = data;
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                BHXH: BHXH
             }
         })
     }
@@ -191,6 +233,14 @@ class AddEmployee extends Component {
             }]
         })
     }
+    // function chỉnh sửa thông tin khen thưởng
+    handleEditPraise = (data) => {
+        const { praiseNew } = this.state;
+        praiseNew[data.index] = data;
+        this.setState({
+            praiseNew: praiseNew
+        })
+    }
     // function thêm thông tin kỷ luật
     handleChangeDiscipline = (data) => {
         const { disciplineNew } = this.state;
@@ -198,6 +248,14 @@ class AddEmployee extends Component {
             disciplineNew: [...disciplineNew, {
                 ...data
             }]
+        })
+    }
+    // function chỉnh sửa thông tin kỷ luật
+    handleEditDiscipline = (data) => {
+        const { disciplineNew } = this.state;
+        disciplineNew[data.index] = data;
+        this.setState({
+            disciplineNew: disciplineNew
         })
     }
     // function thêm thông tin lịch sử lương
@@ -215,6 +273,14 @@ class AddEmployee extends Component {
             })
         }
     }
+    // function chỉnh sửa thông tin lịch sử lương
+    handleEditSalary = (data) => {
+        const { salaryNew } = this.state;
+        salaryNew[data.index] = data;
+        this.setState({
+            salaryNew: salaryNew
+        })
+    }
     // function thêm thông tin nghỉ phép
     handleChangeSabbatical = (data) => {
         const { sabbaticalNew } = this.state;
@@ -224,6 +290,15 @@ class AddEmployee extends Component {
             }]
         })
     }
+    // function chỉnh sửa thông tin nghỉ phép
+    handleEditSabbatical = (data) => {
+        const { sabbaticalNew } = this.state;
+        sabbaticalNew[data.index] = data;
+        this.setState({
+            sabbaticalNew: sabbaticalNew
+        })
+    }
+
     //function thêm thông tin tài liệu đính kèm
     handleChangeFile = (data) => {
         const { file } = this.state;
@@ -231,6 +306,14 @@ class AddEmployee extends Component {
             file: [...file, {
                 ...data
             }]
+        })
+    }
+    //function chỉnh sửa thông tin tài liệu đính kèm
+    handleEditFile = (data) => {
+        const { file } = this.state;
+        file[data.index] = data;
+        this.setState({
+            file:file
         })
     }
     // function xoá các thông tin certificate, experience, contract, BHXH, course
@@ -794,7 +877,7 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Bằng cấp:</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewCertificate">Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới bằng cấp" data-toggle="modal" data-target="#modal-addNewCertificate">Thêm mới</button>
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -817,7 +900,8 @@ class AddEmployee extends Component {
                                                                 <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
                                                                     <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}
                                                                 </td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                <td>
+                                                                    <ModalEditCertificate index={index} data={x} handleChange={this.handleEditCertificate} />
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("certificate", index)}><i className="material-icons"></i></a>
                                                                 </td>
                                                             </tr>
@@ -827,7 +911,7 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">Chứng chỉ:</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewCertificateShort">Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới chứng chỉ" data-toggle="modal" data-target="#modal-addNewCertificateShort">Thêm mới</button>
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -849,7 +933,8 @@ class AddEmployee extends Component {
                                                                 <td>{x.endDate}</td>
                                                                 <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
                                                                     <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                <td>
+                                                                    <ModalEditCertificateShort index={index} handleChange={this.handleEditCertificateShort} data={x} />
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("certificateShort", index)}><i className="material-icons"></i></a>
                                                                 </td>
                                                             </tr>
@@ -892,7 +977,7 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kinh nghiệm làm việc</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewExperience">Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới kinh nghiệm làm việc" data-toggle="modal" data-target="#modal-addNewExperience">Thêm mới</button>
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -911,7 +996,8 @@ class AddEmployee extends Component {
                                                                 <td>{x.endDate}</td>
                                                                 <td>{x.unit}</td>
                                                                 <td>{x.position}</td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                <td >
+                                                                    <ModalEditExperience index={index} data={x} handleChange={this.handleEditExperience} />
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("experience", index)}><i className="material-icons"></i></a>
                                                                 </td>
                                                             </tr>
@@ -958,7 +1044,7 @@ class AddEmployee extends Component {
                                             <div className="col-md-12">
                                                 <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>Quá trình đóng bảo hiểm xã hội:</h4>
                                                 <button style={{ marginBottom: 5, marginLeft: 10 }} type="submit" className="btn btn-primary pull-right" id="editBHXH" data-toggle="modal" data-target="#modal-importFileBHXH" title="Thêm mới bằng file excel" onClick={this.handleAddNew}>Import file</button>
-                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewBHXH">Thêm mới</button>
+                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm quá trình đóng BHXH" data-toggle="modal" data-target="#modal-addNewBHXH">Thêm mới</button>
                                                 <table className="table table-striped table-bordered table-resizable " >
                                                     <thead>
                                                         <tr>
@@ -977,7 +1063,8 @@ class AddEmployee extends Component {
                                                                     <td>{x.endDate}</td>
                                                                     <td>{x.position}</td>
                                                                     <td>{x.unit}</td>
-                                                                    <td style={{ textAlign: "center" }}>
+                                                                    <td>
+                                                                        <ModalEditBHXH index={index} handleChange={this.handleEditBHXH} data={x} />
                                                                         <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("BHXH", index)}><i className="material-icons"></i></a>
                                                                     </td>
                                                                 </tr>
@@ -993,7 +1080,7 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Hợp đồng lao động</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewContract">Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới hợp đồng lao động" data-toggle="modal" data-target="#modal-addNewContract">Thêm mới</button>
                                             <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
                                                     <tr>
@@ -1015,7 +1102,8 @@ class AddEmployee extends Component {
                                                                 <td>{x.endDate}</td>
                                                                 <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
                                                                     <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                <td>
+                                                                    <ModalEditContract data={x} index={index} handleChange={this.handleEditContract} />
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("contract", index)}><i className="material-icons"></i></a>
                                                                 </td>
                                                             </tr>
@@ -1066,7 +1154,7 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Khen thưởng</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addPraise">Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới thông tin khen thưởng" data-toggle="modal" data-target="#modal-addPraise">Thêm mới</button>
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -1088,7 +1176,8 @@ class AddEmployee extends Component {
                                                                 <td>{x.unit}</td>
                                                                 <td>{x.type}</td>
                                                                 <td>{x.reason}</td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                <td>
+                                                                    <ModalEditPraise index={index} data={x} handleChange={this.handleEditPraise} />
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("praiseNew", index)}><i className="material-icons"></i></a>
                                                                 </td>
                                                             </tr>
@@ -1099,7 +1188,7 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kỷ luật</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewDiscipline">Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới thông tin kỷ luật" data-toggle="modal" data-target="#modal-addNewDiscipline">Thêm mới</button>
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -1122,7 +1211,8 @@ class AddEmployee extends Component {
                                                                 <td>{x.unit}</td>
                                                                 <td>{x.type}</td>
                                                                 <td>{x.reason}</td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                <td>
+                                                                    <ModalEditDiscipline data={x} index={index} handleChange={this.handleEditDiscipline} />
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("disciplineNew", index)}><i className="material-icons"></i></a>
                                                                 </td>
                                                             </tr>
@@ -1139,7 +1229,7 @@ class AddEmployee extends Component {
                                         <div className="col-sm-12">
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Lịch sử tăng giảm lương</h4></legend>
-                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewSalary">Thêm mới</button>
+                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới lịch sử lương" data-toggle="modal" data-target="#modal-addNewSalary">Thêm mới</button>
                                                 <table className="table table-striped table-bordered table-resizable" >
                                                     <thead>
                                                         <tr>
@@ -1152,16 +1242,24 @@ class AddEmployee extends Component {
                                                     <tbody>
                                                         {(typeof this.state.salaryNew === 'undefined' || this.state.salaryNew.length === 0) ? <tr><td colSpan={4}><center> Không có dữ liệu</center></td></tr> :
                                                             this.state.salaryNew.map((x, index) => {
+                                                                if (x.bonus.length !== 0) {
+                                                                    var total = 0;
+                                                                    for (let count in x.bonus) {
+                                                                        total = total + parseInt(x.bonus[count].number)
+                                                                    }
+                                                                }
                                                                 return (
                                                                     <tr key={index}>
                                                                         <td>{x.month}</td>
                                                                         <td>{formatter.format(parseInt(x.mainSalary))} {x.unit}</td>
                                                                         <td>
-                                                                            {(typeof x.bonus === 'undefined' || x.bonus.length === 0) ? formatter.format(parseInt(x.mainSalary)) :
-                                                                                x.bonus.map(y => formatter.format(parseInt(x.mainSalary) + parseInt(y.number)))
+                                                                            {(typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
+                                                                                formatter.format(parseInt(x.mainSalary)) :
+                                                                                formatter.format(total + parseInt(x.mainSalary))
                                                                             } {x.unit}
                                                                         </td>
-                                                                        <td style={{ textAlign: "center" }}>
+                                                                        <td>
+                                                                            <ModalEditSalary index={index} data={x} handleChange={this.handleEditSalary} />
                                                                             <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("salaryNew", index)}><i className="material-icons"></i></a>
                                                                         </td>
                                                                     </tr>
@@ -1174,7 +1272,7 @@ class AddEmployee extends Component {
                                             </fieldset>
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thông tin nghỉ phép</h4></legend>
-                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewSabbatical">Thêm mới</button>
+                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới thông tin nghỉ phép" data-toggle="modal" data-target="#modal-addNewSabbatical">Thêm mới</button>
                                                 <table className="table table-striped table-bordered table-resizable">
                                                     <thead>
                                                         <tr>
@@ -1193,7 +1291,8 @@ class AddEmployee extends Component {
                                                                     <td>{x.startDate}</td>
                                                                     <td>{x.reason}</td>
                                                                     <td>{x.status}</td>
-                                                                    <td style={{ textAlign: "center" }}>
+                                                                    <td >
+                                                                        <ModalEditSabbatical index={index} handleChange={this.handleEditSabbatical} data={x} />
                                                                         <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("sabbaticalNew", index)}><i className="material-icons"></i></a>
                                                                     </td>
                                                                 </tr>
@@ -1215,7 +1314,7 @@ class AddEmployee extends Component {
                                         </div>
                                         <div className="col-md-12">
                                             <h4 className="col-md-6" style={{ paddingLeft: 0 }}>Danh sách tài liệu đính kèm:</h4>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewFile">Thêm mới</button>
+                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới tài liệu đính kèm" data-toggle="modal" data-target="#modal-addNewFile">Thêm mới</button>
                                             <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title="Thêm các tài liệu mặc định">Mặc định</button>
                                             <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
@@ -1239,8 +1338,8 @@ class AddEmployee extends Component {
                                                                 <td>{x.status}</td>
                                                                 <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
                                                                     <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <a href="#abc" className="edit" title="Chỉnh sửa thông tin " data-toggle="modal" data-target="#modal"><i className="material-icons"></i></a>
+                                                                <td >
+                                                                    <ModalEditFile data={x} index={index} handleChange={this.handleEditFile} />
                                                                     <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("file", index)}><i className="material-icons"></i></a>
                                                                 </td>
                                                             </tr>
@@ -1275,21 +1374,21 @@ class AddEmployee extends Component {
 }
 
 function mapState(state) {
-    const { employeesInfo, Salary, Discipline, Sabbatical } = state;
-    return { employeesInfo, Salary, Discipline, Sabbatical };
+    const { employeesManager, Salary, Discipline, Sabbatical } = state;
+    return { employeesManager, Salary, Discipline, Sabbatical };
 };
 
 const actionCreators = {
-    addNewEmployee: EmployeeInfoActions.addNewEmployee,
-    uploadAvatar: EmployeeInfoActions.uploadAvatar,
+    addNewEmployee: EmployeeManagerActions.addNewEmployee,
+    uploadAvatar: EmployeeManagerActions.uploadAvatar,
     createNewSalary: SalaryActions.createNewSalary,
     createNewSabbatical: SabbaticalActions.createNewSabbatical,
     createNewPraise: DisciplineActions.createNewPraise,
     createNewDiscipline: DisciplineActions.createNewDiscipline,
-    updateContract: EmployeeInfoActions.updateContract,
-    updateCertificate: EmployeeInfoActions.updateCertificate,
-    updateCertificateShort: EmployeeInfoActions.updateCertificateShort,
-    updateFile: EmployeeInfoActions.updateFile,
+    updateContract: EmployeeManagerActions.updateContract,
+    updateCertificate: EmployeeManagerActions.updateCertificate,
+    updateCertificateShort: EmployeeManagerActions.updateCertificateShort,
+    updateFile: EmployeeManagerActions.updateFile,
 };
 
 const connectedAddEmplyee = connect(mapState, actionCreators)(AddEmployee);

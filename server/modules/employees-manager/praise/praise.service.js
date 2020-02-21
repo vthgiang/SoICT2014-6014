@@ -2,8 +2,10 @@ const Praise = require('../../../models/praise.model');
 const Employee = require('../../../models/employee.model');
 
 //lấy danh sách kỷ luật của nhân viên
-exports.get = async (data) => {
-    var keySearch = {};
+exports.get = async (data,company) => {
+    var keySearch = {
+        company:company
+    };
     if (data.employeeNumber !== "") {
         var employeeinfo = await Employee.findOne({
             employeeNumber: data.employeeNumber
@@ -30,12 +32,14 @@ exports.get = async (data) => {
 }
 
 // thêm mới kỷ luật
-exports.create = async (data) => {
+exports.create = async (data,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber
+        employeeNumber: data.employeeNumber,
+        company:company
     });
     var newPraise=await Praise.create({
         employee: employeeinfo._id,
+        company:company,
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,
@@ -45,6 +49,7 @@ exports.create = async (data) => {
     var content = {
         _id: newPraise._id,
         employee: employeeinfo,
+        company:company,
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,

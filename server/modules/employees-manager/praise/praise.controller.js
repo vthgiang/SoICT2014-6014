@@ -3,7 +3,7 @@ const PraiseService = require('./praise.service');
 // Lấy danh sách kỷ luật
 exports.get = async (req, res) => {
     try {
-        var listPraise = await PraiseService.get(req.body);
+        var listPraise = await PraiseService.get(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: listPraise
@@ -18,7 +18,7 @@ exports.get = async (req, res) => {
 // Tạo mới kỷ luật của nhân viên
 exports.create = async (req, res) => {
     try {
-        var newPraise = await PraiseService.create(req.body);
+        var newPraise = await PraiseService.create(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: newPraise

@@ -32,9 +32,10 @@ class ModalAddCertificate extends Component {
             this.setState({
                 [name]: file.name,
                 urlFile: url,
-                fileUpload:file
+                fileUpload:file,
             })
         };
+        console.log(event.target.value);
     }
     handleChange(event) {
         const { name, value } = event.target;
