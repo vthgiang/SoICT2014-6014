@@ -1,6 +1,9 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import {
+    AuthenticateHeader
+} from '../../../../config';
 export const SabbaticalService = {
     getListSabbatical,
     createNewSabbatical,
@@ -12,9 +15,7 @@ export const SabbaticalService = {
 function getListSabbatical(data) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -26,9 +27,7 @@ function getListSabbatical(data) {
 function createNewSabbatical(data) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
 
@@ -48,12 +47,8 @@ function deleteSabbatical(id) {
 function updateSabbatical(id, data) {
     const requestOptions = {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
     return fetch(`/sabbatical/${id}`, requestOptions).then(handleResponse);
 }
-
-

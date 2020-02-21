@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
-import '../../employee-info/components/addemployee.css';
+import './addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 class ModalEditEmployee extends Component {

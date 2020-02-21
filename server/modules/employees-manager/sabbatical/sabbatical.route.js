@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const { auth } = require('../../../middleware/auth.middleware');
 
 const SabbaticalController = require("./sabbatical.controller");
 
 // Lấy danh sách kỷ luật
-router.post('/paginate', SabbaticalController.get);
+router.post('/paginate',auth, SabbaticalController.get);
 
 // thêm mới kỷ luật
-router.post('/create', SabbaticalController.create);
+router.post('/create',auth, SabbaticalController.create);
 
 // Xoá bẳng thông tin kỷ luật
 router.delete('/:id', SabbaticalController.delete);

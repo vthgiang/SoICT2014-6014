@@ -3,7 +3,7 @@ const SalaryService = require('./salary.service');
 // Lấy danh sách các bảng lương
 exports.get = async (req, res) => {
     try {
-        var ListSaraly = await SalaryService.get(req.body);
+        var ListSaraly = await SalaryService.get(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: ListSaraly
@@ -18,7 +18,7 @@ exports.get = async (req, res) => {
 // Tạo mới một bảng lương 
 exports.create = async (req, res) => {
     try {
-        var saraly = await SalaryService.create(req.body);
+        var saraly = await SalaryService.create(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: saraly

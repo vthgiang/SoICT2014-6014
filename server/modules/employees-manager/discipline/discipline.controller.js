@@ -3,7 +3,7 @@ const DisciplineService = require('./discipline.service');
 // Lấy danh sách kỷ luật
 exports.get = async (req, res) => {
     try {
-        var listDiscipline = await DisciplineService.get(req.body);
+        var listDiscipline = await DisciplineService.get(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: listDiscipline
@@ -18,7 +18,7 @@ exports.get = async (req, res) => {
 // Tạo mới kỷ luật của nhân viên
 exports.create = async (req, res) => {
     try {
-        var newDiscipline = await DisciplineService.create(req.body);
+        var newDiscipline = await DisciplineService.create(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: newDiscipline

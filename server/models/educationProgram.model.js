@@ -6,6 +6,10 @@ const EducationProgramSchema = new Schema({
         type: String,
         required: true
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'companies'
+    },
     numberEducation: {
         type: String,
         required: true

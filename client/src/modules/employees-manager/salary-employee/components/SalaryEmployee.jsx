@@ -205,6 +205,12 @@ class SalaryEmployee extends Component {
                                                 listSalary.map((x, index) => {
 
                                                     var salaryTotal = x.mainSalary.slice(0, x.mainSalary.length - 3);
+                                                    if (x.bonus.length !== 0) {
+                                                        var total = 0;
+                                                        for (let count in x.bonus) {
+                                                            total = total + parseInt(x.bonus[count].number)
+                                                        }
+                                                    }
                                                     var unit = x.mainSalary.slice(-3, x.mainSalary.length);
                                                     return (
                                                         <tr key={index}>
@@ -213,8 +219,9 @@ class SalaryEmployee extends Component {
                                                             <td>{x.month}</td>
                                                             <td>
                                                                 {
-                                                                    (typeof x.bonus === 'undefined' || x.bonus.length === 0) ? formatter.format(parseInt(salaryTotal)) :
-                                                                        x.bonus.map(y => formatter.format(parseInt(salaryTotal) + parseInt(y.number)))
+                                                                    (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
+                                                                        formatter.format(parseInt(salaryTotal)) :
+                                                                        formatter.format(total + parseInt(salaryTotal))
                                                                 } {unit}
                                                             </td>
                                                             <td>Phòng nhân sự</td>

@@ -9,6 +9,10 @@ const DisciplineSchema = new Schema({
         ref: Employee,
         require: true,
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'companies'
+    },
     number: {
         type: String,
         require: true,

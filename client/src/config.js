@@ -24,3 +24,12 @@ export const AuthenticateHeader = (name='jwt') => {
         'Content-Type': 'application/json'
     }
 }
+
+export const AuthenticateHeaderPATCH = (name='jwt') => {
+    const token = getStorage(name);
+    const browserFinger = getBrowserFingerprint();
+    return {
+        'auth-token': token,
+        'browser-finger': browserFinger,
+    }
+}

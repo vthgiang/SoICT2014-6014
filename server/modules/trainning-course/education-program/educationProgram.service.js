@@ -1,13 +1,17 @@
 const EducationProgram = require('../../../models/educationProgram.model');
 //get list educationProgram
-exports.get = async (data) => {
-    var allEducationProgram = await EducationProgram.find().skip(data.page).limit(data.limit);
+exports.get = async (data,company) => {
+    var keySearch = {
+        company:company
+    }
+    var allEducationProgram = await EducationProgram.find(keySearch).skip(data.page).limit(data.limit);
     return allEducationProgram;
 }
 
 // add a new educationProgram
-exports.create = async (data) => {
+exports.create = async (data,company) => {
     var education = await EducationProgram.create({
+        company:company,
         nameEducation: data.nameEducation,
         numberEducation: data.numberEducation,
         unitEducation: data.unitEducation,

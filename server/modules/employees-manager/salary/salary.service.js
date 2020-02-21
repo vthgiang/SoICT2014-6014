@@ -2,8 +2,10 @@ const Salary = require('../../../models/salary.model');
 const Employee = require('../../../models/employee.model');
 
 //lấy danh sách các bẳng lương của nhân viên
-exports.get = async (data) => {
-    var keySearch = {};
+exports.get = async (data,company) => {
+    var keySearch = {
+        company:company
+    };
     if (data.employeeNumber !== "") {
         var employeeinfo = await Employee.findOne({
             employeeNumber: data.employeeNumber
@@ -32,14 +34,16 @@ exports.get = async (data) => {
 }
 
 // thêm mới bẳng lương mới
-exports.create = async (data) => {
+exports.create = async (data,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber
+        employeeNumber: data.employeeNumber,
+        company:company
     });
     var salary = data.mainSalary + data.unit;
     //console.log(employeeinfo.map(x=x._id));
     var newSalary = await Salary.create({
         employee: employeeinfo._id,
+        company:company,
         month: data.month,
         mainSalary: salary,
         bonus: data.bonus
@@ -47,6 +51,7 @@ exports.create = async (data) => {
     var content = {
         _id: newSalary._id,
         employee: employeeinfo,
+        company:company,
         month: data.month,
         mainSalary: salary,
         bonus: data.bonus

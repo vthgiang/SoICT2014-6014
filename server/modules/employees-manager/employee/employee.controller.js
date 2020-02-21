@@ -25,7 +25,7 @@ exports.uploadFile = upload.single("fileUpload");
 // Lấy danh sách nhân viên
 exports.get = async (req, res) => {
     try {
-        var allEmployee = await EmployeeService.get(req.body);
+        var allEmployee = await EmployeeService.get(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: {
@@ -57,7 +57,7 @@ exports.getInforPersonal = async (req, res) => {
 // Tạo nhân viên mới
 exports.create = async (req, res) => {
     try {
-        var data = await EmployeeService.create(req.body);
+        var data = await EmployeeService.create(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: data
@@ -72,7 +72,7 @@ exports.create = async (req, res) => {
 // Cập nhật thông tin cá nhân
 exports.updateInforPersonal = async (req, res) => {
     try {
-        var data = await EmployeeService.updateInforPersonal(req.params.email, req.body);
+        var data = await EmployeeService.updateInforPersonal(req.params.email,req.body);
         res.status(200).json({
             message: "success",
             content: data
@@ -87,7 +87,7 @@ exports.updateInforPersonal = async (req, res) => {
 // Cập nhật avater nhân viên
 exports.updateAvatar = async (req, res) => {
     try {
-        var updateAvatar = await EmployeeService.updateAvatar(req.params.employeeNumber, req.file.filename);
+        var updateAvatar = await EmployeeService.updateAvatar(req.params.employeeNumber, req.file.filename,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateAvatar
@@ -101,7 +101,7 @@ exports.updateAvatar = async (req, res) => {
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
 exports.updateContract = async (req, res) => {
     try {
-        var updateContract = await EmployeeService.updateContract(req.params.employeeNumber,req.body, req.file.filename);
+        var updateContract = await EmployeeService.updateContract(req.params.employeeNumber,req.body, req.file.filename,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateContract
@@ -115,7 +115,7 @@ exports.updateContract = async (req, res) => {
 // Cập nhật(thêm) thông tin bằng cấp theo MSNV
 exports.updateCertificate = async (req, res) => {
     try {
-        var updateCertificate = await EmployeeService.updateCertificate(req.params.employeeNumber,req.body, req.file.filename);
+        var updateCertificate = await EmployeeService.updateCertificate(req.params.employeeNumber,req.body, req.file.filename,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateCertificate
@@ -130,7 +130,7 @@ exports.updateCertificate = async (req, res) => {
 // Cập nhật(thêm) thông tin chứng chỉ theo MSNV
 exports.updateCertificateShort = async (req, res) => {
     try {
-        var updateCertificateShort = await EmployeeService.updateCertificateShort(req.params.employeeNumber,req.body, req.file.filename);
+        var updateCertificateShort = await EmployeeService.updateCertificateShort(req.params.employeeNumber,req.body, req.file.filename,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateCertificateShort
@@ -145,7 +145,7 @@ exports.updateCertificateShort = async (req, res) => {
 // Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
 exports.updateFile = async (req, res) => {
     try {
-        var updateFile = await EmployeeService.updateFile(req.params.employeeNumber,req.body, req.file.filename);
+        var updateFile = await EmployeeService.updateFile(req.params.employeeNumber,req.body, req.file.filename,req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateFile
