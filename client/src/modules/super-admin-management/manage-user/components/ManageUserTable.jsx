@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import UserEditForm from './UserEditForm';
-import DeleteNotification from '../../../../common-components/DeleteNotification';
-import PaginateBar from '../../../../common-components/PaginateBar';
-import SearchBar from '../../../../common-components/SearchBar';
+import { DeleteNotification } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
+import { SearchBar } from '../../../../common-components';
 import UserCreateForm from './UserCreateForm';
-import ActionColumn from '../../../../common-components/ActionColumn';
+import { ActionColumn } from '../../../../common-components';
 
 class ManageUserTable extends Component {
     constructor(props) {

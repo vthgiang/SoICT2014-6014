@@ -47,28 +47,26 @@ class UserCreateForm extends Component {
                 <div className="modal fade" id="modal-id">
                     <div className="modal-dialog">
                         <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 className="modal-title">{ translate('manage_user.add_title') }</h4>
-                            </div>
-                            <div className="modal-body">
-                                <form style={{ marginBottom: '20px' }} >
-                                    <div className="form-group">
-                                        <label>{ translate('table.name') }</label>
-                                        <input type="text" className="form-control" name="name" onChange={ this.inputChange }/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{ translate('table.email') }</label>
-                                        <input type="email" className="form-control" name="email" onChange={ this.inputChange }/>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="modal-footer">
-                                <button className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                                <button className="btn btn-success" 
-                                    onClick={() => this.save(translate('manage_user.add_success'))} 
-                                    data-dismiss="modal">{ translate('form.save') }</button>
-                            </div>
+                            <form onSubmit={() => this.save(translate('manage_user.add_success'))}>
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h4 className="modal-title">{ translate('manage_user.add_title') }</h4>
+                                </div>
+                                <div className="modal-body">
+                                        <div className="form-group">
+                                            <label>{ translate('table.name') }</label>
+                                            <input type="text" className="form-control" name="name" onChange={ this.inputChange }/>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{ translate('table.email') }</label>
+                                            <input type="email" className="form-control" name="email" onChange={ this.inputChange }/>
+                                        </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
+                                    <button className="btn btn-success" type="submit">{ translate('form.save') }</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

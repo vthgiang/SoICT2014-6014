@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LinkActions } from '../redux/actions';
-import DeleteNotification from '../../../../common-components/DeleteNotification';
+import { DeleteNotification } from '../../../../common-components';
 import LinkInfoForm from './LinkInfoForm';
 import CreateLinkForm from './CreateLinkForm';
-import SearchBar from '../../../../common-components/SearchBar';
-import ActionColumn from '../../../../common-components/ActionColumn';
-import PaginateBar from '../../../../common-components/PaginateBar';
+import { SearchBar } from '../../../../common-components';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 
 class ManageLink extends Component {
     constructor(props) {

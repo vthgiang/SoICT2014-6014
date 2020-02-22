@@ -33,6 +33,7 @@ class SearchBar extends Component {
     }
 }
  
-const mapStateToProps = state => state;
+const mapState = state => state;
+const SearchBarExport = connect(mapState, null)(withTranslate(SearchBar));
 
-export default connect( mapStateToProps, null )( withTranslate(SearchBar) );
+export { SearchBarExport as SearchBar }

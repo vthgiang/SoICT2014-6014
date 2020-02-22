@@ -48,4 +48,4 @@ class DeleteNotification extends Component {
     }
 }
  
-export default DeleteNotification;
+export {DeleteNotification};

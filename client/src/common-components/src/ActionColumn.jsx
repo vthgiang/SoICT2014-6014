@@ -43,6 +43,7 @@ class ActionColumn extends Component {
     }
 }
  
-const mapStateToProps = state => state;
+const mapState = state => state;
+const ActionColumnExport = connect(mapState, null)(withTranslate(ActionColumn));
 
-export default connect( mapStateToProps, null )( withTranslate(ActionColumn) );
+export { ActionColumnExport as ActionColumn }

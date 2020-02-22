@@ -5,11 +5,11 @@ import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../manage-user/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
 import './css/Pagination.css';
-import SearchBar from '../../../../common-components/SearchBar';
+import { SearchBar } from '../../../../common-components';
 import RoleCreateForm from './RoleCreateForm';
-import DeleteNotification from '../../../../common-components/DeleteNotification';
-import PaginateBar from '../../../../common-components/PaginateBar';
-import ActionColumn from '../../../../common-components/ActionColumn';
+import { DeleteNotification } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
+import { ActionColumn } from '../../../../common-components';
 
 class RoleTable extends Component {
     constructor(props) {

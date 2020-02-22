@@ -128,7 +128,9 @@ export default {
             edit: 'Chỉnh sửa thông tin phân quyền',
             delete: 'Xóa phân quyền ?',
             add_success: 'Đã tạo thành công phân quyền',
-            edit_success: 'Đã chỉnh sửa lại thông tin phân quyền'
+            add_faile: 'Tạo phân quyền mới thất bại',
+            edit_success: 'Đã chỉnh sửa lại thông tin phân quyền',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         manage_user: {
@@ -139,8 +141,8 @@ export default {
             disable: 'Ngưng hoạt động',
             enable: 'Hoạt động',
             delete: 'Xóa tài khoản ?',
-            add_success: "Đã thêm thành công tài khoản người dùng mới",
-            edit_success: "Đã chỉnh sửa thành công thông tin tài khoản"
+            add_success: "Thêm tài khoản thành công",
+            edit_success: "Chỉnh sửa thông tin thành công"
         },
 
         manage_page: {

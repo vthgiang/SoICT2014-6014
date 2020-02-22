@@ -3,10 +3,10 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import ComponentInfoForm from './ComponentInfoForm';
-import SearchBar from '../../../../common-components/SearchBar';
-import DeleteNotification from '../../../../common-components/DeleteNotification';
-import PaginateBar from '../../../../common-components/PaginateBar';
-import ActionColumn from '../../../../common-components/ActionColumn';
+import { SearchBar } from '../../../../common-components';
+import { DeleteNotification } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
+import { ActionColumn } from '../../../../common-components';
 import ComponentCreateForm from './ComponentCreateForm';
 
 class TableComponent extends Component {

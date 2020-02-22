@@ -32,7 +32,7 @@ exports.getById = async (req, res) => {
 
 exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
 
-    return await Department.create({
+    const department = await Department.create({
         name: data.name,
         description: data.description,
         company: companyID,
@@ -41,6 +41,9 @@ exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
         employee: employeeId,
         parent: data.parent
     });
+    console.log("DEPARTMENT: ", department);
+
+    return department;
 }
 
 exports.edit = async(req, res) => {

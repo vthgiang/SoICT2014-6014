@@ -82,6 +82,7 @@ class PaginateBar extends Component {
     }
 }
  
-const mapStateToProps = state => state;
+const mapState = state => state;
+const PaginateBarExport = connect(mapState, null)(withTranslate(PaginateBar));
 
-export default connect( mapStateToProps, null )( withTranslate(PaginateBar) );
+export { PaginateBarExport as PaginateBar }

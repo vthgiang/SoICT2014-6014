@@ -37,7 +37,7 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, pageName, arrPage } = this.props;
+        const { translate, pageName, arrPage, isLoading } = this.props;
         
         return (
             <React.Fragment>
@@ -57,17 +57,13 @@ class Content extends Component {
                         </ol>
                     </section>
                     <section className="content">
-                        {
-                            this.props.children
-                        }
+                        { this.props.children }
                     </section>
                 </div>
             </React.Fragment>
         );
     }
 }
-const mapState = state => {
-    return state;
-}
+const mapState = state => state;
 
 export default connect(mapState, null)(withTranslate(Content));
