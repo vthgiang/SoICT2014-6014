@@ -43,13 +43,18 @@ exports.getById = async (company, roleId) => {
 }
 
 exports.create = async(data, companyID) => {
+    console.log("tạo role", data);
     var roleTuTao = await RoleType.findOne({ name: 'tutao' });
-    return await Role.create({
+    console.log("role tu tao", roleTuTao)
+    const role = await Role.create({
         name: data.name,
         company: companyID,
         parents: data.parents,
         type: roleTuTao._id
     });
+    console.log("ROLE", role);
+
+    return role;
 }
 
 exports.createAbstract = async(data, companyID) => {

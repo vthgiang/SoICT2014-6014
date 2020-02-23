@@ -40,7 +40,7 @@ class RoleTable extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                         <RoleCreateForm />
                     </div>
                 </div>

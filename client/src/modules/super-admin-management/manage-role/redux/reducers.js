@@ -95,9 +95,9 @@ export function role(state = initState, action) {
                 state.list[index].users = action.payload.users;
             }
             if(indexPaginate !== -1){
-                state.listPaginate[index].name = action.payload.name;
-                state.listPaginate[index].parents = action.payload.parents;
-                state.listPaginate[index].users = action.payload.users;
+                state.listPaginate[indexPaginate].name = action.payload.name;
+                state.listPaginate[indexPaginate].parents = action.payload.parents;
+                state.listPaginate[indexPaginate].users = action.payload.users;
             }
             return {
                 ...state,

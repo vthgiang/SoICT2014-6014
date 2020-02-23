@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import { RoleActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { Modal } from '../../../../common-components';
+import Swal from 'sweetalert2';
 
 class RoleCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            name: null
-        }
-        this.inputChange = this.inputChange.bind(this);
+        this.state = {}
         this.save = this.save.bind(this);
     }
 
@@ -20,21 +18,22 @@ class RoleCreateForm extends Component {
             <React.Fragment>
                 <Modal 
                     title={translate('manage_role.add_title')}
-                    size='50'
+                    size='50' id="create-role"
                     button_name={translate('manage_role.add')} 
                     msg_success={translate('manage_role.add_success')}
                     msg_faile={translate('manage_role.add_faile')}
                     func={this.save}
                 >
-                    <form>
+                    <form id="create-role">
                         <div className="form-group">
                             <label>{ translate('manage_role.name') }<span className="text-red"> * </span></label>
-                            <input className="form-control" name="name" onChange={this.inputChange} type="text"/>
+                            <input className="form-control" type="text" ref="name"/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_role.extends') }</label>
                             <select 
-                                name="parents" 
+                                id="form-vnist"
+                                defaultValue={[]}
                                 className="form-control select2" 
                                 multiple="multiple" 
                                 style={{ width: '100%' }} 
@@ -52,15 +51,6 @@ class RoleCreateForm extends Component {
             </React.Fragment>
          );
     }
-    
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
 
     componentDidMount(){
         this.props.get();
@@ -73,12 +63,11 @@ class RoleCreateForm extends Component {
     }
 
     save(){
-        let select = this.refs.parents;
-        let parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        const { name } = this.state;
-        const role = { name, parents };
+        const name = this.refs.name.value;
+        const select = this.refs.parents;
+        const parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
 
-        return this.props.create(role);
+        return this.props.create({name, parents});
     }
 }
  

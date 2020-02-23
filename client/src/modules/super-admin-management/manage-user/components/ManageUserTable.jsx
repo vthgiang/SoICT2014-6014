@@ -40,7 +40,7 @@ class ManageUserTable extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                         <UserCreateForm />
                     </div>
                 </div>
@@ -71,10 +71,10 @@ class ManageUserTable extends Component {
                                     <td>{u.active ? <p><i className="fa fa-circle text-success" />{translate('manage_user.enable')}</p> : <p><i className="fa fa-circle text-danger" />{translate('manage_user.disable')}</p>}</td>
                                     <td style={{textAlign: 'center'}}>
                                         <UserEditForm
-                                            userEditID={u._id}
-                                            email={u.email}
-                                            username={u.name}
-                                            active={u.active}
+                                            userId={u._id}
+                                            userEmail={u.email}
+                                            userName={u.name}
+                                            userActive={u.active}
                                             editUser={this.editUser}
                                         />
                                         {

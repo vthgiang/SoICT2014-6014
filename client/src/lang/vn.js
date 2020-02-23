@@ -15,6 +15,7 @@ export default {
         },
 
         form: {
+            property: 'Thuộc tính : ',
             required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',
@@ -141,8 +142,10 @@ export default {
             disable: 'Ngưng hoạt động',
             enable: 'Hoạt động',
             delete: 'Xóa tài khoản ?',
-            add_success: "Thêm tài khoản thành công",
-            edit_success: "Chỉnh sửa thông tin thành công"
+            add_success: 'Tạo tài khoản thành công',
+            add_faile: 'Tạo tài khoản thất bại',
+            edit_success: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         manage_page: {

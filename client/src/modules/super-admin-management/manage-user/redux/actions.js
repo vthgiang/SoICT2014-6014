@@ -41,11 +41,11 @@ function getPaginate(data){
     }
 }
 
-function edit(data){
+function edit(id, data){
     return dispatch => {
         dispatch({ type: UserConstants.EDIT_USER_REQUEST});
         return new Promise((resolve, reject) => {
-            UserServices.edit(data)
+            UserServices.edit(id, data)
             .then(res => {
                 dispatch({
                     type: UserConstants.EDIT_USER_SUCCESS,

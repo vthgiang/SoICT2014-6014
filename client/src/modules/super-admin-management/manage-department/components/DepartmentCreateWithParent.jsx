@@ -113,7 +113,7 @@ class DepartmentCreateWithParent extends Component {
                                 <p className="attention pull-left">(*): {translate('form.required')}</p>
                                 <button type="button" className="btn btn-primary pull-right" style={{ marginRight: '8px' }} data-dismiss="modal"> { translate('form.close') }</button>
                                 {
-                                    (name !== '' && description !== '' && dean !== '' && vice_dean != '' && employee != '') &&
+                                    (name !== '' && description !== '' && dean !== '' && vice_dean !== '' && employee !== '') &&
                                     <button 
                                         type="button" 
                                         className="btn btn-success" 

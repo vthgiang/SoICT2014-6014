@@ -73,8 +73,8 @@ export function user(state = initState, action) {
                 state.list[index].active = action.payload.active;
             };
             if(indexPaginate !== -1){
-                state.listPaginate[index].name = action.payload.name;
-                state.listPaginate[index].active = action.payload.active;
+                state.listPaginate[indexPaginate].name = action.payload.name;
+                state.listPaginate[indexPaginate].active = action.payload.active;
             }
             return {
                 ...state,
