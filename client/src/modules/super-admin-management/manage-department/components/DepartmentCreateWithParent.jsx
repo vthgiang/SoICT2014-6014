@@ -37,7 +37,7 @@ class DepartmentCreateWithParent extends Component {
             <React.Fragment>
                 <ModalDialog
                     size="75"
-                    modalID={`form-create-department-${parentId}`}
+                    modalID={`modal-create-department-${parentId}`}
                     formID={`form-create-department-${parentId}`}
                     title={translate('manage_department.add_title')}
                     msg_success={translate('manage_department.add_success')}

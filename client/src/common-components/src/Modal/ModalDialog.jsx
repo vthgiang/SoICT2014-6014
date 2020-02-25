@@ -30,13 +30,15 @@ class ModalDialog extends Component {
                 toast.success(this.props.msg_success, {containerId: `notifi-${this.props.modalID}`});
                 
             }).catch(err => {
+                console.log(err);
                 toast.error(this.props.msg_faile, {containerId: `notifi-${this.props.modalID}`});
             });
     }
 
     render() { 
         const {translate} = this.props;
-        
+        if(this.props.type==="edit") console.log("MODAL EDIT")
+
         return ( 
             <React.Fragment>
                 <ToastContainer enableMultiContainer containerId={`notifi-${this.props.modalID}`} position={toast.POSITION.TOP_RIGHT}/>

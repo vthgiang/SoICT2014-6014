@@ -128,13 +128,13 @@ class DepartmentTreeView extends Component {
                     </div>
                     <div id={`department-setting-${data.id}`} className="row" style={{display: 'none'}}>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <ModalButton modalID={`form-create-department-${data.id}`}
+                            <ModalButton modalID={`modal-create-department-${data.id}`}
                                 button_type="add" color="green"
                                 title={translate('manage_department.add_title')}
                             />
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <ModalButton modalID={`form-edit-department-${data.id}`}
+                            <ModalButton modalID={`modal-edit-department-${data.id}`}
                                 button_type="edit" color="orange"
                                 title={translate('manage_department.edit')}
                             />
