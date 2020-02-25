@@ -26,17 +26,16 @@ class DepartmentTreeView extends Component {
         const { translate, department } = this.props;
         return ( 
             <React.Fragment>
-                <div className="pull-left">
-                    <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
-                    <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut } title={translate('manage_department.zoom_out')}></i>
-                </div>
-                <div className="pull-right">
-                    <DepartmentCreateForm />
-                </div>
-                
                 {
                     department.list.length > 0 &&
                     <React.Fragment >
+                        <div className="pull-left">
+                            <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
+                            <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut } title={translate('manage_department.zoom_out')}></i>
+                        </div>
+                        <div className="pull-right">
+                            <DepartmentCreateForm />
+                        </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
                             <select 
                                 className="select2"

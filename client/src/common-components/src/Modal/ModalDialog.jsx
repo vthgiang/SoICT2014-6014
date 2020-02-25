@@ -8,9 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 class ModalDialog extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            loaded: 0
-         }
+        this.state = {}
     }
 
     closeModal = () => {
@@ -31,7 +29,10 @@ class ModalDialog extends Component {
                 
             }).catch(err => {
                 console.log(err);
-                toast.error(this.props.msg_faile, {containerId: `notifi-${this.props.modalID}`});
+                if(err.response.data.message)
+                    toast.error(err.response.data.message, {containerId: `notifi-${this.props.modalID}`});
+                else
+                    toast.error(this.props.msg_faile, {containerId: `notifi-${this.props.modalID}`});
             });
     }
 

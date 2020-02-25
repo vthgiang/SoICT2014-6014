@@ -27,7 +27,7 @@ class ComponentCreateForm extends Component {
                 >
                     <form id="form-create-component">
                         <div className="form-group">
-                            <label>{ translate('table.name') }</label>
+                            <label>{ translate('table.name') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" ref="name"/>
                         </div>
                         <div className="form-group">
