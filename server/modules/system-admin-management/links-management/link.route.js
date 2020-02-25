@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const LinkController = require('./link.controller');
 const { auth } = require('../../../middleware/auth.middleware');
+const { createValidation } = require('./link.validation');
 
 router.get("/", auth, LinkController.get);
 router.post("/paginate", auth, LinkController.getPaginate);
-router.post("/", auth, LinkController.create);
+router.post("/", auth, createValidation, LinkController.create);
 router.get("/:id", auth, LinkController.show);
 router.patch("/:id", auth, LinkController.edit);
 router.delete("/:id", auth, LinkController.delete);

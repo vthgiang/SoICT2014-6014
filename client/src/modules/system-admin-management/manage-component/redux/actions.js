@@ -62,16 +62,21 @@ function show(id){
 function create(component){
     return dispatch => {
         dispatch({ type: ComponentConstants.CREATE_COMPONENT_REQUEST});
-        ComponentServices.create(component)
+        return new Promise((resolve, reject) => {
+            ComponentServices.create(component)
             .then(res => {
                 dispatch({
                     type: ComponentConstants.CREATE_COMPONENT_SUCCESS,
                     payload: res.data
                 })
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err);
+                reject(err);
             })
+        })
+        
     }
 }
 

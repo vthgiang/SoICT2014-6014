@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../redux/actions';
-import { Modal } from '../../../../common-components';
+import { ModalDialog, ModalButton } from '../../../../common-components';
 
 class RoleInfoForm extends Component {
     constructor(props) {
@@ -49,17 +49,18 @@ class RoleInfoForm extends Component {
         const { roleInfo, role, user, translate } = this.props;
         return ( 
             <React.Fragment>
-                <Modal 
+                <ModalButton modalID={`modal-edit-role-${roleInfo._id}`} button_type="edit" title={translate('manage_role.edit')}/>
+                <ModalDialog
+                    size='50' func={this.save} type="edit"
+                    modalID={`modal-edit-role-${roleInfo._id}`}
+                    formID={`form-edit-role-${roleInfo._id}`}
                     title={translate('manage_role.edit')}
-                    size='50' id={`edit-role-${roleInfo._id}`}
-                    modal_type="edit"
                     msg_success={translate('manage_role.edit_success')}
                     msg_faile={translate('manage_role.edit_faile')}
-                    func={this.save}
                 >
-                    <form id={`edit-role-${roleInfo._id}`}>
+                    <form id={`form-edit-role-${roleInfo._id}`}>
                         <div className="form-group">
-                            <label>{ translate('manage_role.name') }</label>
+                            <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
                             <input className="form-control" name="name" defaultValue={ roleInfo.name } onChange={ this.inputChange }></input>
                         </div>
                         <div className="form-group">
@@ -95,7 +96,7 @@ class RoleInfoForm extends Component {
                             </select>
                         </div>
                     </form>
-                </Modal>
+                </ModalDialog>
             </React.Fragment>
          );
     }

@@ -3,15 +3,12 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
 import { ComponentActions } from '../redux/actions';
+import { ModalButton, ModalDialog } from '../../../../common-components';
 
 class ComponentCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            name: null,
-            description: null
-        }
-        this.inputChange = this.inputChange.bind(this);
+        this.state = {}
         this.save = this.save.bind(this);
     }
 
@@ -19,76 +16,57 @@ class ComponentCreateForm extends Component {
         const { translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <a className="btn btn-success pull-right" data-toggle="modal" href="#modal-create-component" title={ translate('manage_component.add_title') }>{ translate('manage_component.add') }</a>
-                <div className="modal fade" id="modal-create-component">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 className="modal-title">{ translate('manage_component.add_title') }</h4>
-                            </div>
-                            <div className="modal-body">
-                            <div className="box-body">
-                                <div className="form-group">
-                                    <label>{ translate('table.name') }</label>
-                                    <input name="name" type="text" className="form-control" onChange={this.inputChange}/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{ translate('table.description') }</label>
-                                    <input name="description" type="text" className="form-control" onChange={this.inputChange}/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{ translate('manage_component.roles') }</label>
-                                    <select 
-                                        name="roles"
-                                        className="form-control select2" 
-                                        multiple="multiple" 
-                                        onChange={ this.inputChange }
-                                        style={{ width: '100%' }} 
-                                        ref="roles"
-                                    >
-                                        {
-                                            
-                                            role.list.map( role => 
-                                                <option key={role._id} value={role._id}>
-                                                    { role.name }
-                                                </option>
-                                            )
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                                    
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                                <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('form.save') }</button>
-                            </div>
+                <ModalButton modalID="modal-create-component" button_name={translate('manage_component.add')} title={translate('manage_component.add_title')}/>
+                <ModalDialog
+                    modalID="modal-create-component"
+                    formID="form-create-component"
+                    title={translate('manage_component.add_title')}
+                    msg_success={translate('manage_component.add_success')}
+                    msg_faile={translate('manage_component.add_faile')}
+                    func={this.save}
+                >
+                    <form id="form-create-component">
+                        <div className="form-group">
+                            <label>{ translate('table.name') }</label>
+                            <input type="text" className="form-control" ref="name"/>
                         </div>
-                    </div>
-                </div>
-                
+                        <div className="form-group">
+                            <label>{ translate('table.description') }</label>
+                            <input type="text" className="form-control" ref="description"/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_component.roles') }</label>
+                            <select 
+                                className="form-control select2" 
+                                multiple="multiple" 
+                                style={{ width: '100%' }} 
+                                ref="roles"
+                            >
+                                {
+                                    
+                                    role.list.map( role => 
+                                        <option key={role._id} value={role._id}>
+                                            { role.name }
+                                        </option>
+                                    )
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </ModalDialog>
             </React.Fragment>
          );
     }
-        
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
 
-    save(e){
-        e.preventDefault();
+    save = () =>{
         let select = this.refs.roles;
         let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        const { name, description } = this.state;
-        const component = { name, description, roles };
 
-        this.props.createComponet(component);
+        return this.props.createComponet({
+            name: this.refs.name.value,
+            description: this.refs.description.value,
+            roles
+        });
     }
 
     componentDidMount(){

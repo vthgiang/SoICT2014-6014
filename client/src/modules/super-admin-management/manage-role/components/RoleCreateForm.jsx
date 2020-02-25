@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RoleActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { Modal } from '../../../../common-components';
-import Swal from 'sweetalert2';
+import { ModalDialog, ModalButton } from '../../../../common-components';
+
 
 class RoleCreateForm extends Component {
     constructor(props) {
@@ -16,15 +16,17 @@ class RoleCreateForm extends Component {
         const{ translate, role } = this.props;
         return ( 
             <React.Fragment>
-                <Modal 
+                <ModalButton modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')}/>
+                <ModalDialog
+                    modalID="modal-create-role"
+                    formID="form-create-role"
                     title={translate('manage_role.add_title')}
-                    size='50' id="create-role"
-                    button_name={translate('manage_role.add')} 
                     msg_success={translate('manage_role.add_success')}
                     msg_faile={translate('manage_role.add_faile')}
                     func={this.save}
+                    reload={this.reload}
                 >
-                    <form id="create-role">
+                    <form id="form-create-role">
                         <div className="form-group">
                             <label>{ translate('manage_role.name') }<span className="text-red"> * </span></label>
                             <input className="form-control" type="text" ref="name"/>
@@ -33,7 +35,6 @@ class RoleCreateForm extends Component {
                             <label>{ translate('manage_role.extends') }</label>
                             <select 
                                 id="form-vnist"
-                                defaultValue={[]}
                                 className="form-control select2" 
                                 multiple="multiple" 
                                 style={{ width: '100%' }} 
@@ -47,7 +48,7 @@ class RoleCreateForm extends Component {
                             </select>
                         </div>
                     </form>
-                </Modal>
+                </ModalDialog>
             </React.Fragment>
          );
     }

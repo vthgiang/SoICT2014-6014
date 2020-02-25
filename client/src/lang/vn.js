@@ -116,7 +116,10 @@ export default {
             employee_example: 'Nhân viên phòng tài chính',
             add_with_parent: 'Tạo đơn vị mới với đơn vị cha là',
             delete: 'Xóa đơn vị ?',
-            add_success: 'Đã thêm thành công đơn vị mới',
+            add_success: 'Tạo đơn vị thành công',
+            add_faile: 'Tạo đơn vị thất bại',
+            edit_success: 'Chỉnh sửa thông tin thành công',
+            edit_faile: 'Chỉnh sửa thông tin thất bại',
         },
         
         manage_role: {
@@ -156,7 +159,11 @@ export default {
             roles: 'Những role được truy cập vào trang này',
             info: 'Thông tin về trang web',
             edit: 'Chỉnh sửa thông tin',
-            delete: 'Xóa link ?'
+            delete: 'Xóa link ?',
+            add_success: 'Thêm mới thành công',
+            add_faile: 'Thêm mới thất bại',
+            edit_success: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         manage_component: {
@@ -166,6 +173,10 @@ export default {
             edit: 'Chỉnh sửa thông tin về component',
             delete: 'Xóa component ?',
             roles: 'Những role có component này',
+            add_success: 'Thêm mới thành công',
+            add_faile: 'Thêm mới thất bại',
+            edit_success: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         footer: {
@@ -175,9 +186,3 @@ export default {
         }
     }
 }
-// canSave = () => {
-//     const {name, description, dean, vice_dean, employee } = this.state;
-//     if(name !== '' && description !== '' && dean !== '' && vice_dean !== '' && employee !== '')
-//         return true;
-//     else return false;
-// }

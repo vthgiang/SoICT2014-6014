@@ -79,7 +79,15 @@ export const getLinksOfRole = (idRole) => {
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
+                if(err.response !== undefined){
+                    var { msg } = err.response.data;
+                    if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
+                        clearStorage();
+                        dispatch({
+                            type: 'RESET_APP'
+                        })
+                    }
+                }
             })
     }
 }

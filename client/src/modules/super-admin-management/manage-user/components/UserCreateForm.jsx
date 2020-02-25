@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { Modal } from '../../../../common-components';
+import { ModalDialog, ModalButton } from '../../../../common-components';
 
 class UserCreateForm extends Component {
     constructor(props) {
@@ -23,15 +23,16 @@ class UserCreateForm extends Component {
         const{ translate } = this.props;
         return ( 
             <React.Fragment>
-                <Modal
+                <ModalButton modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')}/>
+                <ModalDialog
+                    modalID="modal-create-user"
+                    formID="form-create-user"
                     title={translate('manage_user.add_title')}
-                    size='50' id="create-user"
-                    button_name={translate('manage_user.add')} 
                     msg_success={translate('manage_user.add_success')}
                     msg_faile={translate('manage_user.add_faile')}
                     func={this.save}
                 >
-                    <form id="create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
+                    <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
                         <div className="form-group">
                             <label>{ translate('table.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" ref="name"/>
@@ -41,7 +42,7 @@ class UserCreateForm extends Component {
                             <input type="email" className="form-control" ref="email"/>
                         </div>
                     </form>
-                </Modal>
+                </ModalDialog>
             </React.Fragment>
          );
     }

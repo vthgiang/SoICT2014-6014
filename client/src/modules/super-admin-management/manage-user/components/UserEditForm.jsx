@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
-import { Modal } from '../../../../common-components';
+import { ModalDialog, ModalButton } from '../../../../common-components';
 
 class UserEditForm extends Component {
     constructor(props) {
@@ -29,21 +29,23 @@ class UserEditForm extends Component {
         const { status } = this.state;
         return ( 
             <React.Fragment>
-                <Modal
-                    title={translate('manage_user.add_title')}
-                    size='50' id={`edit-user-${userId}`} modal_type="edit"
-                    msg_success={translate('manage_user.add_success')}
-                    msg_faile={translate('manage_user.add_faile')}
-                    func={this.save}
+                <ModalButton modalID={`modal-edit-user-${userId}`} button_type="edit" title={translate('manage_user.edit')}/>
+                <ModalDialog
+                    size='50' func={this.save} type="edit"
+                    modalID={`modal-edit-user-${userId}`}
+                    formID={`form-edit-user-${userId}`}
+                    title={translate('manage_user.edit')}
+                    msg_success={translate('manage_user.edit_success')}
+                    msg_faile={translate('manage_user.edit_faile')}
                 >
-                    <form id={`edit-user-${userId}`}>
+                    <form id={`form-edit-user-${userId}`}>
                         <div className="row">
                             <div className="form-group col-sm-8">
-                                <label>{ translate('table.email') }</label>
+                                <label>{ translate('table.email') }<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" defaultValue={ userEmail } disabled/>
                             </div>
                             <div className="form-group col-sm-4">
-                                <label>{ translate('table.status') }</label>
+                                <label>{ translate('table.status') }<span className="text-red">*</span></label>
                                 <select 
                                     className="form-control" 
                                     style={{width: '100%'}} 
@@ -58,11 +60,11 @@ class UserEditForm extends Component {
                             </div>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('table.name') }</label>
+                            <label>{ translate('table.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" ref="name" defaultValue={ userName }/>
                         </div>
                     </form>
-                </Modal>
+                </ModalDialog>
             </React.Fragment>
          );
     }

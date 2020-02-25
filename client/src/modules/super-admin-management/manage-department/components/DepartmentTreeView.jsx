@@ -3,15 +3,17 @@ import './department.css';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
-import Swal from 'sweetalert2';
 import DepartmentCreateForm from './DepartmentCreateForm';
+import DepartmentEditForm from './DepartmentEditForm';
+import {DeleteNotification, ModalButton} from '../../../../common-components';
+import DepartmentCreateWithParent from './DepartmentCreateWithParent';
 
 class DepartmentTreeView extends Component {
     constructor(props) {
         super(props);
         this.departmentId = React.createRef();
         this.state = { 
-            zoom: 16    
+            zoom: 16
         }
         this.displayTreeView = this.displayTreeView.bind(this);
         this.showNodeContent = this.showNodeContent.bind(this);
@@ -52,8 +54,8 @@ class DepartmentTreeView extends Component {
                             <a 
                                 className="btn btn-success" 
                                 href={`#department-${
-                                    this.departmentId.current !== null ?
-                                    this.departmentId.current.value :
+                                    this.refs.departmentId !== undefined ?
+                                    this.refs.departmentId.value :
                                     department.list[0]._id
                                 }`}
                                 title={translate('form.search')}
@@ -73,31 +75,27 @@ class DepartmentTreeView extends Component {
                         </div>
                     )
                 }
-                
+                {
+                    department.list.length > 0 && 
+                    department.list.map(d => 
+                        <React.Fragment>
+                            <DepartmentCreateWithParent parentId={d._id}/>
+                            <DepartmentEditForm parentId={d._id}/>
+                        </React.Fragment>
+                    )
+                }
             </React.Fragment>
          );
     }
 
-    
-    deleteDepartment = (title, departmentId, departmentName, yes, no) =>{
-        Swal.fire({
-            title,
-            html: `<h4>[ ${departmentName} ]</h4>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: no, //Không
-            confirmButtonText: yes //Xóa
-        }).then((result) => {
-            if (result.value) {
-                this.props.destroy(departmentId) //xóa user với tham số truyền vào là id của user
-            }
-        })
+    toggleSetting = (id) => {
+        if(document.getElementById(id).style.display === 'none')
+            document.getElementById(id).style.display='block';
+        else document.getElementById(id).style.display='none';
     }
 
     zoomIn = () => {
-        if(this.state.zoom < 25)
+        if(this.state.zoom < 72)
         this.setState({ zoom : this.state.zoom + 1});
     }
 
@@ -108,52 +106,56 @@ class DepartmentTreeView extends Component {
 
     showNodeContent = (data, translate) => {
         return (
-            <div
-                id={`department-${data.id}`} 
-                className="tf-nc pull-left w3-card-4 department" 
-                title={ data.name }
-                style={{ 
-                    width: '150px',
-                    height: 'auto',
-                    textAlign: 'center'
-                }}
-            >
-                <p style={{ marginBottom: '10px', fontSize: '12px' }}>{ data.name }</p>
-                <a 
-                    className="btn pull-right btn-create" 
-                    data-toggle="modal" 
-                    href={`#modal-create-department-with-parent-${data.id}`}
-                    title={`${translate('manage_department.add_with_parent')} [${data.name}]`}
-                    style={{
-                        width: '26px'
+            <React.Fragment>
+                <div
+                    id={`department-${data.id}`} 
+                    className="tf-nc pull-left w3-card-4 department" 
+                    title={ data.name }
+                    style={{ 
+                        width: '150px',
+                        height: 'auto',
+                        textAlign: 'center'
                     }}
-                ><i className="fa fa-plus"></i></a>
-                <a 
-                    className="btn pull-right btn-edit" 
-                    data-toggle="modal" 
-                    href={`#department-detail-${data.id}`}
-                    title={translate('manage_department.info')}
-                    style={{
-                        width: '26px'
-                    }}
-                ><i className="fa fa-pencil"></i></a>
-                <a 
-                    href="#abc"
-                    className="btn pull-right btn-delete" 
-                    data-toggle="modal" 
-                    onClick={() => this.deleteDepartment(
-                        translate('manage_department.delete'),
-                        data.id, 
-                        data.name, 
-                        translate('confirm.yes'),
-                        translate('confirm.no')
-                    )}
-                    title={translate('manage_department.delete')}
-                    style={{
-                        width: '26px'
-                    }}
-                ><i className="fa fa-trash"></i></a>
-            </div>
+                >
+                    <p style={{color:'#605CA8'}}><strong>{ data.name }</strong></p>
+                    <div className="row">
+                        <a 
+                            style={{marginRight: '10px'}} 
+                            className="text-black pull-right" 
+                            onClick={() => this.toggleSetting(`department-setting-${data.id}`)}
+                            title={translate('table.action')}
+                        ><i className="fa fa-gear"></i></a>
+                    </div>
+                    <div id={`department-setting-${data.id}`} className="row" style={{display: 'none'}}>
+                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <ModalButton modalID={`form-create-department-${data.id}`}
+                                button_type="add" color="green"
+                                title={translate('manage_department.add_title')}
+                            />
+                        </div>
+                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <ModalButton modalID={`form-edit-department-${data.id}`}
+                                button_type="edit" color="orange"
+                                title={translate('manage_department.edit')}
+                            />
+                        </div>
+                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <DeleteNotification 
+                                content={{
+                                    title: translate('manage_department.delete'),
+                                    btnNo: translate('confirm.no'),
+                                    btnYes: translate('confirm.yes'),
+                                }}
+                                data={{
+                                    id: data.id,
+                                    info: data.name
+                                }}
+                                func={this.props.destroy}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
         )
     }
 
@@ -177,6 +179,13 @@ class DepartmentTreeView extends Component {
             )
         }
         else return null
+    }
+    componentDidMount() {
+        let script = document.createElement('script');
+        script.src = '/lib/main/js/defindMultiSelect.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
     }
 }
  

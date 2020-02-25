@@ -30,12 +30,14 @@ exports.auth = async (req, res, next) => {
 
 exports.role = async (req, res, next) => {
     try {
+        console.log("GETLINK OF ROLE", req.params, req.user)
         const role = req.params.idRole;
         const user = req.user;
         const check = await UserRole.findOne({
             userId: user._id,
             roleId: role
         });
+        console.log("check", check)
         if(check === null) return res.status(400).send({ msg: 'ROLE INVALID WITH USER'}) 
         next();
     } catch (error) {

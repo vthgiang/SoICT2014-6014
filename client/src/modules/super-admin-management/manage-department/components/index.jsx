@@ -3,7 +3,6 @@ import DepartmentTreeView from './DepartmentTreeView';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
-import DepartmentTable from './DepartmentTable';
 
 class ManageDepartment extends Component {
     constructor(props) {
@@ -33,9 +32,6 @@ class ManageDepartment extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <DepartmentTreeView/>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <DepartmentTable />
                             </div>
                         </div>
                     </div>

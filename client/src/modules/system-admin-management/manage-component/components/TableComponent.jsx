@@ -23,10 +23,44 @@ class TableComponent extends Component {
         this.searchWithOption = this.searchWithOption.bind(this);
         this.setLimit = this.setLimit.bind(this);
     }
+                
+    handleResizeColumn = () => {
+        window.$(function () {
+            var pressed = false;
+            var start = undefined;
+            var startX, startWidth;
+
+            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
+                start = window.$(this);
+                pressed = true;
+                startX = e.pageX;
+                startWidth = window.$(this).width();
+                window.$(start).addClass("resizing");
+            });
+
+            window.$(document).mousemove(function (e) {
+                if (pressed) {
+                    window.$(start).width(startWidth + (e.pageX - startX));
+                }
+            });
+
+            window.$(document).mouseup(function () {
+                if (pressed) {
+                    window.$(start).removeClass("resizing");
+                    pressed = false;
+                }
+            });
+        });
+    }
 
     componentDidMount(){
         this.props.getComponents();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit})
+        let script = document.createElement('script');
+        script.src = 'lib/main/js/CoCauToChuc.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
     }
 
     render() { 
@@ -43,13 +77,11 @@ class TableComponent extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                         <ComponentCreateForm />
                     </div>
                 </div>
-                <table 
-                    style={{marginTop: '50px'}}
-                    className="table table-bordered">
+                <table className="table table-bordered">
                     <thead>
                         <tr>
                             <th>{ translate('table.name') }</th>

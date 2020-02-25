@@ -28,7 +28,7 @@ class RoleTable extends Component {
 
     render() { 
         const { role, translate } = this.props;
-
+        console.log()
         return ( 
             <React.Fragment>
                 <div className="row">
@@ -86,7 +86,7 @@ class RoleTable extends Component {
                                             }
                                         </td>
                                     </tr>       
-                                ): <tr><td colSpan={'3'}>{translate('confirm.no_data')}</td></tr>
+                                ): <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
                             }
                         </tbody>
                     </table>
