@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
 import { LinkActions } from '../redux/actions';
+import { ModalDialog, ModalButton } from '../../../../common-components';
 
 class LinkInfoForm extends Component {
     constructor(props) {
@@ -25,14 +26,13 @@ class LinkInfoForm extends Component {
         });
     }
 
-    save(e){
-        e.preventDefault();
+    save(){
         let select = this.refs.roles;
         let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
         const { id, url, description } = this.state;
         const link = { url, description, roles };
 
-        this.props.editLink(id, link);
+        return this.props.editLink(id, link);
     }
 
     componentDidMount(){
@@ -49,55 +49,47 @@ class LinkInfoForm extends Component {
         
         return ( 
             <React.Fragment>
-                <a className="edit" data-toggle="modal" href={ `#modal-link-${linkId}` } title={translate('manage_page.edit')}><i className="material-icons">edit</i></a>
-                <div className="modal fade" id={`modal-link-${linkId}`}  style={{ textAlign: 'left' }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 className="modal-title">{ translate('manage_page.info') }</h4>
-                            </div>
-                            <div className="modal-body">
-                            <div className="box-body">
-                                <div className="form-group">
-                                    <label>{ translate('manage_page.url') }</label>
-                                    <input name="url" type="text" className="form-control" defaultValue={linkName} onChange={this.inputChange} />
-                                </div>
-                                <div className="form-group">
-                                    <label>{ translate('manage_page.description') }</label>
-                                    <input name="description" type="text" className="form-control" defaultValue={linkDescription} onChange={this.inputChange} />
-                                </div>
-                                <div className="form-group">
-                                    <label>{ translate('manage_page.roles') }</label>
-                                    <select 
-                                        name="roles"
-                                        className="form-control select2" 
-                                        multiple="multiple" 
-                                        style={{ width: '100%' }} 
-                                        onChange={ this.inputChange }
-                                        value={ linkRoles }
-                                        ref="roles"
-                                    >
-                                        {
-                                            
-                                            role.list.map( role => 
-                                                <option key={role._id} value={role._id}>
-                                                    { role.name }
-                                                </option>
-                                            )
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                                    
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                                <button type="button" className="btn btn-success" onClick={this.save} data-dismiss="modal">{ translate('form.save') }</button>
-                            </div>
+                <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_page.edit')}/>
+                <ModalDialog
+                    size='50' func={this.save} type="edit"
+                    modalID={`modal-edit-page-${linkId}`}
+                    formID={`form-edit-page-${linkId}`}
+                    title={translate('manage_page.edit')}
+                    msg_success={translate('manage_page.edit_success')}
+                    msg_faile={translate('manage_page.edit_faile')}
+                >
+                    <form id={`form-edit-page-${linkId}`}>
+                        <div className="form-group">
+                            <label>{ translate('manage_page.url') }</label>
+                            <input name="url" type="text" className="form-control" defaultValue={linkName} onChange={this.inputChange} />
                         </div>
-                    </div>
-                </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_page.description') }</label>
+                            <input name="description" type="text" className="form-control" defaultValue={linkDescription} onChange={this.inputChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_page.roles') }</label>
+                            <select 
+                                name="roles"
+                                className="form-control select2" 
+                                multiple="multiple" 
+                                style={{ width: '100%' }} 
+                                onChange={ this.inputChange }
+                                value={ linkRoles }
+                                ref="roles"
+                            >
+                                {
+                                    
+                                    role.list.map( role => 
+                                        <option key={role._id} value={role._id}>
+                                            { role.name }
+                                        </option>
+                                    )
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </ModalDialog>
             </React.Fragment>
          );
     }

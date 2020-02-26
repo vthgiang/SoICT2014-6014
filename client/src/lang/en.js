@@ -15,6 +15,7 @@ export default {
         },
 
         form: {
+            property: 'Property : ',
             required: 'Information fields required',
             save: 'Save',
             close: 'Close',
@@ -125,6 +126,10 @@ export default {
             users: 'Users has role',
             edit: 'Edit role \'s information',
             delete: 'Delete role ?',
+            add_success: 'Add new role successfully',
+            add_faile: 'Add new role failed',
+            edit_success: 'Edit role successfully',
+            edit_faile: 'Edit role failed'
         },
 
         manage_user: {
@@ -135,6 +140,10 @@ export default {
             disable: 'Disable',
             enable: 'Enable',
             delete: 'Delete user ?',
+            add_success: 'Add new user successfully',
+            add_faile: 'Add new user failed',
+            edit_success: 'Edit user successfully',
+            edit_faile: 'Edit user failed'
         },
 
         manage_page: {

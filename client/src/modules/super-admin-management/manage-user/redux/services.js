@@ -31,9 +31,9 @@ function getPaginate(data) {
     return axios(requestOptions);
 }
 
-function edit(data) {
+function edit(id, data) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/user/${data.id}`,
+        url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
         data: data,
         headers: AuthenticateHeader()

@@ -107,8 +107,12 @@ export function link (state = initState, action) {
 
         case LinkConstants.DELETE_LINK_SUCCESS:
             index = findIndex(state.list, action.payload);
+            indexPaginate = findIndex(state.listPaginate, action.payload);
             if(index !== -1){
                 state.list.splice(index,1);
+            }
+            if(indexPaginate !== -1){
+                state.listPaginate.splice(indexPaginate,1);
             }
             return {
                 ...state,

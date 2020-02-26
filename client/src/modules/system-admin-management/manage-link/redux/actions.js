@@ -61,32 +61,41 @@ function show(id){
 function create(link){
     return dispatch => {
         dispatch({ type: LinkConstants.CREATE_LINK_REQUEST});
-        LinkServices.create(link)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.CREATE_LINK_SUCCESS,
-                    payload: res.data
+        return new Promise((resolve, reject) => {
+            LinkServices
+                .create(link)
+                .then(res => {
+                    dispatch({
+                        type: LinkConstants.CREATE_LINK_SUCCESS,
+                        payload: res.data
+                    });
+                    resolve(res);
                 })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
+                .catch(err => {
+                    console.log("Error: ", err);
+                    reject(err);
+                })
+        })
     }
 }
 
 function edit(id, link){
     return dispatch => {
         dispatch({ type: LinkConstants.EDIT_LINK_REQUEST});
-        LinkServices.edit(id, link)
+        return new Promise((resolve, reject) => {
+            LinkServices.edit(id, link)
             .then(res => {
                 dispatch({
                     type: LinkConstants.EDIT_LINK_SUCCESS,
                     payload: res.data
                 })
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err);
+                reject(err);
             })
+        })
     }
 }
 

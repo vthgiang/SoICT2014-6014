@@ -4,9 +4,9 @@ import { CompanyActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import CompanyEditForm from './CompanyEditForm';
 import CompanyCreateForm from './CompanyCreateForm';
-import PaginateBar from '../../../../common-components/PaginateBar';
-import ActionColumn from '../../../../common-components/ActionColumn';
-import SearchBar from '../../../../common-components/SearchBar';
+import { PaginateBar } from '../../../../common-components';
+import { ActionColumn } from '../../../../common-components';
+import { SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
 
 class CompanyTable extends Component {

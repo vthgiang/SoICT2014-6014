@@ -5,11 +5,11 @@ import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../manage-user/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
 import './css/Pagination.css';
-import SearchBar from '../../../../common-components/SearchBar';
+import { SearchBar } from '../../../../common-components';
 import RoleCreateForm from './RoleCreateForm';
-import DeleteNotification from '../../../../common-components/DeleteNotification';
-import PaginateBar from '../../../../common-components/PaginateBar';
-import ActionColumn from '../../../../common-components/ActionColumn';
+import { DeleteNotification } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
+import { ActionColumn } from '../../../../common-components';
 
 class RoleTable extends Component {
     constructor(props) {
@@ -28,7 +28,7 @@ class RoleTable extends Component {
 
     render() { 
         const { role, translate } = this.props;
-
+        console.log()
         return ( 
             <React.Fragment>
                 <div className="row">
@@ -40,7 +40,7 @@ class RoleTable extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                         <RoleCreateForm />
                     </div>
                 </div>
@@ -86,7 +86,7 @@ class RoleTable extends Component {
                                             }
                                         </td>
                                     </tr>       
-                                ): <tr><td colSpan={'3'}>{translate('confirm.no_data')}</td></tr>
+                                ): <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
                             }
                         </tbody>
                     </table>

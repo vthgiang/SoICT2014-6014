@@ -1,7 +1,13 @@
 import { DepartmentServices } from "./services";
 import { DepartmentConstants } from "./constants";
 
-export const get = () => {
+export const DepartmentActions = {
+    get,
+    create,
+    destroy
+}
+
+function get(){
     return dispatch => {
         dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_REQUEST});
         DepartmentServices.get()
@@ -17,23 +23,28 @@ export const get = () => {
     }
 }
 
-export const create = (data) => {
+function create(data){
     return dispatch => {
         dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_REQUEST});
-        DepartmentServices.create(data)
-            .then(res => {
-                dispatch({
-                    type: DepartmentConstants.CREATE_DEPARTMENT_SUCCESS,
-                    payload: res.data
+        return new Promise((resolve, reject) => {
+            DepartmentServices
+                .create(data)
+                .then(res => {
+                    dispatch({
+                        type: DepartmentConstants.CREATE_DEPARTMENT_SUCCESS,
+                        payload: res.data
+                    });
+                    resolve(res.data);
                 })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
+                .catch(err => {
+                    console.log("Error: ", err);
+                    reject(err);
+                })
+        })
     }
 }
 
-export const destroy = (departmentId) => {
+function destroy(departmentId){
     return dispatch => {
         dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_REQUEST});
         DepartmentServices.destroy(departmentId)

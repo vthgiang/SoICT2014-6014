@@ -1,0 +1,36 @@
+.show-off {
+    display: none;
+}
+
+.show-on {
+    display: block;
+}
+
+.animation-dialog {
+    animation-name: show;
+    animation-duration: 0.7s;
+}
+
+@keyframes show {
+    from  {display: none;}
+    50%  {display: block; margin-top: 40px}
+    to {display: block;}
+}
+
+.modal-size-50 {
+    margin-top: 10px;
+    width: 50%;
+    margin-bottom: 10px
+}
+
+.modal-size-75 {
+    margin-top: 10px;
+    width: 75%;
+    margin-bottom: 10px
+}
+
+.modal-size-100 {
+    margin-top: 0px;
+    width: 100%;
+    margin-bottom: 0px
+}

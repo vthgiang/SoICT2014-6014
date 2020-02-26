@@ -39,7 +39,8 @@ class MainHeaderMenu extends Component {
                             {
                                 auth.user.roles && auth.user.roles.length > 0 &&
                                 <select
-                                    style={{ padding: '8px', marginTop: '5px' }}
+                                    className="form-control"
+                                    style={{ marginTop: '9px' }}
                                     onChange={this.selectHandle}
                                     name='currentRole'
                                     defaultValue={currentRole}>

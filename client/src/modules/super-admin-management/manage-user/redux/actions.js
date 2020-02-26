@@ -41,35 +41,44 @@ function getPaginate(data){
     }
 }
 
-function edit(data){
+function edit(id, data){
     return dispatch => {
         dispatch({ type: UserConstants.EDIT_USER_REQUEST});
-        UserServices.edit(data)
+        return new Promise((resolve, reject) => {
+            UserServices.edit(id, data)
             .then(res => {
                 dispatch({
                     type: UserConstants.EDIT_USER_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res.data);
             })
             .catch(err => {
                 console.log("Error: ", err);
+                reject(err);
             })
+        })
     }
 }
 
 function create(data){
     return dispatch => {
         dispatch({ type: UserConstants.CREATE_USER_REQUEST});
-        UserServices.create(data)
-            .then(res => {
-                dispatch({
-                    type: UserConstants.CREATE_USER_SUCCESS,
-                    payload: res.data
+        return new Promise((resolve, reject) => {
+            UserServices.create(data)
+                .then(res => {
+                    dispatch({
+                        type: UserConstants.CREATE_USER_SUCCESS,
+                        payload: res.data
+                    })
+                    resolve(res.data);
                 })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
+                .catch(err => {
+                    console.log("Error: ", err);
+                    reject(err);
+                })
+        })
+        
     }
 }
 

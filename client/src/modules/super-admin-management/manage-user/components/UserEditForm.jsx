@@ -2,94 +2,69 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
+import { ModalDialog, ModalButton } from '../../../../common-components';
 
 class UserEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            id: this.props.userEditID,
-            email: this.props.email,
-            name: this.props.username,
-            active: this.props.active,
             status: [
                 { id: 1, name: "disable", value: false },
                 { id: 2, name: "enable", value: true }
             ]
         }
-        this.inputChange = this.inputChange.bind(this);
         this.save = this.save.bind(this);
     }
 
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
+    save = () => {
+
+        return this.props.edit(this.props.userId, {
+            name: this.refs.name.value,
+            active: this.refs.active.value
         });
     }
 
-    save = (e) => {
-
-        e.preventDefault();
-        const { id, name, active } = this.state;
-        const user = {
-            id,
-            name,
-            active
-        };
-        this.props.edit(user);
-    }
-
     render() { 
-        const { userEditID, translate } = this.props;
-        const { email, name, active, status } = this.state;
+        const { userId, userEmail, userName, userActive, translate } = this.props;
+        const { status } = this.state;
         return ( 
             <React.Fragment>
-                <a className="edit" data-toggle="modal" href={`#edit-user-modal-${userEditID}`} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
-                <div className="modal fade" id={ `edit-user-modal-${userEditID}` } style={{textAlign: 'left'}}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 className="modal-title">{ translate('manage_user.info') }</h4>
+                <ModalButton modalID={`modal-edit-user-${userId}`} button_type="edit" title={translate('manage_user.edit')}/>
+                <ModalDialog
+                    size='50' func={this.save} type="edit"
+                    modalID={`modal-edit-user-${userId}`}
+                    formID={`form-edit-user-${userId}`}
+                    title={translate('manage_user.edit')}
+                    msg_success={translate('manage_user.edit_success')}
+                    msg_faile={translate('manage_user.edit_faile')}
+                >
+                    <form id={`form-edit-user-${userId}`}>
+                        <div className="row">
+                            <div className="form-group col-sm-8">
+                                <label>{ translate('table.email') }<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" defaultValue={ userEmail } disabled/>
+                            </div>
+                            <div className="form-group col-sm-4">
+                                <label>{ translate('table.status') }<span className="text-red">*</span></label>
+                                <select 
+                                    className="form-control" 
+                                    style={{width: '100%'}} 
+                                    name="active" 
+                                    defaultValue={ userActive }
+                                    ref="active"
+                                    onChange={this.inputChange}>
+                                    {   
+                                        status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
+                                    }
+                                </select>
+                            </div>
                         </div>
-                        <div className="modal-body">
-                            <form style={{ marginBottom: '20px' }} >
-                                <div className="row">
-                                    <div className="form-group col-sm-8">
-                                        <label>{ translate('table.email') }</label>
-                                        <input type="text" className="form-control" name="email" onChange={ this.inputChange } defaultValue={ email } disabled/>
-                                    </div>
-                                    <div className="form-group col-sm-4">
-                                        <label>{ translate('table.status') }</label>
-                                        <select 
-                                            className="form-control" 
-                                            style={{width: '100%'}} 
-                                            name="active" 
-                                            defaultValue={ active }
-                                            onChange={this.inputChange}>
-                                            {   
-                                                status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label>{ translate('table.name') }</label>
-                                    <input type="text" className="form-control" name="name" onChange={ this.inputChange } defaultValue={ name }/>
-                                </div>
-                            </form>
+                        <div className="form-group">
+                            <label>{ translate('table.name') }<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" ref="name" defaultValue={ userName }/>
                         </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                            <button type="button" className="btn btn-success" data-dismiss="modal" onClick={this.save}>{ translate('form.save') }</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-
-                
+                    </form>
+                </ModalDialog>
             </React.Fragment>
          );
     }

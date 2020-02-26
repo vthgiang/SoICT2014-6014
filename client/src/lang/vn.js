@@ -15,6 +15,7 @@ export default {
         },
 
         form: {
+            property: 'Thuộc tính : ',
             required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',
@@ -114,7 +115,11 @@ export default {
             employee_name: 'Tên chức danh cho nhân viên đơn vị',
             employee_example: 'Nhân viên phòng tài chính',
             add_with_parent: 'Tạo đơn vị mới với đơn vị cha là',
-            delete: 'Xóa đơn vị ?'
+            delete: 'Xóa đơn vị ?',
+            add_success: 'Tạo đơn vị thành công',
+            add_faile: 'Tạo đơn vị thất bại',
+            edit_success: 'Chỉnh sửa thông tin thành công',
+            edit_faile: 'Chỉnh sửa thông tin thất bại',
         },
         
         manage_role: {
@@ -126,6 +131,10 @@ export default {
             users: 'Những người dùng có phân quyền',
             edit: 'Chỉnh sửa thông tin phân quyền',
             delete: 'Xóa phân quyền ?',
+            add_success: 'Đã tạo thành công phân quyền',
+            add_faile: 'Tạo phân quyền mới thất bại',
+            edit_success: 'Đã chỉnh sửa lại thông tin phân quyền',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         manage_user: {
@@ -136,6 +145,10 @@ export default {
             disable: 'Ngưng hoạt động',
             enable: 'Hoạt động',
             delete: 'Xóa tài khoản ?',
+            add_success: 'Tạo tài khoản thành công',
+            add_faile: 'Tạo tài khoản thất bại',
+            edit_success: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         manage_page: {
@@ -146,7 +159,11 @@ export default {
             roles: 'Những role được truy cập vào trang này',
             info: 'Thông tin về trang web',
             edit: 'Chỉnh sửa thông tin',
-            delete: 'Xóa link ?'
+            delete: 'Xóa link ?',
+            add_success: 'Thêm mới thành công',
+            add_faile: 'Thêm mới thất bại',
+            edit_success: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         manage_component: {
@@ -156,6 +173,10 @@ export default {
             edit: 'Chỉnh sửa thông tin về component',
             delete: 'Xóa component ?',
             roles: 'Những role có component này',
+            add_success: 'Thêm mới thành công',
+            add_faile: 'Thêm mới thất bại',
+            edit_success: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
 
         footer: {
@@ -165,9 +186,3 @@ export default {
         }
     }
 }
-// canSave = () => {
-//     const {name, description, dean, vice_dean, employee } = this.state;
-//     if(name !== '' && description !== '' && dean !== '' && vice_dean !== '' && employee !== '')
-//         return true;
-//     else return false;
-// }
