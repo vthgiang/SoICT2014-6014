@@ -137,7 +137,9 @@ class SideBar extends Component {
 
                             {/* Quan ly nhan su */}
                             {
-                                this.checkURL('/manage-Employee', links) === true &&
+                                (this.checkURL('/dashboard-employee', links) === true || this.checkURL('/add-employee', links) === true || this.checkURL('/list-employee', links) === true ||
+                                    this.checkURL('/salary-employee', links) === true || this.checkURL('/time-keeping', links) === true ||
+                                    this.checkURL('/discipline', links) === true || this.checkURL('/sabbatical', links) === true) &&
                                 <li className="treeview">
                                     <a href="#abc">
                                         <i className="fa fa-address-book" /> <span>Quản lý nhân sự</span>
@@ -146,18 +148,32 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        <li><Link to="/dashboard-employee"><i className="fa fa-dashboard" />DashBoard quản lý nhân sự </Link></li>
-                                        <li><Link to="/add-employee"><i className="fa fa-user-plus" />Thêm nhân viên </Link></li>
-                                        <li><Link to="/list-employee"><i className="fa fa-address-card" />Quản lý thông tin nhân viên</Link></li>
-                                        <li><Link to="/salary-employee"><i className="fa fa-line-chart" />Quản lý lương nhân viên</Link></li>
-                                        <li><Link to="/time-keeping"><i className="fa fa-calculator" />Chấm công nhân viên</Link></li>
-                                        <li><Link to="/discipline"><i className="fa fa-balance-scale" />Quản lý khen thưởng - kỷ luật</Link></li>
-                                        <li><Link to="/sabbatical"><i className="fa fa-calendar-times-o" />Quản lý nghỉ phép</Link></li>
+                                        {this.checkURL('/dashboard-employee', links) === true &&
+                                            <li><Link to="/dashboard-employee"><i className="fa fa-dashboard" />DashBoard quản lý nhân sự </Link></li>
+                                        }
+                                        {this.checkURL('/add-employee', links) === true &&
+                                            <li><Link to="/add-employee"><i className="fa fa-user-plus" />Thêm nhân viên </Link></li>
+                                        }
+                                        {this.checkURL('/list-employee', links) === true &&
+                                            <li><Link to="/list-employee"><i className="fa fa-address-card" />Quản lý thông tin nhân viên</Link></li>
+                                        }
+                                        {this.checkURL('/salary-employee', links) === true &&
+                                            <li><Link to="/salary-employee"><i className="fa fa-line-chart" />Quản lý lương nhân viên</Link></li>
+                                        }
+                                        {this.checkURL('/time-keeping', links) === true &&
+                                            <li><Link to="/time-keeping"><i className="fa fa-calculator" />Chấm công nhân viên</Link></li>
+                                        }
+                                        {this.checkURL('/discipline', links) === true &&
+                                            <li><Link to="/discipline"><i className="fa fa-balance-scale" />Quản lý khen thưởng - kỷ luật</Link></li>
+                                        }
+                                        {this.checkURL('/sabbatical', links) === true &&
+                                            <li><Link to="/sabbatical"><i className="fa fa-calendar-times-o" />Quản lý nghỉ phép</Link></li>
+                                        }
                                     </ul>
                                 </li>
                             }
                             {
-                                this.checkURL('/account', links) === true &&
+                                (this.checkURL('/detail-employee', links) === true || this.checkURL('/update-employee', links) === true) &&
                                 <li className="treeview">
                                     <a href="#abc">
                                         <i className="fa fa-user-circle" /> <span>Tài khoản</span>
@@ -166,13 +182,17 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        <li><Link to="/detail-employee"><i className="fa fa-user-o" />Thông tin cá nhân</Link></li>
-                                        <li><Link to="/update-employee"><i className="fa fa-pencil-square-o" />Cập nhật thông tin nhân viên</Link></li>
+                                        {this.checkURL('/detail-employee', links) === true &&
+                                            <li><Link to="/detail-employee"><i className="fa fa-user-o" />Thông tin cá nhân</Link></li>
+                                        }
+                                        {this.checkURL('/update-employee', links) === true &&
+                                            <li><Link to="/update-employee"><i className="fa fa-pencil-square-o" />Cập nhật thông tin nhân viên</Link></li>
+                                        }
                                     </ul>
                                 </li>
                             }
                             {
-                                this.checkURL('/trainning-course', links) === true &&
+                                (this.checkURL('/list-course', links) === true || this.checkURL('/training-plan', links) === true) &&
                                 <li className="treeview">
                                     <a href="#abc">
                                         <i className="fa fa-graduation-cap" /> <span>Quản lý đào tạo</span>
@@ -181,8 +201,12 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        <li><Link to="/list-course"><i className="fa fa-university" />Chương trình đào tạo bắt buộc</Link></li>
-                                        <li><Link to="/training-plan"><i className="fa fa-list-alt"  />Quản lý khoá đào tạo</Link></li>
+                                        {this.checkURL('/list-course', links) === true &&
+                                            <li><Link to="/list-course"><i className="fa fa-university" />Chương trình đào tạo bắt buộc</Link></li>
+                                        }
+                                        {this.checkURL('/training-plan', links) === true &&
+                                            <li><Link to="/training-plan"><i className="fa fa-list-alt" />Quản lý khoá đào tạo</Link></li>
+                                        }
                                     </ul>
                                 </li>
                             }

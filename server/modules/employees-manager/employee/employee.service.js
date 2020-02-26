@@ -14,16 +14,22 @@ exports.get = async (data, company) => {
     if (data.employeeNumber !== "") {
         keySearch = {
             ...keySearch,
-            employeeNumber: data.employeeNumber
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
         }
     };
     // if(data.department!=="All") {
     //     keySearch={department:data.department}
     // };
-    if (data.gender !== "") {
+    if (data.gender !== "All") {
         keySearch = {
             ...keySearch,
-            gender: data.gender
+            gender: {
+                $regex: data.gender,
+                $options: "i"
+            }
         }
     };
     var totalList = await Employee.count(keySearch);

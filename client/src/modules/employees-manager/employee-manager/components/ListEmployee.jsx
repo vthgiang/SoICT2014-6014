@@ -14,7 +14,7 @@ class ListEmployee extends Component {
         super(props);
         this.state = {
             position: "",
-            gender: "Nam",
+            gender: "All",
             employeeNumber: "",
             department: "All",
             page: 0,
@@ -106,7 +106,7 @@ class ListEmployee extends Component {
         var pageTotal = ((employeesManager.totalList % this.state.limit) === 0) ?
             parseInt(employeesManager.totalList / this.state.limit) :
             parseInt((employeesManager.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit)+1);
+        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="row">
                 <div className="col-xs-12">
@@ -116,7 +116,7 @@ class ListEmployee extends Component {
                             <div className="col-md-12">
                                 <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                     <div className="box-header col-md-6" style={{ paddingLeft: 0 }}>
-                                        <h3 className="box-title">Danh sách nhân viên {department.toLowerCase()}:</h3>
+                                        <h3 className="box-title">Danh sách nhân viên:</h3>
                                     </div>
                                 </div>
                                 <div className="col-md-3">
@@ -160,7 +160,7 @@ class ListEmployee extends Component {
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <select className="form-group" defaultValue="1" style={{ height: 32, width: "99%" }} name="position" onChange={this.handleChange}>
-                                            <option value="1">--Tất cả--</option>
+                                            <option value="All">--Tất cả--</option>
                                             <option value="2">Nhân viên</option>
                                             <option value="4">Trưởng phòng</option>
                                             <option value="5">Phó phòng</option>
@@ -184,7 +184,7 @@ class ListEmployee extends Component {
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <select className="form-group" defaultValue="1" style={{ height: 32, width: "99%" }} name="gender" onChange={this.handleChange}>
-                                            <option value="">Null</option>
+                                            <option value="All">--Tất cả--</option>
                                             <option value="Nam">Nam</option>
                                             <option value="Nữ">Nữ</option>
                                         </select>
