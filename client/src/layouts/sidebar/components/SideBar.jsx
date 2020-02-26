@@ -42,7 +42,7 @@ class SideBar extends Component {
                             </div>
                             <div className="pull-left info">
                                 <p>User</p>
-                                <a href="#abc"><i className="fa fa-circle text-success" /> Online</a>
+                                <Link to="#abc"><i className="fa fa-circle text-success" /> Online</Link>
                             </div>
                         </div> */}
                         {/* <form action="#" method="get" className="sidebar-form">
@@ -146,13 +146,13 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        <li><a href="/dashboard-employee"><i className="fa fa-dashboard" />DashBoard quản lý nhân sự </a></li>
+                                        <li><Link to="/dashboard-employee"><i className="fa fa-dashboard" />DashBoard quản lý nhân sự </Link></li>
                                         <li><Link to="/add-employee"><i className="fa fa-user-plus" />Thêm nhân viên </Link></li>
-                                        <li><a href="/list-employee"><i className="fa fa-address-card" />Quản lý thông tin nhân viên</a></li>
-                                        <li><a href="/salary-employee"><i className="fa fa-line-chart" />Lương nhân viên</a></li>
-                                        <li><a href="/time-keeping"><i className="fa fa-calculator" />Chấm công nhân viên</a></li>
-                                        <li><a href="/discipline"><i className="fa fa-balance-scale" />Quản lý khen thưởng - kỷ luật</a></li>
-                                        <li><a href="/sabbatical"><i className="fa fa-calendar-times-o" />Quản lý nghỉ phép</a></li>
+                                        <li><Link to="/list-employee"><i className="fa fa-address-card" />Quản lý thông tin nhân viên</Link></li>
+                                        <li><Link to="/salary-employee"><i className="fa fa-line-chart" />Quản lý lương nhân viên</Link></li>
+                                        <li><Link to="/time-keeping"><i className="fa fa-calculator" />Chấm công nhân viên</Link></li>
+                                        <li><Link to="/discipline"><i className="fa fa-balance-scale" />Quản lý khen thưởng - kỷ luật</Link></li>
+                                        <li><Link to="/sabbatical"><i className="fa fa-calendar-times-o" />Quản lý nghỉ phép</Link></li>
                                     </ul>
                                 </li>
                             }
@@ -166,8 +166,8 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        <li><a href="/detail-employee"><i className="fa fa-user-o" />Thông tin cá nhân</a></li>
-                                        <li><a href="/update-employee"><i className="fa fa-pencil-square-o" />Cập nhật thông tin nhân viên</a></li>
+                                        <li><Link to="/detail-employee"><i className="fa fa-user-o" />Thông tin cá nhân</Link></li>
+                                        <li><Link to="/update-employee"><i className="fa fa-pencil-square-o" />Cập nhật thông tin nhân viên</Link></li>
                                     </ul>
                                 </li>
                             }
@@ -181,8 +181,8 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        <li><a href="/list-course"><i className="fa fa-university" />Chương trình đào tạo bắt buộc</a></li>
-                                        <li><a href="/training-plan"><i className="fa fa-list-alt"  />Quản lý khoá đào tạo</a></li>
+                                        <li><Link to="/list-course"><i className="fa fa-university" />Chương trình đào tạo bắt buộc</Link></li>
+                                        <li><Link to="/training-plan"><i className="fa fa-list-alt"  />Quản lý khoá đào tạo</Link></li>
                                     </ul>
                                 </li>
                             }

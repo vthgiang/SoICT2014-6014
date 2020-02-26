@@ -5,6 +5,7 @@ import { ModalDeleteCourse } from './ModalDeleteCourse';
 import { ModalEditCourse } from './ModalEditCourse';
 import { ModalAddCourse } from './ModalAddCourse';
 import { CourseActions } from '../redux/actions';
+import ActionColumn from '../../../../common-components/ActionColumn';
 import '../../../employees-manager/employee-manager/components/listemployee.css';
 
 class ListCourse extends Component {
@@ -12,9 +13,10 @@ class ListCourse extends Component {
         super(props);
         this.state = {
             page: 0,
-            limit: 10,
+            limit: 5,
         };
         this.handleResizeColumn();
+        this.setLimit = this.setLimit.bind(this);
 
     }
     componentDidMount() {
@@ -49,6 +51,13 @@ class ListCourse extends Component {
             });
         });
     }
+
+    setLimit = async (number) => {
+        await this.setState({ limit: parseInt(number) });
+        this.props.getListCourse(this.state);
+        window.$(`#setting-table`).collapse("hide");
+    }
+
     render() {
         var { Course } = this.props;
         var lists = Course.listCourse;
@@ -118,14 +127,20 @@ class ListCourse extends Component {
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
                                     <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addCourse">Thêm chương trình đào tạo</button>
                                 </div>
-                                <table className="table table-striped table-bordered table-resizable">
+                                <table className="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Tên chương trình đào tạo</th>
                                             <th>Mã chương trình</th>
                                             <th>Áp dụng cho đơn vị</th>
                                             <th>Áp dụng cho chức vụ</th>
-                                            <th style={{ width: "13%" }}>Hành động</th>
+                                            <th style={{ width: '120px', textAlign: 'center' }}>
+                                                <ActionColumn
+                                                    columnName="Hành động"
+                                                    hideColumn={false}
+                                                    setLimit={this.setLimit}
+                                                />
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>

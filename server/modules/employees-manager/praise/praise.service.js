@@ -21,13 +21,18 @@ exports.get = async (data,company) => {
             number: data.number
         }
     };
-    var allPraise = await Praise.find(keySearch).populate({
+    var totalList = await Praise.count(keySearch);
+    var listPraise = await Praise.find(keySearch).populate({
             path: 'employee',
             model: Employee
         }).sort({ 'createDate': 'desc' })
         .skip(data.page)
         .limit(data.limit);
-    return allPraise;
+    var content ={
+        totalList,
+        listPraise
+    }
+    return content;
 
 }
 

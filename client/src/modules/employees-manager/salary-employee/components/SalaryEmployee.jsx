@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { SalaryActions } from '../redux/actions';
 import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalDeleteSalary } from './ModalDeleteSalary';
 import { ModalEditSalary } from './ModalEditSalary';
+import ActionColumn from '../../../../common-components/ActionColumn';
+import PaginateBar from '../../../../common-components/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 
 class SalaryEmployee extends Component {
@@ -16,10 +20,12 @@ class SalaryEmployee extends Component {
             employeeNumber: "",
             department: "All",
             page: 0,
-            limit: 10,
+            limit: 5,
 
         }
         this.handleResizeColumn();
+        this.setLimit = this.setLimit.bind(this);
+        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
     }
@@ -31,6 +37,12 @@ class SalaryEmployee extends Component {
         document.body.appendChild(script);
         this.props.getListSalary(this.state);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -58,6 +70,19 @@ class SalaryEmployee extends Component {
                 }
             });
         });
+    }
+
+    setLimit = async (number) => {
+        await this.setState({ limit: parseInt(number) });
+        this.props.getListSalary(this.state);
+        window.$(`#setting-table`).collapse("hide");
+    }
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getListSalary(this.state);
     }
     handleChange(event) {
         const { name, value } = event.target;
@@ -92,6 +117,10 @@ class SalaryEmployee extends Component {
         if (this.props.Salary.isLoading === false) {
             listSalary = this.props.Salary.listSalary;
         }
+        var pageTotal = (this.props.Salary.totalList % this.state.limit === 0) ?
+            parseInt(this.props.Salary.totalList / this.state.limit) :
+            parseInt((this.props.Salary.totalList / this.state.limit) + 1);
+        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
                 <div className="row">
@@ -186,9 +215,8 @@ class SalaryEmployee extends Component {
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="col-md-12">
-                                    <table className="table table-striped table-bordered table-resizable">
+                                    <table className="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th style={{ width: "13%" }}>Mã nhân viên</th>
@@ -197,14 +225,20 @@ class SalaryEmployee extends Component {
                                                 <th style={{ width: "13%" }}>Tổng lương</th>
                                                 <th style={{ width: "15%" }}>Đơn vị</th>
                                                 <th style={{ width: "15%" }}>Chức vụ</th>
-                                                <th style={{ width: "10%" }}>Hành động</th>
+                                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                                    <ActionColumn
+                                                        columnName="Hành động"
+                                                        hideColumn={false}
+                                                        setLimit={this.setLimit}
+                                                    />
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
                                                 listSalary.map((x, index) => {
 
-                                                    var salaryTotal = x.mainSalary.slice(0, x.mainSalary.length - 3);
+                                                    var salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
                                                     if (x.bonus.length !== 0) {
                                                         var total = 0;
                                                         for (let count in x.bonus) {
@@ -220,8 +254,8 @@ class SalaryEmployee extends Component {
                                                             <td>
                                                                 {
                                                                     (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
-                                                                        formatter.format(parseInt(salaryTotal)) :
-                                                                        formatter.format(total + parseInt(salaryTotal))
+                                                                        formatter.format(parseInt(salary)) :
+                                                                        formatter.format(total + parseInt(salary))
                                                                 } {unit}
                                                             </td>
                                                             <td>Phòng nhân sự</td>
@@ -235,13 +269,18 @@ class SalaryEmployee extends Component {
                                             }
                                         </tbody>
                                     </table>
+
                                 </div>
+                                <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
                             </div>
                         </div>
+
                     </div>
                 </div>
+                <ToastContainer />
                 <ModalAddSalary />
                 <ModalImportFileSalary />
+
             </React.Fragment>
         );
     }

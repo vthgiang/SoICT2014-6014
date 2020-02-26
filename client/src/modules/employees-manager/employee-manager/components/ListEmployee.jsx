@@ -5,6 +5,8 @@ import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
+import ActionColumn from '../../../../common-components/ActionColumn';
+import PaginateBar from '../../../../common-components/PaginateBar';
 import './listemployee.css';
 
 class ListEmployee extends Component {
@@ -16,17 +18,18 @@ class ListEmployee extends Component {
             employeeNumber: "",
             department: "All",
             page: 0,
-            limit: 10,
+            limit: 5,
 
         }
         this.handleResizeColumn();
+        this.setLimit = this.setLimit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
 
     }
     componentDidMount() {
         let script = document.createElement('script');
-        script.src = 'lib/main/js/ListEmployee.js';
+        //script.src = 'lib/main/js/ListEmployee.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -63,6 +66,21 @@ class ListEmployee extends Component {
         });
     }
 
+    setLimit = async (number) => {
+        await this.setState({ limit: parseInt(number) });
+        this.props.getAllEmployee(this.state);
+        window.$(`#setting-table`).collapse("hide");
+    }
+
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+
+        });
+        this.props.getAllEmployee(this.state);
+    }
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -76,16 +94,19 @@ class ListEmployee extends Component {
         this.props.getAllEmployee(this.state);
     }
 
+
     render() {
-        console.log(this.state)
         var lists;
         var { employeesManager } = this.props;
         var { department } = this.state;
         if (employeesManager.allEmployee) {
             lists = employeesManager.allEmployee;
         }
-        var { employee, employeeContact } = this.props.employeesManager;
-        console.log(employee);
+        // var pageTotal = employeesManager.totalList / this.state.limit;
+        var pageTotal = ((employeesManager.totalList % this.state.limit) === 0) ?
+            parseInt(employeesManager.totalList / this.state.limit) :
+            parseInt((employeesManager.totalList / this.state.limit) + 1);
+        var page = parseInt((this.state.page / this.state.limit)+1);
         return (
             <div className="row">
                 <div className="col-xs-12">
@@ -174,78 +195,64 @@ class ListEmployee extends Component {
                                         <button type="submit" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
                                     </div>
                                 </div>
-                                <div className="col-md-12">
-
-                                    <table className="table table-striped table-bordered table-resizable" id="myTable" >
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: "15%" }}>Mã nhân viên</th>
-                                                <th>Họ và tên</th>
-                                                <th style={{ width: "10%" }}>Giới tính</th>
-                                                <th style={{ width: "12%" }}>Ngày sinh</th>
-                                                <th style={{ width: "12%" }}>Chức vụ</th>
-                                                <th style={{ width: "13%" }}>Đơn vị</th>
-                                                <th style={{ width: "13%" }}>Hành động
-
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
-                                                lists.map((x, index) => (
-                                                    <tr key={index}>
-                                                        <td>{x.employeeNumber}</td>
-                                                        <td>{x.fullName}</td>
-                                                        <td>{x.gender}</td>
-                                                        <td>{x.brithday}</td>
-                                                        {
-                                                            (typeof x.department !== 'undefined' && x.department.length !== 0) ?
-                                                                x.department.map((department, key) => (
-                                                                    <td key={{ key }}>{department.position}</td>
-                                                                )) : <td></td>
-                                                        }
-                                                        {
-                                                            (typeof x.department !== 'undefined' && x.department.length !== 0) ?
-                                                                x.department.map((department, keys) => (
-                                                                    <td key={{ keys }}>{department.nameDepartment}</td>
-                                                                )) : <td></td>
-                                                        }
-                                                        < td >
-                                                            <ModalDetailEmployee list={x} />
-                                                            <ModalEditEmployee list={x} />
-                                                            <a href="#abc" className="delete" title="Xoá nhân viên khỏi đơn vị" data-toggle="tooltip"><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                                )}
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Mã nhân viên</th>
-                                                <th>Họ và tên</th>
-                                                <th>Giới tính</th>
-                                                <th>Ngày sinh</th>
-                                                <th>Chức vụ</th>
-                                                <th>Đơn vị</th>
-                                                <th>Hành động</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                    <div>
-                                        <ul className="pagination pagination-sm m-0 pull-right" style={{ marginTop: 0 }}>
-                                            <li className="page-item"><a className="page-link" href="#">«</a></li>
-                                            <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                            <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                            <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                            <li className="page-item"><a className="page-link" href="#">»</a></li>
-                                        </ul>
-                                        <div id="search-page" className="col-sm-12 collapse" style={{ width: "26%" }}>
-                                            <input className="col-sm-6 form-control" type="number" min="1" style={{ width: "60%" }} ref={input => this.newCurrentPage = input} />
-                                            <button className="col-sm-4 btn btn-success" style={{ width: "35%", marginLeft: "5%" }} onClick={() => this.handleSearchPage()}>Tìm kiếm</button>
-                                        </div>
-                                    </div>
+                                <div className="col-md-3" style={{ paddingRight: 0 }}>
+                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới nhân viên" data-toggle="modal" data-target="#modal-addNewEmployee">Thêm mới nhân viên</button>
                                 </div>
+                            </div>
+                            <div className="col-md-12">
 
+                                <table className="table table-striped table-bordered" id="myTable" >
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "15%" }}>Mã nhân viên</th>
+                                            <th>Họ và tên</th>
+                                            <th style={{ width: "10%" }}>Giới tính</th>
+                                            <th style={{ width: "12%" }}>Ngày sinh</th>
+                                            <th style={{ width: "12%" }}>Chức vụ</th>
+                                            <th style={{ width: "13%" }}>Đơn vị</th>
+                                            <th style={{ width: '120px', textAlign: 'center' }}>
+                                                <ActionColumn
+                                                    columnName="Hành động"
+                                                    hideColumn={false}
+                                                    setLimit={this.setLimit}
+                                                />
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                            lists.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{x.employee.map(y => y.employeeNumber)}</td>
+                                                    <td>{x.employee.map(y => y.fullName)}</td>
+                                                    <td>{x.employee.map(y => y.gender)}</td>
+                                                    <td>{x.employee.map(y => y.brithday)}</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    < td >
+                                                        <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
+                                                            sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />
+                                                        <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
+                                                            sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
+                                                        <a href="#abc" className="delete" title="Xoá nhân viên khỏi đơn vị" data-toggle="tooltip"><i className="material-icons"></i></a>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            )}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Mã nhân viên</th>
+                                            <th>Họ và tên</th>
+                                            <th>Giới tính</th>
+                                            <th>Ngày sinh</th>
+                                            <th>Chức vụ</th>
+                                            <th>Đơn vị</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
                             </div>
                         </div>
                         {/* /.box-body */}

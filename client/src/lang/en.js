@@ -68,7 +68,7 @@ export default {
             dashboardemployee: 'DashBoard',
             discipline: 'Management Reward And Discipline',
             sabbatical: 'Managing Leave',
-            salaryemployee: 'Salary Of Employees',
+            salaryemployee: 'Management Salary',
             timekeeping: 'Attendance Staff',
             listCourse: 'Education Program',
             trainingplan: 'Managing Training Courses',

@@ -27,7 +27,8 @@ exports.get = async (data,company) => {
             status: data.status
         }
     };
-    var allSabbatical = await Sabbatical.find(keySearch).populate({
+    var totalList = await Sabbatical.count(keySearch);
+    var listSabbatical = await Sabbatical.find(keySearch).populate({
             path: 'employee',
             model: Employee
         }).sort({
@@ -35,7 +36,11 @@ exports.get = async (data,company) => {
         })
         .skip(data.page)
         .limit(data.limit);
-    return allSabbatical;
+    var content = {
+        totalList,
+        listSabbatical
+    }
+    return content;
 
 }
 

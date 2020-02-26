@@ -130,7 +130,7 @@ class ManageUserTable extends Component {
     }
 
     setPage = (pageNumber) => {
-        this.setState({ page: pageNumber });
+       this.setState({ page: pageNumber });
         const data = { limit: this.state.limit, page: pageNumber };
         if(this.state.value !== null){
             data[this.state.option] = this.state.value;

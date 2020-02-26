@@ -147,10 +147,6 @@ const EmployeeSchema = new Schema({
         unit: String,
         status: String
     }],
-    department: [{
-        nameDepartment: String,
-        position: String
-    }],
     numberFile: {
         type: String
     },

@@ -21,13 +21,18 @@ exports.get = async (data,company) => {
             number: data.number
         }
     };
-    var allDiscipline = await Discipline.find(keySearch).populate({
+    var totalList = await Discipline.count(keySearch);
+    var listDiscipline = await Discipline.find(keySearch).populate({
             path: 'employee',
             model: Employee
         })
         .skip(data.page)
         .limit(data.limit);
-    return allDiscipline;
+    var content ={
+        totalList,
+        listDiscipline
+    }
+    return content;
 
 }
 

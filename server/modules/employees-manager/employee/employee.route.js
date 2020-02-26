@@ -16,6 +16,9 @@ router.post('/',auth, EmployeeController.create);
 // Cập nhật thông tin cá nhân
 router.put('/:email', EmployeeController.updateInforPersonal);
 
+// Cập nhật thông tin nhân viên theo id
+router.put('/update/:id', EmployeeController.updateInfoEmployee);
+
 // Cập nhật Avatar của nhân viên theo mã nhân viên
 router.patch('/avatar/:employeeNumber',auth, EmployeeController.uploadFile, EmployeeController.updateAvatar);
 

@@ -69,7 +69,7 @@ export default {
             dashboardemployee: 'DashBoard quản lý nhân sự',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             sabbatical: 'Quản lý nghỉ phép',
-            salaryemployee: 'Lương nhân viên',
+            salaryemployee: 'Quản lý lương nhân viên',
             timekeeping: 'Chấm công nhân viên',
             listCourse: 'Chương trình đào tạo bắt buộc',
             trainingplan: 'Quản lý khoá đào tạo',

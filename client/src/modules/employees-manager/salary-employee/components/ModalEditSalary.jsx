@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { SalaryActions } from '../redux/actions';
 class ModalEditSalary extends Component {
     constructor(props) {
@@ -25,6 +27,12 @@ class ModalEditSalary extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -53,8 +61,17 @@ class ModalEditSalary extends Component {
         })
     };
     handleSunmit(event) {
-        this.props.updateSalary(this.state.id, this.state);
-        window.$(`#modal-editSalary-${this.props.data._id}`).modal("hide");
+        if (this.state.employeeNumber === "") {
+            this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (this.state.mainSalary === "") {
+            this.notifyerror("Bạn chưa nhập tiền lương chính");
+        } else if (this.state.endDate === "") {
+            this.notifyerror("Bạn chưa nhập tháng lương");
+        } else {
+            this.props.updateSalary(this.state.id, this.state);
+            window.$(`#modal-editSalary-${this.props.data._id}`).modal("hide");
+        }
+
     }
 
     render() {
@@ -90,7 +107,7 @@ class ModalEditSalary extends Component {
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
                                                 </div>
-                                                <input type="text" style={{height:33}} className="form-control employeedatepicker" name="month" defaultValue={data.month} data-date-format="mm-yyyy" disabled />
+                                                <input type="text" style={{ height: 33 }} className="form-control employeedatepicker" name="month" defaultValue={data.month} data-date-format="mm-yyyy" disabled />
                                             </div>
                                         </div>
                                         <div className="form-group">

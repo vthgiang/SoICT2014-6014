@@ -12,7 +12,8 @@ export function Salary(state = {listSalary:[]}, action) {
         case SalaryConstants.GET_SALARY_SUCCESS:
             return {
                 ...state,
-                listSalary: action.listSalary.content,
+                listSalary: action.listSalary.content.listSalary,
+                totalList: action.listSalary.content.totalList,
                     isLoading: false,
             };
         case SalaryConstants.GET_SALARY_FAILURE:

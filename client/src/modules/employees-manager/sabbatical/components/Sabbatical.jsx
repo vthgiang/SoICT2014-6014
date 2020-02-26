@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
 import { ModalAddSabbatical } from './ModalAddSabbatical';
 import { ModalEditSabbatical } from './ModalEditSabbatical';
 import { ModalDeleteSabbatical } from './ModalDeleteSabbatical';
+import ActionColumn from '../../../../common-components/ActionColumn';
+import PaginateBar from '../../../../common-components/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 
 class Sabbatical extends Component {
@@ -16,10 +20,12 @@ class Sabbatical extends Component {
             department: "All",
             status: "",
             page: 0,
-            limit: 10,
+            limit: 5,
 
         }
         this.handleResizeColumn();
+        this.setLimit = this.setLimit.bind(this);
+        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
 
@@ -32,6 +38,26 @@ class Sabbatical extends Component {
         document.body.appendChild(script);
         this.props.getListSabbatical(this.state);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
+    setLimit = async (number) => {
+        await this.setState({ limit: parseInt(number) });
+        this.props.getListSabbatical(this.state);
+        window.$(`#setting-table`).collapse("hide");
+    }
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * this.state.limit;
+        await this.setState({
+            page: parseInt(page),
+
+        });
+        this.props.getListSabbatical(this.state);
+    }
+
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -89,7 +115,10 @@ class Sabbatical extends Component {
         if (this.props.Sabbatical.isLoading === false) {
             listSabbatical = this.props.Sabbatical.listSabbatical;
         }
-        console.log(listSabbatical)
+        var pageTotal = ((this.props.Sabbatical.totalList % this.state.limit)===0)?
+        parseInt(this.props.Sabbatical.totalList / this.state.limit):
+        parseInt((this.props.Sabbatical.totalList / this.state.limit)+1);
+        var page = parseInt((this.state.page / this.state.limit)+1);
         return (
             <React.Fragment>
                 <div className="row">
@@ -191,7 +220,7 @@ class Sabbatical extends Component {
                                 </div>
                             </div>
                             <div className="col-md-12">
-                                <table className="table table-striped table-bordered table-resizable">
+                                <table className="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th style={{ width: "8%" }}>Mã NV</th>
@@ -202,8 +231,13 @@ class Sabbatical extends Component {
                                             <th style={{ width: "12%" }}>Đơn vị</th>
                                             <th style={{ width: "10%" }}>Chức vụ</th>
                                             <th style={{ width: "11%" }}>Trạng thái</th>
-                                            <th style={{ width: "9%" }}>Hành động</th>
-
+                                            <th style={{ width: '120px', textAlign: 'center' }}>
+                                                <ActionColumn
+                                                    columnName="Hành động"
+                                                    hideColumn={false}
+                                                    setLimit={this.setLimit}
+                                                />
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -227,9 +261,11 @@ class Sabbatical extends Component {
                                     </tbody>
                                 </table>
                             </div>
+                            <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
                         </div>
                     </div>
                 </div>
+                <ToastContainer />
                 <ModalAddSabbatical />
             </React.Fragment>
         );

@@ -7,8 +7,8 @@ import { DisciplineActions } from '../../discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import './addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { ModalImportFileBHXH,ModalAddCertificate,ModalAddCertificateShort,ModalAddContract,ModalAddExperience } from './CombineContent';
-import { ModalAddBHXH,ModalAddDiscipline,ModalAddPraise,ModalAddSalary,ModalAddSabbatical,ModalAddFile } from './CombineContent';
+import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, ModalAddContract, ModalAddExperience } from './CombineContent';
+import { ModalAddBHXH, ModalAddDiscipline, ModalAddPraise, ModalAddSalary, ModalAddSabbatical, ModalAddFile } from './CombineContent';
 import { ModalEditFile, ModalEditSabbatical, ModalEditSalary, ModalEditPraise, ModalEditDiscipline, ModalEditBHXH } from './CombineContent';
 import { ModalEditExperience, ModalEditContract, ModalEditCertificateShort, ModalEditCertificate } from './CombineContent';
 import './listemployee.css';
@@ -17,6 +17,7 @@ class AddEmployee extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            key: "123",
             img: 'lib/adminLTE/dist/img/avatar5.png',
             avatar: "",
             employeeNew: {
@@ -27,10 +28,6 @@ class AddEmployee extends Component {
                 cultural: "12/12",
                 nameBank: "Techcombank",
                 educational: "Không có",
-                certificate: [],
-                certificateShort: [],
-                contract: [],
-                file: [],
                 experience: [],
                 BHXH: [],
                 course: []
@@ -45,7 +42,6 @@ class AddEmployee extends Component {
             sabbaticalNew: [],
         };
         this.handleResizeColumn();
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
@@ -313,7 +309,7 @@ class AddEmployee extends Component {
         const { file } = this.state;
         file[data.index] = data;
         this.setState({
-            file:file
+            file: file
         })
     }
     // function xoá các thông tin certificate, experience, contract, BHXH, course
@@ -477,7 +473,7 @@ class AddEmployee extends Component {
             // lưu hợp đồng lao động
             if (this.state.contract.length !== 0) {
                 let listContract = this.state.contract;
-                listContract.filter(contract => (contract.fileUpload !== " "))
+                listContract= listContract.filter(contract => (contract.fileUpload !== " "))
                 listContract.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -492,7 +488,7 @@ class AddEmployee extends Component {
             // lưu thông tin bằng cấp
             if (this.state.certificate.length !== 0) {
                 let listCertificate = this.state.certificate;
-                listCertificate.filter(certificate => (certificate.fileUpload !== " "))
+                listCertificate = listCertificate.filter(certificate => (certificate.fileUpload !== " "))
                 listCertificate.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -507,7 +503,7 @@ class AddEmployee extends Component {
             // lưu thông tin chứng chỉ
             if (this.state.certificateShort.length !== 0) {
                 let listCertificateShort = this.state.certificateShort;
-                listCertificateShort.filter(certificateShort => (certificateShort.fileUpload !== " "))
+                listCertificateShort = listCertificateShort.filter(certificateShort => (certificateShort.fileUpload !== " "))
                 listCertificateShort.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -522,7 +518,7 @@ class AddEmployee extends Component {
             // lưu thông tin tài liệu đính kèm
             if (this.state.file.length !== 0) {
                 let listFile = this.state.file;
-                listFile.filter(file => (file.fileUpload !== " "))
+                listFile = listFile.filter(file => (file.fileUpload !== " "))
                 listFile.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -877,7 +873,7 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Bằng cấp:</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới bằng cấp" data-toggle="modal" data-target="#modal-addNewCertificate">Thêm mới</button>
+                                            <ModalAddCertificate handleChange={this.handleChangeCertificate} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -911,7 +907,7 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">Chứng chỉ:</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới chứng chỉ" data-toggle="modal" data-target="#modal-addNewCertificateShort">Thêm mới</button>
+                                            <ModalAddCertificateShort handleChange={this.handleChangeCertificateShort} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -952,10 +948,10 @@ class AddEmployee extends Component {
                                             <div className="form-group">
                                                 <label>Trình độ văn hoá:<span className="required">&#42;</span></label>
                                                 <select className="form-control" name="cultural" onChange={this.handleChange}>
-                                                    <option>12/12</option>
-                                                    <option>11/12</option>
-                                                    <option>10/12</option>
-                                                    <option>9/12</option>
+                                                    <option value="12/12">12/12</option>
+                                                    <option value="11/12">11/12</option>
+                                                    <option value="10/12">10/12</option>
+                                                    <option value="9/12">9/12</option>
                                                 </select>
                                             </div>
                                             <div className="form-group">
@@ -977,7 +973,7 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kinh nghiệm làm việc</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới kinh nghiệm làm việc" data-toggle="modal" data-target="#modal-addNewExperience">Thêm mới</button>
+                                            <ModalAddExperience handleChange={this.handleChangeExperience} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -1043,15 +1039,15 @@ class AddEmployee extends Component {
                                             </div>
                                             <div className="col-md-12">
                                                 <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>Quá trình đóng bảo hiểm xã hội:</h4>
-                                                <button style={{ marginBottom: 5, marginLeft: 10 }} type="submit" className="btn btn-primary pull-right" id="editBHXH" data-toggle="modal" data-target="#modal-importFileBHXH" title="Thêm mới bằng file excel" onClick={this.handleAddNew}>Import file</button>
-                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm quá trình đóng BHXH" data-toggle="modal" data-target="#modal-addNewBHXH">Thêm mới</button>
+                                                <ModalImportFileBHXH index={this.state.key} />
+                                                <ModalAddBHXH handleChange={this.handleChangeBHXH} index={this.state.key} />
                                                 <table className="table table-striped table-bordered table-resizable " >
                                                     <thead>
                                                         <tr>
                                                             <th style={{ width: "15%" }}>Từ tháng</th>
                                                             <th style={{ width: "15%" }}>Đến tháng</th>
-                                                            <th style={{ width: "30%" }}>Chức vụ</th>
                                                             <th style={{ width: "30%" }}>Đơn vị công tác</th>
+                                                            <th style={{ width: "30%" }}>Chức vụ</th>
                                                             <th style={{ width: '10%' }}>Hành động</th>
                                                         </tr>
                                                     </thead>
@@ -1061,8 +1057,8 @@ class AddEmployee extends Component {
                                                                 <tr key={index}>
                                                                     <td>{x.startDate}</td>
                                                                     <td>{x.endDate}</td>
-                                                                    <td>{x.position}</td>
                                                                     <td>{x.unit}</td>
+                                                                    <td>{x.position}</td>
                                                                     <td>
                                                                         <ModalEditBHXH index={index} handleChange={this.handleEditBHXH} data={x} />
                                                                         <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("BHXH", index)}><i className="material-icons"></i></a>
@@ -1080,7 +1076,7 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Hợp đồng lao động</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới hợp đồng lao động" data-toggle="modal" data-target="#modal-addNewContract">Thêm mới</button>
+                                            <ModalAddContract handleChange={this.handleChangeContract} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
                                                     <tr>
@@ -1154,7 +1150,7 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Khen thưởng</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới thông tin khen thưởng" data-toggle="modal" data-target="#modal-addPraise">Thêm mới</button>
+                                            <ModalAddPraise handleChange={this.handleChangePraise} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -1188,7 +1184,7 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kỷ luật</h4></legend>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới thông tin kỷ luật" data-toggle="modal" data-target="#modal-addNewDiscipline">Thêm mới</button>
+                                            <ModalAddDiscipline handleChange={this.handleChangeDiscipline} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -1229,7 +1225,7 @@ class AddEmployee extends Component {
                                         <div className="col-sm-12">
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Lịch sử tăng giảm lương</h4></legend>
-                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới lịch sử lương" data-toggle="modal" data-target="#modal-addNewSalary">Thêm mới</button>
+                                                <ModalAddSalary handleChange={this.handleChangeSalary} index={this.state.key} />
                                                 <table className="table table-striped table-bordered table-resizable" >
                                                     <thead>
                                                         <tr>
@@ -1272,7 +1268,7 @@ class AddEmployee extends Component {
                                             </fieldset>
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thông tin nghỉ phép</h4></legend>
-                                                <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới thông tin nghỉ phép" data-toggle="modal" data-target="#modal-addNewSabbatical">Thêm mới</button>
+                                                <ModalAddSabbatical handleChange={this.handleChangeSabbatical} index={this.state.key} />
                                                 <table className="table table-striped table-bordered table-resizable">
                                                     <thead>
                                                         <tr>
@@ -1314,7 +1310,7 @@ class AddEmployee extends Component {
                                         </div>
                                         <div className="col-md-12">
                                             <h4 className="col-md-6" style={{ paddingLeft: 0 }}>Danh sách tài liệu đính kèm:</h4>
-                                            <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới tài liệu đính kèm" data-toggle="modal" data-target="#modal-addNewFile">Thêm mới</button>
+                                            <ModalAddFile handleChange={this.handleChangeFile} index={this.state.key} />
                                             <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title="Thêm các tài liệu mặc định">Mặc định</button>
                                             <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
@@ -1349,7 +1345,7 @@ class AddEmployee extends Component {
                                         </div>
                                     </div>
                                     <div className=" box-footer">
-                                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={this.handleSubmit}>Thêm nhân viên</button>
+                                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={()=>this.handleSubmit()}>Thêm nhân viên</button>
                                     </div>
                                 </div>
                             </div>
@@ -1357,17 +1353,6 @@ class AddEmployee extends Component {
                         <ToastContainer />
                     </div>
                 </div>
-                <ModalAddCertificate handleChange={this.handleChangeCertificate} />
-                <ModalImportFileBHXH />
-                <ModalAddCertificateShort handleChange={this.handleChangeCertificateShort} />
-                <ModalAddContract handleChange={this.handleChangeContract} />
-                <ModalAddExperience handleChange={this.handleChangeExperience} />
-                <ModalAddBHXH handleChange={this.handleChangeBHXH} />
-                <ModalAddDiscipline handleChange={this.handleChangeDiscipline} />
-                <ModalAddPraise handleChange={this.handleChangePraise} />
-                <ModalAddSalary handleChange={this.handleChangeSalary} />
-                <ModalAddSabbatical handleChange={this.handleChangeSabbatical} />
-                <ModalAddFile handleChange={this.handleChangeFile} />
             </React.Fragment>
         );
     };

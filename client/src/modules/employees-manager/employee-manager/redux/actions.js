@@ -13,6 +13,7 @@ export const EmployeeManagerActions = {
     updateCertificate,
     updateCertificateShort,
     updateFile,
+    updateInformationEmployee
 
 };
 
@@ -85,6 +86,44 @@ function addNewEmployee(employee) {
             error
         }
     };
+}
+
+// update thông tin nhân viên theo id
+function updateInformationEmployee(id,informationEmployee) {
+    return dispatch => {
+        dispatch(request());
+
+        EmployeeService.updateInformationEmployee(id,informationEmployee)
+            .then(
+                informationEmployee => {
+                    dispatch(success(informationEmployee));
+                },
+                error => {
+                    dispatch(failure(error).toString());
+                }
+            );
+    };
+
+    function request() {
+        return {
+            type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST,
+        }
+    };
+
+    function success(informationEmployee) {
+        return {
+            type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS,
+            informationEmployee
+        }
+    };
+
+    function failure(error) {
+        return {
+            type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE,
+            error
+        }
+    };
+
 }
 
 // upload ảnh đại diện

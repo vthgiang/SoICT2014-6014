@@ -21,7 +21,8 @@ exports.get = async (data,company) => {
             month: data.month
         }
     };
-    var allSalary = await Salary.find(keySearch).populate({
+    var totalList = await Salary.count(keySearch);
+    var listSalary = await Salary.find(keySearch).populate({
             path: 'employee',
             model: Employee
         }).sort({
@@ -29,7 +30,11 @@ exports.get = async (data,company) => {
         })
         .skip(data.page)
         .limit(data.limit);
-    return allSalary;
+    var content = {
+        totalList,
+        listSalary
+    }
+    return content;
 
 }
 
@@ -74,7 +79,7 @@ exports.update = async (id, data) => {
     var salaryChange = {
         employee: employeeinfo._id,
         month: data.month,
-        mainSalary: data.mainSalary + data.unit,
+        mainSalary:data.unit? (data.mainSalary + data.unit):data.mainSalary,
         bonus: data.bonus
     };
     await Salary.findOneAndUpdate({

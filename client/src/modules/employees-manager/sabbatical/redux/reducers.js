@@ -12,7 +12,8 @@ export function Sabbatical(state = {listSabbatical:[]}, action) {
         case SabbaticalConstants.GET_SABBATICAL_SUCCESS:
             return {
                 ...state,
-                listSabbatical: action.listSabbatical.content,
+                listSabbatical: action.listSabbatical.content.listSabbatical,
+                totalList: action.listSabbatical.content.totalList,
                     isLoading: false,
             };
         case SabbaticalConstants.GET_SABBATICAL_FAILURE:
