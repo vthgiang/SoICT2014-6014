@@ -126,11 +126,12 @@ class ManageUserTable extends Component {
             page: 1
         };
         data[this.state.option] = this.state.value;
+        console.log(data);
         await this.props.getPaginate(data);
     }
 
     setPage = (pageNumber) => {
-        this.setState({ page: pageNumber });
+       this.setState({ page: pageNumber });
         const data = { limit: this.state.limit, page: pageNumber };
         if(this.state.value !== null){
             data[this.state.option] = this.state.value;

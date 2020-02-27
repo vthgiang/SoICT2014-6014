@@ -62,7 +62,7 @@ class DashBoardEmployees extends Component {
                                         <tr>
                                             <th style={{ width: "5%" }}>STT</th>
                                             <th style={{ width: "30%" }}>Các mốc thời gian</th>
-                                            <th style={{ width: "65%" }}>Mô tả các mốc thời gian</th>
+                                            <th style={{ width: "55%" }}>Mô tả các mốc thời gian</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>

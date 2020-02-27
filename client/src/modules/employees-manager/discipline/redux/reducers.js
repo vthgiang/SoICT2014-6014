@@ -3,8 +3,8 @@ import {
 } from './constants';
 
 const initState = {
-    listDiscipline:[],
-    listPraise:[]
+    listDiscipline: [],
+    listPraise: []
 }
 
 export function Discipline(state = initState, action) {
@@ -17,7 +17,8 @@ export function Discipline(state = initState, action) {
         case DisciplineConstants.GET_DISCIPLINE_SUCCESS:
             return {
                 ...state,
-                listDiscipline: action.listDiscipline.content,
+                listDiscipline: action.listDiscipline.content.listDiscipline,
+                totalListDiscipline: action.listDiscipline.content.totalList,
                     isLoading: false,
             };
         case DisciplineConstants.GET_DISCIPLINE_FAILURE:
@@ -88,7 +89,8 @@ export function Discipline(state = initState, action) {
         case DisciplineConstants.GET_PRAISE_SUCCESS:
             return {
                 ...state,
-                listPraise: action.listPraise.content,
+                listPraise: action.listPraise.content.listPraise,
+                    totalListPraise: action.listPraise.content.totalList,
                     isLoading: false,
             };
         case DisciplineConstants.GET_PRAISE_FAILURE:

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 class ModalAddPraise extends Component {
     constructor(props) {
@@ -21,6 +23,12 @@ class ModalAddPraise extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -31,8 +39,22 @@ class ModalAddPraise extends Component {
         await this.setState({
             startDate: this.refs.startDate.value,
         })
-        this.props.createNewPraise(this.state);
-        window.$(`#modal-addPraise`).modal("hide");
+        if (this.state.employeeNumber === "") {
+            this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (this.state.number === "") {
+            this.notifyerror("Bạn chưa nhập số quyết định");
+        } else if (this.state.unit === "") {
+            this.notifyerror("Bạn chưa nhập cấp ra quyết định");
+        } else if (this.state.startDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày ra quyết định");
+        } else if (this.state.type === "") {
+            this.notifyerror("Bạn chưa nhập hình thức khen thưởng");
+        } else if (this.state.reason === "") {
+            this.notifyerror("Bạn chưa nhập lý do khen thưởng");
+        } else {
+            this.props.createNewPraise(this.state);
+            window.$(`#modal-addPraise`).modal("hide");
+        }
     }
     render() {
         console.log(this.state);
@@ -85,7 +107,7 @@ class ModalAddPraise extends Component {
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={()=>this.handleSunmit()} title="Thêm mới khen thưởng" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới khen thưởng" >Thêm mới</button>
                         </div>
                     </div>
                 </div>

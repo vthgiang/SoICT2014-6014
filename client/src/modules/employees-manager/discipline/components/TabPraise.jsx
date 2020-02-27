@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
 import { ModalEditPraise } from './ModalEditPraise';
-import {ModalDeletePraise} from './ModalDeletePraise';
+import { ModalDeletePraise } from './ModalDeletePraise';
+import ActionColumn from '../../../../common-components/ActionColumn';
+import PaginateBar from '../../../../common-components/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 class TabPraise extends Component {
     constructor(props) {
@@ -14,9 +18,11 @@ class TabPraise extends Component {
             employeeNumber: "",
             department: "All",
             page: 0,
-            limit: 10,
+            limit: 5,
         }
         this.handleResizeColumn();
+        this.setLimit = this.setLimit.bind(this);
+        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
@@ -28,6 +34,12 @@ class TabPraise extends Component {
         document.body.appendChild(script);
         this.props.getListPraise(this.state);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -56,6 +68,18 @@ class TabPraise extends Component {
             });
         });
     }
+    setLimit = async (number) => {
+        await this.setState({ limit: parseInt(number) });
+        this.props.getListPraise(this.state);
+        window.$(`#setting-table`).collapse("hide");
+    }
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * this.state.limit;
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getListPraise(this.state);
+    }
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -70,7 +94,10 @@ class TabPraise extends Component {
         if (this.props.Discipline.isLoading === false) {
             listPraise = this.props.Discipline.listPraise;
         }
-        console.log(listPraise);
+        var pageTotal = (this.props.Discipline.totalListPraise % this.state.limit === 0) ?
+            parseInt(this.props.Discipline.totalListPraise / this.state.limit) :
+            parseInt((this.props.Discipline.totalListPraise / this.state.limit) + 1);
+        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
                 <div id="khenthuong" className="tab-pane active">
@@ -153,7 +180,7 @@ class TabPraise extends Component {
                             </div>
                         </div>
                         <div className="col-sm-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                            <table className="table table-striped table-bordered table-resizable" >
+                            <table className="table table-striped table-bordered" >
                                 <thead>
                                     <tr>
                                         <th style={{ width: "12%" }}>Mã nhân viên</th>
@@ -162,7 +189,13 @@ class TabPraise extends Component {
                                         <th style={{ width: "15%" }}>Số quyết định</th>
                                         <th>Đơn vị</th>
                                         <th>Chức vụ</th>
-                                        <th style={{ width: "10%" }}>Hành động</th>
+                                        <th style={{ width: '120px', textAlign: 'center' }}>
+                                            <ActionColumn
+                                                columnName="Hành động"
+                                                hideColumn={false}
+                                                setLimit={this.setLimit}
+                                            />
+                                        </th>
                                     </tr>
 
                                 </thead>
@@ -178,7 +211,7 @@ class TabPraise extends Component {
                                                 <td>nhân viên</td>
                                                 <td>
                                                     <ModalEditPraise data={x} />
-                                                    <ModalDeletePraise data={x}/>
+                                                    <ModalDeletePraise data={x} />
                                                 </td>
                                             </tr>
                                         ))
@@ -186,8 +219,10 @@ class TabPraise extends Component {
                                 </tbody>
                             </table>
                         </div>
+                        <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
+                <ToastContainer />
                 <ModalAddPraise />
             </React.Fragment>
         )

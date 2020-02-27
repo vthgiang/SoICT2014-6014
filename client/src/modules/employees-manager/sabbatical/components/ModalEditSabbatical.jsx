@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
 class ModalEditSabbatical extends Component {
     constructor(props) {
@@ -21,6 +23,12 @@ class ModalEditSabbatical extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -30,8 +38,21 @@ class ModalEditSabbatical extends Component {
     handleSunmit(event) {
         var startDate = this.refs.startDate.value;
         var endDate = this.refs.endDate.value;
-        this.props.updateSabbatical(this.state.id, { ...this.state, startDate, endDate });
-        window.$(`#modal-editSabbatical-${this.props.data._id}`).modal("hide");
+        if (this.state.employeeNumber === "") {
+            this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (startDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày bắt đầu");
+        } else if (endDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày kết thúc");
+        } else if (this.state.reason === "") {
+            this.notifyerror("Bạn chưa nhập lý do ");
+        } else if (this.state.status === "") {
+            this.notifyerror("Bạn chưa nhập trạng thái");
+        } else {
+            this.props.updateSabbatical(this.state.id, { ...this.state, startDate, endDate });
+            window.$(`#modal-editSabbatical-${this.props.data._id}`).modal("hide");
+        }
+
     }
 
     render() {
@@ -83,7 +104,7 @@ class ModalEditSabbatical extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="employeeNumber">Trạng thái:<span className="required">&#42;</span></label>
-                                        <select className="form-control" name="status" defaultValue={data.status}onChange={this.handleChange} >
+                                        <select className="form-control" name="status" defaultValue={data.status} onChange={this.handleChange} >
                                             <option value="Đã chấp nhận">Đã chấp nhận</option>
                                             <option value="Chờ phê duyệt">Chờ phê duyệt</option>
                                             <option value="Không chấp nhận">Không chấp nhận</option>

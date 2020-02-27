@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 class ModalEditSabbatical extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            index:this.props.index,
+            _id: this.props.data._id,
+            index: this.props.index,
             status: this.props.data.status,
             reason: this.props.data.reason,
-            startDate:this.props.data.startDate,
-            endDate:this.props.data.endDate,
+            startDate: this.props.data.startDate,
+            endDate: this.props.data.endDate,
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -18,29 +21,56 @@ class ModalEditSabbatical extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
     }
+    handleCloseModale = () => {
+        this.setState({
+            _id: this.props.data._id,
+            index: this.props.index,
+            status: this.props.data.status,
+            reason: this.props.data.reason,
+            startDate: this.props.data.startDate,
+            endDate: this.props.data.endDate,
+        })
+        window.$(`#modal-editNewSabbatical-${this.props.index + this.props.keys}`).modal("hide");
+    }
     handleSunmit = async () => {
         await this.setState({
             startDate: this.refs.startDate.value,
             endDate: this.refs.endDate.value
         })
-        this.props.handleChange(this.state);
-        window.$(`#modal-editNewSabbatical-${this.props.index}`).modal("hide");
+        if (this.state.startDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày bắt đầu");
+        } else if (this.state.endDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày kết thúc");
+        } else if (this.state.reason === "") {
+            this.notifyerror("Bạn chưa nhập lý do ");
+        } else if (this.state.status === "") {
+            this.notifyerror("Bạn chưa nhập trạng thái");
+        } else {
+            this.props.handleChange(this.state);
+            window.$(`#modal-editNewSabbatical-${this.props.index + this.props.keys}`).modal("hide");
+        }
     }
     render() {
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editNewSabbatical-${this.props.index}`} className="edit" title="Chỉnh sửa thông tin nghỉ phép" data-toggle="modal"><i className="material-icons"></i></a>
-                <div className="modal fade" id={`modal-editNewSabbatical-${this.props.index}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <a href={`#modal-editNewSabbatical-${this.props.index + this.props.keys}`} className="edit" title="Chỉnh sửa thông tin nghỉ phép" data-toggle="modal"><i className="material-icons"></i></a>
+                <div className="modal fade" id={`modal-editNewSabbatical-${this.props.index + this.props.keys}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" className="close" onClick={() => this.handleCloseModale()} aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
                                 <h4 className="modal-title">Chỉnh sửa thông tin nghỉ phép:</h4>
                             </div>
@@ -84,7 +114,7 @@ class ModalEditSabbatical extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModale()}>Đóng</button>
                                 <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Lưu thay đổi" >Lưu lại</button>
                             </div>
                         </div>

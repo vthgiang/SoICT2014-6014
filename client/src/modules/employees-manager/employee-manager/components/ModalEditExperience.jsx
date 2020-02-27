@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 class ModalEditExperience extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            index:this.props.index,
+            index: this.props.index,
             unit: this.props.data.unit,
             startDate: this.props.data.startDate,
             endDate: this.props.data.endDate,
@@ -18,29 +20,55 @@ class ModalEditExperience extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
     }
+    handleCloseModale = () => {
+        this.setState({
+            index: this.props.index,
+            unit: this.props.data.unit,
+            startDate: this.props.data.startDate,
+            endDate: this.props.data.endDate,
+            position: this.props.data.position,
+        })
+        window.$(`#modal-editNewExperience-${this.props.index + this.props.keys}`).modal("hide");
+    }
     handleSubmit = async () => {
         await this.setState({
             startDate: this.refs.startDate.value,
             endDate: this.refs.endDate.value
         })
-        this.props.handleChange(this.state);
-        window.$(`#modal-editNewExperience-${this.props.index}`).modal("hide");
+        if (this.state.unit === "") {
+            this.notifyerror("Bạn chưa nhập đơn vị công tác");
+        } else if (this.state.unit === "") {
+            this.notifyerror("Bạn chưa nhập từ tháng/năm");
+        } else if (this.state.startDate === "") {
+            this.notifyerror("Bạn chưa nhập đến tháng/năm");
+        } else if (this.state.position === "") {
+            this.notifyerror("Bạn chưa nhập chức vụ");
+        } else {
+            this.props.handleChange(this.state);
+            window.$(`#modal-editNewExperience-${this.props.index + this.props.keys}`).modal("hide");
+        }
     }
     render() {
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editNewExperience-${this.props.index}`} className="edit" title="Chỉnh sửa kinh nghiệp làm việc" data-toggle="modal"><i className="material-icons"></i></a>
-                <div className="modal fade" id={`modal-editNewExperience-${this.props.index}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <a href={`#modal-editNewExperience-${this.props.index + this.props.keys}`} className="edit" title="Chỉnh sửa kinh nghiệp làm việc" data-toggle="modal"><i className="material-icons"></i></a>
+                <div className="modal fade" id={`modal-editNewExperience-${this.props.index + this.props.keys}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" className="close" onClick={() => this.handleCloseModale()} aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
                                 <h4 className="modal-title">Chỉnh sửa kinh nghiệm làm việc:</h4>
                             </div>
@@ -82,7 +110,7 @@ class ModalEditExperience extends Component {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                                    <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModale()}>Đóng</button>
                                     <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSubmit()} title="Lưu thay đổi" >Lưu lại</button>
                                 </div>
                             </form>

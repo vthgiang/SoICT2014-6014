@@ -28,9 +28,7 @@ exports.get = async (req, res) => {
         var allEmployee = await EmployeeService.get(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
-            content: {
-                allEmployee
-            }
+            content:allEmployee
         });
     } catch (error) {
         res.status(400).json({
@@ -73,6 +71,21 @@ exports.create = async (req, res) => {
 exports.updateInforPersonal = async (req, res) => {
     try {
         var data = await EmployeeService.updateInforPersonal(req.params.email,req.body);
+        res.status(200).json({
+            message: "success",
+            content: data
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// Cập nhật thông tin nhân viên
+exports.updateInfoEmployee = async (req, res) => {
+    try {
+        var data = await EmployeeService.updateInfoEmployee(req.params.id,req.body);
         res.status(200).json({
             message: "success",
             content: data

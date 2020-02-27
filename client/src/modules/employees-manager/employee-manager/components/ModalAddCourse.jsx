@@ -14,6 +14,11 @@ class ModalAddCourse extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -22,7 +27,7 @@ class ModalAddCourse extends Component {
     }
     render() {
         return (
-            <div className="modal fade" id="modal-addNewCourse" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div className="modal fade" id={`modal-addNewCourse-${this.props.key}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -67,8 +72,8 @@ class ModalAddCourse extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="reset" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                            <button style={{ marginRight: 15 }} className="btn btn-success" title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
                         </div>
                     </div>
                 </div >

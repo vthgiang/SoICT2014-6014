@@ -13,7 +13,7 @@ class ModalAddEmployee extends Component {
             addEmployee: {
                 adding: false,
                 employeeNew: {
-                    avatar: 'adminLTE/dist/img/avatar5.png',
+                    avatar: 'lib/adminLTE/dist/img/avatar5.png',
                     gender: "Nam",
                     relationship: "Độc thân",
                     department: "Phòng nhân sự",

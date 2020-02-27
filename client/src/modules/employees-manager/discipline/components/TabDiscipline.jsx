@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddDiscipline } from './ModalAddDiscipline';
 import { ModalEditDiscipline } from './ModalEditDiscipline';
 import { ModalDeleteDiscipline } from './ModalDeleteDiscipline';
+import ActionColumnDiscipline from './ActionColumDiscipline';
+import PaginateBar from '../../../../common-components/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 class TabDiscipline extends Component {
     constructor(props) {
@@ -14,12 +18,20 @@ class TabDiscipline extends Component {
             employeeNumber: "",
             department: "All",
             page: 0,
-            limit: 10,
+            limit: 5,
         }
         this.handleResizeColumn();
+        this.setLimit = this.setLimit.bind(this);
+        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     componentDidMount() {
         let script = document.createElement('script');
         script.src = 'lib/main/js/AddEmployee.js';
@@ -56,6 +68,18 @@ class TabDiscipline extends Component {
             });
         });
     }
+    setLimit = async (number) => {
+        await this.setState({ limit: parseInt(number) });
+        this.props.getListDiscipline(this.state);
+        window.$(`#setting-table2`).collapse("hide");
+    }
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * this.state.limit;
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getListDiscipline(this.state);
+    }
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -70,6 +94,10 @@ class TabDiscipline extends Component {
         if (this.props.Discipline.isLoading === false) {
             listDiscipline = this.props.Discipline.listDiscipline;
         }
+        var pageTotal = (this.props.Discipline.totalListDiscipline % this.state.limit === 0) ?
+            parseInt(this.props.Discipline.totalListDiscipline / this.state.limit) :
+            parseInt((this.props.Discipline.totalListDiscipline / this.state.limit) + 1);
+        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
                 <div id="kyluat" className="tab-pane">
@@ -153,7 +181,7 @@ class TabDiscipline extends Component {
                         </div>
 
                         <div className="col-sm-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                            <table className="table table-striped table-bordered table-resizable" >
+                            <table className="table table-striped table-bordered" >
                                 <thead>
                                     <tr>
                                         <th style={{ width: "10%" }}>Mã nhân viên</th>
@@ -163,7 +191,13 @@ class TabDiscipline extends Component {
                                         <th>Số quyết định</th>
                                         <th>Đơn vị</th>
                                         <th>Chức vụ</th>
-                                        <th style={{ width: "12%" }}>Hành động</th>
+                                        <th style={{ width: '120px', textAlign: 'center' }}>
+                                            <ActionColumnDiscipline
+                                                columnName="Hành động"
+                                                hideColumn={false}
+                                                setLimit={this.setLimit}
+                                            />
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -187,8 +221,10 @@ class TabDiscipline extends Component {
                                 </tbody>
                             </table>
                         </div>
+                        <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
+                <ToastContainer />
                 <ModalAddDiscipline />
             </React.Fragment>
         )

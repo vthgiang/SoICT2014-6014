@@ -8,6 +8,7 @@ import {
 export const EmployeeService = {
     getAll,
     addNewEmployee,
+    updateInformationEmployee,
     uploadAvatar,
     updateContract,
     updateCertificate,
@@ -38,6 +39,18 @@ function addNewEmployee(newEmployee) {
     return fetch(`/employee`, requestOptions).then(handleResponse)
 
 }
+
+// Cập nhật thông tin nhân viên theo id
+function updateInformationEmployee(id,data) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: AuthenticateHeader(),
+        body: JSON.stringify(data)
+    };
+    return fetch(`employee/update/${id}`, requestOptions).then(handleResponse);
+}
+
+
 
 // upload ảnh đại diện của nhân viên
 function uploadAvatar(employeeNumber,fileUpload){

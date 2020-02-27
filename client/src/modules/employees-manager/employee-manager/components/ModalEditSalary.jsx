@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 class ModalEditSalary extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            mainSalary: this.props.data.unit ? this.props.data.mainSalary : this.props.data.mainSalary.slice(0, this.props.data.mainSalary.length - 3),
+            _id: this.props.data._id,
             index: this.props.index,
-            unit: this.props.data.unit,
-            mainSalary: this.props.data.mainSalary,
+            unit: this.props.data.unit ? this.props.data.unit : this.props.data.mainSalary.slice(-3, this.props.data.mainSalary.length),
             bonus: this.props.data.bonus,
-            month:this.props.data.month,
+            month: this.props.data.month,
         };
         this.handleAddBonus = this.handleAddBonus.bind(this);
         this.handleChangeBonus = this.handleChangeBonus.bind(this);
@@ -20,6 +23,12 @@ class ModalEditSalary extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -47,22 +56,40 @@ class ModalEditSalary extends Component {
             bonus: bonus
         })
     };
+    handleCloseModale = () => {
+        this.setState({
+            _id: this.props.data._id,
+            index: this.props.index,
+            mainSalary: this.props.data.unit ? this.props.data.mainSalary : this.props.data.mainSalary.slice(0, this.props.data.mainSalary.length - 3),
+            unit: this.props.data.unit ? this.props.data.unit : this.props.data.mainSalary.slice(-3, this.props.data.mainSalary.length),
+            bonus: this.props.data.bonus,
+            month: this.props.data.month,
+        })
+        window.$(`#modal-editNewSalary-${this.props.index + this.props.keys}`).modal("hide");
+    }
     handleSunmit = async () => {
         await this.setState({
             month: this.refs.month.value,
         })
-        this.props.handleChange(this.state);
-        window.$(`#modal-editNewSalary-${this.props.index}`).modal("hide");
+        if (this.state.mainSalary === "") {
+            this.notifyerror("Bạn chưa nhập tiền lương chính");
+        } else if (this.state.endDate === "") {
+            this.notifyerror("Bạn chưa nhập tháng lương");
+        } else {
+            this.props.handleChange(this.state);
+            window.$(`#modal-editNewSalary-${this.props.index + this.props.keys}`).modal("hide");
+        }
+
     }
     render() {
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editNewSalary-${this.props.index}`} title="Thông tin tăng giảm lương lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
-                <div className="modal fade" id={`modal-editNewSalary-${this.props.index}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <a href={`#modal-editNewSalary-${this.props.index + this.props.keys}`} title="Thông tin tăng giảm lương lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <div className="modal fade" id={`modal-editNewSalary-${this.props.index + this.props.keys}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" className="close" onClick={() => this.handleCloseModale()} aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
                                 <h4 className="modal-title">Thông tin tăng giảm lương bảng lương:</h4>
                             </div>
@@ -80,13 +107,13 @@ class ModalEditSalary extends Component {
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
                                                 </div>
-                                                <input type="text" className="form-control" name="month" defaultValue={this.state.month} id="employeedatepicker4" ref="month" onChange={this.handleChange} data-date-format="mm-yyyy" disabled />
+                                                <input type="text" className="form-control employeedatepicker" name="month" defaultValue={this.state.month} ref="month" onChange={this.handleChange} data-date-format="mm-yyyy" disabled />
                                             </div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="mainSalary">Tiền lương chính:<span className="required">&#42;</span></label>
                                             <input style={{ display: "inline", width: "85%" }} type="number" defaultValue={this.state.mainSalary} className="form-control" name="mainSalary" onChange={this.handleChange} autoComplete="off" />
-                                            <select name="unit" id="" className="form-control" defaultValue={this.state.unit} onChange={this.handleChange} style={{ height: 34, display: "inline", width: "15%" }}>
+                                            <select name="unit" className="form-control" defaultValue={this.state.unit} onChange={this.handleChange} style={{ height: 34, display: "inline", width: "15%" }}>
                                                 <option value="VND">VND</option>
                                                 <option value="USD">USD</option>
                                             </select>
@@ -118,8 +145,8 @@ class ModalEditSalary extends Component {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                                    <button style={{ marginRight: 15 }} type="reset" className="btn btn-success" onClick={() => this.handleSunmit()} title="Lưu thay đổi" >Lưu lại</button>
+                                    <button style={{ marginRight: 15 }} type="reset" className="btn btn-default pull-right" onClick={() => this.handleCloseModale()}>Đóng</button>
+                                    <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Lưu thay đổi" >Lưu lại</button>
                                 </div>
                             </form>
                         </div>

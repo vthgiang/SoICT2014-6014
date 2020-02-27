@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
 class ModalAddSabbatical extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: " ",
-            startDate: " ",
-            endDate: " ",
+            employeeNumber: "",
+            startDate: "",
+            endDate: "",
             status: "Đã chấp nhận",
-            reason: " ",
+            reason: "",
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -20,6 +22,12 @@ class ModalAddSabbatical extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -29,10 +37,22 @@ class ModalAddSabbatical extends Component {
     handleSunmit = async () => {
         await this.setState({
             startDate: this.refs.startDate.value,
-            endDate:this.refs.endDate.value
+            endDate: this.refs.endDate.value
         })
-        this.props.createNewSabbatical(this.state);
-        window.$(`#modal-addNewSabbatical`).modal("hide");
+        if (this.state.employeeNumber === "") {
+            this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (this.state.startDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày bắt đầu");
+        } else if (this.state.endDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày kết thúc");
+        } else if (this.state.reason === "") {
+            this.notifyerror("Bạn chưa nhập lý do ");
+        } else if (this.state.status === "") {
+            this.notifyerror("Bạn chưa nhập trạng thái");
+        } else {
+            this.props.createNewSabbatical(this.state);
+            window.$(`#modal-addNewSabbatical`).modal("hide");
+        }
     }
     render() {
         return (
@@ -61,7 +81,7 @@ class ModalAddSabbatical extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="startDate"  ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
@@ -70,7 +90,7 @@ class ModalAddSabbatical extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="endDate"  ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
+                                        <input type="text" style={{ height: 33 }} className="form-control datepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -89,7 +109,7 @@ class ModalAddSabbatical extends Component {
                         </div>
                         <div className="modal-footer">
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={()=>this.handleSunmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
+                            <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
                         </div>
                     </div>
                 </div>

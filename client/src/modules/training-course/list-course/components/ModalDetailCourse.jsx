@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { CourseActions } from '../redux/actions';
 
 class ModalDetailCourse extends Component {
     constructor(props) {

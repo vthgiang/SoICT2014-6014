@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 class ModalEditPraise extends Component {
     constructor(props) {
@@ -23,6 +25,12 @@ class ModalEditPraise extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
+
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -31,8 +39,23 @@ class ModalEditPraise extends Component {
     }
     handleSunmit(event) {
         var startDate = this.refs.startDate.value;
-        this.props.updatePraise(this.state.id, { ...this.state, startDate });
-        window.$(`#modal-viewPraise-${this.state.id}`).modal("hide");
+        if (this.state.employeeNumber === "") {
+            this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (this.state.number === "") {
+            this.notifyerror("Bạn chưa nhập số quyết định");
+        } else if (this.state.unit === "") {
+            this.notifyerror("Bạn chưa nhập cấp ra quyết định");
+        } else if (startDate === "") {
+            this.notifyerror("Bạn chưa nhập ngày ra quyết định");
+        } else if (this.state.type === "") {
+            this.notifyerror("Bạn chưa nhập hình thức khen thưởng");
+        } else if (this.state.reason === "") {
+            this.notifyerror("Bạn chưa nhập lý do khen thưởng");
+        } else {
+            this.props.updatePraise(this.state.id, { ...this.state, startDate });
+            window.$(`#modal-viewPraise-${this.state.id}`).modal("hide");
+        }
+
     }
     render() {
         var data = this.state;
@@ -56,7 +79,7 @@ class ModalEditPraise extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" defaultValue={data.employeeNumber} disabled />
+                                        <input type="text" className="form-control" name="employeeNumber" defaultValue={data.employeeNumber} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                         <label htmlFor="number">Số quyết định:<span className="required">&#42;</span></label>
@@ -77,11 +100,11 @@ class ModalEditPraise extends Component {
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
                                         <label htmlFor="type">Hình thức khen thưởng:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" name="type" defaultValue={data.type} onChange={this.handleChange}/>
+                                        <input type="text" className="form-control" name="type" defaultValue={data.type} onChange={this.handleChange} />
                                     </div>
-                                    <div className="form-group col-md-12" style={{ paddingRight: 0,paddingLeft:0 }}>
+                                    <div className="form-group col-md-12" style={{ paddingRight: 0, paddingLeft: 0 }}>
                                         <label htmlFor="reason">Thành tích (Lý do):<span className="required">&#42;</span></label>
-                                        <textarea className="form-control" rows="3" style={{height:72}} name="reason" defaultValue={data.reason} onChange={this.handleChange}></textarea>
+                                        <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" defaultValue={data.reason} onChange={this.handleChange}></textarea>
                                     </div>
                                 </div>
                             </div>
