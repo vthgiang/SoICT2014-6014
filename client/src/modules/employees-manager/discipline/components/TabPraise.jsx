@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
@@ -34,11 +33,6 @@ class TabPraise extends Component {
         document.body.appendChild(script);
         this.props.getListPraise(this.state);
     }
-
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
 
     handleResizeColumn = () => {
         window.$(function () {
@@ -91,12 +85,12 @@ class TabPraise extends Component {
     }
     render() {
         var listPraise = "";
-        if (this.props.Discipline.isLoading === false) {
-            listPraise = this.props.Discipline.listPraise;
+        if (this.props.discipline.isLoading === false) {
+            listPraise = this.props.discipline.listPraise;
         }
-        var pageTotal = (this.props.Discipline.totalListPraise % this.state.limit === 0) ?
-            parseInt(this.props.Discipline.totalListPraise / this.state.limit) :
-            parseInt((this.props.Discipline.totalListPraise / this.state.limit) + 1);
+        var pageTotal = (this.props.discipline.totalListPraise % this.state.limit === 0) ?
+            parseInt(this.props.discipline.totalListPraise / this.state.limit) :
+            parseInt((this.props.discipline.totalListPraise / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
@@ -222,15 +216,14 @@ class TabPraise extends Component {
                         <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
-                <ToastContainer />
                 <ModalAddPraise />
             </React.Fragment>
         )
     };
 }
 function mapState(state) {
-    const { Discipline } = state;
-    return { Discipline };
+    const { discipline } = state;
+    return { discipline };
 };
 
 const actionCreators = {

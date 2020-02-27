@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
@@ -597,6 +598,7 @@ class AddEmployee extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         var formatter = new Intl.NumberFormat();
         return (
             <React.Fragment>
@@ -1410,5 +1412,5 @@ const actionCreators = {
     updateFile: EmployeeManagerActions.updateFile,
 };
 
-const connectedAddEmplyee = connect(mapState, actionCreators)(AddEmployee);
+const connectedAddEmplyee = connect(mapState, actionCreators)(withTranslate(AddEmployee));
 export { connectedAddEmplyee as AddEmployee };

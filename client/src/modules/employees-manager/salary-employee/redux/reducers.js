@@ -2,7 +2,7 @@ import {
     SalaryConstants
 } from './constants';
 
-export function Salary(state = {listSalary:[]}, action) {
+export function salary(state = {listSalary:[]}, action) {
     switch (action.type) {
         case SalaryConstants.GET_SALARY_REQUEST:
             return {

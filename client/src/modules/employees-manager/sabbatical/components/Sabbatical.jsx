@@ -116,12 +116,12 @@ class Sabbatical extends Component {
     }
     render() {
         var listSabbatical = "";
-        if (this.props.Sabbatical.isLoading === false) {
-            listSabbatical = this.props.Sabbatical.listSabbatical;
+        if (this.props.sabbatical.isLoading === false) {
+            listSabbatical = this.props.sabbatical.listSabbatical;
         }
-        var pageTotal = ((this.props.Sabbatical.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.Sabbatical.totalList / this.state.limit) :
-            parseInt((this.props.Sabbatical.totalList / this.state.limit) + 1);
+        var pageTotal = ((this.props.sabbatical.totalList % this.state.limit) === 0) ?
+            parseInt(this.props.sabbatical.totalList / this.state.limit) :
+            parseInt((this.props.sabbatical.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
@@ -277,8 +277,8 @@ class Sabbatical extends Component {
 };
 
 function mapState(state) {
-    const { Sabbatical } = state;
-    return { Sabbatical };
+    const { sabbatical } = state;
+    return { sabbatical };
 };
 
 const actionCreators = {

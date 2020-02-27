@@ -41,8 +41,8 @@ class ModalDeleteSalary extends Component {
 };
 
 function mapState(state) {
-    const { Salary } = state;
-    return { Salary };
+    const { salary } = state;
+    return { salary };
 };
 
 const actionCreators = {

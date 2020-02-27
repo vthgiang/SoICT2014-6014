@@ -76,7 +76,6 @@ class ModalEditSalary extends Component {
 
     render() {
         var data = this.state;
-        console.log(data);
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-editSalary-${data.id}`} title="Thông tin bảng lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
@@ -158,8 +157,8 @@ class ModalEditSalary extends Component {
     }
 };
 function mapState(state) {
-    const { Salary } = state;
-    return { Salary };
+    const { salary } = state;
+    return { salary };
 };
 
 const actionCreators = {

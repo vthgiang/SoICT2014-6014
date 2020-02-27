@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
+import { EmployeeManagerActions } from '../../employee-manager/redux/actions';
 import 'react-toastify/dist/ReactToastify.css';
 import { SalaryActions } from '../redux/actions';
 class ModalAddSalary extends Component {
@@ -15,7 +16,7 @@ class ModalAddSalary extends Component {
         this.handleAddBonus = this.handleAddBonus.bind(this);
         this.handleChangeBonus = this.handleChangeBonus.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        //this.handleSunmit = this.handleSunmit.bind(this);
+        this.handleChangeMSNV = this.handleChangeMSNV.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -32,6 +33,15 @@ class ModalAddSalary extends Component {
 
     handleChange(event) {
         const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
+    handleChangeMSNV(event) {
+        const { name, value } = event.target;
+        if (value !== "") {
+            this.props.checkMSNV(value);
+        };
         this.setState({
             [name]: value
         });
@@ -88,6 +98,8 @@ class ModalAddSalary extends Component {
         })
         if (this.state.employeeNumber === "") {
             this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (this.props.employeesManager.checkMSNV===false) {
+            this.notifyerror("Mã số nhân viên không tồn tại");
         } else if (this.state.mainSalary === "") {
             this.notifyerror("Bạn chưa nhập tiền lương chính");
         } else if (this.state.endDate === "") {
@@ -100,20 +112,19 @@ class ModalAddSalary extends Component {
                 mainSalary: "",
                 bonus: [],
             });
+            this.notifysuccess("Thêm mới thành công");
             document.getElementById("formAddSalary").reset();
             window.$(`#modal-addNewSalary`).modal("hide");
         }
-
     }
     render() {
         var data = this.state;
-        console.log(data)
         return (
             <div className="modal fade" id="modal-addNewSalary" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" onClick={()=>this.handleCloseModal()} aria-label="Close">
+                            <button type="button" className="close" onClick={() => this.handleCloseModal()} aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới bảng lương:</h4>
                         </div>
@@ -127,7 +138,7 @@ class ModalAddSalary extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChange} placeholder="Mã số nhân viên" autoComplete="off" />
+                                        <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChangeMSNV} placeholder="Mã số nhân viên" autoComplete="off" />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="month">Tháng:<span className="required">&#42;</span></label>
@@ -173,7 +184,7 @@ class ModalAddSalary extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={()=>this.handleCloseModal()}>Đóng</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModal()}>Đóng</button>
                                 <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới bảng lương" >Thêm mới</button>
                             </div>
                         </form>
@@ -184,12 +195,13 @@ class ModalAddSalary extends Component {
     }
 };
 function mapState(state) {
-    const { Salary } = state;
-    return { Salary };
+    const { salary, employeesManager } = state;
+    return { salary, employeesManager };
 };
 
 const actionCreators = {
     createNewSalary: SalaryActions.createNewSalary,
+    checkMSNV:EmployeeManagerActions.checkMSNV,
 };
 
 const connectedAddSalary = connect(mapState, actionCreators)(ModalAddSalary);

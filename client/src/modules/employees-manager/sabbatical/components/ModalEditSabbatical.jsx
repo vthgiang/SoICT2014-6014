@@ -57,7 +57,6 @@ class ModalEditSabbatical extends Component {
 
     render() {
         var data = this.state;
-        console.log(data);
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-editSabbatical-${data.id}`} title="Thông tin bảng lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
@@ -125,8 +124,8 @@ class ModalEditSabbatical extends Component {
 };
 
 function mapState(state) {
-    const { Sabbatical } = state;
-    return { Sabbatical };
+    const { sabbatical } = state;
+    return { sabbatical };
 };
 
 const actionCreators = {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddDiscipline } from './ModalAddDiscipline';
@@ -26,11 +25,6 @@ class TabDiscipline extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
-
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
 
     componentDidMount() {
         let script = document.createElement('script');
@@ -91,12 +85,12 @@ class TabDiscipline extends Component {
     }
     render() {
         var listDiscipline = "";
-        if (this.props.Discipline.isLoading === false) {
-            listDiscipline = this.props.Discipline.listDiscipline;
+        if (this.props.discipline.isLoading === false) {
+            listDiscipline = this.props.discipline.listDiscipline;
         }
-        var pageTotal = (this.props.Discipline.totalListDiscipline % this.state.limit === 0) ?
-            parseInt(this.props.Discipline.totalListDiscipline / this.state.limit) :
-            parseInt((this.props.Discipline.totalListDiscipline / this.state.limit) + 1);
+        var pageTotal = (this.props.discipline.totalListDiscipline % this.state.limit === 0) ?
+            parseInt(this.props.discipline.totalListDiscipline / this.state.limit) :
+            parseInt((this.props.discipline.totalListDiscipline / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
@@ -224,15 +218,14 @@ class TabDiscipline extends Component {
                         <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
-                <ToastContainer />
                 <ModalAddDiscipline />
             </React.Fragment>
         )
     };
 }
 function mapState(state) {
-    const { Discipline } = state;
-    return { Discipline };
+    const { discipline } = state;
+    return { discipline };
 };
 
 const actionCreators = {

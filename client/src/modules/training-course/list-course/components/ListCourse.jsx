@@ -60,8 +60,7 @@ class ListCourse extends Component {
     }
 
     render() {
-        var { Course } = this.props;
-        var lists = Course.listCourse;
+        var lists = this.props.course.listCourse;
         console.log(lists);
         return (
             <React.Fragment>
@@ -179,8 +178,8 @@ class ListCourse extends Component {
 };
 
 function mapState(state) {
-    const { Course } = state;
-    return { Course };
+    const { course } = state;
+    return { course };
 };
 
 const actionCreators = {

@@ -41,8 +41,8 @@ class ModalDeleteDiscipline extends Component {
 };
 
 function mapState(state) {
-    const { Discipline } = state;
-    return { Discipline };
+    const { discipline } = state;
+    return { discipline };
 };
 
 const actionCreators = {
