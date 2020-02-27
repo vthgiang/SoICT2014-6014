@@ -1,6 +1,7 @@
 export default {
     locale: 'vn',
     messages: {
+        language: 'Thiết lập ngôn ngữ',
         auth: {
             login: 'Đăng nhập',
             logout: 'Đăng xuất',

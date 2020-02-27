@@ -87,7 +87,7 @@ class MainHeaderMenu extends Component {
                             <button
                                 className="btn"
                                 data-toggle="control-sidebar"
-                                title="language translate"
+                                title={translate('language')}
                                 style={{
                                     padding: '15px 15px 15px 15px',
                                     backgroundColor: '#605CA8',
@@ -97,16 +97,20 @@ class MainHeaderMenu extends Component {
                             </button>
                         </li>
                     </ul>
-                    <div className="control-sidebar control-sidebar-light" style={{ display: 'none', marginTop: '52px', width: '135px' }}>
+                    <div className="control-sidebar control-sidebar-light" style={{ display: 'none', marginTop: '52px', width: '158px' }}>
                         <div style={{ marginTop: '-40px' }}>
-                            <i onClick={this.props.setLanguageEnglish}>
-                                <img src="/lib/en.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
-                                <span className="badge">EN</span>
-                            </i>
-                            <i onClick={this.props.setLanguageVietNam}>
-                                <img src="/lib/vn.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
-                                <span className="badge">VN</span>
-                            </i>
+                            <button onClick={this.props.setLanguageEnglish} style={{border: 'none', backgroundColor: '#F9FAFC'}}>
+                                <i>
+                                    <img src="/lib/en.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
+                                    <span className="badge">EN</span>
+                                </i>
+                            </button>
+                            <button onClick={this.props.setLanguageVietNam} style={{border: 'none', backgroundColor: '#F9FAFC'}}>
+                                <i>
+                                    <img src="/lib/vn.png" className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
+                                    <span className="badge">VN</span>
+                                </i>
+                            </button>
                         </div>
                     </div>
                 </div>
