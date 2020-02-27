@@ -3,39 +3,42 @@ const RoleSerVice = require('../../super-admin-management/roles-management/role.
 const UserService = require('../../super-admin-management/users-management/user.service');
 const LinkService = require('../links-management/link.service');
 const PrivilegeService = require('../../super-admin-management/privileges/privilege.service');
-const { Logger } = require('../../../logs');
+const { Log} = require('../../../logs');
 
 exports.get = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'GET COMPANIES');
     try {
         const companies = await CompanyService.get();
         
-        //isLog && Logger.info(`[GET_COMPANIES]`+req.user.email);
+        isLog && Logger.info(req.user.email);
         res.status(200).json(companies);
     } catch (error) {
         
-        //isLog && Logger.error(`[GET_COMPANIES]`+req.user.email);
+        isLog && Logger.error(req.user.email);
         res.status(400).json(error);
     }
 };
 
 
 exports.getPaginate = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'GET_PAGINATE_COMPANIES');
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
         var companies = await CompanyService.getPaginate(limit, page, req.body);
 
-        //isLog && Logger.info(`[GET_LINKS_PAGINATE]`+req.user.email);
+        isLog && Logger.info(req.user.email);
         res.status(200).json(companies);
     } catch (error) {
         
-        //isLog && Logger.error(`[GET_LINKS_PAGINATE]`+req.user.email);
+        isLog && Logger.error(req.user.email);
         res.status(400).json(error);
     }
 };
 
 exports.create = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'CREATE_COMPANY');
     try {
         //tao cong ty
         const company = await CompanyService.create(req.body);
@@ -69,52 +72,55 @@ exports.create = async (req, res) => {
         await PrivilegeService.addRolesToLink( manageComponentUI._id, [ admin._id ] );
         await PrivilegeService.addRolesToLink( manageDocument._id, [ admin._id ] );
 
-        //isLog && Logger.info(`[CREATE_COMPANY]`+req.user.email);
+        isLog && Logger.info(req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        //isLog && Logger.error(`[CREATE_COMPANY]`+req.user.email);
+        isLog && Logger.error(req.user.email);
         res.status(400).json(error);
     }
 };
 
 exports.show = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'SHOW_COMPANY');
     try {
         const company = await CompanyService.getById(req.params.id);
         
-        //isLog && Logger.info(`[SHOW_COMPANY]`+req.user.email);
+        isLog && Logger.info(req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        //isLog && Logger.error(`[SHOW_COMPANY]`+req.user.email);
+        isLog && Logger.error(req.user.email);
         res.status(400).json(error);
     }
 };
 
 exports.edit = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'EDIT_COMPANY');
     try {
         console.log("REQ", req.body);
         const company = await CompanyService.edit(req.params.id, req.body);
         console.log("RES", company);
         
-        //isLog && Logger.info(`[EDIT_COMPANY]`+req.user.email);
+        isLog && Logger.info(req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        //isLog && Logger.error(`[EDIT_COMPANY]`+req.user.email);
+        isLog && Logger.error(req.user.email);
         res.status(400).json(error);
     }
 };
 
 exports.delete = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'DELETE_COMPANY');
     try {
         const company = await CompanyService.delete(req.params.id);
         
-        //isLog && Logger.info(`[DELETE_COMPANY]`+req.user.email);
+        isLog && Logger.info(req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        //isLog && Logger.error(`[DELETE_COMPANY]`+req.user.email);
+        isLog && Logger.error(req.user.email);
         res.status(400).json(error);
     }
 };
