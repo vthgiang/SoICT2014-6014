@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TabDiscipline } from './TabDiscipline';
 import { TabPraise } from './TabPraise';
+import { ToastContainer, toast } from 'react-toastify';
 class Discipline extends Component {
     render() {
         return (
@@ -20,6 +21,7 @@ class Discipline extends Component {
                         </div>
                     </div>
                 </div>
+                <ToastContainer />
             </React.Fragment>
         )
     };

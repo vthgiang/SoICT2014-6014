@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { EmployeeManagerActions } from '../../employee-manager/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
@@ -16,6 +17,7 @@ class ModalAddDiscipline extends Component {
             reason: "",
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeMSNV = this.handleChangeMSNV.bind(this);
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -32,6 +34,16 @@ class ModalAddDiscipline extends Component {
 
     handleChange(event) {
         const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    handleChangeMSNV(event) {
+        const { name, value } = event.target;
+        if (value !== "") {
+            this.props.checkMSNV(value);
+        };
         this.setState({
             [name]: value
         });
@@ -58,6 +70,8 @@ class ModalAddDiscipline extends Component {
         })
         if (this.state.employeeNumber === "") {
             this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (this.props.employeesManager.checkMSNV === false) {
+            this.notifyerror("Mã số nhân viên không tồn tại");
         } else if (this.state.number === "") {
             this.notifyerror("Bạn chưa nhập số quyết định");
         } else if (this.state.unit === "") {
@@ -81,6 +95,7 @@ class ModalAddDiscipline extends Component {
                 type: "",
                 reason: "",
             });
+            this.notifysuccess("Thêm mới thành công");
             document.getElementById("formAddDiscipline").reset();
             window.$(`#modal-addNewDiscipline`).modal("hide");
         }
@@ -92,7 +107,7 @@ class ModalAddDiscipline extends Component {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close"  onClick={()=>this.handleCloseModal()} aria-label="Close">
+                            <button type="button" className="close" onClick={() => this.handleCloseModal()} aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới kỷ luật:</h4>
                         </div>
@@ -106,7 +121,7 @@ class ModalAddDiscipline extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" onChange={this.handleChange} name="employeeNumber" placeholder="Mã số nhân viên" />
+                                        <input type="text" className="form-control" onChange={this.handleChangeMSNV} name="employeeNumber" placeholder="Mã số nhân viên" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
                                         <label htmlFor="number">Số quyết định:<span className="required">&#42;</span></label>
@@ -145,7 +160,7 @@ class ModalAddDiscipline extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={()=>this.handleCloseModal()}>Đóng</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModal()}>Đóng</button>
                                 <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới kỷ luật" >Thêm mới</button>
                             </div>
                         </form>
@@ -157,12 +172,13 @@ class ModalAddDiscipline extends Component {
 };
 
 function mapState(state) {
-    const { Discipline } = state;
-    return { Discipline };
+    const { discipline, employeesManager } = state;
+    return { discipline, employeesManager };
 };
 
 const actionCreators = {
     createNewDiscipline: DisciplineActions.createNewDiscipline,
+    checkMSNV: EmployeeManagerActions.checkMSNV,
 };
 
 const connectedAddDiscipline = connect(mapState, actionCreators)(ModalAddDiscipline);

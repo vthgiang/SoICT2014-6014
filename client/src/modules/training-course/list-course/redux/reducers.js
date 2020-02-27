@@ -2,7 +2,7 @@ import {
     CourseConstants
 } from './constants';
 
-export function Course(state = {}, action) {
+export function course(state = {}, action) {
     switch (action.type) {
         case CourseConstants.GET_LISTCOURSE_REQUEST:
             return {

@@ -7,7 +7,7 @@ const initState = {
     listPraise: []
 }
 
-export function Discipline(state = initState, action) {
+export function discipline(state = initState, action) {
     switch (action.type) {
         case DisciplineConstants.GET_DISCIPLINE_REQUEST:
             return {

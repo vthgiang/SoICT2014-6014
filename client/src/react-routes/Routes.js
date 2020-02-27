@@ -160,57 +160,87 @@ class Routes extends Component {
                 />
                 {/* Quan ly nhan su */}
                 <PrivateRoute 
-                    key={ 'addemployee' }
+                    isLoading={ component.isLoading }
+                    key={ 'add_employee' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/add-employee', name: 'add_employee', icon:'fa fa-user-plus' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/add-employee' }
                     path={ '/add-employee' }
-                    pageName={'addemployee' }
+                    pageName={'add_employee' }
                     layout={ Layout }
                     component={ AddEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'detailemployee' }
+                    isLoading={ component.isLoading }
+                    key={ 'detail_employee' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/detail-employee', name: 'detail_employee', icon:'fa fa-user-o' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/detail-employee' }
                     path={ '/detail-employee' }
-                    pageName={'detailemployee' }
+                    pageName={'detail_employee' }
                     layout={ Layout }
                     component={ DetailEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'updateemployee' }
+                    isLoading={ component.isLoading }
+                    key={ 'update_employee' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/update-employee', name: 'update_employee', icon:'fa fa-pencil-square-o' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/update-employee' }
                     path={ '/update-employee' }
-                    pageName={'updateemployee' }
+                    pageName={'update_employee' }
                     layout={ Layout }
                     component={ UpdateEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'listemployee' }
+                    isLoading={ component.isLoading }
+                    key={ 'list_employee' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/list-employee', name: 'list_employee', icon:'fa fa-address-card' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/list-employee' }
                     path={ '/list-employee' }
-                    pageName={'listemployee' }
+                    pageName={'list_employee' }
                     layout={ Layout }
                     component={ ListEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'dashBoardEmployee' }
+                    isLoading={ component.isLoading }
+                    key={ 'dashBoard_employee' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/dashboard-employee', name: 'dashboard_employee', icon:'fa fa-dashboard' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/dashboard-employee' }
                     path={ '/dashboard-employee' }
-                    pageName={'dashboardemployee' }
+                    pageName={'dashboard_employee' }
                     layout={ Layout }
                     component={ DashBoardEmployees }
                 />
                 <PrivateRoute 
+                    isLoading={ component.isLoading }
                     key={ 'discipline' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/discipline', name: 'discipline', icon:'fa fa-balance-scale' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/discipline' }
@@ -220,7 +250,12 @@ class Routes extends Component {
                     component={ Discipline }
                 />
                 <PrivateRoute 
+                    isLoading={ component.isLoading }
                     key={ 'sabbatical' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/sabbatical', name: 'sabbatical', icon:'fa fa-calendar-times-o' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/sabbatical' }
@@ -230,42 +265,62 @@ class Routes extends Component {
                     component={ Sabbatical }
                 />
                 <PrivateRoute 
-                    key={ 'salaryemployee' }
+                    isLoading={ component.isLoading }
+                    key={ 'salary_employee' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/salary-employee', name: 'salary_employee', icon:'fa fa-line-chart' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/salary-employee' }
                     path={ '/salary-employee' }
-                    pageName={'salaryemployee' }
+                    pageName={'salary_employee' }
                     layout={ Layout }
                     component={ SalaryEmployee }
                 />
                 <PrivateRoute 
-                    key={ 'timekeeping' }
+                    isLoading={ component.isLoading }
+                    key={ 'time_keeping' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/time-keeping', name: 'time_keeping', icon:'fa fa-calculator' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/time-keeping' }
                     path={ '/time-keeping' }
-                    pageName={'timekeeping' }
+                    pageName={'time_keeping' }
                     layout={ Layout }
                     component={ Timekeeping }
                 />
                 <PrivateRoute 
-                    key={ 'listCourse' }
+                    isLoading={ component.isLoading }
+                    key={ 'list_course' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/list-course', name: 'list_course', icon:'fa fa-university' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/list-course' }
                     path={ '/list-course' }
-                    pageName={'listCourse' }
+                    pageName={'list_course' }
                     layout={ Layout }
                     component={ ListCourse }
                 />
                 <PrivateRoute 
-                    key={ 'trainingplan' }
+                    isLoading={ component.isLoading }
+                    key={ 'training_plan' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/training-plan', name: 'training_plan', icon:'fa fa-list-alt' }
+                    ]}
                     auth={ auth }
                     exact={ true }
                     link={ '/training-plan' }
                     path={ '/training-plan' }
-                    pageName={'trainingplan' }
+                    pageName={'training_plan' }
                     layout={ Layout }
                     component={ TrainingPlan }
                 />

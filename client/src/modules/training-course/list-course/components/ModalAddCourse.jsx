@@ -140,8 +140,8 @@ class ModalAddCourse extends Component {
     }
 };
 function mapState(state) {
-    const { Course } = state;
-    return { Course };
+    const { course } = state;
+    return { course };
 };
 
 const actionCreators = {

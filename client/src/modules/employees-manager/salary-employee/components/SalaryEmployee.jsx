@@ -114,12 +114,12 @@ class SalaryEmployee extends Component {
     render() {
         var formatter = new Intl.NumberFormat();
         var listSalary = "";
-        if (this.props.Salary.isLoading === false) {
-            listSalary = this.props.Salary.listSalary;
+        if (this.props.salary.isLoading === false) {
+            listSalary = this.props.salary.listSalary;
         }
-        var pageTotal = (this.props.Salary.totalList % this.state.limit === 0) ?
-            parseInt(this.props.Salary.totalList / this.state.limit) :
-            parseInt((this.props.Salary.totalList / this.state.limit) + 1);
+        var pageTotal = (this.props.salary.totalList % this.state.limit === 0) ?
+            parseInt(this.props.salary.totalList / this.state.limit) :
+            parseInt((this.props.salary.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
@@ -238,7 +238,7 @@ class SalaryEmployee extends Component {
                                             {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
                                                 listSalary.map((x, index) => {
 
-                                                    var salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
+                                                    let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
                                                     if (x.bonus.length !== 0) {
                                                         var total = 0;
                                                         for (let count in x.bonus) {
@@ -287,8 +287,8 @@ class SalaryEmployee extends Component {
 }
 
 function mapState(state) {
-    const { Salary } = state;
-    return { Salary };
+    const { salary } = state;
+    return { salary };
 };
 
 const actionCreators = {

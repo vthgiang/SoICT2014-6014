@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Item from './Item';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { Link } from 'react-router-dom';
 
 // ,{
@@ -31,6 +32,7 @@ class SideBar extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         const { links } = this.props.auth;
         return (
             <React.Fragment>
@@ -142,32 +144,32 @@ class SideBar extends Component {
                                     this.checkURL('/discipline', links) === true || this.checkURL('/sabbatical', links) === true) &&
                                 <li className="treeview">
                                     <a href="#abc">
-                                        <i className="fa fa-address-book" /> <span>Quản lý nhân sự</span>
+                                        <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
                                         {this.checkURL('/dashboard-employee', links) === true &&
-                                            <li><Link to="/dashboard-employee"><i className="fa fa-dashboard" />DashBoard quản lý nhân sự </Link></li>
+                                            <li><Link to="/dashboard-employee"><i className="fa fa-dashboard" />{translate(`menu.dashboard_employee`)}</Link></li>
                                         }
                                         {this.checkURL('/add-employee', links) === true &&
-                                            <li><Link to="/add-employee"><i className="fa fa-user-plus" />Thêm nhân viên </Link></li>
+                                            <li><Link to="/add-employee"><i className="fa fa-user-plus" />{translate(`menu.add_employee`)}</Link></li>
                                         }
                                         {this.checkURL('/list-employee', links) === true &&
-                                            <li><Link to="/list-employee"><i className="fa fa-address-card" />Quản lý thông tin nhân viên</Link></li>
+                                            <li><Link to="/list-employee"><i className="fa fa-address-card" />{translate(`menu.list_employee`)}</Link></li>
                                         }
                                         {this.checkURL('/salary-employee', links) === true &&
-                                            <li><Link to="/salary-employee"><i className="fa fa-line-chart" />Quản lý lương nhân viên</Link></li>
+                                            <li><Link to="/salary-employee"><i className="fa fa-line-chart" />{translate(`menu.salary_employee`)}</Link></li>
                                         }
                                         {this.checkURL('/time-keeping', links) === true &&
-                                            <li><Link to="/time-keeping"><i className="fa fa-calculator" />Chấm công nhân viên</Link></li>
+                                            <li><Link to="/time-keeping"><i className="fa fa-calculator" />{translate(`menu.time_keeping`)}</Link></li>
                                         }
                                         {this.checkURL('/discipline', links) === true &&
-                                            <li><Link to="/discipline"><i className="fa fa-balance-scale" />Quản lý khen thưởng - kỷ luật</Link></li>
+                                            <li><Link to="/discipline"><i className="fa fa-balance-scale" />{translate(`menu.discipline`)}</Link></li>
                                         }
                                         {this.checkURL('/sabbatical', links) === true &&
-                                            <li><Link to="/sabbatical"><i className="fa fa-calendar-times-o" />Quản lý nghỉ phép</Link></li>
+                                            <li><Link to="/sabbatical"><i className="fa fa-calendar-times-o" />{translate(`menu.sabbatical`)}</Link></li>
                                         }
                                     </ul>
                                 </li>
@@ -176,17 +178,17 @@ class SideBar extends Component {
                                 (this.checkURL('/detail-employee', links) === true || this.checkURL('/update-employee', links) === true) &&
                                 <li className="treeview">
                                     <a href="#abc">
-                                        <i className="fa fa-user-circle" /> <span>Tài khoản</span>
+                                        <i className="fa fa-user-circle" /> <span>{translate(`menu.account`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
                                         {this.checkURL('/detail-employee', links) === true &&
-                                            <li><Link to="/detail-employee"><i className="fa fa-user-o" />Thông tin cá nhân</Link></li>
+                                            <li><Link to="/detail-employee"><i className="fa fa-user-o" />{translate(`menu.detail_employee`)}</Link></li>
                                         }
                                         {this.checkURL('/update-employee', links) === true &&
-                                            <li><Link to="/update-employee"><i className="fa fa-pencil-square-o" />Cập nhật thông tin nhân viên</Link></li>
+                                            <li><Link to="/update-employee"><i className="fa fa-pencil-square-o" />{translate(`menu.update_employee`)}</Link></li>
                                         }
                                     </ul>
                                 </li>
@@ -195,17 +197,17 @@ class SideBar extends Component {
                                 (this.checkURL('/list-course', links) === true || this.checkURL('/training-plan', links) === true) &&
                                 <li className="treeview">
                                     <a href="#abc">
-                                        <i className="fa fa-graduation-cap" /> <span>Quản lý đào tạo</span>
+                                        <i className="fa fa-graduation-cap" /> <span>{translate(`menu.manage_training`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
                                         {this.checkURL('/list-course', links) === true &&
-                                            <li><Link to="/list-course"><i className="fa fa-university" />Chương trình đào tạo bắt buộc</Link></li>
+                                            <li><Link to="/list-course"><i className="fa fa-university" />{translate(`menu.list_course`)}</Link></li>
                                         }
                                         {this.checkURL('/training-plan', links) === true &&
-                                            <li><Link to="/training-plan"><i className="fa fa-list-alt" />Quản lý khoá đào tạo</Link></li>
+                                            <li><Link to="/training-plan"><i className="fa fa-list-alt" />{translate(`menu.training_plan`)}</Link></li>
                                         }
                                     </ul>
                                 </li>
@@ -224,4 +226,4 @@ const dispatchStateToProps = {
 
 }
 
-export default connect(mapStates, dispatchStateToProps)(SideBar);
+export default connect(mapStates, dispatchStateToProps)(withTranslate(SideBar));

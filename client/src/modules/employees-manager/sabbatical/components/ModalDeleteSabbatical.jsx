@@ -39,8 +39,8 @@ class ModalDeleteSabbatical extends Component {
 };
 
 function mapState(state) {
-    const { Sabbatical } = state;
-    return { Sabbatical };
+    const { sabbatical } = state;
+    return { sabbatical };
 };
 
 const actionCreators = {
