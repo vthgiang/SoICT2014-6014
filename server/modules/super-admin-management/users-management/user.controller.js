@@ -5,11 +5,11 @@ exports.get = async (req, res) => {
     try {
         var users = await UserService.get(req.user.company._id);
 
-        isLog && Logger.info(`[GET_USERS]`+req.user.email);
+        //isLog && Logger.info(`[GET_USERS]`+req.user.email);
         res.status(200).json(users);
     } catch (error) {
         
-        isLog && Logger.error(`[GET_USERS]`+req.user.email);
+        //isLog && Logger.error(`[GET_USERS]`+req.user.email);
         res.status(400).json(error)
     }
 };
@@ -21,11 +21,11 @@ exports.getPaginate = async (req, res) => {
         delete req.body.page;
         var roles = await UserService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
 
-        isLog && Logger.info(`[GET_USERS_PAGINATE]`+req.user.email);
+        //isLog && Logger.info(`[GET_USERS_PAGINATE]`+req.user.email);
         res.status(200).json(roles);
     } catch (error) {
         
-        isLog && Logger.error(`[GET_USERS_PAGINATE]`+req.user.email);
+        //isLog && Logger.error(`[GET_USERS_PAGINATE]`+req.user.email);
         res.status(400).json(error);
     }
 };
@@ -34,11 +34,11 @@ exports.create = async (req, res) => {
     try {
         var user = await UserService.create(req.body, req.user.company._id);
 
-        isLog && Logger.info(`[CREATE_USER]`+req.user.email);
+        //isLog && Logger.info(`[CREATE_USER]`+req.user.email);
         res.status(200).json(user);
     } catch (error) {
 
-        isLog && Logger.error(`[CREATE_USER]`+req.user.email);
+        //isLog && Logger.error(`[CREATE_USER]`+req.user.email);
         res.status(400).json(error)
     }
 };
@@ -47,11 +47,11 @@ exports.show = async (req, res) => {
     try {
         var user = await UserService.getById(req.params.id);
 
-        isLog && Logger.info(`[SHOW_USER]`+req.user.email);
+        //isLog && Logger.info(`[SHOW_USER]`+req.user.email);
         res.status(200).json(user)
     } catch (error) {
         
-        isLog && Logger.error(`[SHOW_USER]`+req.user.email);
+        //isLog && Logger.error(`[SHOW_USER]`+req.user.email);
         res.status(400).json(error)
     }
 };
@@ -60,11 +60,11 @@ exports.edit = async (req, res) => {
     try {
         var user = await UserService.edit(req.params.id, req.body);
         
-        isLog && Logger.info(`[EDIT_USER]`+req.user.email);
+        //isLog && Logger.info(`[EDIT_USER]`+req.user.email);
         res.status(200).json(user);
     } catch (error) {
         
-        isLog && Logger.error(`[EDIT_USER]`+req.user.email);
+        //isLog && Logger.error(`[EDIT_USER]`+req.user.email);
         res.status(400).json(error);
     }
 };
@@ -73,11 +73,11 @@ exports.delete = async (req, res) => {
     try {
         var deleteUser = await UserService.delete(req.params.id);
 
-        isLog && Logger.info(`[DELETE_USER]`+req.user.email);
+        //isLog && Logger.info(`[DELETE_USER]`+req.user.email);
         res.status(200).json(deleteUser);
     } catch (error) {
 
-        isLog && Logger.error(`[DELETE_USER]`+req.user.email);
+        //isLog && Logger.error(`[DELETE_USER]`+req.user.email);
         res.status(400).json(error)
     }
 };
@@ -86,11 +86,11 @@ exports.searchByName = async (req, res) => {
     try {
         var users = await UserService.searchByName(req.user.company._id, req.body.username);
 
-        isLog && Logger.info(`[SEARCH_USER_BY_NAME]`+req.user.email);
+        //isLog && Logger.info(`[SEARCH_USER_BY_NAME]`+req.user.email);
         res.status(200).json(users);
     } catch (error) {
 
-        isLog && Logger.error(`[SEARCH_USER_BY_NAME]`+req.user.email);
+        //isLog && Logger.error(`[SEARCH_USER_BY_NAME]`+req.user.email);
         res.status(400).json(error)
     }
 };

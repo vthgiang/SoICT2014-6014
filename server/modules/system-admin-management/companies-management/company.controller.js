@@ -9,11 +9,11 @@ exports.get = async (req, res) => {
     try {
         const companies = await CompanyService.get();
         
-        isLog && Logger.info(`[GET_COMPANIES]`+req.user.email);
+        //isLog && Logger.info(`[GET_COMPANIES]`+req.user.email);
         res.status(200).json(companies);
     } catch (error) {
         
-        isLog && Logger.error(`[GET_COMPANIES]`+req.user.email);
+        //isLog && Logger.error(`[GET_COMPANIES]`+req.user.email);
         res.status(400).json(error);
     }
 };
@@ -26,11 +26,11 @@ exports.getPaginate = async (req, res) => {
         delete req.body.page;
         var companies = await CompanyService.getPaginate(limit, page, req.body);
 
-        isLog && Logger.info(`[GET_LINKS_PAGINATE]`+req.user.email);
+        //isLog && Logger.info(`[GET_LINKS_PAGINATE]`+req.user.email);
         res.status(200).json(companies);
     } catch (error) {
         
-        isLog && Logger.error(`[GET_LINKS_PAGINATE]`+req.user.email);
+        //isLog && Logger.error(`[GET_LINKS_PAGINATE]`+req.user.email);
         res.status(400).json(error);
     }
 };
@@ -69,11 +69,11 @@ exports.create = async (req, res) => {
         await PrivilegeService.addRolesToLink( manageComponentUI._id, [ admin._id ] );
         await PrivilegeService.addRolesToLink( manageDocument._id, [ admin._id ] );
 
-        isLog && Logger.info(`[CREATE_COMPANY]`+req.user.email);
+        //isLog && Logger.info(`[CREATE_COMPANY]`+req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        isLog && Logger.error(`[CREATE_COMPANY]`+req.user.email);
+        //isLog && Logger.error(`[CREATE_COMPANY]`+req.user.email);
         res.status(400).json(error);
     }
 };
@@ -82,11 +82,11 @@ exports.show = async (req, res) => {
     try {
         const company = await CompanyService.getById(req.params.id);
         
-        isLog && Logger.info(`[SHOW_COMPANY]`+req.user.email);
+        //isLog && Logger.info(`[SHOW_COMPANY]`+req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        isLog && Logger.error(`[SHOW_COMPANY]`+req.user.email);
+        //isLog && Logger.error(`[SHOW_COMPANY]`+req.user.email);
         res.status(400).json(error);
     }
 };
@@ -97,11 +97,11 @@ exports.edit = async (req, res) => {
         const company = await CompanyService.edit(req.params.id, req.body);
         console.log("RES", company);
         
-        isLog && Logger.info(`[EDIT_COMPANY]`+req.user.email);
+        //isLog && Logger.info(`[EDIT_COMPANY]`+req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        isLog && Logger.error(`[EDIT_COMPANY]`+req.user.email);
+        //isLog && Logger.error(`[EDIT_COMPANY]`+req.user.email);
         res.status(400).json(error);
     }
 };
@@ -110,11 +110,11 @@ exports.delete = async (req, res) => {
     try {
         const company = await CompanyService.delete(req.params.id);
         
-        isLog && Logger.info(`[DELETE_COMPANY]`+req.user.email);
+        //isLog && Logger.info(`[DELETE_COMPANY]`+req.user.email);
         res.status(200).json(company);
     } catch (error) {
         
-        isLog && Logger.error(`[DELETE_COMPANY]`+req.user.email);
+        //isLog && Logger.error(`[DELETE_COMPANY]`+req.user.email);
         res.status(400).json(error);
     }
 };
