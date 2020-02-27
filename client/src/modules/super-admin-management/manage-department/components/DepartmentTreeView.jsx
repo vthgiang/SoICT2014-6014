@@ -62,18 +62,22 @@ class DepartmentTreeView extends Component {
                         </div>
                     </React.Fragment>
                 }
-                {
-                    tree !== null &&
-                    tree.map(tree => 
-                        <div className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px'}}>
-                            <ul>
-                                {
-                                    this.displayTreeView(tree, translate)
-                                }
-                            </ul>
-                        </div>
-                    )
-                }
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        {
+                            tree !== null &&
+                            tree.map(tree => 
+                                <div className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px'}}>
+                                    <ul>
+                                        {
+                                            this.displayTreeView(tree, translate)
+                                        }
+                                    </ul>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
                 {
                     department.list.length > 0 && 
                     department.list.map(d => 

@@ -12,6 +12,7 @@ export default {
             yes: 'YES',
             no: 'NO',
             no_data: 'No data',
+            field_invalid: "Input field invalid. Please check again!",
         },
 
         form: {
@@ -157,7 +158,11 @@ export default {
             roles: 'Roles can access this page',
             info: 'Page \'s information',
             edit: 'Edit page \'s information',
-            delete: 'Delele link ?'
+            delete: 'Delele link ?',
+            add_success: 'Add successfully',
+            add_faile: 'Add falied!',
+            edit_success: 'Edit successfully!',
+            edit_faile: 'Edit failed!',
         },
 
         manage_component: {
@@ -167,6 +172,10 @@ export default {
             edit: 'Edit component \'s information',
             delete: 'Delete component ?',
             roles: 'Roles have privilege to component',
+            add_success: 'Add successfully',
+            add_faile: 'Add falied!',
+            edit_success: 'Edit successfully!',
+            edit_faile: 'Edit failed!',
         },
 
         footer: {

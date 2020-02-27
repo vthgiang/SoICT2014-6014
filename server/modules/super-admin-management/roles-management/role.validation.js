@@ -14,7 +14,7 @@ exports.createValidation = async (req, res, next) => {
 
         next();
     } catch (err) {
-        res.status(400).json({ message: 'field_invalid!' });
+        res.status(400).json({ message: 'field_invalid' });
     }   
 }
 
@@ -35,6 +35,6 @@ exports.editValidation = async (req, res, next) => {
 
         next();
     } catch (err) {
-        res.status(400).json({ message: 'field_invalid!' });
+        res.status(400).json({ message: 'field_invalid' });
     }   
 }

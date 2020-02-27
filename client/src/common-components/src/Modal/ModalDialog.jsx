@@ -19,7 +19,7 @@ class ModalDialog extends Component {
         document.getElementById(this.props.formID).reset();
     }
 
-    save = () => {
+    save = (translate) => {
         this.props
             .func()
             .then(res => {
@@ -28,17 +28,18 @@ class ModalDialog extends Component {
                 toast.success(this.props.msg_success, {containerId: `notifi-${this.props.modalID}`});
                 
             }).catch(err => {
-                console.log(err);
-                if(err.response.data.message)
-                    toast.error(err.response.data.message, {containerId: `notifi-${this.props.modalID}`});
-                else
+                if(err.response.data.message){
+                    if(translate(`confirm.${err.response.data.message}`) !== undefined)
+                        toast.error(translate(`confirm.${err.response.data.message}`), {containerId: `notifi-${this.props.modalID}`});
+                    else
+                        toast.error(err.response.data.message, {containerId: `notifi-${this.props.modalID}`});
+                }else
                     toast.error(this.props.msg_faile, {containerId: `notifi-${this.props.modalID}`});
             });
     }
 
     render() { 
         const {translate} = this.props;
-        if(this.props.type==="edit") console.log("MODAL EDIT")
 
         return ( 
             <React.Fragment>
@@ -55,7 +56,7 @@ class ModalDialog extends Component {
                             </div>
                             <div className="modal-footer">
                                 <p className="pull-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
-                                <button type="submit" className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
+                                <button type="submit" className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
                                 <button type="button" className="btn btn-default" onClick={this.closeModal}>{translate('form.close')}</button>
                             </div>
                         </div>
