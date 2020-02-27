@@ -122,12 +122,12 @@ class DepartmentTreeView extends Component {
                 >
                     <p style={{color:'#605CA8'}}><strong>{ data.name }</strong></p>
                     <div className="row">
-                        <a 
-                            style={{marginRight: '10px'}} 
+                        <button
+                            style={{marginRight: '10px', border: 'none', backgroundColor: 'white'}} 
                             className="text-black pull-right" 
                             onClick={() => this.toggleSetting(`department-setting-${data.id}`)}
                             title={translate('table.action')}
-                        ><i className="fa fa-gear"></i></a>
+                        ><i className="fa fa-gear"></i></button>
                     </div>
                     <div id={`department-setting-${data.id}`} className="row" style={{display: 'none'}}>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
