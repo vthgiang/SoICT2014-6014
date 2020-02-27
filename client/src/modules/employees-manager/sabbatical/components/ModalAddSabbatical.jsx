@@ -34,6 +34,18 @@ class ModalAddSabbatical extends Component {
             [name]: value
         });
     }
+    handleCloseModal = () => {
+        this.setState({
+            employeeNumber: "",
+            startDate: "",
+            endDate: "",
+            status: "Đã chấp nhận",
+            reason: "",
+        });
+        document.getElementById("formAddSabbatical").reset();
+        window.$(`#modal-addNewSabbatical`).modal("hide");
+    }
+
     handleSunmit = async () => {
         await this.setState({
             startDate: this.refs.startDate.value,
@@ -51,6 +63,14 @@ class ModalAddSabbatical extends Component {
             this.notifyerror("Bạn chưa nhập trạng thái");
         } else {
             this.props.createNewSabbatical(this.state);
+            this.setState({
+                employeeNumber: "",
+                startDate: "",
+                endDate: "",
+                status: "Đã chấp nhận",
+                reason: "",
+            });
+            document.getElementById("formAddSabbatical").reset();
             window.$(`#modal-addNewSabbatical`).modal("hide");
         }
     }
@@ -60,10 +80,11 @@ class ModalAddSabbatical extends Component {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" className="close" onClick={()=>this.handleCloseModal()} aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới đơn xin nghỉ:</h4>
                         </div>
+                        <form id="formAddSabbatical">
                         <div className="modal-body">
                             <div className="col-md-12">
                                 <div className="checkbox" style={{ marginTop: 0 }}>
@@ -108,9 +129,10 @@ class ModalAddSabbatical extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                            <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={()=>this.handleCloseModal()}>Đóng</button>
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới đơn xin nghỉ" >Thêm mới</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

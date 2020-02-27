@@ -6,8 +6,8 @@ import { DisciplineActions } from '../redux/actions';
 import { ModalAddDiscipline } from './ModalAddDiscipline';
 import { ModalEditDiscipline } from './ModalEditDiscipline';
 import { ModalDeleteDiscipline } from './ModalDeleteDiscipline';
-import ActionColumnDiscipline from './ActionColumDiscipline';
-import PaginateBar from '../../../../common-components/PaginateBar';
+import {ActionColumnDiscipline} from './ActionColumDiscipline';
+import {PaginateBar} from '../../../../common-components/src/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 class TabDiscipline extends Component {
     constructor(props) {

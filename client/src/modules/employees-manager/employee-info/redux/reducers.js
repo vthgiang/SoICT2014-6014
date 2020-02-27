@@ -7,11 +7,12 @@ export function employeesInfo(state = {}, action) {
         case Constants.GET_INFOR_PERSONAL_REQUEST:
             return {
                 ...state,
-                loadding: true
+                isloading: true
             };
         case Constants.GET_INFOR_PERSONAL_SUCCESS:
             return {
                 ...state,
+                isloading: false,
                 employee: action.employee.content.employee,
                     employeeContact: action.employee.content.employeeContact,
                     salary: action.employee.content.salary,
@@ -26,11 +27,12 @@ export function employeesInfo(state = {}, action) {
         case Constants.UPDATE_INFOR_PERSONAL_REQUEST:
             return {
                 ...state,
-                updatting: true
+                isloading: true
             };
         case Constants.UPDATE_INFOR_PERSONAL_SUCCESS:
             return {
                 ...state,
+                isloading: false,
                 infoEmployeeUpdate: action.informationEmployee.content
             };
         case Constants.UPDATE_INFOR_PERSONAL_FAILURE:

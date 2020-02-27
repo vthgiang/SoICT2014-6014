@@ -18,8 +18,7 @@ export function Salary(state = {listSalary:[]}, action) {
             };
         case SalaryConstants.GET_SALARY_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
         case SalaryConstants.CREATE_SALARY_REQUEST:
             return {
@@ -37,8 +36,7 @@ export function Salary(state = {listSalary:[]}, action) {
             };
         case SalaryConstants.CREATE_SALARY_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
         case SalaryConstants.DELETE_SALARY_REQUEST:
             return {
@@ -53,8 +51,7 @@ export function Salary(state = {listSalary:[]}, action) {
             };
         case SalaryConstants.DELETE_SALARY_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
         case SalaryConstants.UPDATE_SALARY_REQUEST:
             return {
@@ -72,10 +69,8 @@ export function Salary(state = {listSalary:[]}, action) {
             };
         case SalaryConstants.UPDATE_SALARY_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
-
         default:
             return state
     }

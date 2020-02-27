@@ -7,12 +7,12 @@ class ModalAddPraise extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: " ",
-            number: " ",
-            unit: " ",
-            startDate: " ",
-            type: " ",
-            reason: " ",
+            employeeNumber: "",
+            number: "",
+            unit: "",
+            startDate: "",
+            type: "",
+            reason: "",
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -35,6 +35,20 @@ class ModalAddPraise extends Component {
             [name]: value
         });
     }
+
+    handleCloseModal = () => {
+        this.setState({
+            employeeNumber: "",
+            number: "",
+            unit: "",
+            startDate: "",
+            type: "",
+            reason: "",
+        });
+        document.getElementById("formAddPraise").reset();
+        window.$(`#modal-addPraise`).modal("hide");
+    }
+
     handleSunmit = async () => {
         await this.setState({
             startDate: this.refs.startDate.value,
@@ -53,6 +67,15 @@ class ModalAddPraise extends Component {
             this.notifyerror("Bạn chưa nhập lý do khen thưởng");
         } else {
             this.props.createNewPraise(this.state);
+            this.setState({
+                employeeNumber: "",
+                number: "",
+                unit: "",
+                startDate: "",
+                type: "",
+                reason: "",
+            });
+            document.getElementById("formAddPraise").reset();
             window.$(`#modal-addPraise`).modal("hide");
         }
     }
@@ -63,10 +86,11 @@ class ModalAddPraise extends Component {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" className="close" onClick={()=>this.handleCloseModal()} aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới khen thưởng:</h4>
                         </div>
+                        <form id="formAddPraise">
                         <div className="modal-body">
                             <div className="col-md-12">
                                 <div className="checkbox" style={{ marginTop: 0 }}>
@@ -106,9 +130,10 @@ class ModalAddPraise extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                            <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={()=>this.handleCloseModal()}>Đóng</button>
                             <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới khen thưởng" >Thêm mới</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

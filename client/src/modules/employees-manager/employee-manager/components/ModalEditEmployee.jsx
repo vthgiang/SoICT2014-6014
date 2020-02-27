@@ -4,7 +4,7 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
 import { DisciplineActions } from '../../discipline/redux/actions';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './addemployee.css';
 import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, ModalAddContract, ModalAddExperience } from './CombineContent';
@@ -47,7 +47,8 @@ class ModalEditEmployee extends Component {
             sabbaticalEdit: [],
         };
         this.handleResizeColumn();
-        //this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChangeMSNV = this.handleChangeMSNV.bind(this);
+        this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
@@ -104,6 +105,34 @@ class ModalEditEmployee extends Component {
     handleChange(event) {
         const { name, value } = event.target;
         const { employeeNew } = this.state;
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                [name]: (value === "") ? " " : value
+            }
+        });
+    }
+    // function thêm mã số nhân viên vào state và kiểm tra sự tồn tại của nó
+    handleChangeMSNV(event) {
+        const { name, value } = event.target;
+        const { employeeNew } = this.state;
+        if (value !== this.props.employee[0].employeeNumber && value !== "") {
+            this.props.checkMSNV(value);
+        }
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                [name]: value
+            }
+        });
+    }
+    // function thêm email công ty vào state và kiểm tra sự tồn tại của nó
+    handleChangeEmail(event) {
+        const { name, value } = event.target;
+        const { employeeNew } = this.state;
+        if (value !== this.props.employee[0].emailCompany && value !== "") {
+            this.props.checkEmail(value);
+        }
         this.setState({
             employeeNew: {
                 ...employeeNew,
@@ -510,155 +539,184 @@ class ModalEditEmployee extends Component {
             }
         });
         const { employeeNew } = this.state;
-
-        await this.props.updateInformationEmployee(this.props.employee[0]._id, employeeNew);
-        var employeeNumber = this.state.employeeNew.employeeNumber ? this.state.employeeNew.employeeNumber : this.props.employee[0].employeeNumber;
-        if (this.state.avatar !== "") {
-            let formData = new FormData();
-            formData.append('fileUpload', this.state.avatar);
-            this.props.uploadAvatar(employeeNumber, formData);
-        };
-        // lưu hợp đồng lao động
-        if (this.state.contract.length !== 0) {
-            let listContract = this.state.contract;
-            listContract = listContract.filter(contract => (contract.urlFile !== " "))
-            listContract.map(x => {
+        // kiểm tra việc nhập các trường bắt buộc
+        if (employeeNew.employeeNumber !== undefined && employeeNew.employeeNumber === " ") {
+            this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (employeeNew.employeeNumber !== undefined && this.props.employeesManager.checkMSNV === true) {
+            this.notifyerror("Mã số nhân viên đã tồn tại");
+        } else if (employeeNew.fullName !== undefined && employeeNew.fullName === " ") {
+            this.notifyerror("Bạn chưa nhập tên nhân viên");
+        } else if (employeeNew.MSCC !== undefined && employeeNew.MSCC === " ") {
+            this.notifyerror("Bạn chưa nhập mã chấm công");
+        } else if (employeeNew.brithday !== undefined && employeeNew.brithday === " ") {
+            this.notifyerror("Bạn chưa nhập ngày sinh");
+        } else if (employeeNew.emailCompany !== undefined && employeeNew.emailCompany === " ") {
+            this.notifyerror("Bạn chưa nhập email công ty");
+        } else if (employeeNew.emailCompany !== undefined && this.props.employeesManager.checkEmail === true) {
+            this.notifyerror("Email công ty đã được sử dụng");
+        } else if (employeeNew.CMND !== undefined && employeeNew.CMND === " ") {
+            this.notifyerror("Bạn chưa nhập số CMND/ Hộ chiếu");
+        } else if (employeeNew.dateCMND !== undefined && employeeNew.dateCMND === " ") {
+            this.notifyerror("Bạn chưa nhập ngày cấp CMND/ Hộ chiếu");
+        } else if (employeeNew.addressCMND !== undefined && employeeNew.addressCMND === " ") {
+            this.notifyerror("Bạn chưa nhập nơi cấp CMND/ Hộ chiếu");
+        } else if (employeeNew.phoneNumber !== undefined && employeeNew.phoneNumber === " ") {
+            this.notifyerror("Bạn chưa nhập số điện thoại");
+        } else if (employeeNew.nowAddress !== undefined && employeeNew.nowAddress === " ") {
+            this.notifyerror("Bạn chưa nhập nơi ở hiện tại");
+        } else if ((employeeNew.numberTax !== undefined && employeeNew.numberTax === " ") || (employeeNew.userTax !== undefined && employeeNew.userTax === " ") ||
+            (employeeNew.startTax !== undefined && employeeNew.startTax === " ") || (employeeNew.unitTax !== undefined && employeeNew.unitTax === " ")) {
+            this.notifyerror("Bạn chưa nhập đủ thông tin thuế");
+        } else {
+            await this.props.updateInformationEmployee(this.props.employee[0]._id, employeeNew);
+            var employeeNumber = this.state.employeeNew.employeeNumber ? this.state.employeeNew.employeeNumber : this.props.employee[0].employeeNumber;
+            if (this.state.avatar !== "") {
                 let formData = new FormData();
-                formData.append('fileUpload', x.fileUpload);
-                formData.append('nameContract', x.nameContract);
-                formData.append('typeContract', x.typeContract);
-                formData.append('file', x.file);
-                formData.append('startDate', x.startDate);
-                formData.append('endDate', x.endDate);
-                this.props.updateContract(employeeNumber, formData)
-            })
-        }
-        // lưu thông tin bằng cấp
-        if (this.state.certificate.length !== 0) {
-            let listCertificate = this.state.certificate;
-            listCertificate = listCertificate.filter(certificate => (certificate.urlFile !== " "))
-            listCertificate.map(x => {
-                let formData = new FormData();
-                formData.append('fileUpload', x.fileUpload);
-                formData.append('nameCertificate', x.nameCertificate);
-                formData.append('addressCertificate', x.addressCertificate);
-                formData.append('file', x.file);
-                formData.append('yearCertificate', x.yearCertificate);
-                formData.append('typeCertificate', x.typeCertificate);
-                this.props.updateCertificate(employeeNumber, formData)
-            })
-        }
-        // lưu thông tin chứng chỉ
-        if (this.state.certificateShort.length !== 0) {
-            let listCertificateShort = this.state.certificateShort;
-            listCertificateShort = listCertificateShort.filter(certificateShort => (certificateShort.urlFile !== " "))
-            listCertificateShort.map(x => {
-                let formData = new FormData();
-                formData.append('fileUpload', x.fileUpload);
-                formData.append('nameCertificateShort', x.nameCertificateShort);
-                formData.append('unit', x.unit);
-                formData.append('file', x.file);
-                formData.append('startDate', x.startDate);
-                formData.append('endDate', x.endDate);
-                this.props.updateCertificateShort(employeeNumber, formData)
-            })
-        }
-        // lưu thông tin tài liệu đính kèm
-        if (this.state.file.length !== 0) {
-            let listFile = this.state.file;
-            listFile = listFile.filter(file => (file.urlFile !== " "))
-            listFile.map(x => {
-                let formData = new FormData();
-                formData.append('fileUpload', x.fileUpload);
-                formData.append('nameFile', x.nameFile);
-                formData.append('discFile', x.discFile);
-                formData.append('file', x.file);
-                formData.append('number', x.number);
-                formData.append('status', x.status);
-                this.props.updateFile(employeeNumber, formData)
-            })
-        }
-        // lưu lịch sử tăng giảm lương
-        if (this.state.salaryNew.length !== 0) {
-            let createSalary = this.state.salaryNew.filter(salary => (salary._id === " "));
-            if (createSalary.length !== 0) {
-                createSalary.map(x => {
-                    this.props.createNewSalary({ ...x, employeeNumber })
+                formData.append('fileUpload', this.state.avatar);
+                this.props.uploadAvatar(employeeNumber, formData);
+            };
+            // lưu hợp đồng lao động
+            if (this.state.contract.length !== 0) {
+                let listContract = this.state.contract;
+                listContract = listContract.filter(contract => (contract.urlFile !== " "))
+                listContract.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameContract', x.nameContract);
+                    formData.append('typeContract', x.typeContract);
+                    formData.append('file', x.file);
+                    formData.append('startDate', x.startDate);
+                    formData.append('endDate', x.endDate);
+                    this.props.updateContract(employeeNumber, formData)
+                })
+            }
+            // lưu thông tin bằng cấp
+            if (this.state.certificate.length !== 0) {
+                let listCertificate = this.state.certificate;
+                listCertificate = listCertificate.filter(certificate => (certificate.urlFile !== " "))
+                listCertificate.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameCertificate', x.nameCertificate);
+                    formData.append('addressCertificate', x.addressCertificate);
+                    formData.append('file', x.file);
+                    formData.append('yearCertificate', x.yearCertificate);
+                    formData.append('typeCertificate', x.typeCertificate);
+                    this.props.updateCertificate(employeeNumber, formData)
+                })
+            }
+            // lưu thông tin chứng chỉ
+            if (this.state.certificateShort.length !== 0) {
+                let listCertificateShort = this.state.certificateShort;
+                listCertificateShort = listCertificateShort.filter(certificateShort => (certificateShort.urlFile !== " "))
+                listCertificateShort.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameCertificateShort', x.nameCertificateShort);
+                    formData.append('unit', x.unit);
+                    formData.append('file', x.file);
+                    formData.append('startDate', x.startDate);
+                    formData.append('endDate', x.endDate);
+                    this.props.updateCertificateShort(employeeNumber, formData)
+                })
+            }
+            // lưu thông tin tài liệu đính kèm
+            if (this.state.file.length !== 0) {
+                let listFile = this.state.file;
+                listFile = listFile.filter(file => (file.urlFile !== " "))
+                listFile.map(x => {
+                    let formData = new FormData();
+                    formData.append('fileUpload', x.fileUpload);
+                    formData.append('nameFile', x.nameFile);
+                    formData.append('discFile', x.discFile);
+                    formData.append('file', x.file);
+                    formData.append('number', x.number);
+                    formData.append('status', x.status);
+                    this.props.updateFile(employeeNumber, formData)
+                })
+            }
+            // lưu lịch sử tăng giảm lương
+            if (this.state.salaryNew.length !== 0) {
+                let createSalary = this.state.salaryNew.filter(salary => (salary._id === " "));
+                if (createSalary.length !== 0) {
+                    createSalary.map(x => {
+                        this.props.createNewSalary({ ...x, employeeNumber })
+                    });
+                }
+            }
+            if (this.state.salaryEdit.length !== 0) {
+                this.state.salaryEdit.map(x => {
+                    this.props.updateSalary(x._id, { ...x, employeeNumber })
                 });
             }
-        }
-        if (this.state.salaryEdit.length !== 0) {
-            this.state.salaryEdit.map(x => {
-                this.props.updateSalary(x._id, { ...x, employeeNumber })
-            });
-        }
-        if (this.state.salaryDelete.length !== 0) {
-            this.state.salaryDelete.map(x => {
-                this.props.deleteSalary(x._id);
-            })
-        }
-        // lưu thông tin nghỉ phép
-        if (this.state.sabbaticalNew.length !== 0) {
-            let createSabbatical = this.state.sabbaticalNew.filter(sabbatical => (sabbatical._id === " "));
-            if (createSabbatical.length !== 0) {
-                createSabbatical.map(x => {
-                    this.props.createNewSabbatical({ ...x, employeeNumber })
+            if (this.state.salaryDelete.length !== 0) {
+                this.state.salaryDelete.map(x => {
+                    this.props.deleteSalary(x._id);
+                })
+            }
+            // lưu thông tin nghỉ phép
+            if (this.state.sabbaticalNew.length !== 0) {
+                let createSabbatical = this.state.sabbaticalNew.filter(sabbatical => (sabbatical._id === " "));
+                if (createSabbatical.length !== 0) {
+                    createSabbatical.map(x => {
+                        this.props.createNewSabbatical({ ...x, employeeNumber })
+                    });
+                }
+            }
+            if (this.state.sabbaticalEdit.length !== 0) {
+                this.state.sabbaticalEdit.map(x => {
+                    this.props.updateSabbatical(x._id, { ...x, employeeNumber })
                 });
             }
-        }
-        if (this.state.sabbaticalEdit.length !== 0) {
-            this.state.sabbaticalEdit.map(x => {
-                this.props.updateSabbatical(x._id, { ...x, employeeNumber })
-            });
-        }
-        if (this.state.sabbaticalDelete.length !== 0) {
-            this.state.sabbaticalDelete.map(x => {
-                this.props.deleteSabbatical(x._id);
-            })
-        }
-        // lưu thông tin khen thưởng
-        if (this.state.praiseNew.length !== 0) {
-            let createPraise = this.state.praiseNew.filter(praise => (praise._id === " "));
-            if (createPraise.length !== 0) {
-                createPraise.map(x => {
-                    this.props.createNewPraise({ ...x, employeeNumber })
+            if (this.state.sabbaticalDelete.length !== 0) {
+                this.state.sabbaticalDelete.map(x => {
+                    this.props.deleteSabbatical(x._id);
+                })
+            }
+            // lưu thông tin khen thưởng
+            if (this.state.praiseNew.length !== 0) {
+                let createPraise = this.state.praiseNew.filter(praise => (praise._id === " "));
+                if (createPraise.length !== 0) {
+                    createPraise.map(x => {
+                        this.props.createNewPraise({ ...x, employeeNumber })
+                    });
+                }
+            }
+            if (this.state.praiseEdit.length !== 0) {
+                this.state.praiseEdit.map(x => {
+                    this.props.updatePraise(x._id, { ...x, employeeNumber })
                 });
             }
-        }
-        if (this.state.praiseEdit.length !== 0) {
-            this.state.praiseEdit.map(x => {
-                this.props.updatePraise(x._id, { ...x, employeeNumber })
-            });
-        }
-        if (this.state.praiseDelete.length !== 0) {
-            this.state.praiseDelete.map(x => {
-                this.props.deletePraise(x._id);
-            })
-        }
-        // lưu thông tin kỷ luật
-        if (this.state.disciplineNew.length !== 0) {
-            let createDiscipline = this.state.disciplineNew.filter(discipline => (discipline._id === " "));
-            if (createDiscipline.length !== 0) {
-                createDiscipline.map(x => {
-                    this.props.createNewDiscipline({ ...x, employeeNumber })
+            if (this.state.praiseDelete.length !== 0) {
+                this.state.praiseDelete.map(x => {
+                    this.props.deletePraise(x._id);
+                })
+            }
+            // lưu thông tin kỷ luật
+            if (this.state.disciplineNew.length !== 0) {
+                let createDiscipline = this.state.disciplineNew.filter(discipline => (discipline._id === " "));
+                if (createDiscipline.length !== 0) {
+                    createDiscipline.map(x => {
+                        this.props.createNewDiscipline({ ...x, employeeNumber })
+                    });
+                }
+            }
+            if (this.state.disciplineEdit.length !== 0) {
+                this.state.disciplineEdit.map(x => {
+                    this.props.updateDiscipline(x._id, { ...x, employeeNumber })
                 });
             }
+            if (this.state.disciplineDelete.length !== 0) {
+                this.state.disciplineDelete.map(x => {
+                    this.props.deleteDiscipline(x._id);
+                })
+            }
+            this.notifysuccess("Chỉnh sửa thông tin thành công");
+            window.$(`#modal-editEmployee-${this.props.employee[0].employeeNumber}`).modal("hide");
         }
-        if (this.state.disciplineEdit.length !== 0) {
-            this.state.disciplineEdit.map(x => {
-                this.props.updateDiscipline(x._id, { ...x, employeeNumber })
-            });
-        }
-        if (this.state.disciplineDelete.length !== 0) {
-            this.state.disciplineDelete.map(x => {
-                this.props.deleteDiscipline(x._id);
-            })
-        }
-        window.$(`#modal-editEmployee-${this.props.employee[0].employeeNumber}`).modal("hide");
-
     }
     render() {
-        console.log(this.state)
+        console.log(this.state.employeeNew);
         var id = this.props.employee[0]._id;
         var formatter = new Intl.NumberFormat();
         var employee = this.props.employee;
@@ -712,7 +770,7 @@ class ModalEditEmployee extends Component {
                                                                     </div>
                                                                     <div className="form-group">
                                                                         <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                                                        <input type="text" className="form-control" defaultValue={x.employeeNumber} name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChange} />
+                                                                        <input type="text" className="form-control" defaultValue={x.employeeNumber} name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChangeMSNV} />
                                                                     </div>
                                                                     <div className="form-group">
                                                                         <label htmlFor="fullname">Họ và tên:<span className="required">&#42;</span></label>
@@ -729,7 +787,7 @@ class ModalEditEmployee extends Component {
                                                                     </div>
                                                                     <div className="form-group">
                                                                         <label htmlFor="emailCompany">Email:<span className="required">&#42;</span></label>
-                                                                        <input type="email" className="form-control" defaultValue={x.emailCompany} placeholder="Email công ty" name="emailCompany" onChange={this.handleChange} autoComplete="off" />
+                                                                        <input type="email" className="form-control" defaultValue={x.emailCompany} placeholder="Email công ty" name="emailCompany" onChange={this.handleChangeEmail} autoComplete="off" />
                                                                     </div>
                                                                 </div>
                                                                 <div className=" col-md-4 " style={{ marginTop: 30 }}>
@@ -741,13 +799,13 @@ class ModalEditEmployee extends Component {
                                                                         <label style={{ display: 'block', paddingBottom: 4 }}>Giới tính:<span className="required">&#42;</span></label>
                                                                         {
                                                                             x.gender === "Nam" ?
-                                                                                <input type="radio" name="gender" value="Nam" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
+                                                                                <input type="radio" name="gender" value="Nam" className="" checked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
                                                                                 <input type="radio" name="gender" value="Nam" className="" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
                                                                         }
                                                                         <label>Nam</label>
                                                                         {
                                                                             x.gender === "Nữ" ?
-                                                                                <input type="radio" name="gender" value="Nữ" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
+                                                                                <input type="radio" name="gender" value="Nữ" className="" checked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
                                                                                 <input type="radio" name="gender" value="Nữ" className="" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
                                                                         }
                                                                         <label>Nữ</label>
@@ -1481,7 +1539,6 @@ class ModalEditEmployee extends Component {
                                                 <button type="button" style={{ marginRight: 10 }} title="Cập nhật thông tin nhân viên" className="btn btn-success pull-right" onClick={() => this.handleSubmit()}>Cập nhật thông tin</button>
                                             </div>
                                         </div>
-                                        <ToastContainer />
                                     </div>
                                 </div>
                             </div>
@@ -1492,13 +1549,15 @@ class ModalEditEmployee extends Component {
     }
 };
 function mapState(state) {
-    const { employeesInfo } = state;
-    return { employeesInfo };
+    const { employeesInfo, employeesManager } = state;
+    return { employeesInfo, employeesManager };
 };
 
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
     uploadAvatar: EmployeeManagerActions.uploadAvatar,
+    checkMSNV: EmployeeManagerActions.checkMSNV,
+    checkEmail: EmployeeManagerActions.checkEmail,
 
     updateCertificate: EmployeeManagerActions.updateCertificate,
     updateCertificateShort: EmployeeManagerActions.updateCertificateShort,

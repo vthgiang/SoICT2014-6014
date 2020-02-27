@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ToastContainer} from 'react-toastify';
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
-import ActionColumn from '../../../../common-components/ActionColumn';
-import PaginateBar from '../../../../common-components/PaginateBar';
+import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import './listemployee.css';
 
 class ListEmployee extends Component {
@@ -29,7 +30,7 @@ class ListEmployee extends Component {
     }
     componentDidMount() {
         let script = document.createElement('script');
-        //script.src = 'lib/main/js/ListEmployee.js';
+        script.src = 'lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -196,11 +197,10 @@ class ListEmployee extends Component {
                                     </div>
                                 </div>
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới nhân viên" data-toggle="modal" data-target="#modal-addNewEmployee">Thêm mới nhân viên</button>
+                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới nhân viên" data-toggle="modal" data-target="#modal-addEmployee">Thêm mới nhân viên</button>
                                 </div>
                             </div>
                             <div className="col-md-12">
-
                                 <table className="table table-striped table-bordered" id="myTable" >
                                     <thead>
                                         <tr>
@@ -220,7 +220,7 @@ class ListEmployee extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                        {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
                                             lists.map((x, index) => (
                                                 <tr key={index}>
                                                     <td>{x.employee.map(y => y.employeeNumber)}</td>
@@ -259,7 +259,8 @@ class ListEmployee extends Component {
                     </div>
                     {/* /.box */}
                 </div>
-                <ModalAddEmployee state={this.state} department={department} />
+                <ToastContainer />
+                <ModalAddEmployee />
             </div >
         );
     };

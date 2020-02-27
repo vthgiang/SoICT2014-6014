@@ -42,7 +42,7 @@ class ActionColumnDiscipline extends Component {
          );
     }
 }
- 
-const mapStateToProps = state => state;
+const mapState = state => state;
+const ActionColumnDisciplineExport = connect(mapState, null)(withTranslate(ActionColumnDiscipline));
 
-export default connect( mapStateToProps, null )( withTranslate(ActionColumnDiscipline) );
+export { ActionColumnDisciplineExport as ActionColumnDiscipline }

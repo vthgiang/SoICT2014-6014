@@ -14,6 +14,8 @@ export const EmployeeService = {
     updateCertificate,
     updateCertificateShort,
     updateFile,
+    checkMSNV,
+    checkEmail,
 
 }
 
@@ -28,11 +30,31 @@ function getAll(data) {
     return fetch(`/employee/paginate`, requestOptions).then(handleResponse);
 }
 
+// Kiểm tra sự tồn tại của MSNV 
+function checkMSNV(employeeNumber) {
+    const requestOptions = {
+        method: 'GET',
+        headers: AuthenticateHeader(),
+    }
+
+    return fetch(`/employee/checkMSNV/${employeeNumber}`, requestOptions).then(handleResponse);
+}
+
+// Kiểm tra sự tồn tại của MSNV 
+function checkEmail(email) {
+    const requestOptions = {
+        method: 'GET',
+        headers: AuthenticateHeader(),
+    }
+
+    return fetch(`/employee/checkEmail/${email}`, requestOptions).then(handleResponse);
+}
+
 // Thêm mới thông tin nhân viên
 function addNewEmployee(newEmployee) {
     const requestOptions = {
         method: 'POST',
-        headers:AuthenticateHeader(),
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newEmployee)
     };
 
@@ -41,7 +63,7 @@ function addNewEmployee(newEmployee) {
 }
 
 // Cập nhật thông tin nhân viên theo id
-function updateInformationEmployee(id,data) {
+function updateInformationEmployee(id, data) {
     const requestOptions = {
         method: 'PUT',
         headers: AuthenticateHeader(),
@@ -53,10 +75,10 @@ function updateInformationEmployee(id,data) {
 
 
 // upload ảnh đại diện của nhân viên
-function uploadAvatar(employeeNumber,fileUpload){
+function uploadAvatar(employeeNumber, fileUpload) {
     const requestOptions = {
         method: 'PATCH',
-        headers:AuthenticateHeaderPATCH(),
+        headers: AuthenticateHeaderPATCH(),
         body: fileUpload,
 
     };
@@ -65,21 +87,20 @@ function uploadAvatar(employeeNumber,fileUpload){
 }
 
 // Cập nhật (thêm) thông tin hợp đồng lao động
-function updateContract(employeeNumber,fileUpload){
+function updateContract(employeeNumber, fileUpload) {
     const requestOptions = {
         method: 'PATCH',
-        headers:AuthenticateHeaderPATCH(),
+        headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
     return fetch(`/employee/contract/${employeeNumber}`, requestOptions).then(handleResponse);
-
 }
 
 // Cập nhật (thêm) thông tin bằng cấp
-function updateCertificate(employeeNumber,fileUpload){
+function updateCertificate(employeeNumber, fileUpload) {
     const requestOptions = {
         method: 'PATCH',
-        headers:AuthenticateHeaderPATCH(),
+        headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
     return fetch(`/employee/certificate/${employeeNumber}`, requestOptions).then(handleResponse);
@@ -87,10 +108,10 @@ function updateCertificate(employeeNumber,fileUpload){
 }
 
 // Cập nhật (thêm) thông tin chứng chỉ
-function updateCertificateShort(employeeNumber,fileUpload){
+function updateCertificateShort(employeeNumber, fileUpload) {
     const requestOptions = {
         method: 'PATCH',
-        headers:AuthenticateHeaderPATCH(),
+        headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
     return fetch(`/employee/certificateShort/${employeeNumber}`, requestOptions).then(handleResponse);
@@ -98,10 +119,10 @@ function updateCertificateShort(employeeNumber,fileUpload){
 }
 
 // Cập nhật (thêm) thông tin tài liệu đính kèm
-function updateFile(employeeNumber,fileUpload){
+function updateFile(employeeNumber, fileUpload) {
     const requestOptions = {
         method: 'PATCH',
-        headers:AuthenticateHeaderPATCH(),
+        headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
     return fetch(`/employee/file/${employeeNumber}`, requestOptions).then(handleResponse);

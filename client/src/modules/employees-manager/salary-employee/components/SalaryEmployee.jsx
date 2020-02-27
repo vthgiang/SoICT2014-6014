@@ -7,8 +7,8 @@ import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalDeleteSalary } from './ModalDeleteSalary';
 import { ModalEditSalary } from './ModalEditSalary';
-import ActionColumn from '../../../../common-components/ActionColumn';
-import PaginateBar from '../../../../common-components/PaginateBar';
+import {ActionColumn} from '../../../../common-components/src/ActionColumn';
+import {PaginateBar} from '../../../../common-components/src/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 
 class SalaryEmployee extends Component {

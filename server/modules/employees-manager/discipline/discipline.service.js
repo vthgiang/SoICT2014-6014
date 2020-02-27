@@ -2,25 +2,41 @@ const Discipline = require('../../../models/discipline.model');
 const Employee = require('../../../models/employee.model');
 
 //lấy danh sách kỷ luật của nhân viên
-exports.get = async (data,company) => {
+exports.get = async (data, company) => {
     var keySearch = {
-        company:company
-    };
-    if (data.employeeNumber !== "") {
-        var employeeinfo = await Employee.findOne({
-            employeeNumber: data.employeeNumber
-        });
-        keySearch = {
-            ...keySearch,
-            employee: employeeinfo._id
-        }
+        company: company
     };
     if (data.number !== "") {
         keySearch = {
             ...keySearch,
-            number: data.number
+            number: {
+                $regex: data.number,
+                $options: "i"
+            }
         }
     };
+    if (data.employeeNumber !== "") {
+        var employeeinfo = await Employee.find({
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
+        });
+        if (employeeinfo.length !== 0) {
+            keySearch = {
+                ...keySearch,
+                $or: []
+            }
+            for (let x in employeeinfo) {
+                keySearch = {
+                    ...keySearch,
+                    $or: [...keySearch.$or, {
+                        employee: employeeinfo[x]._id
+                    }]
+                }
+            }
+        }
+    }
     var totalList = await Discipline.count(keySearch);
     var listDiscipline = await Discipline.find(keySearch).populate({
             path: 'employee',
@@ -28,7 +44,7 @@ exports.get = async (data,company) => {
         })
         .skip(data.page)
         .limit(data.limit);
-    var content ={
+    var content = {
         totalList,
         listDiscipline
     }
@@ -37,14 +53,14 @@ exports.get = async (data,company) => {
 }
 
 // thêm mới kỷ luật
-exports.create = async (data,company) => {
+exports.create = async (data, company) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber,
-        company:company
+        company: company
     });
     var newDiscipline = await Discipline.create({
         employee: employeeinfo._id,
-        company:company,
+        company: company,
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,
@@ -53,9 +69,9 @@ exports.create = async (data,company) => {
         reason: data.reason,
     });
     var content = {
-        _id : newDiscipline._id,
+        _id: newDiscipline._id,
         employee: employeeinfo,
-        company:company,
+        company: company,
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,

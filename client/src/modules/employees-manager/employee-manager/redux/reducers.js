@@ -126,6 +126,36 @@ export function employeesManager(state = {}, action) {
             return {
                 error: action.error
             };
+        case EmployeeConstants.CHECK_EMPLOYEENUMBER_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case EmployeeConstants.CHECK_EMPLOYEENUMBER_SUCCESS:
+            return {
+                ...state,
+                checkMSNV: action.checkMSNV.content,
+                    isloading: false
+            };
+        case EmployeeConstants.CHECK_EMPLOYEENUMBER_FAILURE:
+            return {
+                error: action.error
+            };
+        case EmployeeConstants.CHECK_EMAILCOMPANY_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case EmployeeConstants.CHECK_EMAILCOMPANY_SUCCESS:
+            return {
+                ...state,
+                checkEmail: action.checkEmail.content,
+                    isloading: false
+            };
+        case EmployeeConstants.CHECK_EMAILCOMPANY_FAILURE:
+            return {
+                error: action.error
+            };
         default:
             return state
     }

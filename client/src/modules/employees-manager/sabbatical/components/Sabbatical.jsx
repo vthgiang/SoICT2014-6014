@@ -6,8 +6,8 @@ import { SabbaticalActions } from '../redux/actions';
 import { ModalAddSabbatical } from './ModalAddSabbatical';
 import { ModalEditSabbatical } from './ModalEditSabbatical';
 import { ModalDeleteSabbatical } from './ModalDeleteSabbatical';
-import ActionColumn from '../../../../common-components/ActionColumn';
-import PaginateBar from '../../../../common-components/PaginateBar';
+import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 
 class Sabbatical extends Component {
@@ -18,7 +18,7 @@ class Sabbatical extends Component {
             month: "",
             employeeNumber: "",
             department: "All",
-            status: "",
+            status: "All",
             page: 0,
             limit: 5,
 
@@ -107,7 +107,11 @@ class Sabbatical extends Component {
 
     }
 
-    handleSunmitSearch(event) {
+    handleSunmitSearch = async ()=> {
+        await this.setState({
+            month: this.refs.month.value
+        });
+        console.log(this.state);
         this.props.getListSabbatical(this.state);
     }
     render() {
@@ -115,10 +119,10 @@ class Sabbatical extends Component {
         if (this.props.Sabbatical.isLoading === false) {
             listSabbatical = this.props.Sabbatical.listSabbatical;
         }
-        var pageTotal = ((this.props.Sabbatical.totalList % this.state.limit)===0)?
-        parseInt(this.props.Sabbatical.totalList / this.state.limit):
-        parseInt((this.props.Sabbatical.totalList / this.state.limit)+1);
-        var page = parseInt((this.state.page / this.state.limit)+1);
+        var pageTotal = ((this.props.Sabbatical.totalList % this.state.limit) === 0) ?
+            parseInt(this.props.Sabbatical.totalList / this.state.limit) :
+            parseInt((this.props.Sabbatical.totalList / this.state.limit) + 1);
+        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
                 <div className="row">

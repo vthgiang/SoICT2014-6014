@@ -70,6 +70,18 @@ class ModalAddSalary extends Component {
             bonus: bonus
         })
     };
+
+    handleCloseModal = () => {
+        this.setState({
+            unit: "VND",
+            employeeNumber: "",
+            mainSalary: "",
+            bonus: [],
+        });
+        document.getElementById("formAddSalary").reset();
+        window.$(`#modal-addNewSalary`).modal("hide");
+    }
+
     handleSunmit = async () => {
         await this.setState({
             month: this.refs.month.value,
@@ -82,7 +94,13 @@ class ModalAddSalary extends Component {
             this.notifyerror("Bạn chưa nhập tháng lương");
         } else {
             this.props.createNewSalary(this.state);
-            document.getElementById(`form`).reset();
+            this.setState({
+                unit: "VND",
+                employeeNumber: "",
+                mainSalary: "",
+                bonus: [],
+            });
+            document.getElementById("formAddSalary").reset();
             window.$(`#modal-addNewSalary`).modal("hide");
         }
 
@@ -95,11 +113,11 @@ class ModalAddSalary extends Component {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" className="close" onClick={()=>this.handleCloseModal()} aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
                             <h4 className="modal-title">Thêm mới bảng lương:</h4>
                         </div>
-                        <form id="form">
+                        <form id="formAddSalary">
                             <div className="modal-body">
                                 <div className="col-md-12">
                                     <div className="checkbox" style={{ marginTop: 0 }}>
@@ -155,7 +173,7 @@ class ModalAddSalary extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 15 }} type="reset" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={()=>this.handleCloseModal()}>Đóng</button>
                                 <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới bảng lương" >Thêm mới</button>
                             </div>
                         </form>

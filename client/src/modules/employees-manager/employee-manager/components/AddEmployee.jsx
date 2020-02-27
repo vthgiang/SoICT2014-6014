@@ -43,6 +43,8 @@ class AddEmployee extends Component {
         };
         this.handleResizeColumn();
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeMSNV = this.handleChangeMSNV.bind(this);
+        this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.defaulteClick = this.defaulteClick.bind(this);
@@ -97,6 +99,34 @@ class AddEmployee extends Component {
     handleChange(event) {
         const { name, value } = event.target;
         const { employeeNew } = this.state;
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                [name]: value
+            }
+        });
+    }
+    // function thêm mã số nhân viên vào state và kiểm tra sự tồn tại của nó
+    handleChangeMSNV(event) {
+        const { name, value } = event.target;
+        const { employeeNew } = this.state;
+        if (value !== "") {
+            this.props.checkMSNV(value);
+        }
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                [name]: value
+            }
+        });
+    }
+    // function thêm email công ty vào state và kiểm tra sự tồn tại của nó
+    handleChangeEmail(event) {
+        const { name, value } = event.target;
+        const { employeeNew } = this.state;
+        if (value !== "") {
+            this.props.checkEmail(value);
+        }
         this.setState({
             employeeNew: {
                 ...employeeNew,
@@ -442,6 +472,8 @@ class AddEmployee extends Component {
         // kiểm tra việc nhập các trường bắt buộc
         if (!employeeNew.employeeNumber) {
             this.notifyerror("Bạn chưa nhập mã nhân viên");
+        } else if (this.props.employeesManager.checkMSNV === true) {
+            this.notifyerror("Mã số nhân viên đã tồn tại");
         } else if (!employeeNew.fullName) {
             this.notifyerror("Bạn chưa nhập tên nhân viên");
         } else if (!employeeNew.MSCC) {
@@ -450,6 +482,8 @@ class AddEmployee extends Component {
             this.notifyerror("Bạn chưa nhập ngày sinh");
         } else if (!employeeNew.emailCompany) {
             this.notifyerror("Bạn chưa nhập email công ty");
+        } else if (this.props.employeesManager.checkEmail === true) {
+            this.notifyerror("Email công ty đã được sử dụng");
         } else if (!employeeNew.CMND) {
             this.notifyerror("Bạn chưa nhập số CMND/ Hộ chiếu");
         } else if (!employeeNew.dateCMND) {
@@ -473,7 +507,7 @@ class AddEmployee extends Component {
             // lưu hợp đồng lao động
             if (this.state.contract.length !== 0) {
                 let listContract = this.state.contract;
-                listContract= listContract.filter(contract => (contract.fileUpload !== " "))
+                listContract = listContract.filter(contract => (contract.fileUpload !== " "))
                 listContract.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -558,13 +592,12 @@ class AddEmployee extends Component {
                     this.props.createNewDiscipline({ ...x, employeeNumber })
                 })
             }
-            this.notifysuccess("Thêm thành công");
+            this.notifysuccess("Thêm nhân viên thành công");
         }
     }
 
     render() {
         var formatter = new Intl.NumberFormat();
-        console.log(this.state);
         return (
             <React.Fragment>
                 <div className="row">
@@ -604,11 +637,11 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChange} />
+                                                    <input type="text" className="form-control" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChangeMSNV} />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="fullname">Họ và tên:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" name="fullName" id="fullname" placeholder="Họ và tên" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" name="fullName" placeholder="Họ và tên" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="brithday">Ngày sinh:<span className="required">&#42;</span></label>
@@ -618,17 +651,17 @@ class AddEmployee extends Component {
                                                         </div>
                                                         <input type="text" className="form-control datepicker" name="brithday" ref="brithday" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" autoComplete="off" />
                                                     </div>
-                                                    {/* <input type="Date" className="form-control" id="brithday" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
+                                                    {/* <input type="Date" className="form-control" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="emailCompany">Email:<span className="required">&#42;</span></label>
-                                                    <input type="email" className="form-control" id="emailCompany" placeholder="Email công ty" name="emailCompany" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="email" className="form-control" placeholder="Email công ty" name="emailCompany" onChange={this.handleChangeEmail} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className=" col-md-4 " style={{ marginTop: 30 }}>
                                                 <div className="form-group">
                                                     <label htmlFor="MSCC">Mã số chấm công:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" id="MSCC" placeholder="Mã số chấm công" name="MSCC" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" placeholder="Mã số chấm công" name="MSCC" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label style={{ display: 'block', paddingBottom: 4 }}>Giới tính:<span className="required">&#42;</span></label>
@@ -639,7 +672,7 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="birthplace">Nơi sinh:</label>
-                                                    <input type="text" className="form-control" id="birthplace" name="birthplace" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" name="birthplace" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label style={{ display: 'block', paddingBottom: 7 }}>Tình trạng hôn nhân:</label>
@@ -654,11 +687,11 @@ class AddEmployee extends Component {
                                             <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label htmlFor="CMND">Số CMND/Hộ chiếu:<span className="required">&#42;</span></label>
-                                                    <input type="number" className="form-control" id="CMND" name="CMND" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="number" className="form-control" name="CMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="national">Dân tộc:</label>
-                                                    <input type="text" className="form-control" id="national" name="national" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" name="national" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
@@ -670,22 +703,21 @@ class AddEmployee extends Component {
                                                         </div>
                                                         <input type="text" className="form-control datepicker" name="dateCMND" ref="dateCMND" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
                                                     </div>
-                                                    {/* <input type="Date" className="form-control" id="dateCMND" name="dateCMND" onChange={this.handleChange} /> */}
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="religion">Tôn giáo:</label>
-                                                    <input type="text" className="form-control" id="religion" name="religion" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" name="religion" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
 
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label htmlFor="addressCMND">Nơi cấp:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control" id="addressCMND" name="addressCMND" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" name="addressCMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nation">Quốc tịch:</label>
-                                                    <input type="text" className="form-control" id="nation" name="nation" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" name="nation" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                         </div>
@@ -697,32 +729,32 @@ class AddEmployee extends Component {
                                             <div className="col-md-4">
                                                 <div className="form-group" style={{ paddingTop: 3 }}>
                                                     <label htmlFor="phoneNumber">Điện thoại đi động 1:<span className="required">&#42;</span></label>
-                                                    <input type="number" className="form-control" id="phoneNumber" name="phoneNumber" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="number" className="form-control" name="phoneNumber" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label htmlFor="emailPersonal">Email cá nhân 1</label>
-                                                    <input type="text" className="form-control" id="emailPersonal" name="emailPersonal" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control" name="emailPersonal" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group" style={{ paddingTop: 3 }}>
                                                 <label htmlFor="phoneNumber2">Điện thoại đi động 2:</label>
-                                                <input type="number" className="form-control" id="phoneNumber2" name="phoneNumber2" onChange={this.handleChange} autoComplete="off" />
+                                                <input type="number" className="form-control" name="phoneNumber2" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="emailPersonal2">Email cá nhân 2</label>
-                                                <input type="text" className="form-control" id="emailPersonal2" name="emailPersonal2" onChange={this.handleChange} autoComplete="off" />
+                                                <input type="text" className="form-control" name="emailPersonal2" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="phoneNumberAddress">Điện thoại nhà riêng:</label>
-                                                <input type="text" className="form-control" id="phoneNumberAddress" name="phoneNumberAddress" onChange={this.handleChange} autoComplete="off" />
+                                                <input type="text" className="form-control" name="phoneNumberAddress" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
@@ -733,32 +765,32 @@ class AddEmployee extends Component {
                                                 <div className="col-md-4">
                                                     <div className="form-group">
                                                         <label htmlFor="friendName">Họ và tên:</label>
-                                                        <input type="text" className="form-control" id="friendName" name="friendName" onChange={this.handleChange} autoComplete="off" />
+                                                        <input type="text" className="form-control" name="friendName" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="friendPhone">Điện thoại di động:</label>
-                                                        <input type="text" className="form-control" id="friendPhone" name="friendPhone" onChange={this.handleChange} autoComplete="off" />
+                                                        <input type="text" className="form-control" name="friendPhone" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
 
                                                 </div>
                                                 <div className="col-md-4">
                                                     <div className="form-group">
                                                         <label htmlFor="relation">Quan hệ:</label>
-                                                        <input type="text" className="form-control" id="relation" name="relation" onChange={this.handleChange} autoComplete="off" />
+                                                        <input type="text" className="form-control" name="relation" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="friendPhoneAddress">Điện thoại nhà riêng:</label>
-                                                        <input type="text" className="form-control" id="friendPhoneAddress" name="friendPhoneAddress" onChange={this.handleChange} autoComplete="off" />
+                                                        <input type="text" className="form-control" name="friendPhoneAddress" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                 </div>
                                                 <div className="col-md-4">
                                                     <div className="form-group">
                                                         <label htmlFor="friendAddress">Địa chỉ:</label>
-                                                        <input type="text" className="form-control" id="friendAddress" name="friendAddress" onChange={this.handleChange} autoComplete="off" />
+                                                        <input type="text" className="form-control" name="friendAddress" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="friendEmail">Email:</label>
-                                                        <input type="text" className="form-control" id="friendEmail" name="friendEmail" onChange={this.handleChange} autoComplete="off" />
+                                                        <input type="text" className="form-control" name="friendEmail" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -768,26 +800,26 @@ class AddEmployee extends Component {
                                                 <legend className="scheduler-border"><h4 className="box-title">Hộ khẩu thường trú</h4></legend>
                                                 <div className="form-group">
                                                     <label htmlFor="localAddress">Địa chỉ:</label>
-                                                    <input type="text" className="form-control " name="localAddress" id="localAddress" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="localAddress" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCommune">
                                                         Xã/Phường:</label>
-                                                    <input type="text" className="form-control " name="localCommune" id="localCommune" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="localCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localDistrict">
                                                         Quận/Huyện:</label>
-                                                    <input type="text" className="form-control " name="localDistrict" id="localDistrict" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="localDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCity">
                                                         Tỉnh/Thành phố:</label>
-                                                    <input type="text" className="form-control " name="localCity" id="localCity" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="localCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localNational">Quốc gia:</label>
-                                                    <input type="text" className="form-control " name="localNational" id="localNational" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="localNational" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
                                         </div>
@@ -798,27 +830,27 @@ class AddEmployee extends Component {
                                                 <div className="form-group">
                                                     <label htmlFor="nowAddress">
                                                         Địa chỉ:<span className="required">&#42;</span></label>
-                                                    <input type="text" className="form-control " name="nowAddress" id="nowAddress" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="nowAddress" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCommune">
                                                         Xã/Phường:</label>
-                                                    <input type="text" className="form-control " name="nowCommune" id="nowCommune" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="nowCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowDistrict">
                                                         Quận/Huyện:</label>
-                                                    <input type="text" className="form-control " name="nowDistrict" id="nowDistrict" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="nowDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCity">
                                                         Tỉnh/Thành phố:</label>
-                                                    <input type="text" className="form-control " name="nowCity" id="nowCity" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="nowCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowNational">
                                                         Quốc gia:</label>
-                                                    <input type="text" className="form-control " name="nowNational" id="nowNational" onChange={this.handleChange} autoComplete="off" />
+                                                    <input type="text" className="form-control " name="nowNational" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
                                         </div>
@@ -831,15 +863,15 @@ class AddEmployee extends Component {
                                         <div className="box-body">
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="ATM">Số tài khoản:</label>
-                                                <input type="text" className="form-control" id="ATM" name="ATM" onChange={this.handleChange} autoComplete="off" />
+                                                <input type="text" className="form-control" name="ATM" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="nameBank">Tên ngân hàng:</label>
-                                                <input type="text" className="form-control" id="nameBank" name="nameBank" onChange={this.handleChange} autoComplete="off" />
+                                                <input type="text" className="form-control" name="nameBank" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label htmlFor="addressBank">Chi nhánh:</label>
-                                                <input type="text" className="form-control" id="addressBank" name="addressBank" onChange={this.handleChange} autoComplete="off" />
+                                                <input type="text" className="form-control" name="addressBank" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                     </fieldset>
@@ -847,11 +879,11 @@ class AddEmployee extends Component {
                                         <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thuế thu nhập cá nhân:</h4></legend>
                                         <div className="form-group">
                                             <label htmlFor="numberTax">Mã số thuế:<span className="required">&#42;</span></label>
-                                            <input type="number" className="form-control" id="numberTax" name="numberTax" onChange={this.handleChange} autoComplete="off" />
+                                            <input type="number" className="form-control" name="numberTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="userTax">Người đại diện:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" id="userTax" name="userTax" onChange={this.handleChange} autoComplete="off" />
+                                            <input type="text" className="form-control" name="userTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="startDate">Ngày hoạt động:<span className="required">&#42;</span></label>
@@ -864,7 +896,7 @@ class AddEmployee extends Component {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="unitTax">Quản lý bởi:<span className="required">&#42;</span></label>
-                                            <input type="text" className="form-control" id="unitTax" name="unitTax" onChange={this.handleChange} autoComplete="off" />
+                                            <input type="text" className="form-control" name="unitTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                     </fieldset>
 
@@ -956,7 +988,7 @@ class AddEmployee extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="foreignLanguage ">Trình độ ngoại ngữ:</label>
-                                                <input type="text" className="form-control" id="foreignLanguage" name="foreignLanguage" onChange={this.handleChange} autoComplete="off" />
+                                                <input type="text" className="form-control" name="foreignLanguage" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="educational ">Trình độ chuyên môn:</label>
@@ -1109,7 +1141,7 @@ class AddEmployee extends Component {
                                         </fieldset>
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Quá trình đào tạo</h4></legend>
-                                            <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" id="course" title="Thêm mới quá trình đào tạo" onClick={this.handleAddNew}>Thêm mới</button>
+                                            <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới quá trình đào tạo" onClick={this.handleAddNew}>Thêm mới</button>
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
@@ -1345,7 +1377,7 @@ class AddEmployee extends Component {
                                         </div>
                                     </div>
                                     <div className=" box-footer">
-                                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={()=>this.handleSubmit()}>Thêm nhân viên</button>
+                                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.handleSubmit()}>Thêm nhân viên</button>
                                     </div>
                                 </div>
                             </div>
@@ -1366,6 +1398,8 @@ function mapState(state) {
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
     uploadAvatar: EmployeeManagerActions.uploadAvatar,
+    checkMSNV: EmployeeManagerActions.checkMSNV,
+    checkEmail: EmployeeManagerActions.checkEmail,
     createNewSalary: SalaryActions.createNewSalary,
     createNewSabbatical: SabbaticalActions.createNewSabbatical,
     createNewPraise: DisciplineActions.createNewPraise,

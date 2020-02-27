@@ -6,8 +6,8 @@ import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
 import { ModalEditPraise } from './ModalEditPraise';
 import { ModalDeletePraise } from './ModalDeletePraise';
-import ActionColumn from '../../../../common-components/ActionColumn';
-import PaginateBar from '../../../../common-components/PaginateBar';
+import {ActionColumn} from '../../../../common-components/src/ActionColumn';
+import {PaginateBar} from '../../../../common-components/src/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 class TabPraise extends Component {
     constructor(props) {

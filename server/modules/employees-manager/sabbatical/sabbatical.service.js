@@ -2,29 +2,49 @@ const Sabbatical = require('../../../models/sabbatical.model');
 const Employee = require('../../../models/employee.model');
 
 //lấy danh sách thông tin kỷ luật
-exports.get = async (data,company) => {
+exports.get = async (data, company) => {
     var keySearch = {
-        company:company
+        company: company
     };
-    if (data.employeeNumber !== "") {
-        var employeeinfo = await Employee.findOne({
-            employeeNumber: data.employeeNumber
-        });
-        keySearch = {
-            ...keySearch,
-            employee: employeeinfo._id
-        }
-    };
-    // if (data.month !== "") {
-    //     keySearch = {
-    //         ...keySearch,
-    //         month: data.month
-    //     }
-    // };
-    if (data.status !== "") {
+    if (data.status !== "All") {
         keySearch = {
             ...keySearch,
             status: data.status
+        }
+    };
+    if (data.month !== "") {
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $regex: data.month,
+                $options: "i"
+            },
+            endDate: {
+                $regex: data.month,
+                $options: "i"
+            }
+        }
+    };
+    if (data.employeeNumber !== "") {
+        var employeeinfo = await Employee.find({
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
+        });
+        if (employeeinfo.length !== 0) {
+            keySearch = {
+                ...keySearch,
+                $or: []
+            }
+            for (let x in employeeinfo) {
+                keySearch = {
+                    ...keySearch,
+                    $or: [...keySearch.$or, {
+                        employee: employeeinfo[x]._id
+                    }]
+                }
+            }
         }
     };
     var totalList = await Sabbatical.count(keySearch);
@@ -45,14 +65,14 @@ exports.get = async (data,company) => {
 }
 
 // thêm mới thông tin nghỉ phép
-exports.create = async (data,company) => {
+exports.create = async (data, company) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber,
-        company:company
+        company: company
     });
     var newSabbatical = await Sabbatical.create({
         employee: employeeinfo._id,
-        company:company,
+        company: company,
         startDate: data.startDate,
         endDate: data.endDate,
         status: data.status,
@@ -61,7 +81,7 @@ exports.create = async (data,company) => {
     var content = {
         _id: newSabbatical._id,
         employee: employeeinfo,
-        company:company,
+        company: company,
         startDate: data.startDate,
         endDate: data.endDate,
         status: data.status,

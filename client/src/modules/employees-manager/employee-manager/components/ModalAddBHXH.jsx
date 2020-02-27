@@ -66,7 +66,6 @@ class ModalAddBHXH extends Component {
 
     }
     render() {
-        console.log(this.state);
         return (
             <React.Fragment>
                 <a className="btn btn-success pull-right" style={{ marginBottom: 15 }} data-toggle="modal" href={`#modal-addNewBHXH-${this.props.index}`} title="Thêm quá trình đóng BHXH">Thêm mới</a>

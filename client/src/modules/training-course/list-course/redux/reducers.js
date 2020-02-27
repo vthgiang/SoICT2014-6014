@@ -18,8 +18,7 @@ export function Course(state = {}, action) {
             };
         case CourseConstants.GET_LISTCOURSE_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
         case CourseConstants.CREATE_COURSE_REQUEST:
             return {
@@ -37,8 +36,7 @@ export function Course(state = {}, action) {
             };
         case CourseConstants.CREATE_COURSE_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
         case CourseConstants.DELETE_COURSE_REQUEST:
             return {
@@ -53,8 +51,7 @@ export function Course(state = {}, action) {
             };
         case CourseConstants.DELETE_COURSE_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
         case CourseConstants.UPDATE_COURSE_REQUEST:
             return {
@@ -72,10 +69,8 @@ export function Course(state = {}, action) {
             };
         case CourseConstants.UPDATE_COURSE_FAILURE:
             return {
-                error: action.error,
-                    isLoading: false,
+                error: action.error
             };
-
         default:
             return state
     }

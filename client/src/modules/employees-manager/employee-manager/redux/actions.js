@@ -13,7 +13,9 @@ export const EmployeeManagerActions = {
     updateCertificate,
     updateCertificateShort,
     updateFile,
-    updateInformationEmployee
+    updateInformationEmployee,
+    checkMSNV,
+    checkEmail
 
 };
 
@@ -45,6 +47,68 @@ function getAllEmployee(data) {
     function failure(error) {
         return {
             type: EmployeeConstants.GETALL_FAILURE,
+            error
+        };
+    };
+}
+
+// Kiểm tra sự tồn tại của MSNV
+function checkMSNV(employeeNumber) {
+    return dispatch => {
+        dispatch(request());
+        EmployeeService.checkMSNV(employeeNumber)
+            .then(
+                checkMSNV => dispatch(success(checkMSNV)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function request() {
+        return {
+            type: EmployeeConstants.CHECK_EMPLOYEENUMBER_REQUEST
+        };
+    };
+
+    function success(checkMSNV) {
+        return {
+            type: EmployeeConstants.CHECK_EMPLOYEENUMBER_SUCCESS,
+            checkMSNV
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: EmployeeConstants.CHECK_EMPLOYEENUMBER_FAILURE,
+            error
+        };
+    };
+}
+
+// Kiểm tra sự tồn tại của email công ty
+function checkEmail(email) {
+    return dispatch => {
+        dispatch(request());
+        EmployeeService.checkEmail(email)
+            .then(
+                checkEmail => dispatch(success(checkEmail)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function request() {
+        return {
+            type: EmployeeConstants.CHECK_EMAILCOMPANY_REQUEST,
+        };
+    };
+
+    function success(checkEmail) {
+        return {
+            type: EmployeeConstants.CHECK_EMAILCOMPANY_SUCCESS,
+            checkEmail
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: EmployeeConstants.CHECK_EMAILCOMPANY_FAILURE,
             error
         };
     };

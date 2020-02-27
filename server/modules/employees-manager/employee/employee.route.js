@@ -7,6 +7,12 @@ const EmployeeController = require("./employee.controller");
 // Lấy danh sách nhân viên
 router.post('/paginate',auth, EmployeeController.get);
 
+// Kiểm tra sự tồn tại của MSNV
+router.get('/checkMSNV/:employeeNumber',auth, EmployeeController.checkMSNV);
+
+// Kiểm tra sự tồn tại của email công ty
+router.get('/checkEmail/:email', EmployeeController.checkEmail);
+
 // Lấy thông tin cá nhân
 router.get('/:email', EmployeeController.getInforPersonal);
 

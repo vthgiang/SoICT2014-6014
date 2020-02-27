@@ -5,7 +5,8 @@ import { ModalDeleteCourse } from './ModalDeleteCourse';
 import { ModalEditCourse } from './ModalEditCourse';
 import { ModalAddCourse } from './ModalAddCourse';
 import { CourseActions } from '../redux/actions';
-import ActionColumn from '../../../../common-components/ActionColumn';
+import {ActionColumn} from '../../../../common-components/src/ActionColumn';
+import {PaginateBar} from '../../../../common-components/src/PaginateBar';
 import '../../../employees-manager/employee-manager/components/listemployee.css';
 
 class ListCourse extends Component {

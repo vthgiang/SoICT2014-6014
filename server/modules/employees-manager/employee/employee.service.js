@@ -5,7 +5,6 @@ const Praise = require('../../../models/praise.model');
 const Sabbatical = require('../../../models/sabbatical.model');
 const Salary = require('../../../models/salary.model');
 
-
 // Lấy dánh sách nhân viên
 exports.get = async (data, company) => {
     var keySearch = {
@@ -20,9 +19,6 @@ exports.get = async (data, company) => {
             }
         }
     };
-    // if(data.department!=="All") {
-    //     keySearch={department:data.department}
-    // };
     if (data.gender !== "All") {
         keySearch = {
             ...keySearch,
@@ -74,6 +70,34 @@ exports.get = async (data, company) => {
         totalList
     }
     return contents;
+}
+
+// Kiểm tra sự tồn tại của MSNV
+exports.checkMSNV = async (employeeNumber, company) => {
+    var idEmployee = await Employee.find({
+        employeeNumber: employeeNumber,
+        company: company
+    }, {
+        field1: 1
+    })
+    var checkMSNV = false;
+    if (idEmployee.length !== 0) {
+        checkMSNV = true
+    }
+    return checkMSNV;
+}
+// Kiểm tra sự tồn tại của email công ty
+exports.checkEmail = async (email) => {
+    var idEmployee = await Employee.find({
+        emailCompany: email
+    }, {
+        field1: 1
+    })
+    var checkEmail = false;
+    if (idEmployee.length !== 0) {
+        checkEmail = true
+    }
+    return checkEmail;
 }
 
 // Lấy thông tin cá nhân

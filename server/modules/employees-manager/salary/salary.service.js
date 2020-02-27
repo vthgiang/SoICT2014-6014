@@ -2,18 +2,9 @@ const Salary = require('../../../models/salary.model');
 const Employee = require('../../../models/employee.model');
 
 //lấy danh sách các bẳng lương của nhân viên
-exports.get = async (data,company) => {
+exports.get = async (data, company) => {
     var keySearch = {
-        company:company
-    };
-    if (data.employeeNumber !== "") {
-        var employeeinfo = await Employee.findOne({
-            employeeNumber: data.employeeNumber
-        });
-        keySearch = {
-            ...keySearch,
-            employee: employeeinfo._id
-        }
+        company: company,
     };
     if (data.month !== "") {
         keySearch = {
@@ -21,6 +12,28 @@ exports.get = async (data,company) => {
             month: data.month
         }
     };
+    if (data.employeeNumber !== "") {
+        var employeeinfo = await Employee.find({
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
+        });
+        if (employeeinfo.length !== 0) {
+            keySearch = {
+                ...keySearch,
+                $or: []
+            }
+            for (let x in employeeinfo) {
+                keySearch = {
+                    ...keySearch,
+                    $or: [...keySearch.$or, {
+                        employee: employeeinfo[x]._id
+                    }]
+                }
+            }
+        }
+    }
     var totalList = await Salary.count(keySearch);
     var listSalary = await Salary.find(keySearch).populate({
             path: 'employee',
@@ -30,6 +43,7 @@ exports.get = async (data,company) => {
         })
         .skip(data.page)
         .limit(data.limit);
+
     var content = {
         totalList,
         listSalary
@@ -39,16 +53,16 @@ exports.get = async (data,company) => {
 }
 
 // thêm mới bẳng lương mới
-exports.create = async (data,company) => {
+exports.create = async (data, company) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber,
-        company:company
+        company: company
     });
     var salary = data.mainSalary + data.unit;
     //console.log(employeeinfo.map(x=x._id));
     var newSalary = await Salary.create({
         employee: employeeinfo._id,
-        company:company,
+        company: company,
         month: data.month,
         mainSalary: salary,
         bonus: data.bonus
@@ -56,7 +70,7 @@ exports.create = async (data,company) => {
     var content = {
         _id: newSalary._id,
         employee: employeeinfo,
-        company:company,
+        company: company,
         month: data.month,
         mainSalary: salary,
         bonus: data.bonus
@@ -79,7 +93,7 @@ exports.update = async (id, data) => {
     var salaryChange = {
         employee: employeeinfo._id,
         month: data.month,
-        mainSalary:data.unit? (data.mainSalary + data.unit):data.mainSalary,
+        mainSalary: data.unit ? (data.mainSalary + data.unit) : data.mainSalary,
         bonus: data.bonus
     };
     await Salary.findOneAndUpdate({

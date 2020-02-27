@@ -2,33 +2,51 @@ const Praise = require('../../../models/praise.model');
 const Employee = require('../../../models/employee.model');
 
 //lấy danh sách kỷ luật của nhân viên
-exports.get = async (data,company) => {
+exports.get = async (data, company) => {
     var keySearch = {
-        company:company
-    };
-    if (data.employeeNumber !== "") {
-        var employeeinfo = await Employee.findOne({
-            employeeNumber: data.employeeNumber
-        });
-        keySearch = {
-            ...keySearch,
-            employee: employeeinfo._id
-        }
+        company: company
     };
     if (data.number !== "") {
         keySearch = {
             ...keySearch,
-            number: data.number
+            number: {
+                $regex: data.number,
+                $options: "i"
+            }
         }
     };
+    if (data.employeeNumber !== "") {
+        var employeeinfo = await Employee.find({
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
+        });
+        if (employeeinfo.length !== 0) {
+            keySearch = {
+                ...keySearch,
+                $or: []
+            }
+            for (let x in employeeinfo) {
+                keySearch = {
+                    ...keySearch,
+                    $or: [...keySearch.$or, {
+                        employee: employeeinfo[x]._id
+                    }]
+                }
+            }
+        }
+    }
     var totalList = await Praise.count(keySearch);
     var listPraise = await Praise.find(keySearch).populate({
             path: 'employee',
             model: Employee
-        }).sort({ 'createDate': 'desc' })
+        }).sort({
+            'createDate': 'desc'
+        })
         .skip(data.page)
         .limit(data.limit);
-    var content ={
+    var content = {
         totalList,
         listPraise
     }
@@ -37,14 +55,14 @@ exports.get = async (data,company) => {
 }
 
 // thêm mới kỷ luật
-exports.create = async (data,company) => {
+exports.create = async (data, company) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber,
-        company:company
+        company: company
     });
-    var newPraise=await Praise.create({
+    var newPraise = await Praise.create({
         employee: employeeinfo._id,
-        company:company,
+        company: company,
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,
@@ -54,7 +72,7 @@ exports.create = async (data,company) => {
     var content = {
         _id: newPraise._id,
         employee: employeeinfo,
-        company:company,
+        company: company,
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,
@@ -72,7 +90,7 @@ exports.delete = async (id) => {
 }
 
 // Update thông tin kỷ luật
-exports.update = async (id,data) => {
+exports.update = async (id, data) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber
     });
@@ -86,7 +104,7 @@ exports.update = async (id,data) => {
         reason: data.reason,
     };
     await Praise.findOneAndUpdate({
-        _id:id
+        _id: id
     }, {
         $set: praiseChange
     });
