@@ -60,11 +60,11 @@ class LinkInfoForm extends Component {
                 >
                     <form id={`form-edit-page-${linkId}`}>
                         <div className="form-group">
-                            <label>{ translate('manage_page.url') }</label>
+                            <label>{ translate('manage_page.url') }<span className="text-red"> * </span></label>
                             <input name="url" type="text" className="form-control" defaultValue={linkName} onChange={this.inputChange} />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_page.description') }</label>
+                            <label>{ translate('manage_page.description') }<span className="text-red"> * </span></label>
                             <input name="description" type="text" className="form-control" defaultValue={linkDescription} onChange={this.inputChange} />
                         </div>
                         <div className="form-group">

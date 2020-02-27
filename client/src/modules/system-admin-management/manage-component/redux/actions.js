@@ -83,16 +83,20 @@ function create(component){
 function edit(id, component){
     return dispatch => {
         dispatch({ type: ComponentConstants.EDIT_COMPONENT_REQUEST});
-        ComponentServices.edit(id, component)
+        return new Promise((resolve, reject) => {
+            ComponentServices.edit(id, component)
             .then(res => {
                 dispatch({
                     type: ComponentConstants.EDIT_COMPONENT_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err);
+                reject(err);
             })
+        })
     }
 }
 

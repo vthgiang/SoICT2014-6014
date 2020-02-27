@@ -31,7 +31,15 @@ class ComponentInfoForm extends Component {
         const { id, name, description } = this.state;
         const component = { name, description, roles };
 
-        this.props.editComponent(id, component);
+        return this.props.editComponent(id, component);
+    }
+
+    componentDidMount(){
+        let script = document.createElement('script');
+        script.src = 'lib/main/js/CoCauToChuc.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
     }
 
     render() { 
@@ -49,7 +57,7 @@ class ComponentInfoForm extends Component {
                 >
                     <form id={`form-edit-component-${componentId}`}>
                         <div className="form-group">
-                            <label>{ translate('table.name') }</label>
+                            <label>{ translate('table.name') }<span className="text-red"> * </span></label>
                             <input name="name" type="text" className="form-control" defaultValue={componentName} onChange={this.inputChange} />
                         </div>
                         <div className="form-group">
