@@ -143,7 +143,7 @@ class SideBar extends Component {
                                     this.checkURL('/salary-employee', links) === true || this.checkURL('/time-keeping', links) === true ||
                                     this.checkURL('/discipline', links) === true || this.checkURL('/sabbatical', links) === true) &&
                                 <li className="treeview">
-                                    <a href="#abc">
+                                    <a href="#">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -177,7 +177,7 @@ class SideBar extends Component {
                             {
                                 (this.checkURL('/detail-employee', links) === true || this.checkURL('/update-employee', links) === true) &&
                                 <li className="treeview">
-                                    <a href="#abc">
+                                    <a href="#">
                                         <i className="fa fa-user-circle" /> <span>{translate(`menu.account`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -196,7 +196,7 @@ class SideBar extends Component {
                             {
                                 (this.checkURL('/list-course', links) === true || this.checkURL('/training-plan', links) === true) &&
                                 <li className="treeview">
-                                    <a href="#abc">
+                                    <a href="#">
                                         <i className="fa fa-graduation-cap" /> <span>{translate(`menu.manage_training`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />

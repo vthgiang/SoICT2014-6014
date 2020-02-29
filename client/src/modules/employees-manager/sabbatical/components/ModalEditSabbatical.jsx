@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
@@ -36,18 +37,19 @@ class ModalEditSabbatical extends Component {
         });
     }
     handleSunmit(event) {
+        var { translate } = this.props;
         var startDate = this.refs.startDate.value;
         var endDate = this.refs.endDate.value;
         if (this.state.employeeNumber === "") {
-            this.notifyerror("Bạn chưa nhập mã nhân viên");
+            this.notifyerror(translate('sabbatical.check_null_msnv'));
         } else if (startDate === "") {
-            this.notifyerror("Bạn chưa nhập ngày bắt đầu");
+            this.notifyerror(translate('sabbatical.check_start_day'));
         } else if (endDate === "") {
-            this.notifyerror("Bạn chưa nhập ngày kết thúc");
+            this.notifyerror(translate('sabbatical.check_end_day'));
         } else if (this.state.reason === "") {
-            this.notifyerror("Bạn chưa nhập lý do ");
+            this.notifyerror(translate('sabbatical.check_reason'));
         } else if (this.state.status === "") {
-            this.notifyerror("Bạn chưa nhập trạng thái");
+            this.notifyerror(translate('sabbatical.check_status'));
         } else {
             this.props.updateSabbatical(this.state.id, { ...this.state, startDate, endDate });
             window.$(`#modal-editSabbatical-${this.props.data._id}`).modal("hide");
@@ -56,31 +58,32 @@ class ModalEditSabbatical extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         var data = this.state;
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editSabbatical-${data.id}`} title="Thông tin bảng lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <a href={`#modal-editSabbatical-${data.id}`} title={translate('sabbatical.infor_sabbatical')} data-toggle="modal"><i className="material-icons">view_list</i></a>
                 <div className="modal fade" id={`modal-editSabbatical-${data.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">Chỉnh sửa đơn xin nghỉ:</h4>
+                                <h4 className="modal-title">{translate('sabbatical.infor_sabbatical')}:</h4>
                             </div>
                             <div className="modal-body">
                                 <div className="col-md-12">
                                     <div className="checkbox" style={{ marginTop: 0 }}>
                                         <label style={{ paddingLeft: 0 }}>
-                                            (<span style={{ color: "red" }}>*</span>): là các trường bắt buộc phải nhập.
+                                            (<span style={{ color: "red" }}>*</span>): {translate('modal.note')}.
                                                         </label>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
+                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="employeeNumber" defaultValue={data.employeeNumber} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="startDate">Ngày bắt đầu:<span className="required">&#42;</span></label>
+                                        <label htmlFor="startDate">{translate('sabbatical.start_date')}:<span className="required">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -89,7 +92,7 @@ class ModalEditSabbatical extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="endDate">Ngày kết thúc:<span className="required">&#42;</span></label>
+                                        <label htmlFor="endDate">{translate('sabbatical.end_date')}:<span className="required">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -98,11 +101,11 @@ class ModalEditSabbatical extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="reason">Lý do:<span className="required">&#42;</span></label>
+                                        <label htmlFor="reason">{translate('sabbatical.reason')}:<span className="required">&#42;</span></label>
                                         <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" defaultValue={data.reason} onChange={this.handleChange}></textarea>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">Trạng thái:<span className="required">&#42;</span></label>
+                                        <label htmlFor="employeeNumber">{translate('table.status')}:<span className="required">&#42;</span></label>
                                         <select className="form-control" name="status" defaultValue={data.status} onChange={this.handleChange} >
                                             <option value="Đã chấp nhận">Đã chấp nhận</option>
                                             <option value="Chờ phê duyệt">Chờ phê duyệt</option>
@@ -112,8 +115,8 @@ class ModalEditSabbatical extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 45 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                                <button style={{ marginRight: 15 }} type="button" title="Lưu lại các thay đổi" onClick={this.handleSunmit} className="btn btn-success pull-right">Lưu thay đổi</button>
+                                <button style={{ marginRight: 45 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">{translate('modal.close')}</button>
+                                <button style={{ marginRight: 15 }} type="button" title={translate('modal.update')} onClick={this.handleSunmit} className="btn btn-success pull-right">{translate('modal.update')}</button>
                             </div>
                         </div>
                     </div>
@@ -132,5 +135,5 @@ const actionCreators = {
     updateSabbatical: SabbaticalActions.updateSabbatical,
 };
 
-const connectedEditSabbatical = connect(mapState, actionCreators)(ModalEditSabbatical);
+const connectedEditSabbatical = connect(mapState, actionCreators)(withTranslate(ModalEditSabbatical));
 export { connectedEditSabbatical as ModalEditSabbatical };

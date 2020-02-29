@@ -121,7 +121,6 @@ class UpdateEmployee extends Component {
 
 
     render() {
-        console.log(this.state)
         const { employeesInfo } = this.props;
         var employee, employeeContact;
         if (employeesInfo.employee) employee = employeesInfo.employee;

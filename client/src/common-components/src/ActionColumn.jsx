@@ -6,19 +6,19 @@ class ActionColumn extends Component {
     constructor(props) {
         super(props);
         this.record = React.createRef();
-        this.state = {  }
+        this.state = {}
     }
-    render() { 
+    render() {
         const { columnName, hideColumn, translate } = this.props;
-        return ( 
+        return (
             <React.Fragment>
-                { columnName }
+                {columnName}
                 <button type="button" data-toggle="collapse" data-target="#setting-table" style={{ border: "none", background: "none" }}><i className="fa fa-gear"></i></button>
                 <div id="setting-table" className="row collapse">
                     <span className="pop-arw arwTop L-auto" style={{ right: "13px" }}></span>
                     {
-                        hideColumn && 
-                            <div className="col-xs-12">
+                        hideColumn &&
+                        <div className="col-xs-12">
                             <label style={{ marginRight: "15px" }}>Ẩn cột:</label>
                             <select id="multiSelectShowColumn" multiple="multiple">
                                 <option value="1">Tên mẫu</option>
@@ -32,17 +32,17 @@ class ActionColumn extends Component {
                     }
                     <div className="col-xs-12" style={{ marginTop: "10px" }}>
                         <label style={{ marginRight: "15px" }}>{translate('table.line_per_page')}</label>
-                        <input className="form-control" type="text" defaultValue={5} ref={this.record}/>
+                        <input className="form-control" type="text" defaultValue={5} ref={this.record} />
                     </div>
                     <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
-                        <button type="button" className="btn btn-success" onClick={() => this.props.setLimit(this.record.current.value)}>{ translate('table.update') }</button>
+                        <button type="button" className="btn btn-success" onClick={() => this.props.setLimit(this.record.current.value)}>{translate('table.update')}</button>
                     </div>
                 </div>
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 const mapState = state => state;
 const ActionColumnExport = connect(mapState, null)(withTranslate(ActionColumn));
 
