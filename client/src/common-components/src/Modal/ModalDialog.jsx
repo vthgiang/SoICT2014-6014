@@ -29,7 +29,10 @@ class ModalDialog extends Component {
                 
             }).catch(err => {
                 if(err.response.data.message){
-                    if(translate(`confirm.${err.response.data.message}`) !== undefined)
+                    if( 
+                        err.response.data.message.length < 20 &&
+                        translate(`confirm.${err.response.data.message}`) !== undefined
+                    )
                         toast.error(translate(`confirm.${err.response.data.message}`), {containerId: `notifi-${this.props.modalID}`});
                     else
                         toast.error(err.response.data.message, {containerId: `notifi-${this.props.modalID}`});

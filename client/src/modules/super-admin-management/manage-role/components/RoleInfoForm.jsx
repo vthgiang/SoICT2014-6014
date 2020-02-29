@@ -61,7 +61,9 @@ class RoleInfoForm extends Component {
                     <form id={`form-edit-role-${roleInfo._id}`}>
                         <div className="form-group">
                             <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
-                            <input className="form-control" name="name" defaultValue={ roleInfo.name } onChange={ this.inputChange }></input>
+                            <input className="form-control" name="name" defaultValue={ roleInfo.name } 
+                            disabled={ roleInfo.type.name === 'abstract' ? true : false }
+                            onChange={ this.inputChange }></input>
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_role.extends') }</label>
@@ -81,19 +83,34 @@ class RoleInfoForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_role.users') } { roleInfo.name }</label>
-                            <select 
-                                name="users"
-                                className="form-control select2" 
-                                multiple="multiple" 
-                                onChange={ this.inputChange }
-                                style={{ width: '100%' }} 
-                                value={ roleInfo.users !== undefined ? roleInfo.users.map( user => user.userId ) : [] }
-                                ref="users"
-                            >
-                                {   
-                                    user.list.map( user => <option key={user._id} value={user._id}>{ `${user.email} - ${user.name}` }</option>)
-                                }
-                            </select>
+                            {
+                                roleInfo.name === "Super Admin" ?
+                                <select 
+                                    name="users"
+                                    className="form-control select2"
+                                    onChange={ this.inputChange }
+                                    style={{ width: '100%' }} 
+                                    defaultValue={ roleInfo.users[0].userId}
+                                    ref="users"
+                                >
+                                    {   
+                                        user.list.map( user => <option key={user._id} value={user._id}>{ `${user.email} - ${user.name}` }</option>)
+                                    }
+                                </select> :
+                                <select 
+                                    name="users"
+                                    className="form-control select2" 
+                                    multiple="multiple" 
+                                    onChange={ this.inputChange }
+                                    style={{ width: '100%' }} 
+                                    value={ roleInfo.users !== undefined ? roleInfo.users.map( user => user.userId ) : [] }
+                                    ref="users"
+                                >
+                                    {   
+                                        user.list.map( user => <option key={user._id} value={user._id}>{ `${user.email} - ${user.name}` }</option>)
+                                    }
+                                </select>
+                            }
                         </div>
                     </form>
                 </ModalDialog>

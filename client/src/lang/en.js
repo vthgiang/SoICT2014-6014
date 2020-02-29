@@ -1,6 +1,7 @@
 export default {
     locale: 'en',
     messages: {
+        language: 'Language setting',
         auth: {
             login: 'Login',
             logout: 'Logout',

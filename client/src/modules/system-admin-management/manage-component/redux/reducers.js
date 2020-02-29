@@ -89,10 +89,16 @@ export function component (state = initState, action) {
 
         case ComponentConstants.EDIT_COMPONENT_SUCCESS:
             index = findIndex(state.list, action.payload._id);
+            indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
                 state.list[index].name = action.payload.name;
                 state.list[index].description = action.payload.description;
                 state.list[index].roles = action.payload.roles;
+            }
+            if(indexPaginate !== -1){
+                state.listPaginate[indexPaginate].name = action.payload.name;
+                state.listPaginate[indexPaginate].description = action.payload.description;
+                state.listPaginate[indexPaginate].roles = action.payload.roles;
             }
             return {
                 ...state,

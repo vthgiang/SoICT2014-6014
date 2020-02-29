@@ -26,15 +26,15 @@ class DepartmentTreeView extends Component {
         const { translate, department } = this.props;
         return ( 
             <React.Fragment>
+                <div className="pull-right">
+                    <DepartmentCreateForm />
+                </div>
                 {
                     department.list.length > 0 &&
                     <React.Fragment >
                         <div className="pull-left">
                             <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
                             <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut } title={translate('manage_department.zoom_out')}></i>
-                        </div>
-                        <div className="pull-right">
-                            <DepartmentCreateForm />
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
                             <select 
@@ -122,12 +122,12 @@ class DepartmentTreeView extends Component {
                 >
                     <p style={{color:'#605CA8'}}><strong>{ data.name }</strong></p>
                     <div className="row">
-                        <a 
-                            style={{marginRight: '10px'}} 
+                        <button
+                            style={{marginRight: '10px', border: 'none', backgroundColor: 'white'}} 
                             className="text-black pull-right" 
                             onClick={() => this.toggleSetting(`department-setting-${data.id}`)}
                             title={translate('table.action')}
-                        ><i className="fa fa-gear"></i></a>
+                        ><i className="fa fa-gear"></i></button>
                     </div>
                     <div id={`department-setting-${data.id}`} className="row" style={{display: 'none'}}>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">

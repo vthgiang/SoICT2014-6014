@@ -8,7 +8,7 @@ router.get("/", auth, LinkController.get);
 router.post("/paginate", auth, LinkController.getPaginate);
 router.post("/", auth, createValidation, LinkController.create);
 router.get("/:id", auth, LinkController.show);
-router.patch("/:id", auth, LinkController.edit);
+router.patch("/:id", auth, createValidation, LinkController.edit);
 router.delete("/:id", auth, LinkController.delete);
 
 //manage link of 1 company
