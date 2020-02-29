@@ -73,7 +73,6 @@ class ModalEditSalary extends Component {
             this.props.updateSalary(this.state.id, this.state);
             window.$(`#modal-editSalary-${this.props.data._id}`).modal("hide");
         }
-
     }
 
     render() {

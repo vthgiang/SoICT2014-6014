@@ -85,7 +85,7 @@ class ModalAddSabbatical extends Component {
                 status: "Đã chấp nhận",
                 reason: "",
             });
-            this.notifysuccess("Thêm mới thành công");
+            this.notifysuccess(translate('modal.add_success'));
             document.getElementById("formAddSabbatical").reset();
             window.$(`#modal-addNewSabbatical`).modal("hide");
         }

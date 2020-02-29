@@ -114,7 +114,7 @@ class ModalAddSalary extends Component {
                 mainSalary: "",
                 bonus: [],
             });
-            this.notifysuccess("Thêm mới thành công");
+            this.notifysuccess(translate('modal.add_success'));
             document.getElementById("formAddSalary").reset();
             window.$(`#modal-addNewSalary`).modal("hide");
         }
@@ -141,7 +141,7 @@ class ModalAddSalary extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="employeeNumber">{translate('salary_employee.staff_number')}:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChangeMSNV} placeholder="Mã số nhân viên" autoComplete="off" />
+                                        <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChangeMSNV} placeholder={translate('salary_employee.staff_number')} autoComplete="off" />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="month">{translate('salary_employee.month')}:<span className="required">&#42;</span></label>
@@ -149,7 +149,7 @@ class ModalAddSalary extends Component {
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
                                             </div>
-                                            <input type="text" className="form-control employeedatepicker" name="month" defaultValue={this.formatDate(Date.now())} ref="month" onChange={this.handleChange} placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
+                                            <input type="text" className="form-control employeedatepicker" name="month" defaultValue={this.formatDate(Date.now())} ref="month" onChange={this.handleChange} placeholder={translate('salary_employee.month')} data-date-format="mm-yyyy" autoComplete="off" />
                                         </div>
                                     </div>
                                     <div className="form-group">

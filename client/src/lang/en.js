@@ -57,19 +57,21 @@ export default {
             start_date: 'Start day',
             end_date: 'End day',
         },
-        modal:{
+        modal: {
             update: 'Save',
-            close:'Close',
+            close: 'Close',
             create: 'Add new',
             note: 'Required fields',
         },
-        page:{
+        page: {
             unit: 'Unit',
             position: 'Position',
             month: 'Month',
             status: 'Status',
             staff_number: 'Staff number',
             add_search: 'Search',
+            number_decisions: 'Decisions number',
+            add_success: 'Add new success'
         },
 
         menu: {
@@ -144,7 +146,7 @@ export default {
             add_with_parent: 'Add new department with parent is',
             delete: 'Delete department ?'
         },
-   
+
         manage_role: {
             add: 'Add',
             add_title: 'Add new role',
@@ -215,7 +217,7 @@ export default {
             other_salary: 'Other salary',
             name_salary: 'Name salary',
             money_salary: 'Money',
-            add_new_salary:'Add new salary',
+            add_new_salary: 'Add new salary',
             check_null_msnv: 'Staff number required',
             check_msnv: 'Not find staff number',
             check_main_salary: 'Main salary required',
@@ -236,6 +238,40 @@ export default {
             check_end_day: 'End day required',
             check_reason: 'Reason required',
             check_status: 'Status required',
+        },
+        discipline: {
+            list_discipline: 'List of staff discipline',
+            list_discipline_title: 'List of staff discipline',
+            add_discipline: 'Add discipline',
+            add_discipline_title: 'Add new discipline',
+            infor_discipline: 'Discipline information',
+            delete_discipline: 'Delete discipline',
+            start_date: 'Effective date',
+            end_date: 'Expiration date',
+            discipline_forms: 'Discipline forms',
+            reason_discipline: 'Reason',
+            check_null_msnv: 'Staff number required',
+            check_msnv: 'Not find staff number',
+            check_number: 'Decisions number required',
+            check_unit: 'Decision unit required',
+            check_start_day: 'Effective date required',
+            check_end_day: 'Expiration date required',
+            check_reason_discipline: 'Reason required',
+            check_type_discipline: 'Discipline forms required',
+
+            list_praise: 'List of staff reward',
+            list_praise_title: 'List of staff reward',
+            add_praise: 'Add reward',
+            add_praise_title: 'Add new reward',
+            infor_praise: 'Reward information',
+            delete_praise: 'Delete reward',
+            decision_day: 'Decision day',
+            decision_unit:'Decision unit',
+            reward_forms: 'Reward forms',
+            reason_praise: 'Reason',
+            check_start_date: 'Decision day required',
+            check_reason_praise: 'Reason required',
+            check_type_praise: 'Reward forms required',
         },
 
         footer: {

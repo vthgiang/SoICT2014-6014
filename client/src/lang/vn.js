@@ -61,16 +61,18 @@ export default {
         modal: {
             update: 'Lưu thay đổi',
             close: 'Đóng',
-            create: 'thêm mới',
+            create: 'Thêm mới',
             note: 'là các trường bắt buộc phải nhập',
+            add_success: 'Thêm mới thành công'
         },
-        page:{
+        page: {
             unit: 'Đơn vị',
             position: 'Chức vụ',
             month: 'Tháng',
             status: 'Trạng thái',
             staff_number: 'Mã nhân viên',
             add_search: 'Tìm kiếm',
+            number_decisions: 'Số quyết định'
         },
 
         menu: {
@@ -243,6 +245,40 @@ export default {
             check_end_day: 'Bạn chưa nhập ngày kết thúc',
             check_reason: 'Bạn chưa nhập lý do',
             check_status: 'Bạn chưa nhập trạng thái',
+        },
+        discipline: {
+            list_discipline: 'Danh sách kỷ luật',
+            list_discipline_title: 'Danh sách nhân viên bị kỷ luật',
+            add_discipline: 'Thêm kỷ luật',
+            add_discipline_title: 'Thêm mới kỷ luật',
+            infor_discipline: 'Thông tin kỷ luật',
+            delete_discipline: 'Xoá thông tin kỷ luật',
+            start_date: 'Ngày có hiệu lực',
+            end_date: 'Ngày hết hiệu lực',
+            discipline_forms: 'Hình thức kỷ luật',
+            reason_discipline: 'Lý do kỷ luật',
+            check_null_msnv: 'Bạn chưa nhập mã nhân viên',
+            check_msnv: 'Mã số nhân viên không tồn tại',
+            check_number: 'Bạn chưa nhập số quyết định',
+            check_unit: 'Bạn chưa nhập cấp ra quyết định',
+            check_start_day: 'Bạn chưa nhập ngày có hiệu lực',
+            check_end_day: 'Bạn chưa nhập ngày hết hiệu lực',
+            check_reason_discipline: 'Bạn chưa nhập lý do kỷ luật',
+            check_type_discipline: 'Bạn chưa nhập hình thức kỷ luật',
+
+            list_praise: 'Danh sách khen thưởng',
+            list_praise_title: 'Danh sách nhân viên được khen thưởng',
+            add_praise: 'Thêm khen thưởng',
+            add_praise_title: 'Thêm mới khen thưởng',
+            infor_praise: 'Thông tin khen thưởng',
+            delete_praise: 'Xoá thông tin khen thưởng',
+            decision_day: 'Ngày ra quyết định',
+            decision_unit:'Cấp ra quyết định',
+            reward_forms: 'Hình thức khen thưởng',
+            reason_praise: 'Thành tích (Lý do)',
+            check_start_date: 'Bạn chưa nhập ngày ra quyết định',
+            check_reason_praise: 'Bạn chưa nhập thành tích (lý do)',
+            check_type_praise: 'Bạn chưa nhập hình thức kỷ luật',
         },
 
         footer: {

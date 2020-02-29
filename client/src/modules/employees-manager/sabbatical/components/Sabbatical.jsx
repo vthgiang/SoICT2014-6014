@@ -198,7 +198,7 @@ class Sabbatical extends Component {
                             <div className="col-md-12">
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="employeeNumber" style={{ paddingTop: 5 }}>{translate('page.staff_number')}:</label>
+                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
@@ -212,7 +212,7 @@ class Sabbatical extends Component {
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" className="form-control" name="month" id="employeedatepicker4" defaultValue={this.formatDate(Date.now())} ref="month" placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
+                                        <input type="text" className="form-control" name="month" id="employeedatepicker4" defaultValue={this.formatDate(Date.now())} ref="month" placeholder={translate('page.month')} data-date-format="mm-yyyy" autoComplete="off" />
                                     </div>
                                 </div>
                                 <div className="col-md-3">
