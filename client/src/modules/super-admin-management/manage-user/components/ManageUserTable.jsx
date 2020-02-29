@@ -44,7 +44,7 @@ class ManageUserTable extends Component {
                         <UserCreateForm />
                     </div>
                 </div>
-                <table className="table table-bordered table-striped" id="myTable">
+                <table className="table table-bordered table-striped" id="example1">
                     <thead>
                         <tr>
                             <th>{translate('table.name')}</th>

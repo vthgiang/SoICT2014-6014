@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import './modal.css';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 
 class ModalDialog extends Component {
     constructor(props) {
@@ -19,13 +18,23 @@ class ModalDialog extends Component {
         document.getElementById(this.props.formID).reset();
     }
 
+    notification = (icon, color, message) => {
+        Swal.fire({
+            position: 'top-end',
+            icon,
+            html: `<h4 class="text-${color}">${message}</h4>`,
+            showConfirmButton: false,
+            timer: 4000
+          })
+    }
+
     save = (translate) => {
         this.props
             .func()
             .then(res => {
                 if(this.props.type !== 'edit') this.clear();
                 this.closeModal();
-                toast.success(this.props.msg_success, {containerId: `notifi-${this.props.modalID}`});
+                this.notification("success", "green", this.props.msg_success);
                 
             }).catch(err => {
                 if(err.response.data.message){
@@ -33,11 +42,11 @@ class ModalDialog extends Component {
                         err.response.data.message.length < 20 &&
                         translate(`confirm.${err.response.data.message}`) !== undefined
                     )
-                        toast.error(translate(`confirm.${err.response.data.message}`), {containerId: `notifi-${this.props.modalID}`});
+                        this.notification("warning", "orange", translate(`confirm.${err.response.data.message}`));
                     else
-                        toast.error(err.response.data.message, {containerId: `notifi-${this.props.modalID}`});
+                        this.notification("warning", "orange", err.response.data.message);
                 }else
-                    toast.error(this.props.msg_faile, {containerId: `notifi-${this.props.modalID}`});
+                    this.notification("error", "red", this.props.msg_faile);
             });
     }
 
@@ -46,7 +55,6 @@ class ModalDialog extends Component {
 
         return ( 
             <React.Fragment>
-                <ToastContainer enableMultiContainer containerId={`notifi-${this.props.modalID}`} position={toast.POSITION.TOP_RIGHT}/>
                 <div id={this.props.modalID} className="modal fade in show-off">
                     <div className={`modal-dialog animation-dialog modal-size-${this.props.size}`}>
                         <div className="modal-content">

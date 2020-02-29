@@ -20,6 +20,9 @@ function get(){
             })
         })
         .catch(err => {
+            dispatch({
+                type: UserConstants.GET_USERS_FAILE
+            })
             console.log("Error: ", err.response);
         })
     }
@@ -36,6 +39,9 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: UserConstants.GET_USERS_PAGINATE_FAILE
+                })
                 console.log("Error: ", err);
             })
     }
@@ -54,6 +60,9 @@ function edit(id, data){
                 resolve(res.data);
             })
             .catch(err => {
+                dispatch({
+                    type: UserConstants.EDIT_USER_FAILE
+                })
                 console.log("Error: ", err);
                 reject(err);
             })
@@ -74,6 +83,9 @@ function create(data){
                     resolve(res.data);
                 })
                 .catch(err => {
+                    dispatch({
+                        type: UserConstants.CREATE_USER_FAILE
+                    })
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -93,6 +105,9 @@ function destroy(id){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: UserConstants.DELETE_USER_FAILE
+                })
                 console.log("Error: ", err);
             })
     }
