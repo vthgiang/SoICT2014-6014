@@ -140,11 +140,11 @@ class ModalAddSalary extends Component {
                                                         </label>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">{translate('salary_employee.staff_number')}:<span className="required">&#42;</span></label>
+                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChangeMSNV} placeholder={translate('salary_employee.staff_number')} autoComplete="off" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="month">{translate('salary_employee.month')}:<span className="required">&#42;</span></label>
+                                        <label htmlFor="month">{translate('page.month')}:<span className="required">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />

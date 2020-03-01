@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class ModalEditSabbatical extends Component {
+class ModalEditHoliday extends Component {
     render() {
         return (
             <div className="modal fade" id="modal-editSabbatical" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -43,4 +43,4 @@ class ModalEditSabbatical extends Component {
     }
 };
 
-export { ModalEditSabbatical };
+export { ModalEditHoliday };

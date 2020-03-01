@@ -258,7 +258,7 @@ class Sabbatical extends Component {
                                                     <td>P KTTT ViaVet</td>
                                                     <td>Nhân viên</td>
                                                     <td>{x.status}</td>
-                                                    <td style={{textAlign: 'center'}}>
+                                                    <td>
                                                         <ModalEditSabbatical data={x} />
                                                         <ModalDeleteSabbatical data={x} />
                                                     </td>

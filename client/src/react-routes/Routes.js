@@ -15,7 +15,7 @@ import ManageComponent from '../modules/system-admin-management/manage-component
 import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
 import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
-import { DashBoardEmployees} from '../modules/employees-manager/dashBoard-employeesManagement/components/DashBoardEmployees';
+import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
 import { Discipline} from '../modules/employees-manager/discipline/components/Discipline';
 import { Sabbatical} from '../modules/employees-manager/sabbatical/components/Sabbatical';
 import { SalaryEmployee} from '../modules/employees-manager/salary-employee/components/SalaryEmployee';

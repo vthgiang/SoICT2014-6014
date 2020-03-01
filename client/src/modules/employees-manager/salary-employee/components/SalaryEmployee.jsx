@@ -8,8 +8,8 @@ import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalDeleteSalary } from './ModalDeleteSalary';
 import { ModalEditSalary } from './ModalEditSalary';
-import {ActionColumn} from '../../../../common-components/src/ActionColumn';
-import {PaginateBar} from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 
 class SalaryEmployee extends Component {
@@ -262,7 +262,7 @@ class SalaryEmployee extends Component {
                                                             </td>
                                                             <td>Phòng nhân sự</td>
                                                             <td>Nhân viên</td>
-                                                            <td style={{textAlign: 'center'}}>
+                                                            <td>
                                                                 <ModalEditSalary data={x} />
                                                                 <ModalDeleteSalary data={x} />
                                                             </td>
