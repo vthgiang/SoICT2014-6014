@@ -1,5 +1,5 @@
 const Department = require('../../../models/department.model');
-
+const UserRole = require('../../../models/user_role.model')
 const arrayToTree = require('array-to-tree');
 
 exports.get = async (id) => {
@@ -73,4 +73,25 @@ exports.delete = async(departmentId) => {
     }
 
     return {};
+}
+exports.getDepartmentOfUser = async (req, res) => {
+    console.log('get department of user')
+    try {
+        var roles = await UserRole.find({userId: req.params.id});
+        // console.log(roles);
+        var newRoles = roles.map( role => role.roleId);
+        var departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ]  
+        });
+        console.log(departments);
+
+        res.status(200).json(departments);
+    } catch (error) {
+
+        res.status(400).json({msg: error});
+    }
 }
