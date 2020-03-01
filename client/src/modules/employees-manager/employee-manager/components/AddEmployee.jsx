@@ -607,16 +607,16 @@ class AddEmployee extends Component {
                     <div className="col-md-12">
                         <div className="nav-tabs-custom" >
                             <ul className="nav nav-tabs">
-                                <li className="active"><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin chung của nhân viên" data-toggle="tab" href="#thongtinchung">Thông tin chung</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin liên hệ của nhân viên" data-toggle="tab" href="#thongtinlienhe">Thông tin liên hệ</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Trình độ học vấn - Khinh nghiệm làm việc" data-toggle="tab" href="#kinhnghiem"> Học vấn - Kinh nghiệm</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Bằng cấp - Chứng chỉ" data-toggle="tab" href="#bangcap">Bằng cấp - Chứng chỉ</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Tài khoản ngân hành - Thuế thu nhập các nhân" data-toggle="tab" href="#taikhoan">Tài khoản - Thuế</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Thông tin bảo hiểm" data-toggle="tab" href="#baohiem">Thông tin bảo hiểm</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Hợp đồng lao động - Quá trình đào tạo" data-toggle="tab" href="#hopdong">Hợp đồng - Đào tạo</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Khen thưởng - Kỷ luật" data-toggle="tab" href="#khenthuong">Khen thưởng - kỷ luật</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title="Lịch sử tăng giảm lương - Thông tin nghỉ phép" data-toggle="tab" href="#historySalary">Lịch sử lương - Nghỉ phép</a></li>
-                                <li><a style={{ paddingLeft: 5, }} title="Tài liệu đính kèm" data-toggle="tab" href="#tailieu">Tài liệu đính kèm</a></li>
+                                <li className="active"><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#thongtinchung">{translate('manage_employee.menu_general_infor')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href="#thongtinlienhe">{translate('manage_employee.menu_contact_infor')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_education_experience_title')} data-toggle="tab" href="#kinhnghiem">{translate('manage_employee.menu_education_experience')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_diploma_certificate_title')} data-toggle="tab" href="#bangcap">{translate('manage_employee.menu_diploma_certificate')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_account_tax_title')} data-toggle="tab" href="#taikhoan">{translate('manage_employee.menu_account_tax')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_insurrance_infor_title')} data-toggle="tab" href="#baohiem">{translate('manage_employee.menu_insurrance_infor')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_contract_training_title')} data-toggle="tab" href="#hopdong">{translate('manage_employee.menu_contract_training')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_reward_discipline_title')} data-toggle="tab" href="#khenthuong">{translate('manage_employee.menu_reward_discipline')}</a></li>
+                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_salary_sabbatical_title')} data-toggle="tab" href="#historySalary">{translate('manage_employee.menu_salary_sabbatical')}</a></li>
+                                <li><a style={{ paddingLeft: 5, }} title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#tailieu">{translate('manage_employee.menu_attachments')}</a></li>
                             </ul>
                             < div className="tab-content">
                                 <div id="thongtinchung" className="tab-pane active">
@@ -626,7 +626,7 @@ class AddEmployee extends Component {
                                                 <div className="form-group">
                                                     <img className="attachment-img avarta" src={this.state.img} alt="Attachment" />
                                                     <div className="upload btn btn-default" style={{ marginLeft: 55 }}>
-                                                        Chọn ảnh
+                                                    {translate('manage_employee.upload')}
                                                     <input className="upload" type="file" name="file" onChange={this.handleUpload} />
                                                     </div>
                                                 </div>
@@ -634,19 +634,19 @@ class AddEmployee extends Component {
                                             <div className=" col-md-4">
                                                 <div className="checkbox" style={{ marginTop: 0 }}>
                                                     <label style={{ paddingLeft: 0 }}>
-                                                        (<span style={{ color: "red" }}>*</span>): là các trường bắt buộc phải nhập.
+                                                        (<span style={{ color: "red" }}>*</span>): {translate('modal.note')}.
                                                     </label>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="employeeNumber">{translate('manage_employee.staff_number')}:<span className="required">&#42;</span></label>
                                                     <input type="text" className="form-control" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChangeMSNV} />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="fullname">Họ và tên:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="fullname">{translate('manage_employee.full_name')}:<span className="required">&#42;</span></label>
                                                     <input type="text" className="form-control" name="fullName" placeholder="Họ và tên" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="brithday">Ngày sinh:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="brithday">{translate('manage_employee.date_birth')}:<span className="required">&#42;</span></label>
                                                     <div className={'input-group date has-feedback'}>
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
@@ -656,49 +656,49 @@ class AddEmployee extends Component {
                                                     {/* <input type="Date" className="form-control" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="emailCompany">Email:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="emailCompany">{translate('manage_employee.email')}:<span className="required">&#42;</span></label>
                                                     <input type="email" className="form-control" placeholder="Email công ty" name="emailCompany" onChange={this.handleChangeEmail} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className=" col-md-4 " style={{ marginTop: 30 }}>
                                                 <div className="form-group">
-                                                    <label htmlFor="MSCC">Mã số chấm công:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="MSCC">{translate('manage_employee.attendance_code')}:<span className="required">&#42;</span></label>
                                                     <input type="text" className="form-control" placeholder="Mã số chấm công" name="MSCC" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label style={{ display: 'block', paddingBottom: 4 }}>Giới tính:<span className="required">&#42;</span></label>
-                                                    <input type="radio" name="gender" value="Nam" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
-                                                    <label>Nam</label>
-                                                    <input type="radio" name="gender" value="Nữ" className="" style={{ marginLeft: 90, marginRight: 5 }} onChange={this.handleChange} />
-                                                    <label>Nữ</label>
+                                                    <label style={{ display: 'block', paddingBottom: 4 }}>{translate('manage_employee.gender')}:<span className="required">&#42;</span></label>
+                                                    <input type="radio" name="gender" value="male" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
+                                                    <label>{translate('manage_employee.male')}</label>
+                                                    <input type="radio" name="gender" value="female" className="" style={{ marginLeft: 90, marginRight: 5 }} onChange={this.handleChange} />
+                                                    <label>{translate('manage_employee.female')}</label>
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="birthplace">Nơi sinh:</label>
                                                     <input type="text" className="form-control" name="birthplace" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label style={{ display: 'block', paddingBottom: 7 }}>Tình trạng hôn nhân:</label>
-                                                    <input type="radio" name="relationship" value="Độc thân" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
-                                                    <label> Độc thân</label>
-                                                    <input type="radio" name="relationship" value="Đã kết hôn" className="" style={{ marginLeft: 80, marginRight: 5 }} onChange={this.handleChange} />
-                                                    <label> Đã kết hôn</label>
+                                                    <label style={{ display: 'block', paddingBottom: 7 }}>{translate('manage_employee.relationship')}:</label>
+                                                    <input type="radio" name="relationship" value="single" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
+                                                    <label>{translate('manage_employee.single')}</label>
+                                                    <input type="radio" name="relationship" value="married" className="" style={{ marginLeft: 80, marginRight: 5 }} onChange={this.handleChange} />
+                                                    <label>{translate('manage_employee.married')}</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-md-12">
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="CMND">Số CMND/Hộ chiếu:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="CMND">{translate('manage_employee.id_card')}:<span className="required">&#42;</span></label>
                                                     <input type="number" className="form-control" name="CMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="national">Dân tộc:</label>
+                                                    <label htmlFor="national">{translate('manage_employee.ethnic')}:</label>
                                                     <input type="text" className="form-control" name="national" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="dateCMND">Ngày cấp:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="dateCMND">{translate('manage_employee.date_issued')}:<span className="required">&#42;</span></label>
                                                     <div className={'input-group date has-feedback'}>
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
@@ -707,18 +707,18 @@ class AddEmployee extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="religion">Tôn giáo:</label>
+                                                    <label htmlFor="religion">{translate('manage_employee.religion')}:</label>
                                                     <input type="text" className="form-control" name="religion" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
 
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="addressCMND">Nơi cấp:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="addressCMND">{translate('manage_employee.issued_by')}:<span className="required">&#42;</span></label>
                                                     <input type="text" className="form-control" name="addressCMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="nation">Quốc tịch:</label>
+                                                    <label htmlFor="nation">{translate('manage_employee.nationality')}:</label>
                                                     <input type="text" className="form-control" name="nation" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
@@ -730,68 +730,68 @@ class AddEmployee extends Component {
                                         <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                             <div className="col-md-4">
                                                 <div className="form-group" style={{ paddingTop: 3 }}>
-                                                    <label htmlFor="phoneNumber">Điện thoại đi động 1:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="phoneNumber">{translate('manage_employee.mobile_phone_1')}:<span className="required">&#42;</span></label>
                                                     <input type="number" className="form-control" name="phoneNumber" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="emailPersonal">Email cá nhân 1</label>
+                                                    <label htmlFor="emailPersonal">{translate('manage_employee.personal_email_1')}</label>
                                                     <input type="text" className="form-control" name="emailPersonal" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group" style={{ paddingTop: 3 }}>
-                                                <label htmlFor="phoneNumber2">Điện thoại đi động 2:</label>
+                                                <label htmlFor="phoneNumber2">{translate('manage_employee.mobile_phone_2')}:</label>
                                                 <input type="number" className="form-control" name="phoneNumber2" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
-                                                <label htmlFor="emailPersonal2">Email cá nhân 2</label>
+                                                <label htmlFor="emailPersonal2">{translate('manage_employee.personal_email_2')}</label>
                                                 <input type="text" className="form-control" name="emailPersonal2" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
-                                                <label htmlFor="phoneNumberAddress">Điện thoại nhà riêng:</label>
+                                                <label htmlFor="phoneNumberAddress">{translate('manage_employee.home_phone')}:</label>
                                                 <input type="text" className="form-control" name="phoneNumberAddress" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border">
-                                                    <h4 className="box-title">Liên hệ khẩn cấp với ai</h4>
+                                                    <h4 className="box-title">{translate('manage_employee.emergency_contact')}</h4>
                                                 </legend>
                                                 <div className="col-md-4">
                                                     <div className="form-group">
-                                                        <label htmlFor="friendName">Họ và tên:</label>
+                                                        <label htmlFor="friendName">{translate('manage_employee.full_name')}:</label>
                                                         <input type="text" className="form-control" name="friendName" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label htmlFor="friendPhone">Điện thoại di động:</label>
+                                                        <label htmlFor="friendPhone">{translate('manage_employee.mobile_phone')}:</label>
                                                         <input type="text" className="form-control" name="friendPhone" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
 
                                                 </div>
                                                 <div className="col-md-4">
                                                     <div className="form-group">
-                                                        <label htmlFor="relation">Quan hệ:</label>
+                                                        <label htmlFor="relation">{translate('manage_employee.nexus')}:</label>
                                                         <input type="text" className="form-control" name="relation" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label htmlFor="friendPhoneAddress">Điện thoại nhà riêng:</label>
+                                                        <label htmlFor="friendPhoneAddress">{translate('manage_employee.home_phone')}:</label>
                                                         <input type="text" className="form-control" name="friendPhoneAddress" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                 </div>
                                                 <div className="col-md-4">
                                                     <div className="form-group">
-                                                        <label htmlFor="friendAddress">Địa chỉ:</label>
+                                                        <label htmlFor="friendAddress">{translate('manage_employee.address')}:</label>
                                                         <input type="text" className="form-control" name="friendAddress" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label htmlFor="friendEmail">Email:</label>
+                                                        <label htmlFor="friendEmail">{translate('manage_employee.email')}:</label>
                                                         <input type="text" className="form-control" name="friendEmail" onChange={this.handleChange} autoComplete="off" />
                                                     </div>
                                                 </div>
@@ -799,59 +799,59 @@ class AddEmployee extends Component {
                                         </div>
                                         <div className="col-md-6">
                                             <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border"><h4 className="box-title">Hộ khẩu thường trú</h4></legend>
+                                                <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.permanent_address')}</h4></legend>
                                                 <div className="form-group">
-                                                    <label htmlFor="localAddress">Địa chỉ:</label>
+                                                    <label htmlFor="localAddress">{translate('manage_employee.address')}:</label>
                                                     <input type="text" className="form-control " name="localAddress" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCommune">
-                                                        Xã/Phường:</label>
+                                                    {translate('manage_employee.wards')}:</label>
                                                     <input type="text" className="form-control " name="localCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localDistrict">
-                                                        Quận/Huyện:</label>
+                                                    {translate('manage_employee.district')}:</label>
                                                     <input type="text" className="form-control " name="localDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCity">
-                                                        Tỉnh/Thành phố:</label>
+                                                    {translate('manage_employee.province')}:</label>
                                                     <input type="text" className="form-control " name="localCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="localNational">Quốc gia:</label>
+                                                    <label htmlFor="localNational">{translate('manage_employee.nation')}:</label>
                                                     <input type="text" className="form-control " name="localNational" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
                                         </div>
                                         <div className="col-md-6">
                                             <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border"><h4 className="box-title"> Chỗ ở hiện tại</h4></legend>
+                                                <legend className="scheduler-border"><h4 className="box-title"> {translate('manage_employee.current_residence')}</h4></legend>
 
                                                 <div className="form-group">
                                                     <label htmlFor="nowAddress">
-                                                        Địa chỉ:<span className="required">&#42;</span></label>
+                                                    {translate('manage_employee.address')}:<span className="required">&#42;</span></label>
                                                     <input type="text" className="form-control " name="nowAddress" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCommune">
-                                                        Xã/Phường:</label>
+                                                    {translate('manage_employee.wards')}:</label>
                                                     <input type="text" className="form-control " name="nowCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowDistrict">
-                                                        Quận/Huyện:</label>
+                                                    {translate('manage_employee.district')}:</label>
                                                     <input type="text" className="form-control " name="nowDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCity">
-                                                        Tỉnh/Thành phố:</label>
+                                                    {translate('manage_employee.province')}:</label>
                                                     <input type="text" className="form-control " name="nowCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowNational">
-                                                        Quốc gia:</label>
+                                                    {translate('manage_employee.nation')}:</label>
                                                     <input type="text" className="form-control " name="nowNational" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
@@ -861,34 +861,34 @@ class AddEmployee extends Component {
                                 </div>
                                 <div id="taikhoan" className="tab-pane">
                                     <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Tài khoản ngân hàng:</h4></legend>
+                                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.bank_account')}:</h4></legend>
                                         <div className="box-body">
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="ATM">Số tài khoản:</label>
+                                                <label htmlFor="ATM">{translate('manage_employee.account_number')}:</label>
                                                 <input type="text" className="form-control" name="ATM" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="nameBank">Tên ngân hàng:</label>
+                                                <label htmlFor="nameBank">{translate('manage_employee.bank_name')}:</label>
                                                 <input type="text" className="form-control" name="nameBank" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="addressBank">Chi nhánh:</label>
+                                                <label htmlFor="addressBank">{translate('manage_employee.bank_branch')}</label>
                                                 <input type="text" className="form-control" name="addressBank" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                     </fieldset>
                                     <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thuế thu nhập cá nhân:</h4></legend>
+                                        <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.personal_income_tax')}:</h4></legend>
                                         <div className="form-group">
-                                            <label htmlFor="numberTax">Mã số thuế:<span className="required">&#42;</span></label>
+                                            <label htmlFor="numberTax">{translate('manage_employee.tax_number')}:<span className="required">&#42;</span></label>
                                             <input type="number" className="form-control" name="numberTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="userTax">Người đại diện:<span className="required">&#42;</span></label>
+                                            <label htmlFor="userTax">{translate('manage_employee.representative')}:<span className="required">&#42;</span></label>
                                             <input type="text" className="form-control" name="userTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="startDate">Ngày hoạt động:<span className="required">&#42;</span></label>
+                                            <label htmlFor="startDate">{translate('manage_employee.day_active')}:<span className="required">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -897,7 +897,7 @@ class AddEmployee extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="unitTax">Quản lý bởi:<span className="required">&#42;</span></label>
+                                            <label htmlFor="unitTax">{translate('manage_employee.managed_by')}:<span className="required">&#42;</span></label>
                                             <input type="text" className="form-control" name="unitTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                     </fieldset>
@@ -906,21 +906,21 @@ class AddEmployee extends Component {
                                 <div id="bangcap" className="tab-pane">
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Bằng cấp:</h4></legend>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.diploma')}:</h4></legend>
                                             <ModalAddCertificate handleChange={this.handleChangeCertificate} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ width: "18%" }}>Tên bằng</th>
-                                                        <th style={{ width: "16%" }}>Nơi đào tạo</th>
-                                                        <th style={{ width: "13%" }}>Năm tốt nghiệp</th>
-                                                        <th style={{ width: "13%" }}>Xếp loại</th>
-                                                        <th style={{ width: "30%" }}>File đính kèm</th>
-                                                        <th style={{ width: "10%" }}>Hành động</th>
+                                                        <th style={{ width: "18%" }}>{translate('manage_employee.name_diploma')}</th>
+                                                        <th style={{ width: "16%" }}>{translate('manage_employee.diploma_issued_by')}</th>
+                                                        <th style={{ width: "13%" }}>{translate('manage_employee.graduation_year')}</th>
+                                                        <th style={{ width: "18%" }}>{translate('manage_employee.ranking_learning')}</th>
+                                                        <th style={{ width: "25%" }}>{translate('manage_employee.attached_files')}</th>
+                                                        <th style={{ width: "10%" }}>{translate('table.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.certificate === 'undefined' || this.state.certificate.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.certificate === 'undefined' || this.state.certificate.length === 0) ? <tr><td colSpan={6}><center>{translate('table.no_data')}</center></td></tr> :
                                                         this.state.certificate.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameCertificate}</td>
@@ -940,21 +940,21 @@ class AddEmployee extends Component {
                                             </table>
                                         </fieldset>
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">Chứng chỉ:</h4></legend>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_employee.certificate')}:</h4></legend>
                                             <ModalAddCertificateShort handleChange={this.handleChangeCertificateShort} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ width: "22%" }}>Tên chứng chỉ</th>
-                                                        <th style={{ width: "17%" }}>Nơi cấp</th>
-                                                        <th style={{ width: "9%" }}>Ngày cấp</th>
-                                                        <th style={{ width: "12%" }}>Ngày hết hạn</th>
-                                                        <th style={{ width: "30%" }}>File đính kèm</th>
-                                                        <th style={{ width: "10%" }}>Hành động</th>
+                                                        <th style={{ width: "22%" }}>{translate('manage_employee.name_certificate')}</th>
+                                                        <th style={{ width: "17%" }}>{translate('manage_employee.issued_by')}</th>
+                                                        <th style={{ width: "14%" }}>{translate('manage_employee.date_issued')}</th>
+                                                        <th style={{ width: "12%" }}>{translate('manage_employee.end_date_certificate')}</th>
+                                                        <th style={{ width: "25%" }}>{translate('manage_employee.attached_files')}</th>
+                                                        <th style={{ width: "10%" }}>{translate('table.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.certificateShort === 'undefined' || this.state.certificateShort.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.certificateShort === 'undefined' || this.state.certificateShort.length === 0) ? <tr><td colSpan={6}><center>{translate('table.no_data')}</center></td></tr> :
                                                         this.state.certificateShort.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameCertificateShort}</td>
@@ -978,9 +978,9 @@ class AddEmployee extends Component {
                                 <div id="kinhnghiem" className="tab-pane">
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">Trình độ học vấn</h4></legend>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_employee.academic_level')}</h4></legend>
                                             <div className="form-group">
-                                                <label>Trình độ văn hoá:<span className="required">&#42;</span></label>
+                                                <label>{translate('manage_employee.educational_level')}:<span className="required">&#42;</span></label>
                                                 <select className="form-control" name="cultural" onChange={this.handleChange}>
                                                     <option value="12/12">12/12</option>
                                                     <option value="11/12">11/12</option>
@@ -989,37 +989,37 @@ class AddEmployee extends Component {
                                                 </select>
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="foreignLanguage ">Trình độ ngoại ngữ:</label>
+                                                <label htmlFor="foreignLanguage ">{translate('manage_employee.language_level')}:</label>
                                                 <input type="text" className="form-control" name="foreignLanguage" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="educational ">Trình độ chuyên môn:</label>
-                                                <select className="form-control" name="educational" defaultValue="Không có" onChange={this.handleChange}>
-                                                    <option value="Trung cấp">Trung cấp</option>
-                                                    <option value="Cao đẳng">Cao đẳng</option>
-                                                    <option value="Đại học">Đại học</option>
-                                                    <option value="Thạc sỹ">Thạc sỹ</option>
-                                                    <option value="Tiến sỹ">Tiến sỹ</option>
-                                                    <option value="Không có">Không có</option>
+                                                <label htmlFor="educational ">{translate('manage_employee.qualification')}:</label>
+                                                <select className="form-control" name="educational" defaultValue="unavailable" onChange={this.handleChange}>
+                                                    <option value="intermediate_degree">{translate('manage_employee.intermediate_degree')}</option>
+                                                    <option value="colleges">{translate('manage_employee.colleges')}</option>
+                                                    <option value="university">{translate('manage_employee.university')}</option>
+                                                    <option value="master_degree">{translate('manage_employee.master_degree')}</option>
+                                                    <option value="phd">{translate('manage_employee.phd')}</option>
+                                                    <option value="unavailable">{translate('manage_employee.unavailable')}</option>
 
                                                 </select>
                                             </div>
                                         </fieldset>
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kinh nghiệm làm việc</h4></legend>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.work_experience')}</h4></legend>
                                             <ModalAddExperience handleChange={this.handleChangeExperience} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ width: '14%' }}>Từ tháng/năm</th>
-                                                        <th style={{ width: '14%' }}>Đến tháng/năm</th>
-                                                        <th>Đơn vị công tác</th>
-                                                        <th>Chức vụ</th>
-                                                        <th style={{ width: '10%' }}>Hành động</th>
+                                                        <th style={{ width: '14%' }}>{translate('manage_employee.from_month_year')}</th>
+                                                        <th style={{ width: '14%' }}>{translate('manage_employee.to_month_year')}</th>
+                                                        <th>{translate('manage_employee.unit')}</th>
+                                                        <th>{translate('table.position')}</th>
+                                                        <th style={{ width: '10%' }}>{translate('table.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.employeeNew.experience === 'undefined' || this.state.employeeNew.experience.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.employeeNew.experience === 'undefined' || this.state.employeeNew.experience.length === 0) ? <tr><td colSpan={5}><center>{translate('table.no_d')}</center></td></tr> :
                                                         this.state.employeeNew.experience.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.startDate}</td>
@@ -1109,21 +1109,21 @@ class AddEmployee extends Component {
                                 <div id="hopdong" className="tab-pane">
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Hợp đồng lao động</h4></legend>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.labor_contract')}</h4></legend>
                                             <ModalAddContract handleChange={this.handleChangeContract} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ width: "25%" }}>Tên hợp đồng</th>
-                                                        <th style={{ width: "13%" }}>Loại hợp đồng</th>
-                                                        <th style={{ width: "14%" }}>Ngày có hiệu lực</th>
-                                                        <th style={{ width: "13%" }}>Ngày hết hạn</th>
-                                                        <th style={{ width: "30%" }}>File đính kèm</th>
-                                                        <th style={{ width: '10%' }}>Hành động</th>
+                                                        <th >{translate('manage_employee.name_contract')}</th>
+                                                        <th >{translate('manage_employee.type_contract')}</th>
+                                                        <th >{translate('manage_employee.start_date')}</th>
+                                                        <th >{translate('manage_employee.end_date_certificate')}</th>
+                                                        <th >{translate('manage_employee.attached_files')}</th>
+                                                        <th style={{ width: '10%' }}>{translate('table.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.contract === 'undefined' || this.state.contract.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.contract === 'undefined' || this.state.contract.length === 0) ? <tr><td colSpan={6}><center>{translate('table.no_data')}</center></td></tr> :
                                                         this.state.contract.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameContract}</td>
@@ -1142,24 +1142,24 @@ class AddEmployee extends Component {
                                             </table>
                                         </fieldset>
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Quá trình đào tạo</h4></legend>
-                                            <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới quá trình đào tạo" onClick={this.handleAddNew}>Thêm mới</button>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.training_process')}</h4></legend>
+                                            <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới quá trình đào tạo" onClick={this.handleAddNew}>{translate('modal.create')}</button>
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ width: '18%' }}>Tên khoá học</th>
-                                                        <th style={{ width: '11%' }}>Ngày bắt đầu</th>
-                                                        <th style={{ width: '11%' }}>Ngày kết thúc</th>
-                                                        <th style={{ width: '15%' }}>Nơi đào tạo</th>
-                                                        <th style={{ width: '11%' }}>Loại đào tạo</th>
-                                                        <th style={{ width: '10%' }}>Chi phí</th>
+                                                        <th style={{ width: '15%' }}>{translate('manage_employee.course_name')}</th>
+                                                        <th style={{ width: '11%' }}>{translate('manage_employee.start_date')}</th>
+                                                        <th style={{ width: '11%' }}>{translate('manage_employee.end_date')}</th>
+                                                        <th style={{ width: '15%' }}>{translate('manage_employee.diploma_issued_by')}</th>
+                                                        <th style={{ width: '14%' }}>{translate('manage_employee.type_education')}</th>
+                                                        <th style={{ width: '10%' }}>{translate('manage_employee.cost')}</th>
                                                         {/* <th style={{ width: '12%' }}>Thời gian cam kết</th> */}
-                                                        <th style={{ width: '12%' }}>Trạng thái</th>
-                                                        <th style={{ width: '10%' }}>Hành động</th>
+                                                        <th style={{ width: '12%' }}>{translate('table.status')}</th>
+                                                        <th style={{ width: '10%' }}>{translate('table.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.employeeNew.course === 'undefined' || this.state.employeeNew.course.length === 0) ? <tr><td colSpan={8}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.employeeNew.course === 'undefined' || this.state.employeeNew.course.length === 0) ? <tr><td colSpan={8}><center>{translate('table.no_data')}</center></td></tr> :
                                                         this.state.employeeNew.course.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameCourse}</td>
@@ -1183,22 +1183,22 @@ class AddEmployee extends Component {
                                 <div id="khenthuong" className="tab-pane">
                                     <div className="box-body">
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Khen thưởng</h4></legend>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.Reward')}</h4></legend>
                                             <ModalAddPraise handleChange={this.handleChangePraise} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
-                                                        <th>Số quyết định</th>
-                                                        <th>Ngày quyết định</th>
-                                                        <th>Cấp ra quyết định</th>
-                                                        <th>Hình thức khen thưởng</th>
-                                                        <th style={{ width: "15%" }}>Thành tích (lý do)</th>
-                                                        <th style={{ width: "10%" }}>Hành động</th>
+                                                        <th>{translate('page.number_decisions')}</th>
+                                                        <th>{translate('discipline.decision_day')}</th>
+                                                        <th>{translate('discipline.decision_unit')}</th>
+                                                        <th>{translate('discipline.reward_forms')}</th>
+                                                        <th style={{ width: "15%" }}>{translate('discipline.reason_praise')}</th>
+                                                        <th style={{ width: "10%" }}>{translate('table.action')}</th>
                                                     </tr>
 
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.praiseNew === 'undefined' || this.state.praiseNew.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.praiseNew === 'undefined' || this.state.praiseNew.length === 0) ? <tr><td colSpan={6}><center>{translate('table.no_data')}</center></td></tr> :
                                                         this.state.praiseNew.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.number}</td>
@@ -1217,22 +1217,22 @@ class AddEmployee extends Component {
                                             </table>
                                         </fieldset>
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Kỷ luật</h4></legend>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.discipline')}</h4></legend>
                                             <ModalAddDiscipline handleChange={this.handleChangeDiscipline} index={this.state.key} />
                                             <table className="table table-striped table-bordered table-resizable" >
                                                 <thead>
                                                     <tr>
-                                                        <th>Số quyết định</th>
-                                                        <th>Ngày có hiệu lực</th>
-                                                        <th>Ngày hết hiệu lực</th>
-                                                        <th>Cấp ra quyết định</th>
-                                                        <th>Hình thức Kỷ luật</th>
-                                                        <th>Lý do kỷ luật</th>
-                                                        <th style={{ width: "10%" }}>Hành động</th>
+                                                        <th>{translate('page.number_decisions')}</th>
+                                                        <th>{translate('discipline.start_date')}</th>
+                                                        <th>{translate('discipline.end_date')}</th>
+                                                        <th>{translate('discipline.decision_unit')}</th>
+                                                        <th>{translate('discipline.discipline_forms')}</th>
+                                                        <th>{translate('discipline.reason_discipline')}</th>
+                                                        <th style={{ width: "10%" }}>{translate('table.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.disciplineNew === 'undefined' || this.state.disciplineNew.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.disciplineNew === 'undefined' || this.state.disciplineNew.length === 0) ? <tr><td colSpan={6}><center>{translate('table.no_data')}</center></td></tr> :
                                                         this.state.disciplineNew.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.number}</td>
@@ -1258,19 +1258,19 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <div className="col-sm-12">
                                             <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Lịch sử tăng giảm lương</h4></legend>
+                                                <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.historySalary')}</h4></legend>
                                                 <ModalAddSalary handleChange={this.handleChangeSalary} index={this.state.key} />
                                                 <table className="table table-striped table-bordered table-resizable" >
                                                     <thead>
                                                         <tr>
-                                                            <th>Tháng</th>
-                                                            <th style={{ width: "30%" }}>Lương chính</th>
-                                                            <th style={{ width: "30%" }}>Tổng lương</th>
-                                                            <th style={{ width: "10%" }}>Hành động</th>
+                                                            <th>{translate('table.month')}</th>
+                                                            <th style={{ width: "30%" }}>{translate('salary_employee.main_salary')}</th>
+                                                            <th style={{ width: "30%" }}>{translate('table.total_salary')}</th>
+                                                            <th style={{ width: "10%" }}>{translate('table.action')}</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {(typeof this.state.salaryNew === 'undefined' || this.state.salaryNew.length === 0) ? <tr><td colSpan={4}><center> Không có dữ liệu</center></td></tr> :
+                                                        {(typeof this.state.salaryNew === 'undefined' || this.state.salaryNew.length === 0) ? <tr><td colSpan={4}><center>{translate('table.no_data')}</center></td></tr> :
                                                             this.state.salaryNew.map((x, index) => {
                                                                 if (x.bonus.length !== 0) {
                                                                     var total = 0;
@@ -1301,20 +1301,20 @@ class AddEmployee extends Component {
                                                 </table>
                                             </fieldset>
                                             <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thông tin nghỉ phép</h4></legend>
+                                                <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.sabbatical')}</h4></legend>
                                                 <ModalAddSabbatical handleChange={this.handleChangeSabbatical} index={this.state.key} />
                                                 <table className="table table-striped table-bordered table-resizable">
                                                     <thead>
                                                         <tr>
-                                                            <th >Từ ngày</th>
-                                                            <th >Đến ngày</th>
-                                                            <th>Lý do</th>
-                                                            <th>Trạng thái</th>
-                                                            <th style={{ width: "10%" }} >Hành động</th>
+                                                            <th >{translate('table.start_date')}</th>
+                                                            <th >{translate('table.end_date')}</th>
+                                                            <th>{translate('sabbatical.reason')}</th>
+                                                            <th>{translate('table.status')}</th>
+                                                            <th style={{ width: "10%" }} >{translate('table.action')}</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {(typeof this.state.sabbaticalNew === 'undefined' || this.state.sabbaticalNew.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                                        {(typeof this.state.sabbaticalNew === 'undefined' || this.state.sabbaticalNew.length === 0) ? <tr><td colSpan={5}><center> {translate('table.no_data')}</center></td></tr> :
                                                             this.state.sabbaticalNew.map((x, index) => (
                                                                 <tr key={index}>
                                                                     <td>{x.startDate}</td>
@@ -1338,28 +1338,28 @@ class AddEmployee extends Component {
                                     <div className="box-body">
                                         <div className="col-md-4">
                                             <div className="form-group" style={{ paddingTop: 3 }}>
-                                                <label htmlFor="numberFile">Nơi lưu trữ bản cứng:</label>
+                                                <label htmlFor="numberFile">{translate('manage_employee.attachments_code')}:</label>
                                                 <input type="text" className="form-control" id="numberFile" name="numberFile" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
-                                            <h4 className="col-md-6" style={{ paddingLeft: 0 }}>Danh sách tài liệu đính kèm:</h4>
+                                            <h4 className="col-md-6" style={{ paddingLeft: 0 }}>{translate('manage_employee.list_attachments')}:</h4>
                                             <ModalAddFile handleChange={this.handleChangeFile} index={this.state.key} />
-                                            <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title="Thêm các tài liệu mặc định">Mặc định</button>
+                                            <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
                                             <table className="table table-striped table-bordered table-resizable " >
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ width: "18%" }}>Tên tài liệu</th>
-                                                        <th style={{ width: "42%" }}>Mô tả</th>
-                                                        <th style={{ width: "8%" }}>Số lượng</th>
-                                                        <th style={{ width: "10%" }}>Trạng thái</th>
-                                                        <th style={{ width: "12%" }}>File đính kèm</th>
-                                                        <th style={{ width: '10%' }}>Hành động</th>
+                                                        <th style={{ width: "18%" }}>{translate('manage_employee.file_name')}</th>
+                                                        <th style={{ width: "42%" }}>{translate('table.description')}</th>
+                                                        <th style={{ width: "8%" }}>{translate('manage_employee.number')}</th>
+                                                        <th style={{ width: "10%" }}>{translate('table.status')}</th>
+                                                        <th style={{ width: "12%" }}>{translate('manage_employee.attached_files')}</th>
+                                                        <th style={{ width: '10%' }}>{translate('table.action')}</th>
                                                     </tr>
 
                                                 </thead>
                                                 <tbody>
-                                                    {(typeof this.state.file === 'undefined' || this.state.file.length === 0) ? <tr><td colSpan={6}><center> Không có dữ liệu</center></td></tr> :
+                                                    {(typeof this.state.file === 'undefined' || this.state.file.length === 0) ? <tr><td colSpan={6}><center>{translate('table.no_data')}</center></td></tr> :
                                                         this.state.file.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{x.nameFile}</td>
@@ -1379,7 +1379,7 @@ class AddEmployee extends Component {
                                         </div>
                                     </div>
                                     <div className=" box-footer">
-                                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.handleSubmit()}>Thêm nhân viên</button>
+                                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.handleSubmit()}>{translate('manage_employee.add_staff')}</button>
                                     </div>
                                 </div>
                             </div>
