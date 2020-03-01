@@ -78,4 +78,8 @@ exports.delete = async (req, res) => {
         res.status(400).json(error);
     }
 };
-    
+
+
+exports.getDepartmentOfUser = (req, res) => {
+    return DepartmentService.getDepartmentOfUser(req, res);
+}

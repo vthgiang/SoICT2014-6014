@@ -23,6 +23,14 @@ import { Timekeeping} from '../modules/employees-manager/timekeeping/components/
 import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
 
+
+import {KPIUnitCreate} from "../modules/kpi-unit/kpi-unit-create/component/KPIUnitCreate";
+import {KPIUnitOverview} from "../modules/kpi-unit/kpi-unit-overview/component/KPIUnitOverview";
+import {KPIUnitEvaluate} from "../modules/kpi-unit/kpi-unit-evaluate/component/KPIUnitEvaluate";
+import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview/component/KPIPersonalOverview";
+import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
+import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
+
 class Routes extends Component {
 
     render() {
@@ -323,6 +331,98 @@ class Routes extends Component {
                     pageName={'training_plan' }
                     layout={ Layout }
                     component={ TrainingPlan }
+                />
+
+                {/* kpi - routes */}
+                <PrivateRoute 
+                    isLoading={ component.isLoading }
+                    key={ 'kpi-unit-create' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/kpi-units/create', name: 'kpi_unit_create', icon:'' }
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/kpi-units/create' }
+                    path={ '/kpi-units/create' }
+                    pageName={ 'kpi_unit_create' }
+                    layout={ Layout }
+                    component={ KPIUnitCreate }
+                />
+                <PrivateRoute 
+                    isLoading={ component.isLoading }
+                    key={ 'kpi-unit-evaluate' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/kpi-units/evaluate', name: 'kpi_unit_evaluate', icon:'' }
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/kpi-units/evaluate' }
+                    path={ '/kpi-units/evaluate' }
+                    pageName={ 'kpi_unit_evaluate' }
+                    layout={ Layout }
+                    component={ KPIUnitEvaluate }
+                />
+                <PrivateRoute 
+                    isLoading={ component.isLoading }
+                    key={ 'kpi-unit-overview' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/kpi-units/overview', name: 'kpi_unit_overview', icon:'' }
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/kpi-units/overview' }
+                    path={ '/kpi-units/overview' }
+                    pageName={ 'kpi_unit_overview' }
+                    layout={ Layout }
+                    component={ KPIUnitOverview }
+                />
+                <PrivateRoute 
+                    isLoading={ component.isLoading }
+                    key={ 'kpi-personal-create' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/kpi-personals/create', name: 'kpi_personal_create', icon:'' }
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/kpi-personals/create' }
+                    path={ '/kpi-personals/create' }
+                    pageName={ 'kpi_personal_create' }
+                    layout={ Layout }
+                    component={ KPIPersonalCreate }
+                />
+                <PrivateRoute 
+                    isLoading={ component.isLoading }
+                    key={ 'kpi-personal-overview' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/kpi-personals/overview', name: 'kpi_personal_overview', icon:'' }
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/kpi-personals/overview' }
+                    path={ '/kpi-personals/overview' }
+                    pageName={ 'kpi_personal_overview' }
+                    layout={ Layout }
+                    component={ KPIPersonalOverview }
+                />
+                <PrivateRoute 
+                    isLoading={ component.isLoading }
+                    key={ 'kpi-personal-evaluate' }
+                    arrPage={[
+                        { link: '/', name:'home', icon: 'fa fa-home'},
+                        { link: '/kpi-personals/evaluate', name: 'kpi_personal_evaluate', icon:'' }
+                    ]}
+                    auth={ auth }
+                    exact={ true }
+                    link={ '/kpi-personals/evaluate' }
+                    path={ '/kpi-personals/evaluate' }
+                    pageName={ 'kpi_personal_evaluate' }
+                    layout={ Layout }
+                    component={ KPIPersonalEvaluate }
                 />
             </React.Fragment>
         );

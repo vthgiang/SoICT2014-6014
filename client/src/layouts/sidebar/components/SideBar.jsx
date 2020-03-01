@@ -212,6 +212,62 @@ class SideBar extends Component {
                                     </ul>
                                 </li>
                             }
+
+                            {/* kpi-management */}
+                            {
+                                (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
+                                <li className="treeview">
+                                    <a href="#abc">
+                                        <i className="fa fa-dashboard" /> <span>{translate(`menu.manage_kpi`)}</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                    {
+                                        (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true) &&
+                                        <li className="treeview">
+                                            <a href="#kpiunit"> {translate(`menu.kpi_unit`)}
+                                                <span className="pull-right-container">
+                                                    <i className="fa fa-angle-left pull-right" />
+                                                </span>
+                                            </a>
+                                            <ul className="treeview-menu">
+                                                {
+                                                    (this.checkURL('/kpi-units/overview', links) === true) &&
+                                                    <li><Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link></li>
+                                                }
+                                                {
+                                                    (this.checkURL('/kpi-units/create', links) === true ) &&
+                                                    <li><Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link></li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    }
+                                    {
+                                        (this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
+                                        <li className="treeview">
+                                            <a href="#kpipersonnal">{translate(`menu.kpi_personal`)}
+                                                <span className="pull-right-container">
+                                                    <i className="fa fa-angle-left pull-right" />
+                                                </span>
+                                            </a>
+                                            <ul className="treeview-menu">
+                                                {
+                                                    (this.checkURL('/kpi-personals/overview', links) === true) &&   
+                                                    <li><Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link></li>
+                                                }
+                                                {
+                                                    (this.checkURL('/kpi-personals/create', links) === true) &&
+                                                    <li><Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link></li>
+                                                }
+                                                
+                                            </ul>
+                                        </li>
+                                    }
+                                    </ul>
+                                </li>
+                            }
                         </ul>
                     </section>
                 </aside>

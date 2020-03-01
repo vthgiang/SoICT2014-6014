@@ -20,6 +20,13 @@ const praise = require('./modules/employees-manager/praise/praise.route');
 const sabbatical = require('./modules/employees-manager/sabbatical/sabbatical.route');
 const sample = require('./modules/_sample-module/_sample.route');
 const document = require('./modules/documents-management/document.route');
+
+const createKpiUnit = require("./modules/kpi-unit/kpi-unit-create/create.route");
+const overviewKpiUnit = require("./modules/kpi-unit/kpi-unit-overview/overview.route");
+
+const createKpiPersonal = require("./modules/kpi-personal/kpi-personal-create/create.route")
+const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overview/overview.route")
+
 // process.env.TZ = 'Asia/Ho_Chi_Minh';
 
 require('dotenv').config();
@@ -82,7 +89,14 @@ app.use("/sample", sample);
 app.use("/document", document);
 app.use("/component", component);
 
-console.log("ENV: ", process.env);
+// app.use("/kpiunits", kpiunits);
+app.use("/kpiunits", createKpiUnit);
+app.use("/kpiunits", overviewKpiUnit);
+// app.use("/kpipersonals", kpipersonals);
+app.use("/kpipersonals", createKpiPersonal);
+app.use("/kpipersonals", overviewKpiPersonal);
+
+// console.log("ENV: ", process.env);
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));
