@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
 import { EmployeeManagerActions } from '../../employee-manager/redux/actions';
 import 'react-toastify/dist/ReactToastify.css';
@@ -93,17 +94,18 @@ class ModalAddSalary extends Component {
     }
 
     handleSunmit = async () => {
+        var { translate } = this.props;
         await this.setState({
             month: this.refs.month.value,
         })
         if (this.state.employeeNumber === "") {
-            this.notifyerror("Bạn chưa nhập mã nhân viên");
+            this.notifyerror(translate('salary_employee.check_null_msnv'));
         } else if (this.props.employeesManager.checkMSNV===false) {
-            this.notifyerror("Mã số nhân viên không tồn tại");
+            this.notifyerror(translate('salary_employee.check_msnv'));
         } else if (this.state.mainSalary === "") {
-            this.notifyerror("Bạn chưa nhập tiền lương chính");
+            this.notifyerror(translate('salary_employee.check_main_salary'));
         } else if (this.state.endDate === "") {
-            this.notifyerror("Bạn chưa nhập tháng lương");
+            this.notifyerror(translate('salary_employee.check_month'));
         } else {
             this.props.createNewSalary(this.state);
             this.setState({
@@ -112,12 +114,13 @@ class ModalAddSalary extends Component {
                 mainSalary: "",
                 bonus: [],
             });
-            this.notifysuccess("Thêm mới thành công");
+            this.notifysuccess(translate('modal.add_success'));
             document.getElementById("formAddSalary").reset();
             window.$(`#modal-addNewSalary`).modal("hide");
         }
     }
     render() {
+        const { translate } = this.props;
         var data = this.state;
         return (
             <div className="modal fade" id="modal-addNewSalary" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -126,31 +129,31 @@ class ModalAddSalary extends Component {
                         <div className="modal-header">
                             <button type="button" className="close" onClick={() => this.handleCloseModal()} aria-label="Close">
                                 <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Thêm mới bảng lương:</h4>
+                            <h4 className="modal-title">{translate('salary_employee.add_new_salary')}:</h4>
                         </div>
                         <form id="formAddSalary">
                             <div className="modal-body">
                                 <div className="col-md-12">
                                     <div className="checkbox" style={{ marginTop: 0 }}>
                                         <label style={{ paddingLeft: 0 }}>
-                                            (<span style={{ color: "red" }}>*</span>): là các trường bắt buộc phải nhập.
+                                            (<span style={{ color: "red" }}>*</span>): {translate('modal.note')}.
                                                         </label>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
-                                        <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChangeMSNV} placeholder="Mã số nhân viên" autoComplete="off" />
+                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
+                                        <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChangeMSNV} placeholder={translate('salary_employee.staff_number')} autoComplete="off" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="month">Tháng:<span className="required">&#42;</span></label>
+                                        <label htmlFor="month">{translate('page.month')}:<span className="required">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
                                             </div>
-                                            <input type="text" className="form-control employeedatepicker" name="month" defaultValue={this.formatDate(Date.now())} ref="month" onChange={this.handleChange} placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
+                                            <input type="text" className="form-control employeedatepicker" name="month" defaultValue={this.formatDate(Date.now())} ref="month" onChange={this.handleChange} placeholder={translate('salary_employee.month')} data-date-format="mm-yyyy" autoComplete="off" />
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="mainSalary">Tiền lương chính:<span className="required">&#42;</span></label>
+                                        <label htmlFor="mainSalary">{translate('salary_employee.main_salary')}:<span className="required">&#42;</span></label>
                                         <input style={{ display: "inline", width: "85%" }} type="number" className="form-control" name="mainSalary" onChange={this.handleChange} autoComplete="off" />
                                         <select name="unit" id="" className="form-control" onChange={this.handleChange} style={{ height: 34, display: "inline", width: "15%" }}>
                                             <option value="VND">VND</option>
@@ -158,17 +161,17 @@ class ModalAddSalary extends Component {
                                         </select>
                                     </div>
                                     <div className="form-group">
-                                        <label>Các loại lương thưởng khác:<a href="#abc" title="Thêm lương thưởng khác"><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
+                                        <label>{translate('salary_employee.other_salary')}:<a href="#abc" title="Thêm lương thưởng khác"><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
                                         <table className="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Tên lương thưởng</th>
-                                                    <th style={{ width: "30%" }}>Số tiền</th>
-                                                    <th>Hành động</th>
+                                                    <th>{translate('salary_employee.name_salary')}</th>
+                                                    <th style={{ width: "30%" }}>{translate('salary_employee.money_salary')}</th>
+                                                    <th>{translate('table.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {(typeof data.bonus === 'undefined' || data.bonus.length === 0) ? <tr><td colSpan={3}><center> Không có lương thưởng khác</center></td></tr> :
+                                                {(typeof data.bonus === 'undefined' || data.bonus.length === 0) ? <tr><td colSpan={3}><center> {translate('table.no_data')}</center></td></tr> :
                                                     data.bonus.map((x, index) => (
                                                         <tr key={index}>
                                                             <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={this.handleChangeBonus} /></td>
@@ -184,8 +187,8 @@ class ModalAddSalary extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModal()}>Đóng</button>
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title="Thêm mới bảng lương" >Thêm mới</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleCloseModal()}>{translate('modal.close')}</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-success" onClick={() => this.handleSunmit()} title={translate('salary_employee.add_new_salary')} >{translate('modal.create')}</button>
                             </div>
                         </form>
                     </div>
@@ -204,5 +207,5 @@ const actionCreators = {
     checkMSNV:EmployeeManagerActions.checkMSNV,
 };
 
-const connectedAddSalary = connect(mapState, actionCreators)(ModalAddSalary);
+const connectedAddSalary = connect(mapState, actionCreators)(withTranslate(ModalAddSalary));
 export { connectedAddSalary as ModalAddSalary };

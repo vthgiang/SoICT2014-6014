@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
@@ -38,61 +39,63 @@ class ModalEditDiscipline extends Component {
         });
     }
     handleSunmit(event) {
+        var { translate } = this.props;
         var startDate = this.refs.startDate.value;
         var endDate = this.refs.endDate.value;
         if (this.state.employeeNumber === "") {
-            this.notifyerror("Bạn chưa nhập mã nhân viên");
+            this.notifyerror(translate('discipline.check_null_msnv'));
         } else if (this.state.number === "") {
-            this.notifyerror("Bạn chưa nhập số quyết định");
+            this.notifyerror(translate('discipline.check_number'));
         } else if (this.state.unit === "") {
-            this.notifyerror("Bạn chưa nhập cấp ra quyết định");
+            this.notifyerror(translate('discipline.check_unit'));
         } else if (startDate === "") {
-            this.notifyerror("Bạn chưa nhập ngày có hiệu lực");
+            this.notifyerror(translate('discipline.check_start_day'));
         } else if (endDate === "") {
-            this.notifyerror("Bạn chưa nhập ngày hết hiệu lực");
+            this.notifyerror(translate('discipline.check_end_day'));
         } else if (this.state.type === "") {
-            this.notifyerror("Bạn chưa nhập hình thức kỷ luật");
+            this.notifyerror(translate('discipline.check_type_discipline'));
         } else if (this.state.reason === "") {
-            this.notifyerror("Bạn chưa nhập lý do kỷ luật");
+            this.notifyerror(translate('discipline.check_reason_discipline'));
         } else {
             this.props.updateDiscipline(this.state.id, { ...this.state, startDate, endDate });
             window.$(`#modal-viewDiscipline-${this.state.id}`).modal("hide");
         }
     }
     render() {
+        const { translate } = this.props;
         var data = this.state;
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-viewDiscipline-${data.id}`} title="Thông tin bảng lương" data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <a href={`#modal-viewDiscipline-${data.id}`} title={translate('discipline.infor_discipline')} data-toggle="modal"><i className="material-icons">view_list</i></a>
                 <div className="modal fade" id={`modal-viewDiscipline-${data.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">Thông tin kỷ luật: {data.fullName + " - Số ra quyết định: " + data.number}</h4>
+                                <h4 className="modal-title">{translate('discipline.infor_discipline')}: {data.fullName} - {translate('page.number_decisions')}: {data.number}</h4>
                             </div>
                             <div className="modal-body">
                                 <div className="col-md-12">
                                     <div className="checkbox" style={{ marginTop: 0 }}>
                                         <label style={{ paddingLeft: 0 }}>
-                                            (<span style={{ color: "red" }}>*</span>): là các trường bắt buộc phải nhập.
+                                            (<span style={{ color: "red" }}>*</span>): {translate('modal.note')}.
                                                         </label>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
+                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="employeeNumber" defaultValue={data.employeeNumber} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="number">Số quyết định:<span className="required">&#42;</span></label>
+                                        <label htmlFor="number">{translate('page.number_decisions')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" defaultValue={data.number} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="unit">Cấp ra quyết định:<span className="required">&#42;</span></label>
+                                        <label htmlFor="unit">{translate('discipline.decision_unit')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="unit" defaultValue={data.unit} onChange={this.handleChange} />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="startDate">Ngày có hiệu lực:<span className="required">&#42;</span></label>
+                                        <label htmlFor="startDate">{translate('discipline.start_date')}:<span className="required">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -101,7 +104,7 @@ class ModalEditDiscipline extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="endDate">Ngày hết hiệu lực:<span className="required">&#42;</span></label>
+                                        <label htmlFor="endDate">{translate('discipline.end_date')}:<span className="required">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -110,18 +113,18 @@ class ModalEditDiscipline extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="type">Hình thức kỷ luật:<span className="required">&#42;</span></label>
+                                        <label htmlFor="type">{translate('discipline.discipline_forms')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="type" onChange={this.handleChange} defaultValue={data.type} />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="reason">Lý do kỷ luật:<span className="required">&#42;</span></label>
+                                        <label htmlFor="reason">{translate('discipline.reason_discipline')}:<span className="required">&#42;</span></label>
                                         <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" defaultValue={data.reason} onChange={this.handleChange}></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">Đóng</button>
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title="Lưu lại các thay đổi" onClick={this.handleSunmit} >Lưu thay đổi</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">{translate('modal.close')}</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title={translate('modal.update')} onClick={this.handleSunmit} >{translate('modal.update')}</button>
                             </div>
                         </div>
                     </div>
@@ -139,5 +142,5 @@ const actionCreators = {
     updateDiscipline: DisciplineActions.updateDiscipline,
 };
 
-const connectedEditDiscipline = connect(mapState, actionCreators)(ModalEditDiscipline);
+const connectedEditDiscipline = connect(mapState, actionCreators)(withTranslate(ModalEditDiscipline));
 export { connectedEditDiscipline as ModalEditDiscipline };

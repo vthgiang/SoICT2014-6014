@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
@@ -115,6 +116,7 @@ class Sabbatical extends Component {
         this.props.getListSabbatical(this.state);
     }
     render() {
+        const { translate } = this.props;
         var listSabbatical = "";
         if (this.props.sabbatical.isLoading === false) {
             listSabbatical = this.props.sabbatical.listSabbatical;
@@ -130,11 +132,11 @@ class Sabbatical extends Component {
                         <div className="box-body">
                             <div className="col-md-12">
                                 <div className="box-header col-md-12" style={{ paddingLeft: 0 }}>
-                                    <h3 className="box-title">Danh sách đơn xin nghỉ:</h3>
+                                    <h3 className="box-title">{translate('sabbatical.list_sabbatical')} :</h3>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label style={{ paddingTop: 5 }}>Đơn vị:</label>
+                                        <label style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <select className="form-control">
@@ -169,7 +171,7 @@ class Sabbatical extends Component {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label style={{ paddingTop: 5 }}>Chức vụ:</label>
+                                        <label style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <select className="form-control">
@@ -182,7 +184,7 @@ class Sabbatical extends Component {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label style={{ paddingTop: 5 }}>Trạng thái:</label>
+                                        <label style={{ paddingTop: 5 }}>{translate('page.status')}:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <select className="form-control" name="status" onChange={this.handleChange}>
@@ -196,7 +198,7 @@ class Sabbatical extends Component {
                             <div className="col-md-12">
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="employeeNumber" style={{ paddingTop: 5 }}>Mã NV:</label>
+                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
@@ -204,40 +206,40 @@ class Sabbatical extends Component {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="month" style={{ paddingTop: 5 }}>Tháng:</label>
+                                        <label htmlFor="month" style={{ paddingTop: 5 }}>{translate('page.month')}:</label>
                                     </div>
                                     <div className={'input-group date has-feedback'}>
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
                                         </div>
-                                        <input type="text" className="form-control" name="month" id="employeedatepicker4" defaultValue={this.formatDate(Date.now())} ref="month" placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
+                                        <input type="text" className="form-control" name="month" id="employeedatepicker4" defaultValue={this.formatDate(Date.now())} ref="month" placeholder={translate('page.month')} data-date-format="mm-yyyy" autoComplete="off" />
                                     </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                         <center>
-                                            <button type="submit" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button></center>
+                                            <button type="submit" className="btn btn-success" title={translate('page.add_search')} onClick={this.handleSunmitSearch} >{translate('page.add_search')} </button></center>
                                     </div>
                                 </div>
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addNewSabbatical">Thêm đơn xin nghỉ</button>
+                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title={translate('sabbatical.add_sabbatical_title')} data-toggle="modal" data-target="#modal-addNewSabbatical">{translate('sabbatical.add_sabbatical')}</button>
                                 </div>
                             </div>
                             <div className="col-md-12">
                                 <table className="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th style={{ width: "8%" }}>Mã NV</th>
-                                            <th style={{ width: "16%" }}>Tên nhân viên</th>
-                                            <th style={{ width: "9%" }}>Từ ngày</th>
-                                            <th style={{ width: "9%" }}>Đến ngày</th>
-                                            <th>Lý do</th>
-                                            <th style={{ width: "12%" }}>Đơn vị</th>
-                                            <th style={{ width: "10%" }}>Chức vụ</th>
-                                            <th style={{ width: "11%" }}>Trạng thái</th>
+                                            <th style={{ width: "10%" }}>{translate('table.employee_number')}</th>
+                                            <th style={{ width: "14%" }}>{translate('table.employee_name')}</th>
+                                            <th style={{ width: "9%" }}>{translate('table.start_date')}</th>
+                                            <th style={{ width: "9%" }}>{translate('table.end_date')}</th>
+                                            <th>{translate('sabbatical.reason')}</th>
+                                            <th style={{ width: "12%" }}>{translate('table.unit')}</th>
+                                            <th style={{ width: "10%" }}>{translate('table.position')}</th>
+                                            <th style={{ width: "11%" }}>{translate('table.status')}</th>
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
-                                                    columnName="Hành động"
+                                                    columnName={translate('table.action')}
                                                     hideColumn={false}
                                                     setLimit={this.setLimit}
                                                 />
@@ -245,7 +247,7 @@ class Sabbatical extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><td colSpan={9}><center> Không có dữ liệu</center></td></tr> :
+                                        {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><td colSpan={9}><center>{translate('table.no_data')}</center></td></tr> :
                                             listSabbatical.map((x, index) => (
                                                 <tr key={index}>
                                                     <td>{x.employee.employeeNumber}</td>
@@ -285,5 +287,5 @@ const actionCreators = {
     getListSabbatical: SabbaticalActions.getListSabbatical,
 };
 
-const connectedListSabbatical = connect(mapState, actionCreators)(Sabbatical);
+const connectedListSabbatical = connect(mapState, actionCreators)(withTranslate(Sabbatical));
 export { connectedListSabbatical as Sabbatical };

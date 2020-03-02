@@ -15,6 +15,13 @@ import {salary} from '../modules/employees-manager/salary-employee/redux/reducer
 import {discipline} from '../modules/employees-manager/discipline/redux/reducers';
 import {sabbatical} from '../modules/employees-manager/sabbatical/redux/reducers';
 
+
+import { createKpiUnit } from "../modules/kpi-unit/kpi-unit-create/redux/reducers";
+import { overviewKpiUnit } from "../modules/kpi-unit/kpi-unit-overview/redux/reducers";
+
+import {createKpiPersonal} from "./../modules/kpi-personal/kpi-personal-create/redux/reducers"
+import {overviewKpiPersonal} from "./../modules/kpi-personal/kpi-personal-overview/redux/reducers"
+
 const rootReducer = combineReducers(Object.assign({
     system,
     auth,
@@ -29,7 +36,15 @@ const rootReducer = combineReducers(Object.assign({
     course,
     salary,
     discipline,
-    sabbatical
+    sabbatical,
+
+    // kpi-unit
+    createKpiUnit,
+    overviewKpiUnit,
+
+    //kpi-personal
+    createKpiPersonal,
+    overviewKpiPersonal
 
 }, { Intl }));
 

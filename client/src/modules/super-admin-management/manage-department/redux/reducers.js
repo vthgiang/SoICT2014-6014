@@ -66,6 +66,32 @@ export function department(state = initState, action) {
                 tree: action.payload.data.tree,
                 isLoading: false
             };
+        case DepartmentConstants.GETALL_REQUEST:
+                return {
+                  loading: true
+                };
+        case DepartmentConstants.GETALL_SUCCESS:
+                return {
+                  items: action.departments
+                };
+        case DepartmentConstants.GETALL_FAILURE:
+                return { 
+                  error: action.error
+                };
+        case DepartmentConstants.GETDEPARTMENT_OFUSER_REQUEST:
+            return {
+                loading: true
+            };
+        case DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS:
+            return {
+                ...state,
+                unitofuser: action.departments
+            };
+        case DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE:
+            return { 
+                error: action.error
+            };
+
 
         case 'LOGOUT':
             return initState;

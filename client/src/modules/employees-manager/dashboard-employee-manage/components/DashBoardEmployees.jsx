@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { ModalImportSabbatical } from './ModalImportSabbatical';
-import { ModalDeleteSabbatical } from './ModalDeleteSabbatical';
-import { ModalEditSabbatical } from './ModalEditSabbatical';
+import { ModalImportHoliday } from './ModalImportHoliday';
+import { ModalDeleteHoliday } from './ModalDeleteHoliday';
+import { ModalEditHoliday } from './ModalEditHoliday';
+import { ModalAddHoliday } from './ModalAddHoliday';
 
 class DashBoardEmployees extends Component {
     componentDidMount() {
@@ -55,6 +56,7 @@ class DashBoardEmployees extends Component {
                                     <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" /></button>
                                 </div>
                                 <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
+                                <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Thêm mới lịch nghỉ" data-toggle="modal" data-target="#modal-addSabbatical">Thêm mới</button>
                             </div>
                             <div className="box-body" >
                                 <table className="table table-bordered">
@@ -98,9 +100,10 @@ class DashBoardEmployees extends Component {
                         </div>
                     </div>
                 </div>
-                <ModalImportSabbatical />
-                <ModalDeleteSabbatical />
-                <ModalEditSabbatical />
+                <ModalImportHoliday />
+                <ModalDeleteHoliday />
+                <ModalEditHoliday />
+                <ModalAddHoliday/>
             </React.Fragment>
         );
     }

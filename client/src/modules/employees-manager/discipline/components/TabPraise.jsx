@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
@@ -84,6 +85,7 @@ class TabPraise extends Component {
         this.props.getListPraise(this.state);
     }
     render() {
+        const { translate } = this.props;
         var listPraise = "";
         if (this.props.discipline.isLoading === false) {
             listPraise = this.props.discipline.listPraise;
@@ -99,7 +101,7 @@ class TabPraise extends Component {
                         <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                             <div className="col-md-3">
                                 <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <label htmlFor="fullname" style={{ paddingTop: 5 }}>Đơn vị:</label>
+                                    <label htmlFor="fullname" style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
                                 </div>
                                 <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                     <select className="form-group" style={{ height: 32, width: "100%" }}>
@@ -134,7 +136,7 @@ class TabPraise extends Component {
                             </div>
                             <div className="col-md-3">
                                 <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <label htmlFor="fullname" style={{ paddingTop: 5 }}>Chức vụ:</label>
+                                    <label htmlFor="fullname" style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
                                 </div>
                                 <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                     <select className="form-group" defaultValue="1" style={{ height: 32, width: "99%" }}>
@@ -149,7 +151,7 @@ class TabPraise extends Component {
                         <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                             <div className="col-md-3">
                                 <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <label htmlFor="employeeNumber" style={{ paddingTop: 5 }}>Mã NV:</label>
+                                    <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
                                 </div>
                                 <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                     <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} autoComplete="off" />
@@ -157,18 +159,18 @@ class TabPraise extends Component {
                             </div>
                             <div className="col-md-3">
                                 <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <label htmlFor="number" style={{ marginTop: -5 }}>Số quyết định:</label>
+                                    <label htmlFor="number" style={{ marginTop: -5 }}>{translate('page.number_decisions')}:</label>
                                 </div>
-                                <input type="text" style={{ width: "66%" }} className="form-control" onChange={this.handleChange} name="number" placeholder="Số ra quyết định" autoComplete="off" />
+                                <input type="text" style={{ width: "66%" }} className="form-control" onChange={this.handleChange} name="number" placeholder={translate('page.number_decisions')} autoComplete="off" />
                             </div>
                             <div className="col-md-3">
                                 <div className="form-group" style={{ paddingLeft: 0 }}>
-                                    <button type="submit" className="btn btn-success" onClick={this.handleSubmitSearch} title="Tìm kiếm" >Tìm kiếm</button>
+                                    <button type="submit" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                                 </div>
                             </div>
                             <div className="col-md-3" style={{ paddingRight: 0 }}>
                                 <div className="form-group pull-right" >
-                                    <button type="button" className="btn btn-success" title="Thêm khen thưởng nhân viên" data-toggle="modal" data-target="#modal-addPraise" >Thêm khen thưởng</button>
+                                    <button type="button" className="btn btn-success" title={translate('discipline.add_praise_title')} data-toggle="modal" data-target="#modal-addPraise" >{translate('discipline.add_praise')}</button>
 
                                 </div>
                             </div>
@@ -177,15 +179,15 @@ class TabPraise extends Component {
                             <table className="table table-striped table-bordered" >
                                 <thead>
                                     <tr>
-                                        <th style={{ width: "12%" }}>Mã nhân viên</th>
-                                        <th>Tên nhân viên</th>
-                                        <th style={{ width: "15%" }}>Ngày ra quyết định</th>
-                                        <th style={{ width: "15%" }}>Số quyết định</th>
-                                        <th>Đơn vị</th>
-                                        <th>Chức vụ</th>
+                                        <th style={{ width: "12%" }}>{translate('table.employee_number')}</th>
+                                        <th>{translate('table.employee_name')}</th>
+                                        <th style={{ width: "15%" }}>{translate('discipline.decision_day')}</th>
+                                        <th style={{ width: "15%" }}>{translate('page.number_decisions')}</th>
+                                        <th>{translate('table.unit')}</th>
+                                        <th>{translate('table.position')}</th>
                                         <th style={{ width: '120px', textAlign: 'center' }}>
                                             <ActionColumn
-                                                columnName="Hành động"
+                                                columnName={translate('table.action')}
                                                 hideColumn={false}
                                                 setLimit={this.setLimit}
                                             />
@@ -230,5 +232,5 @@ const actionCreators = {
     getListPraise: DisciplineActions.getListPraise,
 };
 
-const connectedListPraise = connect(mapState, actionCreators)(TabPraise);
+const connectedListPraise = connect(mapState, actionCreators)(withTranslate(TabPraise));
 export { connectedListPraise as TabPraise };

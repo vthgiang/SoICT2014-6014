@@ -4,7 +4,9 @@ import { DepartmentConstants } from "./constants";
 export const DepartmentActions = {
     get,
     create,
-    destroy
+    destroy,
+    getAll,
+    getDepartmentOfUser
 }
 
 function get(){
@@ -70,4 +72,35 @@ function destroy(departmentId){
                 console.log("Error: ", err);
             })
     }
+}
+
+function getAll() {
+    return dispatch => {
+        dispatch(request());
+
+        DepartmentServices.getAll()
+            .then(
+                departments => dispatch(success(departments)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() { return { type: DepartmentConstants.GETALL_REQUEST} }
+    function success(departments) { return { type: DepartmentConstants.GETALL_SUCCESS, departments } }
+    function failure(error) { return { type: DepartmentConstants.GETALL_FAILURE, error } }
+}
+function getDepartmentOfUser() {
+    return dispatch => {
+        dispatch(request());
+
+        DepartmentServices.getDepartmentOfUser()
+            .then(
+                departments => dispatch(success(departments)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() { return { type: DepartmentConstants.GETDEPARTMENT_OFUSER_REQUEST} }
+    function success(departments) { return { type: DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS, departments } }
+    function failure(error) { return { type: DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE, error } }
 }

@@ -10,4 +10,6 @@ router.get("/:id", auth, DepartmentController.show);
 router.patch("/:id", auth, DepartmentController.edit);
 router.delete("/:id", auth, DepartmentController.delete);
 
+router.get('/department-of-user/:id', DepartmentController.getDepartmentOfUser);
+
 module.exports = router;

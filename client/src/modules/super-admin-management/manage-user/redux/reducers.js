@@ -134,6 +134,67 @@ export function user(state = initState, action) {
                 isLoading: false
             };
 
+        case UserConstants.GET_USER_ROLES_SUCCESS:
+            return {
+                ...state,
+                roles: action.payload
+            };
+        case UserConstants.GET_LINK_OF_ROLE_SUCCESS:
+            return {
+                ...state,
+                links: action.payload
+            }
+        case UserConstants.GETROLE_SAMEDEPARTMENT_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case UserConstants.GETROLE_SAMEDEPARTMENT_SUCCESS:
+            return {
+                ...state,
+                roledepartments: action.roleDepartment.data
+            };
+        case UserConstants.GETALLUSER_OFDEPARTMENT_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                userdepartments: null
+            };
+        case UserConstants.GETALLUSER_OFDEPARTMENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                userdepartments: action.users.data
+            };
+        case UserConstants.GETALLUSER_OFDEPARTMENT_FAILURE:
+            return {
+                error: action.error
+            };
+        case UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                userdepartments: null
+            };
+        case UserConstants.GETALLUSER_SAMEDEPARTMENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                userdepartments: action.users.data
+            };
+        case UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE:
+            return {
+                error: action.error
+            };
+        case UserConstants.GETALLUSER_OFCOMPANY_SUCCESS:
+            return {
+                ...state,
+                usercompanys: action.users.data
+            };
+        case UserConstants.GETALLUSER_OFCOMPANY_FAILURE:
+            return {
+                error: action.error
+            };
         case 'LOGOUT':
 
             return initState;

@@ -6,7 +6,11 @@ export const UserActions = {
     getPaginate,
     edit,
     create,
-    destroy
+    destroy,
+    getRoleSameDepartment,
+    getAllUserOfCompany,
+    getAllUserOfDepartment,
+    getAllUserSameDepartment
 };
 
 function get(){
@@ -111,4 +115,97 @@ function destroy(id){
                 console.log("Error: ", err);
             })
     }
+}
+
+export const getRoles = () => {
+    return dispatch => {
+        UserServices.getRoles()
+            .then(res => {
+                let roles = [];
+                res.data.forEach(data => {
+                    roles.push({
+                        id: data.id_role._id,
+                        name: data.id_role.name
+                    })
+                });
+                dispatch({
+                    type: UserConstants.GET_USER_ROLES_SUCCESS,
+                    payload: roles
+                })
+            })
+            .catch(err => {
+                console.log("ERROR ROLES");
+            })
+    }
+}
+
+export const getLinkOfRole = () => {
+    return dispatch => {
+        UserServices.getLinkOfRole()
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GET_LINK_OF_ROLE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("ERROR ROLES");
+            })
+    }
+}
+
+function getRoleSameDepartment(currentRole) {
+    return dispatch => {
+        dispatch(request(currentRole));
+
+        UserServices.getRoleSameDepartmentOfUser(currentRole)
+            .then(
+                roleDepartment => dispatch(success(roleDepartment)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request(currentRole) { return { type: UserConstants.GETROLE_SAMEDEPARTMENT_REQUEST, currentRole } }
+    function success(roleDepartment) { return { type: UserConstants.GETROLE_SAMEDEPARTMENT_SUCCESS, roleDepartment } }
+    function failure(error) { return { type: UserConstants.GETROLE_SAMEDEPARTMENT_FAILURE, error } }
+}
+
+function getAllUserOfCompany() {
+    return dispatch => {
+        UserServices.getAllUserOfCompany()
+            .then(
+                users => dispatch(success(users)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function success(users) { return { type: UserConstants.GETALLUSER_OFCOMPANY_SUCCESS, users } }
+    function failure(error) { return { type: UserConstants.GETALLUSER_OFCOMPANY_FAILURE, error } }
+}
+
+function getAllUserOfDepartment(id) {
+    return dispatch => {
+        dispatch(request(id));
+        UserServices.getAllUserOfDepartment(id)
+            .then(
+                users => dispatch(success(users)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function request(id) { return { type: UserConstants.GETALLUSER_OFDEPARTMENT_REQUEST, id } }
+    function success(users) { return { type: UserConstants.GETALLUSER_OFDEPARTMENT_SUCCESS, users } }
+    function failure(error) { return { type: UserConstants.GETALLUSER_OFDEPARTMENT_FAILURE, error } }
+}
+
+function getAllUserSameDepartment(currentRole) {
+    return dispatch => {
+        dispatch(request(currentRole));
+        UserServices.getAllUserSameDepartment(currentRole)
+            .then(
+                users => dispatch(success(users)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function request(id) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST, id } }
+    function success(users) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_SUCCESS, users } }
+    function failure(error) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE, error } }
 }

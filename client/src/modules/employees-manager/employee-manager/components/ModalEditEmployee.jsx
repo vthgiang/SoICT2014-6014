@@ -50,6 +50,8 @@ class ModalEditEmployee extends Component {
         this.handleChangeMSNV = this.handleChangeMSNV.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeGender = this.handleChangeGender.bind(this);
+        this.handleChangeRelationship = this.handleChangeRelationship.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.defaulteClick = this.defaulteClick.bind(this);
@@ -109,6 +111,28 @@ class ModalEditEmployee extends Component {
             employeeNew: {
                 ...employeeNew,
                 [name]: (value === "") ? " " : value
+            }
+        });
+    }
+    // function lưu giới tính
+    handleChangeGender(event) {
+        const { value } = event.target;
+        const { employeeNew } = this.state;
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                gender: value
+            }
+        });
+    }
+    // function lưu tình hình hôn nhân
+    handleChangeRelationship(event) {
+        const { value } = event.target;
+        const { employeeNew } = this.state;
+        this.setState({
+            employeeNew: {
+                ...employeeNew,
+                relationship: value
             }
         });
     }
@@ -799,14 +823,14 @@ class ModalEditEmployee extends Component {
                                                                         <label style={{ display: 'block', paddingBottom: 4 }}>Giới tính:<span className="required">&#42;</span></label>
                                                                         {
                                                                             x.gender === "Nam" ?
-                                                                                <input type="radio" name="gender" value="Nam" className="" checked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
-                                                                                <input type="radio" name="gender" value="Nam" className="" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
+                                                                                <input type="radio" name={"gender" + x.employeeNumber} value="Nam" className="" checked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeGender} /> :
+                                                                                <input type="radio" name={"gender" + x.employeeNumber} value="Nam" className="" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeGender} />
                                                                         }
                                                                         <label>Nam</label>
                                                                         {
                                                                             x.gender === "Nữ" ?
-                                                                                <input type="radio" name="gender" value="Nữ" className="" checked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
-                                                                                <input type="radio" name="gender" value="Nữ" className="" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
+                                                                                <input type="radio" name={"gender" + x.employeeNumber} value="Nữ" checked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeGender} /> :
+                                                                                <input type="radio" name={"gender" + x.employeeNumber} value="Nữ" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeGender} />
                                                                         }
                                                                         <label>Nữ</label>
                                                                     </div>
@@ -818,15 +842,15 @@ class ModalEditEmployee extends Component {
                                                                         <label style={{ display: 'block', paddingBottom: 7 }}>Tình trạng hôn nhân:</label>
                                                                         {
                                                                             x.relationship === "Độc thân" ?
-                                                                                <input type="radio" name="relationship" value="Độc thân" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
-                                                                                <input type="radio" name="relationship" value="Độc thân" className="" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
+                                                                                <input type="radio" name={"relationship" + x.employeeNumber} value="Độc thân" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeRelationship} /> :
+                                                                                <input type="radio" name={"relationship" + x.employeeNumber} value="Độc thân" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeRelationship} />
                                                                         }
 
                                                                         <label> Độc thân</label>
                                                                         {
                                                                             x.relationship === "Đã kết hôn" ?
-                                                                                <input type="radio" name="relationship" value="Đã kết hôn" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} /> :
-                                                                                <input type="radio" name="relationship" value="Đã kết hôn" className="" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
+                                                                                <input type="radio" name={"relationship" + x.employeeNumber} value="Đã kết hôn" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeRelationship} /> :
+                                                                                <input type="radio" name={"relationship" + x.employeeNumber} value="Đã kết hôn" style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChangeRelationship} />
                                                                         }
                                                                         <label> Đã kết hôn</label>
                                                                     </div>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SalaryActions } from '../redux/actions';
@@ -7,8 +8,8 @@ import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalDeleteSalary } from './ModalDeleteSalary';
 import { ModalEditSalary } from './ModalEditSalary';
-import {ActionColumn} from '../../../../common-components/src/ActionColumn';
-import {PaginateBar} from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import '../../employee-manager/components/listemployee.css';
 
 class SalaryEmployee extends Component {
@@ -112,6 +113,7 @@ class SalaryEmployee extends Component {
         return [month, year].join('-');
     }
     render() {
+        const { translate } = this.props;
         var formatter = new Intl.NumberFormat();
         var listSalary = "";
         if (this.props.salary.isLoading === false) {
@@ -129,11 +131,11 @@ class SalaryEmployee extends Component {
                             <div className="box-body">
                                 <div className="col-md-12">
                                     <div className="box-header col-md-12" style={{ paddingLeft: 0 }}>
-                                        <h3 className="box-title">Danh sách bảng lương nhân viên:</h3>
+                                        <h3 className="box-title">{translate('salary_employee.list_salary')}:</h3>
                                     </div>
                                     <div className="col-md-3">
                                         <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label style={{ paddingTop: 5 }}>Đơn vị:</label>
+                                            <label style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
                                         </div>
                                         <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                             <select className="form-control">
@@ -168,7 +170,7 @@ class SalaryEmployee extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label style={{ paddingTop: 5 }}>Chức vụ:</label>
+                                            <label style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
                                         </div>
                                         <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                             <select className="form-control">
@@ -183,7 +185,7 @@ class SalaryEmployee extends Component {
                                 <div className="col-md-12">
                                     <div className="col-md-3">
                                         <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label htmlFor="employeeNumber" style={{ paddingTop: 5 }}>Mã NV:</label>
+                                            <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
                                         </div>
                                         <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
@@ -191,7 +193,7 @@ class SalaryEmployee extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label htmlFor="month" style={{ paddingTop: 5 }}>Tháng:</label>
+                                            <label htmlFor="month" style={{ paddingTop: 5 }}>{translate('page.month')}:</label>
                                         </div>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
@@ -202,15 +204,15 @@ class SalaryEmployee extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <div className="form-group" style={{ paddingLeft: 0 }}>
-                                            <button type="submit" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSunmitSearch()} >Tìm kiếm</button>
+                                            <button type="submit" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                                         </div>
                                     </div>
                                     <div className="col-md-3" style={{ paddingRight: 0 }}>
                                         <div className="form-group pull-right" >
-                                            <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title="Thêm bảng lương nhân viên" >Thêm bảng lương</button>
+                                            <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title={translate('salary_employee.add_salary_title')} >{translate('salary_employee.add_salary')}</button>
                                             <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
-                                                <li><a href="#abc" style={{ color: "#fff" }} title="Thêm nhiều bảng lương" data-toggle="modal" data-target="#modal-importFileSalary">Import file Excel</a></li>
-                                                <li><a href="#abc" style={{ color: "#fff" }} title="Thêm một bảng lương" data-toggle="modal" data-target="#modal-addNewSalary">Thêm bằng tay</a></li>
+                                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
+                                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_by_hand_title')} data-toggle="modal" data-target="#modal-addNewSalary">{translate('salary_employee.add_by_hand')}</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -219,15 +221,15 @@ class SalaryEmployee extends Component {
                                     <table className="table table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th style={{ width: "13%" }}>Mã nhân viên</th>
-                                                <th style={{ width: "20%" }}>Tên nhân viên</th>
-                                                <th style={{ width: "13%" }}>Tháng</th>
-                                                <th style={{ width: "13%" }}>Tổng lương</th>
-                                                <th style={{ width: "15%" }}>Đơn vị</th>
-                                                <th style={{ width: "15%" }}>Chức vụ</th>
+                                                <th style={{ width: "13%" }}>{translate('table.employee_number')}</th>
+                                                <th style={{ width: "20%" }}>{translate('table.employee_name')}</th>
+                                                <th style={{ width: "13%" }}>{translate('table.month')}</th>
+                                                <th style={{ width: "13%" }}>{translate('table.total_salary')}</th>
+                                                <th style={{ width: "15%" }}>{translate('table.unit')}</th>
+                                                <th style={{ width: "15%" }}>{translate('table.position')}</th>
                                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                                     <ActionColumn
-                                                        columnName="Hành động"
+                                                        columnName={translate('table.action')}
                                                         hideColumn={false}
                                                         setLimit={this.setLimit}
                                                     />
@@ -235,7 +237,7 @@ class SalaryEmployee extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('salary_employee.no_data')}</center></td></tr> :
                                                 listSalary.map((x, index) => {
 
                                                     let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
@@ -295,5 +297,5 @@ const actionCreators = {
     getListSalary: SalaryActions.getListSalary,
 };
 
-const connectedListSalary = connect(mapState, actionCreators)(SalaryEmployee);
+const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryEmployee));
 export { connectedListSalary as SalaryEmployee };
