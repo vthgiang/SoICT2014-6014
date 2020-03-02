@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PrivateRoute, AuthRoute } from './route-export';
-
+import { ToastContainer, toast } from 'react-toastify';
 import Layout from '../layouts/Layout';
 import Login from '../modules/auth/components/Login';
 import System from '../modules/system/components';
@@ -29,6 +29,7 @@ class Routes extends Component {
         const { auth, company, user, role, link, component, department } = this.props;
         return (
             <React.Fragment>
+                <ToastContainer enableMultiContainer containerId={'toast-notification'} position={toast.POSITION.TOP_RIGHT} />
                 <AuthRoute exact auth={ auth } path="/login" component={ Login } />
                 <PrivateRoute 
                     isLoading={ company.isLoading }

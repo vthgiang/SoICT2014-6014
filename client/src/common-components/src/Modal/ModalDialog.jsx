@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import './modal.css';
-import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class ModalDialog extends Component {
     constructor(props) {
@@ -18,35 +19,24 @@ class ModalDialog extends Component {
         document.getElementById(this.props.formID).reset();
     }
 
-    notification = (icon, color, message) => {
-        Swal.fire({
-            position: 'top-end',
-            icon,
-            html: `<h4 class="text-${color}">${message}</h4>`,
-            showConfirmButton: false,
-            timer: 4000
-          })
-    }
-
     save = (translate) => {
         this.props
             .func()
             .then(res => {
                 if(this.props.type !== 'edit') this.clear();
                 this.closeModal();
-                this.notification("success", "green", this.props.msg_success);
-                
+                toast.success(this.props.msg_success, {containerId: 'toast-notification'});
             }).catch(err => {
                 if(err.response.data.message){
                     if( 
                         err.response.data.message.length < 20 &&
                         translate(`confirm.${err.response.data.message}`) !== undefined
                     )
-                        this.notification("warning", "orange", translate(`confirm.${err.response.data.message}`));
+                        toast.warning(translate(`confirm.${err.response.data.message}`), {containerId: 'toast-notification'});
                     else
-                        this.notification("warning", "orange", err.response.data.message);
+                        toast.warning(err.response.data.message, {containerId: 'toast-notification'});
                 }else
-                    this.notification("error", "red", this.props.msg_faile);
+                    toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });
     }
 
