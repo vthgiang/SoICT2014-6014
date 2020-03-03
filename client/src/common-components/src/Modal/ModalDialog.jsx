@@ -12,7 +12,8 @@ class ModalDialog extends Component {
     }
 
     closeModal = () => {
-        document.getElementById(this.props.modalID).className="modal fade in show-off";
+        // document.getElementById(this.props.modalID).className="modal fade in show-off";
+        window.$(`#${this.props.modalID}`).modal("hide");
     }
 
     clear = () => {
@@ -29,7 +30,7 @@ class ModalDialog extends Component {
             }).catch(err => {
                 if(err.response.data.message){
                     if( 
-                        err.response.data.message.length < 20 &&
+                        err.response.data.message.length < 15 &&
                         translate(`confirm.${err.response.data.message}`) !== undefined
                     )
                         toast.warning(translate(`confirm.${err.response.data.message}`), {containerId: 'toast-notification'});
@@ -45,8 +46,8 @@ class ModalDialog extends Component {
 
         return ( 
             <React.Fragment>
-                <div id={this.props.modalID} className="modal fade in show-off">
-                    <div className={`modal-dialog animation-dialog modal-size-${this.props.size}`}>
+                <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div  className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={this.closeModal}>&times;</button>

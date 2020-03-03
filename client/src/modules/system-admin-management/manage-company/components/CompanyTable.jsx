@@ -70,10 +70,12 @@ class CompanyTable extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <CompanyCreateForm/>
+                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        <CompanyCreateForm/>
+                    </div>
                 </div>
                 
-                <table className="table table-bordered table-hover">
+                <table className="table table-2">
                     <thead>
                         <tr>
                             <th>{translate('table.name')}</th>
@@ -127,7 +129,7 @@ class CompanyTable extends Component {
                                 }
                             </React.Fragment> : 
                             <tr>
-                                <td colSpan='2'>{translate('confirm.no_data')}</td>
+                                <td colSpan='4'>{translate('confirm.no_data')}</td>
                             </tr>
                         }
                     </tbody>

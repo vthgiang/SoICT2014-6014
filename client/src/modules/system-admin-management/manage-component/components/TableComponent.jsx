@@ -77,11 +77,11 @@ class TableComponent extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                         <ComponentCreateForm />
                     </div>
                 </div>
-                <table className="table table-bordered">
+                <table className="table table-2">
                     <thead>
                         <tr>
                             <th>{ translate('table.name') }</th>
