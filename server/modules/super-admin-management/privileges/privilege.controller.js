@@ -88,7 +88,6 @@ exports.addRoleToLink = async (req, res) => {
 exports.getLinksOfRole = async (req, res) => {
     const Logger = await Log(req.user.company.short_name, 'GET LINKS OF ROLE');
     try {
-        console.log("GET LINK OF ROLE")
         var links = await PrivilegeService.getLinksOfRole(req.params.idRole);
         
         isLog && await Logger.info(req.user.email);

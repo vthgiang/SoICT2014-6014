@@ -43,6 +43,9 @@ export function auth(state = initState, action) {
             };
 
         case AuthConstants.REFRESH_DATA_USER_SUCCESS:
+            if(localStorage.getItem('currentRole') === null){
+                localStorage.setItem('currentRole', action.payload.roles[0].roleId._id);
+            }
             return {
                 ...state,
                 user: action.payload
@@ -56,6 +59,7 @@ export function auth(state = initState, action) {
 
         case 'RESET_APP':
             return {
+                ...state,
                 logged: false,
                 user: {
                     _id: null,

@@ -47,7 +47,7 @@ class ModalDialog extends Component {
         return ( 
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div  className="modal-dialog">
+                    <div  className={`modal-dialog  modal-size-${this.props.size}`}>
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={this.closeModal}>&times;</button>
