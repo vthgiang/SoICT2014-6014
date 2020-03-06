@@ -387,7 +387,7 @@ export default {
             type_contract: 'Loại hợp đồng',
             start_date: 'Ngày có hiệu lực',
             course_name:'Tên khoá học',
-            start_date: 'Ngày bắt đầu',
+            start_day: 'Ngày bắt đầu',
             end_date: 'Ngày kết thúc',
             type_education:'Loại đào tạo',
             cost:'Chi phí',

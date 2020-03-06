@@ -379,7 +379,7 @@ export default {
             type_contract: 'Type of contract',
             start_date: 'Effective date',
             course_name:'Course name',
-            start_date: 'Start day',
+            start_day: 'Start day',
             end_date: 'End day',
             type_education:'Type of education',
             cost:'Cost',

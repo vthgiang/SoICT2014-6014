@@ -8,7 +8,7 @@ import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
-import './listemployee.css';
+//import './listemployee.css';
 
 class ListEmployee extends Component {
     constructor(props) {
