@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Item from './Item';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 // ,{
 //     name: 'Manage ComponentUI',
@@ -32,6 +32,20 @@ class SideBar extends Component {
     }
 
     render() {
+        const url = {
+            path1: "/dashboard-employee",
+            path2: "/add-employee",
+            path3: "/list-employee",
+            path4: "/salary-employee",
+            path5: "/time-keeping",
+            path6: "/discipline",
+            path7: "/sabbatical",
+            path8: "/detail-employee",
+            path9: "/update-employee",
+            path10: "/list-course",
+            path11: "/training-plan",
+
+        }
         const { translate } = this.props;
         const { links } = this.props.auth;
         return (
@@ -44,7 +58,7 @@ class SideBar extends Component {
                             </div>
                             <div className="pull-left info">
                                 <p>User</p>
-                                <Link to="#abc"><i className="fa fa-circle text-success" /> Online</Link>
+                                <a href="#abc"><i className="fa fa-circle text-success" /> Online</a>
                             </div>
                         </div> */}
                         {/* <form action="#" method="get" className="sidebar-form">
@@ -139,10 +153,12 @@ class SideBar extends Component {
 
                             {/* Quan ly nhan su */}
                             {
-                                (this.checkURL('/dashboard-employee', links) === true || this.checkURL('/add-employee', links) === true || this.checkURL('/list-employee', links) === true ||
-                                    this.checkURL('/salary-employee', links) === true || this.checkURL('/time-keeping', links) === true ||
-                                    this.checkURL('/discipline', links) === true || this.checkURL('/sabbatical', links) === true) &&
-                                <li className="treeview">
+                                (this.checkURL(url.path1, links) === true || this.checkURL(url.path2, links) === true || this.checkURL(url.path3, links) === true ||
+                                    this.checkURL(url.path4, links) === true || this.checkURL(url.path5, links) === true ||
+                                    this.checkURL(url.path6, links) === true || this.checkURL(url.path7, links) === true) &&
+                                <li className={window.location.pathname === url.path1 || window.location.pathname === url.path2 || window.location.pathname === url.path3 ||
+                                    window.location.pathname === url.path4 || window.location.pathname === url.path5 ||
+                                    window.location.pathname === url.path6 || window.location.pathname === url.path7 ? "active treeview menu-open" : "treeview"}>
                                     <a href="#">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
                                         <span className="pull-right-container">
@@ -150,33 +166,68 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        {this.checkURL('/dashboard-employee', links) === true &&
-                                            <li><Link to="/dashboard-employee"><i className="fa fa-dashboard" />{translate(`menu.dashboard_employee`)}</Link></li>
+                                        {this.checkURL(url.path1, links) === true &&
+                                            <li className={ window.location.pathname === url.path1 ? "active" : "" }>
+                                                <a href={url.path1}>
+                                                    <i className="fa fa-dashboard" />
+                                                    {translate(`menu.dashboard_employee`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/add-employee', links) === true &&
-                                            <li><Link to="/add-employee"><i className="fa fa-user-plus" />{translate(`menu.add_employee`)}</Link></li>
+                                        {this.checkURL(url.path2, links) === true &&
+                                            <li className={ window.location.pathname === url.path2 ? "active" : "" }>
+                                                <a href={url.path2}>
+                                                    <i className="fa fa-user-plus" />
+                                                    {translate(`menu.add_employee`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/list-employee', links) === true &&
-                                            <li><Link to="/list-employee"><i className="fa fa-address-card" />{translate(`menu.list_employee`)}</Link></li>
+                                        {this.checkURL(url.path3, links) === true &&
+                                            <li className={ window.location.pathname === url.path3 ? "active" : "" }>
+                                                <a href={url.path3}>
+                                                    <i className="fa fa-address-card" />
+                                                    {translate(`menu.list_employee`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/salary-employee', links) === true &&
-                                            <li><Link to="/salary-employee"><i className="fa fa-line-chart" />{translate(`menu.salary_employee`)}</Link></li>
+                                        {this.checkURL(url.path4, links) === true &&
+                                            <li className={ window.location.pathname === url.path4 ? "active" : "" }>
+                                                <a href={url.path4}>
+                                                    <i className="fa fa-line-chart" />
+                                                    {translate(`menu.salary_employee`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/time-keeping', links) === true &&
-                                            <li><Link to="/time-keeping"><i className="fa fa-calculator" />{translate(`menu.time_keeping`)}</Link></li>
+                                        {this.checkURL(url.path5, links) === true &&
+                                            <li className={ window.location.pathname === url.path5 ? "active" : "" }>
+                                                <a href={url.path5}>
+                                                    <i className="fa fa-calculator" />
+                                                    {translate(`menu.time_keeping`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/discipline', links) === true &&
-                                            <li><Link to="/discipline"><i className="fa fa-balance-scale" />{translate(`menu.discipline`)}</Link></li>
+                                        {this.checkURL(url.path6, links) === true &&
+                                            <li className={ window.location.pathname === url.path6 ? "active" : "" }>
+                                                <a href={url.path6}>
+                                                    <i className="fa fa-balance-scale" />
+                                                    {translate(`menu.discipline`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/sabbatical', links) === true &&
-                                            <li><Link to="/sabbatical"><i className="fa fa-calendar-times-o" />{translate(`menu.sabbatical`)}</Link></li>
+                                        {this.checkURL(url.path7, links) === true &&
+                                            <li className={ window.location.pathname === url.path7 ? "active" : "" }>
+                                                <a href={url.path7}>
+                                                    <i className="fa fa-calendar-times-o" />
+                                                    {translate(`menu.sabbatical`)}
+                                                </a>
+                                            </li>
                                         }
                                     </ul>
                                 </li>
                             }
                             {
-                                (this.checkURL('/detail-employee', links) === true || this.checkURL('/update-employee', links) === true) &&
-                                <li className="treeview">
+                                (this.checkURL(url.path8, links) === true || this.checkURL(url.path9, links) === true) &&
+                                <li className={window.location.pathname === url.path8 || window.location.pathname === url.path9 ? "active treeview menu-open" : "treeview"}>
                                     <a href="#">
                                         <i className="fa fa-user-circle" /> <span>{translate(`menu.account`)}</span>
                                         <span className="pull-right-container">
@@ -184,18 +235,28 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        {this.checkURL('/detail-employee', links) === true &&
-                                            <li><Link to="/detail-employee"><i className="fa fa-user-o" />{translate(`menu.detail_employee`)}</Link></li>
+                                        {this.checkURL(url.path8, links) === true &&
+                                            <li className={ window.location.pathname === url.path8 ? "active" : "" }>
+                                                <a href={url.path8}>
+                                                    <i className="fa fa-user-o" />
+                                                    {translate(`menu.detail_employee`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/update-employee', links) === true &&
-                                            <li><Link to="/update-employee"><i className="fa fa-pencil-square-o" />{translate(`menu.update_employee`)}</Link></li>
+                                        {this.checkURL(url.path9, links) === true &&
+                                            <li className={ window.location.pathname === url.path9 ? "active" : "" }>
+                                                <a href={url.path9}>
+                                                    <i className="fa fa-pencil-square-o" />
+                                                    {translate(`menu.update_employee`)}
+                                                </a>
+                                            </li>
                                         }
                                     </ul>
                                 </li>
                             }
                             {
-                                (this.checkURL('/list-course', links) === true || this.checkURL('/training-plan', links) === true) &&
-                                <li className="treeview">
+                                (this.checkURL(url.path10, links) === true || this.checkURL(url.path11, links) === true) &&
+                                <li className={window.location.pathname === url.path10 || window.location.pathname === url.path11 ? "active treeview menu-open" : "treeview"}>
                                     <a href="#">
                                         <i className="fa fa-graduation-cap" /> <span>{translate(`menu.manage_training`)}</span>
                                         <span className="pull-right-container">
@@ -203,11 +264,21 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        {this.checkURL('/list-course', links) === true &&
-                                            <li><Link to="/list-course"><i className="fa fa-university" />{translate(`menu.list_course`)}</Link></li>
+                                        {this.checkURL(url.path10, links) === true &&
+                                            <li className={ window.location.pathname === url.path10 ? "active" : "" }>
+                                                <a href={url.path10}>
+                                                    <i className="fa fa-university" />
+                                                    {translate(`menu.list_course`)}
+                                                </a>
+                                            </li>
                                         }
-                                        {this.checkURL('/training-plan', links) === true &&
-                                            <li><Link to="/training-plan"><i className="fa fa-list-alt" />{translate(`menu.training_plan`)}</Link></li>
+                                        {this.checkURL(url.path11, links) === true &&
+                                            <li className={ window.location.pathname === url.path11 ? "active" : "" }>
+                                                <a href={url.path11}>
+                                                    <i className="fa fa-list-alt" />
+                                                    {translate(`menu.training_plan`)}
+                                                </a>
+                                            </li>
                                         }
                                     </ul>
                                 </li>
@@ -224,47 +295,47 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                    {
-                                        (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true) &&
-                                        <li className="treeview">
-                                            <a href="#kpiunit"> {translate(`menu.kpi_unit`)}
-                                                <span className="pull-right-container">
-                                                    <i className="fa fa-angle-left pull-right" />
-                                                </span>
-                                            </a>
-                                            <ul className="treeview-menu">
-                                                {
-                                                    (this.checkURL('/kpi-units/overview', links) === true) &&
-                                                    <li><Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link></li>
-                                                }
-                                                {
-                                                    (this.checkURL('/kpi-units/create', links) === true ) &&
-                                                    <li><Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link></li>
-                                                }
-                                            </ul>
-                                        </li>
-                                    }
-                                    {
-                                        (this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
-                                        <li className="treeview">
-                                            <a href="#kpipersonnal">{translate(`menu.kpi_personal`)}
-                                                <span className="pull-right-container">
-                                                    <i className="fa fa-angle-left pull-right" />
-                                                </span>
-                                            </a>
-                                            <ul className="treeview-menu">
-                                                {
-                                                    (this.checkURL('/kpi-personals/overview', links) === true) &&   
-                                                    <li><Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link></li>
-                                                }
-                                                {
-                                                    (this.checkURL('/kpi-personals/create', links) === true) &&
-                                                    <li><Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link></li>
-                                                }
-                                                
-                                            </ul>
-                                        </li>
-                                    }
+                                        {
+                                            (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true) &&
+                                            <li className="treeview">
+                                                <a href="#kpiunit"> {translate(`menu.kpi_unit`)}
+                                                    <span className="pull-right-container">
+                                                        <i className="fa fa-angle-left pull-right" />
+                                                    </span>
+                                                </a>
+                                                <ul className="treeview-menu">
+                                                    {
+                                                        (this.checkURL('/kpi-units/overview', links) === true) &&
+                                                        <li><a href="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</a></li>
+                                                    }
+                                                    {
+                                                        (this.checkURL('/kpi-units/create', links) === true) &&
+                                                        <li><a href="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
+                                        {
+                                            (this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
+                                            <li className="treeview">
+                                                <a href="#kpipersonnal">{translate(`menu.kpi_personal`)}
+                                                    <span className="pull-right-container">
+                                                        <i className="fa fa-angle-left pull-right" />
+                                                    </span>
+                                                </a>
+                                                <ul className="treeview-menu">
+                                                    {
+                                                        (this.checkURL('/kpi-personals/overview', links) === true) &&
+                                                        <li><a href="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</a></li>
+                                                    }
+                                                    {
+                                                        (this.checkURL('/kpi-personals/create', links) === true) &&
+                                                        <li><a href="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</a></li>
+                                                    }
+
+                                                </ul>
+                                            </li>
+                                        }
                                     </ul>
                                 </li>
                             }
