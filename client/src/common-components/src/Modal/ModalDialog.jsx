@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import './modal.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 class ModalDialog extends Component {
@@ -12,7 +12,8 @@ class ModalDialog extends Component {
     }
 
     closeModal = () => {
-        document.getElementById(this.props.modalID).className="modal fade in show-off";
+        // document.getElementById(this.props.modalID).className="modal fade in show-off";
+        window.$(`#${this.props.modalID}`).modal("hide");
     }
 
     clear = () => {
@@ -25,19 +26,18 @@ class ModalDialog extends Component {
             .then(res => {
                 if(this.props.type !== 'edit') this.clear();
                 this.closeModal();
-                toast.success(this.props.msg_success, {containerId: `notifi-${this.props.modalID}`});
-                
+                toast.success(this.props.msg_success, {containerId: 'toast-notification'});
             }).catch(err => {
                 if(err.response.data.message){
                     if( 
-                        err.response.data.message.length < 20 &&
+                        err.response.data.message.length < 15 &&
                         translate(`confirm.${err.response.data.message}`) !== undefined
                     )
-                        toast.error(translate(`confirm.${err.response.data.message}`), {containerId: `notifi-${this.props.modalID}`});
+                        toast.warning(translate(`confirm.${err.response.data.message}`), {containerId: 'toast-notification'});
                     else
-                        toast.error(err.response.data.message, {containerId: `notifi-${this.props.modalID}`});
+                        toast.warning(err.response.data.message, {containerId: 'toast-notification'});
                 }else
-                    toast.error(this.props.msg_faile, {containerId: `notifi-${this.props.modalID}`});
+                    toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });
     }
 
@@ -46,9 +46,8 @@ class ModalDialog extends Component {
 
         return ( 
             <React.Fragment>
-                <ToastContainer enableMultiContainer containerId={`notifi-${this.props.modalID}`} position={toast.POSITION.TOP_RIGHT}/>
-                <div id={this.props.modalID} className="modal fade in show-off">
-                    <div className={`modal-dialog animation-dialog modal-size-${this.props.size}`}>
+                <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div  className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={this.closeModal}>&times;</button>

@@ -20,6 +20,9 @@ function get(){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: DepartmentConstants.GET_DEPARTMENTS_FAILE
+                })
                 console.log("Error: ", err);
             })
     }
@@ -39,6 +42,9 @@ function create(data){
                     resolve(res.data);
                 })
                 .catch(err => {
+                    dispatch({
+                        type: DepartmentConstants.CREATE_DEPARTMENT_FAILE
+                    })
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -60,6 +66,9 @@ function destroy(departmentId){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: DepartmentConstants.DELETE_DEPARTMENT_FAILE
+                })
                 console.log("Error: ", err);
             })
     }

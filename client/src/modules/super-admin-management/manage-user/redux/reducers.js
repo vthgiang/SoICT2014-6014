@@ -41,6 +41,17 @@ export function user(state = initState, action) {
                 isLoading: true,
             }
 
+        case UserConstants.GET_USERS_FAILE:
+        case UserConstants.GET_USERS_PAGINATE_FAILE:
+        case UserConstants.CREATE_USER_FAILE:
+        case UserConstants.EDIT_USER_FAILE:
+        case UserConstants.DELETE_USER_FAILE:
+        case UserConstants.SEARCH_USER_BY_NAME_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+            }
+
         case UserConstants.GET_USERS_SUCCESS:
 
             return {

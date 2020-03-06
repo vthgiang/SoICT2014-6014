@@ -29,7 +29,12 @@ class UserEditForm extends Component {
         const { status } = this.state;
         return ( 
             <React.Fragment>
-                <ModalButton modalID={`modal-edit-user-${userId}`} button_type="edit" title={translate('manage_user.edit')}/>
+                <ModalButton 
+                    modalID={`modal-edit-user-${userId}`} 
+                    button_type="edit" 
+                    title={translate('manage_user.edit')}
+                    color="yellow"
+                />
                 <ModalDialog
                     size='50' func={this.save} type="edit"
                     modalID={`modal-edit-user-${userId}`}

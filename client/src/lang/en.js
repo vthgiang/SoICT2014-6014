@@ -1,6 +1,7 @@
 export default {
     locale: 'en',
     messages: {
+        not_found: '404! Not found this page',
         language: 'Language setting',
         auth: {
             login: 'Login',
@@ -154,7 +155,7 @@ export default {
             employee_name: 'Employee',
             employee_example: 'Ex: Employee of Financial Officer',
             add_with_parent: 'Add new department with parent is',
-            delete: 'Delete department ?'
+            delete: 'Delete department'
         },
 
         manage_role: {
@@ -165,7 +166,7 @@ export default {
             extends: 'Extends of',
             users: 'Users has role',
             edit: 'Edit role \'s information',
-            delete: 'Delete role ?',
+            delete: 'Delete role',
             add_success: 'Add new role successfully',
             add_faile: 'Add new role failed',
             edit_success: 'Edit role successfully',
@@ -179,7 +180,7 @@ export default {
             edit: 'Edit User/Account \'s information',
             disable: 'Disable',
             enable: 'Enable',
-            delete: 'Delete user ?',
+            delete: 'Delete user',
             add_success: 'Add new user successfully',
             add_faile: 'Add new user failed',
             edit_success: 'Edit user successfully',
@@ -194,7 +195,7 @@ export default {
             roles: 'Roles can access this page',
             info: 'Page \'s information',
             edit: 'Edit page \'s information',
-            delete: 'Delele link ?',
+            delete: 'Delele link',
             add_success: 'Add successfully',
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
@@ -206,7 +207,7 @@ export default {
             add_title: 'Add new component',
             info: 'Component \'s information',
             edit: 'Edit component \'s information',
-            delete: 'Delete component ?',
+            delete: 'Delete component',
             roles: 'Roles have privilege to component',
             add_success: 'Add successfully',
             add_faile: 'Add falied!',

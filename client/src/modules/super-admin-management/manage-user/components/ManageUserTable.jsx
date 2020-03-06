@@ -44,7 +44,7 @@ class ManageUserTable extends Component {
                         <UserCreateForm />
                     </div>
                 </div>
-                <table className="table table-bordered table-striped" id="myTable">
+                <table className="table table-2">
                     <thead>
                         <tr>
                             <th>{translate('table.name')}</th>
@@ -64,11 +64,11 @@ class ManageUserTable extends Component {
                             user.listPaginate.length > 0 ? user.listPaginate.map(u => (
                                 <tr
                                     key={u._id}
-                                    style={{ backgroundColor: u.active ? "white" : "#E2DFE7" }}
+                                    // style={{ backgroundColor: u.active ? "white" : "#E2DFE7" }}
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    <td>{u.active ? <p><i className="fa fa-circle text-success" />{translate('manage_user.enable')}</p> : <p><i className="fa fa-circle text-danger" />{translate('manage_user.disable')}</p>}</td>
+                                    <td>{u.active ? <p><i className="fa fa-circle text-success" /> {translate('manage_user.enable')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{textAlign: 'center'}}>
                                         <UserEditForm
                                             userId={u._id}

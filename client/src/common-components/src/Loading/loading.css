@@ -1,0 +1,11 @@
+.show-off {
+    display: none;
+}
+
+.show-on {
+    display: block;
+}
+
+.top-250 {
+    margin-top: 250px;
+}

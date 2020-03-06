@@ -4,7 +4,6 @@ import { RoleActions} from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../manage-user/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
-import './css/Pagination.css';
 import { SearchBar } from '../../../../common-components';
 import RoleCreateForm from './RoleCreateForm';
 import { DeleteNotification } from '../../../../common-components';
@@ -46,7 +45,7 @@ class RoleTable extends Component {
                 </div>
                 {
                     role.list.length > 0 && 
-                    <table className="table table-bordered table-hover">
+                    <table className="table table-2">
                         <thead>
                             <tr>
                                 <th>{ translate('table.name') }</th>

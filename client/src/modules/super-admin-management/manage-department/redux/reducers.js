@@ -29,6 +29,14 @@ export function department(state = initState, action) {
                 isLoading: true
             }
 
+        case DepartmentConstants.GET_DEPARTMENTS_FAILE:
+        case DepartmentConstants.CREATE_DEPARTMENT_FAILE:
+        case DepartmentConstants.DELETE_DEPARTMENT_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            }
+
         case DepartmentConstants.GET_DEPARTMENTS_SUCCESS:
             return {
                 ...state,
