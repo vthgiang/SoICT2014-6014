@@ -1148,7 +1148,7 @@ class AddEmployee extends Component {
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: '15%' }}>{translate('manage_employee.course_name')}</th>
-                                                        <th style={{ width: '11%' }}>{translate('manage_employee.start_date')}</th>
+                                                        <th style={{ width: '11%' }}>{translate('manage_employee.start_day')}</th>
                                                         <th style={{ width: '11%' }}>{translate('manage_employee.end_date')}</th>
                                                         <th style={{ width: '15%' }}>{translate('manage_employee.diploma_issued_by')}</th>
                                                         <th style={{ width: '14%' }}>{translate('manage_employee.type_education')}</th>
