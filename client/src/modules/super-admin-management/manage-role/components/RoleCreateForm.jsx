@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { RoleActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalDialog, ModalButton } from '../../../../common-components';
+import { toast } from 'react-toastify';
 
 
 class RoleCreateForm extends Component {
@@ -42,7 +43,9 @@ class RoleCreateForm extends Component {
                             >
                                 {
                                     role.list !== undefined
-                                    ? role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                    ? role.list.map( role => 
+                                        role.name !== 'Super Admin' ? <option key={role._id} value={role._id}>{role.name}</option> : null
+                                    )
                                     :null
                                 }
                             </select>
