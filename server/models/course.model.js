@@ -31,7 +31,7 @@ const CourseSchema = new Schema({
     },
     EducationProgram: {
         type: Schema.Types.ObjectId,
-        ref: EducationProgram,
+        ref: 'educationprograms',
         required: true
     },
     typeCourse: {
@@ -40,4 +40,4 @@ const CourseSchema = new Schema({
     },
 })
 
-module.exports = Course = mongoose.model("course", CourseSchema);
+module.exports = Course = mongoose.model("courses", CourseSchema);

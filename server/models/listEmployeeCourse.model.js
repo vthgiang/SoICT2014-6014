@@ -1,16 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Employee = require("./Employee.model");
-const Course = require("./Course.model");
 const ListEmployeeCourseSchema = new Schema({
     course: {
         type: Schema.Types.ObjectId,
-        ref: Course,
+        ref: 'courses',
         required: true
     },
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'employees',
         required: true
     },
     result: {
@@ -18,4 +16,4 @@ const ListEmployeeCourseSchema = new Schema({
     }
 
 })
-module.exports = ListEmployeeCourse = mongoose.model("listEmployeeCourse", ListEmployeeCourseSchema);
+module.exports = ListEmployeeCourse = mongoose.model("listemployeecourses", ListEmployeeCourseSchema);

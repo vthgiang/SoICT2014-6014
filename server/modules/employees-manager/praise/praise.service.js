@@ -1,7 +1,7 @@
 const Praise = require('../../../models/praise.model');
 const Employee = require('../../../models/employee.model');
 
-//lấy danh sách kỷ luật của nhân viên
+//lấy danh sách khen thưởng của nhân viên
 exports.get = async (data, company) => {
     var keySearch = {
         company: company
@@ -54,7 +54,7 @@ exports.get = async (data, company) => {
 
 }
 
-// thêm mới kỷ luật
+// thêm mới khen thưởng
 exports.create = async (data, company) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber,
@@ -82,14 +82,14 @@ exports.create = async (data, company) => {
     return content
 }
 
-// Xoá thông tin kỷ luật
+// Xoá thông tin khen thưởng
 exports.delete = async (id) => {
     return await Praise.findOneAndDelete({
         _id: id
     });
 }
 
-// Update thông tin kỷ luật
+// Update thông tin khen thưởng
 exports.update = async (id, data) => {
     var employeeinfo = await Employee.findOne({
         employeeNumber: data.employeeNumber
@@ -99,7 +99,6 @@ exports.update = async (id, data) => {
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,
-        endDate: data.endDate,
         type: data.type,
         reason: data.reason,
     };
@@ -114,7 +113,6 @@ exports.update = async (id, data) => {
         number: data.number,
         unit: data.unit,
         startDate: data.startDate,
-        endDate: data.endDate,
         type: data.type,
         reason: data.reason,
     }

@@ -1,12 +1,12 @@
-const PraiseService = require('./praise.service');
+const HolidayService = require('./holiday.service');
 
-// Lấy danh sách khen thưởng
+// Lấy danh sách nghỉ lễ tết
 exports.get = async (req, res) => {
     try {
-        var listPraise = await PraiseService.get(req.body,req.user.company._id);
+        var listHoliday = await HolidayService.get(req.user.company._id);
         res.status(200).json({
             message: "success",
-            content: listPraise
+            content: listHoliday
         });
     } catch (error) {
         res.status(400).json({
@@ -15,13 +15,13 @@ exports.get = async (req, res) => {
     }
 }
 
-// Tạo mới khen thưởng của nhân viên
+// Tạo mới thông tin nghỉ lễ tết
 exports.create = async (req, res) => {
     try {
-        var newPraise = await PraiseService.create(req.body,req.user.company._id);
+        var newHoliday = await HolidayService.create(req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
-            content: newPraise
+            content: newHoliday
         });
     } catch (error) {
         res.status(400).json({
@@ -30,13 +30,13 @@ exports.create = async (req, res) => {
     }
 }
 
-// delete thông tin khen thưởng
+// delete thông tin nghỉ lễ tết
 exports.delete = async (req, res) => {
     try {
-        var praiseDelete = await PraiseService.delete(req.params.id);
+        var holidayDelete = await HolidayService.delete(req.params.id);
         res.status(200).json({
             message: "success",
-            content: praiseDelete
+            content: holidayDelete
         });
     } catch (error) {
         res.status(400).json({
@@ -45,13 +45,13 @@ exports.delete = async (req, res) => {
     }
 }
 
-// update thông tin khen thưởng
+// update thông tin nghỉ lễ tết
 exports.update = async (req, res) => {
     try {
-        var praiseUpdate = await PraiseService.update(req.params.id,req.body);
+        var holidayUpdate = await HolidayService.update(req.params.id,req.body,req.user.company._id);
         res.status(200).json({
             message: "success",
-            content: praiseUpdate
+            content: holidayUpdate
         });
     } catch (error) {
         res.status(400).json({

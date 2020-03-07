@@ -1,13 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// toạ bảng datatable kỷ luật
-const SabbaticalSchema = new Schema({
-    employee: {
-        type: Schema.Types.ObjectId,
-        ref: 'employees',
-        require: true,
-    },
+// toạ bảng datatable nghỉ lễ tết
+const holidaySchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
         ref: 'companies'
@@ -21,9 +16,6 @@ const SabbaticalSchema = new Schema({
     reason: {
         type: String
     },
-    status: {
-        type: String
-    },
     createDate: {
         type: Date,
         default: Date.now
@@ -34,4 +26,4 @@ const SabbaticalSchema = new Schema({
     }
 })
 
-module.exports = Sabbatical = mongoose.model("sabbaticals", SabbaticalSchema);
+module.exports = Holiday = mongoose.model("holidays", holidaySchema);

@@ -18,6 +18,7 @@ const salary = require('./modules/employees-manager/salary/salary.route');
 const discipline = require('./modules/employees-manager/discipline/discipline.route');
 const praise = require('./modules/employees-manager/praise/praise.route');
 const sabbatical = require('./modules/employees-manager/sabbatical/sabbatical.route');
+const holiday = require('./modules/employees-manager/holiday/holiday.route');
 const sample = require('./modules/_sample-module/_sample.route');
 const document = require('./modules/documents-management/document.route');
 
@@ -85,6 +86,7 @@ app.use("/salary", salary);
 app.use("/discipline", discipline);
 app.use("/praise", praise);
 app.use("/sabbatical", sabbatical);
+app.use("/holiday",holiday);
 app.use("/sample", sample);
 app.use("/document", document);
 app.use("/component", component);

@@ -29,7 +29,7 @@ async function login(user) {
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
         data: user,
-        headers: {}
+        headers: FingerPrint()
     };
 
     return axios(requestOptions);

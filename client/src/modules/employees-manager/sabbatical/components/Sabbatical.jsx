@@ -9,7 +9,7 @@ import { ModalEditSabbatical } from './ModalEditSabbatical';
 import { ModalDeleteSabbatical } from './ModalDeleteSabbatical';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
-import '../../employee-manager/components/listemployee.css';
+//import '../../employee-manager/components/listemployee.css';
 
 class Sabbatical extends Component {
     constructor(props) {
@@ -267,7 +267,7 @@ class Sabbatical extends Component {
                                     </tbody>
                                 </table>
                             </div>
-                            <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
+                            <PaginateBar pageTotal={pageTotal?pageTotal:0} currentPage={page} func={this.setPage} />
                         </div>
                     </div>
                 </div>
