@@ -117,6 +117,8 @@ export default {
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
+
+            notifications: 'Thông báo',
         },
 
         manage_system: {
@@ -408,13 +410,19 @@ export default {
             discipline: 'Kỷ luật',
             historySalary:'Lịch sử tăng giảm lương',
             sabbatical:'Thông tin nghỉ phép',
-
-
-
-
-
-
         },
+
+        notification: {
+            add: 'Thêm mới',
+            add_title: 'Thêm thông báo mới',
+            add_success: 'Tạo thông báo mới thành công',
+            add_faile: 'Tạo thông báo thất bại',
+            edit_success: 'Chỉnh sửa thông báo thành công',
+            edit_faile: 'Chỉnh sửa thông báo thất bại',
+            departments: 'Thông báo tới đơn vị/phòng ban',
+            users: 'Thông báo đến người dùng cụ thể'
+        },
+
         footer: {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

@@ -36,7 +36,7 @@ class DepartmentTreeView extends Component {
                             <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
                             <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut } title={translate('manage_department.zoom_out')}></i>
                         </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
+                        {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
                             <select 
                                 className="select2"
                                 ref="departmentId"
@@ -59,7 +59,7 @@ class DepartmentTreeView extends Component {
                                 }`}
                                 title={translate('form.search')}
                             >{translate('form.search')}</a>
-                        </div>
+                        </div> */}
                     </React.Fragment>
                 }
                 <div className="row">
@@ -83,7 +83,7 @@ class DepartmentTreeView extends Component {
                     department.list.map(d => 
                         <React.Fragment>
                             <DepartmentCreateWithParent parentId={d._id}/>
-                            <DepartmentEditForm parentId={d._id}/>
+                            <DepartmentEditForm departmentInfo={d}/>
                         </React.Fragment>
                     )
                 }
@@ -112,26 +112,14 @@ class DepartmentTreeView extends Component {
             <React.Fragment>
                 <div
                     id={`department-${data.id}`} 
-                    className="tf-nc pull-left w3-card-4 department" 
+                    className="tf-nc w3-card-4 department" 
                     title={ data.name }
-                    style={{ 
-                        width: '150px',
-                        height: 'auto',
-                        textAlign: 'center'
-                    }}
+                    onClick={() => this.toggleSetting(`department-setting-${data.id}`)}
                 >
                     <div className="row">
-                        <p style={{color:'#605CA8'}}>
-                        <button
-                            style={{marginRight: '10px', border: 'none', backgroundColor: 'white'}} 
-                            className="text-black pull-left" 
-                            onClick={() => this.toggleSetting(`department-setting-${data.id}`)}
-                            title={translate('table.action')}
-                        ><i className="fa fa-gear"></i></button>
-                        <strong>{ data.name }</strong>
-                        </p>
+                        { data.name }
                     </div>
-                    <div id={`department-setting-${data.id}`} className="row" style={{display: 'none'}}>
+                    <div id={`department-setting-${data.id}`} className="row" style={{display: 'none', marginTop: '8px'}}>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <ModalButton modalID={`modal-create-department-${data.id}`}
                                 button_type="add" color="green"

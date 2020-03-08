@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Employee = require("./employee.model");
 
 // Create Schema
 const EmployeeContactSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'employees',
         require: true,
     },
     phoneNumber: {
@@ -84,4 +83,4 @@ const EmployeeContactSchema = new Schema({
     }
 });
 
-module.exports = EmployeeContact = mongoose.model("employeeContacts", EmployeeContactSchema);
+module.exports = EmployeeContact = mongoose.model("employeecontacts", EmployeeContactSchema);

@@ -9,7 +9,6 @@ import {
     getStorage
 } from '../../../config';
 import jwt from 'jsonwebtoken';
-// import getBrowserFingerprint from 'get-browser-fingerprint';
 
 export const AuthService = {
     login,
@@ -29,7 +28,7 @@ async function login(user) {
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
         data: user,
-        headers: {}
+        headers: FingerPrint()
     };
 
     return axios(requestOptions);

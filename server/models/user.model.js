@@ -52,6 +52,12 @@ UserSchema.virtual('roles', {
     foreignField: 'userId'
 });
 
+UserSchema.virtual('notifications', {
+    ref: 'notification_user',
+    localField: '_id',
+    foreignField: 'userId'
+});
+
 UserSchema.plugin(mongoosePaginate);
 
 module.exports = User = mongoose.model("users", UserSchema);

@@ -33,6 +33,8 @@ import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
 
+import { Notifications } from "../modules/combine-modules";
+
 class Routes extends Component {
 
     render() {
@@ -427,6 +429,22 @@ class Routes extends Component {
                         pageName={ 'kpi_personal_evaluate' }
                         layout={ Layout }
                         component={ KPIPersonalEvaluate }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ company.isLoading }
+                        key={ 'notifications' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/notifications', name: 'notifications', icon:'fa fa-bell' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/notifications' }
+                        path={ '/notifications' }
+                        pageName={ 'notifications' }
+                        layout={ Layout }
+                        component={ Notifications }
                     />
 
                     {/* NOT FOUND */}

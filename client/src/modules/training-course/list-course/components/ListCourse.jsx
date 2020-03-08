@@ -7,7 +7,7 @@ import { ModalAddCourse } from './ModalAddCourse';
 import { CourseActions } from '../redux/actions';
 import {ActionColumn} from '../../../../common-components/src/ActionColumn';
 import {PaginateBar} from '../../../../common-components/src/PaginateBar';
-import '../../../employees-manager/employee-manager/components/listemployee.css';
+//import '../../../employees-manager/employee-manager/components/listemployee.css';
 
 class ListCourse extends Component {
     constructor(props) {

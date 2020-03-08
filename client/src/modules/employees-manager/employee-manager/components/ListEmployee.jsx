@@ -108,6 +108,7 @@ class ListEmployee extends Component {
             parseInt(employeesManager.totalList / this.state.limit) :
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
+        console.log(pageTotal);
         return (
             <div className="row">
                 <div className="col-xs-12">
@@ -252,7 +253,7 @@ class ListEmployee extends Component {
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
+                                <PaginateBar pageTotal={pageTotal?pageTotal:0} currentPage={page} func={this.setPage} />
                             </div>
                         </div>
                         {/* /.box-body */}

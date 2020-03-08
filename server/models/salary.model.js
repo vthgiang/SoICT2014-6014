@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Employee = require("./employee.model");
 
 // tạo bảng datatbale lương nhân viên
 const SalarySchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'employees',
         require: true,
     },
     company: {
@@ -33,4 +32,4 @@ const SalarySchema = new Schema({
     }
 })
 
-module.exports = Salary = mongoose.model("salary", SalarySchema);
+module.exports = Salary = mongoose.model("salaries", SalarySchema);
