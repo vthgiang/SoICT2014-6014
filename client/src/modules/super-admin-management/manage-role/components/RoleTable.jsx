@@ -69,7 +69,7 @@ class RoleTable extends Component {
                                                 roleInfo={ role }
                                             />
                                             {
-                                                role.type.name !== 'abstract' && 
+                                                role.type.name === 'tutao' && 
                                                 <DeleteNotification 
                                                     content={{
                                                         title: translate('manage_role.delete'),
