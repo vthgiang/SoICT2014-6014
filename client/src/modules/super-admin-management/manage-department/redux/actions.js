@@ -82,7 +82,7 @@ function edit(data){
                     dispatch({
                         type: DepartmentConstants.EDIT_DEPARTMENT_FAILE
                     })
-                    console.log("Error: ", err);
+                    console.log("Error: ", err.response);
                     reject(err);
                 })
         })

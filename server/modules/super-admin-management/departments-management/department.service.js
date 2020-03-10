@@ -53,10 +53,12 @@ exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
 
 exports.edit = async(id, data) => {
     var department = await Department.findById(id);
+    console.log("old: ",department);
     department.name = data.name;
     department.description = data.description;
     department.parent = data.parent;
     department.save();
+    console.log("new: ",department);
 
     return department;
 }

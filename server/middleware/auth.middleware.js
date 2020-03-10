@@ -8,7 +8,6 @@ const Company = require('../models/company.model');
 exports.auth = async (req, res, next) => {
     const token = req.header('auth-token');//token jwt nhận từ người dùng
     const browserFinger = req.header('browser-finger'); //chữ ký của trình duyệt người dùng
-    console.log("FINGER: ", browserFinger)
     if(!token) return res.status(400).json({ msg: 'ACCESS_DENIED' });
     try {
         const verified = await jwt.verify(token, process.env.TOKEN_SECRET);

@@ -97,7 +97,8 @@ exports.crt_rolesOfDepartment = async(data, companyID) => {
     }
 }
 
-exports.edit = async(id, data) => {
+exports.edit = async(id, data={}) => {
+    console.log("sửa role");
     var role = await Role.findById(id)
         .populate([
             { path: 'users', model: UserRole },

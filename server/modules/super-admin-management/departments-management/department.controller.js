@@ -52,10 +52,12 @@ exports.show = async (req, res) => {
 exports.edit = async (req, res) => {
     const Logger = await Log(req.user.company.short_name, 'EDIT DEPARTMENT');
     try {
+        console.log(req.body);
         var department = await DepartmentService.edit(req.params.id, req.body); //sửa phòng ban
-        var dean = await RoleService.edit(departmet.dean, req.body.dean);
-        var vice_dean = await RoleService.edit(departmet.vice_dean, req.body.vice_dean);
-        var employee = await RoleService.edit(departmet.employee, req.body.employee);
+        console.log(department);
+        var dean = await RoleService.edit(department.dean, {name: req.body.dean});
+        var vice_dean = await RoleService.edit(department.vice_dean, {name: req.body.vice_dean});
+        var employee = await RoleService.edit(department.employee, {name: req.body.employee});
         department.dean = dean;
         department.vice_dean = vice_dean;
         department.employee = employee;

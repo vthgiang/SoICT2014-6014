@@ -13,24 +13,20 @@ class ModalDialog extends Component {
         }
     }
 
-    closeModal = () => {
+    closeModal = (reset = true) => {
         this.setState({
             reload: this.state.reload + 1
         });
-        document.getElementById(this.props.formID).reset();
+        if(reset) document.getElementById(this.props.formID).reset();
         window.$(`#${this.props.modalID}`).modal("hide");
-    }
-
-    clear = () => {
-        document.getElementById(this.props.formID).reset();
     }
 
     save = (translate) => {
         this.props
             .func()
             .then(res => {
-                if(this.props.type !== 'edit') this.clear();
-                this.closeModal();
+                if(this.props.type === 'edit') this.closeModal(false);
+                else this.closeModal();
                 toast.success(this.props.msg_success, {containerId: 'toast-notification'});
             }).catch(err => {
                 document.getElementById(this.props.formID).reset();
