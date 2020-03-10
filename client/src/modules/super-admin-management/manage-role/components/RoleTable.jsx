@@ -45,7 +45,7 @@ class RoleTable extends Component {
                 </div>
                 {
                     role.list.length > 0 && 
-                    <table className="table table-2">
+                    <table className="table table-hover table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>{ translate('table.name') }</th>

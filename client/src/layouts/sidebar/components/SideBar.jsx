@@ -340,7 +340,7 @@ class SideBar extends Component {
                                 </li>
                             }
                             {
-                                this.checkURL('/notification', links) === true &&
+                                this.checkURL('/notifications', links) === true &&
                                 <Item
                                     key='notifications'
                                     name='notifications'

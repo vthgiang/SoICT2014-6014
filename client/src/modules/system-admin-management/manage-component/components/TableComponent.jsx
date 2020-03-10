@@ -81,7 +81,7 @@ class TableComponent extends Component {
                         <ComponentCreateForm />
                     </div>
                 </div>
-                <table className="table table-2">
+                <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>{ translate('table.name') }</th>

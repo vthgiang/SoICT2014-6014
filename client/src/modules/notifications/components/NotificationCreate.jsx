@@ -60,39 +60,6 @@ class NotificationCreate extends Component {
         
     }
 
-    setUser = (e, all=false) => {
-        const target = e.target;
-        const name = target.name;
-        const checked = target.checked;
-        if(!all){
-            const index = this.state.user_list.indexOf(name);
-            if(checked && index === -1){ //chưa tồn tại phần tử thì thêm vào mảng
-                this.setState({
-                    ...this.state,
-                    user_list: [name, ...this.state.user_list]
-                });
-            }else if(!checked && index !== -1){
-                const newArr = this.state.user_list;
-                newArr.splice(index, 1);
-                this.setState({
-                    user_list: newArr
-                })
-            }
-        }else{
-            if(checked){
-                const userArr = this.props.user.list.map(user => user._id);
-                this.setState({
-                    user_list: userArr
-                });
-            }else{
-                this.setState({
-                    user_list: []
-                });
-            }
-        }
-        
-    }
-
     componentDidMount(){
         this.props.getDepartment();
         this.props.getUser();
@@ -137,7 +104,7 @@ class NotificationCreate extends Component {
                         
                         <div className="form-group">
                             <label>Nội dung<span className="text-red">*</span></label>
-                            <textarea type="text" name="content" className="form-control" onChange={this.handleChange} style={{height:'200px'}}/>
+                            <textarea type="text" name="content" className="form-control" onChange={this.handleChange} style={{height:'100px'}}/>
                         </div>
                         <div className="form-group">
                             <label>{translate('notification.departments')}</label>
@@ -163,28 +130,19 @@ class NotificationCreate extends Component {
                                     }
                                 </div>
                             </div>
-                            <label>{translate('notification.users')}</label>
-                            <div style={{border: '1px solid #D2D6DE', padding: '10px'}}>
-                                <div className="row">
-                                    <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                        <div className="checkbox">
-                                            <label>
-                                                <input checked={user_list.length === user.list.length ? true : false} type="checkbox" name='allUser' onChange={(e) => this.setUser(e, true)}/> Tất cả
-                                            </label>
-                                        </div>
-                                    </div>
+                            <div className="form-group">
+                            <label>{ translate('notification.users') }</label>
+                                <select 
+                                    className="form-control select2" 
+                                    multiple="multiple" 
+                                    style={{ width: '100%' }} 
+                                    value={this.state.user_list}
+                                    ref="users"
+                                >
                                     {
-                                        user.list.map(user => 
-                                            <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3" key={user._id}>
-                                                <div className="checkbox">
-                                                    <label>
-                                                        <input checked={user_list.indexOf(user._id) !== -1 ? true : false} type="checkbox" name={user._id} onChange={this.setUser}/> {user.name}
-                                                    </label>
-                                                </div>
-                                            </div>  
-                                        )
+                                        user.list.map( user => <option key={user._id} value={user._id}>{user.name}</option>)
                                     }
-                                </div>
+                                </select>
                             </div>
                         </div>
                     </form>

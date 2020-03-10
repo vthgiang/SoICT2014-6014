@@ -54,14 +54,13 @@ class NotificationTable extends Component {
                     <div className="box-body">
                     
                     <div className="table-responsive mailbox-messages">
-                        <table className="table table-hover table-striped">
+                        <table className="table table-hover table-striped table-bordered">
                         <tbody>
                             {
                                 notification.list.length > 0 ? 
                                 notification.list.map(notification => 
                                     <tr key={notification._id} onClick={this.hello}>
                                         <td>
-                                            <i className={`fa ${this.state[notification.icon]}`}></i> 
                                             <strong style={{fontSize:'14px'}}> {notification.title.slice(0, 40)}... </strong>
                                         </td>
                                         <td>

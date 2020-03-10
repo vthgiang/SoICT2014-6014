@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalDialog } from '../../../../common-components';
+import { DepartmentActions } from '../redux/actions';
 
 class DepartmentEditForm extends Component {
     constructor(props) {
@@ -59,15 +60,15 @@ class DepartmentEditForm extends Component {
                                     <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" name="dean" onChange={ this.inputChange } placeholder={ translate('manage_department.dean_example') }/><br/>
+                                        <input type="text" className="form-control" name="dean" value={departmentInfo.dean.name} onChange={ this.inputChange } placeholder={ translate('manage_department.dean_example') }/><br/>
                                     </div> 
                                     <div className="form-group">
                                         <label>{ translate('manage_department.vice_dean_name') }<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" name="vice_dean" onChange={ this.inputChange } placeholder={ translate('manage_department.vice_dean_example') }/><br/>
+                                        <input type="text" className="form-control" name="vice_dean" value={departmentInfo.vice_dean.name} onChange={ this.inputChange } placeholder={ translate('manage_department.vice_dean_example') }/><br/>
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.employee_name') }<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" name="employee" onChange={ this.inputChange } placeholder={ translate('manage_department.employee_example') }/><br/>
+                                        <input type="text" className="form-control" name="employee" value={departmentInfo.employee.name} onChange={ this.inputChange } placeholder={ translate('manage_department.employee_example') }/><br/>
                                     </div>
                                 </fieldset>
                             </div>
@@ -77,8 +78,24 @@ class DepartmentEditForm extends Component {
             </React.Fragment>
          );
     }
+    
+    inputChange = (e) => {
+        const target = e.target;
+        const name = target.name;
+        const value = target.value;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    save = () => {
+        const { name, description, parent, dean, vice_dean, employee } = this.state;
+        return this.props.edit({ name, description, parent, dean, vice_dean, employee });
+    }
 }
 
 const mapState = state => state;
-const getState = {}
+const getState = {
+    edit: DepartmentActions.edit
+}
 export default connect(mapState, getState) (withTranslate(DepartmentEditForm)); 

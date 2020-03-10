@@ -8,6 +8,12 @@ class ActionColumn extends Component {
         this.record = React.createRef();
         this.state = {}
     }
+
+    setLimit = async() => {
+        await window.$(`#setting-table`).collapse("hide");
+        await this.props.setLimit(this.record.current.value);
+    }
+
     render() {
         const { columnName, hideColumn, translate } = this.props;
         return (
@@ -35,7 +41,7 @@ class ActionColumn extends Component {
                         <input className="form-control" type="text" defaultValue={5} ref={this.record} />
                     </div>
                     <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
-                        <button type="button" className="btn btn-success" onClick={() => this.props.setLimit(this.record.current.value)}>{translate('table.update')}</button>
+                        <button type="button" className="btn btn-success" onClick={this.setLimit}>{translate('table.update')}</button>
                     </div>
                 </div>
             </React.Fragment>

@@ -50,7 +50,7 @@ class ManageLink extends Component {
                             </div>
                         </div>
                         <table 
-                            className="table table-2">
+                            className="table table-hover table-striped">
                             <thead>
                                 <tr>
                                     <th>{ translate('table.url') }</th>

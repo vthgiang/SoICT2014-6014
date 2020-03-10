@@ -104,8 +104,10 @@ exports.edit = async(id, data) => {
             { path: 'company', model: Company },
             // { path: 'parents', model: Role }
         ]);
-    role.name = data.name;
-    role.parents = data.parents;
+    if(data.name !== undefined || data.name !== null || data.name !== '')
+        role.name = data.name;
+    if(data.parents !== undefined || data.parents !== null || data.parents !== '')
+        role.parents = data.parents;
     role.save();
 
     return role;
