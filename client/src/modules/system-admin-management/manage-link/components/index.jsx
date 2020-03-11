@@ -45,13 +45,12 @@ class ManageLink extends Component {
                                 setOption={this.setOption}
                                 search={this.searchWithOption}
                             />
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                 <CreateLinkForm/>
                             </div>
                         </div>
                         <table 
-                            style={{marginTop: '20px'}}
-                            className="table table-bordered">
+                            className="table table-hover table-striped">
                             <thead>
                                 <tr>
                                     <th>{ translate('table.url') }</th>

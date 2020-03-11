@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Employee = require("./employee.model");
 
 // toạ bảng datatable kỷ luật
 const PraiseSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'employees',
         require: true,
     },
     company: {
@@ -40,4 +39,4 @@ const PraiseSchema = new Schema({
     }
 })
 
-module.exports = Praise = mongoose.model("praise", PraiseSchema);
+module.exports = Praise = mongoose.model("praises", PraiseSchema);

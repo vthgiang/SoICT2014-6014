@@ -8,7 +8,7 @@ import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
-import './listemployee.css';
+//import './listemployee.css';
 
 class ListEmployee extends Component {
     constructor(props) {
@@ -108,6 +108,7 @@ class ListEmployee extends Component {
             parseInt(employeesManager.totalList / this.state.limit) :
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
+        console.log(pageTotal);
         return (
             <div className="row">
                 <div className="col-xs-12">
@@ -252,7 +253,7 @@ class ListEmployee extends Component {
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
+                                <PaginateBar pageTotal={pageTotal?pageTotal:0} currentPage={page} func={this.setPage} />
                             </div>
                         </div>
                         {/* /.box-body */}

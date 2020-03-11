@@ -8,7 +8,7 @@ import { ModalEditDiscipline } from './ModalEditDiscipline';
 import { ModalDeleteDiscipline } from './ModalDeleteDiscipline';
 import {ActionColumnDiscipline} from './ActionColumDiscipline';
 import {PaginateBar} from '../../../../common-components/src/PaginateBar';
-import '../../employee-manager/components/listemployee.css';
+//import '../../employee-manager/components/listemployee.css';
 class TabDiscipline extends Component {
     constructor(props) {
         super(props);
@@ -217,7 +217,7 @@ class TabDiscipline extends Component {
                                 </tbody>
                             </table>
                         </div>
-                        <PaginateBar pageTotal={pageTotal} currentPage={page} func={this.setPage} />
+                        <PaginateBar pageTotal={pageTotal?pageTotal:0} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
                 <ModalAddDiscipline />

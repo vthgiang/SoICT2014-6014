@@ -3,8 +3,13 @@ const UserRole = require('../../../models/user_role.model')
 const arrayToTree = require('array-to-tree');
 
 exports.get = async (id) => {
-    var departments = await Department.find({ company: id });
-    return departments;
+    return await Department
+        .find({ company: id })
+        .populate([
+            { path: 'dean', model: Role },
+            { path: 'vice_dean', model: Role },
+            { path: 'employee', model: Role }
+        ]);
 }
 
 exports.getTree = async (id) => {
@@ -46,15 +51,14 @@ exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
     return department;
 }
 
-exports.edit = async(req, res) => {
-    var department = await Department.findById(req.params.id);
-    department.name = req.body.name;
-    department.description = req.body.description;
-    department.dean = req.body.dean;
-    department.vice_dean = req.body.vice_dean;
-    department.employee = req.body.employee;
-    department.parents = req.body.parents;
+exports.edit = async(id, data) => {
+    var department = await Department.findById(id);
+    console.log("old: ",department);
+    department.name = data.name;
+    department.description = data.description;
+    department.parent = data.parent;
     department.save();
+    console.log("new: ",department);
 
     return department;
 }

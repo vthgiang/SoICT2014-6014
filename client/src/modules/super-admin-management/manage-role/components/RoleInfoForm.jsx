@@ -77,7 +77,9 @@ class RoleInfoForm extends Component {
                                 ref="parents"
                             >
                                 {   
-                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                    role.list.map( role => 
+                                        (role.name !== 'Super Admin' && role._id !== roleInfo._id) ? <option key={role._id} value={role._id}>{role.name}</option> : null
+                                    )
                                 } 
                             </select>
                         </div>

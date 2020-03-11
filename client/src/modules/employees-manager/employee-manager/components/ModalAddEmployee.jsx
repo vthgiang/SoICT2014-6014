@@ -5,13 +5,12 @@ import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
 import { DisciplineActions } from '../../discipline/redux/actions';
 import { toast } from 'react-toastify';
-import './addemployee.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, ModalAddContract, ModalAddExperience } from './CombineContent';
 import { ModalAddBHXH, ModalAddDiscipline, ModalAddPraise, ModalAddSalary, ModalAddSabbatical, ModalAddFile } from './CombineContent';
 import { ModalEditFile, ModalEditSabbatical, ModalEditSalary, ModalEditPraise, ModalEditDiscipline, ModalEditBHXH } from './CombineContent';
 import { ModalEditExperience, ModalEditContract, ModalEditCertificateShort, ModalEditCertificate } from './CombineContent';
-import './listemployee.css';
+//import './listemployee.css';
 
 class ModalAddEmployee extends Component {
     constructor(props) {

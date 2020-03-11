@@ -23,12 +23,14 @@ exports.create = async (req, res) => {
         var roles = await RoleService.crt_rolesOfDepartment(req.body, req.user.company._id);
         var department = await DepartmentService.create( req.body, roles.dean._id, roles.vice_dean._id, roles.employee.id, req.user.company._id );
         var tree = await DepartmentService.getTree(req.user.company._id);
-        console.log("TREE", tree);
-        isLog && Logger.info(+req.user.email);
+        department.dean = roles.dean;
+        department.vice_dean = roles.vice_dean;
+        department.employee = roles.employee;
+        isLog && Logger.info(req.user.email);
         res.status(200).json({department, tree});
     } catch (error) {
         
-        isLog && Logger.error(+req.user.email);
+        isLog && Logger.error(req.user.email);
         res.status(400).json(error);
     }
 };
@@ -50,10 +52,19 @@ exports.show = async (req, res) => {
 exports.edit = async (req, res) => {
     const Logger = await Log(req.user.company.short_name, 'EDIT DEPARTMENT');
     try {
-        var department = await DepartmentService.edit(req, res);
-        
+        console.log(req.body);
+        var department = await DepartmentService.edit(req.params.id, req.body); //sửa phòng ban
+        console.log(department);
+        var dean = await RoleService.edit(department.dean, {name: req.body.dean});
+        var vice_dean = await RoleService.edit(department.vice_dean, {name: req.body.vice_dean});
+        var employee = await RoleService.edit(department.employee, {name: req.body.employee});
+        department.dean = dean;
+        department.vice_dean = vice_dean;
+        department.employee = employee;
+        var tree = await DepartmentService.getTree(req.user.company._id);
+
         isLog && Logger.info(req.user.email);
-        res.status(200).json(department);
+        res.status(200).json({department, tree});
     } catch (error) {
         
         isLog && Logger.error(req.user.email);

@@ -14,14 +14,13 @@ class DeleteNotification extends Component {
         func //hàm thực hiện tương ứng
     ) => {
         Swal.fire({
-            title: content.title,
-            html: `<h4>${data.info}</h4>`,
-            icon: 'warning',
+            html: `<h4 style="color: red">${content.title} "${data.info}" ?</h4>`,
+            icon: 'error',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             cancelButtonText: content.btnNo,
-            confirmButtonText: content.btnYes
+            confirmButtonText: content.btnYes,
         }).then((result) => {
             if (result.value) {
                 func(data.id) //thực hiện xóa đối tượng với id truyền vào

@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Employee = require("./employee.model");
 
 // toạ bảng datatable kỷ luật
 const SabbaticalSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'employees',
         require: true,
     },
     company: {
@@ -35,4 +34,4 @@ const SabbaticalSchema = new Schema({
     }
 })
 
-module.exports = Sabbatical = mongoose.model("sabbatical", SabbaticalSchema);
+module.exports = Sabbatical = mongoose.model("sabbaticals", SabbaticalSchema);

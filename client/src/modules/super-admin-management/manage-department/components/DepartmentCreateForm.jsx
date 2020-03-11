@@ -53,7 +53,7 @@ class DepartmentCreateForm extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border"><span style={{fontSize: '20px'}}>{ translate('manage_department.info') }</span></legend>
+                                    <legend className="scheduler-border"><span>{ translate('manage_department.info') }</span></legend>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.name')  }<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" name="name" onChange={ this.inputChange }/><br/>
@@ -81,7 +81,7 @@ class DepartmentCreateForm extends Component {
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border"><span style={{fontSize: '20px'}}>{ translate('manage_department.roles_of_department') }</span></legend>
+                                    <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" name="dean" onChange={ this.inputChange } placeholder={ translate('manage_department.dean_example') }/><br/>

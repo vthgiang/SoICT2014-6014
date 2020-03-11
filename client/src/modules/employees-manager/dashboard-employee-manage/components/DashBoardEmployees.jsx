@@ -3,8 +3,29 @@ import { ModalImportHoliday } from './ModalImportHoliday';
 import { ModalDeleteHoliday } from './ModalDeleteHoliday';
 import { ModalEditHoliday } from './ModalEditHoliday';
 import { ModalAddHoliday } from './ModalAddHoliday';
+import { LineAndBarChart } from './LineAndBarChart';
+import {ThreeBarChart} from './ThreeBarChart';
 
 class DashBoardEmployees extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataset: [
+                ['01-2020', 13.50, 12.33],
+                ['02-2020', 13.50, 12.33],
+                ['03-2020', 13.50, 11.33],
+                ['04-2020', 13.50, 15.33],
+                ['05-2020', 13.50, 12.33],
+                ['06-2020', 13.50, 11.33],
+                ['07-2020', 13.50, 12.33],
+                ['08-2020', 13.50, 12.33],
+                ['09-2020', 13.50, 11.33],
+                ['10-2020', 13.50, 15.33],
+                ['11-2020', 13.50, 12.33],
+                ['12-2020', 13.50, 11.33],
+            ]
+        }
+    }
     componentDidMount() {
         let script = document.createElement('script');
         script.src = 'lib/main/js/DashBoardEmployee.js';
@@ -16,38 +37,41 @@ class DashBoardEmployees extends Component {
         return (
             <React.Fragment>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <i className="fa fa-bar-chart-o" />
-                                <h3 className="box-title">Xu hướng vắng mặt của nhân viên trong 6 tháng gần nhất</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="box-body">
-                                <div id="bar-chartEmployees" style={{ height: 300 }} />
-                            </div>
-                            {/* /.box-body*/}
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        {/* LINE CHART */}
-                        <div className="box box-info">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Tình hình tăng giảm nhân sự trong 12 tháng gần nhất</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="box-body chart-responsive">
-                                <div className="chart" id="line-chartEmployees" style={{ height: 300 }} />
-                            </div>
-                            {/* /.box-body */}
-                        </div>
-                    </div>
+                    <LineAndBarChart
+                        dataset={this.state.dataset}
+                        nameChart={"Biểu đồ tỷ lệ % quỹ lương công ty/doanh thu 12 tháng gần nhất"}
+                        calculationUnit={"%"}
+                        nameLableBar={"% Tổng lương"}
+                        nameLableLine={"% Mục tiêu"}
+                    />
+                    <LineAndBarChart
+                        dataset={this.state.dataset}
+                        nameChart={"Biểu đồ tỷ lệ % quỹ lương khối kinh doanh/doanh thu 12 tháng gần nhất"}
+                        calculationUnit={"%"}
+                        nameLableBar={"% Kinh doanh"}
+                        nameLableLine={"% Mục tiêu"}
+                    />
+                    <LineAndBarChart
+                        dataset={this.state.dataset}
+                        nameChart={"Biểu đồ tỷ lệ % quỹ lương khối quản trị/doanh thu 12 tháng gần nhất"}
+                        calculationUnit={"%"}
+                        nameLableBar={"% Quản trị"}
+                        nameLableLine={"% Mục tiêu"}
+                    />
+                    <LineAndBarChart
+                        dataset={this.state.dataset}
+                        nameChart={"Biểu đồ tỷ lệ % quỹ lương khối sản xuất/doanh thu 12 tháng gần nhất"}
+                        calculationUnit={"%"}
+                        nameLableBar={"% Sản xuất"}
+                        nameLableLine={"% Mục tiêu"}
+                    />
+                    <ThreeBarChart
+                    nameChart={"Biểu đồ tỷ lệ % quỹ lương các khối chức năng/doanh thu 12 tháng gần nhất"}
+                    calculationUnit={"%"}
+                    nameField1={"% Kinh doanh"}
+                    nameField2={"% Sản xuất"}
+                    nameField3={"% Quản trị"}
+                    />
                     <div className="col-md-12">
                         <div className="box box-success">
                             <div className="box-header with-border">
@@ -56,7 +80,7 @@ class DashBoardEmployees extends Component {
                                     <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" /></button>
                                 </div>
                                 <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
-                                <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Thêm mới lịch nghỉ" data-toggle="modal" data-target="#modal-addSabbatical">Thêm mới</button>
+                                <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Thêm mới lịch nghỉ" data-toggle="modal" data-target="#modal-addHoliday">Thêm mới</button>
                             </div>
                             <div className="box-body" >
                                 <table className="table table-bordered">
@@ -103,7 +127,7 @@ class DashBoardEmployees extends Component {
                 <ModalImportHoliday />
                 <ModalDeleteHoliday />
                 <ModalEditHoliday />
-                <ModalAddHoliday/>
+                <ModalAddHoliday />
             </React.Fragment>
         );
     }

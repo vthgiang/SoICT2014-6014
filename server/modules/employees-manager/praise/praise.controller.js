@@ -1,6 +1,6 @@
 const PraiseService = require('./praise.service');
 
-// Lấy danh sách kỷ luật
+// Lấy danh sách khen thưởng
 exports.get = async (req, res) => {
     try {
         var listPraise = await PraiseService.get(req.body,req.user.company._id);
@@ -15,7 +15,7 @@ exports.get = async (req, res) => {
     }
 }
 
-// Tạo mới kỷ luật của nhân viên
+// Tạo mới khen thưởng của nhân viên
 exports.create = async (req, res) => {
     try {
         var newPraise = await PraiseService.create(req.body,req.user.company._id);
@@ -30,7 +30,7 @@ exports.create = async (req, res) => {
     }
 }
 
-// delete thông tin kỷ luật
+// delete thông tin khen thưởng
 exports.delete = async (req, res) => {
     try {
         var praiseDelete = await PraiseService.delete(req.params.id);
@@ -45,7 +45,7 @@ exports.delete = async (req, res) => {
     }
 }
 
-// update thông tin kỷ luật
+// update thông tin khen thưởng
 exports.update = async (req, res) => {
     try {
         var praiseUpdate = await PraiseService.update(req.params.id,req.body);

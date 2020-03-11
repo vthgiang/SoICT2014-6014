@@ -43,16 +43,21 @@ function getPaginate(data){
 function create(company){
     return dispatch => {
         dispatch({ type: CompanyConstants.CREATE_COMPANY_REQUEST});
-        CompanyServices.create(company)
+        return new Promise((resolve, reject) => {
+            CompanyServices.create(company)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.CREATE_COMPANY_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err.response.data);
+                reject(err);
             })
+        });
+        
     }
 }
 

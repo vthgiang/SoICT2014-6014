@@ -5,10 +5,10 @@ import {
 } from '../../../env';
 import {
     AuthenticateHeader,
+    FingerPrint,
     getStorage
 } from '../../../config';
 import jwt from 'jsonwebtoken';
-import getBrowserFingerprint from 'get-browser-fingerprint';
 
 export const AuthService = {
     login,
@@ -21,14 +21,14 @@ export const AuthService = {
     resetPassword
 };
 
-function login(user) {
+async function login(user) {
+    const finger = await FingerPrint();
+    console.log("FINGER LOGIN", JSON.stringify(finger));
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
         data: user,
-        headers: {
-            'browser-finger': getBrowserFingerprint()
-        }
+        headers: FingerPrint()
     };
 
     return axios(requestOptions);
@@ -69,12 +69,13 @@ function editProfile(data) {
     return axios(requestOptions);
 }
 
-function getLinksOfRole(idRole) {
+async function getLinksOfRole(idRole) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/privilege/get-links-of-role/${idRole}`,
         method: 'GET',
-        headers: AuthenticateHeader()
+        headers: await AuthenticateHeader()
     };
+    console.log("OPTION: ", requestOptions);
 
     return axios(requestOptions);
 }
@@ -87,7 +88,7 @@ async function refresh() {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
+        headers: await AuthenticateHeader()
     };
 
     return axios(requestOptions);

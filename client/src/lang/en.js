@@ -1,6 +1,7 @@
 export default {
     locale: 'en',
     messages: {
+        not_found: '404! Not found this page',
         language: 'Language setting',
         auth: {
             login: 'Login',
@@ -113,6 +114,8 @@ export default {
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',
             kpi_personal_overview: 'Overview personal KPI',
+
+            notifications: 'Notifications',
         },
 
         manage_system: {
@@ -154,7 +157,7 @@ export default {
             employee_name: 'Employee',
             employee_example: 'Ex: Employee of Financial Officer',
             add_with_parent: 'Add new department with parent is',
-            delete: 'Delete department ?'
+            delete: 'Delete department'
         },
 
         manage_role: {
@@ -165,7 +168,7 @@ export default {
             extends: 'Extends of',
             users: 'Users has role',
             edit: 'Edit role \'s information',
-            delete: 'Delete role ?',
+            delete: 'Delete role',
             add_success: 'Add new role successfully',
             add_faile: 'Add new role failed',
             edit_success: 'Edit role successfully',
@@ -179,7 +182,7 @@ export default {
             edit: 'Edit User/Account \'s information',
             disable: 'Disable',
             enable: 'Enable',
-            delete: 'Delete user ?',
+            delete: 'Delete user',
             add_success: 'Add new user successfully',
             add_faile: 'Add new user failed',
             edit_success: 'Edit user successfully',
@@ -194,7 +197,7 @@ export default {
             roles: 'Roles can access this page',
             info: 'Page \'s information',
             edit: 'Edit page \'s information',
-            delete: 'Delele link ?',
+            delete: 'Delele link',
             add_success: 'Add successfully',
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
@@ -206,7 +209,7 @@ export default {
             add_title: 'Add new component',
             info: 'Component \'s information',
             edit: 'Edit component \'s information',
-            delete: 'Delete component ?',
+            delete: 'Delete component',
             roles: 'Roles have privilege to component',
             add_success: 'Add successfully',
             add_faile: 'Add falied!',
@@ -379,7 +382,7 @@ export default {
             type_contract: 'Type of contract',
             start_date: 'Effective date',
             course_name:'Course name',
-            start_date: 'Start day',
+            start_day: 'Start day',
             end_date: 'End day',
             type_education:'Type of education',
             cost:'Cost',
@@ -395,19 +398,17 @@ export default {
             discipline: 'Discipline',
             historySalary:'History of salary',
             sabbatical:'sabbatical information'
-
-
-
-
-
-
-
-
-
-
-
         },
 
+        notification: {
+            add: 'Thêm mới',
+            add_title: 'Thêm thông báo mới',
+            add_success: 'Tạo thông báo mới thành công',
+            add_faile: 'Tạo thông báo thất bại',
+            edit_success: 'Chỉnh sửa thông báo thành công',
+            edit_faile: 'Chỉnh sửa thông báo thất bại'
+        },
+        
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

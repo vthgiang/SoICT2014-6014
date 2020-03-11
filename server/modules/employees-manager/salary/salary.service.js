@@ -35,6 +35,9 @@ exports.get = async (data, company) => {
         }
     }
     var totalList = await Salary.count(keySearch);
+
+
+    
     var listSalary = await Salary.find(keySearch).populate({
             path: 'employee',
             model: Employee
