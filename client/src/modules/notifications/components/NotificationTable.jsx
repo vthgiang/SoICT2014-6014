@@ -54,17 +54,17 @@ class NotificationTable extends Component {
                     <div className="box-body">
                     
                     <div className="table-responsive mailbox-messages">
-                        <table className="table table-hover table-striped table-bordered">
+                        <table className="table table-hover table-striped">
                         <tbody>
                             {
                                 notification.list.length > 0 ? 
                                 notification.list.map(notification => 
                                     <tr key={notification._id} onClick={this.hello}>
                                         <td>
-                                            <strong style={{fontSize:'14px'}}> {notification.title.slice(0, 40)}... </strong>
+                                            <strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
                                         </td>
                                         <td>
-                                            <i style={{fontSize: '14px'}}>{notification.content.slice(0, 80)}...</i>
+                                            <i style={{fontSize: '14px'}}>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</i>
                                         </td>
                                         <td style={{width: '5px'}}>
                                             <a className="delete pull-right">

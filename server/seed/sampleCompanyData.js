@@ -101,6 +101,41 @@ const sampleCompanyData = async () => {
             email: 'pdf.xyz@gmail.com',
             password: hash,
             company: xyz._id
+        }, {
+            name: 'Trần Minh Đức',
+            email: 'tmd.xyz@gmail.com',
+            password: hash,
+            company: xyz._id
+        }, {
+            name: 'Nguyễn Việt Anh',
+            email: 'nguyenvietanh.xyz@gmail.com',
+            password: hash,
+            company: xyz._id
+        }, {
+            name: 'Nguyễn Viết Thái',
+            email: 'nguyenvietthai.xyz@gmail.com',
+            password: hash,
+            company: xyz._id
+        }, {
+            name: 'Trần Mỹ Hạnh',
+            email: 'tranmyhanh.xyz@gmail.com',
+            password: hash,
+            company: xyz._id
+        }, {
+            name: 'Nguyễn Minh Thành',
+            email: 'nguyenminhthanh.xyz@gmail.com',
+            password: hash,
+            company: xyz._id
+        }, {
+            name: 'Nguyễn Gia Huy',
+            email: 'nguyengiahuy.xyz@gmail.com',
+            password: hash,
+            company: xyz._id
+        }, {
+            name: 'Trần Minh Anh',
+            email: 'tranminhanh.xyz@gmail.com',
+            password: hash,
+            company: xyz._id
         }
     ]);
     console.log("Xong! Đã thêm tài khoản:", users);

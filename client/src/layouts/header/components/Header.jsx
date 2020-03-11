@@ -62,6 +62,8 @@ class Header extends Component {
                         <MainHeaderMenu/>
                     </nav>
                 </header>
+
+                {/* Modal profile */}
                 <div className="modal fade" id="modal-profile">
                     <div className="modal-dialog">
                         <div className="modal-content">

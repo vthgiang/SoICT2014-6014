@@ -1,4 +1,5 @@
 const User = require('../../../models/user.model');
+const Department = require('../../../models/department.model');
 const UserRole = require('../../../models/user_role.model');
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
@@ -139,4 +140,15 @@ exports.searchByName = async (companyId, name) => {
         ]);
     
     return user;
+}
+
+//lấy user trong phòng ban
+exports.getUsersOfDepartment = async (departmentId) => {
+    const department = await Department.findById(departmentId); //lấy thông tin phòng ban hiện tại
+    const roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của phòng ban vào 1 arr
+    const users = await UserRole.find({
+        roleId: { $in: roles }
+    });
+
+    return users.map(user => user.userId); //mảng id của các users trong phòng ban này
 }

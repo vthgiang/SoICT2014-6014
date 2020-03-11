@@ -10,12 +10,17 @@ class ActionColumn extends Component {
     }
 
     setLimit = async() => {
-        await window.$(`#setting-table`).collapse("hide");
+        var cols = window.$(`#${this.props.tableId}`).val();
+        for (var j = 0, len = cols.length; j < len; j++) {
+            window.$('td:nth-child(' + cols[j] + ')').hide();
+            window.$('th:nth-child(' + cols[j] + ')').hide();
+        }
         await this.props.setLimit(this.record.current.value);
+        await window.$(`#setting-table`).collapse("hide");
     }
 
     render() {
-        const { columnName, hideColumn, translate } = this.props;
+        const { columnName, translate, columnArr=[], hiddenColumn=false } = this.props;
         return (
             <React.Fragment>
                 {columnName}
@@ -23,16 +28,13 @@ class ActionColumn extends Component {
                 <div id="setting-table" className="row collapse">
                     <span className="pop-arw arwTop L-auto" style={{ right: "13px" }}></span>
                     {
-                        hideColumn &&
+                        hiddenColumn && columnArr.length > 0 &&
                         <div className="col-xs-12">
                             <label style={{ marginRight: "15px" }}>Ẩn cột:</label>
                             <select id="multiSelectShowColumn" multiple="multiple">
-                                <option value="1">Tên mẫu</option>
-                                <option value="2">Mô tả</option>
-                                <option value="3">Số lần sử dụng</option>
-                                <option value="4">Người tạo</option>
-                                <option value="5">Đơn vị</option>
-                                <option value="6">Hoạt động</option>
+                                {
+                                    columnArr.map((col,i) => <option value={i}>{col}</option>)
+                                }
                             </select>
                         </div>
                     }

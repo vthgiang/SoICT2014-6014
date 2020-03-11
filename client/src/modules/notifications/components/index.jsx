@@ -15,10 +15,10 @@ class Notifications extends Component {
             <React.Fragment>
                 
                 <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                    <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                         <NotificationMenu />
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                    <div className="col-xs-12 col-sm-12 col-md-10 col-lg-10">
                         <NotificationTable/>
                     </div>
                 </div>

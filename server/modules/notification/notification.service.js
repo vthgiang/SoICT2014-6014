@@ -35,6 +35,18 @@ exports.create = async (data, company) => {
     });
 }
 
+//Thông báo tới phòng ban nào (thông báo đến các user trong phòng ban)
+exports.noticeToUsers = async (userArr, notificationId) => { //mảng các userId và id của notification
+    const data = userArr.map(userId => {
+        return {
+            userId,
+            notificationId
+        };
+    });
+
+    return await NotificationUser.insertMany(data);
+}
+
 exports.delete = async (id) => {
     return true;
 }

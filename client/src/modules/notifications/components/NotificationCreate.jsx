@@ -9,55 +9,7 @@ import { NotificationActions } from '../redux/actions';
 class NotificationCreate extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            department_list: [],
-            user_list: [],
-            icon: 'info', //icon của thông báo
-            title: '', //tiêu đề của thông báo
-            content: '', //nội dung của thông báo,
-        }
-    }
-
-    handleChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-
-    setDepartment = (e, all=false) => {
-        const target = e.target;
-        const name = target.name;
-        const checked = target.checked;
-        if(!all){
-            const index = this.state.department_list.indexOf(name);
-            if(checked && index === -1){ //chưa tồn tại phần tử thì thêm vào mảng
-                this.setState({
-                    ...this.state,
-                    department_list: [name, ...this.state.department_list]
-                });
-            }else if(!checked && index !== -1){
-                const newArr = this.state.department_list;
-                newArr.splice(index, 1);
-                this.setState({
-                    department_list: newArr
-                })
-            }
-        }else{
-            if(checked){
-                const departmentArr = this.props.department.list.map(d => d._id);
-                this.setState({
-                    department_list: departmentArr
-                });
-            }else{
-                this.setState({
-                    department_list: []
-                });
-            }
-        }
-        
+        this.state = {}
     }
 
     componentDidMount(){
@@ -66,20 +18,25 @@ class NotificationCreate extends Component {
     }
 
     save = () => {
-        const {title, icon, content} = this.state;
-        return this.props.create({title, icon, content});
+        var title = this.refs.title.value;
+        var icon = this.refs.icon.value;
+        var content = this.refs.content.value;
+        var departments = [].filter.call(this.refs.departments.options, o => o.selected).map(o => o.value);
+        var users = [].filter.call(this.refs.users.options, o => o.selected).map(o => o.value);
+        var data = {title, icon, content, departments, users};
+        console.log("data notification: ",data);
+
+        return this.props.create(data);
     }
 
     render() { 
-        const {department_list, user_list}=this.state;
         const {translate, department, user} = this.props;
-        console.log(this.state)
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-notification" button_name={translate('notification.add')} title={translate('notification.add_title')}></ModalButton>
                 <ModalDialog
                     modalID="modal-create-notification"
-                    formID="form-create-notification" size="75"
+                    formID="form-create-notification" size="50"
                     title={translate('notification.add_title')}
                     msg_success={translate('notification.add_success')}
                     msg_faile={translate('notification.add_faile')}
@@ -87,13 +44,13 @@ class NotificationCreate extends Component {
                 >
                     <form id="form-create-notification">
                         <div className="row">
-                            <div className="form-group col-sm-8">
+                            <div className="form-group col-sm-9">
                                 <label>Tiêu đề<span className="text-red">*</span></label>
-                                <input type="text" name="title" className="form-control" onChange={this.handleChange}/>
+                                <input type="text" ref="title" className="form-control"/>
                             </div>
-                            <div className="form-group col-sm-4">
+                            <div className="form-group col-sm-3">
                                 <label>Loại thông báo<span className="text-red">*</span></label>
-                                <select className="form-control" onChange={this.handleChange} name="icon">
+                                <select className="form-control" ref="icon" defaultValue='info'>
                                     <option key={1} value={'info'}>info</option>
                                     <option key={2} value={'normal'}>normal</option>
                                     <option key={3} value={'warning'}>warning</option>
@@ -101,49 +58,37 @@ class NotificationCreate extends Component {
                                 </select>
                             </div>
                         </div>
-                        
                         <div className="form-group">
                             <label>Nội dung<span className="text-red">*</span></label>
-                            <textarea type="text" name="content" className="form-control" onChange={this.handleChange} style={{height:'100px'}}/>
+                            <textarea type="text" ref="content" className="form-control" style={{height:'150px'}}/>
                         </div>
                         <div className="form-group">
-                            <label>{translate('notification.departments')}</label>
-                            <div style={{border: '1px solid #D2D6DE', padding: '10px', marginBottom: '20px'}}>
-                                <div className="row">
-                                    <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                        <div className="checkbox">
-                                            <label>
-                                                <input checked={department_list.length === department.list.length ? true : false} type="checkbox" name='allDepartment' onChange={(e) => this.setDepartment(e, true)}/> Tất cả
-                                            </label>
-                                        </div>
-                                    </div>
-                                    {
-                                        department.list.map(department => 
-                                            <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3" key={department._id}>
-                                                <div className="checkbox">
-                                                    <label>
-                                                        <input checked={department_list.indexOf(department._id) !== -1 ? true : false} type="checkbox" name={department._id} onChange={this.setDepartment}/> {department.name}
-                                                    </label>
-                                                </div>
-                                            </div>  
-                                        )
-                                    }
-                                </div>
-                            </div>
-                            <div className="form-group">
+                            <label>{ translate('notification.departments') }</label>
+                            <select 
+                                className="form-control select2" 
+                                multiple="multiple" 
+                                style={{ width: '100%' }} 
+                                value={this.state.user_list}
+                                ref="departments"
+                            >
+                                {
+                                    department.list.map( d => <option key={d._id} value={d._id}>{d.name}</option>)
+                                }
+                            </select>
+                        </div>
+                        <div className="form-group">
                             <label>{ translate('notification.users') }</label>
-                                <select 
-                                    className="form-control select2" 
-                                    multiple="multiple" 
-                                    style={{ width: '100%' }} 
-                                    value={this.state.user_list}
-                                    ref="users"
-                                >
-                                    {
-                                        user.list.map( user => <option key={user._id} value={user._id}>{user.name}</option>)
-                                    }
-                                </select>
-                            </div>
+                            <select 
+                                className="form-control select2" 
+                                multiple="multiple" 
+                                style={{ width: '100%' }} 
+                                value={this.state.user_list}
+                                ref="users"
+                            >
+                                {
+                                    user.list.map( user => <option key={user._id} value={user._id}>{user.name}</option>)
+                                }
+                            </select>
                         </div>
                     </form>
                 </ModalDialog>

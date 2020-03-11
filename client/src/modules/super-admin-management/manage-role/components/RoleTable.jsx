@@ -52,7 +52,9 @@ class RoleTable extends Component {
                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                     <ActionColumn 
                                         columnName={translate('table.action')} 
-                                        hideColumn={false}
+                                        columnArr={[
+                                            translate('table.name')
+                                        ]}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

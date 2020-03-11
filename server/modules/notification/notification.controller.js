@@ -1,4 +1,5 @@
 const NotificationServices = require('./notification.service');
+const UserServices = require('../super-admin-management/users-management/user.service');
 const { Log } = require('../../logs');
 
 exports.get = async (req, res) => {
@@ -37,13 +38,18 @@ exports.create = async (req, res) => {
     try {
         req.body.creater = req.user._id;
         var notification = await NotificationServices.create(req.body, req.user.company._id);
+        var {departments} = req.body;
+        departments.forEach(async(department) => {
+            var userArr =  await UserServices.getUsersOfDepartment(department);
+            await NotificationServices.noticeToUsers(userArr, notification._id);
+        });
 
         isLog && Logger.info(req.user.email);
         res.status(200).json(notification);
     } catch (error) {
 
         isLog && Logger.error(req.user.email);
-        res.status(400).json(error)
+        res.status(400).json(error);
     }
 };
 
