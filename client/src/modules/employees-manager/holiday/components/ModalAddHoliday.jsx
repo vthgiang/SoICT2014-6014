@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { HolidayActions } from '../redux/actions';
+import { toast } from 'react-toastify';
 
 class ModalAddHoliday extends Component {
     constructor(props) {
         super(props);
         this.state = {
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
@@ -15,13 +18,10 @@ class ModalAddHoliday extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
-
-    handleChange(event) {
-        const { name, value } = event.target;
-        this.setState({
-            [name]: value
-        });
-    }
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message);
+    notifyerror = (message) => toast.error(message);
+    notifywarning = (message) => toast.warning(message);
 
     handleCloseModal = () => {
         this.setState({
@@ -29,10 +29,24 @@ class ModalAddHoliday extends Component {
         document.getElementById("formAddaddHoliday").reset();
         window.$(`#modal-addHoliday`).modal("hide");
     }
-
     handleSunmit = () => {
-        document.getElementById("formAddaddHoliday").reset();
-        window.$(`#modal-addHoliday`).modal("hide");
+        var { translate } = this.props;
+        if (this.refs.startDate.value === "") {
+            this.notifyerror(translate('holiday.check_start_Date'));
+        } else if (this.refs.endDate.value === "") {
+            this.notifyerror(translate('holiday.check_end_Date'));
+        } else if (this.refs.reason.value === "") {
+            this.notifyerror(translate('holiday.check_description'));
+        } else {
+            var data = {
+                startDate: this.refs.startDate.value,
+                endDate: this.refs.endDate.value,
+                reason: this.refs.reason.value
+            }
+            this.props.createNewHoliday(data);
+            document.getElementById("formAddaddHoliday").reset();
+            window.$(`#modal-addHoliday`).modal("hide");
+        }
     }
     render() {
         return (
@@ -69,7 +83,7 @@ class ModalAddHoliday extends Component {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="reason">Mô tả lịch nghỉ:<span className="required">&#42;</span></label>
-                                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" onChange={this.handleChange}></textarea>
+                                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" ref="reason"></textarea>
                                         </div>
 
                                     </div>
@@ -87,5 +101,14 @@ class ModalAddHoliday extends Component {
         );
     }
 };
+function mapState(state) {
+    const { holiday } = state;
+    return { holiday };
+};
 
-export { ModalAddHoliday };
+const actionCreators = {
+    createNewHoliday: HolidayActions.createNewHoliday,
+};
+
+const addHoliday = connect(mapState, actionCreators)(withTranslate(ModalAddHoliday));
+export { addHoliday as ModalAddHoliday };

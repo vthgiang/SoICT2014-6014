@@ -8,10 +8,10 @@ const holidaySchema = new Schema({
         ref: 'companies'
     },
     startDate: {
-        type: String
+        type: Date
     },
     endDate: {
-        type: String
+        type: Date
     },
     reason: {
         type: String

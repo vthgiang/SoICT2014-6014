@@ -408,7 +408,14 @@ export default {
 
 
         },
-
+        holiday: {
+            start_date: 'Start day',
+            end_Date: 'End day',
+            description: 'Description',
+            check_start_Date: 'Start day required',
+            check_end_Date: 'End day required',
+            check_description: 'Description required'
+        },
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
