@@ -7,11 +7,11 @@ import { ModalCopyKPIPersonal } from './ModalCopyKPIPersonal';
 
 class KPIPersonalOverview extends Component {
     UNSAFE_componentWillMount() {
-        this.props.getAllKPIPersonal(localStorage.getItem("id"));
+        this.props.getAllKPIPersonal();//localStorage.getItem("id")
     }
     componentDidMount() {
         let script = document.createElement('script');
-        script.src = '/main/js/Table.js';
+        script.src = '../lib/main/js/Table.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -61,30 +61,32 @@ class KPIPersonalOverview extends Component {
         const { overviewKpiPersonal } = this.props;
         if (overviewKpiPersonal.kpipersonals) {
             listkpi = overviewKpiPersonal.kpipersonals;
-            kpiApproved = listkpi.filter(item => item.status === 3);
-            currentKPI = listkpi.filter(item => item.status !== 3);
-            currentTargets = currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
-            systempoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.systempoint }
-            }).reverse();
-            mypoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.mypoint }
-            }).reverse();
-            approverpoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.approverpoint }
-            }).reverse();
-            targetA = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.listtarget[0].approverpoint }
-            }).reverse();
-            targetC = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.listtarget[1].approverpoint }
-            }).reverse();
-            targetOther = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: (item.approverpoint - item.listtarget[0].approverpoint - item.listtarget[1].approverpoint) }
-            }).reverse();
-            misspoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: (100 - item.approverpoint) }
-            }).reverse();
+            if(typeof listkpi !== "undefined" && listkpi.length !== 0){//listkpi.content
+                kpiApproved = listkpi.filter(item => item.status === 3);
+                currentKPI = listkpi.filter(item => item.status !== 3);
+                currentTargets = currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
+                systempoint = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.systempoint }
+                }).reverse();
+                mypoint = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.mypoint }
+                }).reverse();
+                approverpoint = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.approverpoint }
+                }).reverse();
+                targetA = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.listtarget[0].approverpoint }
+                }).reverse();
+                targetC = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.listtarget[1].approverpoint }
+                }).reverse();
+                targetOther = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: (item.approverpoint - item.listtarget[0].approverpoint - item.listtarget[1].approverpoint) }
+                }).reverse();
+                misspoint = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: (100 - item.approverpoint) }
+                }).reverse();
+            }
         }
         const options2 = {
             animationEnabled: true,

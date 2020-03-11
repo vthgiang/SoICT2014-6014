@@ -28,7 +28,7 @@ class ModalEditTargetKPIUnit extends Component {
             editing: true,
             newTarget: {
                 name: this.name.value,
-                parent: this.parent.value,
+                parent: (this.parent) ? this.parent.value : null,//fix
                 weight: this.weight.value,
                 criteria: this.criteria.value
             }

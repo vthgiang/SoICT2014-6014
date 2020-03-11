@@ -15,18 +15,18 @@ export const createKpiActions = {
 
 
 // Lấy KPI cá nhân hiện tại
-function getCurrentKPIPersonal(id) {
+function getCurrentKPIPersonal() {
     return dispatch => {
-        dispatch(request(id));
+        dispatch(request());
 
-        createKpiService.getCurrentKPIPersonal(id)
+        createKpiService.getCurrentKPIPersonal()
             .then(
                 kpipersonal => dispatch(success(kpipersonal)),
                 error => dispatch(failure(error.toString()))
             );
     };
 
-    function request(id) { return { type: createKpiConstants.GETCURRENT_KPIPERSONAL_REQUEST, id } }
+    function request() { return { type: createKpiConstants.GETCURRENT_KPIPERSONAL_REQUEST } }
     function success(kpipersonal) { return { type: createKpiConstants.GETCURRENT_KPIPERSONAL_SUCCESS, kpipersonal } }
     function failure(error) { return { type: createKpiConstants.GETCURRENT_KPIPERSONAL_FAILURE, error } }
 }

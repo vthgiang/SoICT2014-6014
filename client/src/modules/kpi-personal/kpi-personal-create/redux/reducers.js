@@ -19,15 +19,18 @@ export function createKpiPersonal(state = {}, action) {
     case  createKpiConstants.EDIT_KPIPERSONAL_REQUEST:
       return {
         ...state,
-        adding: true
+        // adding: true
+        editing: true
       };
     case createKpiConstants.EDIT_KPIPERSONAL_SUCCESS:
       return {
-          ...state,
-          items: [
-            ...state.items,
-            action.target.kpipersonal
-          ]
+        ...state,
+        editing: false,
+        currentKPI: action.kpipersonal.content
+        // items: [
+        //   ...state.items,
+        //   action.target.kpipersonal
+        // ]
       };
     case createKpiConstants.EDIT_KPIPERSONAL_FAILURE:
       return { 

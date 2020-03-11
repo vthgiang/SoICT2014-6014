@@ -79,7 +79,7 @@ exports.create = async (req, res) => {
         if (department.parent !== null) {
             var kpiunitparent = await KPIUnit.findOne({ unit: department.parent, status: 1 }).populate("listtarget");
             var defaultTarget;
-            if (kpiunitparent.listtarget) defaultTarget = kpiunitparent.listtarget.filter(item => item.default !== 0);
+            if (kpiunitparent.listtarget) defaultTarget = kpiunitparent.listtarget.filter(item => item.default !== 0);//default Target là nhưng mục tiêu có default !== 0
             if (defaultTarget !== []) {
                 var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
                     var defaultT = await DetailKPIUnit.create({
