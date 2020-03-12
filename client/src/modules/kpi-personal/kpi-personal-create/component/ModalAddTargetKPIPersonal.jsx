@@ -63,7 +63,8 @@ class ModalAddTargetKPIPersonal extends Component {
                                 <div className="form-group">
                                     <label>Thuộc mục tiêu:</label>
                                     <div className={'form-group has-feedback'}>
-                                        {(typeof parentTargets !== 'undefined' && parentTargets.length !== 0) && 
+{/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                         */}
+                                        {(typeof parentTargets !== 'undefined' && parentTargets.length !== 0) && //giờ đang có parentTargets.length === 0
                                         <select className="form-control" id="selparent" name="parent" ref={input => this.parent = input}>
                                             {parentTargets.filter(item => item.default === 0).map(x => {
                                                 return <option key={x._id} value={x._id}>{x.name}</option>

@@ -104,7 +104,7 @@ function getRoleSameDepartmentOfUser(currentRole) {
 // Lấy tất cả nhân viên của công ty
 function getAllUserOfCompany() {
     const requestOptions = {
-        url: `${LOCAL_SERVER_API}/users`,
+        url: `${LOCAL_SERVER_API}/user`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -115,7 +115,7 @@ function getAllUserOfCompany() {
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
 function getAllUserOfDepartment(id) {
     const requestOptions = {
-        url: `${LOCAL_SERVER_API}/users/users-of-department/${id}`,
+        url: `${LOCAL_SERVER_API}/user/users-of-department/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -126,7 +126,7 @@ function getAllUserOfDepartment(id) {
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
 function getAllUserSameDepartment(id) {
     const requestOptions = {
-        url: `${LOCAL_SERVER_API}/users/same-department/${id}`,
+        url: `${LOCAL_SERVER_API}/user/same-department/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };

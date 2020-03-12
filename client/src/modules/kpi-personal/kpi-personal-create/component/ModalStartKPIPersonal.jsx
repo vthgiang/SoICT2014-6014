@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { UserActions } from '../../../../redux-actions/CombineActions';
 import { UserActions } from "../../../super-admin-management/manage-user/redux/actions"
 import { createKpiActions  } from '../redux/actions';
 
@@ -10,17 +9,23 @@ class ModalStartKPIPersonal extends Component {
         this.state = {
             kpipersonal: {
                 unit: "",
-                creater: localStorage.getItem("id"),
+                // creater: this.getCreater(), //localStorage.getItem("id"),
                 approver: "",
                 time: "",
             },
             adding: false
         };
     }
+    // getCreater = async () => {
+    //     const token = getStorage();
+    //     const verified = await jwt.verify(token, TOKEN_SECRET);
+    //     var id = verified._id;
+    //     return id;
+    // }
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '../lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -38,9 +43,11 @@ class ModalStartKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
+    //chu
     handleCreateKPIPersonal = async (event, unit) => {
         event.preventDefault();
         await this.setState(state => {
+            console.log('clicked');
             return {
                 ...state,
                 kpipersonal: {
@@ -52,7 +59,7 @@ class ModalStartKPIPersonal extends Component {
             }
         })
         var {kpipersonal} = this.state;
-        if(kpipersonal.unit && kpipersonal.creater && kpipersonal.time && kpipersonal.approver){
+        if(kpipersonal.unit  && kpipersonal.time && kpipersonal.approver){//&& kpipersonal.creater
             this.props.createKPIPersonal(kpipersonal);
             window.$("#startKPIPersonal").modal("hide");
         }
@@ -61,6 +68,8 @@ class ModalStartKPIPersonal extends Component {
         var userdepartments;
         const { unit, user } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
+        // console.log(this.getCreater());
+        console.log(this.state);
         return (
             <div className="modal fade" id="startKPIPersonal">
                 <div className="modal-dialog">
@@ -87,18 +96,26 @@ class ModalStartKPIPersonal extends Component {
                                 <div className="form-group">
                                     <label className="col-sm-4" style={{ marginTop: "7px" }}>Người phê duyệt:</label>
                                     <div className={'form-group col-sm-9 has-feedback'} style={{ marginLeft: "-9%" }}>
-                                        {userdepartments && <select defaultValue={userdepartments[0].id_user[0]._id} ref={input => this.approver = input} className="form-control select2" style={{ width: '100%' }}>
-                                            <optgroup label={userdepartments[0].id_role.name}>
-                                                {userdepartments[0].id_user.map(x => {
-                                                    return <option key={x._id} value={x._id}>{x.name}</option>
-                                                })}
+                                        {userdepartments && <select defaultValue={userdepartments[0].userId._id} ref={input => this.approver = input} className="form-control select2" style={{ width: '100%' }}>
+                                            <optgroup label={userdepartments[0].roleId.name}>
+                                                 <option key={userdepartments[0].userId._id} value={userdepartments[0].userId._id}>{userdepartments[0].userId.name}</option>
                                             </optgroup>
-                                            <optgroup label={userdepartments[1].id_role.name}>
-                                                {userdepartments[1].id_user.map(x => {
-                                                    return <option key={x._id} value={x._id}>{x.name}</option>
-                                                })}
+                                            <optgroup label={userdepartments[1].roleId.name}>
+                                                <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>{userdepartments[1].userId.name}</option>
                                             </optgroup>
                                         </select>}
+                                        {/* {userdepartments && <select defaultValue={userdepartments[0].userId[0]._id} ref={input => this.approver = input} className="form-control select2" style={{ width: '100%' }}>
+                                            <optgroup label={userdepartments[0].roleId.name}>
+                                                {userdepartments[0].userId.map(x => {
+                                                    return <option key={x._id} value={x._id}>{x.name}</option>
+                                                })}
+                                            </optgroup>
+                                            <optgroup label={userdepartments[1].roleId.name}>
+                                                {userdepartments[1].userId.map(x => {
+                                                    return <option key={x._id} value={x._id}>{x.name}</option>
+                                                })}
+                                            </optgroup>
+                                        </select>} */}
                                     </div>
                                 </div>
                                 <div className="form-group" >

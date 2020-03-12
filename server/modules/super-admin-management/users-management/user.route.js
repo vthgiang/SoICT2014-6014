@@ -12,4 +12,6 @@ router.patch("/:id", auth, editValidation, UserController.edit);
 router.delete("/:id", auth, UserController.delete);
 router.post("/search-by-name", auth, UserController.searchByName);
 
+router.get("/same-department/:id", UserController.getUsersSameDepartment);
+
 module.exports = router;

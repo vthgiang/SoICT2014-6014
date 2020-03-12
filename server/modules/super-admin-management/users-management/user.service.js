@@ -152,3 +152,28 @@ exports.getUsersOfDepartment = async (departmentId) => {
 
     return users.map(user => user.userId); //mảng id của các users trong phòng ban này
 }
+
+//lấy tất cả các user cùng phòng ban với user hiện tại
+exports.getUsersSameDepartment = async(req, res) => {
+    console.log("get user of department");
+    try {
+        const id_role = req.params.id; //lấy id role hiện tại của user
+        var department = await Department.findOne({ 
+            $or:[
+                {'dean': id_role}, 
+                {'vice_dean': id_role}, 
+                {'employee': id_role}
+            ]  
+        });
+        
+        var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
+        var vice_dean = await UserRole.findOne({ roleId: department.vice_dean}).populate('userId roleId');
+        var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');
+        var users = [];
+        users = users.concat(dean, vice_dean, employee);
+
+        res.status(200).json(users); //tra ve list cac user theo 3 chuc danh cua phong ban
+    } catch (error) {
+        res.status(400).json({msg: error});
+    }
+}

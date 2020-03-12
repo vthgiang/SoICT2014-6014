@@ -22,7 +22,7 @@ class ModalAddTargetKPIUnit extends Component {
                 ...state,
                 target: {
                     name: this.name.value,
-                    parent: this.parent.value,
+                    parent: (this.parent) ? this.parent.value : null,//fix
                     weight: this.weight.value,
                     criteria: this.criteria.value,
                     kpiunit: this.props.kpiunit
@@ -57,13 +57,14 @@ class ModalAddTargetKPIUnit extends Component {
                                     <input type="text" className="form-control" ref={input => this.name = input} id="inputname" placeholder="Tên mục tiêu" name="name" />
                                 </div>
                             </div>
-                            {(typeof unit !== "undefined" && unit.parent !== null) &&
+                            {(typeof unit !== "undefined" && unit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                                 <div className="form-group">
                                     <label>Thuộc mục tiêu:</label>
                                     <div className={'form-group has-feedback' + (adding && !target.parent ? ' has-error' : '')}>
+{/* --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
                                         {(typeof parentKPI !== 'undefined' && parentKPI !== null) &&
-                                            <select defaultValue={parentKPI.listtarget[3]._id} ref={input => this.parent = input} className="form-control" id="selparent" name="parent">
-                                                {parentKPI.listtarget.filter(item => item.default === 0).map(x => {
+                                            <select defaultValue={parentKPI.listtarget[0]._id} ref={input => this.parent = input} className="form-control" id="selparent" name="parent">
+                                                {parentKPI.listtarget.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                                                     return <option key={x._id} value={x._id}>{x.name}</option>
                                                 })}
                                             </select>}

@@ -5,18 +5,18 @@ export const overviewKpiActions = {
 };
 
 // Lấy tất cả KPI cá nhân
-function getAllKPIPersonalByMember(member) {
+function getAllKPIPersonalByMember() {
     return dispatch => {
-        dispatch(request(member));
+        dispatch(request());//member
 
-        overviewKpiServices.getAllKPIPersonalByMember(member)
+        overviewKpiServices.getAllKPIPersonalByMember()
             .then(
                 kpipersonals => dispatch(success(kpipersonals)),
                 error => dispatch(failure(error.toString()))
             );
     };
 
-    function request(member) { return { type: overviewKpiConstants.GETALL_KPIPERSONAL_REQUEST, member } }
+    function request() { return { type: overviewKpiConstants.GETALL_KPIPERSONAL_REQUEST } }
     function success(kpipersonals) { return { type: overviewKpiConstants.GETALL_KPIPERSONAL_SUCCESS, kpipersonals } }
     function failure(error) { return { type: overviewKpiConstants.GETALL_KPIPERSONAL_FAILURE, error } }
 }
