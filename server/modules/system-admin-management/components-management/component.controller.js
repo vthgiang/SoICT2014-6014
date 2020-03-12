@@ -1,4 +1,5 @@
 const ComponentService = require('./component.service');
+const LinkServices = require('../links-management/link.service');
 const { Log } = require('../../../logs');
 
 exports.get = async (req, res) => {
@@ -39,6 +40,7 @@ exports.create = async (req, res) => {
         var createComponent = await ComponentService.create(req.body);
         await ComponentService.relationshipComponentRole(createComponent._id, req.body.roles);
         var component = await ComponentService.getById(createComponent._id);
+        await LinkServices.addComponentOfLink(req.body.linkId, createComponent._id); //thêm component đó vào trang
 
         isLog && Logger.info(req.user.email);
         res.status(200).json(component);
@@ -91,3 +93,19 @@ exports.delete = async (req, res) => {
         res.status(400).json(error);
     }
 };
+
+//Lấy tất cả các component của user với trang web hiện tại
+exports.getComponentsOfUserInLink = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'GET COMPONENTS OF LINK');
+    try {
+        var components  = await ComponentService.getComponentsOfUserInLink(req.params.roleId, req.params.linkId);
+        
+        isLog && Logger.info(req.user.email);
+        res.status(200).json(components);
+    } catch (error) {
+        
+        isLog && Logger.error(req.user.email);
+        res.status(400).json(error);
+    }
+};
+

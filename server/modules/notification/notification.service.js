@@ -50,3 +50,20 @@ exports.noticeToUsers = async (userArr, notificationId) => { //mảng các userI
 exports.delete = async (id) => {
     return true;
 }
+
+//Lấy tất cả các thông báo đã nhận của user
+exports.getNotificationReceivered = async (userId) => {
+    var data = await NotificationUser
+        .find({userId})
+        .populate([{ path: 'notificationId', model: Notification }]);
+    var notifications = data.map(notifi => notifi.notificationId);
+
+    return notifications;
+}
+
+//Lấy tất cả các thông báo đã tạo của user
+exports.getNotificationSent = async (userId) => {
+    var notifications = await Notification.find({creater: userId});
+
+    return notifications;
+}

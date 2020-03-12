@@ -89,3 +89,15 @@ exports.relationshipLinkRole = async(linkId, roleArr) => {
 
     return privilege;
 }
+
+
+exports.addComponentOfLink = async(id, componentId) => { //thêm component(button thêm, sửa, xóa,..) trên trang web 
+    var link = await Link
+        .findById(id)
+        .populate({ path: 'roles', model: Privilege }); //Lấy thông tin trang hiện tại
+
+    link.components.push(componentId); //thêm id của component vào trong mảng các component của trang này
+    link.save();
+
+    return link;
+}

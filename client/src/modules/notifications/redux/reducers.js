@@ -32,12 +32,28 @@ export function notification(state = initState, action) {
     switch (action.type) {
         case NotificationConstants.GET_NOTIFICATIONS_REQUEST:
         case NotificationConstants.CREATE_NOTIFICATION_REQUEST:
+        case NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_REQUEST:
+        case NotificationConstants.GET_NOTIFICATIONS_SENT_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
 
         case NotificationConstants.GET_NOTIFICATIONS_SUCCESS:
+            return {
+                ...state,
+                list: action.payload,
+                isLoading: false
+            };
+
+        case NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_SUCCESS:
+            return {
+                ...state,
+                list: action.payload,
+                isLoading: false
+            };
+
+        case NotificationConstants.GET_NOTIFICATIONS_SENT_SUCCESS:
             return {
                 ...state,
                 list: action.payload,

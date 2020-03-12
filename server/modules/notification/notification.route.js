@@ -6,6 +6,12 @@ const { auth } = require('../../middleware/auth.middleware');
 //Lấy tất cả các thông báo
 router.get("/", auth, NotificationController.get);
 
+//Lấy tất cả các thông báo mà user nhận
+router.get("/receivered/:userId", auth, NotificationController.getNotificationReceivered);
+
+//Lấy tất cả các thông báo mà user đã gửi
+router.get("/sent/:userId", auth, NotificationController.getNotificationSent);
+
 //Lấy các thông báo theo số lượng yêu cầu
 router.post("/paginate", auth, NotificationController.getPaginate);
 

@@ -103,7 +103,7 @@ class DepartmentTreeView extends Component {
     }
 
     zoomOut = () => {
-        if(this.state.zoom > 16)
+        if(this.state.zoom > 0)
             this.setState({ zoom : this.state.zoom - 1});
     }
 
@@ -114,11 +114,9 @@ class DepartmentTreeView extends Component {
                     id={`department-${data.id}`} 
                     className="tf-nc w3-card-4 department" 
                     title={ data.name }
-                    onClick={() => this.toggleSetting(`department-setting-${data.id}`)}
                 >
-                    <div className="row">
-                        { data.name }
-                    </div>
+                    <button style={{border: 'none', backgroundColor: 'white'}} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gear"></i></button>
+                    {` ${data.name} `}
                     <div id={`department-setting-${data.id}`} className="row" style={{display: 'none', marginTop: '8px'}}>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <ModalButton modalID={`modal-create-department-${data.id}`}

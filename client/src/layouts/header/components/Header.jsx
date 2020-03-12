@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MainHeaderMenu from './MainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { editProfile } from '../../../modules/auth/redux/actions';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Header extends Component {
     constructor(props) {
@@ -112,12 +112,8 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        editProfile: (data) => {
-            dispatch(editProfile(data)); 
-        }
-    }
+const mapDispatchToProps = {
+    editProfile: AuthActions.editProfile
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Header) );

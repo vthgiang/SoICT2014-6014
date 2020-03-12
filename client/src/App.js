@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { createBrowserHistory } from 'history';
 import Routes from './react-routes/Routes';
 import { ToastContainer, toast } from 'react-toastify';

@@ -10,11 +10,11 @@ class ActionColumn extends Component {
     }
 
     setLimit = async() => {
-        var cols = window.$(`#${this.props.tableId}`).val();
-        for (var j = 0, len = cols.length; j < len; j++) {
-            window.$('td:nth-child(' + cols[j] + ')').hide();
-            window.$('th:nth-child(' + cols[j] + ')').hide();
-        }
+        // var cols = window.$(`#${this.props.tableId}`).val();
+        // for (var j = 0, len = cols.length; j < len; j++) {
+        //     window.$('td:nth-child(' + cols[j] + ')').hide();
+        //     window.$('th:nth-child(' + cols[j] + ')').hide();
+        // }
         await this.props.setLimit(this.record.current.value);
         await window.$(`#setting-table`).collapse("hide");
     }

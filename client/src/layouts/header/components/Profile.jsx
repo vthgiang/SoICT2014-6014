@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { logout, logoutAllAccount } from '../../../modules/auth/redux/actions';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Profile extends Component {
     constructor(props) {
@@ -46,15 +46,9 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
-    return {
-        logout: () => {
-            dispatch(logout()); //dispatch đến action getUsers trong file index của action và lưu dữ liệu users trên store
-        },
-        logoutAllAccount: () => {
-            dispatch(logoutAllAccount()); //dispatch đến action getUsers trong file index của action và lưu dữ liệu users trên store
-        }
-    }
+const mapDispatchToProps = { 
+        logout: AuthActions.logout,
+        logoutAllAccount: AuthActions.logoutAllAccount
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Profile));

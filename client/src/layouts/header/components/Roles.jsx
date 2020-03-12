@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { setStorage, getStorage } from '../../../config';
-import { getLinksOfRole } from '../../../modules/auth/redux/actions';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 
 class Roles extends Component {
     constructor(props) {
@@ -16,11 +16,39 @@ class Roles extends Component {
     selectRole(e) {
         this.setState({ currentRole: e.target.value });
         setStorage('currentRole', e.target.value);
-        this.props.getLinksOfRole(e.target.value);
+        this.props.getLinksOfRole(e.target.value)
+            .then(res => {
+                var {links} = this.props.auth;
+                var path = window.location.pathname;
+                var linkId;
+                for (let index = 0; index < links.length; index++) {
+                    const element = links[index];
+                    if(element.url === path){
+                        linkId = element._id;
+                        break;
+                    }
+                }
+                var currentRole = getStorage('currentRole');
+                this.props.getComponentsOfUserInLink(currentRole, linkId);
+            });
     }
 
     componentDidMount() {
-        this.props.getLinksOfRole(this.state.currentRole);
+        this.props.getLinksOfRole(this.state.currentRole)
+            .then(res => {
+                var {links} = this.props.auth; 
+                var path = window.location.pathname;
+                var linkId;
+                for (let index = 0; index < links.length; index++) {
+                    const element = links[index];
+                    if(element.url === path){
+                        linkId = element._id;
+                        break;
+                    }
+                }
+                var currentRole = getStorage('currentRole');
+                this.props.getComponentsOfUserInLink(currentRole, linkId);
+            });
     }
     
     render() { 
@@ -56,12 +84,9 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
-    return {
-        getLinksOfRole: (idRole) => {
-            dispatch(getLinksOfRole(idRole));
-        },
-    }
+const mapDispatchToProps = { //lưu các users lên store
+    getLinksOfRole: AuthActions.getLinksOfRole,
+    getComponentsOfUserInLink: AuthActions.getComponentOfUserInLink
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Roles));

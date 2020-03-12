@@ -1,13 +1,6 @@
 import axios from 'axios';
-import {
-    LOCAL_SERVER_API,
-    TOKEN_SECRET
-} from '../../../env';
-import {
-    AuthenticateHeader,
-    FingerPrint,
-    getStorage
-} from '../../../config';
+import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
+import { AuthenticateHeader, FingerPrint, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
 
 export const AuthService = {
@@ -18,7 +11,8 @@ export const AuthService = {
     logout,
     logoutAllAccount,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    getComponentOfUserInLink
 };
 
 async function login(user) {
@@ -115,6 +109,16 @@ function resetPassword(otp, email, password) {
             email,
             password
         }
+    };
+
+    return axios(requestOptions);
+}
+
+function getComponentOfUserInLink(currentRole, linkId) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
+        method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);

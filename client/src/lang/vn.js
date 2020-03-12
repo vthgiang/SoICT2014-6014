@@ -219,6 +219,9 @@ export default {
             add: 'Thêm',
             add_title: 'Thêm component mới',
             info: 'Thông tin về component',
+            name: 'Tên của component',
+            description: 'Mô tả về component',
+            link: 'Thuộc về trang nào',
             edit: 'Chỉnh sửa thông tin về component',
             delete: 'Xóa component',
             roles: 'Những role có component này',
@@ -415,6 +418,8 @@ export default {
         notification: {
             add: 'Thêm mới',
             add_title: 'Thêm thông báo mới',
+            added: 'Thông báo đã tạo',
+            receivered: 'Thông báo đã nhận',
             add_success: 'Tạo thông báo mới thành công',
             add_faile: 'Tạo thông báo thất bại',
             edit_success: 'Chỉnh sửa thông báo thành công',

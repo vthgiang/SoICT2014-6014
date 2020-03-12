@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../css/MainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
-import { refresh } from '../../../modules/auth/redux/actions';
+import { AuthActions } from '../../../modules/auth/redux/actions';
 import Notifications from './Notifications';
 import Profile from './Profile';
 import Roles from './Roles';
 import Language from './Language';
+import { getStorage } from '../../../config';
 
 class MainHeaderMenu extends Component {
 
@@ -39,12 +40,8 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return {
-        refresh: () => {
-            dispatch(refresh());
-        },
-    }
+const mapDispatchToProps = {
+    refresh: AuthActions.refresh,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(MainHeaderMenu));

@@ -2,7 +2,19 @@ import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
 import { setStorage, clearStorage } from '../../../config';
 
-export const login = (user) => {
+export const AuthActions = {
+    login,
+    logout,
+    logoutAllAccount,
+    editProfile,
+    getLinksOfRole,
+    refresh,
+    resetPassword,
+    forgotPassword,
+    getComponentOfUserInLink
+}
+
+function login(user){
     return dispatch => {
         AuthService.login(user)
             .then(res => {
@@ -24,7 +36,7 @@ export const login = (user) => {
     }
 }
 
-export const logout = () => {
+function logout(){
     return dispatch => {
         AuthService.logout()
             .then(res => {
@@ -39,7 +51,7 @@ export const logout = () => {
     }
 }
 
-export const logoutAllAccount = () => {
+function logoutAllAccount(){
     return dispatch => {
         AuthService.logoutAllAccount()
             .then(res => {
@@ -54,7 +66,7 @@ export const logoutAllAccount = () => {
     }
 }
 
-export const editProfile = (data) => {
+function editProfile(data){
     return dispatch => {
         AuthService.editProfile(data)
             .then(res => {
@@ -69,14 +81,16 @@ export const editProfile = (data) => {
     }
 }
 
-export const getLinksOfRole = (idRole) => {
+function getLinksOfRole(idRole){
     return dispatch => {
-        AuthService.getLinksOfRole(idRole)
+        return new Promise((resolve, reject) => {
+            AuthService.getLinksOfRole(idRole)
             .then(res => {
                 dispatch({
                     type: AuthConstants.GET_LINKS_OF_ROLE_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 if(err.response !== undefined){
@@ -88,12 +102,13 @@ export const getLinksOfRole = (idRole) => {
                         })
                     }
                 }
+                reject(err);
             })
+        });
     }
 }
 
-export const refresh = () => {
-
+function refresh(){
     return dispatch => {
         dispatch({ type: AuthConstants.REFRESH_DATA_USER_REQUEST});
         AuthService.refresh()
@@ -117,7 +132,7 @@ export const refresh = () => {
     }
 }
 
-export const forgotPassword = (email) => {
+function forgotPassword(email){
     return dispatch => {
         AuthService.forgotPassword(email)
             .then(res => {
@@ -132,7 +147,7 @@ export const forgotPassword = (email) => {
     }
 }
 
-export const resetPassword = (otp, email, password) => {
+function resetPassword(otp, email, password){
     return dispatch => {
         AuthService.resetPassword(otp, email, password)
             .then(res => {
@@ -147,10 +162,26 @@ export const resetPassword = (otp, email, password) => {
     }
 }
 
-export const reset = () => {
+function reset(){
     return dispatch => {
         dispatch({
             type: 'RESET_APP'
         });
+    }
+}
+
+function getComponentOfUserInLink(curentRole, linkId){
+    return dispatch => {
+        dispatch({ type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST});
+        AuthService.getComponentOfUserInLink(curentRole, linkId)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+            })
     }
 }

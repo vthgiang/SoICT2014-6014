@@ -94,3 +94,31 @@ exports.delete = async (req, res) => {
         res.status(400).json(error)
     }
 };
+
+exports.getNotificationReceivered = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'GET NOTIFICATION RECEIVERED');
+    try {
+        var notifications = await NotificationServices.getNotificationReceivered(req.params.userId);
+
+        isLog && Logger.info(req.user.email);
+        res.status(200).json(notifications);
+    } catch (error) {
+
+        isLog && Logger.error(req.user.email);
+        res.status(400).json(error)
+    }
+};
+
+exports.getNotificationSent = async (req, res) => {
+    const Logger = await Log(req.user.company.short_name, 'GET NOTIFICATION SENT');
+    try {
+        var notifications = await NotificationServices.getNotificationSent(req.params.userId);
+
+        isLog && Logger.info(req.user.email);
+        res.status(200).json(notifications);
+    } catch (error) {
+
+        isLog && Logger.error(req.user.email);
+        res.status(400).json(error)
+    }
+};

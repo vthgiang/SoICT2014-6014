@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalButton, ModalDialog } from '../../../common-components';
+import { ModalDialog } from '../../../common-components';
 import { DepartmentActions } from '../../super-admin-management/manage-department/redux/actions';
 import { UserActions } from '../../super-admin-management/manage-user/redux/actions';
 import { NotificationActions } from '../redux/actions';
@@ -33,7 +33,7 @@ class NotificationCreate extends Component {
         const {translate, department, user} = this.props;
         return ( 
             <React.Fragment>
-                <ModalButton modalID="modal-create-notification" button_name={translate('notification.add')} title={translate('notification.add_title')}></ModalButton>
+                <a style={{width: '100%', marginBottom: '15px'}} className="btn btn-success" title={translate('notification.add_title')} data-toggle="modal" href='#modal-create-notification'>{translate('notification.add')}</a>
                 <ModalDialog
                     modalID="modal-create-notification"
                     formID="form-create-notification" size="50"
