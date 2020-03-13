@@ -36,10 +36,12 @@ exports.login = async (browserFinger, data) => { // data bao gom email va passwo
         throw {msg: 'Password invalid'};
     }
     if(!user.active) throw { msg: ' Cannot login! The account has been locked !'};
+
     const token = await jwt.sign(
         {_id: user._id, email: user.email, company: user.company, browserFinger: browserFinger}, 
         process.env.TOKEN_SECRET
     );
+    
     user.status = 0; 
     user.token.push(token);
     user.save();

@@ -127,7 +127,6 @@ exports.relationshipUserRole = async (userId, roleId) => {
 
 //search user with name
 exports.searchByName = async (companyId, name) => {
-    console.log("data: ",name);
     var user = await User
         .find({
             company: companyId,

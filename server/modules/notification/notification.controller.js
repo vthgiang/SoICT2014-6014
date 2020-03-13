@@ -1,40 +1,36 @@
 const NotificationServices = require('./notification.service');
 const UserServices = require('../super-admin-management/users-management/user.service');
-const { Log } = require('../../logs');
+const { LogInfo, LogError } = require('../../logs');
 
 exports.get = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'GET NOTIFICATIONS');
     try {
         var notifications = await NotificationServices.get(req.user.company._id);
 
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'GET_NOTIFICATIONS', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notifications);
     } catch (error) {
-        
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'GET_NOTIFICATIONS', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error)
     }
 };
 
 exports.getPaginate = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'GET PAGINATE NOTIFICATIONS');
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
         var notifications = await NotificationServices.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
 
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notifications);
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error);
     }
 };
 
 exports.create = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'CREATE NOTIFICATION');
     try {
         req.body.creater = req.user._id;
         var notification = await NotificationServices.create(req.body, req.user.company._id);
@@ -44,81 +40,76 @@ exports.create = async (req, res) => {
             await NotificationServices.noticeToUsers(userArr, notification._id);
         });
 
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'CREATE_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notification);
     } catch (error) {
 
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'CREATE_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error);
     }
 };
 
 exports.show = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'SHOW NOTIFICATION');
     try {
         var notification = await NotificationServices.getById(req.params.id);
 
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'SHOW_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notification)
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'SHOW_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error)
     }
 };
 
 exports.edit = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'EDIT NOTIFICATION');
     try {
         var notification = await NotificationServices.edit(req.params.id, req.body);
         
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notification);
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error);
     }
 };
 
 exports.delete = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'DELETE NOTIFICATION');
     try {
         var notification = await NotificationServices.delete(req.params.id);
 
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notification);
     } catch (error) {
 
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error)
     }
 };
 
 exports.getNotificationReceivered = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'GET NOTIFICATION RECEIVERED');
     try {
         var notifications = await NotificationServices.getNotificationReceivered(req.params.userId);
 
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notifications);
     } catch (error) {
 
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error)
     }
 };
 
 exports.getNotificationSent = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'GET NOTIFICATION SENT');
     try {
         var notifications = await NotificationServices.getNotificationSent(req.params.userId);
 
-        isLog && Logger.info(req.user.email);
+        await LogInfo(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notifications);
     } catch (error) {
 
-        isLog && Logger.error(req.user.email);
+        await LogError(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id, req.user.company.short_name);
         res.status(400).json(error)
     }
 };

@@ -1,9 +1,11 @@
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, printf } = format;
+const Company = require('../models/company.model');
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
     return `${timestamp} |${label}| ${level} ${message}`;
 });
+
 const Log = async (filename="guest", title) => {
     var option = {
         level: 'error',
@@ -23,6 +25,28 @@ const Log = async (filename="guest", title) => {
     return await createLogger(option);
 }
 
+const LogInfo = async(user, content, companyId=null, companyShortName="guest") => {
+    const Logger = await Log(companyShortName, content);
+    if(companyId !== null){
+        const company = await Company.findById(companyId); //lấy thông tin của công ty
+        company.log && await Logger.info(user);
+    }else{
+        await Logger.info(user);
+    }
+}
+
+const LogError = async(user, content, companyId=null, companyShortName="guest") => {
+    const Logger = await Log(companyShortName, content);
+    if(companyId !== null){
+        const company = await Company.findById(companyId); //lấy thông tin của công ty
+        company.log && await Logger.error(user);
+    }else{
+        await Logger.error(user);
+    }
+}
+
 module.exports = {
-    Log
+    Log,
+    LogInfo,
+    LogError
 };

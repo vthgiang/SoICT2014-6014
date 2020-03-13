@@ -205,7 +205,7 @@ export default {
             add_title: 'Thêm link mới cho trang web',
             url: 'Đường link của trang web',
             description: 'Mô tả về trang web',
-            roles: 'Những role được truy cập vào trang này',
+            roles: 'Những role được truy cập',
             info: 'Thông tin về trang web',
             edit: 'Chỉnh sửa thông tin',
             delete: 'Xóa link',

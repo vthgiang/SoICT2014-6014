@@ -15,6 +15,10 @@ const CompanySchema = new Schema({
     description: {
         type: String
     },
+    log: {
+        type: Boolean,
+        default: true
+    },
     active: {
         type: Boolean,
         required: true,

@@ -13,13 +13,12 @@ class Profile extends Component {
         return ( 
             <li className="dropdown user user-menu">
                 <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
-                    <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" className="user-image" alt="User Avatar" />
-                    <span className="hidden-xs">{auth.user.name}</span>
+                    <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="user-image" alt="User Avatar" />
                 </a>
                 <ul className="dropdown-menu">
                     {/* User image */}
                     <li className="user-header">
-                        <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" className="img-circle" alt="User Avatar" />
+                        <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="img-circle" alt="User Avatar" />
                         <p>
                             {auth.user.name}
                             <small>{auth.user.email}</small>

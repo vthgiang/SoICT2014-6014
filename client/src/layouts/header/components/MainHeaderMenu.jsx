@@ -28,8 +28,8 @@ class MainHeaderMenu extends Component {
                     <ul className="nav navbar-nav">
                         <Roles />
                         <Notifications />
-                        <Profile />
                         <Language />
+                        <Profile />
                     </ul>
                 </div>
             </React.Fragment>

@@ -9,13 +9,12 @@ exports.get = async (company) => {
 
 exports.getPaginate = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
-    console.log("DATA Link: ", newData, limit, page);
     return await Link
         .paginate( newData , { 
             page, 
             limit,
             populate: [
-                { path: 'roles', model: Privilege}
+                { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }}
             ]
         });
 }

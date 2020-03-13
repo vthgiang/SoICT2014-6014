@@ -53,8 +53,9 @@ class ManageLink extends Component {
                             className="table table-hover table-striped">
                             <thead>
                                 <tr>
-                                    <th>{ translate('table.url') }</th>
-                                    <th>{ translate('table.description') }</th>
+                                    <th>{ translate('manage_page.url') }</th>
+                                    <th>{ translate('manage_page.description') }</th>
+                                    <th>{ translate('manage_page.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
@@ -70,12 +71,49 @@ class ManageLink extends Component {
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.description }</td>
+                                            <td>{
+                                                link.roles.map((role, index, arr) => {
+                                                    if(arr.length < 4){
+                                                        return <span className="badge">{role.roleId.name}</span>
+                                                    }else{
+                                                        if(index < 3 ){
+                                                            return <span className="badge">{role.roleId.name}</span>
+                                                        }
+                                                    }
+                                                })
+                                            }{
+                                                link.roles.length >=4 &&
+                                                
+                                                <React.Fragment>
+                                                    <a data-toggle="modal" href={`#link-roles-detail-${link._id}`} style={{fontSize: '24px'}} title="Xem chi tiết">...</a>
+                                                    <div className="modal fade" id={`link-roles-detail-${link._id}`}>
+                                                        <div className="modal-dialog">
+                                                        <div className="modal-content" style={{borderRadius: '20px'}}>
+                                                            <div className="modal-header">
+                                                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                            <h5 className="modal-title">{translate('manage_page.roles')}<span className="text-purple"> {link.description} </span></h5>
+                                                            </div>
+                                                            <div className="modal-body">
+                                                                <ul>
+                                                                {
+                                                                    link.roles.map(role => <li>{role.roleId.name}</li>)
+                                                                }
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    </div>  
+                                                </React.Fragment>
+
+                                                
+                                            }
+                                            </td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <LinkInfoForm 
                                                     linkId={ link._id }
                                                     linkName={ link.url }
                                                     linkDescription={ link.description }
-                                                    linkRoles={ link.roles.map(role => role.roleId) }
+                                                    linkRoles={ link.roles.map(role => role.roleId._id) }
                                                 />
                                                 <DeleteNotification 
                                                     content={{
@@ -85,13 +123,13 @@ class ManageLink extends Component {
                                                     }}
                                                     data={{
                                                         id: link._id,
-                                                        info: link.url+"<br/> "+link.description
+                                                        info: link.url+"<br/>"+link.description
                                                     }}
                                                     func={this.props.destroy}
                                                 />
                                             </td>
                                         </tr> 
-                                    ): <tr><td colSpan={3}>{translate('confirm.no_data')}</td></tr>
+                                    ): <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>

@@ -69,7 +69,6 @@ async function getLinksOfRole(idRole) {
         method: 'GET',
         headers: await AuthenticateHeader()
     };
-    console.log("OPTION: ", requestOptions);
 
     return axios(requestOptions);
 }

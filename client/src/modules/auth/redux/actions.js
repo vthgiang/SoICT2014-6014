@@ -93,6 +93,7 @@ function getLinksOfRole(idRole){
                 resolve(res);
             })
             .catch(err => {
+                console.log("Có lỗi xảy ra rồi ông ơi! :(", err.response);
                 if(err.response !== undefined){
                     var { msg } = err.response.data;
                     if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){

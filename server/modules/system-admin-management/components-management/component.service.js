@@ -12,7 +12,6 @@ exports.get = async (id) => {
 
 exports.getPaginate = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
-    console.log("DATA: ", newData);
     return await Component
         .paginate( newData , { 
             page, 
@@ -97,10 +96,8 @@ exports.getComponentsOfUserInLink = async(roleId, linkId) => {
         resourceType: 'Component',
         resourceId: { $in: componentArr }
     }).populate({ path: 'resourceId', model: Component });
-    console.log("USER DATA: ", data);
 
     var components = data.map(component => component.resourceId);
-    console.log("USER COMPONENT: ", components);
 
     return components;
 }
