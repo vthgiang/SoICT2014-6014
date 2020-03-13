@@ -12,7 +12,7 @@ class Profile extends Component {
         const {auth, translate}=this.props;
         return ( 
             <li className="dropdown user user-menu">
-                <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
+                <a className="dropdown-toggle btn" data-toggle="dropdown" style={{width: '55px', height: '50px'}}>
                     <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="user-image" alt="User Avatar" />
                 </a>
                 <ul className="dropdown-menu">

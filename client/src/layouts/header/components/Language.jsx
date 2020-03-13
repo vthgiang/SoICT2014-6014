@@ -13,17 +13,13 @@ class Language extends Component {
         return ( 
             <React.Fragment>
                 <li>
-                    <button
+                    <a
                         className="btn"
                         data-toggle="control-sidebar"
                         title={translate('language')}
-                        style={{
-                            padding: '15px 15px 15px 15px',
-                            backgroundColor: '#605CA8',
-                            color: 'white'
-                        }}>
+                    >
                         <i className="fa fa-language"></i>
-                    </button>
+                    </a>
                 </li>
                 <div className="control-sidebar control-sidebar-light" style={{ display: 'none', marginTop: '52px', width: '158px' }}>
                     <div style={{ marginTop: '-40px' }}>

@@ -74,10 +74,11 @@ class ManageLink extends Component {
                                             <td>{
                                                 link.roles.map((role, index, arr) => {
                                                     if(arr.length < 4){
-                                                        return <span className="badge">{role.roleId.name}</span>
+                                                        if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                        else return `${role.roleId.name}`
                                                     }else{
                                                         if(index < 3 ){
-                                                            return <span className="badge">{role.roleId.name}</span>
+                                                            return `${role.roleId.name}, `
                                                         }
                                                     }
                                                 })
@@ -85,27 +86,17 @@ class ManageLink extends Component {
                                                 link.roles.length >=4 &&
                                                 
                                                 <React.Fragment>
-                                                    <a data-toggle="modal" href={`#link-roles-detail-${link._id}`} style={{fontSize: '24px'}} title="Xem chi tiết">...</a>
-                                                    <div className="modal fade" id={`link-roles-detail-${link._id}`}>
-                                                        <div className="modal-dialog">
-                                                        <div className="modal-content" style={{borderRadius: '20px'}}>
-                                                            <div className="modal-header">
-                                                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                            <h5 className="modal-title">{translate('manage_page.roles')}<span className="text-purple"> {link.description} </span></h5>
-                                                            </div>
-                                                            <div className="modal-body">
-                                                                <ul>
-                                                                {
-                                                                    link.roles.map(role => <li>{role.roleId.name}</li>)
-                                                                }
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                        </div>
-                                                    </div>  
+                                                    <div className="tooltip2">...
+                                                        <span className="tooltip2text">
+                                                            {
+                                                                link.roles.map((role, index, arr) => {
+                                                                    if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                                    else return `${role.roleId.name}`
+                                                                })
+                                                            }
+                                                        </span>
+                                                    </div>
                                                 </React.Fragment>
-
-                                                
                                             }
                                             </td>
                                             <td style={{ textAlign: 'center' }}>

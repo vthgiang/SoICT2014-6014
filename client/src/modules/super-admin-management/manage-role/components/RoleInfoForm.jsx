@@ -31,7 +31,7 @@ class RoleInfoForm extends Component {
         let users = [].filter.call(selectUsers.options, o => o.selected).map(o => o.value);
 
         const { name } = this.state;
-        var role = { id: this.props.roleInfo._id, name, parents, users };
+        var role = { id: this.props.roleId, name, parents, users };
         
         return this.props.edit(role);
     }
@@ -42,27 +42,27 @@ class RoleInfoForm extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-        this.setState({ name: this.props.roleInfo.name });
+        this.setState({ name: this.props.roleName });
     }
 
     render() { 
-        const { roleInfo, role, user, translate } = this.props;
+        const { roleType, roleId, roleName, roleParents, roleUsers, role, user, translate } = this.props;
         return ( 
             <React.Fragment>
-                <ModalButton modalID={`modal-edit-role-${roleInfo._id}`} button_type="edit" title={translate('manage_role.edit')}/>
+                <ModalButton modalID={`modal-edit-role-${roleId}`} button_type="edit" title={translate('manage_role.edit')}/>
                 <ModalDialog
                     size='50' func={this.save} type="edit"
-                    modalID={`modal-edit-role-${roleInfo._id}`}
-                    formID={`form-edit-role-${roleInfo._id}`}
+                    modalID={`modal-edit-role-${roleId}`}
+                    formID={`form-edit-role-${roleId}`}
                     title={translate('manage_role.edit')}
                     msg_success={translate('manage_role.edit_success')}
                     msg_faile={translate('manage_role.edit_faile')}
                 >
-                    <form id={`form-edit-role-${roleInfo._id}`}>
+                    <form id={`form-edit-role-${roleId}`}>
                         <div className="form-group">
                             <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
-                            <input className="form-control" name="name" defaultValue={ roleInfo.name } 
-                            disabled={ roleInfo.type.name === 'abstract' ? true : false }
+                            <input className="form-control" name="name" defaultValue={ roleName } 
+                            disabled={ roleType === 'abstract' ? true : false }
                             onChange={ this.inputChange }></input>
                         </div>
                         <div className="form-group">
@@ -73,26 +73,24 @@ class RoleInfoForm extends Component {
                                 multiple="multiple" 
                                 onChange={ this.inputChange }
                                 style={{ width: '100%' }} 
-                                value={ roleInfo.parents }
+                                value={ roleParents }
                                 ref="parents"
                             >
                                 {   
-                                    role.list.map( role => 
-                                        (role.name !== 'Super Admin' && role._id !== roleInfo._id) ? <option key={role._id} value={role._id}>{role.name}</option> : null
-                                    )
+                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
                                 } 
                             </select>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_role.users') } { roleInfo.name }</label>
+                            <label>{ translate('manage_role.users') } { roleName }</label>
                             {
-                                roleInfo.name === "Super Admin" ?
+                                roleName === "Super Admin" ?
                                 <select 
                                     name="users"
                                     className="form-control select2"
                                     onChange={ this.inputChange }
                                     style={{ width: '100%' }} 
-                                    defaultValue={ roleInfo.users[0].userId}
+                                    defaultValue={ roleUsers[0] }
                                     ref="users"
                                 >
                                     {   
@@ -105,7 +103,7 @@ class RoleInfoForm extends Component {
                                     multiple="multiple" 
                                     onChange={ this.inputChange }
                                     style={{ width: '100%' }} 
-                                    value={ roleInfo.users !== undefined ? roleInfo.users.map( user => user.userId ) : [] }
+                                    value={ roleUsers }
                                     ref="users"
                                 >
                                     {   

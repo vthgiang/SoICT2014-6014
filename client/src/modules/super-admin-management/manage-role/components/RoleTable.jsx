@@ -48,7 +48,8 @@ class RoleTable extends Component {
                     <table className="table table-hover table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>{ translate('table.name') }</th>
+                                <th>{ translate('manage_role.name') }</th>
+                                <th>{ translate('manage_role.extends') }</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                     <ActionColumn 
                                         columnName={translate('table.action')} 
@@ -66,9 +67,39 @@ class RoleTable extends Component {
                                 role.listPaginate.map( role => 
                                     <tr key={ `roleList${role._id}` }>
                                         <td> { role.name } </td>
+                                        <td> { 
+                                            role.parents.map((parent, index, arr) => {
+                                                if(arr.length < 4){
+                                                    if(index !== arr.length - 1) return `${parent.name}, `;
+                                                    else return `${parent.name}`
+                                                }else{
+                                                    if(index < 3 ){
+                                                        return `${parent.name}, `
+                                                    }
+                                                }
+                                            })
+                                        }{
+                                            role.parents.length >=4 &&
+                                            <React.Fragment>
+                                                <div className="tooltip2">...
+                                                    <span className="tooltip2text">
+                                                        {
+                                                            role.parents.map((parent, index, arr) => {
+                                                                if(index !== arr.length - 1) return `${parent.name}, `;
+                                                                else return `${parent.name}`
+                                                            })
+                                                        }
+                                                    </span>
+                                                </div>
+                                            </React.Fragment>
+                                        } </td>
                                         <td style={{ textAlign: 'center' }}>
                                             <RoleInfoForm 
-                                                roleInfo={ role }
+                                                roleType={role.type.name}
+                                                roleId={role._id}
+                                                roleName={role.name}
+                                                roleParents={role.parents.map(parent => parent._id)}
+                                                roleUsers={role.users.map(user=>user.userId._id)}
                                             />
                                             {
                                                 role.type.name === 'tutao' && 
