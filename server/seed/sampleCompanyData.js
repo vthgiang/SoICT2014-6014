@@ -435,27 +435,27 @@ const sampleCompanyData = async () => {
         }, {
             resourceId: links[1]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[2]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[3]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[4]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[5]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[6]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         },
         //end
         //gán 7 link trên cho admin
@@ -466,96 +466,96 @@ const sampleCompanyData = async () => {
         }, {
             resourceId: links[1]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[2]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[3]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[4]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[5]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[6]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[7]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[8]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[9]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[10]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[11]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[12]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[13]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[14]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[15]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[16]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[17]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[18]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[19]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[20]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         //end
         //gán quyền vào trang home '/' cho role Dean, Vice Dean và Employee
@@ -566,11 +566,11 @@ const sampleCompanyData = async () => {
         }, {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[2]._id._id //Vice Dean
+            roleId: roles[2]._id //Vice Dean
         }, {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id._id //Employee
+            roleId: roles[3]._id //Employee
         },
 
         //gán quyền vào trang kpi cho role Dean, Vice Dean và Employee
