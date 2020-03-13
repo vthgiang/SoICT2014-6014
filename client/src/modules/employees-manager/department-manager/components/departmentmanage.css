@@ -1,0 +1,39 @@
+ul.tree li {
+    list-style-type: none;
+    position: relative;
+}
+
+ul.tree li ul {
+    display: none;
+}
+
+ul.tree li.open>ul {
+    display: block;
+}
+
+ul.tree li a {
+    color: black;
+    text-decoration: none;
+}
+
+ul.tree li a:before {
+    height: 1em;
+    padding: 0 .1em;
+    font-size: .8em;
+    display: block;
+    position: absolute;
+    left: -1.3em;
+    top: .2em;
+}
+
+ul.tree li>a.tree:before {
+    content: "\25BA";
+}
+
+ul.tree li>a.notree:before {
+    content: "\25A2";
+}
+
+ul.tree li.open>a.tree:before {
+    content: "\25BC";
+}

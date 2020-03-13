@@ -9,6 +9,7 @@ exports.get = async (company) => {
     return await Role
         .find({company})
         .populate([
+            { path: 'users', model: UserRole},
             { path: 'type', model: RoleType }
         ]);
 }

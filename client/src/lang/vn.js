@@ -96,6 +96,7 @@ export default {
             manage_employee: 'Quản lý nhân sự',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
+            manage_unit: 'Quản lý nhân sự các đơn vị',
             add_employee: 'Thêm nhân viên',
             list_employee: 'Quản lý thông tin nhân viên',
             detail_employee: 'Thông tin cá nhân',

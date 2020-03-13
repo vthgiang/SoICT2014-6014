@@ -24,6 +24,7 @@ import { SalaryEmployee} from '../modules/employees-manager/salary-employee/comp
 import { Timekeeping} from '../modules/employees-manager/timekeeping/components/Timekeeping';
 import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
+import { DepartmentManage} from '../modules/employees-manager/department-manager/components/DepartmentManage';
 
 
 import {KPIUnitCreate} from "../modules/kpi-unit/kpi-unit-create/component/KPIUnitCreate";
@@ -231,6 +232,23 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ ListEmployee }
                     />
+
+                    <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'manage_unit' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage_unit', name: 'manage_unit', icon:'fa fa-sitemap' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage_unit' }
+                        path={ '/manage_unit' }
+                        pageName={'manage_unit' }
+                        layout={ Layout }
+                        component={ DepartmentManage }
+                    />
+
                     <PrivateRoute 
                         isLoading={ component.isLoading }
                         key={ 'dashBoard_employee' }
