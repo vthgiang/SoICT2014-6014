@@ -20,7 +20,8 @@ exports.getPaginate = async (company, limit, page, data={}) => {
             page, 
             limit,
             populate: [
-                { path: 'users', model: UserRole},
+                { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
+                { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]
         });
@@ -95,7 +96,6 @@ exports.crt_rolesOfDepartment = async(data, companyID) => {
 }
 
 exports.edit = async(id, data={}) => {
-    console.log("sửa role");
     var role = await Role.findById(id)
         .populate([
             { path: 'users', model: UserRole },

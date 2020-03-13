@@ -45,7 +45,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu công ty!");
     var xyz = await Company.create({
         name: 'Công ty TNHH XYZ',
-        short_name: 'xys',
+        short_name: 'xyz',
         description: 'Công ty TNHH XYZ'
     });
     console.log(`Xong! Công ty [${xyz.name}] đã được tạo.`);
@@ -303,7 +303,8 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Tạo link cho các trang web của công ty...");
-    const links = await Link.insertMany([{ // 0
+    const links = await Link.insertMany([
+        { // 0
             url: '/',
             description: `Trang chủ công ty ${xyz.name}`,
             company: xyz._id
@@ -422,6 +423,11 @@ const sampleCompanyData = async () => {
             url: '/kpi-personals/overview',
             description: 'Tổng quan KPI cá nhân',
             company: xyz._id
+        },
+        { // 25
+            url: '/notifications',
+            description: 'Thông báo',
+            company: xyz._id
         }
     ]);
     console.log("Xong! Đã tạo links: ", links);
@@ -435,30 +441,36 @@ const sampleCompanyData = async () => {
         }, {
             resourceId: links[1]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[2]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[3]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[4]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[5]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
         }, {
             resourceId: links[6]._id,
             resourceType: 'Link',
-            roleId: roles[0]._id._id
+            roleId: roles[0]._id
+        },
+        {
+            resourceId: links[25]._id, //notifications
+            resourceType: 'Link',
+            roleId: roles[0]._id
         },
         //end
-        //gán 7 link trên cho admin
+        
+        //Gán quyền vào các trang cho admin
         {
             resourceId: links[0]._id,
             resourceType: 'Link',
@@ -466,99 +478,104 @@ const sampleCompanyData = async () => {
         }, {
             resourceId: links[1]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[2]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[3]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[4]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[5]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[6]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         }, {
             resourceId: links[7]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[8]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[9]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[10]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[11]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[12]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[13]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[14]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[15]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[16]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[17]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[18]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[19]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
         },
         {
             resourceId: links[20]._id,
             resourceType: 'Link',
-            roleId: admin._id._id
+            roleId: admin._id
+        },
+        {
+            resourceId: links[25]._id,
+            resourceType: 'Link',
+            roleId: admin._id
         },
         //end
-        //gán quyền vào trang home '/' cho role Dean, Vice Dean và Employee
+        //gán quyền vào trang home '/' ,trang thông báo /notifications -> cho role Dean, Vice Dean và Employee
         {
             resourceId: links[0]._id,
             resourceType: 'Link',
@@ -566,13 +583,25 @@ const sampleCompanyData = async () => {
         }, {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[2]._id._id //Vice Dean
+            roleId: roles[2]._id //Vice Dean
         }, {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id._id //Employee
+            roleId: roles[3]._id //Employee
         },
-
+        {
+            resourceId: links[25]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id //Dean
+        }, {
+            resourceId: links[25]._id,
+            resourceType: 'Link',
+            roleId: roles[2]._id //Vice Dean
+        }, {
+            resourceId: links[25]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id //Employee
+        },
         //gán quyền vào trang kpi cho role Dean, Vice Dean và Employee
         {
             resourceId: links[21]._id, //Khởi tạo KPI đơn vị

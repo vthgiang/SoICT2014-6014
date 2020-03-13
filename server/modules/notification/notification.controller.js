@@ -19,7 +19,7 @@ exports.getPaginate = async (req, res) => {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var notifications = await NotificationServices.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
+        var notifications = await NotificationServices.getPaginate(req.user.company._id, limit, page, req.body);
 
         await LogInfo(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id, req.user.company.short_name);
         res.status(200).json(notifications);

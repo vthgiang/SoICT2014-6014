@@ -65,6 +65,10 @@ const seedDatabase = async () => {
 
     //Tạo link của trang quản lý system và thông tin các công ty và gán quyền cho role System Admin
     var links = await Link.insertMany([{
+            url: '/',
+            description: 'System Management HomePage',
+            company: vnist._id
+        },{
             url: '/system',
             description: 'System Management',
             company: vnist._id
@@ -82,6 +86,10 @@ const seedDatabase = async () => {
         },
         {
             resourceId: links[1]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
+        },{
+            resourceId: links[2]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
         }

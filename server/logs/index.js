@@ -25,8 +25,9 @@ const Log = async (filename="guest", title) => {
     return await createLogger(option);
 }
 
-const LogInfo = async(user, content, companyId=null, companyShortName="guest") => {
-    const Logger = await Log(companyShortName, content);
+const LogInfo = async(user, content, companyId=null, companyShortName="system") => {
+    const directory = companyId === null ? 'system' : companyShortName;
+    const Logger = await Log(directory, content);
     if(companyId !== null){
         const company = await Company.findById(companyId); //lấy thông tin của công ty
         company.log && await Logger.info(user);
@@ -35,8 +36,9 @@ const LogInfo = async(user, content, companyId=null, companyShortName="guest") =
     }
 }
 
-const LogError = async(user, content, companyId=null, companyShortName="guest") => {
-    const Logger = await Log(companyShortName, content);
+const LogError = async(user, content, companyId=null, companyShortName="system") => {
+    const directory = companyId === null ? 'system' : companyShortName;
+    const Logger = await Log(directory, content);
     if(companyId !== null){
         const company = await Company.findById(companyId); //lấy thông tin của công ty
         company.log && await Logger.error(user);
