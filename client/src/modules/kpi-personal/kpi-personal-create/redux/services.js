@@ -1,4 +1,11 @@
 import {handleResponse} from '../../../../helpers/HandleResponse';
+import {
+    TOKEN_SECRET
+} from '../../../../env';
+import {
+    getStorage
+} from '../../../../config';
+import jwt from 'jsonwebtoken';
 export const createKpiService = {
     getCurrentKPIPersonal,
     editKPIPersonal,
@@ -13,7 +20,10 @@ export const createKpiService = {
 };
 
 // Lấy KPI cá nhân hiện tại
-function getCurrentKPIPersonal(id) {
+async function getCurrentKPIPersonal() {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
     const requestOptions = {
         method: 'GET',
     };
@@ -22,7 +32,11 @@ function getCurrentKPIPersonal(id) {
 }
 
 // chỉnh sửa kpi cá nhân
-function editKPIPersonal(id, newTarget) {
+async function editKPIPersonal(id, newTarget) {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var creater = verified._id;
+    newTarget = {...newTarget, creater: creater};
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -82,7 +96,12 @@ function editTargetKPIPersonal(id, newTarget) {
 }
 
 // khởi tạo kpi cá nhân 
-function createKPIPersonal(newKPI) {
+async function createKPIPersonal(newKPI) {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+    console.log(id);
+    newKPI = {...newKPI, creater: id};
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

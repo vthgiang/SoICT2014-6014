@@ -13,7 +13,7 @@ class ComponentCreateForm extends Component {
     }
 
     render() { 
-        const { translate, role } = this.props;
+        const { translate, role, link } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-component" button_name={translate('manage_component.add')} title={translate('manage_component.add_title')}/>
@@ -27,12 +27,32 @@ class ComponentCreateForm extends Component {
                 >
                     <form id="form-create-component">
                         <div className="form-group">
-                            <label>{ translate('table.name') }<span className="text-red"> * </span></label>
+                            <label>{ translate('manage_component.name') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" ref="name"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('table.description') }</label>
+                            <label>{ translate('manage_component.description') }</label>
                             <input type="text" className="form-control" ref="description"/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_component.link') }</label>
+                            {
+                                link.list.length > 0 &&
+                                <select 
+                                    className="form-control select2"
+                                    style={{ width: '100%' }} 
+                                    defaultValue={link.list[0]._id}
+                                    ref="linkId"
+                                >
+                                    {
+                                        link.list.map( link => 
+                                            <option key={link._id} value={link._id}>
+                                                { link.url }
+                                            </option>
+                                        )
+                                    }
+                                </select>
+                            }
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_component.roles') }</label>
@@ -59,13 +79,13 @@ class ComponentCreateForm extends Component {
     }
 
     save = () =>{
-        let select = this.refs.roles;
-        let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-
+        // let select = this.refs.roles;
+        // let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
         return this.props.createComponet({
             name: this.refs.name.value,
             description: this.refs.description.value,
-            roles
+            linkId: this.refs.linkId.value,
+            roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
         });
     }
 

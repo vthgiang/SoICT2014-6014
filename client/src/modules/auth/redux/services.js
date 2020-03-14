@@ -1,15 +1,7 @@
 import axios from 'axios';
-import {
-    LOCAL_SERVER_API,
-    TOKEN_SECRET
-} from '../../../env';
-import {
-    AuthenticateHeader,
-    FingerPrint,
-    getStorage
-} from '../../../config';
+import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
+import { AuthenticateHeader, FingerPrint, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
-// import getBrowserFingerprint from 'get-browser-fingerprint';
 
 export const AuthService = {
     login,
@@ -19,7 +11,8 @@ export const AuthService = {
     logout,
     logoutAllAccount,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    getComponentOfUserInLink
 };
 
 async function login(user) {
@@ -76,7 +69,6 @@ async function getLinksOfRole(idRole) {
         method: 'GET',
         headers: await AuthenticateHeader()
     };
-    console.log("OPTION: ", requestOptions);
 
     return axios(requestOptions);
 }
@@ -116,6 +108,16 @@ function resetPassword(otp, email, password) {
             email,
             password
         }
+    };
+
+    return axios(requestOptions);
+}
+
+function getComponentOfUserInLink(currentRole, linkId) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
+        method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);

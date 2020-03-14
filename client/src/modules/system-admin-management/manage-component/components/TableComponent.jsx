@@ -3,11 +3,9 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import ComponentInfoForm from './ComponentInfoForm';
-import { SearchBar } from '../../../../common-components';
-import { DeleteNotification } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
-import { ActionColumn } from '../../../../common-components';
+import { PaginateBar, ActionColumn, DeleteNotification, SearchBar } from '../../../../common-components';
 import ComponentCreateForm from './ComponentCreateForm';
+import { LinkActions } from '../../manage-link/redux/actions';
 
 class TableComponent extends Component {
     constructor(props) {
@@ -54,6 +52,7 @@ class TableComponent extends Component {
     }
 
     componentDidMount(){
+        this.props.getLinks();
         this.props.getComponents();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit})
         let script = document.createElement('script');
@@ -81,7 +80,7 @@ class TableComponent extends Component {
                         <ComponentCreateForm />
                     </div>
                 </div>
-                <table className="table table-2">
+                <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>{ translate('table.name') }</th>
@@ -171,7 +170,8 @@ const mapState = state => state;
 const getState = {
     getComponents: ComponentActions.get,
     destroy: ComponentActions.destroy,
-    getPaginate: ComponentActions.getPaginate
+    getPaginate: ComponentActions.getPaginate,
+    getLinks: LinkActions.get,
 }
  
 export default connect(mapState, getState) (withTranslate(TableComponent));

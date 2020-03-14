@@ -8,26 +8,28 @@ import 'react-toastify/dist/ReactToastify.css';
 class ModalDialog extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            reload: 0
+        }
     }
 
-    closeModal = () => {
-        // document.getElementById(this.props.modalID).className="modal fade in show-off";
+    closeModal = (reset = true) => {
+        this.setState({
+            reload: this.state.reload + 1
+        });
+        if(reset) document.getElementById(this.props.formID).reset();
         window.$(`#${this.props.modalID}`).modal("hide");
-    }
-
-    clear = () => {
-        document.getElementById(this.props.formID).reset();
     }
 
     save = (translate) => {
         this.props
             .func()
             .then(res => {
-                if(this.props.type !== 'edit') this.clear();
-                this.closeModal();
+                if(this.props.type === 'edit') this.closeModal(false);
+                else this.closeModal();
                 toast.success(this.props.msg_success, {containerId: 'toast-notification'});
             }).catch(err => {
+                document.getElementById(this.props.formID).reset();
                 if(err.response.data.message){
                     if( 
                         err.response.data.message.length < 15 &&
@@ -41,9 +43,16 @@ class ModalDialog extends Component {
             });
     }
 
+    componentDidUpdate(){
+        let script = document.createElement('script');
+        script.src = '/lib/main/js/CoCauToChuc.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+    }
+
     render() { 
         const {translate} = this.props;
-
         return ( 
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -51,7 +60,7 @@ class ModalDialog extends Component {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={this.closeModal}>&times;</button>
-                                <h3 className="modal-title text-center">{this.props.title}</h3>
+                                <h4 className="modal-title text-center">{this.props.title}</h4>
                             </div>
                             <div className="modal-body text-left">
                                 {this.props.children}

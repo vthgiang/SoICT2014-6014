@@ -44,7 +44,7 @@ class ManageUserTable extends Component {
                         <UserCreateForm />
                     </div>
                 </div>
-                <table className="table table-2">
+                <table id="user-table" className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>{translate('table.name')}</th>
@@ -52,8 +52,13 @@ class ManageUserTable extends Component {
                             <th>{translate('table.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 <ActionColumn 
+                                    tableId="user-table"
                                     columnName={translate('table.action')} 
-                                    hideColumn={false}
+                                    columnArr={[
+                                        translate('table.name'),
+                                        translate('table.email'),
+                                        translate('table.status')
+                                    ]}
                                     setLimit={this.setLimit} 
                                 />
                             </th>

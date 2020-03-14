@@ -9,13 +9,12 @@ exports.get = async (company) => {
 
 exports.getPaginate = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
-    console.log("DATA Link: ", newData, limit, page);
     return await Link
         .paginate( newData , { 
             page, 
             limit,
             populate: [
-                { path: 'roles', model: Privilege}
+                { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }}
             ]
         });
 }
@@ -88,4 +87,16 @@ exports.relationshipLinkRole = async(linkId, roleArr) => {
     console.log("Created data: ", privilege)
 
     return privilege;
+}
+
+
+exports.addComponentOfLink = async(id, componentId) => { //thêm component(button thêm, sửa, xóa,..) trên trang web 
+    var link = await Link
+        .findById(id)
+        .populate({ path: 'roles', model: Privilege }); //Lấy thông tin trang hiện tại
+
+    link.components.push(componentId); //thêm id của component vào trong mảng các component của trang này
+    link.save();
+
+    return link;
 }

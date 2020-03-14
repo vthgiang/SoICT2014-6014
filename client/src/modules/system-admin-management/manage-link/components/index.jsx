@@ -50,11 +50,12 @@ class ManageLink extends Component {
                             </div>
                         </div>
                         <table 
-                            className="table table-2">
+                            className="table table-hover table-striped">
                             <thead>
                                 <tr>
-                                    <th>{ translate('table.url') }</th>
-                                    <th>{ translate('table.description') }</th>
+                                    <th>{ translate('manage_page.url') }</th>
+                                    <th>{ translate('manage_page.description') }</th>
+                                    <th>{ translate('manage_page.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
@@ -70,12 +71,40 @@ class ManageLink extends Component {
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.description }</td>
+                                            <td>{
+                                                link.roles.map((role, index, arr) => {
+                                                    if(arr.length < 4){
+                                                        if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                        else return `${role.roleId.name}`
+                                                    }else{
+                                                        if(index < 3 ){
+                                                            return `${role.roleId.name}, `
+                                                        }
+                                                    }
+                                                })
+                                            }{
+                                                link.roles.length >=4 &&
+                                                
+                                                <React.Fragment>
+                                                    <div className="tooltip2">...
+                                                        <span className="tooltip2text">
+                                                            {
+                                                                link.roles.map((role, index, arr) => {
+                                                                    if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                                    else return `${role.roleId.name}`
+                                                                })
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </React.Fragment>
+                                            }
+                                            </td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <LinkInfoForm 
                                                     linkId={ link._id }
                                                     linkName={ link.url }
                                                     linkDescription={ link.description }
-                                                    linkRoles={ link.roles.map(role => role.roleId) }
+                                                    linkRoles={ link.roles.map(role => role.roleId._id) }
                                                 />
                                                 <DeleteNotification 
                                                     content={{
@@ -85,13 +114,13 @@ class ManageLink extends Component {
                                                     }}
                                                     data={{
                                                         id: link._id,
-                                                        info: link.url+"<br/> "+link.description
+                                                        info: link.url+"<br/>"+link.description
                                                     }}
                                                     func={this.props.destroy}
                                                 />
                                             </td>
                                         </tr> 
-                                    ): <tr><td colSpan={3}>{translate('confirm.no_data')}</td></tr>
+                                    ): <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>

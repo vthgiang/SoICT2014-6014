@@ -7,6 +7,7 @@ const initState = {
     logged: token ? true : false,
     user: {},
     links: [],
+    components: [],
     error: null,
     forgotPassword: false
 }
@@ -55,6 +56,12 @@ export function auth(state = initState, action) {
             return {
                 ...state,
                 links: action.payload
+            };
+
+        case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_SUCCESS:
+            return {
+                ...state,
+                components: action.payload
             };
 
         case 'RESET_APP':

@@ -65,7 +65,11 @@ function addTargetKPIUnit(newTarget) {
 }
 
 // Chỉnh sửa KPI đơn vị
-function editKPIUnit(id, newKPI) {
+async function editKPIUnit(id, newKPI) {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var creater = verified._id;
+    newKPI = {...newKPI, creater: creater};
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

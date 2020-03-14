@@ -15,7 +15,7 @@ class KPIUnitOverview extends Component {
         };
     }
     componentDidMount() {
-        this.props.getDepartment(localStorage.getItem('id'));
+        this.props.getDepartment();//localStorage.getItem('id')
         this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
         this.handleResizeColumn();
     }
@@ -101,24 +101,28 @@ class KPIUnitOverview extends Component {
         }
         if (overviewKpiUnit.kpis) {
             listkpi = overviewKpiUnit.kpis;
-            kpiApproved = listkpi.filter(item => item.status === 2);
-            currentKPI = listkpi.filter(item => item.status !== 2);
-            currentTargets = currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
-            datachat1 = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.result }
-            }).reverse();
-            targetA = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.listtarget[0].result }
-            }).reverse();
-            targetC = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.listtarget[1].result }
-            }).reverse();
-            targetOther = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
-            }).reverse();
-            misspoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: (100 - item.result) }
-            }).reverse();
+            if(typeof listkpi !== "undefined" && listkpi.length !== 0)//listkpi.content
+            {
+                kpiApproved = listkpi.filter(item => item.status === 2);
+                currentKPI = listkpi.filter(item => item.status !== 2);
+                currentTargets =currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
+                datachat1 = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.result }
+                }).reverse();
+                targetA = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.listtarget[0].result }
+                }).reverse();
+                targetC = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: item.listtarget[1].result }
+                }).reverse();
+                targetOther = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
+                }).reverse();
+                misspoint = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.time), y: (100 - item.result) }
+                }).reverse();
+            };
+            
         }
         const options1 = {
             animationEnabled: true,

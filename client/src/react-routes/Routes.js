@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Route,Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { PrivateRoute, AuthRoute } from './route-export';
-import { ToastContainer, toast } from 'react-toastify';
 import Layout from '../layouts/Layout';
 import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/Login';
@@ -34,13 +33,14 @@ import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
 
+import { Notifications } from "../modules/combine-modules";
+
 class Routes extends Component {
 
     render() {
         const { auth, company, user, role, link, component, department } = this.props;
         return (
             <React.Fragment>
-                <ToastContainer enableMultiContainer containerId={'toast-notification'} position={toast.POSITION.TOP_RIGHT} />
                 <Switch>
                     <AuthRoute exact auth={ auth } path="/login" component={ Login } />
                     <PrivateRoute 
@@ -445,6 +445,22 @@ class Routes extends Component {
                         pageName={ 'kpi_personal_evaluate' }
                         layout={ Layout }
                         component={ KPIPersonalEvaluate }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ company.isLoading }
+                        key={ 'notifications' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/notifications', name: 'notifications', icon:'fa fa-bell' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/notifications' }
+                        path={ '/notifications' }
+                        pageName={ 'notifications' }
+                        layout={ Layout }
+                        component={ Notifications }
                     />
 
                     {/* NOT FOUND */}

@@ -31,21 +31,21 @@ class PaginateBar extends Component {
         
         if (typeof pageTotal !== "undefined" && pageTotal > 5) {
             if (currentPage <= 3) {
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < currentPage+1; i++) {
                     items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => func(i + 1)}>{i + 1}</a></li>);
                 }
                 items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);
                 items.push(<li key={pageTotal} className={currentPage === pageTotal ? "active" : ""}><a href="#abc" onClick={() => func(pageTotal)}>{pageTotal}</a></li>);
-            } else if (currentPage >= pageTotal - 3) {
+            } else if (currentPage >= pageTotal - 2) {
                 items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => func(1)}>1</a></li>);
                 items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                for (let i = pageTotal - 5; i < pageTotal; i++) {
+                for (let i = pageTotal - 3; i < pageTotal; i++) {
                     items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => func(i + 1)}>{i + 1}</a></li>);
                 }
             } else {
                 items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => func(1)}>1</a></li>);
                 items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                for (let i = currentPage - 3; i < currentPage + 2; i++) {
+                for (let i = currentPage - 2; i < currentPage + 1; i++) {
                     items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => func(i + 1)}>{i + 1}</a></li>);
                 }
                 items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);

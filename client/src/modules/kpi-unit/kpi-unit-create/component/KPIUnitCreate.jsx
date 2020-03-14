@@ -38,7 +38,7 @@ class KPIUnitCreate extends Component {
             kpiunit: {
                 unit: "",
                 time: this.formatDate(Date.now()),
-                creater: localStorage.getItem("id")
+                creater: ""     //localStorage.getItem("id")
             },
             adding: false,
             editing: false,
@@ -96,7 +96,7 @@ class KPIUnitCreate extends Component {
             }
         })
         var { kpiunit } = this.state;
-        if (kpiunit.unit && kpiunit.time && kpiunit.creater) {
+        if (kpiunit.unit && kpiunit.time ) {//&& kpiunit.creater
             this.props.editKPIUnit(id, kpiunit);
         }
     }

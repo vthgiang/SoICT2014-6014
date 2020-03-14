@@ -86,6 +86,7 @@ exports.addRoleToLink = async (req, res) => {
 };
 
 exports.getLinksOfRole = async (req, res) => {
+    console.log("get link of rolle")
     const Logger = await Log(req.user.company.short_name, 'GET LINKS OF ROLE');
     try {
         var links = await PrivilegeService.getLinksOfRole(req.params.idRole);
@@ -95,6 +96,6 @@ exports.getLinksOfRole = async (req, res) => {
     } catch (error) {
         
         isLog && Logger.error(req.user.email);
-        res.status(400).send(error);
+        res.status(400).json(error);
     }
 };

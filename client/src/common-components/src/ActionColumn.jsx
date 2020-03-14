@@ -8,8 +8,19 @@ class ActionColumn extends Component {
         this.record = React.createRef();
         this.state = {}
     }
+
+    setLimit = async() => {
+        // var cols = window.$(`#${this.props.tableId}`).val();
+        // for (var j = 0, len = cols.length; j < len; j++) {
+        //     window.$('td:nth-child(' + cols[j] + ')').hide();
+        //     window.$('th:nth-child(' + cols[j] + ')').hide();
+        // }
+        await this.props.setLimit(this.record.current.value);
+        await window.$(`#setting-table`).collapse("hide");
+    }
+
     render() {
-        const { columnName, hideColumn, translate } = this.props;
+        const { columnName, translate, columnArr=[], hiddenColumn=false } = this.props;
         return (
             <React.Fragment>
                 {columnName}
@@ -17,16 +28,13 @@ class ActionColumn extends Component {
                 <div id="setting-table" className="row collapse">
                     <span className="pop-arw arwTop L-auto" style={{ right: "13px" }}></span>
                     {
-                        hideColumn &&
+                        hiddenColumn && columnArr.length > 0 &&
                         <div className="col-xs-12">
                             <label style={{ marginRight: "15px" }}>Ẩn cột:</label>
                             <select id="multiSelectShowColumn" multiple="multiple">
-                                <option value="1">Tên mẫu</option>
-                                <option value="2">Mô tả</option>
-                                <option value="3">Số lần sử dụng</option>
-                                <option value="4">Người tạo</option>
-                                <option value="5">Đơn vị</option>
-                                <option value="6">Hoạt động</option>
+                                {
+                                    columnArr.map((col,i) => <option value={i}>{col}</option>)
+                                }
                             </select>
                         </div>
                     }
@@ -35,7 +43,7 @@ class ActionColumn extends Component {
                         <input className="form-control" type="text" defaultValue={5} ref={this.record} />
                     </div>
                     <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
-                        <button type="button" className="btn btn-success" onClick={() => this.props.setLimit(this.record.current.value)}>{translate('table.update')}</button>
+                        <button type="button" className="btn btn-success" onClick={this.setLimit}>{translate('table.update')}</button>
                     </div>
                 </div>
             </React.Fragment>

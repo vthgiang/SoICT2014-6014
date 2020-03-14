@@ -1,5 +1,7 @@
 const Component = require('../../../models/component.model');
 const Privilege = require('../../../models/privilege.model');
+const Link = require('../../../models/link.model');
+const Role = require('../../../models/role.model');
 
 exports.get = async (id) => {
 
@@ -10,7 +12,6 @@ exports.get = async (id) => {
 
 exports.getPaginate = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
-    console.log("DATA: ", newData);
     return await Component
         .paginate( newData , { 
             page, 
@@ -77,4 +78,26 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
     console.log("Created data: ", privilege)
 
     return privilege;
+}
+
+exports.getComponentsOfUserInLink = async(roleId, linkId) => {
+    var role = await Role.findById(roleId);
+    var roleArr = [role._id];
+    roleArr = roleArr.concat(role.parents);
+    
+    var link = await Link.findById(linkId)
+        .populate([
+            { path: 'components', model: Component }
+        ]); //lấy được thông tin về link
+
+    var componentArr = link.components; //lấy các component trong page này
+    var data = await Privilege.find({
+        roleId: {$in: roleArr},
+        resourceType: 'Component',
+        resourceId: { $in: componentArr }
+    }).populate({ path: 'resourceId', model: Component });
+
+    var components = data.map(component => component.resourceId);
+
+    return components;
 }

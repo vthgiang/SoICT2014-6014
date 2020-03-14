@@ -2,13 +2,6 @@ import React, { Component } from 'react';
 import Item from './Item';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { Link } from 'react-router-dom';
-
-// ,{
-//     name: 'Manage ComponentUI',
-//     path: '/manage-component-ui',
-//     icon: 'fa fa-simplybuilt'
-// },
 
 class SideBar extends Component {
 
@@ -55,37 +48,44 @@ class SideBar extends Component {
 
         }
         const { translate } = this.props;
-        const { links } = this.props.auth;
+        const { user, links } = this.props.auth;
         return (
             <React.Fragment>
                 <aside className="main-sidebar">
                     <section className="sidebar">
-                        {/* <div className="user-panel">
+                        <div className="user-panel">
                             <div className="pull-left image">
-                                <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" className="img-circle" alt="User avatar" />
+                                <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
-                                <p>User</p>
+                                <p>{user.name}</p>
                                 <a href="#abc"><i className="fa fa-circle text-success" /> Online</a>
                             </div>
-                        </div> */}
-                        {/* <form action="#" method="get" className="sidebar-form">
-                            <div className="input-group">
-                                <input type="text" name="q" className="form-control" placeholder="Search" />
-                                <span className="input-group-btn">
-                                    <button type="submit" name="search" id="search-btn" className="btn btn-flat"><i className="fa fa-search" />
-                                    </button>
-                                </span>
-                            </div>
-                        </form> */}
+                        </div>
                         <ul className="sidebar-menu" data-widget="tree">
                             <li className="header">MENU</li>
-                            <Item
-                                key='home'
-                                name='home'
-                                path='/'
-                                icon='fa fa-home'
-                            />
+                            {
+                                this.checkURL('/', links) === true &&
+                                <Item
+                                    key='home'
+                                    name='home'
+                                    path='/'
+                                    icon='fa fa-home'
+                                />
+                            }
+                            {
+                                this.checkURL('/notifications', links) === true &&
+                                <React.Fragment>
+                                    <li className="header">NOTIFICATIONS</li>
+                                    <Item
+                                        key='notifications'
+                                        name='notifications'
+                                        path='/notifications'
+                                        icon='fa fa-bell'
+                                    />
+                                </React.Fragment>
+                            }
+                            <li className="header">MANAGEMENT</li>
                             {
                                 this.checkURL('/system', links) === true &&
                                 <Item

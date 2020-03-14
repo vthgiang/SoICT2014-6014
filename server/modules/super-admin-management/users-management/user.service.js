@@ -1,4 +1,5 @@
 const User = require('../../../models/user.model');
+const Department = require('../../../models/department.model');
 const UserRole = require('../../../models/user_role.model');
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
@@ -126,7 +127,6 @@ exports.relationshipUserRole = async (userId, roleId) => {
 
 //search user with name
 exports.searchByName = async (companyId, name) => {
-    console.log("data: ",name);
     var user = await User
         .find({
             company: companyId,
@@ -139,4 +139,40 @@ exports.searchByName = async (companyId, name) => {
         ]);
     
     return user;
+}
+
+//lấy user trong phòng ban
+exports.getUsersOfDepartment = async (departmentId) => {
+    const department = await Department.findById(departmentId); //lấy thông tin phòng ban hiện tại
+    const roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của phòng ban vào 1 arr
+    const users = await UserRole.find({
+        roleId: { $in: roles }
+    });
+
+    return users.map(user => user.userId); //mảng id của các users trong phòng ban này
+}
+
+//lấy tất cả các user cùng phòng ban với user hiện tại
+exports.getUsersSameDepartment = async(req, res) => {
+    console.log("get user of department");
+    try {
+        const id_role = req.params.id; //lấy id role hiện tại của user
+        var department = await Department.findOne({ 
+            $or:[
+                {'dean': id_role}, 
+                {'vice_dean': id_role}, 
+                {'employee': id_role}
+            ]  
+        });
+        
+        var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
+        var vice_dean = await UserRole.findOne({ roleId: department.vice_dean}).populate('userId roleId');
+        var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');
+        var users = [];
+        users = users.concat(dean, vice_dean, employee);
+
+        res.status(200).json(users); //tra ve list cac user theo 3 chuc danh cua phong ban
+    } catch (error) {
+        res.status(400).json({msg: error});
+    }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { login, forgotPassword } from '../redux/actions';
+import { AuthActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import ForgotPassword from './ForgotPassword';
 
@@ -98,15 +98,9 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        login: (user) => {
-            dispatch(login(user));
-        },
-        forgotPassword: (email) => {
-            dispatch(forgotPassword(email));
-        },
-    }
+const mapDispatchToProps = {
+    login: AuthActions.login,
+    forgotPassword: AuthActions.forgotPassword,
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Login) );

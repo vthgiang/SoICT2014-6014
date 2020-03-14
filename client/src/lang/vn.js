@@ -118,6 +118,8 @@ export default {
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
+
+            notifications: 'Thông báo',
         },
 
         manage_system: {
@@ -204,7 +206,7 @@ export default {
             add_title: 'Thêm link mới cho trang web',
             url: 'Đường link của trang web',
             description: 'Mô tả về trang web',
-            roles: 'Những role được truy cập vào trang này',
+            roles: 'Những role được truy cập',
             info: 'Thông tin về trang web',
             edit: 'Chỉnh sửa thông tin',
             delete: 'Xóa link',
@@ -218,6 +220,9 @@ export default {
             add: 'Thêm',
             add_title: 'Thêm component mới',
             info: 'Thông tin về component',
+            name: 'Tên của component',
+            description: 'Mô tả về component',
+            link: 'Thuộc về trang nào',
             edit: 'Chỉnh sửa thông tin về component',
             delete: 'Xóa component',
             roles: 'Những role có component này',
@@ -409,12 +414,18 @@ export default {
             discipline: 'Kỷ luật',
             historySalary: 'Lịch sử tăng giảm lương',
             sabbatical: 'Thông tin nghỉ phép',
-
-
-
-
-
-
+        },
+        notification: {
+            add: 'Thêm mới',
+            add_title: 'Thêm thông báo mới',
+            added: 'Thông báo đã tạo',
+            receivered: 'Thông báo đã nhận',
+            add_success: 'Tạo thông báo mới thành công',
+            add_faile: 'Tạo thông báo thất bại',
+            edit_success: 'Chỉnh sửa thông báo thành công',
+            edit_faile: 'Chỉnh sửa thông báo thất bại',
+            departments: 'Thông báo tới đơn vị/phòng ban',
+            users: 'Thông báo đến người dùng cụ thể'
         },
         holiday: {
             start_date: 'Ngày bắt đầu',

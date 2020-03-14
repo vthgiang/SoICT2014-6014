@@ -35,7 +35,6 @@ class RoleCreateForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_role.extends') }</label>
                             <select 
-                                id="form-vnist"
                                 className="form-control select2" 
                                 multiple="multiple" 
                                 style={{ width: '100%' }} 

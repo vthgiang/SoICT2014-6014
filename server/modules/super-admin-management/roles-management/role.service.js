@@ -16,13 +16,13 @@ exports.get = async (company) => {
 
 exports.getPaginate = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
-    console.log("DATA: ", newData);
     return await Role
         .paginate( newData , { 
             page, 
             limit,
             populate: [
-                { path: 'users', model: UserRole},
+                { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
+                { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]
         });
@@ -44,16 +44,14 @@ exports.getById = async (company, roleId) => {
 }
 
 exports.create = async(data, companyID) => {
-    console.log("tạo role", data);
     var roleTuTao = await RoleType.findOne({ name: 'tutao' });
-    console.log("role tu tao", roleTuTao)
-    const role = await Role.create({
+    var role = await Role.create({
         name: data.name,
         company: companyID,
         parents: data.parents,
         type: roleTuTao._id
     });
-    console.log("ROLE", role);
+    role.type = roleTuTao;
 
     return role;
 }
@@ -98,15 +96,17 @@ exports.crt_rolesOfDepartment = async(data, companyID) => {
     }
 }
 
-exports.edit = async(id, data) => {
+exports.edit = async(id, data={}) => {
     var role = await Role.findById(id)
         .populate([
             { path: 'users', model: UserRole },
             { path: 'company', model: Company },
             // { path: 'parents', model: Role }
         ]);
-    role.name = data.name;
-    role.parents = data.parents;
+    if(data.name !== undefined || data.name !== null || data.name !== '')
+        role.name = data.name;
+    if(data.parents !== undefined || data.parents !== null || data.parents !== '')
+        role.parents = data.parents;
     role.save();
 
     return role;

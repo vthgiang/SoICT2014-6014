@@ -11,7 +11,7 @@ class NotFound extends Component {
         const {translate} = this.props;
         return ( 
             <div style={{backgroundColor: 'white', width: '100%', height: '650px', marginTop: '-25px'}}>
-                <h1 style={{padding: '10px 10px 10px 10px', textAlign: 'center'}}>
+                <h1 style={{padding: '10px 10px 10px 10px', textAlign: 'center', color: 'red'}}>
                     {translate('not_found')}
                 </h1>
             </div>

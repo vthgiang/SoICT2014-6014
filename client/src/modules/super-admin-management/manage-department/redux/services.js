@@ -14,6 +14,7 @@ import {handleResponse} from '../../../../helpers/HandleResponse';
 export const DepartmentServices = {
     get,
     create,
+    edit,
     destroy,
     getAll,
     getDepartmentOfUser
@@ -33,6 +34,17 @@ function create(department) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/department`,
         method: 'POST',
+        data: department,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function edit(department) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/department/${department._id}`,
+        method: 'PATCH',
         data: department,
         headers: AuthenticateHeader()
     };

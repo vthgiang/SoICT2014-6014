@@ -3,6 +3,14 @@ import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { overviewKpiActions } from '../redux/actions';
 
+import {
+    TOKEN_SECRET
+} from '../../../../env';
+import {
+    getStorage
+} from '../../../../config';
+import jwt from 'jsonwebtoken';
+
 class ModalCopyKPIPersonal extends Component {
     constructor(props) {
         super(props);
@@ -10,13 +18,14 @@ class ModalCopyKPIPersonal extends Component {
             kpipersonal: {
                 unit: "",
                 time: this.formatDate(Date.now()),
-                creater: localStorage.getItem("id")
+                creater: "" //localStorage.getItem("id")
+                
             },
         };
     }
     componentDidMount() {
         let script = document.createElement('script');
-        script.src = '/main/js/CoCauToChuc.js';
+        script.src = '../lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -36,6 +45,10 @@ class ModalCopyKPIPersonal extends Component {
     }
     handleSubmit = async (event, oldkpipersonal) => {
         event.preventDefault();
+        const token = getStorage();
+        const verified = await jwt.verify(token, TOKEN_SECRET);
+        var id = verified._id;
+        kpipersonal.creater = id;
         await this.setState(state => {
             return {
                 ...state,
@@ -46,8 +59,9 @@ class ModalCopyKPIPersonal extends Component {
                 }
             }
         })
+        
         var { kpipersonal } = this.state;
-        if (kpipersonal.unit && kpipersonal.time && kpipersonal.creater) {
+        if (kpipersonal.unit && kpipersonal.time ) {//&& kpipersonal.creater
             Swal.fire({
                 title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                 type: 'warning',

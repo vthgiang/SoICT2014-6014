@@ -4,6 +4,7 @@ import { DepartmentConstants } from "./constants";
 export const DepartmentActions = {
     get,
     create,
+    edit,
     destroy,
     getAll,
     getDepartmentOfUser
@@ -58,6 +59,30 @@ function create(data){
                         type: DepartmentConstants.CREATE_DEPARTMENT_FAILE
                     })
                     console.log("Error: ", err);
+                    reject(err);
+                })
+        })
+    }
+}
+
+function edit(data){
+    return dispatch => {
+        dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_REQUEST});
+        return new Promise((resolve, reject) => {
+            DepartmentServices
+                .edit(data)
+                .then(res => {
+                    dispatch({
+                        type: DepartmentConstants.EDIT_DEPARTMENT_SUCCESS,
+                        payload: res.data
+                    });
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    dispatch({
+                        type: DepartmentConstants.EDIT_DEPARTMENT_FAILE
+                    })
+                    console.log("Error: ", err.response);
                     reject(err);
                 })
         })

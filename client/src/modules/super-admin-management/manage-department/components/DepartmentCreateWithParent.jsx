@@ -48,22 +48,24 @@ class DepartmentCreateWithParent extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border"><span style={{fontSize: '20px'}}>{ translate('manage_department.info') }</span></legend>
-                                    <div className="form-group" style={{margin: '15px 0px 15px'}}>
-                                        <label style={{fontSize:'14px',marginBottom:'5px'}}>{ translate('manage_department.name') }<span className="attention"> * </span></label>
+                                    <legend className="scheduler-border"><span>{ translate('manage_department.info') }</span></legend>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_department.name') }<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" ref="name"/><br/>
                                     </div>
-                                    <div className="form-group" style={{margin: '0px 0px 15px'}}>
-                                        <label style={{fontSize:'14px',marginBottom:'5px'}}>{ translate('manage_department.description') }<span className="attention"> * </span></label>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_department.description') }<span className="attention"> * </span></label>
                                         <textarea type="text" style={{height: '54px'}} className="form-control" ref="description"/><br/>
                                     </div>
-                                    <div className="form-group" style={{margin: '0px 0px 15px'}}>
-                                        <label style={{fontSize:'14px',marginBottom:'5px'}}>{ translate('manage_department.parent') }</label>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_department.parent') }</label>
                                         <select 
                                             className="form-control" 
                                             style={{width: '100%'}} 
                                             ref="parent" 
-                                            defaultValue={parentId}>
+                                            defaultValue={parentId}
+                                            disabled
+                                            >
                                                 <option key="select-parent">---{ translate('manage_department.select_parent') }---</option>
                                             {   
                                                 department.list.map(department => 
@@ -76,17 +78,17 @@ class DepartmentCreateWithParent extends Component {
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border"><span style={{fontSize: '20px'}}>{ translate('manage_department.roles_of_department') }</span></legend>
-                                    <div className="form-group" style={{margin: '15px 0px 15px'}}>
-                                        <label style={{fontSize:'14px',marginBottom:'5px'}}>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
+                                    <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" ref="dean" placeholder={ translate('manage_department.dean_example') }/><br/>
                                     </div> 
-                                    <div className="form-group" style={{margin: '15px 0px 15px'}}>
-                                        <label style={{fontSize:'14px',marginBottom:'5px'}}>{ translate('manage_department.vice_dean_name') }<span className="attention"> * </span></label>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_department.vice_dean_name') }<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" ref="vice_dean" placeholder={ translate('manage_department.vice_dean_example') }/><br/>
                                     </div>
-                                    <div className="form-group" style={{margin: '15px 0px 15px'}}>
-                                        <label style={{fontSize:'14px',marginBottom:'5px'}}>{ translate('manage_department.employee_name') }<span className="attention"> * </span></label>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_department.employee_name') }<span className="attention"> * </span></label>
                                         <input type="text" className="form-control" ref="employee" placeholder={ translate('manage_department.employee_example') }/><br/>
                                     </div>
                                 </fieldset>

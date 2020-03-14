@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { DepartmentActions, UserActions } from '../../../../redux-actions/CombineActions';
 import { UserActions } from "../../../super-admin-management/manage-user/redux/actions";
 import { DepartmentActions } from "../../../super-admin-management/manage-department/redux/actions";
-// import { createKpiActions } from '../../../../redux-actions/CombineActions';
 import { createKpiActions } from '../redux/actions';
 import { ModalAddTargetKPIPersonal } from './ModalAddTargetKPIPersonal';
 import { ModalStartKPIPersonal } from './ModalStartKPIPersonal';
@@ -14,13 +12,13 @@ import Swal from 'sweetalert2';
 
 class KPIPersonalCreate extends Component {
     componentDidMount() {
-        this.props.getDepartment(localStorage.getItem('id'));
-        this.props.getCurrentKPIPersonal(localStorage.getItem('id'));
+        this.props.getDepartment();//localStorage.getItem('id');
+        this.props.getCurrentKPIPersonal()//localStorage.getItem('id');
         this.handleResizeColumn();
     }
     componentDidUpdate() {
         let script = document.createElement('script');
-        script.src = 'lib/main/js/CoCauToChuc.js';
+        script.src = '../lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -29,7 +27,7 @@ class KPIPersonalCreate extends Component {
         super(props);
         this.state = {
             kpipersonal: {
-                creater: localStorage.getItem("id"),
+                creater: "", //localStorage.getItem("id")
             },
             adding: false,
             editing: false,
@@ -118,8 +116,8 @@ class KPIPersonalCreate extends Component {
         })
         var { kpipersonal } = this.state;
         console.log(kpipersonal);
-        if (kpipersonal.unit && kpipersonal.time && kpipersonal.creater) {
-            // this.props.editKPIUnit(id, kpipersonal);
+        if (kpipersonal.unit && kpipersonal.time ) {//&& kpipersonal.creater
+            this.props.editKPIPersonal(id, kpipersonal);
         }
     }
     handleResizeColumn = () => {
@@ -351,22 +349,35 @@ class KPIPersonalCreate extends Component {
                                                         {editing ? userdepartments &&
                                                             <div className="col-sm-10 input-group" style={{ width: "25%", paddingLeft: "15px" }}>
                                                                 <select defaultValue={currentKPI.approver._id} ref={input => this.approver = input} className="form-control select2">
-                                                                    <optgroup label={userdepartments[0].id_role.name}>
-                                                                        {userdepartments[0].id_user.map(x => {
+                                                                    <optgroup label={userdepartments[0].roleId.name}>
+                                                                        <option key={userdepartments[0].userId._id} value={userdepartments[0].userId._id}>{userdepartments[0].userId.name}</option>
+                                                                    </optgroup>
+                                                                    <optgroup label={userdepartments[1].roleId.name}>
+                                                                        <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>{userdepartments[1].userId.name}</option>
+                                                                    </optgroup>
+                                                                </select>
+                                                            </div> :
+                                                            <label className="col-sm-10" style={{ fontWeight: "400" }}>: {currentKPI.approver.name}</label>
+                                                        }
+                                                        {/* {editing ? userdepartments &&
+                                                            <div className="col-sm-10 input-group" style={{ width: "25%", paddingLeft: "15px" }}>
+                                                                <select defaultValue={currentKPI.approver._id} ref={input => this.approver = input} className="form-control select2">
+                                                                    <optgroup label={userdepartments[0].roleId.name}>
+                                                                        {userdepartments[0].userId.map(x => {
                                                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                                                         })}
                                                                     </optgroup>
-                                                                    <optgroup label={userdepartments[1].id_role.name}>
-                                                                        {userdepartments[1].id_user.map(x => {
+                                                                    <optgroup label={userdepartments[1].roleId.name}>
+                                                                        {userdepartments[1].userId.map(x => {
                                                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                                                         })}
                                                                     </optgroup>
                                                                 </select>
                                                             </div> :
                                                             <label className="col-sm-10" style={{ fontWeight: "400" }}>: {currentKPI.approver.name}</label>
-                                                        }
+                                                        } */}
                                                     </div>
-                                                    {editing === false &&
+                                                    {editing === false &&///chua thuc hien edit
                                                         <React.Fragment>
                                                             <div className="form-group">
                                                                 <label className="col-sm-2" style={{ fontWeight: "500" }}>Trạng thái KPI</label>
@@ -421,11 +432,11 @@ class KPIPersonalCreate extends Component {
                                                     <tbody>
                                                         {
                                                             (typeof currentKPI === 'undefined' || currentKPI === null) ? <tr><td colSpan={7}><center>Chưa khởi tạo KPI cá nhân tháng {this.formatDate(Date.now())}</center></td></tr> :
-                                                                currentKPI.listtarget.map((item, index) =>
+                                                                (currentKPI.listtarget.map((item, index) =>
                                                                     <tr key={index + 1}>
                                                                         <td title={index + 1}>{index + 1}</td>
                                                                         <td title={item.name}>{item.name}</td>
-                                                                        <td title={item.parent.name}>{item.parent.name}</td>
+                                                                        <td title={item.parent.name}>{item.parent.name}</td>    
                                                                         <td title={item.criteria}>{item.criteria}</td>
                                                                         <td title={item.weight}>{item.weight}</td>
                                                                         <td title={this.checkStatusTarget(item.status)}>{this.checkStatusTarget(item.status)}</td>
@@ -436,7 +447,7 @@ class KPIPersonalCreate extends Component {
                                                                                 <a className="copy" title="Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)"><i className="material-icons">notification_important</i></a>}
                                                                         </td>
                                                                     </tr>
-                                                                )
+                                                                ))
                                                         }
                                                     </tbody>
                                                 </table>

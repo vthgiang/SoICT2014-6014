@@ -115,6 +115,8 @@ export default {
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',
             kpi_personal_overview: 'Overview personal KPI',
+
+            notifications: 'Notifications',
         },
 
         manage_system: {
@@ -397,17 +399,6 @@ export default {
             discipline: 'Discipline',
             historySalary:'History of salary',
             sabbatical:'sabbatical information'
-
-
-
-
-
-
-
-
-
-
-
         },
         holiday: {
             start_date: 'Start day',
@@ -417,6 +408,16 @@ export default {
             check_end_Date: 'End day required',
             check_description: 'Description required'
         },
+
+        notification: {
+            add: 'Thêm mới',
+            add_title: 'Thêm thông báo mới',
+            add_success: 'Tạo thông báo mới thành công',
+            add_faile: 'Tạo thông báo thất bại',
+            edit_success: 'Chỉnh sửa thông báo thành công',
+            edit_faile: 'Chỉnh sửa thông báo thất bại'
+        },
+        
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

@@ -36,7 +36,7 @@ class DepartmentTreeView extends Component {
                             <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
                             <i className="btn btn-sm btn-default fa fa-minus" onClick={ this.zoomOut } title={translate('manage_department.zoom_out')}></i>
                         </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
+                        {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 item-container">
                             <select 
                                 className="select2"
                                 ref="departmentId"
@@ -59,15 +59,15 @@ class DepartmentTreeView extends Component {
                                 }`}
                                 title={translate('form.search')}
                             >{translate('form.search')}</a>
-                        </div>
+                        </div> */}
                     </React.Fragment>
                 }
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         {
                             tree !== null &&
-                            tree.map(tree => 
-                                <div className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px'}}>
+                            tree.map((tree,index) => 
+                                <div key={index} className="tf-tree example" style={{ textAlign: 'left', fontSize: this.state.zoom, marginTop: '50px'}}>
                                     <ul>
                                         {
                                             this.displayTreeView(tree, translate)
@@ -81,9 +81,9 @@ class DepartmentTreeView extends Component {
                 {
                     department.list.length > 0 && 
                     department.list.map(d => 
-                        <React.Fragment>
+                        <React.Fragment key={d._id}>
                             <DepartmentCreateWithParent parentId={d._id}/>
-                            <DepartmentEditForm parentId={d._id}/>
+                            <DepartmentEditForm departmentInfo={d}/>
                         </React.Fragment>
                     )
                 }
@@ -103,7 +103,7 @@ class DepartmentTreeView extends Component {
     }
 
     zoomOut = () => {
-        if(this.state.zoom > 16)
+        if(this.state.zoom > 0)
             this.setState({ zoom : this.state.zoom - 1});
     }
 
@@ -112,26 +112,12 @@ class DepartmentTreeView extends Component {
             <React.Fragment>
                 <div
                     id={`department-${data.id}`} 
-                    className="tf-nc pull-left w3-card-4 department" 
+                    className="tf-nc w3-card-4 department" 
                     title={ data.name }
-                    style={{ 
-                        width: '150px',
-                        height: 'auto',
-                        textAlign: 'center'
-                    }}
                 >
-                    <div className="row">
-                        <p style={{color:'#605CA8'}}>
-                        <button
-                            style={{marginRight: '10px', border: 'none', backgroundColor: 'white'}} 
-                            className="text-black pull-left" 
-                            onClick={() => this.toggleSetting(`department-setting-${data.id}`)}
-                            title={translate('table.action')}
-                        ><i className="fa fa-gear"></i></button>
-                        <strong>{ data.name }</strong>
-                        </p>
-                    </div>
-                    <div id={`department-setting-${data.id}`} className="row" style={{display: 'none'}}>
+                    <button style={{border: 'none', backgroundColor: 'white'}} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gear"></i></button>
+                    {` ${data.name} `}
+                    <div id={`department-setting-${data.id}`} className="row" style={{display: 'none', marginTop: '8px'}}>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <ModalButton modalID={`modal-create-department-${data.id}`}
                                 button_type="add" color="green"
