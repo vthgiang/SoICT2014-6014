@@ -147,7 +147,8 @@ export default {
             edit_faile: 'Chỉnh sửa thông tin thất bại',
             log: 'Trạng thái ghi log',
             on: 'Bật',
-            off: 'Tắt'
+            off: 'Tắt',
+            service: 'Dịch vụ'
         },
 
         manage_department: {

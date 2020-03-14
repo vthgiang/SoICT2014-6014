@@ -38,6 +38,7 @@ exports.getById = async (company, roleId) => {
         })
         .populate([
             { path: 'users', model: UserRole },
+            { path: 'parents', model: Role },
             { path: 'company', model: Company },
             { path: 'type', model: RoleType }
         ]);
@@ -51,7 +52,6 @@ exports.create = async(data, companyID) => {
         parents: data.parents,
         type: roleTuTao._id
     });
-    role.type = roleTuTao;
 
     return role;
 }

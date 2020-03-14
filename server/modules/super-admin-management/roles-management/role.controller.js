@@ -36,9 +36,12 @@ exports.create = async (req, res) => {
     const Logger = await Log(req.user.company.short_name, 'CREATE_ROLE');
     try {
         var role = await RoleService.create(req.body, req.user.company._id);
+        await RoleService.editRelationshiopUserRole(role._id, req.body.users);
+        var data = await RoleService.getById(req.user.company._id, role._id);
         
+        console.log("Dtaa: ", data);
         isLog && Logger.info(req.user.email);
-        res.status(200).json(role);
+        res.status(200).json(data);
     } catch (error) {
         
         isLog && Logger.error(req.user.email);
