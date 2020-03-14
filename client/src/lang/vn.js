@@ -130,21 +130,24 @@ export default {
 
         manage_company: {
             add: 'Thêm',
-            add_title: 'Thêm doanh nghiệp/công ty mới',
-            name: 'Tên doanh nghiệp/công ty',
-            short_name: 'Tên ngắn của công ty',
-            description: 'Mô tả thông tin về công ty',
+            add_title: 'Thêm doanh nghiệp mới',
+            name: 'Tên doanh nghiệp',
+            short_name: 'Tên ngắn doanh nghiệp',
+            description: 'Mô tả về doanh nghiệp',
             on_service: 'Bật dịch vụ',
             off_service: 'Tắt dịch vụ',
             turning_on: 'Đang bật dịch vụ',
             turning_off: 'Đang tắt dịch vụ',
-            info: 'Thông tin về doanh nghiệp/công ty',
-            edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
-            super_admin: 'Email tài khoản super admin của công ty',
-            add_success: 'Tạo doanh nghiệp/công ty thành công',
-            add_faile: 'Tạo doanh nghiệp/công ty thất bại',
+            info: 'Thông tin về doanh nghiệp',
+            edit: 'Chỉnh sửa thông tin doanh nghiệp',
+            super_admin: 'Email tài khoản super admin của doanh nghiệp',
+            add_success: 'Tạo doanh nghiệp thành công',
+            add_faile: 'Tạo doanh nghiệp thất bại',
             edit_success: 'Chỉnh sửa thông tin thành công',
             edit_faile: 'Chỉnh sửa thông tin thất bại',
+            log: 'Trạng thái ghi log',
+            on: 'Bật',
+            off: 'Tắt'
         },
 
         manage_department: {

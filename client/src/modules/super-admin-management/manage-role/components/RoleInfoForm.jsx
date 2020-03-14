@@ -68,12 +68,10 @@ class RoleInfoForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_role.extends') }</label>
                             <select 
-                                name="parents" 
                                 className="form-control select2" 
                                 multiple="multiple" 
-                                onChange={ this.inputChange }
                                 style={{ width: '100%' }} 
-                                value={ roleParents }
+                                defaultValue={ roleParents }
                                 ref="parents"
                             >
                                 {   

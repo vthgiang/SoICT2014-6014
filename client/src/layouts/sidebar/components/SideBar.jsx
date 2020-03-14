@@ -63,16 +63,6 @@ class SideBar extends Component {
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree">
-                            <li className="header">MENU</li>
-                            {
-                                this.checkURL('/', links) === true &&
-                                <Item
-                                    key='home'
-                                    name='home'
-                                    path='/'
-                                    icon='fa fa-home'
-                                />
-                            }
                             {
                                 this.checkURL('/notifications', links) === true &&
                                 <React.Fragment>
@@ -85,7 +75,16 @@ class SideBar extends Component {
                                     />
                                 </React.Fragment>
                             }
-                            <li className="header">MANAGEMENT</li>
+                            <li className="header">MENU</li>
+                            {
+                                this.checkURL('/', links) === true &&
+                                <Item
+                                    key='home'
+                                    name='home'
+                                    path='/'
+                                    icon='fa fa-home'
+                                />
+                            }
                             {
                                 this.checkURL('/system', links) === true &&
                                 <Item

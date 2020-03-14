@@ -1,5 +1,5 @@
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import Fingerprint2 from 'fingerprintjs2';
+// import Fingerprint2 from 'fingerprintjs2';
 
 export const clearStorage = () => {
     localStorage.clear();
@@ -19,30 +19,29 @@ export const getStorage = (name='jwt') => {
 export const AuthenticateHeader = (name='jwt') => {
     const token = getStorage(name);
     const currentRole = getStorage('currentRole');
-    const browserFinger = getBrowserFingerprint();
-    console.log(browserFinger);
+    const fingerprint = getBrowserFingerprint();
     return {
         'auth-token': token,
         'current-role': currentRole,
-        'browser-finger': browserFinger,
+        'fingerprint': fingerprint,
         'Content-Type': 'application/json'
     }
 }
 
 export const FingerPrint = () => {
-    const browserFinger = getBrowserFingerprint();
+    const fingerprint = getBrowserFingerprint();
     return {
-        'browser-finger': browserFinger
+        'fingerprint': fingerprint
     }
 }
 
 export const AuthenticateHeaderPATCH = (name='jwt') => {
     const token = getStorage(name);
     const currentRole = getStorage('currentRole');
-    const browserFinger = getBrowserFingerprint();
+    const fingerprint = getBrowserFingerprint();
     return {
         'auth-token': token,
         'current-role': currentRole,
-        'browser-finger': browserFinger,
+        'fingerprint': fingerprint,
     }
 }

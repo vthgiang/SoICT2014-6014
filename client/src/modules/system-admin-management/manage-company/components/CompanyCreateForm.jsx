@@ -52,15 +52,15 @@ class CompanyCreateForm extends Component {
                             <input type="text" className="form-control" name="name" onChange={ this.inputChange }/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_company.short_name') }}<span className="text-red"> * </span></label>
+                            <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" name="short_name" onChange={ this.inputChange }/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_company.description') }}<span className="text-red"> * </span></label>
+                            <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
                             <textarea style={{ height: '150px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange }/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_company.super_admin') }}<span className="text-red"> * </span></label>
+                            <label>{ translate('manage_company.super_admin') }<span className="text-red"> * </span></label>
                             <input type="email" className="form-control" name="email" onChange={ this.inputChange }/>
                         </div>
                     </form>

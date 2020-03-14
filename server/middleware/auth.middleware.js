@@ -9,7 +9,7 @@ const Company = require('../models/company.model');
 exports.auth = async (req, res, next) => {
     try {
         const token = req.header('auth-token');//JWT nhận từ người dùng
-        const browserFinger = req.header('browser-finger'); //chữ ký của trình duyệt người dùng - fingerprint
+        const fingerprint = req.header('fingerprint'); //chữ ký của trình duyệt người dùng - fingerprint
         const role = await Role.findById(req.header('current-role')); //current role của người dùng
 
         /**
@@ -26,7 +26,7 @@ exports.auth = async (req, res, next) => {
          * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
          * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
          */
-        if(verified.browserFinger !== browserFinger) throw ({ msg: 'ACCESS_DENIED' });
+        if(verified.fingerprint !== fingerprint) throw ({ msg: 'ACCESS_DENIED' });
 
         req.user = verified; 
         req.token = token;
@@ -67,27 +67,27 @@ exports.auth = async (req, res, next) => {
                  * Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
                  * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
                  */
-                // var origin = JSON.stringify(req.headers.origin);
-                // var referer = JSON.stringify(req.headers.referer);
-                // var url = referer.substr(origin.length - 1, referer.length - origin.length);
-                // const link = await Link.findOne({
-                //     url,
-                //     company: req.user.company._id 
-                // });
-                // const roleArr = [roleId].concat(role.parents);
-                // console.log("ORIGIN :", origin);
-                // console.log("REFERER :", referer);
-                // console.log("URL :", url);
-                // console.log("LINK :", link);
-                // console.log("roleArr :", roleArr);
-                // console.log("link, role: ",link._id, roleArr)
-                // const privilege = await Privilege.findOne({
-                //     resourceId: link._id,
-                //     resourceType: 'Link',
-                //     roleId: '5e6b45bcfefe0f30d0787d75'
-                // });
-                // console.log("PRI :", privilege);
-                // if(privilege === null) throw ({ msg: 'PRIVILEGE_DENIED' });
+                var origin = JSON.stringify(req.headers.origin);
+                var referer = JSON.stringify(req.headers.referer);
+                var url = referer.substr(origin.length - 1, referer.length - origin.length);
+                const link = await Link.findOne({
+                    url,
+                    company: req.user.company._id 
+                });
+                const roleArr = [roleId].concat(role.parents);
+                console.log("ORIGIN :", origin); //host của bên client VD: http://localhost:3000
+                console.log("REFERER :", referer); //đường dẫn mà client đang truy cập VD: http://localhost:3000/manage-user
+                console.log("URL :", url);
+                console.log("LINK :", link);
+                console.log("roleArr :", roleArr);
+                console.log("link, role: ",link._id, roleArr)
+                const privilege = await Privilege.findOne({
+                    resourceId: link._id,
+                    resourceType: 'Link',
+                    roleId: { $in: roleArr }
+                });
+                console.log("PRI :", privilege);
+                if(privilege === null) throw ({ msg: 'PAGE_ACCESS_DENIED' });
             }
 
             next();

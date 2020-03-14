@@ -2,16 +2,16 @@ const Company = require('../../../models/company.model');
 
 exports.get = async () => {
     
-    return await Company.find();
+    return await Company.find({customer: true});
 }
 
 exports.getById = async (id) => {
     
-    return await Company.findById(id);
+    return await Company.findOne({_id: id, customer: true});
 }
 
 exports.getPaginate = async (limit, page, data={}) => {
-    const newData = await Object.assign( {}, data );
+    const newData = await Object.assign( {customer: true}, data );
     return await Company
         .paginate( newData , { 
             page, 
@@ -32,15 +32,17 @@ exports.create = async(data) => {
 }
 
 exports.edit = async(id, data) => {
-    var company = await Company.findById(id);
+    console.log("data com:", data);
+    var company = await Company.findOne({_id: id, customer: true});
     if(company.short_name !== data.short_name){
         //check shortname invalid?
         var test = await Company.findOne({ short_name: data.short_name }); 
         if(test) throw { msg: 'Short name already exists' }; 
     }
-    if(data.name !== null) company.name = data.name;
-    if(data.description !== null) company.description = data.description;
-    if(data.short_name !== null) company.short_name = data.short_name;
+    company.name = data.name;
+    company.description = data.description;
+    company.short_name = data.short_name;
+    company.log = data.log;
     if(data.active !== null) company.active = data.active;
     company.save();
 
@@ -49,5 +51,5 @@ exports.edit = async(id, data) => {
 
 exports.delete = async(id) => {
 
-    return await Company.deleteOne({ _id: id });
+    return await Company.deleteOne({ _id: id, customer: true });
 }

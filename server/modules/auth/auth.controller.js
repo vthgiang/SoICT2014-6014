@@ -3,7 +3,7 @@ const { LogInfo, LogError } = require('../../logs');
 
 exports.login = async (req, res) => {
     try {
-        var loginUser = await AuthService.login(req.header('browser-finger'), req.body);
+        var loginUser = await AuthService.login(req.header('fingerprint'), req.body);
 
         await LogInfo(req.body.email, 'LOGIN');
         res.status(200).json(loginUser);

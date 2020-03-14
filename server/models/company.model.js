@@ -23,6 +23,11 @@ const CompanySchema = new Schema({
         type: Boolean,
         required: true,
         default: true
+    },
+    customer: {
+        type: Boolean,
+        required: true,
+        default: true
     }
 },{
     timestamps: true
