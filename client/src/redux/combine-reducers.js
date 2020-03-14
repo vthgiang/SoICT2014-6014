@@ -1,4 +1,5 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual';
+import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
 import { alert } from '../modules/alert/redux/reducers';
 import { system } from '../modules/system/redux/reducers';
@@ -56,7 +57,8 @@ const appReducer = combineReducers(Object.assign({
 }, { Intl }));
 
 const rootReducer = (state, action) => {
-    if (action.type === 'RESET_ALERT') {
+    if (action.type === 'RESET') {
+        clearStorage();
         state = undefined;
     }
 

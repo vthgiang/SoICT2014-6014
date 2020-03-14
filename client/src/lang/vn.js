@@ -3,6 +3,14 @@ export default {
     messages: {
         not_found: '404! Trang không tồn tại',
         language: 'Thiết lập ngôn ngữ',
+        alert: {
+            log_again: 'Đã xảy ra lỗi. Vui lòng đăng nhập lại!',
+            access_denied: 'Truy cập trái phép! Vui lòng đăng nhập!',
+            role_invalid: 'Quyền truy cập không hợp lệ! Vui lòng đăng nhập lại!',
+            page_access_denied: 'Quyền truy cập vào trang này của bạn đã được thay đổi! Vui lòng đăng nhập lại để tiếp tục làm việc!',
+            user_role_invalid: 'Quyền của bạn đã bị thay đổi! Vui lòng đăng nhập lại!',
+            acc_logged_out: 'Phiên làm việc không khả dụng. Vui lòng đăng nhập lại!'
+        },
         auth: {
             login: 'Đăng nhập',
             logout: 'Đăng xuất',

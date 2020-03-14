@@ -61,21 +61,6 @@ export function auth(state = initState, action) {
                 components: action.payload
             };
 
-        case 'RESET_APP':
-            return {
-                ...state,
-                user: {
-                    _id: null,
-                    name: null,
-                    email: null,
-                    roles: null,
-                    company: null
-                },
-                links: [],
-                error: null,
-                forgotPassword: false
-            };
-
         case AuthConstants.FORGOT_PASSWORD_SUCCESS:
             return {
                 ...state,

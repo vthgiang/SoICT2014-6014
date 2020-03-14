@@ -17,7 +17,8 @@ class Alert extends Component {
     }
 
     render() { 
-        const { display } = this.props.alert;
+        const { display, msg } = this.props.alert;
+        const { translate } = this.props;
         return ( 
             <React.Fragment>
                 <div id="alert" className={display ? 'modal fade in display-block' : 'modal fade in display-none'} >
@@ -27,7 +28,9 @@ class Alert extends Component {
                                 <h4 className="modal-title text-center text-red">Thông báo từ hệ thống</h4>
                             </div>
                             <div className="modal-body text-center">
-                                Quyền của bạn đã bị thay đổi. Vui lòng đăng nhập lại để tiếp tục làm việc!
+                                <strong>
+                                    { msg !== null ? translate(`alert.${msg}`) : translate('alert.log_again') }
+                                </strong>
                             </div>
                             <div className="modal-footer">
                                 <button className="btn btn-primary" onClick={this.handleButton}>OK</button>

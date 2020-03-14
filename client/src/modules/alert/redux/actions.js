@@ -6,6 +6,6 @@ export const AlertActions = {
 
 function reset(){
     return {
-        type: AlertConstants.RESET_ALERT
+        type: 'RESET'
     }
 }

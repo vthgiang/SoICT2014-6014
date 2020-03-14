@@ -24,18 +24,10 @@ function get(){
                 })
                 .catch(err => {
                     console.log("Error: ", err);
-                    if(err.response.data.msg === 'USER_ROLE_INVALID' || err.response.data.msg === 'PRIVILEGE_INVALID'){
-                        alert("Phân quyền của bạn không hợp lệ hoặc đã bị thay đổi! Vui lòng đăng nhập lại!");
-                        localStorage.clear();
-                        dispatch({
-                            type: 'RESET_APP'
-                        })
-                    }else{
-                        dispatch({
-                            type: DepartmentConstants.GET_DEPARTMENTS_FAILE
-                        });
-                        reject(err);
-                    }
+                    dispatch({
+                        type: err.response.data.msg
+                    });
+                    reject(err);
                 })
         })
     }
@@ -56,7 +48,7 @@ function create(data){
                 })
                 .catch(err => {
                     dispatch({
-                        type: DepartmentConstants.CREATE_DEPARTMENT_FAILE
+                        type: err.response.data.msg
                     })
                     console.log("Error: ", err);
                     reject(err);
@@ -80,9 +72,9 @@ function edit(data){
                 })
                 .catch(err => {
                     dispatch({
-                        type: DepartmentConstants.EDIT_DEPARTMENT_FAILE
+                        type: err.response.data.msg
                     })
-                    console.log("Error: ", err.response);
+                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -104,7 +96,7 @@ function destroy(departmentId){
             })
             .catch(err => {
                 dispatch({
-                    type: DepartmentConstants.DELETE_DEPARTMENT_FAILE
+                    type: err.response.data.msg
                 })
                 console.log("Error: ", err);
             })

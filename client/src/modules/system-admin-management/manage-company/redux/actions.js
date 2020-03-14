@@ -19,6 +19,9 @@ function get(){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -35,6 +38,9 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -53,7 +59,10 @@ function create(company){
                 resolve(res);
             })
             .catch(err => {
-                console.log("Error: ", err.response.data);
+                dispatch({
+                    type: err.response.data.msg
+                })
+                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -74,7 +83,10 @@ function edit(id, data){
                 resolve(res);
             })
             .catch(err => {
-                console.log("Error: ", err.response.data);
+                dispatch({
+                    type: err.response.data.msg
+                })
+                console.log("Error: ", err);
                 reject(err);
             })
         });

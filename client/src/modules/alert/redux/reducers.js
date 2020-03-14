@@ -1,8 +1,8 @@
 import { AlertConstants } from "./constants";
-import { clearStorage } from '../../../config';
 
 const initState = {
-    display: false
+    display: false,
+    msg: null
 }
 
 export function alert(state = initState, action) {
@@ -11,14 +11,32 @@ export function alert(state = initState, action) {
         case AlertConstants.ACCESS_DENIED:
             return {
                 ...state,
-                display: true
+                display: true,
+                msg: 'access_denied'
             };
-
-        case AlertConstants.RESET_ALERT:
-            clearStorage();
+        case AlertConstants.USER_ROLE_INVALID:
             return {
                 ...state,
-                display: false
+                display: true,
+                msg: 'user_role_invalid'
+            };
+        case AlertConstants.ACC_LOGGED_OUT:
+            return {
+                ...state,
+                display: true,
+                msg: 'acc_logged_out'
+            };
+        case AlertConstants.PAGE_ACCESS_DENIED:
+            return {
+                ...state,
+                display: true,
+                msg: 'page_access_denied'
+            };
+        case AlertConstants.ROLE_INVALID:
+            return {
+                ...state,
+                display: true,
+                msg: 'role_invalid'
             };
 
         default:

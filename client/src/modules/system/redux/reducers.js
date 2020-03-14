@@ -29,11 +29,6 @@ export function system(state = initState, action) {
                 isLoading: false
             };
 
-        case 'RESET_APP':
-            return {
-                log: false
-            };
-
         default:
             return state;
     }

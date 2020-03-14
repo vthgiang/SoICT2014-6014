@@ -1,6 +1,6 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
-import { setStorage, clearStorage } from '../../../config';
+import { setStorage } from '../../../config';
 
 export const AuthActions = {
     login,
@@ -40,9 +40,8 @@ function logout(){
     return dispatch => {
         AuthService.logout()
             .then(res => {
-                clearStorage();
                 dispatch({
-                    type: 'RESET_APP'
+                    type: 'RESET'
                 })
             })
             .catch(err => {
@@ -55,9 +54,8 @@ function logoutAllAccount(){
     return dispatch => {
         AuthService.logoutAllAccount()
             .then(res => {
-                clearStorage();
                 dispatch({
-                    type: 'RESET_APP'
+                    type: 'RESET'
                 })
             })
             .catch(err => {
@@ -93,16 +91,10 @@ function getLinksOfRole(idRole){
                 resolve(res);
             })
             .catch(err => {
-                console.log("Có lỗi xảy ra rồi ông ơi! :(", err.response);
-                if(err.response !== undefined){
-                    var { msg } = err.response.data;
-                    if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
-                        clearStorage();
-                        dispatch({
-                            type: 'RESET_APP'
-                        })
-                    }
-                }
+                console.log(err.response);
+                dispatch({
+                    type: err.response.data.msg
+                });
                 reject(err);
             })
         });
@@ -122,12 +114,9 @@ function refresh(){
             .catch(err => {
                 if(err.response !== undefined){
                     var { msg } = err.response.data;
-                    if(msg === 'ACC_LOGGED_OUT' || msg === 'TOKEN_INVALID' || msg === 'ACCESS_DENIED'){
-                        clearStorage();
-                        dispatch({
-                            type: 'RESET_APP'
-                        })
-                    }
+                    dispatch({
+                        type: msg
+                    });
                 }
             })
     }
@@ -160,14 +149,6 @@ function resetPassword(otp, email, password){
             .catch(err => {
                 console.log("Error: ", err);
             })
-    }
-}
-
-function reset(){
-    return dispatch => {
-        dispatch({
-            type: 'RESET_APP'
-        });
     }
 }
 

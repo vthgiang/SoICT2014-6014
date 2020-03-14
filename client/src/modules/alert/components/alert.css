@@ -1,5 +1,6 @@
 .display-block {
     display: block;
+    background-color: black;
 }
 
 .display-none {

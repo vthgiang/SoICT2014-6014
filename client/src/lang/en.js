@@ -3,6 +3,14 @@ export default {
     messages: {
         not_found: '404! Not found this page',
         language: 'Language setting',
+        alert: {
+            log_again: 'Error! Log in again!',
+            access_denied: 'Access denied! Log in again!',
+            role_invalid: 'Log in again!',
+            page_access_denied: 'Log in again!',
+            user_role_invalid: 'Log in again!',
+            acc_logged_out: 'Log in again!'
+        },
         auth: {
             login: 'Login',
             logout: 'Logout',
