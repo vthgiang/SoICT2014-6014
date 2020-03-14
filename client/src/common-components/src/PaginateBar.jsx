@@ -9,6 +9,7 @@ class PaginateBar extends Component {
             page: 1
          }
         this.inputChange = this.inputChange.bind(this);
+        this.setPaginate = this.setPaginate.bind(this);
     }
 
     inputChange = (e) => {
@@ -20,9 +21,9 @@ class PaginateBar extends Component {
         });
     }
 
-    setPaginate = (e) => {
-        e.preventDefaults();
-        
+    setPaginate = async () => {
+        await window.$(`#search-page`).collapse("hide");
+        await this.props.func(this.state.page);
     }
 
     render() { 
@@ -72,7 +73,7 @@ class PaginateBar extends Component {
                             <button 
                                 className="col-sm-4 btn btn-success" 
                                 style={{ width: "35%", marginLeft: "5%" }} 
-                                onClick={()=>func(this.state.page)}
+                                onClick={this.setPaginate}
                             >{translate('form.search')}</button>
                         </div>
                     </div>
