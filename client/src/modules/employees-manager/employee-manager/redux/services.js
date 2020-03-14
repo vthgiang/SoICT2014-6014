@@ -69,7 +69,7 @@ function updateInformationEmployee(id, data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`employee/update/${id}`, requestOptions).then(handleResponse);
+    return fetch(`/employee/update/${id}`, requestOptions).then(handleResponse);
 }
 
 

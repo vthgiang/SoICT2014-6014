@@ -99,7 +99,6 @@ class ListEmployee extends Component {
     render() {
         var lists;
         var { employeesManager } = this.props;
-        var { department } = this.state;
         if (employeesManager.allEmployee) {
             lists = employeesManager.allEmployee;
         }

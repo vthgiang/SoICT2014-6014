@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { EmployeeInfoActions } from '../redux/actions';
+import {EmployeeManagerActions} from '../../employee-manager/redux/actions'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 class UpdateEmployee extends Component {
@@ -76,7 +77,7 @@ class UpdateEmployee extends Component {
                 }
             })
         } else {
-            // thêm thông tin nhân viên được thây đổi vào state
+            // thêm thông tin nhân viên được thay đổi vào state
             this.setState({
                 informationEmployee: {
                     ...this.state.informationEmployee,
@@ -109,9 +110,12 @@ class UpdateEmployee extends Component {
                     let employeeNumber = this.props.employeesInfo.employee.map(x => x.employeeNumber);
                     let formData = new FormData();
                     formData.append('fileUpload', this.state.avatar);
+                    console.log(employeeNumber);
                     this.props.uploadAvatar(employeeNumber, formData);
                 }
-                this.props.updateInformationPersonal(informationEmployee)
+                if(informationEmployee!==null){
+                    this.props.updateInformationPersonal(informationEmployee)
+                }
                 this.notifysuccess("Cập nhật thông tin thành công");
             } else {
                 this.notifyerror("Thất bại! Xin hãy xác nhận thông tin");
@@ -383,7 +387,7 @@ function mapState(state) {
 const actionCreator = {
     getInformationPersonal: EmployeeInfoActions.getInformationPersonal,
     updateInformationPersonal: EmployeeInfoActions.updateInformationPersonal,
-    uploadAvatar: EmployeeInfoActions.uploadAvatar,
+    uploadAvatar: EmployeeManagerActions.uploadAvatar,
 };
 const connectUpdateEmployee = connect(mapState, actionCreator)(UpdateEmployee);
 export { connectUpdateEmployee as UpdateEmployee };

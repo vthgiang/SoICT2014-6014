@@ -10,13 +10,13 @@ class SideBar extends Component {
         this.state = {}
         this.checkURL = this.checkURL.bind(this);
     }
-    componentWillMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/adminLTE/dist/js/adminlte.min.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
+    // componentWillMount() {
+    //     let script = document.createElement('script');
+    //     script.src = 'lib/adminLTE/dist/js/adminlte.min.js';
+    //     script.async = true;
+    //     script.defer = true;
+    //     document.body.appendChild(script);
+    // }
 
     checkURL = (urlName, linkArr) => {
         var result = false;
