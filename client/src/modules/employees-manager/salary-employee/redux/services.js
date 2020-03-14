@@ -1,6 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
 export const SalaryService = {
     getListSalary,
@@ -17,7 +18,7 @@ function getListSalary(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/salary/paginate`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/salary/paginate`, requestOptions).then(handleResponse);
 
 }
 
@@ -29,7 +30,7 @@ function createNewSalary(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/salary/create`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/salary/create`, requestOptions).then(handleResponse);
 }
 
 // Xoá bảng lương  theo mã nhân viên và tháng lương
@@ -38,7 +39,7 @@ function deleteSalary(id) {
         method: 'DELETE',
     };
 
-    return fetch(`/salary/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/salary/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin bảng lương theo mã nhân viên và tháng lương
@@ -48,5 +49,5 @@ function updateSalary(id,data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`/salary/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/salary/${id}`, requestOptions).then(handleResponse);
 }

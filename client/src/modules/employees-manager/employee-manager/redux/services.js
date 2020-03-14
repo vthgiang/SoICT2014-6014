@@ -1,6 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import { LOCAL_SERVER_API } from '../../../../env';
 import {
     AuthenticateHeader,
     AuthenticateHeaderPATCH
@@ -27,7 +28,7 @@ function getAll(data) {
         body: JSON.stringify(data)
     }
 
-    return fetch(`/employee/paginate`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/paginate`, requestOptions).then(handleResponse);
 }
 
 // Kiểm tra sự tồn tại của MSNV 
@@ -37,7 +38,7 @@ function checkMSNV(employeeNumber) {
         headers: AuthenticateHeader(),
     }
 
-    return fetch(`/employee/checkMSNV/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/checkMSNV/${employeeNumber}`, requestOptions).then(handleResponse);
 }
 
 // Kiểm tra sự tồn tại của MSNV 
@@ -47,7 +48,7 @@ function checkEmail(email) {
         headers: AuthenticateHeader(),
     }
 
-    return fetch(`/employee/checkEmail/${email}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/checkEmail/${email}`, requestOptions).then(handleResponse);
 }
 
 // Thêm mới thông tin nhân viên
@@ -58,7 +59,7 @@ function addNewEmployee(newEmployee) {
         body: JSON.stringify(newEmployee)
     };
 
-    return fetch(`/employee`, requestOptions).then(handleResponse)
+    return fetch(`${ LOCAL_SERVER_API }/employee`, requestOptions).then(handleResponse)
 
 }
 
@@ -69,7 +70,7 @@ function updateInformationEmployee(id, data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`/employee/update/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/update/${id}`, requestOptions).then(handleResponse);
 }
 
 
@@ -82,7 +83,7 @@ function uploadAvatar(employeeNumber, fileUpload) {
         body: fileUpload,
 
     };
-    return fetch(`/employee/avatar/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/avatar/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 
@@ -93,7 +94,7 @@ function updateContract(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`/employee/contract/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/contract/${employeeNumber}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật (thêm) thông tin bằng cấp
@@ -103,7 +104,7 @@ function updateCertificate(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`/employee/certificate/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/certificate/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 
@@ -114,7 +115,7 @@ function updateCertificateShort(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`/employee/certificateShort/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/certificateShort/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 
@@ -125,6 +126,6 @@ function updateFile(employeeNumber, fileUpload) {
         headers: AuthenticateHeaderPATCH(),
         body: fileUpload
     };
-    return fetch(`/employee/file/${employeeNumber}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/file/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }

@@ -2,7 +2,8 @@ import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
 import {
-    TOKEN_SECRET
+    TOKEN_SECRET,
+    LOCAL_SERVER_API
 } from '../../../../env';
 import {
     AuthenticateHeader,
@@ -23,7 +24,7 @@ async function getInformationPersonal() {
     const requestOptions = {
         method: 'GET',
     }
-    return fetch(`/employee/${email}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/${email}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin cá nhân
@@ -36,5 +37,5 @@ async function updateInformationPersonal(information) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(information)
     };
-    return fetch(`/employee/${email}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/employee/${email}`, requestOptions).then(handleResponse);
 }
