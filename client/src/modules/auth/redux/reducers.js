@@ -3,8 +3,7 @@ import { getStorage } from '../../../config';
 
 const token = getStorage();
 
-const initState = {
-    logged: token ? true : false,
+var initState = {
     user: {},
     links: [],
     components: [],
@@ -19,7 +18,6 @@ export function auth(state = initState, action) {
             return {
                 ...state,
                 user: action.payload,
-                logged: true,
                 error: null
             };
 
@@ -33,7 +31,6 @@ export function auth(state = initState, action) {
                     roles: null,
                     company: null
                 },
-                logged: false,
                 error: action.payload.msg
             };
 
@@ -67,7 +64,6 @@ export function auth(state = initState, action) {
         case 'RESET_APP':
             return {
                 ...state,
-                logged: false,
                 user: {
                     _id: null,
                     name: null,

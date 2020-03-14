@@ -5,7 +5,6 @@ import Footer from './footer/components/Footer';
 import Content from './content/components/Content';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { Loading } from '../common-components';
 
 class Layout extends Component {
     constructor(props) {
