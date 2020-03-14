@@ -81,6 +81,7 @@ class CompanyTable extends Component {
                             <th>{translate('table.name')}</th>
                             <th>{translate('table.short_name')}</th>
                             <th>{translate('table.description')}</th>
+                            <th>{translate('manage_company.log')}</th>
                             <th style={{ width: "120px", textAlign: 'center' }}>
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
@@ -103,6 +104,9 @@ class CompanyTable extends Component {
                                             <td>{ com.name }</td>
                                             <td>{ com.short_name }</td>
                                             <td>{ com.description }</td>
+                                            <td>
+                                                Bật
+                                            </td>
                                             <td style={{ textAlign: 'center'}}>
                                                 <CompanyEditForm
                                                     companyID={ com._id }

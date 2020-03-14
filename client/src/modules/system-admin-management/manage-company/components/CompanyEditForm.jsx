@@ -51,9 +51,18 @@ class CompanyEditForm extends Component {
                                     <label>{ translate('manage_company.name') }</label>
                                     <input type="text" className="form-control" name="name" onChange={ this.inputChange } defaultValue={ companyName }/>
                                 </div>
-                                <div className="form-group">
-                                    <label>{ translate('manage_company.short_name') }</label>
-                                    <input type="text" className="form-control" name="short_name" onChange={ this.inputChange } defaultValue={ companyShortName }/>
+                                <div className="row">
+                                    <div className="form-group col-sm-9">
+                                        <label>{ translate('manage_company.short_name') }</label>
+                                        <input type="text" className="form-control" name="short_name" onChange={ this.inputChange } defaultValue={ companyShortName }/>
+                                    </div>
+                                    <div className="form-group col-sm-3">
+                                        <label>{ translate('manage_company.log') }</label>
+                                        <label className="switch" style={{margin: '5px 0px 0px 20px'}}>
+                                            <input type="checkbox" />
+                                            <span className="slider round" />
+                                        </label>
+                                    </div>
                                 </div>
                                 <div className="form-group">
                                     <label>{ translate('manage_company.description') }</label>

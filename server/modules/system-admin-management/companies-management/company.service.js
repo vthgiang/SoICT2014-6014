@@ -41,6 +41,7 @@ exports.edit = async(id, data) => {
     if(data.name !== null) company.name = data.name;
     if(data.description !== null) company.description = data.description;
     if(data.short_name !== null) company.short_name = data.short_name;
+    if(data.log !== null) company.log = data.log;
     if(data.active !== null) company.active = data.active;
     company.save();
 
