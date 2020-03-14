@@ -10,6 +10,13 @@ class SideBar extends Component {
         this.state = {}
         this.checkURL = this.checkURL.bind(this);
     }
+    componentWillMount() {
+        let script = document.createElement('script');
+        script.src = 'lib/adminLTE/dist/js/adminlte.min.js';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+    }
 
     checkURL = (urlName, linkArr) => {
         var result = false;
@@ -37,6 +44,7 @@ class SideBar extends Component {
             path9: "/update-employee",
             path10: "/list-course",
             path11: "/training-plan",
+            path12: "/manage_unit",
 
         }
         const { translate } = this.props;
@@ -154,10 +162,10 @@ class SideBar extends Component {
                             {/* Quan ly nhan su */}
                             {
                                 (this.checkURL(url.path1, links) === true || this.checkURL(url.path2, links) === true || this.checkURL(url.path3, links) === true ||
-                                    this.checkURL(url.path4, links) === true || this.checkURL(url.path5, links) === true ||
+                                    this.checkURL(url.path4, links) === true || this.checkURL(url.path5, links) === true || this.checkURL(url.path12, links) === true ||
                                     this.checkURL(url.path6, links) === true || this.checkURL(url.path7, links) === true) &&
                                 <li className={window.location.pathname === url.path1 || window.location.pathname === url.path2 || window.location.pathname === url.path3 ||
-                                    window.location.pathname === url.path4 || window.location.pathname === url.path5 ||
+                                    window.location.pathname === url.path4 || window.location.pathname === url.path5 || window.location.pathname === url.path12 ||
                                     window.location.pathname === url.path6 || window.location.pathname === url.path7 ? "active treeview menu-open" : "treeview"}>
                                     <a href="#">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
@@ -171,6 +179,14 @@ class SideBar extends Component {
                                                 <a href={url.path1}>
                                                     <i className="fa fa-dashboard" />
                                                     {translate(`menu.dashboard_employee`)}
+                                                </a>
+                                            </li>
+                                        }
+                                        {this.checkURL(url.path12, links) === true &&
+                                            <li className={ window.location.pathname === url.path12 ? "active" : "" }>
+                                                <a href={url.path12}>
+                                                    <i className="fa fa-sitemap" />
+                                                    {translate(`menu.manage_unit`)}
                                                 </a>
                                             </li>
                                         }

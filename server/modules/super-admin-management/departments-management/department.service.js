@@ -18,10 +18,18 @@ exports.getTree = async (id) => {
     var newData = data.map( department => {
         var departmentID = department._id.toString();
         var departmentName = department.name;
+        var departmentDescription = department.description;
+        var departmentDean = department.dean.toString();
+        var departmentViceDean = department.vice_dean.toString();
+        var employee = department.employee.toString();
         var departmentParent = department.parent !== null ? department.parent.toString() : null;
         return {
             id: departmentID,
             name: departmentName,
+            description: departmentDescription,
+            dean:departmentDean,
+            vice_dean:departmentViceDean,
+            employee:employee,
             parent_id: departmentParent
         }
     });

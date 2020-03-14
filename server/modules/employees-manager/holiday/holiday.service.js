@@ -4,6 +4,8 @@ const Holiday = require('../../../models/holiday.model');
 exports.get = async (company) => {
     var listHoliday = await Holiday.find({
         company: company
+    }).sort({
+        'startDate': 'ASC'
     })
     return listHoliday;
 
@@ -11,18 +13,16 @@ exports.get = async (company) => {
 
 // thêm mới ngày nghỉ lễ tết
 exports.create = async (data, company) => {
+    var partStart = data.startDate.split('-');
+    var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+    var partEnd = data.endDate.split('-');
+    var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
     var createHoliday = await Holiday.create({
         company: company,
-        startDate: data.startDate,
-        endDate: data.endDate,
+        startDate: startDate,
+        endDate: endDate,
         reason: data.reason,
     });
-    // var content = {
-    //     company: company,
-    //     startDate: data.startDate,
-    //     endDate: data.type,
-    //     reason: data.reason,
-    // }
     return createHoliday
 }
 
@@ -34,24 +34,22 @@ exports.delete = async (id) => {
 }
 
 // Update thông tin nghỉ lễ tết
-exports.update = async (id, data, company) => {
+exports.update = async (id, data) => {
+    var partStart = data.startDate.split('-');
+    var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+    var partEnd = data.endDate.split('-');
+    var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
     var holidayChange = {
-        company: company,
-        startDate: data.startDate,
-        endDate: data.endDate,
+        startDate: startDate,
+        endDate: endDate,
         reason: data.reason,
     };
-    await Praise.findOneAndUpdate({
+    await Holiday.findOneAndUpdate({
         _id: id
     }, {
         $set: holidayChange
     });
-    var updateHoliday = {
-        _id: id,
-        company: company,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        reason: data.reason,
-    }
-    return updateHoliday;
+    return await Holiday.findOne({
+        _id: id
+    })
 }

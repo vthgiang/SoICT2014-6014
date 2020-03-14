@@ -54,12 +54,12 @@ class ModalEditSabbatical extends Component {
             this.props.updateSabbatical(this.state.id, { ...this.state, startDate, endDate });
             window.$(`#modal-editSabbatical-${this.props.data._id}`).modal("hide");
         }
-
     }
 
     render() {
         const { translate } = this.props;
         var data = this.state;
+        console.log(data)
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-editSabbatical-${data.id}`} title={translate('sabbatical.infor_sabbatical')} data-toggle="modal"><i className="material-icons">view_list</i></a>

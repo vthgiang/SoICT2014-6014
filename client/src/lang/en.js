@@ -93,6 +93,7 @@ export default {
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
+            manage_unit:'manage units',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -398,6 +399,14 @@ export default {
             discipline: 'Discipline',
             historySalary:'History of salary',
             sabbatical:'sabbatical information'
+        },
+        holiday: {
+            start_date: 'Start day',
+            end_Date: 'End day',
+            description: 'Description',
+            check_start_Date: 'Start day required',
+            check_end_Date: 'End day required',
+            check_description: 'Description required'
         },
 
         notification: {
