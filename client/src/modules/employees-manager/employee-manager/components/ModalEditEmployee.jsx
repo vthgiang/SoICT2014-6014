@@ -739,7 +739,7 @@ class ModalEditEmployee extends Component {
         }
     }
     render() {
-        console.log(this.state.employeeNew);
+        //console.log(this.state.employeeNew);
         var id = this.props.employee[0]._id;
         var formatter = new Intl.NumberFormat();
         var employee = this.props.employee;

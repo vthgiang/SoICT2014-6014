@@ -6,14 +6,14 @@ import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
 import { ModalEditPraise } from './ModalEditPraise';
 import { ModalDeletePraise } from './ModalDeletePraise';
-import {ActionColumn} from '../../../../common-components/src/ActionColumn';
-import {PaginateBar} from '../../../../common-components/src/PaginateBar';
-//import '../../employee-manager/components/listemployee.css';
+import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
 class TabPraise extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "",
+            position: "All",
             number: "",
             employeeNumber: "",
             department: "All",
@@ -33,6 +33,34 @@ class TabPraise extends Component {
         script.defer = true;
         document.body.appendChild(script);
         this.props.getListPraise(this.state);
+        this.props.getDepartment();
+        let script1 = document.createElement('script');
+        script1.src = 'lib/main/js/GridSelect.js';
+        script1.async = true;
+        script1.defer = true;
+        document.body.appendChild(script1);
+    }
+
+    displayTreeSelect = (data, i) => {
+        i = i + 1;
+        if (data !== undefined) {
+            if (typeof (data.children) === 'undefined') {
+                return (
+                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
+                )
+            } else {
+                return (
+                    <React.Fragment key={data.id}>
+                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
+                        {
+                            data.children.map(tag => this.displayTreeSelect(tag, i))
+                        }
+                    </React.Fragment>
+                )
+            }
+
+        }
+        else return null
     }
 
     handleResizeColumn = () => {
@@ -85,8 +113,18 @@ class TabPraise extends Component {
         this.props.getListPraise(this.state);
     }
     render() {
+        const { tree, list } = this.props.department;
         const { translate } = this.props;
-        var listPraise = "";
+        var listPraise = "", listDepartment = list, listPosition;
+        for (let n in listDepartment) {
+            if (listDepartment[n]._id === this.state.department) {
+                listPosition = [
+                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
+                    { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
+                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
+                ]
+            }
+        }
         if (this.props.discipline.isLoading === false) {
             listPraise = this.props.discipline.listPraise;
         }
@@ -104,33 +142,12 @@ class TabPraise extends Component {
                                     <label htmlFor="fullname" style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
                                 </div>
                                 <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <select className="form-group" style={{ height: 32, width: "100%" }}>
-                                        <option value="các đơn vị">-- Tất cả --</option>
-                                        <optgroup label="MARKETING & NCPT sản phẩm">
-                                            <option value="Phòng MARKETING">Phòng MARKETING</option>
-                                            <option value="Phòng nghiên cứu phát triển sản phẩm">Phòng nghiên cứu phát triển sản phẩm</option>
-                                        </optgroup>
-                                        <optgroup label="Quản trị nhân sự">
-                                            <option value="Phòng hành chính - quản trị">Phòng hành chính - quản trị</option>
-                                            <option value="Tổ hỗ trợ">Tổ hỗ trợ</option>
-                                        </optgroup>
-                                        <optgroup label="Tài chính - kế toán">
-                                            <option>Phòng kế toàn doanh nghiệp</option>
-                                            <option>Phòng kế toàn ADMIN</option>
-                                        </optgroup>
-                                        <optgroup label="Nhà máy sản xuất">
-                                            <option>Phòng công nghệ phát triển sản phẩm</option>
-                                            <option>Văn phòng xưởng</option>
-                                            <option>Phòng đảm bảo chất lượng</option>
-                                            <option>Phòng kiểm tra chất lượng</option>
-                                            <option>Phòng kế hoạch vật tư</option>
-                                            <option>Xưởng thuốc bột GMP</option>
-                                            <option>Xưởng thuốc nước GMP</option>
-                                            <option>Xưởng thực phẩm chức năng</option>
-                                        </optgroup>
-                                        <option value="Phòng kinh doanh VIAVET">Phòng kinh doanh VIAVET</option>
-                                        <option value="Phòng kinh doanh SANFOVET">Phòng kinh doanh SANFOVET</option>
-                                        <option value="">Ban kinh doanh dự án</option>
+                                    <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
+                                        <option value="All" level={1}>--Tất cả---</option>
+                                        {
+                                            tree !== null &&
+                                            tree.map((tree, index) => this.displayTreeSelect(tree, 0))
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -139,11 +156,14 @@ class TabPraise extends Component {
                                     <label htmlFor="fullname" style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
                                 </div>
                                 <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <select className="form-group" defaultValue="1" style={{ height: 32, width: "99%" }}>
-                                        <option value="1">--Tất cả--</option>
-                                        <option value="2">Nhân viên</option>
-                                        <option value="4">Trưởng phòng</option>
-                                        <option value="5">Phó phòng</option>
+                                    <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
+                                        <option value="All">--Tất cả--</option>
+                                        {
+                                            listPosition !== undefined &&
+                                            listPosition.map((position, index) => (
+                                                <option key={index} value={position._id}>{position.name}</option>
+                                            ))
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -215,7 +235,7 @@ class TabPraise extends Component {
                                 </tbody>
                             </table>
                         </div>
-                        <PaginateBar pageTotal={pageTotal?pageTotal:0} currentPage={page} func={this.setPage} />
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
                 <ModalAddPraise />
@@ -224,11 +244,12 @@ class TabPraise extends Component {
     };
 }
 function mapState(state) {
-    const { discipline } = state;
-    return { discipline };
+    const { discipline,department } = state;
+    return { discipline,department };
 };
 
 const actionCreators = {
+    getDepartment: DepartmentActions.get,
     getListPraise: DisciplineActions.getListPraise,
 };
 

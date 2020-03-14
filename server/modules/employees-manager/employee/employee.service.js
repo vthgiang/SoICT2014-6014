@@ -4,12 +4,54 @@ const Discipline = require('../../../models/discipline.model');
 const Praise = require('../../../models/praise.model');
 const Sabbatical = require('../../../models/sabbatical.model');
 const Salary = require('../../../models/salary.model');
+const Department = require('../../../models/department.model');
+const UserRole = require('../../../models/user_role.model');
+const User = require('../../../models/user.model');
 
 // Lấy dánh sách nhân viên
 exports.get = async (data, company) => {
     var keySearch = {
         company: company
     };
+    if (data.department !== "All") {
+        var department = await Department.findById(data.department); //lấy thông tin đơn vị
+        if (data.position === "All") {
+            var roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của đơn vào 1 arr
+        } else {
+            var roles = [data.position]
+        }
+        // lấy danh sách người dùng theo phòng ban và chức danh
+        var userRoles = await UserRole.find({
+            roleId: {
+                $in: roles
+            }
+        });
+        var userId = userRoles.map(userRole => userRole.userId) //lấy userID vào 1 arr
+        // Lấy email của người dùng theo phòng ban và chức danh
+        var emailUsers = await User.find({
+            _id: {
+                $in: userId
+            }
+        }, {
+            email: 1
+        })
+        // Thêm tìm kiếm nhân viên theo phòng ban, chức danh vào keySearch
+        if (emailUsers.length !== 0) {
+            keySearch = {
+                ...keySearch,
+                $or: []
+            }
+            for (let x in emailUsers) {
+                keySearch = {
+                    ...keySearch,
+                    $or: [...keySearch.$or, {
+                        emailCompany: emailUsers[x].email
+                    }]
+                }
+            }
+        }
+    }
+    // Thêm key tìm kiếm nhân viên theo MSNV vào keySearch
     if (data.employeeNumber !== "") {
         keySearch = {
             ...keySearch,
@@ -19,6 +61,7 @@ exports.get = async (data, company) => {
             }
         }
     };
+    // Thêm key tìm kiếm nhân viên theo giới tính vào keySearch
     if (data.gender !== "All") {
         keySearch = {
             ...keySearch,
@@ -28,9 +71,12 @@ exports.get = async (data, company) => {
             }
         }
     };
+    // Số lượng danh sách nhân viên
     var totalList = await Employee.count(keySearch);
+
     var allEmployee = await Employee.find(keySearch, {
-            field1: 1
+            field1: 1,
+            emailCompany: 1
         })
         .sort({
             'createDate': 'desc'
