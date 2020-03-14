@@ -7,7 +7,7 @@ import Notifications from './Notifications';
 import Profile from './Profile';
 import Roles from './Roles';
 import Language from './Language';
-import { getStorage } from '../../../config';
+//import { getStorage } from '../../../config';
 
 class MainHeaderMenu extends Component {
 
@@ -21,7 +21,7 @@ class MainHeaderMenu extends Component {
     }
 
     render() {
-        const { auth, translate } = this.props;
+        //const { auth, translate } = this.props;
         return (
             <React.Fragment>
                 <div className="navbar-custom-menu">

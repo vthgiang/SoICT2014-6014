@@ -6,7 +6,6 @@ import {
 } from '../../../../env';
 import {
     AuthenticateHeader,
-    AuthenticateHeaderPATCH,
     getStorage
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
@@ -17,7 +16,7 @@ export const EmployeeService = {
 }
 
 // lấy thông tin cá nhân
-async function getInformationPersonal(){
+async function getInformationPersonal() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var email = verified.email;
@@ -37,6 +36,5 @@ async function updateInformationPersonal(information) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(information)
     };
-    return fetch(`employee/${email}`, requestOptions).then(handleResponse);
+    return fetch(`/employee/${email}`, requestOptions).then(handleResponse);
 }
-

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { TabDiscipline } from './TabDiscipline';
 import { TabPraise } from './TabPraise';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 class Discipline extends Component {
     render() {
         const { translate } = this.props;

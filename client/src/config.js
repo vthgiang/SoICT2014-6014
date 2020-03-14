@@ -38,11 +38,11 @@ export const FingerPrint = () => {
 
 export const AuthenticateHeaderPATCH = (name='jwt') => {
     const token = getStorage(name);
-    const curentRole = getStorage('curentRole');
+    const currentRole = getStorage('currentRole');
     const browserFinger = getBrowserFingerprint();
     return {
         'auth-token': token,
-        'current_role': curentRole,
+        'current-role': currentRole,
         'browser-finger': browserFinger,
     }
 }

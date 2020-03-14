@@ -33,8 +33,6 @@ class ModalAddExperience extends Component {
     handleCloseModale = () => {
         this.setState({
             unit: "",
-            startDate: "",
-            endDate: "",
             position: "",
             startDate: "",
             endDate: "",
