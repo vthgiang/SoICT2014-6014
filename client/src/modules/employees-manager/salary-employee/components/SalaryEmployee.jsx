@@ -10,13 +10,13 @@ import { ModalDeleteSalary } from './ModalDeleteSalary';
 import { ModalEditSalary } from './ModalEditSalary';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
-//import '../../employee-manager/components/listemployee.css';
+import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
 
 class SalaryEmployee extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "",
+            position: "All",
             month: "",
             employeeNumber: "",
             department: "All",
@@ -36,7 +36,35 @@ class SalaryEmployee extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+        let script1 = document.createElement('script');
+        script1.src = 'lib/main/js/GridSelect.js';
+        script1.async = true;
+        script1.defer = true;
+        document.body.appendChild(script1);
         this.props.getListSalary(this.state);
+        this.props.getDepartment();
+    }
+
+    displayTreeSelect = (data, i) => {
+        i = i + 1;
+        if (data !== undefined) {
+            if (typeof (data.children) === 'undefined') {
+                return (
+                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
+                )
+            } else {
+                return (
+                    <React.Fragment key={data.id}>
+                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
+                        {
+                            data.children.map(tag => this.displayTreeSelect(tag, i))
+                        }
+                    </React.Fragment>
+                )
+            }
+
+        }
+        else return null
     }
 
     // function: notification the result of an action
@@ -113,9 +141,19 @@ class SalaryEmployee extends Component {
         return [month, year].join('-');
     }
     render() {
+        const { tree, list } = this.props.department;
         const { translate } = this.props;
         var formatter = new Intl.NumberFormat();
-        var listSalary = "";
+        var listSalary = "", listDepartment = list, listPosition;
+        for (let n in listDepartment) {
+            if (listDepartment[n]._id === this.state.department) {
+                listPosition = [
+                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
+                    { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
+                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
+                ]
+            }
+        }
         if (this.props.salary.isLoading === false) {
             listSalary = this.props.salary.listSalary;
         }
@@ -138,33 +176,12 @@ class SalaryEmployee extends Component {
                                             <label style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
                                         </div>
                                         <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <select className="form-control">
-                                                <option value="các đơn vị">-- Tất cả --</option>
-                                                <optgroup label="MARKETING & NCPT sản phẩm">
-                                                    <option value="Phòng MARKETING">Phòng MARKETING</option>
-                                                    <option value="Phòng nghiên cứu phát triển sản phẩm">Phòng nghiên cứu phát triển sản phẩm</option>
-                                                </optgroup>
-                                                <optgroup label="Quản trị nhân sự">
-                                                    <option value="Phòng hành chính - quản trị">Phòng hành chính - quản trị</option>
-                                                    <option value="Tổ hỗ trợ">Tổ hỗ trợ</option>
-                                                </optgroup>
-                                                <optgroup label="Tài chính - kế toán">
-                                                    <option>Phòng kế toàn doanh nghiệp</option>
-                                                    <option>Phòng kế toàn ADMIN</option>
-                                                </optgroup>
-                                                <optgroup label="Nhà máy sản xuất">
-                                                    <option>Phòng công nghệ phát triển sản phẩm</option>
-                                                    <option>Văn phòng xưởng</option>
-                                                    <option>Phòng đảm bảo chất lượng</option>
-                                                    <option>Phòng kiểm tra chất lượng</option>
-                                                    <option>Phòng kế hoạch vật tư</option>
-                                                    <option>Xưởng thuốc bột GMP</option>
-                                                    <option>Xưởng thuốc nước GMP</option>
-                                                    <option>Xưởng thực phẩm chức năng</option>
-                                                </optgroup>
-                                                <option value="Phòng kinh doanh VIAVET">Phòng kinh doanh VIAVET</option>
-                                                <option value="Phòng kinh doanh SANFOVET">Phòng kinh doanh SANFOVET</option>
-                                                <option value="">Ban kinh doanh dự án</option>
+                                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
+                                                <option value="All" level={1}>--Tất cả---</option>
+                                                {
+                                                    tree !== null &&
+                                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
+                                                }
                                             </select>
                                         </div>
                                     </div>
@@ -173,11 +190,14 @@ class SalaryEmployee extends Component {
                                             <label style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
                                         </div>
                                         <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <select className="form-control">
-                                                <option>--Tất cả--</option>
-                                                <option>Trưởng phòng</option>
-                                                <option>Phó trưởng phòng</option>
-                                                <option>Nhân viên</option>
+                                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
+                                                <option value="All">--Tất cả--</option>
+                                                {
+                                                    listPosition !== undefined &&
+                                                    listPosition.map((position, index) => (
+                                                        <option key={index} value={position._id}>{position.name}</option>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
                                     </div>
@@ -237,7 +257,7 @@ class SalaryEmployee extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('salary_employee.no_data')}</center></td></tr> :
+                                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('table.no_data')}</center></td></tr> :
                                                 listSalary.map((x, index) => {
 
                                                     let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
@@ -273,7 +293,7 @@ class SalaryEmployee extends Component {
                                     </table>
 
                                 </div>
-                                <PaginateBar pageTotal={pageTotal?pageTotal:0} currentPage={page} func={this.setPage} />
+                                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                             </div>
                         </div>
 
@@ -289,11 +309,12 @@ class SalaryEmployee extends Component {
 }
 
 function mapState(state) {
-    const { salary } = state;
-    return { salary };
+    const { salary, department } = state;
+    return { salary, department };
 };
 
 const actionCreators = {
+    getDepartment: DepartmentActions.get,
     getListSalary: SalaryActions.getListSalary,
 };
 

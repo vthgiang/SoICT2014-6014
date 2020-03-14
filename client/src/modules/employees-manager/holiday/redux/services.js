@@ -1,6 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import { LOCAL_SERVER_API } from '../../../../env';
 import {
     AuthenticateHeader
 } from '../../../../config';
@@ -18,7 +19,7 @@ function getListHoliday() {
         headers: AuthenticateHeader(),
     };
 
-    return fetch(`/holiday/`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/holiday/`, requestOptions).then(handleResponse);
 
 }
 
@@ -30,7 +31,7 @@ function createNewHoliday(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/holiday/create`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/holiday/create`, requestOptions).then(handleResponse);
 }
 
 // Xoá thông tin nghỉ lễ tết
@@ -39,7 +40,7 @@ function deleteHoliday(id) {
         method: 'DELETE',
     };
 
-    return fetch(`/holiday/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/holiday/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin nghỉ lễ tết
@@ -49,5 +50,5 @@ function updateHoliday(id, data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`/holiday/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/holiday/${id}`, requestOptions).then(handleResponse);
 }

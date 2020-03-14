@@ -1,6 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import { LOCAL_SERVER_API } from '../../../../env';
 import {
     AuthenticateHeader
 } from '../../../../config';
@@ -19,7 +20,7 @@ function getListSabbatical(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/sabbatical/paginate`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/sabbatical/paginate`, requestOptions).then(handleResponse);
 
 }
 
@@ -31,7 +32,7 @@ function createNewSabbatical(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/sabbatical/create`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/sabbatical/create`, requestOptions).then(handleResponse);
 }
 
 // Xoá thông tin nghỉ phép
@@ -40,7 +41,7 @@ function deleteSabbatical(id) {
         method: 'DELETE',
     };
 
-    return fetch(`/sabbatical/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/sabbatical/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin nghỉ phép
@@ -50,5 +51,5 @@ function updateSabbatical(id, data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`/sabbatical/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/sabbatical/${id}`, requestOptions).then(handleResponse);
 }

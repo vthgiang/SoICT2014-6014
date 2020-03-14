@@ -26,11 +26,11 @@ class DashBoardEmployees extends Component {
         }
     }
     componentDidMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/DashBoardEmployee.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+        // let script = document.createElement('script');
+        // script.src = 'lib/main/js/DashBoardEmployee.js';
+        // script.async = true;
+        // script.defer = true;
+        // document.body.appendChild(script);
     }
     render() {
         return (

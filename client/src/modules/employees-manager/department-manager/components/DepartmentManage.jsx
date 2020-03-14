@@ -85,7 +85,6 @@ class DepartmentManage extends Component {
     }
     render() {
         const { tree } = this.props.department;
-        console.log(tree);
         const { translate } = this.props;
         return (
             <div className="row">

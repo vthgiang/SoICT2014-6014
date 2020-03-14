@@ -1,6 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import { LOCAL_SERVER_API } from '../../../../env';
 import {
     AuthenticateHeader
 } from '../../../../config';
@@ -23,7 +24,7 @@ function getListDiscipline(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/discipline/paginate`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/discipline/paginate`, requestOptions).then(handleResponse);
 
 }
 
@@ -35,7 +36,7 @@ function createNewDiscipline(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/discipline/create`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/discipline/create`, requestOptions).then(handleResponse);
 }
 
 // Xoá thông tin kỷ luật của nhân viên
@@ -44,7 +45,7 @@ function deleteDiscipline(id) {
         method: 'DELETE',
     };
 
-    return fetch(`/discipline/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/discipline/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin kỷ luật của nhân viên
@@ -54,7 +55,7 @@ function updateDiscipline(id, data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`/discipline/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/discipline/${id}`, requestOptions).then(handleResponse);
 }
 
 
@@ -68,7 +69,7 @@ function getListPraise(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/praise/paginate`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/praise/paginate`, requestOptions).then(handleResponse);
 
 }
 
@@ -80,7 +81,7 @@ function createNewPraise(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/praise/create`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/praise/create`, requestOptions).then(handleResponse);
 }
 
 // Xoá thông tin khen thưởng
@@ -89,7 +90,7 @@ function deletePraise(id) {
         method: 'DELETE',
     };
 
-    return fetch(`/praise/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/praise/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin khen thưởng
@@ -99,5 +100,5 @@ function updatePraise(id, data) {
         headers:AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`/praise/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/praise/${id}`, requestOptions).then(handleResponse);
 }

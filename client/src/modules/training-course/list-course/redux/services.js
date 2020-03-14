@@ -1,6 +1,7 @@
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
+import { LOCAL_SERVER_API } from '../../../../env';
 import {
     AuthenticateHeader
 } from '../../../../config';
@@ -19,7 +20,7 @@ function getListCourse(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/educationProgram/paginate`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/educationProgram/paginate`, requestOptions).then(handleResponse);
 
 }
 
@@ -31,7 +32,7 @@ function createNewCourse(data) {
         body: JSON.stringify(data)
     };
 
-    return fetch(`/educationProgram/`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/educationProgram/`, requestOptions).then(handleResponse);
 }
 
 // Xoá một chương trình đào tạo
@@ -40,7 +41,7 @@ function deleteCourse(numberEducation) {
         method: 'DELETE',
     };
 
-    return fetch(`/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin chương trình đào tạo
@@ -52,5 +53,5 @@ function updateCourse(numberEducation, data) {
         },
         body: JSON.stringify(data)
     };
-    return fetch(`/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);
 }

@@ -1,11 +1,66 @@
 const Sabbatical = require('../../../models/sabbatical.model');
 const Employee = require('../../../models/employee.model');
-
+const Department = require('../../../models/department.model');
+const UserRole = require('../../../models/user_role.model');
+const User = require('../../../models/user.model');
 //lấy danh sách thông tin kỷ luật
 exports.get = async (data, company) => {
     var keySearch = {
         company: company
     };
+    var keySearchEmployee;
+    // Bắt sựu kiện đơn vị tìm kiếm khác All 
+    if (data.department !== "All") {
+        var department = await Department.findById(data.department); //lấy thông tin đơn vị
+        if (data.position === "All") {
+            var roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của đơn vào 1 arr
+        } else {
+            var roles = [data.position]
+        }
+        // lấy danh sách người dùng theo phòng ban và chức danh
+        var userRoles = await UserRole.find({
+            roleId: {
+                $in: roles
+            }
+        });
+        var userId = userRoles.map(userRole => userRole.userId); //lấy userID vào 1 arr
+        // Lấy email của người dùng theo phòng ban và chức danh
+        var emailUsers = await User.find({
+            _id: {
+                $in: userId
+            }
+        }, {
+            email: 1
+        });
+        emailCompany = emailUsers.map(user => user.email)
+        keySearchEmployee={
+            ...keySearchEmployee,
+            emailCompany:{
+                $in:emailCompany
+            }
+        }
+    }
+    //Bắt sựu kiện MSNV tìm kiếm khác ""
+    if (data.employeeNumber !== "") {
+        keySearchEmployee = {
+            ...keySearchEmployee,
+            employeeNumber: {
+                $regex: data.employeeNumber,
+                $options: "i"
+            }
+        }
+    }
+    if (keySearchEmployee !== undefined) {
+        var employeeinfo = await Employee.find(keySearchEmployee);
+        var employee = employeeinfo.map(employeeinfo =>employeeinfo._id);
+        keySearch={
+            ...keySearch,
+            employee:{
+                $in:employee
+            }
+        }
+
+    }
     if (data.status !== "All") {
         keySearch = {
             ...keySearch,
@@ -25,29 +80,8 @@ exports.get = async (data, company) => {
             }
         }
     };
-    if (data.employeeNumber !== "") {
-        var employeeinfo = await Employee.find({
-            employeeNumber: {
-                $regex: data.employeeNumber,
-                $options: "i"
-            }
-        });
-        if (employeeinfo.length !== 0) {
-            keySearch = {
-                ...keySearch,
-                $or: []
-            }
-            for (let x in employeeinfo) {
-                keySearch = {
-                    ...keySearch,
-                    $or: [...keySearch.$or, {
-                        employee: employeeinfo[x]._id
-                    }]
-                }
-            }
-        }
-    };
     var totalList = await Sabbatical.count(keySearch);
+    console.log(totalList)
     var listSabbatical = await Sabbatical.find(keySearch).populate({
             path: 'employee',
             model: Employee
@@ -60,6 +94,7 @@ exports.get = async (data, company) => {
         totalList,
         listSabbatical
     }
+    console.log(content);
     return content;
 
 }
