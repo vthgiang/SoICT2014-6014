@@ -80,7 +80,8 @@ class CompanyTable extends Component {
                             <th>{translate('manage_company.name')}</th>
                             <th>{translate('manage_company.short_name')}</th>
                             <th>{translate('manage_company.description')}</th>
-                            <th style={{ width: "140px"}}>{translate('manage_company.log')}</th>
+                            <th style={{ width: "130px"}}>{translate('manage_company.log')}</th>
+                            <th style={{ width: "130px"}}>{translate('manage_company.service')}</th>
                             <th style={{ width: "120px", textAlign: 'center' }}>
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
@@ -104,6 +105,7 @@ class CompanyTable extends Component {
                                             <td>{ com.short_name }</td>
                                             <td>{ com.description }</td>
                                             <td>{ com.log ? <p><i className="fa fa-circle text-success" /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
+                                            <td>{ com.active ? <p><i className="fa fa-circle text-success" /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
                                                 <CompanyEditForm
                                                     companyID={ com._id }

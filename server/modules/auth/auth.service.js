@@ -6,7 +6,7 @@ const {loginValidation} = require('./auth.validation');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
 
-exports.login = async (browserFinger, data) => { // data bao gom email va password
+exports.login = async (fingerprint, data) => { // data bao gom email va password
 
     const {error} = loginValidation(data);
     if(error) throw {msg: error.details[0].message};
@@ -19,31 +19,27 @@ exports.login = async (browserFinger, data) => { // data bao gom email va passwo
         ]);
 
     if(!user) throw {msg: "EMAIL_INVALID"};
-    if(!user.company.active) throw ({msg: 'SERVICE_OFF'});
-
     const validPass = await bcrypt.compare(data.password, user.password);
-
     if(!validPass) {
         if(user.active) user.status = user.status + 1;
         if(user.status > 5){
             user.active = false;
             user.status = 0;
             user.save();
-
             throw { msg: 'WRONG_5_TIMES_BLOCKED_ACCOUNT'};
         }
         user.save();
-
         throw {msg: 'PASSWORD_INVALID'};
     }
     if(!user.active) throw { msg: 'ACCOUNT_HAS_BEEN_LOCKED'};
+    if(!user.company.active) throw ({msg: 'COMPANY_SERVICE_OFF'});
 
     const token = await jwt.sign(
         {
             _id: user._id, 
             email: user.email, 
             company: user.company, 
-            browserFinger: browserFinger
+            fingerprint: fingerprint
         }, 
         process.env.TOKEN_SECRET
     );

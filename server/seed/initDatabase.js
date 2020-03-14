@@ -35,11 +35,12 @@ const seedDatabase = async () => {
         { name: 'tutao' }
     ]);
 
-    //Tạo dữ liệu cho công ty vnist
+    //Tạo dữ liệu về hệ thống quản lý công việc cho system admin
     var vnist = await Company.create({
-        name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
-        short_name: 'vnist',
-        description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
+        name: 'Quản lý công việc',
+        short_name: 'qlcv',
+        customer: false,
+        description: 'Hệ thống quản lý công việc cho các doanh nghiệp/công ty'
     });
 
     //Tạo tài khoản systemadmin cho hệ thống quản lý công việc

@@ -9,7 +9,7 @@ const Company = require('../models/company.model');
 exports.auth = async (req, res, next) => {
     try {
         const token = req.header('auth-token');//JWT nhận từ người dùng
-        const browserFinger = req.header('browser-finger'); //chữ ký của trình duyệt người dùng - fingerprint
+        const fingerprint = req.header('fingerprint'); //chữ ký của trình duyệt người dùng - fingerprint
         const role = await Role.findById(req.header('current-role')); //current role của người dùng
 
         /**
@@ -26,7 +26,7 @@ exports.auth = async (req, res, next) => {
          * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
          * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
          */
-        if(verified.browserFinger !== browserFinger) throw ({ msg: 'ACCESS_DENIED' });
+        if(verified.fingerprint !== fingerprint) throw ({ msg: 'ACCESS_DENIED' });
 
         req.user = verified; 
         req.token = token;
@@ -75,8 +75,8 @@ exports.auth = async (req, res, next) => {
                     company: req.user.company._id 
                 });
                 const roleArr = [roleId].concat(role.parents);
-                console.log("ORIGIN :", origin);
-                console.log("REFERER :", referer);
+                console.log("ORIGIN :", origin); //host của bên client VD: http://localhost:3000
+                console.log("REFERER :", referer); //đường dẫn mà client đang truy cập VD: http://localhost:3000/manage-user
                 console.log("URL :", url);
                 console.log("LINK :", link);
                 console.log("roleArr :", roleArr);
