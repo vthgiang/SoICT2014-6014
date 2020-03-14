@@ -83,16 +83,10 @@ export function company(state = initState, action) {
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
-                state.list[index].name = action.payload.name;
-                state.list[index].description = action.payload.description;
-                state.list[index].short_name = action.payload.short_name;
-                state.list[index].active = action.payload.active;
+                state.list[index] = action.payload;
             }
             if(indexPaginate !== -1){
-                state.listPaginate[indexPaginate].name = action.payload.name;
-                state.listPaginate[indexPaginate].description = action.payload.description;
-                state.listPaginate[indexPaginate].short_name = action.payload.short_name;
-                state.listPaginate[indexPaginate].active = action.payload.active;
+                state.listPaginate[indexPaginate] = action.payload;
             }
             return {
                 ...state,

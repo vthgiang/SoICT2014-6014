@@ -67,27 +67,27 @@ exports.auth = async (req, res, next) => {
                  * Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
                  * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
                  */
-                // var origin = JSON.stringify(req.headers.origin);
-                // var referer = JSON.stringify(req.headers.referer);
-                // var url = referer.substr(origin.length - 1, referer.length - origin.length);
-                // const link = await Link.findOne({
-                //     url,
-                //     company: req.user.company._id 
-                // });
-                // const roleArr = [roleId].concat(role.parents);
-                // console.log("ORIGIN :", origin);
-                // console.log("REFERER :", referer);
-                // console.log("URL :", url);
-                // console.log("LINK :", link);
-                // console.log("roleArr :", roleArr);
-                // console.log("link, role: ",link._id, roleArr)
-                // const privilege = await Privilege.findOne({
-                //     resourceId: link._id,
-                //     resourceType: 'Link',
-                //     roleId: '5e6b45bcfefe0f30d0787d75'
-                // });
-                // console.log("PRI :", privilege);
-                // if(privilege === null) throw ({ msg: 'PRIVILEGE_DENIED' });
+                var origin = JSON.stringify(req.headers.origin);
+                var referer = JSON.stringify(req.headers.referer);
+                var url = referer.substr(origin.length - 1, referer.length - origin.length);
+                const link = await Link.findOne({
+                    url,
+                    company: req.user.company._id 
+                });
+                const roleArr = [roleId].concat(role.parents);
+                console.log("ORIGIN :", origin);
+                console.log("REFERER :", referer);
+                console.log("URL :", url);
+                console.log("LINK :", link);
+                console.log("roleArr :", roleArr);
+                console.log("link, role: ",link._id, roleArr)
+                const privilege = await Privilege.findOne({
+                    resourceId: link._id,
+                    resourceType: 'Link',
+                    roleId: { $in: roleArr }
+                });
+                console.log("PRI :", privilege);
+                if(privilege === null) throw ({ msg: 'PAGE_ACCESS_DENIED' });
             }
 
             next();

@@ -10,13 +10,6 @@ class SideBar extends Component {
         this.state = {}
         this.checkURL = this.checkURL.bind(this);
     }
-    componentWillMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/adminLTE/dist/js/adminlte.min.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
 
     checkURL = (urlName, linkArr) => {
         var result = false;
@@ -63,16 +56,6 @@ class SideBar extends Component {
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree">
-                            <li className="header">MENU</li>
-                            {
-                                this.checkURL('/', links) === true &&
-                                <Item
-                                    key='home'
-                                    name='home'
-                                    path='/'
-                                    icon='fa fa-home'
-                                />
-                            }
                             {
                                 this.checkURL('/notifications', links) === true &&
                                 <React.Fragment>
@@ -85,7 +68,16 @@ class SideBar extends Component {
                                     />
                                 </React.Fragment>
                             }
-                            <li className="header">MANAGEMENT</li>
+                            <li className="header">MENU</li>
+                            {
+                                this.checkURL('/', links) === true &&
+                                <Item
+                                    key='home'
+                                    name='home'
+                                    path='/'
+                                    icon='fa fa-home'
+                                />
+                            }
                             {
                                 this.checkURL('/system', links) === true &&
                                 <Item

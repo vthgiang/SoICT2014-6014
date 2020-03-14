@@ -70,12 +70,10 @@ class LinkInfoForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_page.roles') }</label>
                             <select 
-                                name="roles"
                                 className="form-control select2" 
                                 multiple="multiple" 
                                 style={{ width: '100%' }} 
-                                onChange={ this.inputChange }
-                                value={ linkRoles }
+                                defaultValue={ linkRoles }
                                 ref="roles"
                             >
                                 {

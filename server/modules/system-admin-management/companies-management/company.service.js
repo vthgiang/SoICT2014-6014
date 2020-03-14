@@ -32,16 +32,17 @@ exports.create = async(data) => {
 }
 
 exports.edit = async(id, data) => {
+    console.log("data com:", data);
     var company = await Company.findById(id);
     if(company.short_name !== data.short_name){
         //check shortname invalid?
         var test = await Company.findOne({ short_name: data.short_name }); 
         if(test) throw { msg: 'Short name already exists' }; 
     }
-    if(data.name !== null) company.name = data.name;
-    if(data.description !== null) company.description = data.description;
-    if(data.short_name !== null) company.short_name = data.short_name;
-    if(data.log !== null) company.log = data.log;
+    company.name = data.name;
+    company.description = data.description;
+    company.short_name = data.short_name;
+    company.log = data.log;
     if(data.active !== null) company.active = data.active;
     company.save();
 

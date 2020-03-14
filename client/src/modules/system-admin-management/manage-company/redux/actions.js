@@ -64,15 +64,20 @@ function create(company){
 function edit(id, data){
     return dispatch => {
         dispatch({ type: CompanyConstants.EDIT_COMPANY_REQUEST});
-        CompanyServices.edit(id, data)
+        return new Promise((resolve, reject) => {
+            CompanyServices.edit(id, data)
             .then(res => {
                 dispatch({
                     type: CompanyConstants.EDIT_COMPANY_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err.response.data);
+                reject(err);
             })
+        });
+        
     }
 }

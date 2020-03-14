@@ -4,9 +4,7 @@ import { CompanyActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import CompanyEditForm from './CompanyEditForm';
 import CompanyCreateForm from './CompanyCreateForm';
-import { PaginateBar } from '../../../../common-components';
-import { ActionColumn } from '../../../../common-components';
-import { SearchBar } from '../../../../common-components';
+import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
 
 class CompanyTable extends Component {
@@ -27,7 +25,7 @@ class CompanyTable extends Component {
     }
 
     
-    toggle = (id, title, name, btnNo, btnYes, value) => {
+    toggle = (id, data, title, name, btnNo, btnYes, value) => {
         Swal.fire({
             title: title,
             html: `<h4>${name}</h4>`,
@@ -40,9 +38,10 @@ class CompanyTable extends Component {
         }).then((result) => {
             if (result.value) {
                 this.props.edit(id, {
-                    name: null,
-                    short_name: null,
-                    description: null,
+                    name: data.name,
+                    short_name: data.short_name,
+                    description: data.description,
+                    log: value ? data.log : value,
                     active: value
                 });
             }
@@ -62,9 +61,9 @@ class CompanyTable extends Component {
                 <div className="row">
                     <SearchBar 
                         columns={[
-                            { title: translate('table.name'), value: 'name' },
-                            { title: translate('table.shortName'), value: 'short_name' },
-                            { title: translate('table.description'), value: 'description' },
+                            { title: translate('manage_company.name'), value: 'name' },
+                            { title: translate('manage_company.short_name'), value: 'short_name' },
+                            { title: translate('manage_company.description'), value: 'description' },
                         ]}
                         option={this.state.option}
                         setOption={this.setOption}
@@ -78,10 +77,10 @@ class CompanyTable extends Component {
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>{translate('table.name')}</th>
-                            <th>{translate('table.short_name')}</th>
-                            <th>{translate('table.description')}</th>
-                            <th>{translate('manage_company.log')}</th>
+                            <th>{translate('manage_company.name')}</th>
+                            <th>{translate('manage_company.short_name')}</th>
+                            <th>{translate('manage_company.description')}</th>
+                            <th style={{ width: "140px"}}>{translate('manage_company.log')}</th>
                             <th style={{ width: "120px", textAlign: 'center' }}>
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
@@ -104,14 +103,13 @@ class CompanyTable extends Component {
                                             <td>{ com.name }</td>
                                             <td>{ com.short_name }</td>
                                             <td>{ com.description }</td>
-                                            <td>
-                                                Bật
-                                            </td>
+                                            <td>{ com.log ? <p><i className="fa fa-circle text-success" /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
                                                 <CompanyEditForm
                                                     companyID={ com._id }
                                                     companyName={ com.name }
                                                     companyShortName={ com.short_name }
+                                                    comLog={com.log}
                                                     companyDescription={ com.description }
                                                 />
                                                 {
@@ -119,12 +117,36 @@ class CompanyTable extends Component {
                                                     <a 
                                                         href="#abc" 
                                                         title={translate('manage_company.turning_on')}
-                                                        onClick={() => this.toggle(com._id, translate('manage_company.off_service'), com.name, translate('confirm.no'), translate('confirm.yes'), false)}
+                                                        onClick={() => this.toggle(
+                                                            com._id, 
+                                                            {
+                                                                name: com.name,
+                                                                description: com.description,
+                                                                short_name: com.short_name,
+                                                                log: com.log
+                                                            },
+                                                            translate('manage_company.off_service'), 
+                                                            com.name, translate('confirm.no'), 
+                                                            translate('confirm.yes'), 
+                                                            false
+                                                        )}
                                                     ><i className="material-icons">lock_open</i></a> :
                                                     <a 
                                                         href="#abc"
                                                         title={translate('manage_company.turning_on')}
-                                                        onClick={() => this.toggle(com._id, translate('manage_company.on_service'), com.name, translate('confirm.no'), translate('confirm.yes'), true)}
+                                                        onClick={() => this.toggle(
+                                                            com._id, 
+                                                            {
+                                                                name: com.name,
+                                                                description: com.description,
+                                                                short_name: com.short_name,
+                                                                log: com.log
+                                                            },
+                                                            translate('manage_company.on_service'), 
+                                                            com.name, translate('confirm.no'), 
+                                                            translate('confirm.yes'), 
+                                                            true
+                                                        )}
                                                     ><i className="material-icons">lock</i></a>
                                                 }
                                             </td>
@@ -133,7 +155,7 @@ class CompanyTable extends Component {
                                 }
                             </React.Fragment> : 
                             <tr>
-                                <td colSpan='4'>{translate('confirm.no_data')}</td>
+                                <td colSpan='5'>{translate('confirm.no_data')}</td>
                             </tr>
                         }
                     </tbody>

@@ -18,7 +18,8 @@ exports.login = async (browserFinger, data) => { // data bao gom email va passwo
             { path: 'company' }
         ]);
 
-    if(!user) throw {msg: "Email invalid"};
+    if(!user) throw {msg: "EMAIL_INVALID"};
+    if(!user.company.active) throw ({msg: 'SERVICE_OFF'});
 
     const validPass = await bcrypt.compare(data.password, user.password);
 
@@ -29,13 +30,13 @@ exports.login = async (browserFinger, data) => { // data bao gom email va passwo
             user.status = 0;
             user.save();
 
-            throw { msg: 'Enter the wrong password more than 5 times. The account has been locked.'};
+            throw { msg: 'WRONG_5_TIMES_BLOCKED_ACCOUNT'};
         }
         user.save();
 
-        throw {msg: 'Password invalid'};
+        throw {msg: 'PASSWORD_INVALID'};
     }
-    if(!user.active) throw { msg: ' Cannot login! The account has been locked !'};
+    if(!user.active) throw { msg: 'ACCOUNT_HAS_BEEN_LOCKED'};
 
     const token = await jwt.sign(
         {
@@ -64,10 +65,8 @@ exports.login = async (browserFinger, data) => { // data bao gom email va passwo
 }
 
 exports.logout = async (id, token) => {
-    console.log("logout service")
     var user = await User.findById(id);
     var position = await user.token.indexOf(token);
-    console.log("INDEX: ", position)
     user.token.splice(position, 1);
     user.save();
 
