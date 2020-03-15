@@ -67,9 +67,10 @@ exports.edit = async (req, res) => {
     try {
         await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
         var link = await LinkService.edit(req.params.id, req.body);
+        var data = await LinkService.getById(link._id);
         
         isLog && Logger.info(req.user.email);
-        res.status(200).json(link);
+        res.status(200).json(data);
     } catch (error) {
         
         isLog && Logger.error(req.user.email);

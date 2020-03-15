@@ -68,9 +68,10 @@ exports.edit = async (req, res) => {
     try {
         await RoleService.editRelationshiopUserRole(req.params.id, req.body.users);
         var role = await RoleService.edit(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
+        var data = await RoleService.getById(req.user.company._id, role._id);
         
         isLog && Logger.info(req.user.email);
-        res.status(200).json(role);
+        res.status(200).json(data);
     } catch (error) {
         
         isLog && Logger.error(req.user.email);

@@ -23,7 +23,7 @@ exports.getById = async (id) => {
 
     return await Link
         .findById(id)
-        .populate({ path: 'roles', model: Privilege });
+        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
 }
 
 exports.create = async(data, companyId) => {
