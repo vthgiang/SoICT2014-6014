@@ -10,7 +10,6 @@ import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, Mod
 import { ModalAddBHXH, ModalAddDiscipline, ModalAddPraise, ModalAddSalary, ModalAddSabbatical, ModalAddFile } from './CombineContent';
 import { ModalEditFile, ModalEditSabbatical, ModalEditSalary, ModalEditPraise, ModalEditDiscipline, ModalEditBHXH } from './CombineContent';
 import { ModalEditExperience, ModalEditContract, ModalEditCertificateShort, ModalEditCertificate } from './CombineContent';
-//import './listemployee.css';
 
 class ModalEditEmployee extends Component {
     constructor(props) {
@@ -527,16 +526,16 @@ class ModalEditEmployee extends Component {
     defaulteClick(event) {
         event.preventDefault();
         const defaulteFile = [
-            { nameFile: "Bằng cấp", discFile: "Bằng tốt nghiệp trình độ học vấn cao nhất", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Sơ yếu lý lịch", discFile: "Sơ yếu lý lịch có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Ảnh", discFile: "Ảnh 4X6", number: "3", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Bản sao CMND/Hộ chiếu", discFile: "Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Giấy khám sức khoẻ", discFile: "Giấy khám sức khoẻ có dấu đỏ", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Giấy khai sinh", discFile: "Giấy khái sinh có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Đơn xin việc", discFile: "Đơn xin việc viết tay", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "CV", discFile: "CV của nhân viên", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " },
-            { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: " ", fileUpload: " " }
+            { nameFile: "Bằng cấp", discFile: "Bằng tốt nghiệp trình độ học vấn cao nhất", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Sơ yếu lý lịch", discFile: "Sơ yếu lý lịch có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Ảnh", discFile: "Ảnh 4X6", number: "3", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Bản sao CMND/Hộ chiếu", discFile: "Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Giấy khám sức khoẻ", discFile: "Giấy khám sức khoẻ có dấu đỏ", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Giấy khai sinh", discFile: "Giấy khái sinh có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Đơn xin việc", discFile: "Đơn xin việc viết tay", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "CV", discFile: "CV của nhân viên", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: " "},
+            { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: " "}
         ]
         this.setState({
             file: defaulteFile
@@ -555,10 +554,10 @@ class ModalEditEmployee extends Component {
                 startTax: this.refs.startTax.value.length !== 0 ? this.refs.startTax.value : newEmployee.startTax,
                 startDateBHYT: this.refs.startDateBHYT.value.length !== 0 ? this.refs.startDateBHYT.value : newEmployee.startDateBHYT,
                 endDateBHYT: this.refs.endDateBHYT.value.length !== 0 ? this.refs.endDateBHYT.value : newEmployee.endDateBHYT,
-                certificate: certificate.filter(certificate => (certificate.urlFile === " ")),
-                certificateShort: certificateShort.filter(certificateShort => (certificateShort.urlFile === " ")),
-                contract: contract.filter(contract => (contract.urlFile === " ")),
-                file: file.filter(file => (file.urlFile === " "))
+                certificate: certificate.filter(certificate => (certificate.fileUpload === undefined)),
+                certificateShort: certificateShort.filter(certificateShort => (certificateShort.fileUpload === undefined)),
+                contract: contract.filter(contract => (contract.fileUpload === undefined)),
+                file: file.filter(file => (file.fileUpload === undefined))
             }
         });
         const { employeeNew } = this.state;
@@ -601,7 +600,7 @@ class ModalEditEmployee extends Component {
             // lưu hợp đồng lao động
             if (this.state.contract.length !== 0) {
                 let listContract = this.state.contract;
-                listContract = listContract.filter(contract => (contract.urlFile !== " "))
+                listContract = listContract.filter(contract => (contract.fileUpload !== undefined))
                 listContract.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -610,13 +609,14 @@ class ModalEditEmployee extends Component {
                     formData.append('file', x.file);
                     formData.append('startDate', x.startDate);
                     formData.append('endDate', x.endDate);
-                    this.props.updateContract(employeeNumber, formData)
+                    //console.log("hdhadhahwhdhsfhjaw",x.fileUpload)
+                    this.props.updateContract(employeeNumber, formData) 
                 })
             }
             // lưu thông tin bằng cấp
             if (this.state.certificate.length !== 0) {
                 let listCertificate = this.state.certificate;
-                listCertificate = listCertificate.filter(certificate => (certificate.urlFile !== " "))
+                listCertificate = listCertificate.filter(certificate => (certificate.fileUpload !== undefined))
                 listCertificate.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -631,7 +631,7 @@ class ModalEditEmployee extends Component {
             // lưu thông tin chứng chỉ
             if (this.state.certificateShort.length !== 0) {
                 let listCertificateShort = this.state.certificateShort;
-                listCertificateShort = listCertificateShort.filter(certificateShort => (certificateShort.urlFile !== " "))
+                listCertificateShort = listCertificateShort.filter(certificateShort => (certificateShort.fileUpload !== undefined))
                 listCertificateShort.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);
@@ -646,7 +646,7 @@ class ModalEditEmployee extends Component {
             // lưu thông tin tài liệu đính kèm
             if (this.state.file.length !== 0) {
                 let listFile = this.state.file;
-                listFile = listFile.filter(file => (file.urlFile !== " "))
+                listFile = listFile.filter(file => (file.fileUpload !== undefined))
                 listFile.map(x => {
                     let formData = new FormData();
                     formData.append('fileUpload', x.fileUpload);

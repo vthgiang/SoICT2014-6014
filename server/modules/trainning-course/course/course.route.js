@@ -1,19 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const { auth } = require('../../../middleware/auth.middleware');
 
-const EducationProgramController = require("./educationProgram.controller");
+const CourseController = require("./course.controller");
 
 // get all list educationProgram
-router.get('/', EducationProgramController.get);
+router.get('/',auth, CourseController.get);
 
 // create a new a educationProgram
-router.post('/', EducationProgramController.create);
+router.post('/',auth, CourseController.create);
 
 // delete a educationProgram
-router.delete('/:numberEducation', EducationProgramController.delete);
+router.delete('/:numberEducation',auth, CourseController.delete);
 
 // update a educationProgram
-router.put('/:numberEducation', EducationProgramController.update);
-
+router.put('/:numberEducation',auth, CourseController.update);
 
 module.exports = router;

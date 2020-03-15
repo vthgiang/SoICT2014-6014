@@ -1,4 +1,4 @@
-const EducationProgram = require('../../../models/course.model');
+const Course = require('../../../models/course.model');
 //get list course
 exports.get = async () => {
     
