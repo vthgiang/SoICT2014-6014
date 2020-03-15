@@ -15,7 +15,8 @@ export const EmployeeManagerActions = {
     updateFile,
     updateInformationEmployee,
     checkMSNV,
-    checkEmail
+    checkEmail,
+    deleteEmployee
 
 };
 
@@ -337,6 +338,39 @@ function updateFile(employeeNumber,fileUpload) {
     function failure(error) {
         return {
             type: EmployeeConstants.UPDATE_FILE_FAILURE,
+            error
+        };
+    };
+}
+
+// Xoá thông tin nhân viên
+function deleteEmployee(id) {
+    return dispatch => {
+        dispatch(request());
+
+        EmployeeService.deleteEmployee(id)
+            .then(
+                employeeDelete => dispatch(success(employeeDelete)),
+                error => dispatch(failure(error.toString()))
+            );
+    }
+
+    function request() {
+        return {
+            type: EmployeeConstants.DELETE_EMPLOYEE_REQUEST,
+        };
+    };
+
+    function success(employeeDelete) {
+        return {
+            type: EmployeeConstants.DELETE_EMPLOYEE_SUCCESS,
+            employeeDelete
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: EmployeeConstants.DELETE_EMPLOYEE_FAILURE,
             error
         };
     };

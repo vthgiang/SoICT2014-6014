@@ -23,6 +23,7 @@ async function getInformationPersonal() {
     var email = verified.email;
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader(),
     }
     return fetch(`${ LOCAL_SERVER_API }/employee/${email}`, requestOptions).then(handleResponse);
 }

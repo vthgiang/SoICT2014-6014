@@ -11,9 +11,9 @@ router.post('/paginate',auth, PraiseController.get);
 router.post('/create',auth, PraiseController.create);
 
 // Xoá bẳng thông tin khen thưởng
-router.delete('/:id', PraiseController.delete);
+router.delete('/:id',auth, PraiseController.delete);
 
 // update thông tin khen thưởng
-router.put('/:id', PraiseController.update);
+router.put('/:id',auth, PraiseController.update);
 
 module.exports = router;

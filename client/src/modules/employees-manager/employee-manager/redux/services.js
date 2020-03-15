@@ -17,6 +17,7 @@ export const EmployeeService = {
     updateFile,
     checkMSNV,
     checkEmail,
+    deleteEmployee,
 
 }
 
@@ -128,4 +129,14 @@ function updateFile(employeeNumber, fileUpload) {
     };
     return fetch(`${ LOCAL_SERVER_API }/employee/file/${employeeNumber}`, requestOptions).then(handleResponse);
 
+}
+
+// Xoá thông tin nhân viên
+function deleteEmployee(id) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: AuthenticateHeader(),
+    };
+
+    return fetch(`${ LOCAL_SERVER_API }/employee/${id}`, requestOptions).then(handleResponse);
 }

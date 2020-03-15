@@ -198,3 +198,18 @@ exports.updateFile = async (req, res) => {
         });
     }
 }
+
+// delete thông tin nhân viên
+exports.delete = async (req, res) => {
+    try {
+        var infoEmployeeDelete = await EmployeeService.delete(req.params.id);
+        res.status(200).json({
+            message: "success",
+            content: infoEmployeeDelete
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error
+        });
+    }
+}

@@ -144,7 +144,6 @@ class ListEmployee extends Component {
             parseInt(employeesManager.totalList / this.state.limit) :
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
-        console.log(listPosition);
         return (
             <div className="row">
                 <div className="col-xs-12">
@@ -262,7 +261,7 @@ class ListEmployee extends Component {
                                                                 id: x.employee.map(y => y._id),
                                                                 info: x.employee.map(y => y.fullName) + " - " + x.employee.map(y => y.employeeNumber)
                                                             }}
-                                                            func={this.props.deleteSalary}
+                                                            func={this.props.deleteEmployee}
                                                         />
                                                     </td>
                                                 </tr>
@@ -303,6 +302,7 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
+    deleteEmployee: EmployeeManagerActions.deleteEmployee,
     //getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
     //getListEmployee: EmployeeManagerActions.getListEmployee,
 };

@@ -11,9 +11,9 @@ router.post('/paginate',auth, DisciplineController.get);
 router.post('/create',auth, DisciplineController.create);
 
 // Xoá bẳng thông tin kỷ luật
-router.delete('/:id', DisciplineController.delete);
+router.delete('/:id',auth, DisciplineController.delete);
 
 // update thông tin kyt luật
-router.put('/:id', DisciplineController.update);
+router.put('/:id',auth, DisciplineController.update);
 
 module.exports = router;

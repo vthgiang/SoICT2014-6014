@@ -11,9 +11,9 @@ router.post('/paginate',auth, SalaryController.get);
 router.post('/create',auth, SalaryController.create);
 
 // Xoá bẳng lương nhan viên theo mã nhân viên
-router.delete('/:id', SalaryController.delete);
+router.delete('/:id',auth, SalaryController.delete);
 
 // update thông tin bảng lương
-router.put('/:id', SalaryController.update);
+router.put('/:id',auth, SalaryController.update);
 
 module.exports = router;

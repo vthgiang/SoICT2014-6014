@@ -11,9 +11,9 @@ router.post('/paginate',auth, SabbaticalController.get);
 router.post('/create',auth, SabbaticalController.create);
 
 // Xoá bẳng thông tin kỷ luật
-router.delete('/:id', SabbaticalController.delete);
+router.delete('/:id',auth, SabbaticalController.delete);
 
 // Cập nhật thông tin nghỉ phép
-router.put('/:id', SabbaticalController.update);
+router.put('/:id',auth, SabbaticalController.update);
 
 module.exports = router;

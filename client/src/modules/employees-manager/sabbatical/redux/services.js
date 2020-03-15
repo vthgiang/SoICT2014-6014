@@ -39,6 +39,7 @@ function createNewSabbatical(data) {
 function deleteSabbatical(id) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader(),
     };
 
     return fetch(`${ LOCAL_SERVER_API }/sabbatical/${id}`, requestOptions).then(handleResponse);

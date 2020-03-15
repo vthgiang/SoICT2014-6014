@@ -572,3 +572,31 @@ exports.updateFile = async (employeeNumber, data, url, company) => {
     }
     return content;
 }
+
+//  Xoá thông tin nhân viên theo 
+exports.delete = async (id) => {
+    var infoEmployee = await Employee.findOneAndDelete({
+        _id: id
+    });
+    var infoEmployeeContact = await EmployeeContact.findOneAndDelete({
+        employee: id
+    });
+    await Discipline.deleteMany({
+        employee: id
+    });
+    await Praise.deleteMany({
+        employee: id
+    });
+    await Sabbatical.deleteMany({
+        employee: id
+    });
+    await Salary.deleteMany({
+        employee: id
+    });
+    var content = {
+        infoEmployee,
+        infoEmployeeContact
+
+    }
+    return content;
+}
