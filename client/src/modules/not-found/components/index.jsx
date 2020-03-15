@@ -10,10 +10,17 @@ class NotFound extends Component {
     render() { 
         const {translate} = this.props;
         return ( 
-            <div style={{backgroundColor: 'white', width: '100%', height: '650px', marginTop: '-25px'}}>
-                <h1 style={{padding: '10px 10px 10px 10px', textAlign: 'center', color: 'red'}}>
-                    {translate('not_found')}
-                </h1>
+            <div style={{backgroundColor: 'white',padding: '100px 20px 400px 20px'}}>
+                <div className="error-page">
+                <h2 className="headline text-yellow"> 404 </h2>
+                <div className="error-content">
+                    <h3><i className="fa fa-warning text-yellow" />{translate('not_found.title')}</h3>
+                    <p className="text-center">
+                        {`${translate('not_found.content')}. `}
+                        <a href="/">{translate('not_found.back_to_home')}</a>
+                    </p>
+                </div>
+                </div>
             </div>
          );
     }

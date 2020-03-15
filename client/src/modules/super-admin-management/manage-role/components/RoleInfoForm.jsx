@@ -75,7 +75,10 @@ class RoleInfoForm extends Component {
                                 ref="parents"
                             >
                                 {   
-                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                    role.list.map( role => {
+                                        if(role.name !== 'Super Admin' && role.name !== roleName) 
+                                            return <option key={role._id} value={role._id}>{role.name}</option>
+                                    })
                                 } 
                             </select>
                         </div>
@@ -84,9 +87,7 @@ class RoleInfoForm extends Component {
                             {
                                 roleName === "Super Admin" ?
                                 <select 
-                                    name="users"
                                     className="form-control select2"
-                                    onChange={ this.inputChange }
                                     style={{ width: '100%' }} 
                                     defaultValue={ roleUsers[0] }
                                     ref="users"
@@ -96,12 +97,10 @@ class RoleInfoForm extends Component {
                                     }
                                 </select> :
                                 <select 
-                                    name="users"
                                     className="form-control select2" 
                                     multiple="multiple" 
-                                    onChange={ this.inputChange }
                                     style={{ width: '100%' }} 
-                                    value={ roleUsers }
+                                    defaultValue={ roleUsers }
                                     ref="users"
                                 >
                                     {   

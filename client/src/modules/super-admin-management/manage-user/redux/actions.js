@@ -25,9 +25,9 @@ function get(){
         })
         .catch(err => {
             dispatch({
-                type: UserConstants.GET_USERS_FAILE
+                type: err.response.data.msg
             })
-            console.log("Error: ", err.response);
+            console.log("Error: ", err);
         })
     }
 }
@@ -44,7 +44,7 @@ function getPaginate(data){
             })
             .catch(err => {
                 dispatch({
-                    type: UserConstants.GET_USERS_PAGINATE_FAILE
+                    type: err.response.data.msg
                 })
                 console.log("Error: ", err);
             })
@@ -65,7 +65,7 @@ function edit(id, data){
             })
             .catch(err => {
                 dispatch({
-                    type: UserConstants.EDIT_USER_FAILE
+                    type: err.response.data.msg
                 })
                 console.log("Error: ", err);
                 reject(err);
@@ -88,7 +88,7 @@ function create(data){
                 })
                 .catch(err => {
                     dispatch({
-                        type: UserConstants.CREATE_USER_FAILE
+                        type: err.response.data.msg
                     })
                     console.log("Error: ", err);
                     reject(err);
@@ -110,7 +110,7 @@ function destroy(id){
             })
             .catch(err => {
                 dispatch({
-                    type: UserConstants.DELETE_USER_FAILE
+                    type: err.response.data.msg
                 })
                 console.log("Error: ", err);
             })
@@ -134,7 +134,10 @@ export const getRoles = () => {
                 })
             })
             .catch(err => {
-                console.log("ERROR ROLES");
+                dispatch({
+                    type: err.response.data.msg
+                })
+                console.log("Error: ", err);
             })
     }
 }
@@ -149,7 +152,10 @@ export const getLinkOfRole = () => {
                 })
             })
             .catch(err => {
-                console.log("ERROR ROLES");
+                dispatch({
+                    type: err.response.data.msg
+                })
+                console.log("Error: ", err);
             })
     }
 }

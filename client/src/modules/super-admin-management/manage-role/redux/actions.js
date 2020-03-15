@@ -21,6 +21,9 @@ function get(){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -37,6 +40,9 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -53,6 +59,9 @@ function show(id){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -72,6 +81,10 @@ function create(role){
                     resolve(res.data);
                 })
                 .catch(err => {
+                    dispatch({
+                        type: err.response.data.msg
+                    })
+                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -91,6 +104,9 @@ function edit(role){
                 resolve(res.data);
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
                 reject(err);
             })
@@ -109,6 +125,9 @@ function destroy(roleId){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }

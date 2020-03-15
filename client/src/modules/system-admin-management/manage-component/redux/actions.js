@@ -22,6 +22,9 @@ function get(){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -38,6 +41,9 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -54,6 +60,9 @@ function show(id){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }
@@ -72,6 +81,9 @@ function create(component){
                 resolve(res);
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
                 reject(err);
             })
@@ -93,6 +105,9 @@ function edit(id, component){
                 resolve(res);
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
                 reject(err);
             })
@@ -111,6 +126,9 @@ function destroy(id, component){
                 })
             })
             .catch(err => {
+                dispatch({
+                    type: err.response.data.msg
+                })
                 console.log("Error: ", err);
             })
     }

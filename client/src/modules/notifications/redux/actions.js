@@ -22,7 +22,10 @@ function get(){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    console.log("Error: ", err.response);
+                    dispatch({
+                        type: err.response.data.msg
+                    })
+                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -43,6 +46,9 @@ function getNotificationReceivered(userId){
                     resolve(res.data);
                 })
                 .catch(err => {
+                    dispatch({
+                        type: err.response.data.msg
+                    })
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -64,6 +70,9 @@ function getNotificationSent(userId){
                     resolve(res.data);
                 })
                 .catch(err => {
+                    dispatch({
+                        type: err.response.data.msg
+                    })
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -85,6 +94,9 @@ function create(data){
                     resolve(res.data);
                 })
                 .catch(err => {
+                    dispatch({
+                        type: err.response.data.msg
+                    })
                     console.log("Error: ", err);
                     reject(err);
                 })

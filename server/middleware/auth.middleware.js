@@ -58,7 +58,13 @@ exports.auth = async (req, res, next) => {
                  * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
                  */
                 const company = await Company.findById(req.user.company._id);
-                if(company === null || company.active === false) throw ({msg: 'ACCESS_DENIED'});
+                if(company.active === false){ //dịch vụ của công ty người dùng đã tạm dừng
+                    const resetUser = await User.findById(user._id);
+                    resetUser.token = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
+                    resetUser.save();
+
+                    throw ({msg: 'ACCESS_DENIED'})
+                };
                 
                 /**
                  * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?

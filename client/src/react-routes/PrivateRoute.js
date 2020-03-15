@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Redirect} from 'react-router-dom';
+import { getStorage } from  '../config';
 
 const checkURL = (urlName, linkArr) => {
     var result = false;
@@ -16,7 +17,8 @@ const checkURL = (urlName, linkArr) => {
 
 export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => (
     <Route {...rest} render={props => {
-        if(auth.logged){
+        var logged = getStorage();
+        if(logged !== null){
             if(link !== '/' && checkURL(link, auth.links) !== true){
                 return <Layout pageName={ pageName }></Layout>
             } 

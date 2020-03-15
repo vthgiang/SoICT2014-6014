@@ -1,8 +1,20 @@
 export default {
     locale: 'en',
     messages: {
-        not_found: '404! Not found this page',
+        not_found: {
+            title: 'Qpps! Page not found',
+            content: 'We could not find the page you were looking for',
+            back_to_home: 'Return to HomePage'
+        },
         language: 'Language setting',
+        alert: {
+            log_again: 'Error! Log in again!',
+            access_denied: 'Access denied! Log in again!',
+            role_invalid: 'Log in again!',
+            page_access_denied: 'Log in again!',
+            user_role_invalid: 'Log in again!',
+            acc_logged_out: 'Log in again!'
+        },
         auth: {
             login: 'Login',
             logout: 'Logout',

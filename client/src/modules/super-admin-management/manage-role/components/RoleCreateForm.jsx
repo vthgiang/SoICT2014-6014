@@ -14,7 +14,7 @@ class RoleCreateForm extends Component {
     }
 
     render() { 
-        const{ translate, role } = this.props;
+        const{ translate, role, user } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')}/>
@@ -49,6 +49,19 @@ class RoleCreateForm extends Component {
                                 }
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_role.users') }</label>
+                            <select 
+                                className="form-control select2" 
+                                multiple="multiple" 
+                                style={{ width: '100%' }} 
+                                ref="users"
+                            >
+                                {   
+                                    user.list.map( user => <option key={user._id} value={user._id}>{ `${user.email} - ${user.name}` }</option>)
+                                }
+                            </select>
+                        </div>
                     </form>
                 </ModalDialog>
             </React.Fragment>
@@ -65,11 +78,12 @@ class RoleCreateForm extends Component {
     }
 
     save(){
-        const name = this.refs.name.value;
-        const select = this.refs.parents;
-        const parents = [].filter.call(select.options, o => o.selected).map(o => o.value);
-
-        return this.props.create({name, parents});
+        
+        return this.props.create({
+            name: this.refs.name.value,
+            parents: [].filter.call(this.refs.parents.options, o => o.selected).map(o => o.value),
+            users: [].filter.call(this.refs.users.options, o => o.selected).map(o => o.value)
+        });
     }
 }
  

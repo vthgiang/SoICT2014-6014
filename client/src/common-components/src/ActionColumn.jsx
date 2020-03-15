@@ -15,8 +15,8 @@ class ActionColumn extends Component {
         //     window.$('td:nth-child(' + cols[j] + ')').hide();
         //     window.$('th:nth-child(' + cols[j] + ')').hide();
         // }
-        await this.props.setLimit(this.record.current.value);
         await window.$(`#setting-table`).collapse("hide");
+        await this.props.setLimit(this.record.current.value);
     }
 
     render() {
