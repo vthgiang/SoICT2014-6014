@@ -76,25 +76,25 @@ class ModalEditPraise extends Component {
                             <div className="modal-body">
                                 <div className="col-md-12">
                                     <div className="checkbox" style={{ marginTop: 0 }}>
-                                        <label style={{ paddingLeft: 0 }}>
+                                        <label className="pull-left" style={{ paddingLeft: 0 }}>
                                             (<span style={{ color: "red" }}>*</span>): {translate('modal.note')}.
                                                         </label>
                                     </div>
-                                    <div className="form-group">
-                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
+                                    <div className="form-group col-md-12" style={{ paddingLeft: 0, paddingRight:0 }}>
+                                        <label className="pull-left" htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="employeeNumber" defaultValue={data.employeeNumber} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="number">{translate('page.number_decisions')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="number">{translate('page.number_decisions')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" defaultValue={data.number} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="unit">{translate('discipline.decision_unit')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="unit">{translate('discipline.decision_unit')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="unit" defaultValue={data.unit} onChange={this.handleChange} />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="startDate">{translate('discipline.decision_day')}:<span className="required">&#42;</span></label>
-                                        <div className={'input-group date has-feedback'}>
+                                        <label className="pull-left" htmlFor="startDate">{translate('discipline.decision_day')}:<span className="required">&#42;</span></label>
+                                        <div className={'input-group date has-feedback pull-left'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
                                             </div>
@@ -102,11 +102,11 @@ class ModalEditPraise extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="type">{translate('discipline.reward_forms')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="type">{translate('discipline.reward_forms')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="type" defaultValue={data.type} onChange={this.handleChange} />
                                     </div>
                                     <div className="form-group col-md-12" style={{ paddingRight: 0, paddingLeft: 0 }}>
-                                        <label htmlFor="reason">{translate('discipline.reason_praise')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="reason">{translate('discipline.reason_praise')}:<span className="required">&#42;</span></label>
                                         <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" defaultValue={data.reason} onChange={this.handleChange}></textarea>
                                     </div>
                                 </div>

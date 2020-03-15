@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer } from 'react-toastify';
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
@@ -9,6 +10,7 @@ import { ModalEditEmployee } from './ModalEditEmployee';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DeleteNotification } from '../../../../common-components';
 
 class ListEmployee extends Component {
     constructor(props) {
@@ -134,7 +136,7 @@ class ListEmployee extends Component {
                 ]
             }
         }
-        var { employeesManager } = this.props;
+        var { employeesManager,translate } = this.props;
         if (employeesManager.allEmployee) {
             lists = employeesManager.allEmployee;
         }
@@ -250,7 +252,18 @@ class ListEmployee extends Component {
                                                             sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />
                                                         <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
                                                             sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
-                                                        <a href="#abc" className="delete" title="Xoá nhân viên khỏi đơn vị" data-toggle="tooltip"><i className="material-icons"></i></a>
+                                                        <DeleteNotification
+                                                            content={{
+                                                                title: "Xoá thông tin nhân viên",
+                                                                btnNo: translate('confirm.no'),
+                                                                btnYes: translate('confirm.yes'),
+                                                            }}
+                                                            data={{
+                                                                id: x.employee.map(y => y._id),
+                                                                info: x.employee.map(y => y.fullName) + " - " + x.employee.map(y => y.employeeNumber)
+                                                            }}
+                                                            func={this.props.deleteSalary}
+                                                        />
                                                     </td>
                                                 </tr>
                                             )
@@ -293,6 +306,6 @@ const actionCreators = {
     //getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
     //getListEmployee: EmployeeManagerActions.getListEmployee,
 };
-const connectedEmplyee = connect(mapState, actionCreators)(ListEmployee);
+const connectedEmplyee = connect(mapState, actionCreators)(withTranslate(ListEmployee));
 
 export { connectedEmplyee as ListEmployee };

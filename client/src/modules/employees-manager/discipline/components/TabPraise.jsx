@@ -5,10 +5,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
 import { ModalEditPraise } from './ModalEditPraise';
-import { ModalDeletePraise } from './ModalDeletePraise';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DeleteNotification } from '../../../../common-components';
 class TabPraise extends Component {
     constructor(props) {
         super(props);
@@ -225,9 +225,20 @@ class TabPraise extends Component {
                                                 <td>{x.number}</td>
                                                 <td>Phòng MARKETING</td>
                                                 <td>nhân viên</td>
-                                                <td>
+                                                <td style={{textAlign:"center"}}>
                                                     <ModalEditPraise data={x} />
-                                                    <ModalDeletePraise data={x} />
+                                                    <DeleteNotification
+                                                        content={{
+                                                            title: "Xoá thông tin khen thưởng",
+                                                            btnNo: translate('confirm.no'),
+                                                            btnYes: translate('confirm.yes'),
+                                                        }}
+                                                        data={{
+                                                            id: x._id,
+                                                            info: x.employee.employeeNumber + " - Số quyết định: " + x.number
+                                                        }}
+                                                        func={this.props.deletePraise}
+                                                    />
                                                 </td>
                                             </tr>
                                         ))
@@ -251,6 +262,7 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: DepartmentActions.get,
     getListPraise: DisciplineActions.getListPraise,
+    deletePraise: DisciplineActions.deletePraise,
 };
 
 const connectedListPraise = connect(mapState, actionCreators)(withTranslate(TabPraise));

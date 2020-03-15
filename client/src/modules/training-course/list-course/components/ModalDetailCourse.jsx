@@ -38,7 +38,7 @@ class ModalDetailCourse extends Component {
         var { data } = this.props;
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-viewCourse-${data.numberEducation}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">visibility</i></a>
+                <a href={`#modal-viewCourse-${data.numberEducation}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">view_list</i></a>
                 <div className="modal modal-full fade" id={`modal-viewCourse-${data.numberEducation}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog-full">
                         <div className="modal-content">

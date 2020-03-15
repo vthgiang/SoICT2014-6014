@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { ModalDetailCourse } from './ModalDetailCourse';
-import { ModalDeleteCourse } from './ModalDeleteCourse';
 import { ModalEditCourse } from './ModalEditCourse';
 import { ModalAddCourse } from './ModalAddCourse';
 import { CourseActions } from '../redux/actions';
-import {ActionColumn} from '../../../../common-components/src/ActionColumn';
-import {PaginateBar} from '../../../../common-components/src/PaginateBar';
-//import '../../../employees-manager/employee-manager/components/listemployee.css';
+import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { DeleteNotification } from '../../../../common-components';
 
 class ListCourse extends Component {
     constructor(props) {
@@ -61,6 +61,7 @@ class ListCourse extends Component {
 
     render() {
         var lists = this.props.course.listCourse;
+        const { translate } = this.props;
         console.log(lists);
         return (
             <React.Fragment>
@@ -158,7 +159,18 @@ class ListCourse extends Component {
                                                     <td>
                                                         <ModalDetailCourse data={x} />
                                                         <ModalEditCourse data={x} />
-                                                        <ModalDeleteCourse data={x} />
+                                                        <DeleteNotification
+                                                            content={{
+                                                                title: "Xoá chương trình đào tạo",
+                                                                btnNo: translate('confirm.no'),
+                                                                btnYes: translate('confirm.yes'),
+                                                            }}
+                                                            data={{
+                                                                id: x.numberEducation,
+                                                                info: x.nameEducation + " - " + x.numberEducation
+                                                            }}
+                                                            func={this.props.deleteCourse}
+                                                        />
                                                     </td>
                                                 </tr>))
                                         }
@@ -184,7 +196,8 @@ function mapState(state) {
 
 const actionCreators = {
     getListCourse: CourseActions.getListCourse,
+    deleteCourse: CourseActions.deleteCourse,
 };
 
-const connectedListCourse = connect(mapState, actionCreators)(ListCourse);
+const connectedListCourse = connect(mapState, actionCreators)(withTranslate(ListCourse));
 export { connectedListCourse as ListCourse };

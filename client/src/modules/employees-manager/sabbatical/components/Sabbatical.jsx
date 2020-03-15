@@ -6,10 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
 import { ModalAddSabbatical } from './ModalAddSabbatical';
 import { ModalEditSabbatical } from './ModalEditSabbatical';
-import { ModalDeleteSabbatical } from './ModalDeleteSabbatical';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DeleteNotification } from '../../../../common-components';
 
 class Sabbatical extends Component {
     constructor(props) {
@@ -45,7 +45,7 @@ class Sabbatical extends Component {
         script1.defer = true;
         document.body.appendChild(script1);
     }
-    
+
     displayTreeSelect = (data, i) => {
         i = i + 1;
         if (data !== undefined) {
@@ -279,9 +279,20 @@ class Sabbatical extends Component {
                                                     <td>P KTTT ViaVet</td>
                                                     <td>Nhân viên</td>
                                                     <td>{x.status}</td>
-                                                    <td>
+                                                    <td style={{ textAlign: "center" }}>
                                                         <ModalEditSabbatical data={x} />
-                                                        <ModalDeleteSabbatical data={x} />
+                                                        <DeleteNotification
+                                                            content={{
+                                                                title: "Xoá thông tin nghỉ phép",
+                                                                btnNo: translate('confirm.no'),
+                                                                btnYes: translate('confirm.yes'),
+                                                            }}
+                                                            data={{
+                                                                id: x._id,
+                                                                info: x.startDate.replace(/-/gi, "/") + " - " + x.endDate.replace(/-/gi, "/")
+                                                            }}
+                                                            func={this.props.deleteSabbatical}
+                                                        />
                                                     </td>
                                                 </tr>))
                                         }
@@ -307,6 +318,7 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: DepartmentActions.get,
     getListSabbatical: SabbaticalActions.getListSabbatical,
+    deleteSabbatical: SabbaticalActions.deleteSabbatical,
 };
 
 const connectedListSabbatical = connect(mapState, actionCreators)(withTranslate(Sabbatical));

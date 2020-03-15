@@ -11,13 +11,18 @@ class DepartmentManage extends Component {
         super(props);
         this.state = {
         }
-        this.handleResizeColumn()
+        this.handleResizeColumn();
+        this.loadJS = this.loadJS.bind(this);
     }
     componentDidMount() {
         this.props.getDepartment();
         this.props.getRole();
         this.props.getUser();
+        window.addEventListener('load', this.loadJS);
 
+    }
+    componentWillUnmount() {
+        window.removeEventListener('load', this.loadJS)
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -47,7 +52,7 @@ class DepartmentManage extends Component {
             });
         });
     }
-    componentDidUpdate() {
+    loadJS() {
         let script = document.createElement('script');
         script.src = 'lib/main/js/GridTableVers2.js';
         script.async = true;

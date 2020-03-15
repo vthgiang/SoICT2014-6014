@@ -428,6 +428,11 @@ const sampleCompanyData = async () => {
             url: '/notifications',
             description: 'Thông báo',
             company: xyz._id
+        },
+        { // 26
+            url: '/manage-unit',
+            description: 'Quản lý nhân sự các đơn vị',
+            company: xyz._id
         }
     ]);
     console.log("Xong! Đã tạo links: ", links);
@@ -574,6 +579,11 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: admin._id
         },
+        {
+            resourceId: links[26]._id,
+            resourceType: 'Link',
+            roleId: admin._id
+        },
         //end
         //gán quyền vào trang home '/' ,trang thông báo /notifications -> cho role Dean, Vice Dean và Employee
         {
@@ -646,7 +656,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "tranhungcuong@gmail.com",
+        emailCompany: "trancuong@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",

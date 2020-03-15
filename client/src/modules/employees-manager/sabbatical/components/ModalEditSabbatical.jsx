@@ -74,17 +74,17 @@ class ModalEditSabbatical extends Component {
                             <div className="modal-body">
                                 <div className="col-md-12">
                                     <div className="checkbox" style={{ marginTop: 0 }}>
-                                        <label style={{ paddingLeft: 0 }}>
+                                        <label className="pull-left" style={{ paddingLeft: 0 }}>
                                             (<span style={{ color: "red" }}>*</span>): {translate('modal.note')}.
                                                         </label>
                                     </div>
-                                    <div className="form-group">
-                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
+                                    <div className="form-group col-md-12" style={{paddingRight:0,paddingLeft:0}}>
+                                        <label className="pull-left" htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
                                         <input type="text" className="form-control" name="employeeNumber" defaultValue={data.employeeNumber} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="startDate">{translate('sabbatical.start_date')}:<span className="required">&#42;</span></label>
-                                        <div className={'input-group date has-feedback'}>
+                                        <label className="pull-left" htmlFor="startDate">{translate('sabbatical.start_date')}:<span className="required">&#42;</span></label>
+                                        <div className={'input-group date has-feedback pull-left'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
                                             </div>
@@ -92,8 +92,8 @@ class ModalEditSabbatical extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="endDate">{translate('sabbatical.end_date')}:<span className="required">&#42;</span></label>
-                                        <div className={'input-group date has-feedback'}>
+                                        <label className="pull-left" htmlFor="endDate">{translate('sabbatical.end_date')}:<span className="required">&#42;</span></label>
+                                        <div className={'input-group date has-feedback pull-left'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
                                             </div>
@@ -101,11 +101,11 @@ class ModalEditSabbatical extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="reason">{translate('sabbatical.reason')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="reason">{translate('sabbatical.reason')}:<span className="required">&#42;</span></label>
                                         <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" defaultValue={data.reason} onChange={this.handleChange}></textarea>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">{translate('table.status')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="employeeNumber">{translate('table.status')}:<span className="required">&#42;</span></label>
                                         <select className="form-control" name="status" defaultValue={data.status} onChange={this.handleChange} >
                                             <option value="Đã chấp nhận">Đã chấp nhận</option>
                                             <option value="Chờ phê duyệt">Chờ phê duyệt</option>
