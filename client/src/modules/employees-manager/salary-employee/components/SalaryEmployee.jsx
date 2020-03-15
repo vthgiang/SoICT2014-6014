@@ -36,13 +36,14 @@ class SalaryEmployee extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+        this.props.getListSalary(this.state);
+        this.props.getDepartment();
         let script1 = document.createElement('script');
         script1.src = 'lib/main/js/GridSelect.js';
         script1.async = true;
         script1.defer = true;
         document.body.appendChild(script1);
-        this.props.getListSalary(this.state);
-        this.props.getDepartment();
+        
     }
 
     displayTreeSelect = (data, i) => {

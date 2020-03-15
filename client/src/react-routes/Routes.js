@@ -242,8 +242,8 @@ class Routes extends Component {
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage_unit' }
-                        path={ '/manage_unit' }
+                        link={ '/manage-unit' }
+                        path={ '/manage-unit' }
                         pageName={'manage_unit' }
                         layout={ Layout }
                         component={ DepartmentManage }

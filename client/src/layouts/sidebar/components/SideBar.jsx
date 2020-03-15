@@ -44,7 +44,7 @@ class SideBar extends Component {
             path9: "/update-employee",
             path10: "/list-course",
             path11: "/training-plan",
-            path12: "/manage_unit",
+            path12: "/manage-unit",
 
         }
         const { translate } = this.props;
