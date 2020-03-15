@@ -164,6 +164,7 @@ export default {
             name: 'Department \'s name',
             description: 'Department \'s description',
             parent: 'Parent of Department',
+            no_parent: 'No parent department',
             select_parent: 'Select parent of department',
             roles_of_department: 'Roles in Department',
             dean_name: 'Dean',

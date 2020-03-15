@@ -1,5 +1,6 @@
 import { RoleServices } from "./services";
 import { RoleConstants } from "./constants";
+import { AlertActions } from "../../../alert/redux/actions";
 
 export const RoleActions = {
     get,
@@ -21,10 +22,8 @@ function get(){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -40,10 +39,8 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -59,10 +56,8 @@ function show(id){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -81,10 +76,8 @@ function create(role){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
                     console.log("Error: ", err);
+                    AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
         })
@@ -104,10 +97,8 @@ function edit(role){
                 resolve(res.data);
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
                 reject(err);
             })
         })
@@ -125,10 +116,8 @@ function destroy(roleId){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

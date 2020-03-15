@@ -176,6 +176,7 @@ export default {
             description: 'Mô tả về đơn vị',
             parent: 'Đơn vị cha',
             select_parent: 'Chọn đơn vị cha',
+            no_parent: 'Không có đơn vị cha',
             roles_of_department: 'Các chức danh của đơn vị',
             dean_name: 'Tên chức danh cho trưởng đơn vị',
             dean_example: 'VD: Trưởng phòng tài chính',

@@ -13,7 +13,7 @@ exports.get = async (req, res) => {
     } catch (error) {
         
         isLog && Logger.error(req.user.email);
-        res.status(400).json({ error: error, tag: 'CO LOI'});
+        res.status(400).json(error);
     }
 };
 

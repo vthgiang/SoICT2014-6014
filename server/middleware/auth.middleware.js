@@ -12,7 +12,9 @@ exports.auth = async (req, res, next) => {
         const token = req.header('auth-token');//JWT nhận từ người dùng
         const fingerprint = req.header('fingerprint'); //chữ ký của trình duyệt người dùng - fingerprint
         const currentRole = req.header('current-role');
-        if(!ObjectId.isValid(currentRole)) throw ({ msg: "ROLE_INVALID"}); //trả về lỗi nếu current role là một giá trị không xác định
+        if(!ObjectId.isValid(currentRole)){
+            throw ({ msg: "ROLE_INVALID"}); //trả về lỗi nếu current role là một giá trị không xác định
+        }
 
         const role = await Role.findById(currentRole); //current role của người dùng
 
