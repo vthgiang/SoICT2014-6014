@@ -11,9 +11,9 @@ router.get('/',auth, HolidayController.get);
 router.post('/create',auth, HolidayController.create);
 
 // Xoá thông tin nghỉ lễ tết
-router.delete('/:id', HolidayController.delete);
+router.delete('/:id',auth, HolidayController.delete);
 
 // update thông tin nghỉ lễ tết
-router.put('/:id', HolidayController.update);
+router.put('/:id',auth, HolidayController.update);
 
 module.exports = router;

@@ -38,6 +38,7 @@ function createNewHoliday(data) {
 function deleteHoliday(id) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader(),
     };
 
     return fetch(`${ LOCAL_SERVER_API }/holiday/${id}`, requestOptions).then(handleResponse);

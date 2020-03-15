@@ -11,10 +11,10 @@ router.post('/paginate',auth, EducationProgramController.get);
 router.post('/',auth, EducationProgramController.create);
 
 // delete a educationProgram
-router.delete('/:numberEducation', EducationProgramController.delete);
+router.delete('/:numberEducation',auth, EducationProgramController.delete);
 
 // update a educationProgram
-router.put('/:numberEducation', EducationProgramController.update);
+router.put('/:numberEducation',auth, EducationProgramController.update);
 
 
 module.exports = router;

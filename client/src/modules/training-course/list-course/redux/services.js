@@ -39,6 +39,7 @@ function createNewCourse(data) {
 function deleteCourse(numberEducation) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader(),
     };
 
     return fetch(`${ LOCAL_SERVER_API }/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);
@@ -48,9 +49,7 @@ function deleteCourse(numberEducation) {
 function updateCourse(numberEducation, data) {
     const requestOptions ={
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
     return fetch(`${ LOCAL_SERVER_API }/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);

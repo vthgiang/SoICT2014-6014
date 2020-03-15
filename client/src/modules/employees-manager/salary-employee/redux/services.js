@@ -37,6 +37,7 @@ function createNewSalary(data) {
 function deleteSalary(id) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader(),
     };
 
     return fetch(`${ LOCAL_SERVER_API }/salary/${id}`, requestOptions).then(handleResponse);

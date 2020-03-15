@@ -156,6 +156,22 @@ export function employeesManager(state = {}, action) {
             return {
                 error: action.error
             };
+
+        case EmployeeConstants.DELETE_EMPLOYEE_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+            };
+        case EmployeeConstants.DELETE_EMPLOYEE_SUCCESS:
+            return {
+                ...state,
+                allEmployee: state.allEmployee.filter(list => (list.employee[0]._id !== action.employeeDelete.content.infoEmployee._id)),
+                    isLoading: false,
+            };
+        case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
+            return {
+                error: action.error,
+            };
         default:
             return state
     }

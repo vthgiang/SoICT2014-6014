@@ -42,6 +42,7 @@ function createNewDiscipline(data) {
 // Xoá thông tin kỷ luật của nhân viên
 function deleteDiscipline(id) {
     const requestOptions = {
+        headers: AuthenticateHeader(),
         method: 'DELETE',
     };
 
@@ -88,6 +89,7 @@ function createNewPraise(data) {
 function deletePraise(id) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader(),
     };
 
     return fetch(`${ LOCAL_SERVER_API }/praise/${id}`, requestOptions).then(handleResponse);
