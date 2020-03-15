@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { AuthActions } from '../../auth/redux/actions';
+import { getStorage } from '../../../config';
 
 class NotFound extends Component {
     constructor(props) {
@@ -24,8 +26,28 @@ class NotFound extends Component {
             </div>
          );
     }
+
+    componentDidMount() {
+        var currentRole = getStorage('currentRole');
+        this.props.getLinksOfRole(currentRole)
+            .then(res => {
+                var {links} = this.props.auth; 
+                var path = window.location.pathname;
+                for (let index = 0; index < links.length; index++) {
+                    const element = links[index];
+                    if(element.url === path){
+                        this.props.getComponentsOfUserInLink(currentRole, element._id);
+                        break;
+                    }
+                }
+            });
+    }
 }
  
 const mapState = state => state;
-const NotFoundExport = connect(mapState, null)(withTranslate(NotFound));
+const actionToStore = {
+    getLinksOfRole: AuthActions.getLinksOfRole,
+    getComponentsOfUserInLink: AuthActions.getComponentOfUserInLink
+}
+const NotFoundExport = connect(mapState, actionToStore)(withTranslate(NotFound));
 export { NotFoundExport as NotFound }
