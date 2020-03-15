@@ -5,9 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddDiscipline } from './ModalAddDiscipline';
 import { ModalEditDiscipline } from './ModalEditDiscipline';
-import { ModalDeleteDiscipline } from './ModalDeleteDiscipline';
 import { ActionColumnDiscipline } from './ActionColumDiscipline';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { DeleteNotification } from '../../../../common-components';
 class TabDiscipline extends Component {
     constructor(props) {
         super(props);
@@ -219,9 +219,20 @@ class TabDiscipline extends Component {
                                                 <td>{x.number}</td>
                                                 <td>Phòng MARKETING</td>
                                                 <td>nhân viên</td>
-                                                <td>
+                                                <td style={{textAlign:'center'}}>
                                                     <ModalEditDiscipline data={x} />
-                                                    <ModalDeleteDiscipline data={x} />
+                                                    <DeleteNotification
+                                                        content={{
+                                                            title: "Xoá thông tin kỷ luật",
+                                                            btnNo: translate('confirm.no'),
+                                                            btnYes: translate('confirm.yes'),
+                                                        }}
+                                                        data={{
+                                                            id: x._id,
+                                                            info: x.employee.employeeNumber + " - Số quyết định: " + x.number
+                                                        }}
+                                                        func={this.props.deleteDiscipline}
+                                                    />
                                                 </td>
                                             </tr>
                                         ))
@@ -238,12 +249,13 @@ class TabDiscipline extends Component {
     };
 }
 function mapState(state) {
-    const { discipline,department } = state;
-    return { discipline,department };
+    const { discipline, department } = state;
+    return { discipline, department };
 };
 
 const actionCreators = {
     getListDiscipline: DisciplineActions.getListDiscipline,
+    deleteDiscipline: DisciplineActions.deleteDiscipline,
 };
 
 const connectedListDiscipline = connect(mapState, actionCreators)(withTranslate(TabDiscipline));

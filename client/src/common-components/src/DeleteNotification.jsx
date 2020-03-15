@@ -14,7 +14,7 @@ class DeleteNotification extends Component {
         func //hàm thực hiện tương ứng
     ) => {
         Swal.fire({
-            html: `<h4 style="color: red">${content.title} "${data.info}" ?</h4>`,
+            html: `<h4 style="color: red"><div>${content.title}</div> <div>"${data.info}" ?</div></h4>`,
             icon: 'error',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

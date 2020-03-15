@@ -6,11 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { SalaryActions } from '../redux/actions';
 import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
-import { ModalDeleteSalary } from './ModalDeleteSalary';
 import { ModalEditSalary } from './ModalEditSalary';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DeleteNotification } from '../../../../common-components';
 
 class SalaryEmployee extends Component {
     constructor(props) {
@@ -43,7 +43,7 @@ class SalaryEmployee extends Component {
         script1.async = true;
         script1.defer = true;
         document.body.appendChild(script1);
-        
+
     }
 
     displayTreeSelect = (data, i) => {
@@ -283,9 +283,20 @@ class SalaryEmployee extends Component {
                                                             </td>
                                                             <td>Phòng nhân sự</td>
                                                             <td>Nhân viên</td>
-                                                            <td>
+                                                            <td style={{textAlign:'center'}}>
                                                                 <ModalEditSalary data={x} />
-                                                                <ModalDeleteSalary data={x} />
+                                                                <DeleteNotification
+                                                                    content={{
+                                                                        title: "Xoá bảng lương",
+                                                                        btnNo: translate('confirm.no'),
+                                                                        btnYes: translate('confirm.yes'),
+                                                                    }}
+                                                                    data={{
+                                                                        id: x._id,
+                                                                        info: x.employee.employeeNumber + "- tháng: " + x.month
+                                                                    }}
+                                                                    func={this.props.deleteSalary}
+                                                                />
                                                             </td>
                                                         </tr>)
                                                 })
@@ -317,6 +328,7 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: DepartmentActions.get,
     getListSalary: SalaryActions.getListSalary,
+    deleteSalary: SalaryActions.deleteSalary,
 };
 
 const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryEmployee));

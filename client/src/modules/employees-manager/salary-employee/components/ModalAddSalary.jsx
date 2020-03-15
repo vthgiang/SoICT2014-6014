@@ -167,7 +167,7 @@ class ModalAddSalary extends Component {
                                                 <tr>
                                                     <th>{translate('salary_employee.name_salary')}</th>
                                                     <th style={{ width: "30%" }}>{translate('salary_employee.money_salary')}</th>
-                                                    <th>{translate('table.action')}</th>
+                                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
