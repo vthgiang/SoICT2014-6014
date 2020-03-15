@@ -68,29 +68,29 @@ exports.auth = async (req, res, next) => {
                 await resetUser.save();
                 throw ({msg: 'SERVICE_OFF'});
             };
-            
-            /**
-             * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
-             * Lấy đường link mà người dùng đã truy cập 
-             * Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang 
-             * Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
-             * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
-             */
-            var origin = JSON.stringify(req.headers.origin);//host của bên client VD: http://localhost:3000
-            var referer = JSON.stringify(req.headers.referer);//đường dẫn mà client đang truy cập VD: http://localhost:3000/manage-user
-            var url = referer.substr(origin.length - 1, referer.length - origin.length);
-            const link = await Link.findOne({
-                url,
-                company: req.user.company._id 
-            });
-            const roleArr = [roleId].concat(role.parents);
-            const privilege = await Privilege.findOne({
-                resourceId: link._id,
-                resourceType: 'Link',
-                roleId: { $in: roleArr }
-            });
-            if(privilege === null) throw ({ msg: 'PAGE_ACCESS_DENIED' });
         }
+
+         /**
+         * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
+         * Lấy đường link mà người dùng đã truy cập 
+         * Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang 
+         * Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
+         * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
+         */
+        var origin = JSON.stringify(req.headers.origin);//host của bên client VD: http://localhost:3000
+        var referer = JSON.stringify(req.headers.referer);//đường dẫn mà client đang truy cập VD: http://localhost:3000/manage-user
+        var url = referer.substr(origin.length - 1, referer.length - origin.length);
+        const link = await Link.findOne({
+            url,
+            company: req.user.company._id 
+        });
+        const roleArr = [roleId].concat(role.parents);
+        const privilege = await Privilege.findOne({
+            resourceId: link._id,
+            resourceType: 'Link',
+            roleId: { $in: roleArr }
+        });
+        if(privilege === null) throw ({ msg: 'PAGE_ACCESS_DENIED' });
 
         next();
         
