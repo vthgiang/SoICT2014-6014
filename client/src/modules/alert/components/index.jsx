@@ -25,7 +25,7 @@ class Alert extends Component {
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h4 className="modal-title text-center text-red">Thông báo từ hệ thống</h4>
+                                <h4 className="modal-title text-center text-red">{translate('alert.title')}</h4>
                             </div>
                             <div className="modal-body text-center">
                                 <strong>

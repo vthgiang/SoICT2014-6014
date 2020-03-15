@@ -1,6 +1,7 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
 import { setStorage } from '../../../config';
+import { AlertActions } from "../../alert/redux/actions";
 
 export const AuthActions = {
     login,
@@ -31,7 +32,7 @@ function login(user){
                 dispatch({
                     type: AuthConstants.LOGIN_FAILE,
                     payload: typeof(err.response) !== 'undefined' ? err.response.data : err
-                })
+                });
             })
     }
 }
@@ -45,7 +46,7 @@ function logout(){
                 })
             })
             .catch(err => {
-                console.log("logout error");
+                console.log(err);
             })
     }
 }
@@ -59,7 +60,8 @@ function logoutAllAccount(){
                 })
             })
             .catch(err => {
-                console.log("logout error");
+                console.log(err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -75,6 +77,7 @@ function editProfile(data){
             })
             .catch(err => {
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -92,9 +95,7 @@ function getLinksOfRole(idRole){
             })
             .catch(err => {
                 console.log(err.response);
-                dispatch({
-                    type: err.response.data.msg
-                });
+                AlertActions.handleAlert(dispatch, err);
                 reject(err);
             })
         });
@@ -112,12 +113,8 @@ function refresh(){
                 })
             })
             .catch(err => {
-                if(err.response !== undefined){
-                    var { msg } = err.response.data;
-                    dispatch({
-                        type: msg
-                    });
-                }
+                console.log(err.response);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -163,7 +160,8 @@ function getComponentOfUserInLink(curentRole, linkId){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
+                console.log(err.response);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

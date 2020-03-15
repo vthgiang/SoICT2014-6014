@@ -8,12 +8,15 @@ export default {
         },
         language: 'Thiết lập ngôn ngữ',
         alert: {
+            title: 'Thông báo từ hệ thống',
             log_again: 'Đã xảy ra lỗi. Vui lòng đăng nhập lại!',
             access_denied: 'Truy cập trái phép! Vui lòng đăng nhập!',
-            role_invalid: 'Quyền truy cập không hợp lệ! Vui lòng đăng nhập lại!',
-            page_access_denied: 'Quyền truy cập vào trang này của bạn đã được thay đổi! Vui lòng đăng nhập lại để tiếp tục làm việc!',
-            user_role_invalid: 'Quyền của bạn đã bị thay đổi! Vui lòng đăng nhập lại!',
-            acc_logged_out: 'Phiên làm việc không khả dụng. Vui lòng đăng nhập lại!'
+            role_invalid: 'Quyền truy cập không hợp lệ! Vui lòng thử lại sau!',
+            page_access_denied: 'Quyền truy cập vào trang này của bạn đã được thay đổi! Vui lòng đăng nhập lại!',
+            user_role_invalid: 'Quyền hiện tại của bạn đã bị thay đổi! Vui lòng đăng nhập lại!',
+            acc_logged_out: 'Phiên làm việc này không tồn tại. Vui lòng đăng nhập lại!',
+            service_off: 'Dịch vụ của công ty bạn đã tạm ngưng! Phiên làm việc của bạn sẽ bị tạm ngưng!',
+            fingerprint_invalid: 'Phiên đăng nhập của bạn không đúng! Vui lòng đăng nhập lại!'
         },
         auth: {
             login: 'Đăng nhập',
@@ -39,7 +42,7 @@ export default {
             new_password: 'Mật khẩu mới',
             confirm: 'Xác thực mật khẩu',
             description: 'Mô tả',
-            reset_assword: 'Thiết lập lại mật khẩu',
+            reset_password: 'Thiết lập lại mật khẩu',
             forgot_password: 'Quên mật khẩu ?',
             signin: 'Đăng nhập',
             otp: 'Mã xác thực',

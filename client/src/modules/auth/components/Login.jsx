@@ -78,7 +78,7 @@ class Login extends Component {
                                             <input type="checkbox" /> Remember Me
                                     </label>
                                     </div> */}
-                                    <a data-toggle="modal" href='#modal-reset-password'>{ translate('form.forgotPassword') }</a><br />
+                                    <a data-toggle="modal" href='#modal-reset-password'>{ translate('form.forgot_password') }</a><br />
                                     <ForgotPassword />
                                 </div>
                                 <div className="col-xs-4">

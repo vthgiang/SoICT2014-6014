@@ -2,9 +2,8 @@ import getBrowserFingerprint from 'get-browser-fingerprint';
 // import Fingerprint2 from 'fingerprintjs2';
 
 export const clearStorage = () => {
-    localStorage.clear();
-    localStorage.clear();
-
+    localStorage.removeItem('currentRole');
+    localStorage.removeItem('jwt');
     return true;
 };
 
@@ -19,10 +18,11 @@ export const getStorage = (name='jwt') => {
 export const AuthenticateHeader = (name='jwt') => {
     const token = getStorage(name);
     const currentRole = getStorage('currentRole');
+    console.log("currentrole: ", currentRole);
     const fingerprint = getBrowserFingerprint();
     return {
         'auth-token': token,
-        'current-role': currentRole,
+        'current-role': undefined,
         'fingerprint': fingerprint,
         'Content-Type': 'application/json'
     }
