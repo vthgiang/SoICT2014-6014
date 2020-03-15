@@ -26,7 +26,7 @@ class Profile extends Component {
                     </li>
                     <li className="user-footer">
                         <div className="pull-left">
-                            <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i> {translate('auth.profile')} </a>
+                            <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i> {translate('auth.profile.title')} </a>
                         </div>
                         <div className="pull-right">
                             <button type="button" className="btn btn-default btn-flat" onClick={this.props.logout}><i className="fa fa-sign-out"></i> {translate('auth.logout')} </button>

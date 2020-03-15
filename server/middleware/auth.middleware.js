@@ -94,8 +94,7 @@ exports.auth = async (req, res, next) => {
 
         next();
         
-    } catch (error) {
-        console.log("ERROR: ",error);   
+    } catch (error) { 
         res.status(400).json(error);
     }   
 }

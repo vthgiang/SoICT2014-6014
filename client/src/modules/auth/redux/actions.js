@@ -68,17 +68,21 @@ function logoutAllAccount(){
 
 function editProfile(data){
     return dispatch => {
-        AuthService.editProfile(data)
+        return new Promise((resolve, reject) => {
+            AuthService.editProfile(data)
             .then(res => {
                 dispatch({
                     type: AuthConstants.EDIT_PROFILE_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err);
                 AlertActions.handleAlert(dispatch, err);
+                reject(err);
             })
+        });
     }
 }
 

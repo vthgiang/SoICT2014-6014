@@ -22,7 +22,15 @@ export default {
             login: 'Login',
             logout: 'Logout',
             logout_all_account: 'Log out all account',
-            profile: 'Profile',
+            profile: {
+                title: 'Profile',
+                name: 'Username',
+                email: 'Email',
+                password: 'New password',
+                confirm: 'Confirm password',
+                edit_success: 'Edit user profile success',
+                edit_faile: 'Edit user profile faile'
+            }
         },
 
         confirm: {

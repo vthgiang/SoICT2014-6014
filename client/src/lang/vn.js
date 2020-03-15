@@ -22,7 +22,15 @@ export default {
             login: 'Đăng nhập',
             logout: 'Đăng xuất',
             logout_all_account: 'Đăng xuất khỏi tất cả các thiết bị',
-            profile: 'Thông tin tài khoản',
+            profile: {
+                title: 'Thông tin tài khoản',
+                name: 'Tên người dùng',
+                email: 'Địa chỉ email',
+                password: 'Mật khẩu mới',
+                confirm: 'Xác thực mật khẩu',
+                edit_success: 'Chỉnh sửa thông tin người dùng thành công',
+                edit_faile: 'Chỉnh sửa thông tin người dùng thất bại'
+            },
         },
 
         confirm: {
