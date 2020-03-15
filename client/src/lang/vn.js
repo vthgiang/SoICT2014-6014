@@ -1,7 +1,11 @@
 export default {
     locale: 'vn',
     messages: {
-        not_found: '404! Trang không tồn tại',
+        not_found: {
+            title: 'Không tìm thấy địa chỉ này!',
+            content: 'Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm',
+            back_to_home: 'Quay lại trang chủ'
+        },
         language: 'Thiết lập ngôn ngữ',
         alert: {
             log_again: 'Đã xảy ra lỗi. Vui lòng đăng nhập lại!',

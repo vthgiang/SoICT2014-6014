@@ -1,7 +1,11 @@
 export default {
     locale: 'en',
     messages: {
-        not_found: '404! Not found this page',
+        not_found: {
+            title: 'Qpps! Page not found',
+            content: 'We could not find the page you were looking for',
+            back_to_home: 'Return to HomePage'
+        },
         language: 'Language setting',
         alert: {
             log_again: 'Error! Log in again!',
