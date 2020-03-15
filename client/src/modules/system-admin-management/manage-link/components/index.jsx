@@ -49,8 +49,7 @@ class ManageLink extends Component {
                                 <CreateLinkForm/>
                             </div>
                         </div>
-                        <table 
-                            className="table table-hover table-striped">
+                        <table className="table table-hover table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>{ translate('manage_page.url') }</th>
@@ -174,45 +173,10 @@ class ManageLink extends Component {
         }
         this.props.getPaginate(data);
     }
-            
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
-    }
-
+     
     componentDidMount(){
         this.props.getLinks();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/defindMultiSelect.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-        this.handleResizeColumn();
     }
 }
  

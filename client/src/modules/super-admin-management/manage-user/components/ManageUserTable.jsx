@@ -3,11 +3,8 @@ import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import UserEditForm from './UserEditForm';
-import { DeleteNotification } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
-import { SearchBar } from '../../../../common-components';
+import { PaginateBar, ActionColumn, SearchBar, DeleteNotification } from '../../../../common-components';
 import UserCreateForm from './UserCreateForm';
-import { ActionColumn } from '../../../../common-components';
 
 class ManageUserTable extends Component {
     constructor(props) {
@@ -44,7 +41,7 @@ class ManageUserTable extends Component {
                         <UserCreateForm />
                     </div>
                 </div>
-                <table id="user-table" className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>{translate('table.name')}</th>

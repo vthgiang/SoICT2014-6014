@@ -4,11 +4,8 @@ import { RoleActions} from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../manage-user/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
-import { SearchBar } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, ActionColumn } from '../../../../common-components';
 import RoleCreateForm from './RoleCreateForm';
-import { DeleteNotification } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
-import { ActionColumn } from '../../../../common-components';
 
 class RoleTable extends Component {
     constructor(props) {
@@ -43,86 +40,83 @@ class RoleTable extends Component {
                         <RoleCreateForm />
                     </div>
                 </div>
-                {
-                    role.list.length > 0 && 
-                    <table className="table table-hover table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>{ translate('manage_role.name') }</th>
-                                <th>{ translate('manage_role.extends') }</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                    <ActionColumn 
-                                        columnName={translate('table.action')} 
-                                        columnArr={[
-                                            translate('table.name')
-                                        ]}
-                                        setLimit={this.setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                role.listPaginate.length > 0 ? 
-                                role.listPaginate.map( role => 
-                                    <tr key={ `roleList${role._id}` }>
-                                        <td> { role.name } </td>
-                                        <td> { 
-                                            role.parents.map((parent, index, arr) => {
-                                                if(arr.length < 4){
-                                                    if(index !== arr.length - 1) return `${parent.name}, `;
-                                                    else return `${parent.name}`
-                                                }else{
-                                                    if(index < 3 ){
-                                                        return `${parent.name}, `
-                                                    }
+                <table className="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>{ translate('manage_role.name') }</th>
+                            <th>{ translate('manage_role.extends') }</th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>
+                                <ActionColumn 
+                                    columnName={translate('table.action')} 
+                                    columnArr={[
+                                        translate('table.name')
+                                    ]}
+                                    setLimit={this.setLimit}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            role.listPaginate.length > 0 ? 
+                            role.listPaginate.map( role => 
+                                <tr key={ `roleList${role._id}` }>
+                                    <td> { role.name } </td>
+                                    <td> { 
+                                        role.parents.map((parent, index, arr) => {
+                                            if(arr.length < 4){
+                                                if(index !== arr.length - 1) return `${parent.name}, `;
+                                                else return `${parent.name}`
+                                            }else{
+                                                if(index < 3 ){
+                                                    return `${parent.name}, `
                                                 }
-                                            })
-                                        }{
-                                            role.parents.length >=4 &&
-                                            <React.Fragment>
-                                                <div className="tooltip2">...
-                                                    <span className="tooltip2text">
-                                                        {
-                                                            role.parents.map((parent, index, arr) => {
-                                                                if(index !== arr.length - 1) return `${parent.name}, `;
-                                                                else return `${parent.name}`
-                                                            })
-                                                        }
-                                                    </span>
-                                                </div>
-                                            </React.Fragment>
-                                        } </td>
-                                        <td style={{ textAlign: 'center' }}>
-                                            <RoleInfoForm 
-                                                roleType={role.type.name}
-                                                roleId={role._id}
-                                                roleName={role.name}
-                                                roleParents={role.parents.map(parent => parent._id)}
-                                                roleUsers={role.users.map(user=>user.userId._id)}
-                                            />
-                                            {
-                                                role.type.name === 'tutao' && 
-                                                <DeleteNotification 
-                                                    content={{
-                                                        title: translate('manage_role.delete'),
-                                                        btnNo: translate('confirm.no'),
-                                                        btnYes: translate('confirm.yes'),
-                                                    }}
-                                                    data={{
-                                                        id: role._id,
-                                                        info: role.name
-                                                    }}
-                                                    func={this.props.destroy}
-                                                />
                                             }
-                                        </td>
-                                    </tr>       
-                                ): <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
-                            }
-                        </tbody>
-                    </table>
-                }   
+                                        })
+                                    }{
+                                        role.parents.length >=4 &&
+                                        <React.Fragment>
+                                            <div className="tooltip2">...
+                                                <span className="tooltip2text">
+                                                    {
+                                                        role.parents.map((parent, index, arr) => {
+                                                            if(index !== arr.length - 1) return `${parent.name}, `;
+                                                            else return `${parent.name}`
+                                                        })
+                                                    }
+                                                </span>
+                                            </div>
+                                        </React.Fragment>
+                                    } </td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <RoleInfoForm 
+                                            roleType={role.type.name}
+                                            roleId={role._id}
+                                            roleName={role.name}
+                                            roleParents={role.parents.map(parent => parent._id)}
+                                            roleUsers={role.users.map(user=>user.userId._id)}
+                                        />
+                                        {
+                                            role.type.name === 'tutao' && 
+                                            <DeleteNotification 
+                                                content={{
+                                                    title: translate('manage_role.delete'),
+                                                    btnNo: translate('confirm.no'),
+                                                    btnYes: translate('confirm.yes'),
+                                                }}
+                                                data={{
+                                                    id: role._id,
+                                                    info: role.name
+                                                }}
+                                                func={this.props.destroy}
+                                            />
+                                        }
+                                    </td>
+                                </tr>       
+                            ): <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
+                        }
+                    </tbody>
+                </table>
                 {/* PaginateBar */}
                 <PaginateBar pageTotal={role.totalPages} currentPage={role.page} func={this.setPage}/>
             </React.Fragment>
@@ -166,46 +160,10 @@ class RoleTable extends Component {
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
         this.props.get();
         this.props.getUser();
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/defindMultiSelect.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-        this.handleResizeColumn();
     }
 
     deleteRole = (roleId) => {
         this.props.destroy(roleId);
-    }
-
-    
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
 
 }

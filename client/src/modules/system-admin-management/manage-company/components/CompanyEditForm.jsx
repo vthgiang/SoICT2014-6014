@@ -72,24 +72,6 @@ class CompanyEditForm extends Component {
                         </div>
                     </form>
                 </ModalDialog>
-                {/* <a className="edit" data-toggle="modal" href={ `#modal-company-${companyID}` } title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
-                <div className="modal fade" id={ `modal-company-${companyID}` } style={{textAlign: 'left'}}>
-                    <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 className="modal-title">{translate('manage_company.info')}</h4>
-                        </div>
-                        <div className="modal-body">
-                            
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" data-dismiss="modal">{ translate('form.close') }</button>
-                            <button type="button" className="btn btn-success" data-dismiss="modal" onClick={ this.save }>{ translate('form.save') }</button>
-                        </div>
-                    </div>
-                    </div>
-                </div> */}
             </React.Fragment>
          );
     }
