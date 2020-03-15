@@ -7,35 +7,24 @@ import { ModalDialog, ModalButton } from '../../../../common-components';
 class DepartmentCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            name: '',
-            description: '',
-            dean: '',
-            vice_dean: '',
-            employee: '',
-            parent: null
-         }
-        this.inputChange = this.inputChange.bind(this);
+        this.state = {}
         this.save = this.save.bind(this);
     }
 
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-
     save = () => {
-        const { name, description, dean, vice_dean, employee, parent } = this.state;
-        return this.props.create({name, description, dean, vice_dean, employee, parent});     
+        console.log("parentrole:", this.refs.parent.value);
+        return this.props.create({
+            name: this.refs.name.value,
+            description: this.refs.description.value,
+            dean: this.refs.dean.value,
+            vice_dean: this.refs.vice_dean.value,
+            employee: this.refs.employee.value,
+            parent: this.refs.parent.value
+        });     
     }
 
     render() { 
         const { translate,department } = this.props;
-        const { name, description, dean, vice_dean, employee } = this.state;
 
         return ( 
             <React.Fragment>
@@ -56,20 +45,19 @@ class DepartmentCreateForm extends Component {
                                     <legend className="scheduler-border"><span>{ translate('manage_department.info') }</span></legend>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.name')  }<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" name="name" onChange={ this.inputChange }/><br/>
+                                        <input type="text" className="form-control" ref="name"/><br/>
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.description') }<span className="attention"> * </span></label>
-                                        <textarea type="text" className="form-control" name="description" onChange={ this.inputChange }/><br/>
+                                        <textarea type="text" className="form-control" ref="description"/><br/>
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.parent') }</label>
                                         <select 
-                                            className="form-control" 
+                                            className="form-control select2" 
                                             style={{width: '100%'}} 
-                                            name="parent" 
-                                            onChange={this.inputChange}>
-                                                <option>---{ translate('manage_department.select_parent') }---</option>
+                                            ref="parent">
+                                                <option key={'noparent'} value={null}>{translate('manage_department.no_parent')}</option>
                                             {   
                                                 department.list.map(department => 
                                                     <option key={department._id} value={department._id}>{department.name}</option>    
@@ -84,15 +72,15 @@ class DepartmentCreateForm extends Component {
                                     <legend className="scheduler-border"><span>{ translate('manage_department.roles_of_department') }</span></legend>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.dean_name') }<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" name="dean" onChange={ this.inputChange } placeholder={ translate('manage_department.dean_example') }/><br/>
+                                        <input type="text" className="form-control" ref="dean" placeholder={ translate('manage_department.dean_example') }/><br/>
                                     </div> 
                                     <div className="form-group">
                                         <label>{ translate('manage_department.vice_dean_name') }<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" name="vice_dean" onChange={ this.inputChange } placeholder={ translate('manage_department.vice_dean_example') }/><br/>
+                                        <input type="text" className="form-control" ref="vice_dean" placeholder={ translate('manage_department.vice_dean_example') }/><br/>
                                     </div>
                                     <div className="form-group">
                                         <label>{ translate('manage_department.employee_name') }<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" name="employee" onChange={ this.inputChange } placeholder={ translate('manage_department.employee_example') }/><br/>
+                                        <input type="text" className="form-control" ref="employee" placeholder={ translate('manage_department.employee_example') }/><br/>
                                     </div>
                                 </fieldset>
                             </div>

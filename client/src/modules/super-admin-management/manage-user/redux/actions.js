@@ -1,5 +1,6 @@
 import { UserServices } from "./services";
 import { UserConstants } from "./constants";
+import { AlertActions } from "../../../alert/redux/actions";
 
 export const UserActions = {
     get,
@@ -24,10 +25,8 @@ function get(){
             })
         })
         .catch(err => {
-            dispatch({
-                type: err.response.data.msg
-            })
             console.log("Error: ", err);
+            AlertActions.handleAlert(dispatch, err);
         })
     }
 }
@@ -43,10 +42,8 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -64,10 +61,8 @@ function edit(id, data){
                 resolve(res.data);
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
                 reject(err);
             })
         })
@@ -87,10 +82,8 @@ function create(data){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
                     console.log("Error: ", err);
+                    AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
         })
@@ -109,10 +102,8 @@ function destroy(id){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -134,10 +125,8 @@ export const getRoles = () => {
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -152,10 +141,8 @@ export const getLinkOfRole = () => {
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

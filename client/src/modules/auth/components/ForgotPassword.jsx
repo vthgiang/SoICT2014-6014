@@ -40,7 +40,7 @@ class ForgotPassword extends Component {
                     <div className="modal-content">
                     <div className="modal-header">
                         <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 className="modal-title">{ translate('form.resetPassword') }</h4>
+                        <h4 className="modal-title">{ translate('form.reset_password') }</h4>
                     </div>
                     {
                         !auth.forgotPassword ?
@@ -66,7 +66,7 @@ class ForgotPassword extends Component {
                                     <input type="text" className="form-control" name="otp" onChange={ this.handleChange }/><br/>
                                 </div>
                                 <div className="form-group">
-                                    <label>{ translate('form.newPassword') }</label>
+                                    <label>{ translate('form.new_password') }</label>
                                     <input type="password" className="form-control" name="password" onChange={ this.handleChange }/><br/>
                                 </div>
                                 <div className="form-group">

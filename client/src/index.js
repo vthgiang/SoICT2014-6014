@@ -4,16 +4,8 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import translations from './lang'
-import { IntlProvider, IntlActions } from 'react-redux-multilingual';
-
-const lang = localStorage.getItem('lang');
-if(lang){
-    store.dispatch(IntlActions.setLocale(lang));
-}else{
-    localStorage.setItem('lang', 'vn');
-    store.dispatch(IntlActions.setLocale(localStorage.getItem('lang')));
-}
+import translations from './lang';
+import { IntlProvider } from 'react-redux-multilingual';
 
 ReactDOM.render(
     <Provider store={store}>

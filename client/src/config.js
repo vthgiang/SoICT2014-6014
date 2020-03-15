@@ -2,9 +2,8 @@ import getBrowserFingerprint from 'get-browser-fingerprint';
 // import Fingerprint2 from 'fingerprintjs2';
 
 export const clearStorage = () => {
-    localStorage.clear();
-    localStorage.clear();
-
+    localStorage.removeItem('currentRole');
+    localStorage.removeItem('jwt');
     return true;
 };
 

@@ -1,6 +1,7 @@
 const Department = require('../../../models/department.model');
 const UserRole = require('../../../models/user_role.model')
 const arrayToTree = require('array-to-tree');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 exports.get = async (id) => {
     return await Department
@@ -52,7 +53,7 @@ exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
         dean: deanId,
         vice_dean: vice_deanId,
         employee: employeeId,
-        parent: data.parent
+        parent: ObjectId.isValid(data.parent) ? data.parent : null
     });
     console.log("DEPARTMENT: ", department);
 

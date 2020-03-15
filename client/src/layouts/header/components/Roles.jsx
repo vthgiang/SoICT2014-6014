@@ -34,20 +34,18 @@ class Roles extends Component {
     }
 
     componentDidMount() {
+        var currentRole = getStorage('currentRole');
         this.props.getLinksOfRole(this.state.currentRole)
             .then(res => {
                 var {links} = this.props.auth; 
                 var path = window.location.pathname;
-                var linkId;
                 for (let index = 0; index < links.length; index++) {
                     const element = links[index];
                     if(element.url === path){
-                        linkId = element._id;
+                        this.props.getComponentsOfUserInLink(currentRole, element._id);
                         break;
                     }
                 }
-                var currentRole = getStorage('currentRole');
-                this.props.getComponentsOfUserInLink(currentRole, linkId);
             });
     }
     

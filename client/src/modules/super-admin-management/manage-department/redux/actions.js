@@ -1,5 +1,6 @@
 import { DepartmentServices } from "./services";
 import { DepartmentConstants } from "./constants";
+import { AlertActions } from "../../../alert/redux/actions";
 
 export const DepartmentActions = {
     get,
@@ -23,10 +24,8 @@ function get(){
                     resolve(res);
                 })
                 .catch(err => {
-                    console.log("Error: ", err);
-                    dispatch({
-                        type: err.response.data.msg
-                    });
+                    console.log("Error: ", err.response);
+                    AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
         })
@@ -47,10 +46,8 @@ function create(data){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
                     console.log("Error: ", err);
+                    AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
         })
@@ -71,10 +68,8 @@ function edit(data){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
                     console.log("Error: ", err);
+                    AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
         })
@@ -95,10 +90,8 @@ function destroy(departmentId){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
                 console.log("Error: ", err);
+                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
