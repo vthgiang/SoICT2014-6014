@@ -5,12 +5,12 @@ import { PrivateRoute, AuthRoute } from './route-export';
 import Layout from '../layouts/Layout';
 import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/Login';
-import System from '../modules/system/components';
+import LogManagement from '../modules/system-admin-management/logs-management/components';
 import Home from '../modules/home/components';
 import ManageCompany from '../modules/system-admin-management/manage-company/components';
 import ManageUser from '../modules/super-admin-management/manage-user/components';
 import ManageRole from '../modules/super-admin-management/manage-role/components';
-import ManageLink from '../modules/system-admin-management/manage-link/components';
+import ManageLink from '../modules/super-admin-management/links-management/components';
 import ManageDepartment from '../modules/super-admin-management/manage-department/components';
 import ManageComponent from '../modules/system-admin-management/manage-component/components';
 import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
@@ -47,15 +47,15 @@ class Routes extends Component {
                         isLoading={ company.isLoading }
                         key={ 'manage_system' }
                         arrPage={[
-                            { link: '/system', name:'manage_system', icon: 'fa fa-gears'}
+                            { link: '/log', name:'manage_system', icon: 'fa fa-gears'}
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/system' }
-                        path={ '/system' }
+                        link={ '/log' }
+                        path={ '/log' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ System }
+                        component={ LogManagement }
                     />
                     <PrivateRoute 
                         isLoading={ auth.isLoading }
@@ -162,7 +162,7 @@ class Routes extends Component {
                         component={ ManageComponent }
                     />
                     <PrivateRoute 
-                        key={ 'manage-form-document' }
+                        key={ 'manage-document' }
                         auth={ auth }
                         exact={ true }
                         link={ '/manage-document' }

@@ -32,7 +32,7 @@ exports.auth = async (req, res, next) => {
          * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
          * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
          */
-        if(verified.fingerprint !== fingerprint) throw ({ msg: 'FINGERPRINT_INVALID' }); // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
+        // if(verified.fingerprint !== fingerprint) throw ({ msg: 'FINGERPRINT_INVALID' }); // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
         req.user = verified; 
         req.token = token;
@@ -43,8 +43,8 @@ exports.auth = async (req, res, next) => {
          * Nếu như người tạo ra JWT này đã đăng xuất thì JWT này sẽ được xóa đi khỏi CSDL của người dùng.
          * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
          */
-        var logged = await User.findOne({ _id: req.user._id,  token: token });
-        if(logged === null) throw ({ msg: 'ACC_LOGGED_OUT'});
+        var userToken = await User.findOne({ _id: req.user._id,  token: token });
+        if(userToken === null) throw ({ msg: 'ACC_LOGGED_OUT'});
 
         /**
          * Kiểm tra xem current role có đúng với người dùng hay không?
@@ -80,10 +80,14 @@ exports.auth = async (req, res, next) => {
         var origin = JSON.stringify(req.headers.origin);//host của bên client VD: http://localhost:3000
         var referer = JSON.stringify(req.headers.referer);//đường dẫn mà client đang truy cập VD: http://localhost:3000/manage-user
         var url = referer.substr(origin.length - 1, referer.length - origin.length);
-        const link = await Link.findOne({
-            url,
-            company: req.user.company._id 
-        });
+        const link = role.name !== 'System Admin' ?
+            await Link.findOne({
+                url,
+                company: req.user.company._id 
+            }) :
+            await Link.findOne({
+                url
+            });
         const roleArr = [roleId].concat(role.parents);
         const privilege = await Privilege.findOne({
             resourceId: link._id,

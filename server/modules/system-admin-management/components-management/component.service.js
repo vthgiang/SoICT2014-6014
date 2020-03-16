@@ -61,7 +61,6 @@ exports.delete = async(id) => {
 }
 
 exports.relationshipComponentRole = async(componentId, roleArr) => {
-    console.log("relation ship: ", componentId, roleArr)
     await Privilege.deleteMany({
         resourceId: componentId,
         resourceType: 'Component'
@@ -75,7 +74,6 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         };
     });
     var privilege = await Privilege.insertMany(data);
-    console.log("Created data: ", privilege)
 
     return privilege;
 }

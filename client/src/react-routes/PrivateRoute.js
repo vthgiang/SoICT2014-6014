@@ -21,8 +21,9 @@ export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, compone
         var logged = getStorage();
         if(logged !== null){
             if(link !== '/' && checkURL(link, auth.links) !== true){
-                // return <NotFound/>
-                return <Layout></Layout>
+                if(!auth.calledAPI) //chưa thực hiện load trang để check link
+                    return <Layout isLoading={isLoading}></Layout>
+                else return <NotFound/> //đã thực hiện load trang để check link
             } 
             return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{

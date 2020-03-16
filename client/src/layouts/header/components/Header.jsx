@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 import { ModalDialog } from '../../../common-components';
+import { Link } from 'react-router-dom';
 
 class Header extends Component {
     constructor(props) {
@@ -25,12 +26,12 @@ class Header extends Component {
         return ( 
             <React.Fragment>
                 <header className="main-header">
-                    <a href="index2.html" className="logo">
+                    <Link to='/' className="logo">
                         <span className="logo-mini"><img src="/lib/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img></span>
                         <span className="logo-lg"><img src="/lib/main/image/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img>VNIST-Việc</span>
-                    </a>
+                    </Link>
                     <nav className="navbar navbar-static-top">
-                        <a href="#abc" className="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <a className="sidebar-toggle" data-toggle="push-menu" role="button">
                             <span className="sr-only">Toggle navigation</span>
                         </a>
                         <MainHeaderMenu/>

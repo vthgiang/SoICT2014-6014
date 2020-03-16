@@ -77,6 +77,7 @@ async function refresh() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
+    console.log("verified: ", verified)
     
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,

@@ -17,18 +17,18 @@ const initState = {
     item: null
 }
 
-var findIndex = (array, id) => {
-    var result = -1;
-    array.forEach((value, index) => {
-        if(value._id === id){
-            result = index;
-        }
-    });
-    return result;
-}
+// var findIndex = (array, id) => {
+//     var result = -1;
+//     array.forEach((value, index) => {
+//         if(value._id === id){
+//             result = index;
+//         }
+//     });
+//     return result;
+// }
 
 export function notification(state = initState, action) {
-    var index = -1;
+    // var index = -1;
     switch (action.type) {
         case NotificationConstants.GET_NOTIFICATIONS_REQUEST:
         case NotificationConstants.CREATE_NOTIFICATION_REQUEST:

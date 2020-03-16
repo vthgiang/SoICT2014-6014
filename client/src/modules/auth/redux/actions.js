@@ -99,6 +99,7 @@ function getLinksOfRole(idRole){
             })
             .catch(err => {
                 console.log(err.response);
+                dispatch({type: AuthConstants.GET_LINKS_OF_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
             })
@@ -118,6 +119,7 @@ function refresh(){
             })
             .catch(err => {
                 console.log(err.response);
+                dispatch({type: AuthConstants.REFRESH_DATA_USER_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }
@@ -165,6 +167,7 @@ function getComponentOfUserInLink(curentRole, linkId){
             })
             .catch(err => {
                 console.log(err.response);
+                dispatch({type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }

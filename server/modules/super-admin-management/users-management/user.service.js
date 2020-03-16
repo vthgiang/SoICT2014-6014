@@ -21,7 +21,6 @@ exports.get = async (company) => { //id cua cong ty do
 //Lay danh sach nguoi dung theo phân trang
 exports.getPaginate = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
-    console.log("DATA-user-paginate: ", newData);
     return await User
         .paginate( newData , { 
             page, 

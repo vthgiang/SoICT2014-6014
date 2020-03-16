@@ -70,12 +70,10 @@ exports.getLinksOfCompany = async(id) => {
 } 
 
 exports.relationshipLinkRole = async(linkId, roleArr) => {
-    console.log("relation ship: ", linkId, roleArr)
     await Privilege.deleteMany({
         resourceId: linkId,
         resourceType: 'Link'
     });
-    console.log('creat data')
     var data = roleArr.map( role => {
         return {
             resourceId: linkId,
@@ -84,7 +82,6 @@ exports.relationshipLinkRole = async(linkId, roleArr) => {
         };
     });
     var privilege = await Privilege.insertMany(data);
-    console.log("Created data: ", privilege)
 
     return privilege;
 }
