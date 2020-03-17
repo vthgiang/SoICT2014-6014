@@ -2,7 +2,8 @@ import { NotificationConstants } from "./constants";
 
 const initState = {
     list: [],
-    listPaginate: [],
+    listReceivered: [],
+    listSent: [],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -49,21 +50,21 @@ export function notification(state = initState, action) {
         case NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_SUCCESS:
             return {
                 ...state,
-                list: action.payload,
+                listReceivered: action.payload,
                 isLoading: false
             };
 
         case NotificationConstants.GET_NOTIFICATIONS_SENT_SUCCESS:
             return {
                 ...state,
-                list: action.payload,
+                listSent: action.payload,
                 isLoading: false
             };
 
         case NotificationConstants.CREATE_NOTIFICATION_SUCCESS:
             return {
                 ...state,
-                list: [
+                listSent: [
                     action.payload,
                     ...state.list
                 ],

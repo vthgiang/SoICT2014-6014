@@ -26,24 +26,43 @@ const Log = async (filename="guest", title) => {
 }
 
 const LogInfo = async(user, content, companyId=null, companyShortName="system") => {
-    const directory = companyId === null ? 'system' : companyShortName;
-    const Logger = await Log(directory, content);
-    if(companyId !== null){
-        const company = await Company.findById(companyId); //lấy thông tin của công ty
-        company.log && await Logger.info(user);
-    }else{
+    console.log("INFO,giá trị company ID nhận vào: ", companyId);
+    if(companyId === null){
+        //Không có id công ty để check trong databse
+        const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest
         await Logger.info(user);
+    }else{
+        //Có id của công ty
+        const company = await Company.findById(companyId); //lấy thông tin về công ty trong hệ thống
+        if(company === null){
+            //Không có dữ liệu về công ty này
+            const Logger = await Log('system', content); //ghi log vào thư mục system - systemadmin
+            await Logger.info(user);
+        }else{
+            //Có dữ liệu về công ty
+            company.log && await Logger.info(user);
+        }
     }
 }
 
 const LogError = async(user, content, companyId=null, companyShortName="system") => {
-    const directory = companyId === null ? 'system' : companyShortName;
-    const Logger = await Log(directory, content);
-    if(companyId !== null){
-        const company = await Company.findById(companyId); //lấy thông tin của công ty
-        company.log && await Logger.error(user);
-    }else{
+    console.log("ERR,giá trị company ID nhận vào: ", companyId);
+    if(companyId === null){
+        //Không có id công ty để check trong databse
+        const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest
         await Logger.error(user);
+    }else{
+        //Có id của công ty
+        const company = await Company.findById(companyId); //lấy thông tin về công ty trong hệ thống
+        if(company === null){
+            //Không có dữ liệu về công ty này
+            const Logger = await Log('system', content); //ghi log vào thư mục system - systemadmin
+            await Logger.error(user);
+        }else{
+            //Có dữ liệu về công ty
+            const Logger = await Log(company.short_name, content);
+            company.log && await Logger.error(user);
+        }
     }
 }
 
