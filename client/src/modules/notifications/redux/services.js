@@ -12,7 +12,7 @@ export const NotificationServices = {
 
 function get() {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notification`,
+        url: `${ LOCAL_SERVER_API }/notifications`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -26,7 +26,7 @@ function getNotificationReceivered() {
     var id = verified._id;
 
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notification/receivered/${id}`,
+        url: `${ LOCAL_SERVER_API }/notifications/receivered/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -40,7 +40,7 @@ function getNotificationSent() {
     var id = verified._id;
 
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notification/sent/${id}`,
+        url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -50,7 +50,7 @@ function getNotificationSent() {
 
 function create(data) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notification`,
+        url: `${ LOCAL_SERVER_API }/notifications`,
         method: 'POST',
         data,
         headers: AuthenticateHeader()

@@ -33,7 +33,7 @@ class NotificationTable extends Component {
     }
 
     render() { 
-        const {translate, notification, auth} = this.props;
+        const {translate, notifications, auth} = this.props;
         return ( 
             <React.Fragment>
                 <div className="box" role="tabpanel">
@@ -50,7 +50,7 @@ class NotificationTable extends Component {
                                 <i className="fa fa-download"/>
                                 {translate('notification.receivered')}
                                 <span className="label label-default pull-right">
-                                    {notification.listReceivered.length}
+                                    {notifications.listReceivered.length}
                                 </span>
                             </a>
                         </li>
@@ -65,7 +65,7 @@ class NotificationTable extends Component {
                                 <i className="fa fa-upload"/>
                                 {translate('notification.added')}
                                 <span className="label label-default pull-right">
-                                    {notification.listSent.length}
+                                    {notifications.listSent.length}
                                 </span>
                             </a>
                         </li>
@@ -93,8 +93,8 @@ class NotificationTable extends Component {
                                     <table className="table table-hover table-striped">
                                     <tbody>
                                         {
-                                            notification.listReceivered.length > 0 ? 
-                                            notification.listReceivered.map(notification => 
+                                            notifications.listReceivered.length > 0 ? 
+                                            notifications.listReceivered.map(notification => 
                                                 <tr key={notification._id} onClick={this.hello}>
                                                     <td>
                                                         <i className={
@@ -146,8 +146,8 @@ class NotificationTable extends Component {
                                     <table className="table table-hover table-striped">
                                     <tbody>
                                         {
-                                            notification.listSent.length > 0 ? 
-                                            notification.listSent.map(notification => 
+                                            notifications.listSent.length > 0 ? 
+                                            notifications.listSent.map(notification => 
                                                 <tr key={notification._id} onClick={this.hello}>
                                                     <td>
                                                         <i className={

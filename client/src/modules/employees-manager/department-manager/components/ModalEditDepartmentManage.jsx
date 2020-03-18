@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
-import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
+import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
 import 'react-toastify/dist/ReactToastify.css';
 class ModalEditDepartmentManage extends Component {
     constructor(props) {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
+import { RoleActions } from '../../roles-management/redux/actions';
 import { LinkActions } from '../redux/actions';
 import { ModalDialog, ModalButton } from '../../../../common-components';
 

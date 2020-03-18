@@ -4,7 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { LinkActions } from '../redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 import LinkInfoForm from './LinkInfoForm';
-import CreateLinkForm from './CreateLinkForm';
 import { SearchBar } from '../../../../common-components';
 import { ActionColumn } from '../../../../common-components';
 import { PaginateBar } from '../../../../common-components';
@@ -45,9 +44,6 @@ class ManageLink extends Component {
                                 setOption={this.setOption}
                                 search={this.searchWithOption}
                             />
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <CreateLinkForm/>
-                            </div>
                         </div>
                         <table className="table table-hover table-striped table-bordered">
                             <thead>
@@ -104,18 +100,6 @@ class ManageLink extends Component {
                                                     linkName={ link.url }
                                                     linkDescription={ link.description }
                                                     linkRoles={ link.roles.map(role => role.roleId._id) }
-                                                />
-                                                <DeleteNotification 
-                                                    content={{
-                                                        title: translate('manage_page.delete'),
-                                                        btnNo: translate('confirm.no'),
-                                                        btnYes: translate('confirm.yes'),
-                                                    }}
-                                                    data={{
-                                                        id: link._id,
-                                                        info: link.url+"<br/>"+link.description
-                                                    }}
-                                                    func={this.props.destroy}
                                                 />
                                             </td>
                                         </tr> 

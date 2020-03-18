@@ -28,7 +28,7 @@ const initState = {
 //     return result;
 // }
 
-export function notification(state = initState, action) {
+export function notifications(state = initState, action) {
     // var index = -1;
     switch (action.type) {
         case NotificationConstants.GET_NOTIFICATIONS_REQUEST:

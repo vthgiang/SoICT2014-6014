@@ -7,13 +7,13 @@ import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/Login';
 import LogManagement from '../modules/system-admin-management/logs-management/components';
 import Home from '../modules/home/components';
-import ManageCompany from '../modules/system-admin-management/manage-company/components';
-import ManageUser from '../modules/super-admin-management/manage-user/components';
-import ManageRole from '../modules/super-admin-management/manage-role/components';
+import ManageCompany from '../modules/system-admin-management/companies-management/components';
+import ManageUser from '../modules/super-admin-management/users-management/components';
+import ManageRole from '../modules/super-admin-management/roles-management/components';
 import ManageLink from '../modules/super-admin-management/links-management/components';
-import ManageDepartment from '../modules/super-admin-management/manage-department/components';
-import ManageComponent from '../modules/system-admin-management/manage-component/components';
-import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
+import ManageDepartment from '../modules/super-admin-management/departments-management/components';
+import ManageComponent from '../modules/system-admin-management/components-management/components';
+import ManageFormDocument from '../modules/super-admin-management/documents-management/components';
 import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
@@ -73,7 +73,7 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ company.isLoading }
-                        key={ 'manage-company' }
+                        key={ 'companies-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
                             { link: '/system/companies-management', name: 'manage_company', icon:'fa fa-building' }
@@ -88,7 +88,7 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ user.isLoading }
-                        key={ 'manage-user' }
+                        key={ 'users-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
                             { link: '/users-management', name: 'manage_user', icon:'fa fa-users' }
@@ -107,7 +107,7 @@ class Routes extends Component {
                             { link: '/', name:'home', icon:'fa fa-home' },
                             { link: '/roles-management', name: 'manage_role', icon:'fa fa-lock'}
                         ]}
-                        key={ 'manage-role' }
+                        key={ 'roles-management' }
                         auth={ auth }
                         exact={ true }
                         link={ '/roles-management' }
@@ -118,7 +118,7 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ link.isLoading }
-                        key={ 'manage-link' }
+                        key={ 'links-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
                             { link: '/pages-management', name: 'manage_page', icon:'fa fa-link' }
@@ -133,7 +133,7 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ department.isLoading }
-                        key={ 'manage-department' }
+                        key={ 'departments-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
                             { link: '/departments-management', name: 'manage_department', icon:'fa fa-sitemap' }
@@ -148,7 +148,7 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }
-                        key={ 'manage-component' }
+                        key={ 'components-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
                             { link: '/components-management', name: 'manage_component', icon:'fa fa-object-group' }

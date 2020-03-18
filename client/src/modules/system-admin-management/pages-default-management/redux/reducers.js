@@ -27,7 +27,7 @@ const initState = {
     item: null
 }
 
-export function link (state = initState, action) {
+export function pagesDefault (state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {

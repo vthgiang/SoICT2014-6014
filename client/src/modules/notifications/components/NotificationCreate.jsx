@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalDialog } from '../../../common-components';
-import { DepartmentActions } from '../../super-admin-management/manage-department/redux/actions';
-import { UserActions } from '../../super-admin-management/manage-user/redux/actions';
+import { DepartmentActions } from '../../super-admin-management/departments-management/redux/actions';
+import { UserActions } from '../../super-admin-management/users-management/redux/actions';
 import { NotificationActions } from '../redux/actions';
 
 class NotificationCreate extends Component {

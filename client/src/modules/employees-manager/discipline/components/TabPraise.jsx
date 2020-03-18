@@ -7,7 +7,7 @@ import { ModalAddPraise } from './ModalAddPraise';
 import { ModalEditPraise } from './ModalEditPraise';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
-import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 class TabPraise extends Component {
     constructor(props) {

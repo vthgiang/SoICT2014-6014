@@ -10,16 +10,16 @@ class Notifications extends Component {
         this.state = {  }
     }
     render() { 
-        const {translate, notification} = this.props;
+        const {translate, notifications} = this.props;
         return ( 
             <React.Fragment>
                 <li className="dropdown notifications-menu">
                     <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
                         <i className="fa fa-bell-o" />
-                        <span className="label label-warning">{notification.listReceivered.length}</span>
+                        <span className="label label-warning">{notifications.listReceivered.length}</span>
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>
-                        <li className="header text-center"> {notification.listReceivered.length} {translate('notification.news')}</li>
+                        <li className="header text-center"> {notifications.listReceivered.length} {translate('notification.news')}</li>
                         <li>
                             <ul className="menu">
                                 <li>
