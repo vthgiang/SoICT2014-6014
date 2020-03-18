@@ -1,4 +1,4 @@
-const Log = require('../models/log.model');
+const Component = require('../models/component.model');
 const RoleType = require('../models/role_type.model');
 const Role = require('../models/role.model');
 const Company = require('../models/company.model');
@@ -34,7 +34,7 @@ mongoose.connect(db, {
 }).catch(err => console.log("ERROR! :(\n", err));
 
 const sampleCompanyData = async () => {
-    console.log("Đang fake dữ liệu ...");
+    console.log("Đang tạo dữ liệu ...");
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -309,96 +309,96 @@ const sampleCompanyData = async () => {
             description: `Trang chủ công ty ${xyz.name}`,
             company: xyz._id
         }, { // 1
-            url: '/manage-department',
+            url: '/departments-management',
             description: 'Quản lý cơ cấu tổ chức',
             company: xyz._id
         }, { // 2
-            url: '/manage-user',
+            url: '/users-management',
             description: 'Quản lý người dùng',
             company: xyz._id
         }, { // 3
-            url: '/manage-role',
+            url: '/roles-management',
             description: 'Quản lý phân quyền',
             company: xyz._id
         }, { // 4
-            url: '/manage-link',
+            url: '/pages-management',
             description: 'Quản lý trang web của công ty',
             company: xyz._id
         }, { // 5
-            url: '/manage-component',
+            url: '/components-management',
             description: 'Quản lý các thành phần UI trên trang web của công ty',
             company: xyz._id
         }, { // 6
-            url: '/manage-form-document',
+            url: '/documents-management',
             description: 'Quản lý tài liệu biểu mẫu',
             company: xyz._id
         }, { // 7
-            url: '/manage-Employee',
+            url: '/hr-holiday',
             description: 'Quản lý nhân sự',
             company: xyz._id
         },
         { // 8
-            url: '/add-employee',
+            url: '/hr-add-employee',
             description: 'Thêm mới nhân viên',
             company: xyz._id
         },
         { // 9
-            url: '/list-employee',
+            url: '/hr-list-employee',
             description: 'Danh sách nhân viên',
             company: xyz._id
         },
         { // 10
-            url: '/update-employee',
+            url: '/hr-update-employee',
             description: 'Cập nhật thông tin cá nhân của nhân viên',
             company: xyz._id
         },
         { // 11
-            url: '/detail-employee',
+            url: '/hr-detail-employee',
             description: 'Thông tin cá nhân của nhân viên',
             company: xyz._id
         },
         { // 12
-            url: '/salary-employee',
+            url: '/hr-salary-employee',
             description: 'Quản lý lương nhân viên',
             company: xyz._id
         },
         { // 13
-            url: '/sabbatical',
+            url: '/hr-sabbatical',
             description: 'Quản lý nghỉ phép của nhân viên',
             company: xyz._id
         },
         { // 14
-            url: '/discipline',
+            url: '/hr-discipline',
             description: 'Quản lý khen thưởng, kỷ luật',
             company: xyz._id
         },
         { // 15
-            url: '/dashboard-employee',
+            url: '/hr-dashboard-employee',
             description: 'Dashboard nhân sự',
             company: xyz._id
         },
         { // 16
-            url: '/time-keeping',
+            url: '/hr-time-keeping',
             description: 'Quản lý chấm công',
             company: xyz._id
         },
         { // 17
-            url: '/trainning-course',
+            url: '/hr-trainning-course',
             description: 'Quản lý đào tạo',
             company: xyz._id
         },
         { // 18
-            url: '/account',
+            url: '/hr-account',
             description: 'Thông tin tài khoản ',
             company: xyz._id
         },
         { // 19
-            url: '/training-plan',
+            url: '/hr-training-plan',
             description: 'Kế hoạch đào tạo',
             company: xyz._id
         },
         { // 20
-            url: '/list-course',
+            url: '/hr-list-course',
             description: 'Chương trình đào tạo bắt buộc',
             company: xyz._id
         },
@@ -430,13 +430,37 @@ const sampleCompanyData = async () => {
             company: xyz._id
         },
         { // 26
-            url: '/manage-unit',
+            url: '/hr-manage-department',
             description: 'Quản lý nhân sự các đơn vị',
             company: xyz._id
         }
     ]);
     console.log("Xong! Đã tạo links: ", links);
+
+    //Thêm component -------------------------------------------------------
+    const components = await Component.insertMany([
+        {
+            name: 'create-notification',
+            description: 'Tạo thông báo mới',
+            company: xyz._id
+        }
+    ]);
+    const notificationLink = await Link.findById(links[25]._id);
+    await notificationLink.components.push(components[0]._id);
+    await notificationLink.save();
+
+    //gán quyền tạo thông báo cho admin, superadmin
+    var data = [roles[0]._id, admin._id].map( role => {
+        return {
+            resourceId: components[0]._id,
+            resourceType: 'Component',
+            roleId: role
+        };
+    });
+    var privileges_component = await Privilege.insertMany(data);
+    console.log("privilege component: ", privileges_component);
     //END
+
     const privileges = await Privilege.insertMany([
         //gán 7 link trên cho super admin
         {

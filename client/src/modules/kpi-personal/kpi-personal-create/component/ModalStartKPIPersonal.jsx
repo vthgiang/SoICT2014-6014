@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { UserActions } from "../../../super-admin-management/manage-user/redux/actions"
+import { UserActions } from "../../../super-admin-management/users-management/redux/actions"
 import { createKpiActions  } from '../redux/actions';
 
 class ModalStartKPIPersonal extends Component {

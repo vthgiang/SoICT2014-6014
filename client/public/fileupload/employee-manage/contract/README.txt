@@ -1,0 +1,1 @@
+Thư mục này dùng để lưu trữ hợp đồng lao động của nhân viên trong module quản lý nhân sự

@@ -10,10 +10,12 @@ class SideBar extends Component {
         super(props);
         this.state = {}
         this.checkURL = this.checkURL.bind(this);
-        //this.handClick = this.handClick.bind(this);
     }
     handClick = (event) => {
         var parent = window.$("a." + event).parent(".treeview");
+        window.$('html,body').animate({
+            scrollTop: parent.offset().top},
+            'slow');
         if (parent.attr('class') === "treeview") {
             parent.addClass("active menu-open");
         } else {
@@ -37,18 +39,19 @@ class SideBar extends Component {
 
     render() {
         const url = {
-            path1: "/dashboard-employee",
-            path2: "/add-employee",
-            path3: "/list-employee",
-            path4: "/salary-employee",
-            path5: "/time-keeping",
-            path6: "/discipline",
-            path7: "/sabbatical",
-            path8: "/detail-employee",
-            path9: "/update-employee",
-            path10: "/list-course",
-            path11: "/training-plan",
-            path12: "/manage-unit",
+            path1: "/hr-dashboard-employee",
+            path2: "/hr-add-employee",
+            path3: "/hr-list-employee",
+            path4: "/hr-salary-employee",
+            path5: "/hr-time-keeping",
+            path6: "/hr-discipline",
+            path7: "/hr-sabbatical",
+            path8: "/hr-detail-employee",
+            path9: "/hr-update-employee",
+            path10: "/hr-list-course",
+            path11: "/hr-training-plan",
+            path12: "/hr-manage-department",
+            path13: "/hr-holiday",
 
         }
         const { translate } = this.props;
@@ -63,23 +66,11 @@ class SideBar extends Component {
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
-                                <a href="#abc"><i className="fa fa-circle text-success" /> Online</a>
+                                <Link to='/notifications'><i className="fa fa-bell text-yellow"></i>{translate('menu.notifications')}</Link>
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree">
-                            {
-                                this.checkURL('/notifications', links) === true &&
-                                <React.Fragment>
-                                    <li className="header">NOTIFICATIONS</li>
-                                    <Item
-                                        key='notifications'
-                                        name='notifications'
-                                        path='/notifications'
-                                        icon='fa fa-bell'
-                                    />
-                                </React.Fragment>
-                            }
-                            <li className="header">MENU</li>
+                            <li className="header">SIDEBAR</li>
                             {
                                 this.checkURL('/', links) === true &&
                                 <Item
@@ -90,74 +81,75 @@ class SideBar extends Component {
                                 />
                             }
                             {
-                                this.checkURL('/system', links) === true &&
+                                this.checkURL('/system/settings', links) === true &&
                                 <Item
                                     key='manage_system'
                                     name='manage_system'
-                                    path='/system'
+                                    path='/system/settings'
                                     icon='fa fa-gears'
                                 />
                             }
                             {
-                                this.checkURL('/manage-company', links) === true &&
+                                this.checkURL('/system/companies-management', links) === true &&
                                 <Item
                                     key='manage_company'
                                     name='manage_company'
-                                    path='/manage-company'
+                                    path='/system/companies-management'
                                     icon='fa fa-building'
                                 />
                             }
                             {
-                                this.checkURL('/manage-department', links) === true &&
+                                this.checkURL('/departments-management', links) === true &&
                                 <Item
                                     key='manage_department'
                                     name='manage_department'
-                                    path='/manage-department'
+                                    path='/departments-management'
                                     icon='fa fa-sitemap'
                                 />
                             }
                             {
-                                this.checkURL('/manage-user', links) === true &&
+                                this.checkURL('/users-management', links) === true &&
                                 <Item
                                     key='manage_user'
                                     name='manage_user'
-                                    path='/manage-user'
+                                    path='/users-management'
                                     icon='fa fa-users'
                                 />
                             }
                             {
-                                this.checkURL('/manage-role', links) === true &&
+                                this.checkURL('/roles-management', links) === true &&
                                 <Item
                                     key='manage_role'
                                     name='manage_role'
-                                    path='/manage-role'
+                                    path='/roles-management'
                                     icon='fa fa-lock'
                                 />
                             }
                             {
-                                this.checkURL('/manage-link', links) === true &&
+                                this.checkURL('/pages-management', links) === true &&
                                 <Item
                                     key='manage_page'
                                     name='manage_page'
-                                    path='/manage-link'
+                                    path='/pages-management'
                                     icon='fa fa-link'
                                 />
                             }
                             {
-                                this.checkURL('/manage-component', links) === true &&
+                                this.checkURL('/components-management', links) === true &&
                                 <Item
                                     key='manage_component'
                                     name='manage_component'
-                                    path='/manage-component'
+                                    path='/components-management'
                                     icon='fa fa-object-group'
                                 />
                             }
                             {
-                                this.checkURL('/manage-document', links) === true &&
+                                this.checkURL('/documents-management', links) === true &&
                                 <Item
+                                    pending={true}
                                     key='manage_document'
                                     name='manage_document'
-                                    path='/manage-form-document'
+                                    path='/documents-management'
                                     icon='fa fa-folder-open'
                                 />
                             }
@@ -170,7 +162,7 @@ class SideBar extends Component {
                                 <li className={window.location.pathname === url.path1 || window.location.pathname === url.path2 || window.location.pathname === url.path3 ||
                                     window.location.pathname === url.path4 || window.location.pathname === url.path5 || window.location.pathname === url.path12 ||
                                     window.location.pathname === url.path6 || window.location.pathname === url.path7 ? "active treeview menu-open" : "treeview"} >
-                                    <a href="#" className="tree1" onClick={() => this.handClick("tree1")}>
+                                    <a href="#abc" className="tree1" onClick={() => this.handClick("tree1")}>
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -241,13 +233,21 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {this.checkURL(url.path13, links) === true &&
+                                            <li className={window.location.pathname === url.path13 ? "active" : ""}>
+                                                <Link to={url.path13}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.holiday`)}
+                                                </Link>
+                                            </li>
+                                        }
                                     </ul>
                                 </li>
                             }
                             {
                                 (this.checkURL(url.path8, links) === true || this.checkURL(url.path9, links) === true) &&
                                 <li className={window.location.pathname === url.path8 || window.location.pathname === url.path9 ? "active treeview menu-open" : "treeview"}>
-                                    <a href="#" className="tree2" onClick={() => this.handClick("tree2")}>
+                                    <a href="#abc" className="tree2" onClick={() => this.handClick("tree2")}>
                                         <i className="fa fa-user-circle" /> <span>{translate(`menu.account`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -276,7 +276,7 @@ class SideBar extends Component {
                             {
                                 (this.checkURL(url.path10, links) === true || this.checkURL(url.path11, links) === true) &&
                                 <li className={window.location.pathname === url.path10 || window.location.pathname === url.path11 ? "active treeview menu-open" : "treeview"}>
-                                    <a href="#" className="tree3" onClick={() => this.handClick("tree3")}>
+                                    <a href="#abc" className="tree3" onClick={() => this.handClick("tree3")}>
                                         <i className="fa fa-graduation-cap" /> <span>{translate(`menu.manage_training`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -307,7 +307,7 @@ class SideBar extends Component {
                             {
                                 (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
                                 <li className="treeview">
-                                    <a href="#" className="tree4" onClick={() => this.handClick("tree4")}>
+                                    <a href="#abc" className="tree4" onClick={() => this.handClick("tree4")}>
                                         <i className="fa fa-dashboard" /> <span>{translate(`menu.manage_kpi`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />

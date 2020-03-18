@@ -8,7 +8,7 @@ import { ModalAddSabbatical } from './ModalAddSabbatical';
 import { ModalEditSabbatical } from './ModalEditSabbatical';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
-import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 
 class Sabbatical extends Component {

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer } from 'react-toastify';
-import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
-import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
-import { UserActions } from '../../../super-admin-management/manage-user/redux/actions';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
+import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
+import { UserActions } from '../../../super-admin-management/users-management/redux/actions';
 import { ModalEditDepartmentManage } from './ModalEditDepartmentManage';
 class DepartmentManage extends Component {
     constructor(props) {
@@ -18,11 +18,9 @@ class DepartmentManage extends Component {
         this.props.getDepartment();
         this.props.getRole();
         this.props.getUser();
-        window.addEventListener('load', this.loadJS);
-
     }
-    componentWillUnmount() {
-        window.removeEventListener('load', this.loadJS)
+    componentWillMount() {
+        this.loadJS();
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -93,7 +91,7 @@ class DepartmentManage extends Component {
         const { translate } = this.props;
         return (
             <div className="row">
-                <div className="col-xs-12">
+                <div className="col-md-12">
                     <div className="box box-info">
                         {/* /.box-header */}
                         <div className="box-body">
@@ -108,7 +106,7 @@ class DepartmentManage extends Component {
                                         <tr id="task">
                                             <th style={{ width: "40%" }}>Tên đơn vị</th>
                                             <th style={{ width: "50" }} >Mô tả đơn vị</th>
-                                            <th style={{ width: "10%" }}>Hành động</th>
+                                            <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody id="taskTable" className="task-table">

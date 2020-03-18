@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LineAndBarChart } from './LineAndBarChart';
 import { ThreeBarChart } from './ThreeBarChart';
-import { Holiday } from '../../holiday/components/Holiday';
 
 class DashBoardEmployees extends Component {
     constructor(props) {
@@ -71,7 +70,6 @@ class DashBoardEmployees extends Component {
                         nameField2={"% Sản xuất"}
                         nameField3={"% Quản trị"}
                     />
-                    <Holiday/>
                 </div>
             </React.Fragment>
         );

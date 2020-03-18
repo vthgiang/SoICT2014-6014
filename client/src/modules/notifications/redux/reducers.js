@@ -2,7 +2,8 @@ import { NotificationConstants } from "./constants";
 
 const initState = {
     list: [],
-    listPaginate: [],
+    listReceivered: [],
+    listSent: [],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -17,18 +18,18 @@ const initState = {
     item: null
 }
 
-var findIndex = (array, id) => {
-    var result = -1;
-    array.forEach((value, index) => {
-        if(value._id === id){
-            result = index;
-        }
-    });
-    return result;
-}
+// var findIndex = (array, id) => {
+//     var result = -1;
+//     array.forEach((value, index) => {
+//         if(value._id === id){
+//             result = index;
+//         }
+//     });
+//     return result;
+// }
 
-export function notification(state = initState, action) {
-    var index = -1;
+export function notifications(state = initState, action) {
+    // var index = -1;
     switch (action.type) {
         case NotificationConstants.GET_NOTIFICATIONS_REQUEST:
         case NotificationConstants.CREATE_NOTIFICATION_REQUEST:
@@ -49,21 +50,21 @@ export function notification(state = initState, action) {
         case NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_SUCCESS:
             return {
                 ...state,
-                list: action.payload,
+                listReceivered: action.payload,
                 isLoading: false
             };
 
         case NotificationConstants.GET_NOTIFICATIONS_SENT_SUCCESS:
             return {
                 ...state,
-                list: action.payload,
+                listSent: action.payload,
                 isLoading: false
             };
 
         case NotificationConstants.CREATE_NOTIFICATION_SUCCESS:
             return {
                 ...state,
-                list: [
+                listSent: [
                     action.payload,
                     ...state.list
                 ],

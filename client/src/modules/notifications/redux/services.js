@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { LOCAL_SERVER_API } from '../../../env';
+import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
 import { AuthenticateHeader,getStorage } from '../../../config';
+import jwt from 'jsonwebtoken';
 
 export const NotificationServices = {
     get,
@@ -11,7 +12,7 @@ export const NotificationServices = {
 
 function get() {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notification`,
+        url: `${ LOCAL_SERVER_API }/notifications`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -19,9 +20,13 @@ function get() {
     return axios(requestOptions);
 }
 
-function getNotificationReceivered(userId) {
+function getNotificationReceivered() {
+    const token = getStorage();
+    const verified = jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notificatio/receivered/${userId}`,
+        url: `${ LOCAL_SERVER_API }/notifications/receivered/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -29,9 +34,13 @@ function getNotificationReceivered(userId) {
     return axios(requestOptions);
 }
 
-function getNotificationSent(userId) {
+function getNotificationSent() {
+    const token = getStorage();
+    const verified = jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notification/sent/${userId}`,
+        url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -41,7 +50,7 @@ function getNotificationSent(userId) {
 
 function create(data) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notification`,
+        url: `${ LOCAL_SERVER_API }/notifications`,
         method: 'POST',
         data,
         headers: AuthenticateHeader()

@@ -57,20 +57,22 @@ exports.create = async (req, res) => {
 
         //Create manage link for company------------------------------------------------
         var homePage = await LinkService.create({ url: '/', description: `HomePage of ${company.name}`}, company._id);
-        var manageUser = await LinkService.create({ url: '/manage-user', description: `Manage user of ${company.name}`}, company._id);
-        var manageRole = await LinkService.create({ url: '/manage-role', description: `Manage role of ${company.name}`}, company._id);
-        var manageDepartment = await LinkService.create({ url: '/manage-department', description: `Manage department of ${company.name}`}, company._id);
-        var manageLink = await LinkService.create({ url: '/manage-link', description: `Manage link of ${company.name}`}, company._id);
-        var manageComponentUI = await LinkService.create({ url: '/manage-component', description: `Manage component UI of ${company.name}`}, company._id);
-        var manageDocument = await LinkService.create({ url: '/manage-document', description: `Manage Documents of ${company.name}`}, company._id);
+        var manageUser = await LinkService.create({ url: '/users-management', description: `Manage user of ${company.name}`}, company._id);
+        var manageRole = await LinkService.create({ url: '/roles-management', description: `Manage role of ${company.name}`}, company._id);
+        var manageDepartment = await LinkService.create({ url: '/departments-management', description: `Manage department of ${company.name}`}, company._id);
+        var manageLink = await LinkService.create({ url: '/pages-management', description: `Manage link of ${company.name}`}, company._id);
+        var manageComponentUI = await LinkService.create({ url: '/components-management', description: `Manage component UI of ${company.name}`}, company._id);
+        var manageDocument = await LinkService.create({ url: '/documents-management', description: `Manage Documents of ${company.name}`}, company._id);
+        var notifications = await LinkService.create({ url: '/notifications', description: `Notifications`}, company._id);
 
-        await PrivilegeService.addRolesToLink( homePage._id, [ admin._id, dean._id, viceDean._id, employee._id ] );
-        await PrivilegeService.addRolesToLink( manageUser._id, [ admin._id ] );
-        await PrivilegeService.addRolesToLink( manageRole._id, [ admin._id ] );
-        await PrivilegeService.addRolesToLink( manageDepartment._id, [ admin._id ] );
-        await PrivilegeService.addRolesToLink( manageLink._id, [ admin._id ] );
-        await PrivilegeService.addRolesToLink( manageComponentUI._id, [ admin._id ] );
-        await PrivilegeService.addRolesToLink( manageDocument._id, [ admin._id ] );
+        await PrivilegeService.addRolesToLink( homePage._id, [ superAdmin._id, admin._id, dean._id, viceDean._id, employee._id ] );
+        await PrivilegeService.addRolesToLink( manageUser._id, [ superAdmin._id, admin._id ] );
+        await PrivilegeService.addRolesToLink( manageRole._id, [ superAdmin._id, admin._id ] );
+        await PrivilegeService.addRolesToLink( manageDepartment._id, [ superAdmin._id, admin._id ] );
+        await PrivilegeService.addRolesToLink( manageLink._id, [ superAdmin._id, admin._id ] );
+        await PrivilegeService.addRolesToLink( manageComponentUI._id, [ superAdmin._id, admin._id ] );
+        await PrivilegeService.addRolesToLink( manageDocument._id, [ superAdmin._id, admin._id ] );
+        await PrivilegeService.addRolesToLink( notifications._id, [ superAdmin._id, admin._id, dean._id, viceDean._id, employee._id ] );
 
         isLog && Logger.info(req.user.email);
         res.status(200).json(company);

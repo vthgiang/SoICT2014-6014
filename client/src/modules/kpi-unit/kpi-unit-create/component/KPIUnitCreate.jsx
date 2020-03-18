@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUnitKpiActions } from '../redux/actions.js';
-import { DepartmentActions} from '../../../super-admin-management/manage-department/redux/actions';
+import { DepartmentActions} from '../../../super-admin-management/departments-management/redux/actions';
 import { ModalAddTargetKPIUnit } from './ModalAddTargetKPIUnit';
 import { ModalStartKPIUnit } from './ModalStartKPIUnit';
 import Swal from 'sweetalert2';

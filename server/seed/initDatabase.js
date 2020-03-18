@@ -36,7 +36,7 @@ const seedDatabase = async () => {
     ]);
 
     //Tạo dữ liệu về hệ thống quản lý công việc cho system admin
-    var vnist = await Company.create({
+    var qlcv = await Company.create({
         name: 'Quản lý công việc',
         short_name: 'qlcv',
         customer: false,
@@ -50,14 +50,14 @@ const seedDatabase = async () => {
         name: process.env.SYSTEM_ADMIN_NAME,
         email: process.env.SYSTEM_ADMIN_EMAIL,
         password: hash,
-        company: vnist._id
+        company: qlcv._id
     });
 
     //Tạo role System Admin 
     var roleAbstract = await RoleType.findOne({ name: 'abstract' });
     var roleSystemAdmin = await Role.create({
         name: 'System Admin',
-        company: vnist._id,
+        company: qlcv._id,
         type: roleAbstract._id
     });
 
@@ -68,15 +68,19 @@ const seedDatabase = async () => {
     var links = await Link.insertMany([{
             url: '/',
             description: 'System Management HomePage',
-            company: vnist._id
+            company: qlcv._id
         },{
-            url: '/system',
+            url: '/system/settings',
             description: 'System Management',
-            company: vnist._id
+            company: qlcv._id
         },{
-            url: '/manage-company',
+            url: '/system/companies-management',
             description: 'Manage companies information',
-            company: vnist._id
+            company: qlcv._id
+        },{
+            url: '/system/pages-default-management',
+            description: 'Manage pages default in system',
+            company: qlcv._id
         }
     ]);
     await Privilege.insertMany([
@@ -91,6 +95,10 @@ const seedDatabase = async () => {
             roleId: roleSystemAdmin._id
         },{
             resourceId: links[2]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
+        },{
+            resourceId: links[3]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
         }

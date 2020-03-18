@@ -1,9 +1,7 @@
 import { AuthConstants } from "./constants";
-import { getStorage } from '../../../config';
-
-const token = getStorage();
 
 var initState = {
+    calledAPI: false, //chưa chạy lần nào 
     user: {},
     links: [],
     components: [],
@@ -17,6 +15,7 @@ export function auth(state = initState, action) {
         case AuthConstants.LOGIN_SUCCESS:
             return {
                 ...state,
+                calledAPI: true,
                 user: action.payload,
                 error: null
             };
@@ -37,6 +36,7 @@ export function auth(state = initState, action) {
         case AuthConstants.EDIT_PROFILE_SUCCESS:
             return {
                 ...state,
+                calledAPI: true,
                 user: action.payload
             };
 
@@ -46,18 +46,21 @@ export function auth(state = initState, action) {
             }
             return {
                 ...state,
+                calledAPI: true,
                 user: action.payload
             };
 
         case AuthConstants.GET_LINKS_OF_ROLE_SUCCESS:
             return {
                 ...state,
+                calledAPI: true,
                 links: action.payload
             };
 
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_SUCCESS:
             return {
                 ...state,
+                calledAPI: true,
                 components: action.payload
             };
 
@@ -70,6 +73,14 @@ export function auth(state = initState, action) {
         case AuthConstants.RESET_PASSWORD_SUCCESS:
             alert("Thay đổi mật khẩu thành công!\nChange password successfully!")
             return initState;
+
+        case AuthConstants.REFRESH_DATA_USER_FAILE:
+        case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE:
+        case AuthConstants.GET_LINKS_OF_ROLE_FAILE:
+            return {
+                ...state,
+                calledAPI: true
+            }
 
         default:
             return state;

@@ -11,8 +11,8 @@ class Loading extends Component {
         return ( 
             <React.Fragment>
                 <div className="modal fade in show-on" id="loading-data">
-                    <div className="modal-dialog top-250" style={{textAlign: 'center',width:'8%', marginLeft:'46%'}}>
-                        <ReactLoading type="spin" width="100%"/>
+                    <div className="modal-dialog top-250" style={{textAlign: 'center',width:'20%', marginLeft:'40%'}}>
+                         <p className="fa fa-spin fa-refresh" style={{width: '100%', fontSize: '72px', color: 'white'}}></p>
                     </div>
                 </div>
             </React.Fragment>

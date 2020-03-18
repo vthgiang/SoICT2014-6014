@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const LinkController = require('./link.controller');
-const { auth } = require('../../../middleware/auth.middleware');
+const { auth } = require('../../../middleware');
 const { createValidation } = require('./link.validation');
 
 router.get("/", auth, LinkController.get);

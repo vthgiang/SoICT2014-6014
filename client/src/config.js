@@ -19,7 +19,9 @@ export const AuthenticateHeader = (name='jwt') => {
     const token = getStorage(name);
     const currentRole = getStorage('currentRole');
     const fingerprint = getBrowserFingerprint();
+    console.log(fingerprint);
     return {
+        'current-page': window.location.pathname,
         'auth-token': token,
         'current-role': currentRole,
         'fingerprint': fingerprint,

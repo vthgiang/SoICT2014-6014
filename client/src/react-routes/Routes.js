@@ -5,15 +5,15 @@ import { PrivateRoute, AuthRoute } from './route-export';
 import Layout from '../layouts/Layout';
 import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/Login';
-import System from '../modules/system/components';
+import LogManagement from '../modules/system-admin-management/logs-management/components';
 import Home from '../modules/home/components';
-import ManageCompany from '../modules/system-admin-management/manage-company/components';
-import ManageUser from '../modules/super-admin-management/manage-user/components';
-import ManageRole from '../modules/super-admin-management/manage-role/components';
-import ManageLink from '../modules/system-admin-management/manage-link/components';
-import ManageDepartment from '../modules/super-admin-management/manage-department/components';
-import ManageComponent from '../modules/system-admin-management/manage-component/components';
-import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
+import ManageCompany from '../modules/system-admin-management/companies-management/components';
+import ManageUser from '../modules/super-admin-management/users-management/components';
+import ManageRole from '../modules/super-admin-management/roles-management/components';
+import ManageLink from '../modules/super-admin-management/links-management/components';
+import ManageDepartment from '../modules/super-admin-management/departments-management/components';
+import ManageComponent from '../modules/system-admin-management/components-management/components';
+import ManageFormDocument from '../modules/super-admin-management/documents-management/components';
 import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
@@ -24,7 +24,7 @@ import { Timekeeping} from '../modules/employees-manager/timekeeping/components/
 import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
 import { DepartmentManage} from '../modules/employees-manager/department-manager/components/DepartmentManage';
-
+import { Holiday } from '../modules/employees-manager/holiday/components/Holiday';
 
 import {KPIUnitCreate} from "../modules/kpi-unit/kpi-unit-create/component/KPIUnitCreate";
 import {KPIUnitOverview} from "../modules/kpi-unit/kpi-unit-overview/component/KPIUnitOverview";
@@ -39,7 +39,7 @@ import { Notifications } from "../modules/combine-modules";
 class Routes extends Component {
 
     render() {
-        const { auth, company, user, role, link, component, department } = this.props;
+        const { auth, company, user, role, link, component, department,employeesManager } = this.props;
         return (
             <React.Fragment>
                 <Switch>
@@ -48,15 +48,15 @@ class Routes extends Component {
                         isLoading={ company.isLoading }
                         key={ 'manage_system' }
                         arrPage={[
-                            { link: '/system', name:'manage_system', icon: 'fa fa-gears'}
+                            { link: '/system/settings', name:'manage_system', icon: 'fa fa-gears'}
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/system' }
-                        path={ '/system' }
+                        link={ '/system/settings' }
+                        path={ '/system/settings' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ System }
+                        component={ LogManagement }
                     />
                     <PrivateRoute 
                         isLoading={ auth.isLoading }
@@ -74,30 +74,30 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ company.isLoading }
-                        key={ 'manage-company' }
+                        key={ 'companies-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-company', name: 'manage_company', icon:'fa fa-building' }
+                            { link: '/system/companies-management', name: 'manage_company', icon:'fa fa-building' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-company' }
-                        path={ '/manage-company' }
+                        link={ '/system/companies-management' }
+                        path={ '/system/companies-management' }
                         pageName={ 'manage_company' }
                         layout={ Layout }
                         component={ ManageCompany }
                     />
                     <PrivateRoute 
                         isLoading={ user.isLoading }
-                        key={ 'manage-user' }
+                        key={ 'users-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-user', name: 'manage_user', icon:'fa fa-users' }
+                            { link: '/users-management', name: 'manage_user', icon:'fa fa-users' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-user' }
-                        path={ '/manage-user' }
+                        link={ '/users-management' }
+                        path={ '/users-management' }
                         pageName={ 'manage_user' }
                         layout={ Layout }
                         component={ ManageUser }
@@ -106,68 +106,68 @@ class Routes extends Component {
                         isLoading={ role.isLoading }
                         arrPage={[
                             { link: '/', name:'home', icon:'fa fa-home' },
-                            { link: '/manage-role', name: 'manage_role', icon:'fa fa-lock'}
+                            { link: '/roles-management', name: 'manage_role', icon:'fa fa-lock'}
                         ]}
-                        key={ 'manage-role' }
+                        key={ 'roles-management' }
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-role' }
-                        path={ '/manage-role' }
+                        link={ '/roles-management' }
+                        path={ '/roles-management' }
                         pageName={ 'manage_role' }
                         layout={ Layout }
                         component={ ManageRole }
                     />
                     <PrivateRoute 
                         isLoading={ link.isLoading }
-                        key={ 'manage-link' }
+                        key={ 'links-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-link', name: 'manage_page', icon:'fa fa-link' }
+                            { link: '/pages-management', name: 'manage_page', icon:'fa fa-link' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-link' }
-                        path={ '/manage-link' }
+                        link={ '/pages-management' }
+                        path={ '/pages-management' }
                         pageName={ 'manage_page' }
                         layout={ Layout }
                         component={ ManageLink }
                     />
                     <PrivateRoute 
                         isLoading={ department.isLoading }
-                        key={ 'manage-department' }
+                        key={ 'departments-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-department', name: 'manage_department', icon:'fa fa-sitemap' }
+                            { link: '/departments-management', name: 'manage_department', icon:'fa fa-sitemap' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-department' }
-                        path={ '/manage-department' }
+                        link={ '/departments-management' }
+                        path={ '/departments-management' }
                         pageName={ 'manage_department' }
                         layout={ Layout }
                         component={ ManageDepartment }
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }
-                        key={ 'manage-component' }
+                        key={ 'components-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-component', name: 'manage_component', icon:'fa fa-object-group' }
+                            { link: '/components-management', name: 'manage_component', icon:'fa fa-object-group' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-component' }
-                        path={ '/manage-component' }
+                        link={ '/components-management' }
+                        path={ '/components-management' }
                         pageName={ 'manage_component' }
                         layout={ Layout }
                         component={ ManageComponent }
                     />
                     <PrivateRoute 
-                        key={ 'manage-form-document' }
+                        key={ 'manage-document' }
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-document' }
-                        path={ '/manage-document' }
+                        link={ '/documents-managements' }
+                        path={ '/documents-managements' }
                         pageName={ 'manage_document' }
                         layout={ Layout }
                         component={ ManageFormDocument }
@@ -178,12 +178,12 @@ class Routes extends Component {
                         key={ 'add_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/add-employee', name: 'add_employee', icon:'fa fa-user-plus' }
+                            { link: '/hr-add-employee', name: 'add_employee', icon:'fa fa-user-plus' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/add-employee' }
-                        path={ '/add-employee' }
+                        link={ '/hr-add-employee' }
+                        path={ '/hr-add-employee' }
                         pageName={'add_employee' }
                         layout={ Layout }
                         component={ AddEmployee }
@@ -193,12 +193,12 @@ class Routes extends Component {
                         key={ 'detail_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/detail-employee', name: 'detail_employee', icon:'fa fa-user-o' }
+                            { link: '/hr-detail-employee', name: 'detail_employee', icon:'fa fa-user-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/detail-employee' }
-                        path={ '/detail-employee' }
+                        link={ '/hr-detail-employee' }
+                        path={ '/hr-detail-employee' }
                         pageName={'detail_employee' }
                         layout={ Layout }
                         component={ DetailEmployee }
@@ -208,43 +208,43 @@ class Routes extends Component {
                         key={ 'update_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/update-employee', name: 'update_employee', icon:'fa fa-pencil-square-o' }
+                            { link: '/hr-update-employee', name: 'update_employee', icon:'fa fa-pencil-square-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/update-employee' }
-                        path={ '/update-employee' }
+                        link={ '/hr-update-employee' }
+                        path={ '/hr-update-employee' }
                         pageName={'update_employee' }
                         layout={ Layout }
                         component={ UpdateEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ employeesManager.isLoading }
                         key={ 'list_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/list-employee', name: 'list_employee', icon:'fa fa-address-card' }
+                            { link: '/hr-list-employee', name: 'list_employee', icon:'fa fa-address-card' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/list-employee' }
-                        path={ '/list-employee' }
+                        link={ '/hr-list-employee' }
+                        path={ '/hr-list-employee' }
                         pageName={'list_employee' }
                         layout={ Layout }
                         component={ ListEmployee }
                     />
 
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ department.isLoading }
                         key={ 'manage_unit' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage_unit', name: 'manage_unit', icon:'fa fa-sitemap' }
+                            { link: '/hr-manage-department', name: 'manage_unit', icon:'fa fa-sitemap' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-unit' }
-                        path={ '/manage-unit' }
+                        link={ '/hr-manage-department' }
+                        path={ '/hr-manage-department' }
                         pageName={'manage_unit' }
                         layout={ Layout }
                         component={ DepartmentManage }
@@ -255,12 +255,12 @@ class Routes extends Component {
                         key={ 'dashBoard_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/dashboard-employee', name: 'dashboard_employee', icon:'fa fa-dashboard' }
+                            { link: '/hr-dashboard-employee', name: 'dashboard_employee', icon:'fa fa-dashboard' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/dashboard-employee' }
-                        path={ '/dashboard-employee' }
+                        link={ '/hr-dashboard-employee' }
+                        path={ '/hr-dashboard-employee' }
                         pageName={'dashboard_employee' }
                         layout={ Layout }
                         component={ DashBoardEmployees }
@@ -270,12 +270,12 @@ class Routes extends Component {
                         key={ 'discipline' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/discipline', name: 'discipline', icon:'fa fa-balance-scale' }
+                            { link: '/hr-discipline', name: 'discipline', icon:'fa fa-balance-scale' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/discipline' }
-                        path={ '/discipline' }
+                        link={ '/hr-discipline' }
+                        path={ '/hr-discipline' }
                         pageName={'discipline' }
                         layout={ Layout }
                         component={ Discipline }
@@ -285,27 +285,42 @@ class Routes extends Component {
                         key={ 'sabbatical' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/sabbatical', name: 'sabbatical', icon:'fa fa-calendar-times-o' }
+                            { link: '/hr-sabbatical', name: 'sabbatical', icon:'fa fa-calendar-times-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/sabbatical' }
-                        path={ '/sabbatical' }
+                        link={ '/hr-sabbatical' }
+                        path={ '/hr-sabbatical' }
                         pageName={'sabbatical' }
                         layout={ Layout }
                         component={ Sabbatical }
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }
-                        key={ 'salary_employee' }
+                        key={ 'holiday' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/salary-employee', name: 'salary_employee', icon:'fa fa-line-chart' }
+                            { link: '/hr-holiday', name: 'holiday', icon:'fa fa-calendar' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/salary-employee' }
-                        path={ '/salary-employee' }
+                        link={ '/hr-holiday' }
+                        path={ '/hr-holiday' }
+                        pageName={'holiday' }
+                        layout={ Layout }
+                        component={ Holiday }
+                    />
+                    <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'salary_employee' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/hr-salary-employee', name: 'salary_employee', icon:'fa fa-line-chart' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/hr-salary-employee' }
+                        path={ '/hr-salary-employee' }
                         pageName={'salary_employee' }
                         layout={ Layout }
                         component={ SalaryEmployee }
@@ -315,12 +330,12 @@ class Routes extends Component {
                         key={ 'time_keeping' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/time-keeping', name: 'time_keeping', icon:'fa fa-calculator' }
+                            { link: '/hr-time-keeping', name: 'time_keeping', icon:'fa fa-calculator' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/time-keeping' }
-                        path={ '/time-keeping' }
+                        link={ '/hr-time-keeping' }
+                        path={ '/hr-time-keeping' }
                         pageName={'time_keeping' }
                         layout={ Layout }
                         component={ Timekeeping }
@@ -330,12 +345,12 @@ class Routes extends Component {
                         key={ 'list_course' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/list-course', name: 'list_course', icon:'fa fa-university' }
+                            { link: '/hr-list-course', name: 'list_course', icon:'fa fa-university' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/list-course' }
-                        path={ '/list-course' }
+                        link={ '/hr-list-course' }
+                        path={ '/hr-list-course' }
                         pageName={'list_course' }
                         layout={ Layout }
                         component={ ListCourse }
@@ -345,12 +360,12 @@ class Routes extends Component {
                         key={ 'training_plan' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/training-plan', name: 'training_plan', icon:'fa fa-list-alt' }
+                            { link: '/hr-training-plan', name: 'training_plan', icon:'fa fa-list-alt' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/training-plan' }
-                        path={ '/training-plan' }
+                        link={ '/hr-training-plan' }
+                        path={ '/hr-training-plan' }
                         pageName={'training_plan' }
                         layout={ Layout }
                         component={ TrainingPlan }
