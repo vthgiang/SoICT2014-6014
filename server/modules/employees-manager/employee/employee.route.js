@@ -26,18 +26,18 @@ router.put('/:email',auth, EmployeeController.updateInforPersonal);
 router.put('/update/:id',auth, EmployeeController.updateInfoEmployee);
 
 // Cập nhật Avatar của nhân viên theo mã nhân viên
-router.patch('/avatar/:employeeNumber',auth, EmployeeController.uploadFile, EmployeeController.updateAvatar);
+router.patch('/avatar/:employeeNumber',auth, EmployeeController.uploadAvatar, EmployeeController.updateAvatar);
 
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-router.patch('/contract/:employeeNumber',auth, EmployeeController.uploadFile, EmployeeController.updateContract);
+router.patch('/contract/:employeeNumber',auth, EmployeeController.uploadContract, EmployeeController.updateContract);
 
 // Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-router.patch('/certificateShort/:employeeNumber',auth, EmployeeController.uploadFile, EmployeeController.updateCertificateShort);
+router.patch('/certificateShort/:employeeNumber',auth, EmployeeController.uploadCertificateshort, EmployeeController.updateCertificateShort);
 
 // Cập nhật(thêm) thông tin bằng cấp theo MSNV
-router.patch('/certificate/:employeeNumber',auth, EmployeeController.uploadFile, EmployeeController.updateCertificate);
+router.patch('/certificate/:employeeNumber',auth, EmployeeController.uploadCertificate, EmployeeController.updateCertificate);
 
-// Cập nhật(thêm) thông tin bằng cấp theo MSNV
+// Cập nhật(thêm) thông tin file đính kèm
 router.patch('/file/:employeeNumber',auth, EmployeeController.uploadFile, EmployeeController.updateFile);
 
 // Xoá thông tin nhân viên
