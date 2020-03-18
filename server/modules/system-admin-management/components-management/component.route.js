@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ComponentController = require('./component.controller');
-const { auth } = require('../../../middleware/auth.middleware');
+const { auth } = require('../../../middleware');
 const { validation } = require('./component.validation');
 
 router.get("/", auth, ComponentController.get);

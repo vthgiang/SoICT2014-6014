@@ -25,8 +25,8 @@ const Log = async (filename="guest", title) => {
     return await createLogger(option);
 }
 
-const LogInfo = async(user, content, companyId=null, companyShortName="system") => {
-    console.log("INFO,giá trị company ID nhận vào: ", companyId);
+const LogInfo = async(user, content, companyId=null) => {
+    console.log("INFO: ", content, companyId);
     if(companyId === null){
         //Không có id công ty để check trong databse
         const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest
@@ -45,8 +45,8 @@ const LogInfo = async(user, content, companyId=null, companyShortName="system") 
     }
 }
 
-const LogError = async(user, content, companyId=null, companyShortName="system") => {
-    console.log("ERR,giá trị company ID nhận vào: ", companyId);
+const LogError = async(user, content, companyId=null) => {
+    console.log("ERR: ", content, companyId);
     if(companyId === null){
         //Không có id công ty để check trong databse
         const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest

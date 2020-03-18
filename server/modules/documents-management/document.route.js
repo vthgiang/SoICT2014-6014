@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const DocumentController = require('./document.controller');
-const { auth } = require('../../middleware/auth.middleware');
+const { auth } = require('../../middleware');
 
 router.get("/document", auth, DocumentController.get);
 router.get("/document/:id", auth, DocumentController.show);

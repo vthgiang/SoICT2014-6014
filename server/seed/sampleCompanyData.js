@@ -1,4 +1,4 @@
-const Log = require('../models/log.model');
+const Component = require('../models/component.model');
 const RoleType = require('../models/role_type.model');
 const Role = require('../models/role.model');
 const Company = require('../models/company.model');
@@ -34,7 +34,7 @@ mongoose.connect(db, {
 }).catch(err => console.log("ERROR! :(\n", err));
 
 const sampleCompanyData = async () => {
-    console.log("Đang fake dữ liệu ...");
+    console.log("Đang tạo dữ liệu ...");
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -436,7 +436,31 @@ const sampleCompanyData = async () => {
         }
     ]);
     console.log("Xong! Đã tạo links: ", links);
+
+    //Thêm component -------------------------------------------------------
+    const components = await Component.insertMany([
+        {
+            name: 'create-notification',
+            description: 'Tạo thông báo mới',
+            company: xyz._id
+        }
+    ]);
+    const notificationLink = await Link.findById(links[25]._id);
+    await notificationLink.components.push(components[0]._id);
+    await notificationLink.save();
+
+    //gán quyền tạo thông báo cho admin, superadmin
+    var data = [roles[0]._id, admin._id].map( role => {
+        return {
+            resourceId: components[0]._id,
+            resourceType: 'Component',
+            roleId: role
+        };
+    });
+    var privileges_component = await Privilege.insertMany(data);
+    console.log("privilege component: ", privileges_component);
     //END
+
     const privileges = await Privilege.insertMany([
         //gán 7 link trên cho super admin
         {
