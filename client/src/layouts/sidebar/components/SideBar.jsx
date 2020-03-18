@@ -153,6 +153,15 @@ class SideBar extends Component {
                                     icon='fa fa-folder-open'
                                 />
                             }
+                            {
+                                this.checkURL('/task-template', links) === true &&
+                                <Item
+                                    key='task_template'
+                                    name='task_template'
+                                    path='/task-template'
+                                    icon='fa fa-flash'
+                                />
+                            }
 
                             {/* Quan ly nhan su */}
                             {

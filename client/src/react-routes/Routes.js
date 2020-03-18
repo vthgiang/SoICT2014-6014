@@ -467,7 +467,7 @@ class Routes extends Component {
                         key={ 'task-template-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/task-template', name: 'task_template', icon:'fa fa-calculator' }
+                            { link: '/task-template', name: 'task_template', icon:'fa fa-flash' }
                         ]}
                         auth={ auth }
                         exact={ true }
