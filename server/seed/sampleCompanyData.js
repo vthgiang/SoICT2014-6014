@@ -309,27 +309,27 @@ const sampleCompanyData = async () => {
             description: `Trang chủ công ty ${xyz.name}`,
             company: xyz._id
         }, { // 1
-            url: '/manage-department',
+            url: '/departments-management',
             description: 'Quản lý cơ cấu tổ chức',
             company: xyz._id
         }, { // 2
-            url: '/manage-user',
+            url: '/users-management',
             description: 'Quản lý người dùng',
             company: xyz._id
         }, { // 3
-            url: '/manage-role',
+            url: '/roles-management',
             description: 'Quản lý phân quyền',
             company: xyz._id
         }, { // 4
-            url: '/manage-link',
+            url: '/pages-management',
             description: 'Quản lý trang web của công ty',
             company: xyz._id
         }, { // 5
-            url: '/manage-component',
+            url: '/components-management',
             description: 'Quản lý các thành phần UI trên trang web của công ty',
             company: xyz._id
         }, { // 6
-            url: '/manage-form-document',
+            url: '/documents-management',
             description: 'Quản lý tài liệu biểu mẫu',
             company: xyz._id
         }, { // 7

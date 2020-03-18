@@ -78,75 +78,75 @@ class SideBar extends Component {
                                 />
                             }
                             {
-                                this.checkURL('/log', links) === true &&
+                                this.checkURL('/system/settings', links) === true &&
                                 <Item
                                     key='manage_system'
                                     name='manage_system'
-                                    path='/log'
+                                    path='/system/settings'
                                     icon='fa fa-gears'
                                 />
                             }
                             {
-                                this.checkURL('/manage-company', links) === true &&
+                                this.checkURL('/system/companies-management', links) === true &&
                                 <Item
                                     key='manage_company'
                                     name='manage_company'
-                                    path='/manage-company'
+                                    path='/system/companies-management'
                                     icon='fa fa-building'
                                 />
                             }
                             {
-                                this.checkURL('/manage-department', links) === true &&
+                                this.checkURL('/departments-management', links) === true &&
                                 <Item
                                     key='manage_department'
                                     name='manage_department'
-                                    path='/manage-department'
+                                    path='/departments-management'
                                     icon='fa fa-sitemap'
                                 />
                             }
                             {
-                                this.checkURL('/manage-user', links) === true &&
+                                this.checkURL('/users-management', links) === true &&
                                 <Item
                                     key='manage_user'
                                     name='manage_user'
-                                    path='/manage-user'
+                                    path='/users-management'
                                     icon='fa fa-users'
                                 />
                             }
                             {
-                                this.checkURL('/manage-role', links) === true &&
+                                this.checkURL('/roles-management', links) === true &&
                                 <Item
                                     key='manage_role'
                                     name='manage_role'
-                                    path='/manage-role'
+                                    path='/roles-management'
                                     icon='fa fa-lock'
                                 />
                             }
                             {
-                                this.checkURL('/manage-link', links) === true &&
+                                this.checkURL('/pages-management', links) === true &&
                                 <Item
                                     key='manage_page'
                                     name='manage_page'
-                                    path='/manage-link'
+                                    path='/pages-management'
                                     icon='fa fa-link'
                                 />
                             }
                             {
-                                this.checkURL('/manage-component', links) === true &&
+                                this.checkURL('/components-management', links) === true &&
                                 <Item
                                     key='manage_component'
                                     name='manage_component'
-                                    path='/manage-component'
+                                    path='/components-management'
                                     icon='fa fa-object-group'
                                 />
                             }
                             {
-                                this.checkURL('/manage-document', links) === true &&
+                                this.checkURL('/documents-management', links) === true &&
                                 <Item
                                     pending={true}
                                     key='manage_document'
                                     name='manage_document'
-                                    path='/manage-document'
+                                    path='/documents-management'
                                     icon='fa fa-folder-open'
                                 />
                             }
