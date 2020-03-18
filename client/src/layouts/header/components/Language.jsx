@@ -13,7 +13,8 @@ class Language extends Component {
         return ( 
             <React.Fragment>
                 <li>
-                    <a
+                    <a  
+                        href="#abc"
                         className="btn"
                         data-toggle="control-sidebar"
                         title={translate('language')}

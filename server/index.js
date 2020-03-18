@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
-const system = require('./modules/system/system.route');
+const log = require('./modules/system-admin-management/logs-management/log.route');
 const user = require('./modules/super-admin-management/users-management/user.route');
 const auth = require('./modules/auth/auth.route');
 const company = require('./modules/system-admin-management/companies-management/company.route');
@@ -73,7 +73,7 @@ Logger.findOne({
 
 
 
-app.use("/system", system);
+app.use("/log", log);
 app.use("/user", user);
 app.use("/auth", auth);
 app.use("/company", company);

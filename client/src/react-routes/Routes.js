@@ -5,12 +5,12 @@ import { PrivateRoute, AuthRoute } from './route-export';
 import Layout from '../layouts/Layout';
 import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/Login';
-import System from '../modules/system/components';
+import LogManagement from '../modules/system-admin-management/logs-management/components';
 import Home from '../modules/home/components';
 import ManageCompany from '../modules/system-admin-management/manage-company/components';
 import ManageUser from '../modules/super-admin-management/manage-user/components';
 import ManageRole from '../modules/super-admin-management/manage-role/components';
-import ManageLink from '../modules/system-admin-management/manage-link/components';
+import ManageLink from '../modules/super-admin-management/links-management/components';
 import ManageDepartment from '../modules/super-admin-management/manage-department/components';
 import ManageComponent from '../modules/system-admin-management/manage-component/components';
 import ManageFormDocument from '../modules/super-admin-management/manage-form-document/components';
@@ -47,15 +47,15 @@ class Routes extends Component {
                         isLoading={ company.isLoading }
                         key={ 'manage_system' }
                         arrPage={[
-                            { link: '/system', name:'manage_system', icon: 'fa fa-gears'}
+                            { link: '/system/settings', name:'manage_system', icon: 'fa fa-gears'}
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/system' }
-                        path={ '/system' }
+                        link={ '/system/settings' }
+                        path={ '/system/settings' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ System }
+                        component={ LogManagement }
                     />
                     <PrivateRoute 
                         isLoading={ auth.isLoading }
@@ -76,12 +76,12 @@ class Routes extends Component {
                         key={ 'manage-company' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-company', name: 'manage_company', icon:'fa fa-building' }
+                            { link: '/system/companies-management', name: 'manage_company', icon:'fa fa-building' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-company' }
-                        path={ '/manage-company' }
+                        link={ '/system/companies-management' }
+                        path={ '/system/companies-management' }
                         pageName={ 'manage_company' }
                         layout={ Layout }
                         component={ ManageCompany }
@@ -91,12 +91,12 @@ class Routes extends Component {
                         key={ 'manage-user' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-user', name: 'manage_user', icon:'fa fa-users' }
+                            { link: '/users-management', name: 'manage_user', icon:'fa fa-users' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-user' }
-                        path={ '/manage-user' }
+                        link={ '/users-management' }
+                        path={ '/users-management' }
                         pageName={ 'manage_user' }
                         layout={ Layout }
                         component={ ManageUser }
@@ -105,13 +105,13 @@ class Routes extends Component {
                         isLoading={ role.isLoading }
                         arrPage={[
                             { link: '/', name:'home', icon:'fa fa-home' },
-                            { link: '/manage-role', name: 'manage_role', icon:'fa fa-lock'}
+                            { link: '/roles-management', name: 'manage_role', icon:'fa fa-lock'}
                         ]}
                         key={ 'manage-role' }
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-role' }
-                        path={ '/manage-role' }
+                        link={ '/roles-management' }
+                        path={ '/roles-management' }
                         pageName={ 'manage_role' }
                         layout={ Layout }
                         component={ ManageRole }
@@ -121,12 +121,12 @@ class Routes extends Component {
                         key={ 'manage-link' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-link', name: 'manage_page', icon:'fa fa-link' }
+                            { link: '/pages-management', name: 'manage_page', icon:'fa fa-link' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-link' }
-                        path={ '/manage-link' }
+                        link={ '/pages-management' }
+                        path={ '/pages-management' }
                         pageName={ 'manage_page' }
                         layout={ Layout }
                         component={ ManageLink }
@@ -136,12 +136,12 @@ class Routes extends Component {
                         key={ 'manage-department' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-department', name: 'manage_department', icon:'fa fa-sitemap' }
+                            { link: '/departments-management', name: 'manage_department', icon:'fa fa-sitemap' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-department' }
-                        path={ '/manage-department' }
+                        link={ '/departments-management' }
+                        path={ '/departments-management' }
                         pageName={ 'manage_department' }
                         layout={ Layout }
                         component={ ManageDepartment }
@@ -151,22 +151,22 @@ class Routes extends Component {
                         key={ 'manage-component' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-component', name: 'manage_component', icon:'fa fa-object-group' }
+                            { link: '/components-management', name: 'manage_component', icon:'fa fa-object-group' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-component' }
-                        path={ '/manage-component' }
+                        link={ '/components-management' }
+                        path={ '/components-management' }
                         pageName={ 'manage_component' }
                         layout={ Layout }
                         component={ ManageComponent }
                     />
                     <PrivateRoute 
-                        key={ 'manage-form-document' }
+                        key={ 'manage-document' }
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-document' }
-                        path={ '/manage-document' }
+                        link={ '/documents-managements' }
+                        path={ '/documents-managements' }
                         pageName={ 'manage_document' }
                         layout={ Layout }
                         component={ ManageFormDocument }

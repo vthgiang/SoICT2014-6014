@@ -1,5 +1,5 @@
-const SystemService = require('./system.service');
-const { LogInfo, LogError } = require('../../logs');
+const SystemService = require('./log.service');
+const { LogInfo, LogError } = require('../../../logs');
 
 exports.getLogState = async (req, res) => {
     try {

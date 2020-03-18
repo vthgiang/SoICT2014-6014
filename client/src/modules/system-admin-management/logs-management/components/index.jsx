@@ -15,8 +15,8 @@ class System extends Component {
 
     render() { 
         const { translate } = this.props;
-        var type = this.props.system.log ? 'danger' : 'success';
-        var toggleButton = this.props.system.log ? translate('manage_system.turn_off') : translate('manage_system.turn_on');
+        var type = this.props.log.status ? 'danger' : 'success';
+        var toggleButton = this.props.log.status  ? translate('manage_system.turn_off') : translate('manage_system.turn_on');
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">

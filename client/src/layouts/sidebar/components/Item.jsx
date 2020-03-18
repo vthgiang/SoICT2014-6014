@@ -9,11 +9,14 @@ class Item extends Component {
         this.state = {  }
     }
     render() { 
-        const { name, path, icon, translate } = this.props;
+        const { name, path, icon, translate, pending=false } = this.props;
         return ( 
             <li className={ window.location.pathname === path ? "active" : "" }>
                 <Link to={ path }>
                     <i className={ icon } /> <span>{ translate(`menu.${name}`) }</span>
+                    {
+                        pending && <span className="label label-warning" title="trial - chưa đưa vào hoạt động">trial</span>
+                    }
                 </Link>
             </li>
         );

@@ -12,7 +12,7 @@ class Profile extends Component {
         const {auth, translate}=this.props;
         return ( 
             <li className="dropdown user user-menu">
-                <a className="dropdown-toggle btn" data-toggle="dropdown" style={{width: '55px', height: '50px'}}>
+                <a href='#abc' className="dropdown-toggle btn" data-toggle="dropdown" style={{width: '55px', height: '50px'}}>
                     <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="user-image" alt="User Avatar" />
                 </a>
                 <ul className="dropdown-menu">
@@ -26,7 +26,7 @@ class Profile extends Component {
                     </li>
                     <li className="user-footer">
                         <div className="pull-left">
-                            <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i> {translate('auth.profile')} </a>
+                            <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i> {translate('auth.profile.title')} </a>
                         </div>
                         <div className="pull-right">
                             <button type="button" className="btn btn-default btn-flat" onClick={this.props.logout}><i className="fa fa-sign-out"></i> {translate('auth.logout')} </button>

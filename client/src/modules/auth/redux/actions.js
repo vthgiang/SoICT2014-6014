@@ -68,17 +68,21 @@ function logoutAllAccount(){
 
 function editProfile(data){
     return dispatch => {
-        AuthService.editProfile(data)
+        return new Promise((resolve, reject) => {
+            AuthService.editProfile(data)
             .then(res => {
                 dispatch({
                     type: AuthConstants.EDIT_PROFILE_SUCCESS,
                     payload: res.data
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err);
                 AlertActions.handleAlert(dispatch, err);
+                reject(err);
             })
+        });
     }
 }
 
@@ -95,6 +99,7 @@ function getLinksOfRole(idRole){
             })
             .catch(err => {
                 console.log(err.response);
+                dispatch({type: AuthConstants.GET_LINKS_OF_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
             })
@@ -114,6 +119,7 @@ function refresh(){
             })
             .catch(err => {
                 console.log(err.response);
+                dispatch({type: AuthConstants.REFRESH_DATA_USER_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }
@@ -161,6 +167,7 @@ function getComponentOfUserInLink(curentRole, linkId){
             })
             .catch(err => {
                 console.log(err.response);
+                dispatch({type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }

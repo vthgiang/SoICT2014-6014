@@ -6,7 +6,7 @@
     "thainv-vnist <thainv.vnist@gmail.com>"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/thainv-vnist/vnist-qlcv",
+  "homepage": "https://github.com/VNISTResearch/qlcv",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -15,6 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "lib": "https://github.com/thainv-vnist/ui-source.git"
+    "lib": "https://github.com/VNISTResearch/qlcv-template.git"
   }
 }

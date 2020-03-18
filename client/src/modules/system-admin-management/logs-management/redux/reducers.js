@@ -1,11 +1,11 @@
 import { SystemConsts } from "./constants";
 
 const initState = {
-    log: false,
+    status: false,
     isLoading: false
 }
 
-export function system(state = initState, action) {
+export function log(state = initState, action) {
 
     switch (action.type) {
         case SystemConsts.GET_LOG_STATE_REQUEST:
@@ -18,14 +18,14 @@ export function system(state = initState, action) {
         case SystemConsts.GET_LOG_STATE_REQUEST_SUCCESS:
             return {
                 ...state,
-                log: action.payload,
+                status: action.payload,
                 isLoading: false
             };
 
         case SystemConsts.TOGGLE_LOG_STATE_REQUEST_SUCCESS:
             return {
                 ...state,
-                log: action.payload ? !state.log : state.log,
+                status: action.payload ? !state.status : state.status,
                 isLoading: false
             };
 

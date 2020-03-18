@@ -2,7 +2,7 @@ import { IntlReducer as Intl } from 'react-redux-multilingual';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
 import { alert } from '../modules/alert/redux/reducers';
-import { system } from '../modules/system/redux/reducers';
+import { log } from '../modules/system-admin-management/logs-management/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin-management/manage-company/redux/reducers';
 import { user } from '../modules/super-admin-management/manage-user/redux/reducers';
@@ -28,7 +28,7 @@ import {overviewKpiPersonal} from "./../modules/kpi-personal/kpi-personal-overvi
 
 const appReducer = combineReducers(Object.assign({
     alert,
-    system,
+    log,
     auth,
     company,
     user,

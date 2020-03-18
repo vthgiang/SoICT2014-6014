@@ -70,11 +70,11 @@ const seedDatabase = async () => {
             description: 'System Management HomePage',
             company: vnist._id
         },{
-            url: '/system',
+            url: '/system/settings',
             description: 'System Management',
             company: vnist._id
         },{
-            url: '/manage-company',
+            url: '/system/companies-management',
             description: 'Manage companies information',
             company: vnist._id
         }

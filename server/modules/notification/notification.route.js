@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const NotificationController = require('./notification.controller');
-const { auth } = require('../../middleware/auth.middleware');
+const { auth } = require('../../middleware');
 
 //Lấy tất cả các thông báo
 router.get("/", auth, NotificationController.get);

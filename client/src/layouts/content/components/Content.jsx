@@ -66,7 +66,7 @@ class Content extends Component {
         });
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         let script = document.createElement('script');
         script.src = '/lib/main/js/defindMultiSelect.js';
         script.async = true;

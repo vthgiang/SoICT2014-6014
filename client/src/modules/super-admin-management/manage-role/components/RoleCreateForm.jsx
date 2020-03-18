@@ -25,7 +25,6 @@ class RoleCreateForm extends Component {
                     msg_success={translate('manage_role.add_success')}
                     msg_faile={translate('manage_role.add_faile')}
                     func={this.save}
-                    reload={this.reload}
                 >
                     <form id="form-create-role">
                         <div className="form-group">

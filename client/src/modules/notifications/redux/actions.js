@@ -1,5 +1,6 @@
 import { NotificationServices } from "./services";
 import { NotificationConstants } from "./constants";
+import { AlertActions } from '../../alert/redux/actions';
 
 export const NotificationActions = {
     get,
@@ -22,9 +23,7 @@ function get(){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
+                    AlertActions.handleAlert(dispatch, err);
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -32,12 +31,12 @@ function get(){
     }
 }
 
-function getNotificationReceivered(userId){
+function getNotificationReceivered(){
     return dispatch => {
         dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_REQUEST});
         return new Promise((resolve, reject) => {
             NotificationServices
-                .getNotificationReceivered(userId)
+                .getNotificationReceivered()
                 .then(res => {
                     dispatch({
                         type: NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_SUCCESS,
@@ -46,9 +45,7 @@ function getNotificationReceivered(userId){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
+                    AlertActions.handleAlert(dispatch, err);
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -56,12 +53,12 @@ function getNotificationReceivered(userId){
     }
 }
 
-function getNotificationSent(userId){
+function getNotificationSent(){
     return dispatch => {
         dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_SENT_REQUEST});
         return new Promise((resolve, reject) => {
             NotificationServices
-                .getNotificationSent(userId)
+                .getNotificationSent()
                 .then(res => {
                     dispatch({
                         type: NotificationConstants.GET_NOTIFICATIONS_SENT_SUCCESS,
@@ -70,9 +67,7 @@ function getNotificationSent(userId){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
+                    AlertActions.handleAlert(dispatch, err);
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -94,9 +89,7 @@ function create(data){
                     resolve(res.data);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
+                    AlertActions.handleAlert(dispatch, err);
                     console.log("Error: ", err);
                     reject(err);
                 })

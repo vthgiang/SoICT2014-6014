@@ -10,19 +10,27 @@ export default {
         alert: {
             title: 'Thông báo từ hệ thống',
             log_again: 'Đã xảy ra lỗi. Vui lòng đăng nhập lại!',
-            access_denied: 'Truy cập trái phép! Vui lòng đăng nhập!',
-            role_invalid: 'Quyền truy cập không hợp lệ! Vui lòng thử lại sau!',
-            page_access_denied: 'Quyền truy cập vào trang này của bạn đã được thay đổi! Vui lòng đăng nhập lại!',
-            user_role_invalid: 'Quyền hiện tại của bạn đã bị thay đổi! Vui lòng đăng nhập lại!',
-            acc_logged_out: 'Phiên làm việc này không tồn tại. Vui lòng đăng nhập lại!',
-            service_off: 'Dịch vụ của công ty bạn đã tạm ngưng! Phiên làm việc của bạn sẽ bị tạm ngưng!',
+            access_denied: 'ACCESS DENIED! Truy cập trái phép! Vui lòng đăng nhập!',
+            role_invalid: 'ROLE INVALID! Quyền truy cập không hợp lệ! Vui lòng thử lại sau!',
+            page_access_denied: 'PAGE ACCESS DENIED! Quyền truy cập vào trang này của bạn đã được thay đổi! Vui lòng đăng nhập lại!',
+            user_role_invalid: 'USER-ROLE INVALID! Quyền hiện tại của bạn đã bị thay đổi! Vui lòng đăng nhập lại!',
+            acc_logged_out: 'JWT - phiên làm việc không chính xác. Vui lòng đăng nhập lại!',
+            service_off: 'SERVICE OFF! Dịch vụ của công ty bạn đã tạm ngưng! Phiên làm việc của bạn sẽ bị tạm ngưng!',
             fingerprint_invalid: 'Phiên đăng nhập của bạn không đúng! Vui lòng đăng nhập lại!'
         },
         auth: {
             login: 'Đăng nhập',
             logout: 'Đăng xuất',
             logout_all_account: 'Đăng xuất khỏi tất cả các thiết bị',
-            profile: 'Thông tin tài khoản',
+            profile: {
+                title: 'Thông tin tài khoản',
+                name: 'Tên người dùng',
+                email: 'Địa chỉ email',
+                password: 'Mật khẩu mới',
+                confirm: 'Xác thực mật khẩu',
+                edit_success: 'Chỉnh sửa thông tin người dùng thành công',
+                edit_faile: 'Chỉnh sửa thông tin người dùng thất bại'
+            },
         },
 
         confirm: {
@@ -445,7 +453,9 @@ export default {
             edit_success: 'Chỉnh sửa thông báo thành công',
             edit_faile: 'Chỉnh sửa thông báo thất bại',
             departments: 'Thông báo tới đơn vị/phòng ban',
-            users: 'Thông báo đến người dùng cụ thể'
+            users: 'Thông báo đến người dùng cụ thể',
+            news: 'Thông báo mới',
+            see_all: 'Xem tất cả'
         },
         holiday: {
             start_date: 'Ngày bắt đầu',

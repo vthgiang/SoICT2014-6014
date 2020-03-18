@@ -35,7 +35,7 @@ class Roles extends Component {
 
     componentDidMount() {
         var currentRole = getStorage('currentRole');
-        this.props.getLinksOfRole(this.state.currentRole)
+        this.props.getLinksOfRole(currentRole)
             .then(res => {
                 var {links} = this.props.auth; 
                 var path = window.location.pathname;

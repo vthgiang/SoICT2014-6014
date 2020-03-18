@@ -1,4 +1,4 @@
-const Log = require('../../models/log.model');
+const Log = require('../../../models/log.model');
 
 exports.getLogState = async () => {
     var log =  await Log.findOne({ name: 'log'}); 
