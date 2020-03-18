@@ -33,6 +33,7 @@ import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
 
+import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
 class Routes extends Component {
@@ -445,6 +446,21 @@ class Routes extends Component {
                         pageName={ 'kpi_personal_evaluate' }
                         layout={ Layout }
                         component={ KPIPersonalEvaluate }
+                    />
+                    <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'task-template-management' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-template', name: 'task_template', icon:'fa fa-calculator' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-template' }
+                        path={ '/task-template' }
+                        pageName={ 'task_template' }
+                        layout={ Layout }
+                        component={ TaskTemplate }
                     />
 
                     <PrivateRoute 

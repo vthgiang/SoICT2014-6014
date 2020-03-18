@@ -93,7 +93,7 @@ function getLinkOfRole() {
 // Lấy tất cả các vai trò cùng phòng ban với người dùng
 function getRoleSameDepartmentOfUser(currentRole) {
     const requestOptions = {
-        url: `${LOCAL_SERVER_API}/roles/same-department/${currentRole}`,
+        url: `${LOCAL_SERVER_API}/role/same-department/${currentRole}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };

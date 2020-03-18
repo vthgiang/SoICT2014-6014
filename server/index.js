@@ -29,6 +29,8 @@ const overviewKpiUnit = require("./modules/kpi-unit/kpi-unit-overview/overview.r
 const createKpiPersonal = require("./modules/kpi-personal/kpi-personal-create/create.route")
 const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overview/overview.route")
 
+const tasktemplates =require ("./modules/task-template-management/task-template-management.route")
+
 // process.env.TZ = 'Asia/Ho_Chi_Minh';
 
 require('dotenv').config();
@@ -100,6 +102,7 @@ app.use("/kpiunits", overviewKpiUnit);
 app.use("/kpipersonals", createKpiPersonal);
 app.use("/kpipersonals", overviewKpiPersonal);
 
+app.use  ("/tasktemplates",tasktemplates);
 // console.log("ENV: ", process.env);
 const port = process.env.PORT || 5000;
 
