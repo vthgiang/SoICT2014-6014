@@ -24,7 +24,7 @@ import { Timekeeping} from '../modules/employees-manager/timekeeping/components/
 import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
 import { DepartmentManage} from '../modules/employees-manager/department-manager/components/DepartmentManage';
-
+import { Holiday } from '../modules/employees-manager/holiday/components/Holiday';
 
 import {KPIUnitCreate} from "../modules/kpi-unit/kpi-unit-create/component/KPIUnitCreate";
 import {KPIUnitOverview} from "../modules/kpi-unit/kpi-unit-overview/component/KPIUnitOverview";
@@ -293,6 +293,21 @@ class Routes extends Component {
                         pageName={'sabbatical' }
                         layout={ Layout }
                         component={ Sabbatical }
+                    />
+                    <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'holiday' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/hr-holiday', name: 'holiday', icon:'fa fa-calendar' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/hr-holiday' }
+                        path={ '/hr-holiday' }
+                        pageName={'holiday' }
+                        layout={ Layout }
+                        component={ Holiday }
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }

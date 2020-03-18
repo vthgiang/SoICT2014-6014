@@ -30,54 +30,57 @@ class Holiday extends Component {
         var { translate } = this.props;
         return (
             <React.Fragment>
-                <div className="col-md-12">
-                    <div className="box box-success">
-                        <div className="box-header with-border">
-                            <h3 className="box-title">Danh sách lịch nghỉ ngày lễ (ngày tết)</h3>
-                            <div className="box-tools pull-right">
-                                <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" /></button>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box box-info">
+                            <div className="box-body" >
+                                <div className="col-md-12">
+                                    <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 5 }}>
+                                        <div className="box-header col-md-6" style={{ paddingLeft: 0 }}>
+                                            <h3 className="box-title">Danh sách lịch nghỉ ngày lễ (ngày tết):</h3>
+                                        </div>
+                                        <button type="submit" style={{ marginRight:0 }} className="btn btn-success pull-right" id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
+                                        <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Thêm mới lịch nghỉ" data-toggle="modal" data-target="#modal-addHoliday">Thêm mới</button>
+                                    </div>
+                                    <table className="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ width: "5%" }}>STT</th>
+                                                <th style={{ width: "30%" }}>Các mốc thời gian</th>
+                                                <th style={{ width: "55%" }}>Mô tả các mốc thời gian</th>
+                                                <th>Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {(typeof listHoliday === 'undefined' || listHoliday.length === 0) ? <tr><td colSpan={4}><center>{translate('table.no_data')}</center></td></tr> :
+                                                listHoliday.map((x, index) => (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
+                                                        <td>{x.reason}</td>
+                                                        <td>
+                                                            <ModalEditHoliday data={x} />
+                                                            <DeleteNotification
+                                                                content={{
+                                                                    title: "Xoá ngày nghỉ lễ (tết)",
+                                                                    btnNo: translate('confirm.no'),
+                                                                    btnYes: translate('confirm.yes'),
+                                                                }}
+                                                                data={{
+                                                                    id: x._id,
+                                                                    info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
+                                                                }}
+                                                                func={this.props.deleteHoliday}
+                                                            />
+                                                        </td>
+                                                    </tr>)
+                                                )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
-                            <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Thêm mới lịch nghỉ" data-toggle="modal" data-target="#modal-addHoliday">Thêm mới</button>
+                            {/* /.box-body */}
                         </div>
-                        <div className="box-body" >
-                            <table className="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "5%" }}>STT</th>
-                                        <th style={{ width: "30%" }}>Các mốc thời gian</th>
-                                        <th style={{ width: "55%" }}>Mô tả các mốc thời gian</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(typeof listHoliday === 'undefined' || listHoliday.length === 0) ? <tr><td colSpan={4}><center>{translate('table.no_data')}</center></td></tr> :
-                                        listHoliday.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
-                                                <td>{x.reason}</td>
-                                                <td>
-                                                    <ModalEditHoliday data={x} />
-                                                    <DeleteNotification
-                                                        content={{
-                                                            title: "Xoá ngày nghỉ lễ (tết)",
-                                                            btnNo: translate('confirm.no'),
-                                                            btnYes: translate('confirm.yes'),
-                                                        }}
-                                                        data={{
-                                                            id: x._id,
-                                                            info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
-                                                        }}
-                                                        func={this.props.deleteHoliday}
-                                                    />
-                                                </td>
-                                            </tr>)
-                                        )}
-                                </tbody>
-                            </table>
-                        </div>
-                        {/* /.box-body */}
                     </div>
                 </div>
                 <ModalImportHoliday />

@@ -51,6 +51,7 @@ class SideBar extends Component {
             path10: "/hr-list-course",
             path11: "/hr-training-plan",
             path12: "/hr-manage-department",
+            path13: "/hr-holiday",
 
         }
         const { translate } = this.props;
@@ -229,6 +230,14 @@ class SideBar extends Component {
                                                 <Link to={url.path7}>
                                                     <i className="fa fa-calendar-times-o" />
                                                     {translate(`menu.sabbatical`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url.path13, links) === true &&
+                                            <li className={window.location.pathname === url.path13 ? "active" : ""}>
+                                                <Link to={url.path13}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.holiday`)}
                                                 </Link>
                                             </li>
                                         }

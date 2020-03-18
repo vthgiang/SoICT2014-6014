@@ -333,7 +333,7 @@ const sampleCompanyData = async () => {
             description: 'Quản lý tài liệu biểu mẫu',
             company: xyz._id
         }, { // 7
-            url: '/hr-manage-Employee',
+            url: '/hr-holiday',
             description: 'Quản lý nhân sự',
             company: xyz._id
         },

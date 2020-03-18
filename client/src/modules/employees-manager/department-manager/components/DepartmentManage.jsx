@@ -91,7 +91,7 @@ class DepartmentManage extends Component {
         const { translate } = this.props;
         return (
             <div className="row">
-                <div className="col-xs-12">
+                <div className="col-md-12">
                     <div className="box box-info">
                         {/* /.box-header */}
                         <div className="box-body">
