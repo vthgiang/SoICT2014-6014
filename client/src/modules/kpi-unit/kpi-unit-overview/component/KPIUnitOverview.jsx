@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { overviewActions } from '../redux/actions';
 import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../Chart/canvasjs.react';

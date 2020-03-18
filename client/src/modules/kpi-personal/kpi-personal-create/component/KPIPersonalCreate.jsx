@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { UserActions } from "../../../super-admin-management/manage-user/redux/actions";
-import { DepartmentActions } from "../../../super-admin-management/manage-department/redux/actions";
+import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
+import { DepartmentActions } from "../../../super-admin-management/departments-management/redux/actions";
 import { createKpiActions } from '../redux/actions';
 import { ModalAddTargetKPIPersonal } from './ModalAddTargetKPIPersonal';
 import { ModalStartKPIPersonal } from './ModalStartKPIPersonal';

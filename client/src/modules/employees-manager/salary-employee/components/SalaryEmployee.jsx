@@ -9,7 +9,7 @@ import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalEditSalary } from './ModalEditSalary';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
-import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 
 class SalaryEmployee extends Component {

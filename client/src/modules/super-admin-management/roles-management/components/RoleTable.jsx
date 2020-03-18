@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RoleActions} from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { UserActions } from '../../manage-user/redux/actions';
+import { UserActions } from '../../users-management/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
 import { SearchBar, DeleteNotification, PaginateBar, ActionColumn } from '../../../../common-components';
 import RoleCreateForm from './RoleCreateForm';

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer } from 'react-toastify';
-import { DepartmentActions } from '../../../super-admin-management/manage-department/redux/actions';
-import { RoleActions } from '../../../super-admin-management/manage-role/redux/actions';
-import { UserActions } from '../../../super-admin-management/manage-user/redux/actions';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
+import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
+import { UserActions } from '../../../super-admin-management/users-management/redux/actions';
 import { ModalEditDepartmentManage } from './ModalEditDepartmentManage';
 class DepartmentManage extends Component {
     constructor(props) {
