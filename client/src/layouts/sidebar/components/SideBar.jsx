@@ -10,10 +10,12 @@ class SideBar extends Component {
         super(props);
         this.state = {}
         this.checkURL = this.checkURL.bind(this);
-        //this.handClick = this.handClick.bind(this);
     }
     handClick = (event) => {
         var parent = window.$("a." + event).parent(".treeview");
+        window.$('html,body').animate({
+            scrollTop: parent.offset().top},
+            'slow');
         if (parent.attr('class') === "treeview") {
             parent.addClass("active menu-open");
         } else {
@@ -37,18 +39,18 @@ class SideBar extends Component {
 
     render() {
         const url = {
-            path1: "/dashboard-employee",
-            path2: "/add-employee",
-            path3: "/list-employee",
-            path4: "/salary-employee",
-            path5: "/time-keeping",
-            path6: "/discipline",
-            path7: "/sabbatical",
-            path8: "/detail-employee",
-            path9: "/update-employee",
-            path10: "/list-course",
-            path11: "/training-plan",
-            path12: "/manage-unit",
+            path1: "/hr-dashboard-employee",
+            path2: "/hr-add-employee",
+            path3: "/hr-list-employee",
+            path4: "/hr-salary-employee",
+            path5: "/hr-time-keeping",
+            path6: "/hr-discipline",
+            path7: "/hr-sabbatical",
+            path8: "/hr-detail-employee",
+            path9: "/hr-update-employee",
+            path10: "/hr-list-course",
+            path11: "/hr-training-plan",
+            path12: "/hr-manage-department",
 
         }
         const { translate } = this.props;

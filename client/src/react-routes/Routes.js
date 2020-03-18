@@ -38,7 +38,7 @@ import { Notifications } from "../modules/combine-modules";
 class Routes extends Component {
 
     render() {
-        const { auth, company, user, role, link, component, department } = this.props;
+        const { auth, company, user, role, link, component, department,employeesManager } = this.props;
         return (
             <React.Fragment>
                 <Switch>
@@ -177,12 +177,12 @@ class Routes extends Component {
                         key={ 'add_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/add-employee', name: 'add_employee', icon:'fa fa-user-plus' }
+                            { link: '/hr-add-employee', name: 'add_employee', icon:'fa fa-user-plus' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/add-employee' }
-                        path={ '/add-employee' }
+                        link={ '/hr-add-employee' }
+                        path={ '/hr-add-employee' }
                         pageName={'add_employee' }
                         layout={ Layout }
                         component={ AddEmployee }
@@ -192,12 +192,12 @@ class Routes extends Component {
                         key={ 'detail_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/detail-employee', name: 'detail_employee', icon:'fa fa-user-o' }
+                            { link: '/hr-detail-employee', name: 'detail_employee', icon:'fa fa-user-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/detail-employee' }
-                        path={ '/detail-employee' }
+                        link={ '/hr-detail-employee' }
+                        path={ '/hr-detail-employee' }
                         pageName={'detail_employee' }
                         layout={ Layout }
                         component={ DetailEmployee }
@@ -207,43 +207,43 @@ class Routes extends Component {
                         key={ 'update_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/update-employee', name: 'update_employee', icon:'fa fa-pencil-square-o' }
+                            { link: '/hr-update-employee', name: 'update_employee', icon:'fa fa-pencil-square-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/update-employee' }
-                        path={ '/update-employee' }
+                        link={ '/hr-update-employee' }
+                        path={ '/hr-update-employee' }
                         pageName={'update_employee' }
                         layout={ Layout }
                         component={ UpdateEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ employeesManager.isLoading }
                         key={ 'list_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/list-employee', name: 'list_employee', icon:'fa fa-address-card' }
+                            { link: '/hr-list-employee', name: 'list_employee', icon:'fa fa-address-card' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/list-employee' }
-                        path={ '/list-employee' }
+                        link={ '/hr-list-employee' }
+                        path={ '/hr-list-employee' }
                         pageName={'list_employee' }
                         layout={ Layout }
                         component={ ListEmployee }
                     />
 
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ department.isLoading }
                         key={ 'manage_unit' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage_unit', name: 'manage_unit', icon:'fa fa-sitemap' }
+                            { link: '/hr-manage-department', name: 'manage_unit', icon:'fa fa-sitemap' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-unit' }
-                        path={ '/manage-unit' }
+                        link={ '/hr-manage-department' }
+                        path={ '/hr-manage-department' }
                         pageName={'manage_unit' }
                         layout={ Layout }
                         component={ DepartmentManage }
@@ -254,12 +254,12 @@ class Routes extends Component {
                         key={ 'dashBoard_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/dashboard-employee', name: 'dashboard_employee', icon:'fa fa-dashboard' }
+                            { link: '/hr-dashboard-employee', name: 'dashboard_employee', icon:'fa fa-dashboard' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/dashboard-employee' }
-                        path={ '/dashboard-employee' }
+                        link={ '/hr-dashboard-employee' }
+                        path={ '/hr-dashboard-employee' }
                         pageName={'dashboard_employee' }
                         layout={ Layout }
                         component={ DashBoardEmployees }
@@ -269,12 +269,12 @@ class Routes extends Component {
                         key={ 'discipline' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/discipline', name: 'discipline', icon:'fa fa-balance-scale' }
+                            { link: '/hr-discipline', name: 'discipline', icon:'fa fa-balance-scale' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/discipline' }
-                        path={ '/discipline' }
+                        link={ '/hr-discipline' }
+                        path={ '/hr-discipline' }
                         pageName={'discipline' }
                         layout={ Layout }
                         component={ Discipline }
@@ -284,12 +284,12 @@ class Routes extends Component {
                         key={ 'sabbatical' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/sabbatical', name: 'sabbatical', icon:'fa fa-calendar-times-o' }
+                            { link: '/hr-sabbatical', name: 'sabbatical', icon:'fa fa-calendar-times-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/sabbatical' }
-                        path={ '/sabbatical' }
+                        link={ '/hr-sabbatical' }
+                        path={ '/hr-sabbatical' }
                         pageName={'sabbatical' }
                         layout={ Layout }
                         component={ Sabbatical }
@@ -299,12 +299,12 @@ class Routes extends Component {
                         key={ 'salary_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/salary-employee', name: 'salary_employee', icon:'fa fa-line-chart' }
+                            { link: '/hr-salary-employee', name: 'salary_employee', icon:'fa fa-line-chart' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/salary-employee' }
-                        path={ '/salary-employee' }
+                        link={ '/hr-salary-employee' }
+                        path={ '/hr-salary-employee' }
                         pageName={'salary_employee' }
                         layout={ Layout }
                         component={ SalaryEmployee }
@@ -314,12 +314,12 @@ class Routes extends Component {
                         key={ 'time_keeping' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/time-keeping', name: 'time_keeping', icon:'fa fa-calculator' }
+                            { link: '/hr-time-keeping', name: 'time_keeping', icon:'fa fa-calculator' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/time-keeping' }
-                        path={ '/time-keeping' }
+                        link={ '/hr-time-keeping' }
+                        path={ '/hr-time-keeping' }
                         pageName={'time_keeping' }
                         layout={ Layout }
                         component={ Timekeeping }
@@ -329,12 +329,12 @@ class Routes extends Component {
                         key={ 'list_course' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/list-course', name: 'list_course', icon:'fa fa-university' }
+                            { link: '/hr-list-course', name: 'list_course', icon:'fa fa-university' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/list-course' }
-                        path={ '/list-course' }
+                        link={ '/hr-list-course' }
+                        path={ '/hr-list-course' }
                         pageName={'list_course' }
                         layout={ Layout }
                         component={ ListCourse }
@@ -344,12 +344,12 @@ class Routes extends Component {
                         key={ 'training_plan' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/training-plan', name: 'training_plan', icon:'fa fa-list-alt' }
+                            { link: '/hr-training-plan', name: 'training_plan', icon:'fa fa-list-alt' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/training-plan' }
-                        path={ '/training-plan' }
+                        link={ '/hr-training-plan' }
+                        path={ '/hr-training-plan' }
                         pageName={'training_plan' }
                         layout={ Layout }
                         component={ TrainingPlan }

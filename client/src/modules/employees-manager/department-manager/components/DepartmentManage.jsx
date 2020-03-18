@@ -18,11 +18,9 @@ class DepartmentManage extends Component {
         this.props.getDepartment();
         this.props.getRole();
         this.props.getUser();
-        window.addEventListener('load', this.loadJS);
-
     }
-    componentWillUnmount() {
-        window.removeEventListener('load', this.loadJS)
+    componentWillMount() {
+        this.loadJS();
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -108,7 +106,7 @@ class DepartmentManage extends Component {
                                         <tr id="task">
                                             <th style={{ width: "40%" }}>Tên đơn vị</th>
                                             <th style={{ width: "50" }} >Mô tả đơn vị</th>
-                                            <th style={{ width: "10%" }}>Hành động</th>
+                                            <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody id="taskTable" className="task-table">

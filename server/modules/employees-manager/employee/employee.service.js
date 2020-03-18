@@ -421,7 +421,7 @@ exports.updateAvatar = async (employeeNumber, url, company) => {
         company: company
     });
     avatarUpdate = {
-        avatar: "lib/fileEmployee/" + url
+        avatar: "fileupload/employee-manage/avatar/" + url
     }
     await Employee.findOneAndUpdate({
         _id: employeeinfo._id
@@ -430,7 +430,7 @@ exports.updateAvatar = async (employeeNumber, url, company) => {
     });
     var content = {
         _id: employeeinfo._id,
-        avatar: "lib/fileEmployee/" + url
+        avatar: "fileupload/employee-manage/avatar/" + url
     }
     return content;
 }
@@ -448,7 +448,7 @@ exports.updateContract = async (employeeNumber, data, url, company) => {
             startDate: data.startDate,
             endDate: data.endDate,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url
+            urlFile: "fileupload/employee-manage/contract/" + url
         }]
     };
     await Employee.findOneAndUpdate({
@@ -462,7 +462,7 @@ exports.updateContract = async (employeeNumber, data, url, company) => {
             nameContract: data.nameContract,
             typeContract: data.typeContract,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url
+            urlFile: "fileupload/employee-manage/contract/" + url
         }]
     }
     return content;
@@ -481,7 +481,7 @@ exports.updateCertificate = async (employeeNumber, data, url, company) => {
             yearCertificate: data.yearCertificate,
             typeCertificate: data.typeCertificate,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url,
+            urlFile: "fileupload/employee-manage/certificate/" + url,
         }]
     };
     await Employee.findOneAndUpdate({
@@ -497,7 +497,7 @@ exports.updateCertificate = async (employeeNumber, data, url, company) => {
             yearCertificate: data.yearCertificate,
             typeCertificate: data.typeCertificate,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url,
+            urlFile: "fileupload/employee-manage/certificate/" + url,
         }]
     }
     return content;
@@ -516,7 +516,7 @@ exports.updateCertificateShort = async (employeeNumber, data, url, company) => {
             startDate: data.startDate,
             endDate: data.endDate,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url,
+            urlFile: "fileupload/employee-manage/certificateshort/" + url,
         }]
     };
     await Employee.findOneAndUpdate({
@@ -532,7 +532,7 @@ exports.updateCertificateShort = async (employeeNumber, data, url, company) => {
             startDate: data.startDate,
             endDate: data.endDate,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url,
+            urlFile: "fileupload/employee-manage/certificateshort/" + url,
         }]
     }
     return content;
@@ -551,7 +551,7 @@ exports.updateFile = async (employeeNumber, data, url, company) => {
             number: data.number,
             status: data.status,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url,
+            urlFile: "fileupload/employee-manage/file/" + url,
         }]
     };
     await Employee.findOneAndUpdate({
@@ -567,7 +567,7 @@ exports.updateFile = async (employeeNumber, data, url, company) => {
             number: data.number,
             status: data.status,
             file: data.file,
-            urlFile: "lib/fileEmployee/" + url,
+            urlFile: "fileupload/employee-manage/file/" + url,
         }]
     }
     return content;

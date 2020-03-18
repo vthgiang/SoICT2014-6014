@@ -1,26 +1,101 @@
 const EmployeeService = require('./employee.service');
 const multer = require('multer');
-const DIR = '../client/public/lib/fileEmployee';
+const DIRAVATAR = '../client/public/fileupload/employee-manage/avatar';
+const DIRCONTRACT = '../client/public/fileupload/employee-manage/contract';
+const DIRCERTIFICATE = '../client/public/fileupload/employee-manage/certificate';
+const DIRCERTIFICATESHORT = '../client/public/fileupload/employee-manage/certificateshort';
+const DIRFILE = '../client/public/fileupload/employee-manage/file';
 
-const multerStorage = multer.diskStorage({
+/*********************************************
+ *  upload file tài liệu đính kèm 
+******************************************** */
+const multerStorageFile = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, DIR);
+        cb(null, DIRFILE);
     },
     filename: (req, file, cb) => {
         const fileName = file.originalname.toLowerCase().split(' ').join('-');
         cb(null, Date.now() + '-' + fileName)
     }
 });
+const uploadFile = multer({
+    storage: multerStorageFile,
+    fileFilter: (req, file, cb) => {cb(null, true);}
+});
+exports.uploadFile = uploadFile.single("fileUpload");
 
-const upload = multer({
-    storage: multerStorage,
-    fileFilter: (req, file, cb) => {
-        cb(null, true);
+/*********************************************
+ *  upload file hợp đồng lao động
+******************************************** */
+const multerStorageContract = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, DIRCONTRACT);
+    },
+    filename: (req, file, cb) => {
+        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        cb(null, Date.now() + '-' + fileName)
     }
 });
+const uploadContract = multer({
+    storage: multerStorageContract,
+    fileFilter: (req, file, cb) => {cb(null, true);}
+});
+exports.uploadContract = uploadContract.single("fileUpload");
 
-// upload file lên server
-exports.uploadFile = upload.single("fileUpload");
+/*********************************************
+ *  upload file bằng cấp
+******************************************** */
+const multerStorageCertificate = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, DIRCERTIFICATE);
+    },
+    filename: (req, file, cb) => {
+        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        cb(null, Date.now() + '-' + fileName)
+    }
+});
+const uploadCertificate = multer({
+    storage: multerStorageCertificate,
+    fileFilter: (req, file, cb) => {cb(null, true);}
+});
+exports.uploadCertificate = uploadCertificate.single("fileUpload");
+
+/*********************************************
+ *  upload tài liệu chứng chỉ
+******************************************** */
+const multerStorageCertificateshort = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, DIRCERTIFICATESHORT);
+    },
+    filename: (req, file, cb) => {
+        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        cb(null, Date.now() + '-' + fileName)
+    }
+});
+const uploadCertificateshort = multer({
+    storage: multerStorageCertificateshort,
+    fileFilter: (req, file, cb) => {cb(null, true);}
+});
+exports.uploadCertificateshort = uploadCertificateshort.single("fileUpload");
+
+/*********************************************
+ *  upload Avatar
+******************************************** */
+const multerStorageAvatar = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, DIRAVATAR);
+    },
+    filename: (req, file, cb) => {
+        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        cb(null, Date.now() + '-' + fileName)
+    }
+});
+const uploadAvatar = multer({
+    storage: multerStorageAvatar,
+    fileFilter: (req, file, cb) => {cb(null, true);}
+});
+exports.uploadAvatar = uploadAvatar.single("fileUpload");
+
 
 // Lấy danh sách nhân viên
 exports.get = async (req, res) => {
