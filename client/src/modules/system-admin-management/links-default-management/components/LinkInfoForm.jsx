@@ -45,7 +45,7 @@ class LinkInfoForm extends Component {
     }
 
     render() { 
-        const { translate, role, linkId, linkName, linkDescription, linkRoles } = this.props;
+        const { translate, role, linkId, linkName, linkDescription } = this.props;
         
         return ( 
             <React.Fragment>
@@ -67,7 +67,7 @@ class LinkInfoForm extends Component {
                             <label>{ translate('manage_page.description') }<span className="text-red"> * </span></label>
                             <input name="description" type="text" className="form-control" defaultValue={linkDescription} onChange={this.inputChange} />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>{ translate('manage_page.roles') }</label>
                             <select 
                                 className="form-control select2" 
@@ -85,7 +85,7 @@ class LinkInfoForm extends Component {
                                     )
                                 }
                             </select>
-                        </div>
+                        </div> */}
                     </form>
                 </ModalDialog>
             </React.Fragment>
