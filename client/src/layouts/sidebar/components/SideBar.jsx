@@ -99,6 +99,24 @@ class SideBar extends Component {
                                 />
                             }
                             {
+                                this.checkURL('/system/links-default-management', links) === true &&
+                                <Item
+                                    key='manage_page'
+                                    name='manage_page'
+                                    path='/system/links-default-management'
+                                    icon='fa fa-link'
+                                />
+                            }
+                            {
+                                this.checkURL('/system/components-default-management', links) === true &&
+                                <Item
+                                    key='manage_component'
+                                    name='manage_component'
+                                    path='/system/components-default-management'
+                                    icon='fa fa-object-group'
+                                />
+                            }
+                            {
                                 this.checkURL('/departments-management', links) === true &&
                                 <Item
                                     key='manage_department'

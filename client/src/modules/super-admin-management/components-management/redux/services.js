@@ -2,7 +2,7 @@ import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
 
-export const LinkServices = {
+export const ComponentServices = {
     get,
     getPaginate,
     show,
@@ -13,7 +13,7 @@ export const LinkServices = {
 
 function get() {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link`,
+        url: `${ LOCAL_SERVER_API }/component`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -23,7 +23,7 @@ function get() {
 
 function getPaginate(data) {  
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/paginate`,
+        url: `${ LOCAL_SERVER_API }/component/paginate`,
         method: 'POST',
         data,
         headers: AuthenticateHeader()
@@ -34,7 +34,7 @@ function getPaginate(data) {
 
 function show(id) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -42,31 +42,31 @@ function show(id) {
     return axios(requestOptions);
 }
 
-function create(link) {
+function create(component) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link`,
+        url: `${ LOCAL_SERVER_API }/component`,
         method: 'POST',
-        data: link,
+        data: component,
         headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
 }
 
-function edit(id, data) {
+function edit(id, component) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'PATCH',
-        data: data,
+        data: component,
         headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
 }
 
-function destroy(id) {
+function destroy(id, component) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'DELETE',
         headers: AuthenticateHeader()
     };

@@ -67,22 +67,60 @@ const seedDatabase = async () => {
     //Tạo link của trang quản lý system và thông tin các công ty và gán quyền cho role System Admin
     var links = await Link.insertMany([{
             url: '/',
-            description: 'System Management HomePage',
+            description: 'Trang chủ',
             company: qlcv._id
         },{
             url: '/system/settings',
-            description: 'System Management',
+            description: 'Quản lý thiết lập hệ thống',
+            type: 'system',
             company: qlcv._id
         },{
             url: '/system/companies-management',
-            description: 'Manage companies information',
+            description: 'Quản lý thông tin doanh nghiệp/công ty',
+            type: 'system',
             company: qlcv._id
         },{
-            url: '/system/pages-default-management',
-            description: 'Manage pages default in system',
+            url: '/system/links-default-management',
+            description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty',
+            type: 'system',
+            company: qlcv._id
+        },{
+            url: '/system/components-default-management',
+            description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty',
+            type: 'system',
+            company: qlcv._id
+        },{
+            url: '/users-management',
+            description: 'Quản lý người dùng',
+            company: qlcv._id
+        },{
+            url: '/roles-management',
+            description: 'Quản lý phân quyền',
+            company: qlcv._id
+        },{
+            url: '/departments-management',
+            description: 'Quản lý cơ cấu tổ chức',
+            company: qlcv._id
+        },{
+            url: '/links-management',
+            description: 'Quản lý trang',
+            company: qlcv._id
+        }
+        ,{
+            url: '/components-management',
+            description: 'Quản lý thành phần UI',
+            company: qlcv._id
+        },{
+            url: '/documents-management',
+            description: 'Quản lý tài liệu biểu mẫu',
+            company: qlcv._id
+        },{
+            url: '/notifications',
+            description: 'Thông báo',
             company: qlcv._id
         }
     ]);
+
     await Privilege.insertMany([
         {
             resourceId: links[0]._id,
@@ -99,6 +137,10 @@ const seedDatabase = async () => {
             roleId: roleSystemAdmin._id
         },{
             resourceId: links[3]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
+        },{
+            resourceId: links[4]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
         }

@@ -31,6 +31,8 @@ const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overvie
 
 const tasktemplates =require ("./modules/task-template-management/task-template-management.route")
 
+const linksDefault = require('./modules/system-admin-management/links-default-management/link.route');
+
 // process.env.TZ = 'Asia/Ho_Chi_Minh';
 
 require('dotenv').config();
@@ -79,6 +81,7 @@ app.use("/log", log);
 app.use("/user", user);
 app.use("/auth", auth);
 app.use("/company", company);
+app.use("/links-default-management", linksDefault);
 app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
