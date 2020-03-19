@@ -117,7 +117,7 @@ export default {
             manageDocumentType: 'Quản lý loại văn bản',
 
             manage_employee: 'Quản lý nhân sự',
-            holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
             manage_unit: 'Quản lý nhân sự các đơn vị',

@@ -160,28 +160,28 @@ class TabDiscipline extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 10 }}>
                             <div className="col-md-3">
-                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                     <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
                                 </div>
-                                <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                     <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} autoComplete="off" />
                                 </div>
                             </div>
                             <div className="col-md-3">
-                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                     <label htmlFor="number" style={{ marginTop: -5 }}>{translate('page.number_decisions')}:</label>
                                 </div>
                                 <input type="text" style={{ width: "66%" }} className="form-control" onChange={this.handleChange} name="number" placeholder={translate('page.number_decisions')} autoComplete="off" />
                             </div>
                             <div className="col-md-3">
-                                <div className="form-group" style={{ paddingLeft: 0 }}>
+                                <div className="form-group" style={{ paddingLeft: 0, marginBottom: 0 }}>
                                     <button type="submit" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                                 </div>
                             </div>
                             <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                <div className="form-group pull-right" >
+                                <div className="form-group pull-right" style={{ marginBottom: 0 }} >
                                     <button type="button" className="btn btn-success" title={translate('discipline.add_discipline_title')} data-toggle="modal" data-target="#modal-addNewDiscipline" >{translate('discipline.add_discipline')}</button>
 
                                 </div>
@@ -198,7 +198,7 @@ class TabDiscipline extends Component {
                                         <th style={{ width: "13%" }}>{translate('discipline.end_date')}</th>
                                         <th>{translate('page.number_decisions')}</th>
                                         <th>{translate('table.unit')}</th>
-                                        <th>{translate('table.position')}</th>
+                                        <th style={{ width: "15%"}}>{translate('table.position')}</th>
                                         <th style={{ width: '120px', textAlign: 'center' }}>
                                             <ActionColumnDiscipline
                                                 columnName={translate('table.action')}
@@ -217,9 +217,17 @@ class TabDiscipline extends Component {
                                                 <td>{x.startDate}</td>
                                                 <td>{x.endDate}</td>
                                                 <td>{x.number}</td>
-                                                <td>Phòng MARKETING</td>
-                                                <td>nhân viên</td>
-                                                <td style={{textAlign:'center'}}>
+                                                <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                                    <React.Fragment key={unit._id}>
+                                                        {unit.name}<br />
+                                                    </React.Fragment>
+                                                )) : null}</td>
+                                                <td>{x.roles.length !== 0 ? x.roles.map(role => (
+                                                    <React.Fragment key={role._id}>
+                                                        {role.roleId.name}<br />
+                                                    </React.Fragment>
+                                                )) : null}</td>
+                                                <td style={{ textAlign: 'center' }}>
                                                     <ModalEditDiscipline data={x} />
                                                     <DeleteNotification
                                                         content={{

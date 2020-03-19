@@ -3,6 +3,7 @@ const Employee = require('../../../models/employee.model');
 const Department = require('../../../models/department.model');
 const UserRole = require('../../../models/user_role.model');
 const User = require('../../../models/user.model');
+const Role = require('../../../models/role.model');
 //lấy danh sách thông tin kỷ luật
 exports.get = async (data, company) => {
     var keySearch = {
@@ -33,10 +34,10 @@ exports.get = async (data, company) => {
             email: 1
         });
         emailCompany = emailUsers.map(user => user.email)
-        keySearchEmployee={
+        keySearchEmployee = {
             ...keySearchEmployee,
-            emailCompany:{
-                $in:emailCompany
+            emailCompany: {
+                $in: emailCompany
             }
         }
     }
@@ -52,11 +53,11 @@ exports.get = async (data, company) => {
     }
     if (keySearchEmployee !== undefined) {
         var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo =>employeeinfo._id);
-        keySearch={
+        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        keySearch = {
             ...keySearch,
-            employee:{
-                $in:employee
+            employee: {
+                $in: employee
             }
         }
 
@@ -90,11 +91,41 @@ exports.get = async (data, company) => {
         })
         .skip(data.page)
         .limit(data.limit);
+    for (let n in listSabbatical) {
+        var roles = [];
+        var departments = [];
+        let user = await User.findOne({
+            email: listSabbatical[n].employee.emailCompany
+        })
+        if (user !== null) {
+            roles = await UserRole.find({
+                userId: user._id
+            }).populate([{
+                path: 'roleId',
+                model: Role
+            }]);
+            let newRoles = roles.map(role => role.roleId._id);
+            departments = await Department.find({
+                $or: [
+                    {'dean': { $in: newRoles }}, 
+                    {'vice_dean':{ $in: newRoles }}, 
+                    {'employee':{ $in: newRoles }}
+                ] 
+            });
+        }
+        if (roles !== []) {
+            roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+        }
+        listSabbatical[n] = {
+            ...listSabbatical[n]._doc,
+            roles,
+            departments
+        }
+    }
     var content = {
         totalList,
         listSabbatical
     }
-    console.log(content);
     return content;
 
 }
@@ -105,7 +136,7 @@ exports.create = async (data, company) => {
         employeeNumber: data.employeeNumber,
         company: company
     });
-    var newSabbatical = await Sabbatical.create({
+    var createSabbatical = await Sabbatical.create({
         employee: employeeinfo._id,
         company: company,
         startDate: data.startDate,
@@ -113,14 +144,40 @@ exports.create = async (data, company) => {
         status: data.status,
         reason: data.reason,
     });
+    var roles = [];
+    var departments = [];
+    let user = await User.findOne({
+        email: employeeinfo.emailCompany
+    })
+    if (user !== null) {
+        roles = await UserRole.find({
+            userId: user._id
+        }).populate([{
+            path: 'roleId',
+            model: Role
+        }]);
+        let newRoles = roles.map(role => role.roleId._id);
+        departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ] 
+        });
+    }
+    if (roles !== []) {
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+    }
+    var newSabbatical = await Sabbatical.findOne({
+        _id:createSabbatical._id
+    }).populate([{
+        path: 'employee',
+        model: Employee
+    }])
     var content = {
-        _id: newSabbatical._id,
-        employee: employeeinfo,
-        company: company,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        status: data.status,
-        reason: data.reason,
+        ...newSabbatical._doc,
+        roles,
+        departments
     }
     return content
 }
@@ -149,13 +206,40 @@ exports.update = async (id, data) => {
     }, {
         $set: SabbaticalChange
     });
-    var updateSabbatical = {
-        _id: id,
-        employee: employeeinfo,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        status: data.status,
-        reason: data.reason,
+    var roles = [];
+    var departments = [];
+    let user = await User.findOne({
+        email: employeeinfo.emailCompany
+    })
+    if (user !== null) {
+        roles = await UserRole.find({
+            userId: user._id
+        }).populate([{
+            path: 'roleId',
+            model: Role
+        }]);
+        let newRoles = roles.map(role => role.roleId._id);
+        departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ] 
+        });
     }
-    return updateSabbatical;
+    if (roles !== []) {
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+    }
+    var updateSabbatical = await Sabbatical.findOne({
+        _id:id
+    }).populate([{
+        path: 'employee',
+        model: Employee
+    }])
+    var content = {
+        ...updateSabbatical._doc,
+        roles,
+        departments
+    }
+    return content;
 }

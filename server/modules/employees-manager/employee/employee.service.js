@@ -7,6 +7,7 @@ const Salary = require('../../../models/salary.model');
 const Department = require('../../../models/department.model');
 const UserRole = require('../../../models/user_role.model');
 const User = require('../../../models/user.model');
+const Role = require('../../../models/role.model');
 
 // Lấy dánh sách nhân viên
 exports.get = async (data, company) => {
@@ -83,7 +84,28 @@ exports.get = async (data, company) => {
         })
         .skip(data.page).limit(data.limit);
     var data = [];
+    var roles = [];
+    var departments = [];
     for (let x in allEmployee) {
+        let user = await User.findOne({
+            email: allEmployee[x].emailCompany
+        })
+        if (user !== null) {
+            roles = await UserRole.find({
+                userId: user._id
+            }).populate([{
+                path: 'roleId',
+                model: Role
+            }]);
+            let newRoles = roles.map(role => role.roleId._id);
+            departments = await Department.find({
+                $or: [
+                    {'dean': { $in: newRoles }}, 
+                    {'vice_dean':{ $in: newRoles }}, 
+                    {'employee':{ $in: newRoles }}
+                ] 
+            });
+        }
         var employee = await Employee.find({
             _id: allEmployee[x]._id
         });
@@ -102,8 +124,11 @@ exports.get = async (data, company) => {
         var discipline = await Discipline.find({
             employee: allEmployee[x]._id
         })
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin"); 
         data[x] = {
             employee,
+            departments,
+            roles,
             employeeContact,
             salary,
             sabbatical,
@@ -148,6 +173,30 @@ exports.checkEmail = async (email) => {
 
 // Lấy thông tin cá nhân
 exports.getInforPersonal = async (email) => {
+    var roles = [];
+    var departments = [];
+    let user = await User.findOne({
+        email: email
+    })
+    if (user !== null) {
+        roles = await UserRole.find({
+            userId: user._id
+        }).populate([{
+            path: 'roleId',
+            model: Role
+        }]);
+        let newRoles = roles.map(role => role.roleId._id);
+        departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ] 
+        });
+    }
+    if (roles !== []) {
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+    }
     var employeeinfo = await Employee.findOne({
         emailCompany: email
     });
@@ -170,6 +219,8 @@ exports.getInforPersonal = async (email) => {
         employee: employeeinfo._id
     })
     var employee = {
+        roles: roles,
+        departments: departments,
         salary: salary,
         employee: infoPersonal,
         employeeContact: infoEmployeeContact,
@@ -182,7 +233,7 @@ exports.getInforPersonal = async (email) => {
 
 // Thêm mới nhân viên
 exports.create = async (data, company) => {
-    var employees = await Employee.create({
+    var createEmployees = await Employee.create({
         avatar: data.avatar,
         fullName: data.fullName,
         employeeNumber: data.employeeNumber,
@@ -224,7 +275,7 @@ exports.create = async (data, company) => {
         numberFile: data.numberFile,
         file: data.file,
     });
-    var employeeContact = await EmployeeContact.create({
+    await EmployeeContact.create({
         employee: employees._id,
         phoneNumber: data.phoneNumber,
         emailPersonal: data.emailPersonal,
@@ -248,9 +299,15 @@ exports.create = async (data, company) => {
         nowDistrict: data.nowDistrict,
         nowCommune: data.nowCommune,
     });
+    var employee = await Employee.find({
+        _id: createEmployees._id
+    });
+    var employeeContact = await EmployeeContact.find({
+        employee: createEmployees._id
+    });
     var content = {
-        employees,
-        employeeContact
+        employee,
+        employeeContact,
     };
     return content;
 }
@@ -306,10 +363,15 @@ exports.updateInforPersonal = async (email, data) => {
     }, {
         $set: employeeUpdate
     });
-
+    var infoPersonal = await Employee.find({
+        _id: employeeinfo._id
+    });
+    var infoEmployeeContact = await EmployeeContact.find({
+        employee: employeeinfo._id
+    });
     var content = {
-        employeeContactUpdate,
-        employeeUpdate
+        employee: infoPersonal,
+        employeeContact: infoEmployeeContact,
     }
     return content;
 }
