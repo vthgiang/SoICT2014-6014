@@ -117,7 +117,7 @@ export default {
             manage_training: 'Manage Training',
             account: 'Account',
             manage_unit: 'manage units',
-            holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Kế hoạch làm việc',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',

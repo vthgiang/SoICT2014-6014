@@ -163,7 +163,7 @@ const sampleCompanyData = async () => {
         type: roleAbstract._id
     });
     const roles = await Role.insertMany([{
-        name: "Super Admin",
+        name: "nSuper Admi",
         company: xyz._id,
         type: roleAbstract._id,
         parents: [admin._id]
@@ -333,8 +333,8 @@ const sampleCompanyData = async () => {
             description: 'Quản lý tài liệu biểu mẫu',
             company: xyz._id
         }, { // 7
-            url: '/hr-holiday',
-            description: 'Quản lý nhân sự',
+            url: '/hr-manage-holiday',
+            description: 'Kế hoạch làm việc',
             company: xyz._id
         },
         { // 8

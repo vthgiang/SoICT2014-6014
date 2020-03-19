@@ -216,17 +216,17 @@ class Sabbatical extends Component {
                                         </select>
                                     </div>
                                 </div></div>
-                            <div className="col-md-12">
+                            <div className="col-md-12" style={{ marginBottom: 10 }}>
                                 <div className="col-md-3">
-                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                         <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
                                     </div>
-                                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                         <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
                                     </div>
                                 </div>
                                 <div className="col-md-3">
-                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                         <label htmlFor="month" style={{ paddingTop: 5 }}>{translate('page.month')}:</label>
                                     </div>
                                     <div className={'input-group date has-feedback'}>
@@ -237,13 +237,13 @@ class Sabbatical extends Component {
                                     </div>
                                 </div>
                                 <div className="col-md-3">
-                                    <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                    <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                         <center>
                                             <button type="submit" className="btn btn-success" title={translate('page.add_search')} onClick={this.handleSunmitSearch} >{translate('page.add_search')} </button></center>
                                     </div>
                                 </div>
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title={translate('sabbatical.add_sabbatical_title')} data-toggle="modal" data-target="#modal-addNewSabbatical">{translate('sabbatical.add_sabbatical')}</button>
+                                    <button type="submit" style={{ marginBottom: 0 }} className="btn btn-success pull-right" title={translate('sabbatical.add_sabbatical_title')} data-toggle="modal" data-target="#modal-addNewSabbatical">{translate('sabbatical.add_sabbatical')}</button>
                                 </div>
                             </div>
                             <div className="col-md-12">
@@ -256,7 +256,7 @@ class Sabbatical extends Component {
                                             <th style={{ width: "9%" }}>{translate('table.end_date')}</th>
                                             <th>{translate('sabbatical.reason')}</th>
                                             <th style={{ width: "12%" }}>{translate('table.unit')}</th>
-                                            <th style={{ width: "10%" }}>{translate('table.position')}</th>
+                                            <th style={{ width: "14%" }}>{translate('table.position')}</th>
                                             <th style={{ width: "11%" }}>{translate('table.status')}</th>
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
@@ -276,8 +276,16 @@ class Sabbatical extends Component {
                                                     <td>{x.startDate}</td>
                                                     <td>{x.endDate}</td>
                                                     <td>{x.reason}</td>
-                                                    <td>P KTTT ViaVet</td>
-                                                    <td>Nhân viên</td>
+                                                    <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                                        <React.Fragment key={unit._id}>
+                                                            {unit.name}<br />
+                                                        </React.Fragment>
+                                                    )) : null}</td>
+                                                    <td>{x.roles.length !== 0 ? x.roles.map(role => (
+                                                        <React.Fragment key={role._id}>
+                                                            {role.roleId.name}<br />
+                                                        </React.Fragment>
+                                                    )) : null}</td>
                                                     <td>{x.status}</td>
                                                     <td style={{ textAlign: "center" }}>
                                                         <ModalEditSabbatical data={x} />

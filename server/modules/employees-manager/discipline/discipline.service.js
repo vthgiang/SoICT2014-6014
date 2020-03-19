@@ -3,6 +3,7 @@ const Employee = require('../../../models/employee.model');
 const Department = require('../../../models/department.model');
 const UserRole = require('../../../models/user_role.model');
 const User = require('../../../models/user.model');
+const Role = require('../../../models/role.model');
 
 //lấy danh sách kỷ luật của nhân viên
 exports.get = async (data, company) => {
@@ -34,10 +35,10 @@ exports.get = async (data, company) => {
             email: 1
         });
         emailCompany = emailUsers.map(user => user.email)
-        keySearchEmployee={
+        keySearchEmployee = {
             ...keySearchEmployee,
-            emailCompany:{
-                $in:emailCompany
+            emailCompany: {
+                $in: emailCompany
             }
         }
     }
@@ -53,11 +54,11 @@ exports.get = async (data, company) => {
     }
     if (keySearchEmployee !== undefined) {
         var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo =>employeeinfo._id);
-        keySearch={
+        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        keySearch = {
             ...keySearch,
-            employee:{
-                $in:employee
+            employee: {
+                $in: employee
             }
         }
     }
@@ -77,6 +78,37 @@ exports.get = async (data, company) => {
         })
         .skip(data.page)
         .limit(data.limit);
+    for (let n in listDiscipline) {
+        var roles = [];
+        var departments = [];
+        let user = await User.findOne({
+            email: listDiscipline[n].employee.emailCompany
+        })
+        if (user !== null) {
+            roles = await UserRole.find({
+                userId: user._id
+            }).populate([{
+                path: 'roleId',
+                model: Role
+            }]);
+            let newRoles = roles.map(role => role.roleId._id);
+            departments = await Department.find({
+                $or: [
+                    {'dean': { $in: newRoles }}, 
+                    {'vice_dean':{ $in: newRoles }}, 
+                    {'employee':{ $in: newRoles }}
+                ] 
+            });
+        }
+        if (roles !== []) {
+            roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+        }
+        listDiscipline[n] = {
+            ...listDiscipline[n]._doc,
+            roles,
+            departments
+        }
+    }
     var content = {
         totalList,
         listDiscipline
@@ -91,7 +123,7 @@ exports.create = async (data, company) => {
         employeeNumber: data.employeeNumber,
         company: company
     });
-    var newDiscipline = await Discipline.create({
+    var createDiscipline = await Discipline.create({
         employee: employeeinfo._id,
         company: company,
         number: data.number,
@@ -101,16 +133,41 @@ exports.create = async (data, company) => {
         type: data.type,
         reason: data.reason,
     });
+
+    var roles = [];
+    var departments = [];
+    let user = await User.findOne({
+        email: employeeinfo.emailCompany
+    })
+    if (user !== null) {
+        roles = await UserRole.find({
+            userId: user._id
+        }).populate([{
+            path: 'roleId',
+            model: Role
+        }]);
+        let newRoles = roles.map(role => role.roleId._id);
+        departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ] 
+        });
+    }
+    if (roles !== []) {
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+    }
+    var newDiscipline = await Discipline.findOne({
+        _id: createDiscipline._id
+    }).populate([{
+        path: 'employee',
+        model: Employee
+    }])
     var content = {
-        _id: newDiscipline._id,
-        employee: employeeinfo,
-        company: company,
-        number: data.number,
-        unit: data.unit,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        type: data.type,
-        reason: data.reason,
+        ...newDiscipline._doc,
+        roles,
+        departments
     }
     return content
 }
@@ -141,15 +198,41 @@ exports.update = async (id, data) => {
     }, {
         $set: DisciplineChange
     });
-    var updateDiscipline = {
-        _id: id,
-        employee: employeeinfo,
-        number: data.number,
-        unit: data.unit,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        type: data.type,
-        reason: data.reason,
+
+    var roles = [];
+    var departments = [];
+    let user = await User.findOne({
+        email: employeeinfo.emailCompany
+    })
+    if (user !== null) {
+        roles = await UserRole.find({
+            userId: user._id
+        }).populate([{
+            path: 'roleId',
+            model: Role
+        }]);
+        let newRoles = roles.map(role => role.roleId._id);
+        departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ] 
+        });
     }
-    return updateDiscipline;
+    if (roles !== []) {
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+    }
+    var updateDiscipline = await Discipline.findOne({
+        _id: id
+    }).populate([{
+        path: 'employee',
+        model: Employee
+    }])
+    var content = {
+        ...updateDiscipline._doc,
+        roles,
+        departments
+    }
+    return content;
 }

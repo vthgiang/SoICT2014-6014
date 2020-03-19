@@ -526,16 +526,16 @@ class ModalEditEmployee extends Component {
     defaulteClick(event) {
         event.preventDefault();
         const defaulteFile = [
-            { nameFile: "Bằng cấp", discFile: "Bằng tốt nghiệp trình độ học vấn cao nhất", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Sơ yếu lý lịch", discFile: "Sơ yếu lý lịch có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Ảnh", discFile: "Ảnh 4X6", number: "3", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Bản sao CMND/Hộ chiếu", discFile: "Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Giấy khám sức khoẻ", discFile: "Giấy khám sức khoẻ có dấu đỏ", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Giấy khai sinh", discFile: "Giấy khái sinh có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Đơn xin việc", discFile: "Đơn xin việc viết tay", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "CV", discFile: "CV của nhân viên", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: " "},
-            { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: " "}
+            { nameFile: "Bằng cấp", discFile: "Bằng tốt nghiệp trình độ học vấn cao nhất", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Sơ yếu lý lịch", discFile: "Sơ yếu lý lịch có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Ảnh", discFile: "Ảnh 4X6", number: "3", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Bản sao CMND/Hộ chiếu", discFile: "Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Giấy khám sức khoẻ", discFile: "Giấy khám sức khoẻ có dấu đỏ", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Giấy khai sinh", discFile: "Giấy khái sinh có công chứng", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Đơn xin việc", discFile: "Đơn xin việc viết tay", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "CV", discFile: "CV của nhân viên", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Cam kết", discFile: "Giấy cam kết làm việc", number: "1", status: "Đã nộp", file: "", urlFile: " " },
+            { nameFile: "Tạm trú tạm vắng", discFile: "Giấy xác nhận tạm trú tạm vắng", number: "1", status: "Đã nộp", file: "", urlFile: " " }
         ]
         this.setState({
             file: defaulteFile
@@ -610,7 +610,7 @@ class ModalEditEmployee extends Component {
                     formData.append('startDate', x.startDate);
                     formData.append('endDate', x.endDate);
                     //console.log("hdhadhahwhdhsfhjaw",x.fileUpload)
-                    this.props.updateContract(employeeNumber, formData) 
+                    this.props.updateContract(employeeNumber, formData)
                 })
             }
             // lưu thông tin bằng cấp
@@ -734,11 +734,13 @@ class ModalEditEmployee extends Component {
                     this.props.deleteDiscipline(x._id);
                 })
             }
+            await  this.props.getAllEmployee(this.props.initState);
             this.notifysuccess("Chỉnh sửa thông tin thành công");
             window.$(`#modal-editEmployee-${this.props.employee[0].employeeNumber}`).modal("hide");
         }
     }
     render() {
+        console.log(this.props.initState);
         //console.log(this.state.employeeNew);
         var id = this.props.employee[0]._id;
         var formatter = new Intl.NumberFormat();
@@ -1578,6 +1580,7 @@ function mapState(state) {
 
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
     uploadAvatar: EmployeeManagerActions.uploadAvatar,
     checkMSNV: EmployeeManagerActions.checkMSNV,
     checkEmail: EmployeeManagerActions.checkEmail,
