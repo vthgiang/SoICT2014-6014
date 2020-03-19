@@ -109,7 +109,7 @@ export default {
             manage_component: 'Manage ComponentUI',
             manage_document: 'Manage Documents',
 
-            tasktemplate: 'Task Template',
+            task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
             taskmanagement: 'Task Management',
             manageDocument: 'Manage Document',

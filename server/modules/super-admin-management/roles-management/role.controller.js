@@ -106,3 +106,7 @@ exports.test = async (req, res) => {
         res.status(400).json(error);
     }
 };
+
+exports.getRoleSameDepartment = (req, res) => {
+    return RoleService.getRoleSameDepartment(req, res);
+};

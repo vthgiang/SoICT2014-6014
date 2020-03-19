@@ -151,4 +151,28 @@ exports.editRelationshiopUserRole = async( roleId, userArr ) => {
         relationshipUpdated
     };
 }
+exports.getRoleSameDepartment = async (req, res) => {
+    var id = req.params.id;
+    try {
+        var roles = await Department.findOne({ 
+            $or:[
+                {'dean':id}, 
+                {'vice_dean':id}, 
+                {'employee':id}
+            ]  
+        }).populate([
+            {path:'dean'}, 
+            {path:'vice_dean'}, 
+            {path:'employee'}]
+        );
+        
+        res.status(200).json(roles);
+    } catch (error) {
+
+        res.status(400).json({msg: error});
+    }
+    console.log("get roles same");
+}
+
+
 

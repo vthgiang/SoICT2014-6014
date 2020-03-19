@@ -110,7 +110,7 @@ export default {
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
 
-            tasktemplate: 'Mẫu Công Việc',
+            task_template: 'Mẫu Công Việc',
             cocautochuc: 'Cơ Cấu Tổ Chức',
             taskmanagement: 'Quản Lý Công Việc',
             manageDocument: 'Quản lý văn bản',

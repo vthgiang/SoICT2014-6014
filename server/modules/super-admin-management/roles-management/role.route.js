@@ -13,4 +13,5 @@ router.delete("/:id", auth, RoleController.delete);
 
 router.patch("/test/:id", auth, RoleController.test);
 
+router.get('/same-department/:id', RoleController.getRoleSameDepartment);
 module.exports = router;
