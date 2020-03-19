@@ -171,7 +171,7 @@ class SideBar extends Component {
                                     this.checkURL(url.path6, links) === true || this.checkURL(url.path7, links) === true) &&
                                 <li className={window.location.pathname === url.path1 || window.location.pathname === url.path2 || window.location.pathname === url.path3 ||
                                     window.location.pathname === url.path4 || window.location.pathname === url.path5 || window.location.pathname === url.path12 ||
-                                    window.location.pathname === url.path6 || window.location.pathname === url.path7 ? "active treeview menu-open" : "treeview"} >
+                                    window.location.pathname === url.path6 || window.location.pathname === url.path7 || window.location.pathname === url.path13 ? "active treeview menu-open" : "treeview"} >
                                     <a className="tree1" onClick={() => this.handClick("tree1")}>
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
                                         <span className="pull-right-container">
