@@ -49,16 +49,16 @@ class LinkInfoForm extends Component {
         
         return ( 
             <React.Fragment>
-                <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_page.edit')}/>
+                <ModalButton modalID={`modal-edit-link-default-${linkId}`} button_type="edit" title={translate('manage_page.edit')}/>
                 <ModalDialog
                     size='50' func={this.save} type="edit"
-                    modalID={`modal-edit-page-${linkId}`}
-                    formID={`form-edit-page-${linkId}`}
+                    modalID={`modal-edit-link-default-${linkId}`}
+                    formID={`form-edit-link-default-${linkId}`}
                     title={translate('manage_page.edit')}
                     msg_success={translate('manage_page.edit_success')}
                     msg_faile={translate('manage_page.edit_faile')}
                 >
-                    <form id={`form-edit-page-${linkId}`}>
+                    <form id={`form-edit-link-default-${linkId}`}>
                         <div className="form-group">
                             <label>{ translate('manage_page.url') }<span className="text-red"> * </span></label>
                             <input name="url" type="text" className="form-control" defaultValue={linkName} onChange={this.inputChange} />

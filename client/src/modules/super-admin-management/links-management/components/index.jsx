@@ -20,11 +20,48 @@ class ManageLink extends Component {
             description: null,
             role: null
         }
-        this.inputChange = this.inputChange.bind(this);
         this.setPage = this.setPage.bind(this);
         this.setOption = this.setOption.bind(this);
         this.searchWithOption = this.searchWithOption.bind(this);
         this.setLimit = this.setLimit.bind(this);
+    }
+    
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+
+    searchWithOption = async() => {
+        const data = {
+            limit: this.state.limit,
+            page: 1
+        };
+        data[this.state.option] = this.state.value;
+        await this.props.getPaginate(data);
+    }
+
+    setPage = (pageNumber) => {
+        this.setState({ page: pageNumber });
+        const data = { limit: this.state.limit, page: pageNumber };
+        if(this.state.value !== null){
+            data[this.state.option] = this.state.value;
+        }
+        this.props.getPaginate(data);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { limit: number, page: this.state.page };
+        if(this.state.value !== null){
+            data[this.state.option] = this.state.value;
+        }
+        this.props.getPaginate(data);
+    }
+     
+    componentDidMount(){
+        this.props.getLinks();
+        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
 
     render() { 
@@ -114,53 +151,6 @@ class ManageLink extends Component {
             </div>
         );
 
-    }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async() => {
-        const data = {
-            limit: this.state.limit,
-            page: 1
-        };
-        data[this.state.option] = this.state.value;
-        await this.props.getPaginate(data);
-    }
-
-    setPage = (pageNumber) => {
-        this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
-    }
-    
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-    
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { limit: number, page: this.state.page };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
-    }
-     
-    componentDidMount(){
-        this.props.getLinks();
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
 }
  

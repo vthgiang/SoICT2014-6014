@@ -36,17 +36,11 @@ class LinkInfoForm extends Component {
     }
 
     componentDidMount(){
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         this.props.getRole();
     }
 
     render() { 
-        const { translate, role, linkId, linkName, linkDescription, linkRoles } = this.props;
-        
+        var { translate, role, linkId, linkName, linkDescription, linkRoles } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_page.edit')}/>
