@@ -36,6 +36,9 @@ import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/com
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
+import { TaskManagement } from "../modules/task-management/task-management/component/TaskManagement";
+import { TaskDashboard } from "../modules/task-management/task-management/component/TaskDashboard";
+
 class Routes extends Component {
 
     render() {
@@ -494,6 +497,37 @@ class Routes extends Component {
                         component={ Notifications }
                     />
 
+                     {/* Task Management */}
+                     <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'task-management' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-management', name: 'task_management', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-management' }
+                        path={ '/task-management' }
+                        pageName={ 'task_management' }
+                        layout={ Layout }
+                        component={ TaskManagement }
+                    />
+                    <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'task-management-dashboard' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-management-dashboard', name: 'task_management_dashboard', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-management-dashboard' }
+                        path={ '/task-management-dashboard' }
+                        pageName={ 'task_management_dashboard' }
+                        layout={ Layout }
+                        component={ TaskDashboard }
+                    />
                     {/* NOT FOUND */}
                     <Route component={ NotFound }></Route>
                 </Switch>

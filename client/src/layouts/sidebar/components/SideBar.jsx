@@ -334,11 +334,11 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-units/overview', links) === true) &&
-                                                        <li><a href="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</a></li>
+                                                        <li><Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link></li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-units/create', links) === true) &&
-                                                        <li><a href="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</a></li>
+                                                        <li><Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link></li>
                                                     }
                                                 </ul>
                                             </li>
@@ -354,15 +354,37 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-personals/overview', links) === true) &&
-                                                        <li><a href="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</a></li>
+                                                        <li><Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link></li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-personals/create', links) === true) &&
-                                                        <li><a href="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</a></li>
+                                                        <li><Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link></li>
                                                     }
 
                                                 </ul>
                                             </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            {/* Task management */}
+                            {   
+                                ((this.checkURL('/task-management-dashboard', links) === true) || (this.checkURL('/task-management', links) === true)) && 
+                                <li className="treeview">
+                                    <a href="#abc">
+                                    <i className="fa fa-tasks"></i> <span>{translate(`menu.tasks`)}</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        {
+                                            (this.checkURL('/task-management-dashboard', links) === true) &&
+                                            <li><Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link></li>
+                                        }
+                                        {
+                                            (this.checkURL('/task-management', links) === true) &&
+                                            <li><Link to="/task-management">{translate(`menu.task_management`)}</Link></li>
                                         }
                                     </ul>
                                 </li>

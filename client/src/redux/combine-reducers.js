@@ -29,6 +29,9 @@ import {overviewKpiPersonal} from "./../modules/kpi-personal/kpi-personal-overvi
 
 import {tasktemplates} from '../modules/task-template-management/redux/reducers';
 
+import { performtasks } from "./../modules/task-management/perform-task/redux/reducers";
+import { tasks } from "./../modules/task-management/task-management/redux/reducers";
+
 const appReducer = combineReducers(Object.assign({
     alert,
 
@@ -64,7 +67,11 @@ const appReducer = combineReducers(Object.assign({
     overviewKpiPersonal,
 
     //tasktemplates
-    tasktemplates
+    tasktemplates,
+
+    //task-managemnet
+    tasks,
+    performtasks
 }, { Intl }));
 
 const rootReducer = (state, action) => {

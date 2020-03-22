@@ -144,6 +144,10 @@ export default {
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
 
             notifications: 'Thông báo',
+            
+            tasks: 'Quản lý công việc',
+            task_management: 'Xem danh sách công việc',
+            task_management_dashboard: 'Dashboard công việc',
         },
 
         manage_system: {

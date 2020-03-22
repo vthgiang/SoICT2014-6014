@@ -141,6 +141,10 @@ export default {
             kpi_personal_overview: 'Overview personal KPI',
 
             notifications: 'Notifications',
+
+            tasks: 'Task management',
+            task_management: 'View task list',
+            task_management_dashboard: 'Task dashboard',
         },
 
         manage_system: {
