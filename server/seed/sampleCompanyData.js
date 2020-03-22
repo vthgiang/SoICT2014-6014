@@ -444,6 +444,16 @@ const sampleCompanyData = async () => {
             description: 'Quản lí kpi nhân viên',
             company: xyz._id
         },
+        { // 29
+            url: '/task-management',
+            description: 'Xem danh sách công việc',
+            company: xyz._id
+        },
+        { // 30
+            url: '/task-management-dashboard',
+            description: 'Dashboard công việc',
+            company: xyz._id
+        }
     ]);
     console.log("Xong! Đã tạo links: ", links);
 
@@ -681,6 +691,17 @@ const sampleCompanyData = async () => {
             roleId: roles[1]._id  //Dean
         },
         
+        // Gán quyền quản lý công việc
+        {
+            resourceId: links[29]._id, //Quản lý công việc
+            resourceType: 'Link',
+            roleId: roles[3]._id //Employee
+        },
+        {
+            resourceId: links[30]._id, //Quản lý biểu đồ công việc
+            resourceType: 'Link',
+            roleId: roles[3]._id //Employee
+        }
 
     ]);
     console.log("Gán quyền cho các role: ", privileges);
