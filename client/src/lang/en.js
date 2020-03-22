@@ -16,7 +16,8 @@ export default {
             user_role_invalid: 'User and role invalid! Log in again!',
             acc_logged_out: 'Timework invalid! Log in again!',
             service_off: 'Your company service turning off! Try again!',
-            fingerprint_invalid: 'Your token invalid! Log in again!'
+            fingerprint_invalid: 'Your token invalid! Log in again!',
+            service_permisson_denied: 'You do not have permission call to Service',
         },
         auth: {
             login: 'Login',
@@ -117,7 +118,7 @@ export default {
             manage_training: 'Manage Training',
             account: 'Account',
             manage_unit: 'manage units',
-            holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Kế hoạch làm việc',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',

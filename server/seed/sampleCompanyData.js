@@ -163,7 +163,7 @@ const sampleCompanyData = async () => {
         type: roleAbstract._id
     });
     const roles = await Role.insertMany([{
-        name: "Super Admin",
+        name: "nSuper Admi",
         company: xyz._id,
         type: roleAbstract._id,
         parents: [admin._id]
@@ -333,8 +333,8 @@ const sampleCompanyData = async () => {
             description: 'Quản lý tài liệu biểu mẫu',
             company: xyz._id
         }, { // 7
-            url: '/hr-holiday',
-            description: 'Quản lý nhân sự',
+            url: '/hr-manage-holiday',
+            description: 'Kế hoạch làm việc',
             company: xyz._id
         },
         { // 8
@@ -438,7 +438,12 @@ const sampleCompanyData = async () => {
             url: '/task-template',
             description: 'Quản lý mẫu công việc',
             company: xyz._id
-        }
+        },
+        { // 28
+            url: '/kpi-member/overview',
+            description: 'Quản lí kpi nhân viên',
+            company: xyz._id
+        },
     ]);
     console.log("Xong! Đã tạo links: ", links);
 
@@ -669,8 +674,13 @@ const sampleCompanyData = async () => {
             resourceId: links[27]._id, //Quản lý mẫu công việc
             resourceType: 'Link',
             roleId: roles[3]._id //Employee
-        }
-
+        },
+        {
+            resourceId: links[28]._id, //Quản lý công việc
+            resourceType: 'Link',
+            roleId: roles[1]._id  //Dean
+        },
+        
 
     ]);
     console.log("Gán quyền cho các role: ", privileges);

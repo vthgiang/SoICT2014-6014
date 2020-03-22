@@ -8,11 +8,13 @@ import Login from '../modules/auth/components/Login';
 import LogManagement from '../modules/system-admin-management/logs-management/components';
 import Home from '../modules/home/components';
 import ManageCompany from '../modules/system-admin-management/companies-management/components';
+import LinksDefaultManagement from '../modules/system-admin-management/links-default-management/components';
+import ComponentsDefaultManagement from '../modules/system-admin-management/components-management/components';
 import ManageUser from '../modules/super-admin-management/users-management/components';
 import ManageRole from '../modules/super-admin-management/roles-management/components';
 import ManageLink from '../modules/super-admin-management/links-management/components';
 import ManageDepartment from '../modules/super-admin-management/departments-management/components';
-import ManageComponent from '../modules/system-admin-management/components-management/components';
+import ManageComponent from '../modules/super-admin-management/components-management/components';
 import ManageFormDocument from '../modules/super-admin-management/documents-management/components';
 import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
@@ -24,7 +26,7 @@ import { Timekeeping} from '../modules/employees-manager/timekeeping/components/
 import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
 import { DepartmentManage} from '../modules/employees-manager/department-manager/components/DepartmentManage';
-import { Holiday } from '../modules/employees-manager/holiday/components/Holiday';
+import { ManageHoliday } from '../modules/employees-manager/holiday/components/ManageHoliday';
 
 import {KPIUnitCreate} from "../modules/kpi-unit/kpi-unit-create/component/KPIUnitCreate";
 import {KPIUnitOverview} from "../modules/kpi-unit/kpi-unit-overview/component/KPIUnitOverview";
@@ -32,7 +34,7 @@ import {KPIUnitEvaluate} from "../modules/kpi-unit/kpi-unit-evaluate/component/K
 import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview/component/KPIPersonalOverview";
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
-
+import {KPIMember} from "../modules/kpi-member/component/KPIMember";
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
@@ -60,6 +62,34 @@ class Routes extends Component {
                         pageName={ 'manage_system' }
                         layout={ Layout }
                         component={ LogManagement }
+                    />
+                    <PrivateRoute 
+                        isLoading={ company.isLoading }
+                        key={ 'manage_links_default' }
+                        arrPage={[
+                            { link: '/system/links-default-management', name:'manage_page', icon: 'fa fa-link'}
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/system/links-default-management' }
+                        path={ '/system/links-default-management' }
+                        pageName={ 'manage_page' }
+                        layout={ Layout }
+                        component={ LinksDefaultManagement }
+                    />
+                    <PrivateRoute 
+                        isLoading={ company.isLoading }
+                        key={ 'manage_components_default' }
+                        arrPage={[
+                            { link: '/system/components-default-management', name:'manage_company', icon: 'fa fa-object-group'}
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/system/components-default-management' }
+                        path={ '/system/components-default-management' }
+                        pageName={ 'manage_component' }
+                        layout={ Layout }
+                        component={ ComponentsDefaultManagement }
                     />
                     <PrivateRoute 
                         isLoading={ auth.isLoading }
@@ -300,18 +330,18 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }
-                        key={ 'holiday' }
+                        key={ 'manage_holiday' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/hr-holiday', name: 'holiday', icon:'fa fa-calendar' }
+                            { link: '/hr-manage-holiday', name: 'manage_holiday', icon:'fa fa-calendar' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/hr-holiday' }
-                        path={ '/hr-holiday' }
-                        pageName={'holiday' }
+                        link={ '/hr-manage-holiday' }
+                        path={ '/hr-manage-holiday' }
+                        pageName={'manage_holiday' }
                         layout={ Layout }
-                        component={ Holiday }
+                        component={ ManageHoliday }
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }
@@ -495,6 +525,21 @@ class Routes extends Component {
                         pageName={ 'notifications' }
                         layout={ Layout }
                         component={ Notifications }
+                    />
+                    <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'kpi_member' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link:'/kpi-member/overview', name: 'kpi_member', icon:'fa fa-number' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={'/kpi-member/overview'}
+                        path={ '/kpi-member/overview' }
+                        pageName= "KPI member"
+                        layout={ Layout }
+                        component={ KPIMember }
                     />
 
                      {/* Task Management */}

@@ -107,7 +107,7 @@ class LineAndBarChart extends Component {
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
             .attr("font-size", "11px")
-            .attr("fill", "black")
+            .attr("fill", "#ffffff")
             .text(function (d) {
                 return Number(d[2]).toFixed(2);
             });

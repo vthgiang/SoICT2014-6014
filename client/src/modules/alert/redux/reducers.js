@@ -38,6 +38,11 @@ export function alert(state = initState, action) {
                     display: true,
                     msg: 'role_invalid'
                 };
+            case AlertConstants.SERVICE_PERMISSION_DENIED:
+                return {
+                    ...state,
+                    msg: 'service_permission_denied'
+                };
             
             case AlertConstants.SERVICE_OFF:
                 return {

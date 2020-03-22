@@ -1,4 +1,4 @@
-import { LinkConstants } from "./constants";
+import { ComponentConstants } from "./constants";
 
 var findIndex = (array, id) => {
     var result = -1;
@@ -27,30 +27,30 @@ const initState = {
     item: null
 }
 
-export function pagesDefault (state = initState, action) {
+export function component (state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
 
-        case LinkConstants.GET_LINKS_REQUEST:
-        case LinkConstants.GET_LINKS_PAGINATE_REQUEST:
-        case LinkConstants.SHOW_LINK_REQUEST:
-        case LinkConstants.CREATE_LINK_REQUEST:
-        case LinkConstants.EDIT_LINK_REQUEST:
-        case LinkConstants.DELETE_LINK_REQUEST:
+        case ComponentConstants.GET_COMPONENTS_REQUEST:
+        case ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST:
+        case ComponentConstants.SHOW_COMPONENT_REQUEST:
+        case ComponentConstants.CREATE_COMPONENT_REQUEST:
+        case ComponentConstants.EDIT_COMPONENT_REQUEST:
+        case ComponentConstants.DELETE_COMPONENT_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
 
-        case LinkConstants.GET_LINKS_SUCCESS:
+        case ComponentConstants.GET_COMPONENTS_SUCCESS:
             return {
                 ...state,
                 list: action.payload,
                 isLoading: false
             };
 
-        case LinkConstants.GET_LINKS_PAGINATE_SUCCESS:
+        case ComponentConstants.GET_COMPONENTS_PAGINATE_SUCCESS:
             return {
                 ...state,
                 listPaginate: action.payload.docs,
@@ -66,14 +66,14 @@ export function pagesDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case LinkConstants.SHOW_LINK_SUCCESS:
+        case ComponentConstants.SHOW_COMPONENT_SUCCESS:
             return {
                 ...state,
                 item: action.payload,
                 isLoading: false
             };
 
-        case LinkConstants.CREATE_LINK_SUCCESS:
+        case ComponentConstants.CREATE_COMPONENT_SUCCESS:
             return {
                 ...state,
                 list: [
@@ -87,16 +87,16 @@ export function pagesDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case LinkConstants.EDIT_LINK_SUCCESS:
+        case ComponentConstants.EDIT_COMPONENT_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
-                state.list[index].url = action.payload.url;
+                state.list[index].name = action.payload.name;
                 state.list[index].description = action.payload.description;
                 state.list[index].roles = action.payload.roles;
             }
             if(indexPaginate !== -1){
-                state.listPaginate[indexPaginate].url = action.payload.url;
+                state.listPaginate[indexPaginate].name = action.payload.name;
                 state.listPaginate[indexPaginate].description = action.payload.description;
                 state.listPaginate[indexPaginate].roles = action.payload.roles;
             }
@@ -105,15 +105,11 @@ export function pagesDefault (state = initState, action) {
                 isLoading: false
             };
 
-        case LinkConstants.DELETE_LINK_SUCCESS:
+        case ComponentConstants.DELETE_COMPONENT_SUCCESS:
             index = findIndex(state.list, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
-            if(index !== -1){
-                state.list.splice(index,1);
-            }
-            if(indexPaginate !== -1){
-                state.listPaginate.splice(indexPaginate,1);
-            }
+            if(index !== -1) state.list.splice(index,1);
+            if(indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
             return {
                 ...state,
                 isLoading: false

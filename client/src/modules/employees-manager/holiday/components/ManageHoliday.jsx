@@ -7,7 +7,7 @@ import { ModalImportHoliday } from './ModalImportHoliday';
 import { ModalEditHoliday } from './ModalEditHoliday';
 import { ModalAddHoliday } from './ModalAddHoliday';
 import { DeleteNotification } from '../../../../common-components';
-class Holiday extends Component {
+class ManageHoliday extends Component {
     componentDidMount() {
         this.props.getListHoliday();
     }
@@ -35,7 +35,7 @@ class Holiday extends Component {
                         <div className="box box-info">
                             <div className="box-body" >
                                 <div className="col-md-12">
-                                    <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 5 }}>
+                                    <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 10 }}>
                                         <div className="box-header col-md-6" style={{ paddingLeft: 0 }}>
                                             <h3 className="box-title">Danh sách lịch nghỉ ngày lễ (ngày tết):</h3>
                                         </div>
@@ -100,5 +100,5 @@ const actionCreators = {
     deleteHoliday: HolidayActions.deleteHoliday,
     getListHoliday: HolidayActions.getListHoliday
 };
-const listHoliday = connect(mapState, actionCreators)(withTranslate(Holiday));
-export { listHoliday as Holiday };
+const listHoliday = connect(mapState, actionCreators)(withTranslate(ManageHoliday));
+export { listHoliday as ManageHoliday };
