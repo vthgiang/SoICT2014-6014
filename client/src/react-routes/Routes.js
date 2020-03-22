@@ -34,7 +34,7 @@ import {KPIUnitEvaluate} from "../modules/kpi-unit/kpi-unit-evaluate/component/K
 import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview/component/KPIPersonalOverview";
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
-
+import {KPIMember} from "../modules/kpi-member/component/KPIMember";
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
@@ -522,6 +522,21 @@ class Routes extends Component {
                         pageName={ 'notifications' }
                         layout={ Layout }
                         component={ Notifications }
+                    />
+                    <PrivateRoute 
+                        isLoading={ component.isLoading }
+                        key={ 'kpi_member' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link:'/kpi-member/overview', name: 'kpi_member', icon:'fa fa-number' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={'/kpi-member/overview'}
+                        path={ '/kpi-member/overview' }
+                        pageName= "KPI member"
+                        layout={ Layout }
+                        component={ KPIMember }
                     />
 
                     {/* NOT FOUND */}

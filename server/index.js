@@ -33,6 +33,9 @@ const tasktemplates =require ("./modules/task-template-management/task-template-
 
 const linksDefault = require('./modules/system-admin-management/links-default-management/link.route');
 const componentsDefault = require('./modules/system-admin-management/components-default-management/component.route');
+
+const kpimember = require('./modules/kpi-member/kpiMember.route');
+
 // process.env.TZ = 'Asia/Ho_Chi_Minh';
 
 require('dotenv').config();
@@ -105,7 +108,7 @@ app.use("/kpiunits", overviewKpiUnit);
 // app.use("/kpipersonals", kpipersonals);
 app.use("/kpipersonals", createKpiPersonal);
 app.use("/kpipersonals", overviewKpiPersonal);
-
+app.use("/kpimembers", kpimember);
 app.use  ("/tasktemplates",tasktemplates);
 // console.log("ENV: ", process.env);
 const port = process.env.PORT || 5000;

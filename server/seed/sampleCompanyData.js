@@ -438,7 +438,12 @@ const sampleCompanyData = async () => {
             url: '/task-template',
             description: 'Quản lý mẫu công việc',
             company: xyz._id
-        }
+        },
+        { // 28
+            url: '/kpi-member/overview',
+            description: 'Quản lí kpi nhân viên',
+            company: xyz._id
+        },
     ]);
     console.log("Xong! Đã tạo links: ", links);
 
@@ -669,8 +674,13 @@ const sampleCompanyData = async () => {
             resourceId: links[27]._id, //Quản lý mẫu công việc
             resourceType: 'Link',
             roleId: roles[3]._id //Employee
-        }
-
+        },
+        {
+            resourceId: links[28]._id, //Quản lý công việc
+            resourceType: 'Link',
+            roleId: roles[1]._id  //Dean
+        },
+        
 
     ]);
     console.log("Gán quyền cho các role: ", privileges);

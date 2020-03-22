@@ -386,6 +386,12 @@ class SideBar extends Component {
                                     </ul>
                                 </li>
                             }
+                            {/* can them cai goi ham checkURL() */}
+                            <li>
+                                <a href="/kpi-member/overview">
+                                    <i className="fa fa-dashboard" /> <span>Quản lý kpi nhân viên</span>
+                                </a>
+                            </li>
                         </ul>
                     </section>
                 </aside>
