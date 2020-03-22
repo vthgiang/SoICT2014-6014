@@ -6,5 +6,6 @@ export const AlertConstants = {
     ROLE_INVALID: 'ROLE_INVALID', //Role không hợp lệ
     FINGERPRINT_INVALID: 'FINGERPRINT_INVALID', // sử dụng fingerprint không hợp lệ
     SERVICE_OFF: 'SERVICE_OFF', //Dịch vụ của công ty người dùng đã bị tắt - không kích hoạt dịch vụ cho cty
+    SERVICE_PERMISSION_DENIED: 'SERVICE_PERMISSION_DENIED', //không có quyền sử dụng dịch vụ này
     AUTH_OK: 'AUTH_OK'
 } 

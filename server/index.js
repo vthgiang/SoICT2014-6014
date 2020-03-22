@@ -34,8 +34,11 @@ const tasktemplates =require ("./modules/task-template-management/task-template-
 const linksDefault = require('./modules/system-admin-management/links-default-management/link.route');
 const componentsDefault = require('./modules/system-admin-management/components-default-management/component.route');
 
+<<<<<<< HEAD
 const kpimember = require('./modules/kpi-member/kpiMember.route');
 
+=======
+>>>>>>> 7b8dbe972d88ad34db040ef885379720f8043711
 // process.env.TZ = 'Asia/Ho_Chi_Minh';
 
 require('dotenv').config();
