@@ -33,20 +33,17 @@ exports.getById = async (req, res) => {
 }
 
 //Lấy mẫu công việc theo chức danh
-exports.getByRole = async (req, res) => {
-    try {
-        var roleId = await Role.findById(req.params.id); //lấy id role hiện tại
-        var roles = [roleId._id]; //thêm id role hiện tại vào 1 mảng
-        roles = roles.concat(roleId.abstract); //thêm các role children vào mảng
-        var tasks = await Privilege.find({
-            role: { $in: roles },
-            resource_type: 'TaskTemplate'
-        }).populate({ path: 'resource', model: TaskTemplate, populate: { path: 'creator' } });
+exports.getByRole = async (id) => {
+   
+    var roleId = await Role.findById(id); //lấy id role hiện tại
+    var roles = [roleId._id]; //thêm id role hiện tại vào 1 mảng
+    roles = roles.concat(roleId.abstract); //thêm các role children vào mảng
+    var tasks = await Privilege.find({
+        role: { $in: roles },
+        resource_type: 'TaskTemplate'
+    }).populate({ path: 'resource', model: TaskTemplate, populate: { path: 'creator' } });
 
-        res.status(200).json(tasks)
-    } catch (error) {
-        res.status(400).json({ msg: error });
-    }
+    return tasks;
 }
 
 // lấy tất cả mẫu công việc theo id user
