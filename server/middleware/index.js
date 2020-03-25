@@ -6,6 +6,7 @@ const Privilege = require('../models/privilege.model');
 const Link = require('../models/link.model');
 const Company = require('../models/company.model');
 var ObjectId = require('mongoose').Types.ObjectId;
+const {data, checkServicePermission} = require('./servicesPermission');
 
 
 /**
@@ -42,14 +43,14 @@ exports.auth = async (req, res, next) => {
 
             const role = await Role.findById(currentRole); //current role của người dùng
             if(role === null) throw ({ msg: "ROLE_INVALID"});
-            console.log("CURRENT ROLE: ", role);
+            // console.log("CURRENT ROLE: ", role);
             /**
              * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
              * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
              * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
              */
-            console.log("fingerprint 1 : ", verified.fingerprint);
-            console.log("fingerprint 2 : ", fingerprint);
+            // console.log("fingerprint 1 : ", verified.fingerprint);
+            // console.log("fingerprint 2 : ", fingerprint);
             if(verified.fingerprint !== fingerprint) throw ({ msg: 'FINGERPRINT_INVALID' }); // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
             /**
@@ -60,18 +61,18 @@ exports.auth = async (req, res, next) => {
              */
             var userToken = await User.findOne({ _id: req.user._id,  token: token });
             if(userToken === null) throw ({ msg: 'ACC_LOGGED_OUT'});
-            console.log("usertoken: ", userToken);
+            // console.log("usertoken: ", userToken);
 
             /**
              * Kiểm tra xem current role có đúng với người dùng hay không?
              */
             // const roleId = role._id;
             const userId = req.user._id;
-            console.log("userid: ", userId)
-            console.log("userrole1: ", role._id, userId);
+            // console.log("userid: ", userId)
+            // console.log("userrole1: ", role._id, userId);
             const userrole = await UserRole.findOne({userId, roleId: role._id});
             if(userrole === null) throw ({msg: 'USER_ROLE_INVALID'});
-            console.log("userrole2: ", userrole);
+            // console.log("userrole2: ", userrole);
             /**
              * Riêng đối với system admin của hệ thống thì bỏ qua bước này
              */
@@ -95,9 +96,10 @@ exports.auth = async (req, res, next) => {
              * Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
              * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
              */
-            var url = req.header('current-page');
-            console.log("trang web hiện tại người dùng đang truy cập: ", url);
-            console.log("ROLE NAME:", role.name, req.user.company._id);
+
+            var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+            // console.log("trang web hiện tại người dùng đang truy cập: ", url);
+            // console.log("ROLE NAME:", role.name, req.user.company._id);
             const link = role.name !== 'System Admin' ?
                 await Link.findOne({
                     url,
@@ -106,19 +108,27 @@ exports.auth = async (req, res, next) => {
                 await Link.findOne({
                     url
                 });
-            console.log("LINK ACCESS: ", link);
+            // console.log("LINK ACCESS: ", link);
             if(link === null) throw ({msg: 'URL_INVALID'});
             const roleArr = [currentRole].concat(role.parents);
-            console.log("ROLE ARR: ", roleArr);
+            // console.log("ROLE ARR: ", roleArr);
             const privilege = await Privilege.findOne({
                 resourceId: link._id,
                 resourceType: 'Link',
                 roleId: { $in: roleArr }
             });
             if(privilege === null) throw ({ msg: 'PAGE_ACCESS_DENIED' });
+
+            /**
+             * Kiểm tra xem user này có được gọi tới service này hay không?
+             */
+            const path = req.route.path !== '/' ? req.baseUrl + req.route.path : req.baseUrl;
+            const checkSP = await checkServicePermission(data, path, req.method, currentRole);
+            if(!checkSP) throw ({msg: 'SERVICE_PERMISSION_INVALID'});
+
         }
 
-        console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
+        // console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
         next();
         
     } catch (error) { 

@@ -29,7 +29,7 @@ class ManageLink extends Component {
     }
 
     render() { 
-        const { translate, link } = this.props;
+        const { translate, linksDefault } = this.props;
 
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
@@ -54,7 +54,6 @@ class ManageLink extends Component {
                                 <tr>
                                     <th>{ translate('manage_page.url') }</th>
                                     <th>{ translate('manage_page.description') }</th>
-                                    <th>{ translate('manage_page.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
@@ -66,44 +65,15 @@ class ManageLink extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    link.listPaginate.length > 0 ? link.listPaginate.map( link => 
+                                    linksDefault.list.length > 0 ? linksDefault.list.map( link => 
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.description }</td>
-                                            <td>{
-                                                link.roles.map((role, index, arr) => {
-                                                    if(arr.length < 4){
-                                                        if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                        else return `${role.roleId.name}`
-                                                    }else{
-                                                        if(index < 3 ){
-                                                            return `${role.roleId.name}, `
-                                                        }
-                                                    }
-                                                })
-                                            }{
-                                                link.roles.length >=4 &&
-                                                
-                                                <React.Fragment>
-                                                    <div className="tooltip2">...
-                                                        <span className="tooltip2text">
-                                                            {
-                                                                link.roles.map((role, index, arr) => {
-                                                                    if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                                    else return `${role.roleId.name}`
-                                                                })
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                </React.Fragment>
-                                            }
-                                            </td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <LinkInfoForm 
                                                     linkId={ link._id }
                                                     linkName={ link.url }
                                                     linkDescription={ link.description }
-                                                    linkRoles={ link.roles.map(role => role.roleId._id) }
                                                 />
                                                 <DeleteNotification 
                                                     content={{
@@ -119,12 +89,12 @@ class ManageLink extends Component {
                                                 />
                                             </td>
                                         </tr> 
-                                    ): <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                                    ): <tr><td colSpan={3}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>
                         {/* PaginateBar */}
-                        <PaginateBar pageTotal={link.totalPages} currentPage={link.page} func={this.setPage}/>
+                        <PaginateBar pageTotal={linksDefault.totalPages} currentPage={linksDefault.page} func={this.setPage}/>
                     </React.Fragment>
                 </div>
             </div>
@@ -176,7 +146,7 @@ class ManageLink extends Component {
      
     componentDidMount(){
         this.props.getLinks();
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+        // this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
 }
  

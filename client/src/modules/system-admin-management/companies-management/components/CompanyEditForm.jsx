@@ -41,7 +41,7 @@ class CompanyEditForm extends Component {
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-company-${companyID}`} button_type="edit" button_name={translate('manage_company.add')} title={translate('manage_company.edit')}/>
                 <ModalDialog
-                    modalID={`modal-edit-company-${companyID}`} type="edit"
+                    modalID={`modal-edit-company-${companyID}`} type="edit" size="100"
                     formID={`form-edit-company-${companyID}`}
                     title={translate('manage_company.edit')}
                     msg_success={translate('manage_company.add_success')}
@@ -49,26 +49,38 @@ class CompanyEditForm extends Component {
                     func={this.save}
                 >
                     <form id={`form-edit-company-${companyID}`}>
-                        <div className="form-group">
-                            <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" name="name" onChange={ this.inputChange } defaultValue={ companyName }/>
-                        </div>
                         <div className="row">
-                            <div className="form-group col-sm-9">
-                                <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
-                                <input type="text" className="form-control" name="short_name" onChange={ this.inputChange } defaultValue={ companyShortName }/>
+                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">Thông tin doanh nghiệp</legend>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
+                                        <input type="text" className="form-control" name="name" onChange={ this.inputChange } defaultValue={ companyName }/>
+                                    </div>
+                                    <div className="row">
+                                        <div className="form-group col-sm-9">
+                                            <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
+                                            <input type="text" className="form-control" name="short_name" onChange={ this.inputChange } defaultValue={ companyShortName }/>
+                                        </div>
+                                        <div className="form-group col-sm-3">
+                                            <label>{ translate('manage_company.log') }<span className="text-red"> * </span></label>
+                                            <select className="form-control" name="log" onChange={ this.inputChange } defaultValue={comLog}>
+                                                <option key='1' value={true}>{ translate('manage_company.on') }</option>
+                                                <option key='2' value={false}>{ translate('manage_company.off') }</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
+                                        <textarea  style={{ height: '250px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange } defaultValue={ companyDescription }/>
+                                    </div>
+                                </fieldset>
                             </div>
-                            <div className="form-group col-sm-3">
-                                <label>{ translate('manage_company.log') }<span className="text-red"> * </span></label>
-                                <select className="form-control" name="log" onChange={ this.inputChange } defaultValue={comLog}>
-                                    <option key='1' value={true}>{ translate('manage_company.on') }</option>
-                                    <option key='2' value={false}>{ translate('manage_company.off') }</option>
-                                </select>
+                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <fieldset className="scheduler-border" style={{minHeight: '504.59px'}}>
+                                    <legend className="scheduler-border">Dịch vụ hoạt động</legend>
+                                </fieldset>
                             </div>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
-                            <textarea  style={{ height: '250px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange } defaultValue={ companyDescription }/>
                         </div>
                     </form>
                 </ModalDialog>

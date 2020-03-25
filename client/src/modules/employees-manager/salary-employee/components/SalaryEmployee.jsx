@@ -24,7 +24,6 @@ class SalaryEmployee extends Component {
             limit: 5,
 
         }
-        this.handleResizeColumn();
         this.setLimit = this.setLimit.bind(this);
         this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -72,35 +71,6 @@ class SalaryEmployee extends Component {
     notifysuccess = (message) => toast(message);
     notifyerror = (message) => toast.error(message);
     notifywarning = (message) => toast.warning(message);
-
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
-    }
 
     setLimit = async (number) => {
         await this.setState({ limit: parseInt(number) });
@@ -203,17 +173,17 @@ class SalaryEmployee extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-12">
+                                <div className="col-md-12" style={{ marginBottom: 10 }} >
                                     <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                             <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
                                         </div>
-                                        <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                        <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
                                         </div>
                                     </div>
                                     <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
                                             <label htmlFor="month" style={{ paddingTop: 5 }}>{translate('page.month')}:</label>
                                         </div>
                                         <div className={'input-group date has-feedback'}>
@@ -224,12 +194,12 @@ class SalaryEmployee extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-3">
-                                        <div className="form-group" style={{ paddingLeft: 0 }}>
+                                        <div className="form-group" style={{ paddingLeft: 0, marginBottom: 0 }}>
                                             <button type="submit" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                                         </div>
                                     </div>
                                     <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                        <div className="form-group pull-right" >
+                                        <div className="form-group pull-right" style={{ marginBottom: 0 }} >
                                             <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title={translate('salary_employee.add_salary_title')} >{translate('salary_employee.add_salary')}</button>
                                             <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
                                                 <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
@@ -239,15 +209,15 @@ class SalaryEmployee extends Component {
                                     </div>
                                 </div>
                                 <div className="col-md-12">
-                                    <table className="table table-striped table-bordered">
+                                    <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th style={{ width: "13%" }}>{translate('table.employee_number')}</th>
-                                                <th style={{ width: "20%" }}>{translate('table.employee_name')}</th>
-                                                <th style={{ width: "13%" }}>{translate('table.month')}</th>
+                                                <th style={{ width: "18%" }}>{translate('table.employee_name')}</th>
+                                                <th style={{ width: "10%" }}>{translate('table.month')}</th>
                                                 <th style={{ width: "13%" }}>{translate('table.total_salary')}</th>
                                                 <th style={{ width: "15%" }}>{translate('table.unit')}</th>
-                                                <th style={{ width: "15%" }}>{translate('table.position')}</th>
+                                                <th style={{ width: "18%" }}>{translate('table.position')}</th>
                                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                                     <ActionColumn
                                                         columnName={translate('table.action')}
@@ -281,9 +251,17 @@ class SalaryEmployee extends Component {
                                                                         formatter.format(total + parseInt(salary))
                                                                 } {unit}
                                                             </td>
-                                                            <td>Phòng nhân sự</td>
-                                                            <td>Nhân viên</td>
-                                                            <td style={{textAlign:'center'}}>
+                                                            <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                                                <React.Fragment key={unit._id}>
+                                                                    {unit.name}<br />
+                                                                </React.Fragment>
+                                                            )) : null}</td>
+                                                            <td>{x.roles.length !== 0 ? x.roles.map(role => (
+                                                                <React.Fragment key={role._id}>
+                                                                    {role.roleId.name}<br />
+                                                                </React.Fragment>
+                                                            )) : null}</td>
+                                                            <td style={{ textAlign: 'center' }}>
                                                                 <ModalEditSalary data={x} />
                                                                 <DeleteNotification
                                                                     content={{

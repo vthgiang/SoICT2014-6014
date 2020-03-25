@@ -11,6 +11,11 @@ const LinkSchema = new Schema({
     description: {
         type: String
     },
+    type: {
+        type: String ,
+        required: true,
+        default: 'service'
+    },
     components: [{
         type: Schema.Types.ObjectId,
         ref: 'components'

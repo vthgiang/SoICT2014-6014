@@ -40,26 +40,58 @@ class Content extends Component {
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
+
+            var tableHeadings = [];
+            var originalHeadingWidths = [];
+            var resizingIndex = -1;
+            var startX = undefined;
 
             window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
                 pressed = true;
                 startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
+
+                let currentTH = window.$(this);
+                window.$(currentTH).addClass("resizing");
+                tableHeadings = window.$(currentTH)[0].parentNode.childNodes;
+
+                // Find the index of resizing column
+                for (let i = 0; i<tableHeadings.length; ++i) {
+                    if (tableHeadings[i] === window.$(currentTH)[0]){
+                        resizingIndex = i;
+                        break;
+                    }
+                }
+
+                // Save the current widths of all columns
+                for (let i = 0; i<tableHeadings.length; ++i) {
+                    originalHeadingWidths[i] = window.$(tableHeadings[i]).width()
+                }
             });
 
             window.$(document).mousemove(function (e) {
                 if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
+                    let MINIMUM_WIDTH = 40;
+
+                    /* Kích thước cột hiện tại được mượn/cho từ kích thước cột kế tiếp
+                     * Điều kiện là cột hiện tại và cột kế tiếp luôn có kích thước tối thiểu nào đó
+                     */
+                    let additionalWidth = e.pageX - startX;
+                    if (additionalWidth > originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH) {
+                        additionalWidth = originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH;
+                    }
+                    if (originalHeadingWidths[resizingIndex] + additionalWidth <MINIMUM_WIDTH){
+                        additionalWidth = MINIMUM_WIDTH - originalHeadingWidths[resizingIndex];
+                    }
+
+                    // Cập nhật kích thước cột hiện tại và cột kế tiếp
+                    window.$(tableHeadings[resizingIndex]).width(originalHeadingWidths[resizingIndex] + additionalWidth);
+                    window.$(tableHeadings[resizingIndex + 1]).width(originalHeadingWidths[resizingIndex + 1] - additionalWidth);
                 }
             });
 
             window.$(document).mouseup(function () {
                 if (pressed) {
-                    window.$(start).removeClass("resizing");
+                    window.$(tableHeadings[resizingIndex]).removeClass("resizing");
                     pressed = false;
                 }
             });
@@ -72,7 +104,6 @@ class Content extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-        this.handleResizeColumn();
         script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;

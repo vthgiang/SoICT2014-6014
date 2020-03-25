@@ -16,7 +16,8 @@ export default {
             user_role_invalid: 'USER-ROLE INVALID! Quyền hiện tại của bạn đã bị thay đổi! Vui lòng đăng nhập lại!',
             acc_logged_out: 'JWT - phiên làm việc không chính xác. Vui lòng đăng nhập lại!',
             service_off: 'SERVICE OFF! Dịch vụ của công ty bạn đã tạm ngưng! Phiên làm việc của bạn sẽ bị tạm ngưng!',
-            fingerprint_invalid: 'Phiên đăng nhập của bạn không đúng! Vui lòng đăng nhập lại!'
+            fingerprint_invalid: 'Phiên đăng nhập của bạn không đúng! Vui lòng đăng nhập lại!',
+            service_permisson_denied: 'Bạn không có quyền gọi đến service',
         },
         auth: {
             login: 'Đăng nhập',
@@ -117,7 +118,7 @@ export default {
             manageDocumentType: 'Quản lý loại văn bản',
 
             manage_employee: 'Quản lý nhân sự',
-            holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
             manage_unit: 'Quản lý nhân sự các đơn vị',
@@ -144,6 +145,10 @@ export default {
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
 
             notifications: 'Thông báo',
+            
+            tasks: 'Quản lý công việc',
+            task_management: 'Xem danh sách công việc',
+            task_management_dashboard: 'Dashboard công việc',
         },
 
         manage_system: {

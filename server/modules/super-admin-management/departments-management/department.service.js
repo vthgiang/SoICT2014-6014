@@ -1,5 +1,6 @@
 const Department = require('../../../models/department.model');
-const UserRole = require('../../../models/user_role.model')
+const UserRole = require('../../../models/user_role.model');
+const Role = require('../../../models/role.model')
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -103,6 +104,39 @@ exports.getDepartmentOfUser = async (req, res) => {
         console.log(departments);
 
         res.status(200).json(departments);
+    } catch (error) {
+
+        res.status(400).json({msg: error});
+    }
+}
+
+/**
+ * SERVICE: Lấy thông tin của đơn vị và các role trong đơn vị đó của user
+ * Chi tiết dữ liệu trả về:
+ * 1. Thông tin về đơn vị
+ * 2. Thông tin về các vai trò trong đơn vị (Trưởng dv, Phó dv, Nhân viên dv)
+ * 3. Id của các user tương ứng với từng vai trò của đơn vị
+ * --------------------------------------
+ * Thông tin xác định dựa trên 3 tham số
+ * 1. companyId - tìm kiếm trong phạm vi công ty của người dùng
+ * 2. userId - id của người dùng
+ * 3. roleId - xác định vai trò truy cập hiện tại của người dùng trên website (vd: đang truy cập với quyền là Nhân viên phòng hành chính,...)
+ */
+exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
+    try {
+        const department = await Department.findOne({
+            $or: [
+                {'dean': roleId, company: companyId }, 
+                {'vice_dean': roleId, company: companyId }, 
+                {'employee': roleId, company: companyId }
+            ]
+        }).populate([
+            { path: 'dean', model: Role, populate: { path: 'users', model: UserRole} },
+            { path: 'vice_dean', model: Role, populate: { path: 'users', model: UserRole}  },
+            { path: 'employee', model: Role, populate: { path: 'users', model: UserRole}  }
+        ]);
+
+        res.status(200).json(department);
     } catch (error) {
 
         res.status(400).json({msg: error});

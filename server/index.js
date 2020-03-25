@@ -8,10 +8,10 @@ const user = require('./modules/super-admin-management/users-management/user.rou
 const auth = require('./modules/auth/auth.route');
 const company = require('./modules/system-admin-management/companies-management/company.route');
 const role = require('./modules/super-admin-management/roles-management/role.route');
-const link = require('./modules/system-admin-management/links-management/link.route');
+const link = require('./modules/super-admin-management/links-management/link.route');
 const department = require('./modules/super-admin-management/departments-management/department.route');
 const privilege = require('./modules/super-admin-management/privileges/privilege.route');
-const component = require('./modules/system-admin-management/components-management/component.route');
+const component = require('./modules/super-admin-management/components-management/component.route');
 const educationProgram = require('./modules/trainning-Course/education-program/educationProgram.route');
 const employee = require('./modules/employees-manager/employee/employee.route');
 const salary = require('./modules/employees-manager/salary/salary.route');
@@ -30,6 +30,14 @@ const createKpiPersonal = require("./modules/kpi-personal/kpi-personal-create/cr
 const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overview/overview.route")
 
 const tasktemplates =require ("./modules/task-template-management/task-template-management.route")
+
+const tasks = require("./modules/task-management/task-management/task-management.route");
+const performtask = require("./modules/task-management/perform-task/perform-task.route");
+
+const linksDefault = require('./modules/system-admin-management/links-default-management/link.route');
+const componentsDefault = require('./modules/system-admin-management/components-default-management/component.route');
+
+const kpimember = require('./modules/kpi-member/kpiMember.route');
 
 // process.env.TZ = 'Asia/Ho_Chi_Minh';
 
@@ -79,6 +87,8 @@ app.use("/log", log);
 app.use("/user", user);
 app.use("/auth", auth);
 app.use("/company", company);
+app.use("/links-default-management", linksDefault);
+app.use("/components-default-management", componentsDefault);
 app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
@@ -101,8 +111,11 @@ app.use("/kpiunits", overviewKpiUnit);
 // app.use("/kpipersonals", kpipersonals);
 app.use("/kpipersonals", createKpiPersonal);
 app.use("/kpipersonals", overviewKpiPersonal);
-
+app.use("/kpimembers", kpimember);
 app.use  ("/tasktemplates",tasktemplates);
+
+app.use("/tasks", tasks);
+app.use("/performtask", performtask);
 // console.log("ENV: ", process.env);
 const port = process.env.PORT || 5000;
 

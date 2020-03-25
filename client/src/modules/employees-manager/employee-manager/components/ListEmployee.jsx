@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer } from 'react-toastify';
 import { EmployeeManagerActions } from '../redux/actions';
-import { EmployeeInfoActions } from '../../employee-info/redux/actions';
+//import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
@@ -28,7 +28,6 @@ class ListEmployee extends Component {
         this.setLimit = this.setLimit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
-
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -136,7 +135,7 @@ class ListEmployee extends Component {
                 ]
             }
         }
-        var { employeesManager,translate } = this.props;
+        var { employeesManager, translate } = this.props;
         if (employeesManager.allEmployee) {
             lists = employeesManager.allEmployee;
         }
@@ -214,7 +213,7 @@ class ListEmployee extends Component {
                                     </div>
                                 </div>
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title="Thêm mới nhân viên" data-toggle="modal" data-target="#modal-addEmployee">Thêm mới nhân viên</button>
+                                    <ModalAddEmployee initState={this.state} />
                                 </div>
                             </div>
                             <div className="col-md-12">
@@ -225,8 +224,8 @@ class ListEmployee extends Component {
                                             <th>Họ và tên</th>
                                             <th style={{ width: "10%" }}>Giới tính</th>
                                             <th style={{ width: "12%" }}>Ngày sinh</th>
-                                            <th style={{ width: "12%" }}>Chức vụ</th>
-                                            <th style={{ width: "13%" }}>Đơn vị</th>
+                                            <th style={{ width: "15%" }}>Đơn vị</th>
+                                            <th style={{ width: "18%" }}>Chức vụ</th>
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
                                                     columnName="Hành động"
@@ -244,12 +243,20 @@ class ListEmployee extends Component {
                                                     <td>{x.employee.map(y => y.fullName)}</td>
                                                     <td>{x.employee.map(y => y.gender)}</td>
                                                     <td>{x.employee.map(y => y.brithday)}</td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                                        <React.Fragment key={unit._id}>
+                                                            {unit.name}<br />
+                                                        </React.Fragment>
+                                                    )) : null}</td>
+                                                    <td>{x.roles.length !== 0 ? x.roles.map(role => (
+                                                        <React.Fragment key={role._id}>
+                                                            {role.roleId.name}<br />
+                                                        </React.Fragment>
+                                                    )) : null}</td>
                                                     < td >
                                                         <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
                                                             sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />
-                                                        <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
+                                                        <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary} initState={this.state}
                                                             sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
                                                         <DeleteNotification
                                                             content={{
@@ -288,7 +295,6 @@ class ListEmployee extends Component {
                     {/* /.box */}
                 </div>
                 <ToastContainer />
-                <ModalAddEmployee />
             </div >
         );
     };

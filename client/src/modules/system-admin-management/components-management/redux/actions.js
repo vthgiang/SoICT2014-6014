@@ -13,11 +13,11 @@ export const ComponentActions = {
 
 function get(){
     return dispatch => {
-        dispatch({ type: ComponentConstants.GET_COMPONENTS_REQUEST});
+        dispatch({ type: ComponentConstants.GET_COMPONENTS_DEFAULT_REQUEST});
         ComponentServices.get()
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.GET_COMPONENTS_SUCCESS,
+                    type: ComponentConstants.GET_COMPONENTS_DEFAULT_SUCCESS,
                     payload: res.data
                 })
             })
@@ -32,11 +32,11 @@ function get(){
 
 function getPaginate(data){
     return dispatch => {
-        dispatch({ type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST});
+        dispatch({ type: ComponentConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST});
         ComponentServices.getPaginate(data)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.GET_COMPONENTS_PAGINATE_SUCCESS,
+                    type: ComponentConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
                     payload: res.data
                 })
             })
@@ -51,11 +51,11 @@ function getPaginate(data){
 
 function show(id){
     return dispatch => {
-        dispatch({ type: ComponentConstants.SHOW_COMPONENT_REQUEST});
+        dispatch({ type: ComponentConstants.SHOW_COMPONENT_DEFAULT_REQUEST});
         ComponentServices.show(id)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.SHOW_COMPONENT_SUCCESS,
+                    type: ComponentConstants.SHOW_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data
                 })
             })
@@ -70,12 +70,12 @@ function show(id){
 
 function create(component){
     return dispatch => {
-        dispatch({ type: ComponentConstants.CREATE_COMPONENT_REQUEST});
+        dispatch({ type: ComponentConstants.CREATE_COMPONENT_DEFAULT_REQUEST});
         return new Promise((resolve, reject) => {
             ComponentServices.create(component)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.CREATE_COMPONENT_SUCCESS,
+                    type: ComponentConstants.CREATE_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data
                 })
                 resolve(res);
@@ -94,12 +94,12 @@ function create(component){
 
 function edit(id, component){
     return dispatch => {
-        dispatch({ type: ComponentConstants.EDIT_COMPONENT_REQUEST});
+        dispatch({ type: ComponentConstants.EDIT_COMPONENT_DEFAULT_REQUEST});
         return new Promise((resolve, reject) => {
             ComponentServices.edit(id, component)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.EDIT_COMPONENT_SUCCESS,
+                    type: ComponentConstants.EDIT_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data
                 });
                 resolve(res);
@@ -117,11 +117,11 @@ function edit(id, component){
 
 function destroy(id, component){
     return dispatch => {
-        dispatch({ type: ComponentConstants.DELETE_COMPONENT_REQUEST});
+        dispatch({ type: ComponentConstants.DELETE_COMPONENT_DEFAULT_REQUEST});
         ComponentServices.destroy(id, component)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.DELETE_COMPONENT_SUCCESS,
+                    type: ComponentConstants.DELETE_COMPONENT_DEFAULT_SUCCESS,
                     payload: id
                 })
             })

@@ -37,7 +37,7 @@ exports.getById = async (company, roleId) => {
             _id: roleId
         })
         .populate([
-            { path: 'users', model: UserRole },
+            { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
             { path: 'parents', model: Role },
             { path: 'company', model: Company },
             { path: 'type', model: RoleType }

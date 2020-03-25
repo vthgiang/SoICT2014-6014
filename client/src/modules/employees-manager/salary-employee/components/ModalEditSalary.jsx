@@ -87,7 +87,7 @@ class ModalEditSalary extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">{translate('salary_employee.infor_salary')}: {data.fullName + " - "}{ translate('salary_employee.month') }{": " + data.month}</h4>
+                                <h4 className="modal-title">{translate('salary_employee.infor_salary')}: {data.fullName + " - "}{ translate('page.month') }{": " + data.month}</h4>
                             </div>
                             <div className="modal-body">
                                 {/* /.box-header */}
