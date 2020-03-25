@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
+import {
+    TOKEN_SECRET
+} from '../../../../env';
+import {
+    getStorage
+} from '../../../../config';
+import jwt from 'jsonwebtoken';
 import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
@@ -9,9 +16,14 @@ import { overviewKpiActions } from "../../../kpi-personal/kpi-personal-overview/
 
 class ModalPerformTask extends Component {
     constructor(props) {
+
+        const token = getStorage();
+        const verified = jwt.verify(token, TOKEN_SECRET);
+        var idUser = verified._id;
+
         super(props);
         this.state = {
-            currentUser: localStorage.getItem('id'),//fix----------------------------------
+            currentUser: idUser,//fix---------------localStorage.getItem('id')-------------------
             selected: "actionTask",
             extendDescription: false,
             editDescription: false,
@@ -27,7 +39,7 @@ class ModalPerformTask extends Component {
             showChildComment: "",
             newComment: {
                 task: this.props.id,
-                creator: localStorage.getItem("id"),//fix----------------------------------
+                creator: idUser,//fix---------------localStorage.getItem("id")-------------------
                 parent: null,
                 content: "",
                 file: null
@@ -36,7 +48,7 @@ class ModalPerformTask extends Component {
                 task: this.props.id,
                 startTimer: "",
                 stopTimer: null,
-                user: localStorage.getItem("id"),//fix----------------------------------
+                user: idUser,//fix---------------localStorage.getItem("id")-------------------
                 time: 0,
             },
             resultTask: 0
@@ -98,7 +110,7 @@ class ModalPerformTask extends Component {
         this.props.getAllUserOfDepartment(this.props.unit);
         this.props.getTaskById(this.props.id);
         this.props.getCommentTask(this.props.id);
-        this.props.getStatusTimer(this.props.id, localStorage.getItem("id"));//fix hàm bên services---------------------------------------------------
+        this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
     }
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -242,18 +254,18 @@ class ModalPerformTask extends Component {
             // Update dữ liệu: Thời gian kết thúc, time = oldTime + newTime
             console.log(this.state);
             this.props.stopTimer(timer._id, this.state.timer);
-            // this.setState(state => {
-            //     return {
-            //         ...state,
-            //         timer: {
-            //             task: this.props.id,
-            //             startTimer: "",
-            //             stopTimer: null,
-            //             user: localStorage.getItem("id"),
-            //             time: 0
-            //         }
-            //     }
-            // })
+            this.setState(state => {
+                // TODO: test sau
+                return {
+                    ...state,
+                    timer: {
+                        task: this.props.id,
+                        startTimer: "",
+                        stopTimer: null,
+                        time: 0
+                    }
+                }
+            })
         });
         // reset trạng thái timer
     }

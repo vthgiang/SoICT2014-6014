@@ -1,7 +1,7 @@
 import {handleResponse} from '../../../../helpers/HandleResponse';
 import { AuthenticateHeader } from '../../../../config';
 import {
-    TOKEN_SECRET
+    TOKEN_SECRET,LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
@@ -27,7 +27,7 @@ function getLogTimerTask(task) {
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/performtask/log-timer/${task}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/${task}`, requestOptions).then(handleResponse);
 }
 
 // get current status task
@@ -40,7 +40,7 @@ async function getTimerStatusTask(task) { //function getTimerStatusTask(task, us
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/performtask/log-timer/currentTimer/${task}/${user}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`, requestOptions).then(handleResponse);
 }
 
 // start timer task
@@ -51,7 +51,7 @@ function startTimerTask(newTimer) {
         body: JSON.stringify(newTimer),
     };
 
-    return fetch(`/performtask/log-timer/start-timer`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/start-timer`, requestOptions).then(handleResponse);
 }
 // stop timer task
 function stopTimerTask(id, newTimer) {
@@ -61,7 +61,7 @@ function stopTimerTask(id, newTimer) {
         body: JSON.stringify(newTimer),
     };
 
-    return fetch(`/performtask/log-timer/stop-timer/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/stop-timer/${id}`, requestOptions).then(handleResponse);
 }
 
 // pause timer task
@@ -72,7 +72,7 @@ function pauseTimerTask(id, newTimer) {
         body: JSON.stringify(newTimer)
     };
 
-    return fetch(`/performtask/log-timer/pause-timer/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/pause-timer/${id}`, requestOptions).then(handleResponse);
 }
 
 // continue timer task
@@ -83,7 +83,7 @@ function continueTimerTask(id, newTimer) {
         body: JSON.stringify(newTimer)
     };
 
-    return fetch(`/performtask/log-timer/continue-timer/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/continue-timer/${id}`, requestOptions).then(handleResponse);
 }
 
 // get all comment task
@@ -93,7 +93,7 @@ function getCommentTask(task) {
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/performtask/comment-task/${task}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${task}`, requestOptions).then(handleResponse);
 }
 
 // add comment task
@@ -103,7 +103,7 @@ function addCommentTask(newComment) {
         body: newComment
     };
 
-    return fetch(`/performtask/comment-task/create`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/create`, requestOptions).then(handleResponse);
 }
 
 // edit comment task
@@ -114,7 +114,7 @@ function editCommentTask(id, newComment) {
         body: JSON.stringify(newComment)
     };
 
-    return fetch(`/performtask/comment-task/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${id}`, requestOptions).then(handleResponse);
 }
 
 // delete comment task
@@ -123,5 +123,5 @@ function deleteCommentTask(id) {
         method: 'DELETE',
     };
 
-    return fetch(`/performtask/comment-task/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${id}`, requestOptions).then(handleResponse);
 }

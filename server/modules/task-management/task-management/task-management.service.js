@@ -240,7 +240,7 @@ exports.create = async (req, res) => {
                 req.body.tasktemplate, { $inc: { 'count': 1} }, { new: true }
             );
         }
-        task = await task.populate("unit").execPopulate();
+        task = await task.populate({path: "unit creator parent"}).execPopulate();
         res.status(200).json({
             message: "Create Task Template Successfully!",
             data: task
