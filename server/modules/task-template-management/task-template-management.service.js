@@ -94,8 +94,6 @@ exports.getByUser = async (req, res) => {
         var totalPages = Math.ceil(totalCount / 1);
         res.status(200).json({"message" : tasktemplates,"pages": totalPages})
     } catch (error) {
-     
-        console.log("****************************",error);
         res.status(400).json({ msg: error });
         
     }
@@ -104,7 +102,6 @@ exports.getByUser = async (req, res) => {
 //Tạo mẫu công việc
 exports.create = async (req, res) => {
     try {
-        console.log("\n***********abcbcbcbcb\n\n\n\n\n\n\n\n",req.body);
         var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc
             unit: req.body.unit,
             name: req.body.name,
@@ -158,13 +155,14 @@ exports.create = async (req, res) => {
 }
 
 //Xóa mẫu công việc
-exports.delete = async () => {
+exports.delete = async (req, res) => { 
     try {
-        var template = await WorkTemplate.findByIdAndDelete(req.params.id); // xóa mẫu công việc theo id
+        var template = await TaskTemplate.findByIdAndDelete(req.params.id); // xóa mẫu công việc theo id
         var privileges = await Privilege.deleteMany({
-            resource: req.params.id, //id của task template
+            resourceId: req.params.id, //id của task template
             resourceType: "TaskTemplate"
         });
+        
 
         res.status(200).json("Delete success");
     } catch (error) {
