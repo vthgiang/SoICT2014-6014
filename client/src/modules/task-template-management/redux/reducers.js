@@ -103,7 +103,7 @@ export function tasktemplates(state = {}, action) {
             return {
                 ...state,
                 items: state.items.map(template =>
-                    template._id === action.id
+                    template.resourceId._id === action.id
                         ? { ...template, deleting: true }
                         : template
                 )
@@ -111,7 +111,7 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.DELETE_TEMPLATE_SUCCESS:
             return {
                 ...state,
-                items: state.items.filter(template => template._id !== action.id)
+                items: state.items.filter(template => template.resourceId._id !== action.id)
             };
         case taskTemplateConstants.DELETE_TEMPLATE_FAILURE:
             return {

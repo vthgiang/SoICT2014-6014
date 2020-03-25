@@ -43,4 +43,7 @@ router.patch('/file/:employeeNumber',auth, EmployeeController.uploadFile, Employ
 // Xoá thông tin nhân viên
 router.delete('/:id',auth, EmployeeController.delete);
 
+// Kiểm tra sự tồn tại của MSNV
+router.post('/checkArrayMSNV',auth, EmployeeController.checkArrayMSNV);
+
 module.exports = router;
