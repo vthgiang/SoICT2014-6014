@@ -100,6 +100,24 @@ class SideBar extends Component {
                                 />
                             }
                             {
+                                this.checkURL('/system/links-default-management', links) === true &&
+                                <Item
+                                    key='manage_page'
+                                    name='manage_page'
+                                    path='/system/links-default-management'
+                                    icon='fa fa-link'
+                                />
+                            }
+                            {
+                                this.checkURL('/system/components-default-management', links) === true &&
+                                <Item
+                                    key='manage_component'
+                                    name='manage_component'
+                                    path='/system/components-default-management'
+                                    icon='fa fa-object-group'
+                                />
+                            }
+                            {
                                 this.checkURL('/departments-management', links) === true &&
                                 <Item
                                     key='manage_department'
@@ -335,11 +353,11 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-units/overview', links) === true) &&
-                                                        <li><a href="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</a></li>
+                                                        <li><Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link></li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-units/create', links) === true) &&
-                                                        <li><a href="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</a></li>
+                                                        <li><Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link></li>
                                                     }
                                                 </ul>
                                             </li>
@@ -355,11 +373,11 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-personals/overview', links) === true) &&
-                                                        <li><a href="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</a></li>
+                                                        <li><Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link></li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-personals/create', links) === true) &&
-                                                        <li><a href="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</a></li>
+                                                        <li><Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link></li>
                                                     }
 
                                                 </ul>
@@ -368,6 +386,34 @@ class SideBar extends Component {
                                     </ul>
                                 </li>
                             }
+                            {/* Task management */}
+                            {   
+                                ((this.checkURL('/task-management-dashboard', links) === true) || (this.checkURL('/task-management', links) === true)) && 
+                                <li className="treeview">
+                                    <a className="tree5" onClick={() => this.handClick("tree5")}>
+                                    <i className="fa fa-tasks"></i> <span>{translate(`menu.tasks`)}</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        {
+                                            (this.checkURL('/task-management-dashboard', links) === true) &&
+                                            <li><Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link></li>
+                                        }
+                                        {
+                                            (this.checkURL('/task-management', links) === true) &&
+                                            <li><Link to="/task-management">{translate(`menu.task_management`)}</Link></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            {/* can them cai goi ham checkURL() */}
+                            <li>
+                                <a href="/kpi-member/overview">
+                                    <i className="fa fa-dashboard" /> <span>Quản lý kpi nhân viên</span>
+                                </a>
+                            </li>
                         </ul>
                     </section>
                 </aside>

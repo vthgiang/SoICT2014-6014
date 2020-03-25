@@ -104,7 +104,6 @@ class Content extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-        this.handleResizeColumn();
         script.src = '/lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;

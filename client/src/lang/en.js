@@ -16,7 +16,8 @@ export default {
             user_role_invalid: 'User and role invalid! Log in again!',
             acc_logged_out: 'Timework invalid! Log in again!',
             service_off: 'Your company service turning off! Try again!',
-            fingerprint_invalid: 'Your token invalid! Log in again!'
+            fingerprint_invalid: 'Your token invalid! Log in again!',
+            service_permisson_denied: 'You do not have permission call to Service',
         },
         auth: {
             login: 'Login',
@@ -141,6 +142,10 @@ export default {
             kpi_personal_overview: 'Overview personal KPI',
 
             notifications: 'Notifications',
+
+            tasks: 'Task management',
+            task_management: 'View task list',
+            task_management_dashboard: 'Task dashboard',
         },
 
         manage_system: {

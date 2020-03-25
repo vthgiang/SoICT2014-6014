@@ -32,25 +32,25 @@ export function component (state = initState, action) {
     var indexPaginate = -1;
     switch (action.type) {
 
-        case ComponentConstants.GET_COMPONENTS_REQUEST:
-        case ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST:
-        case ComponentConstants.SHOW_COMPONENT_REQUEST:
-        case ComponentConstants.CREATE_COMPONENT_REQUEST:
-        case ComponentConstants.EDIT_COMPONENT_REQUEST:
-        case ComponentConstants.DELETE_COMPONENT_REQUEST:
+        case ComponentConstants.GET_COMPONENTS_DEFAULT_REQUEST:
+        case ComponentConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST:
+        case ComponentConstants.SHOW_COMPONENT_DEFAULT_REQUEST:
+        case ComponentConstants.CREATE_COMPONENT_DEFAULT_REQUEST:
+        case ComponentConstants.EDIT_COMPONENT_DEFAULT_REQUEST:
+        case ComponentConstants.DELETE_COMPONENT_DEFAULT_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
 
-        case ComponentConstants.GET_COMPONENTS_SUCCESS:
+        case ComponentConstants.GET_COMPONENTS_DEFAULT_SUCCESS:
             return {
                 ...state,
                 list: action.payload,
                 isLoading: false
             };
 
-        case ComponentConstants.GET_COMPONENTS_PAGINATE_SUCCESS:
+        case ComponentConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS:
             return {
                 ...state,
                 listPaginate: action.payload.docs,
@@ -66,14 +66,14 @@ export function component (state = initState, action) {
                 isLoading: false
             };
 
-        case ComponentConstants.SHOW_COMPONENT_SUCCESS:
+        case ComponentConstants.SHOW_COMPONENT_DEFAULT_SUCCESS:
             return {
                 ...state,
                 item: action.payload,
                 isLoading: false
             };
 
-        case ComponentConstants.CREATE_COMPONENT_SUCCESS:
+        case ComponentConstants.CREATE_COMPONENT_DEFAULT_SUCCESS:
             return {
                 ...state,
                 list: [
@@ -87,7 +87,7 @@ export function component (state = initState, action) {
                 isLoading: false
             };
 
-        case ComponentConstants.EDIT_COMPONENT_SUCCESS:
+        case ComponentConstants.EDIT_COMPONENT_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
@@ -105,7 +105,7 @@ export function component (state = initState, action) {
                 isLoading: false
             };
 
-        case ComponentConstants.DELETE_COMPONENT_SUCCESS:
+        case ComponentConstants.DELETE_COMPONENT_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
             if(index !== -1) state.list.splice(index,1);

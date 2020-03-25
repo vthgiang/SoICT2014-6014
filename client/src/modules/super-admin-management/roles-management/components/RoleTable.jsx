@@ -45,6 +45,7 @@ class RoleTable extends Component {
                         <tr>
                             <th>{ translate('manage_role.name') }</th>
                             <th>{ translate('manage_role.extends') }</th>
+                            <th>{ translate('manage_role.users') }</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
@@ -82,6 +83,32 @@ class RoleTable extends Component {
                                                         role.parents.map((parent, index, arr) => {
                                                             if(index !== arr.length - 1) return `${parent.name}, `;
                                                             else return `${parent.name}`
+                                                        })
+                                                    }
+                                                </span>
+                                            </div>
+                                        </React.Fragment>
+                                    } </td>
+                                    <td> { 
+                                        role.users.map((user, index, arr) => {
+                                            if(arr.length < 3){
+                                                if(index !== arr.length - 1) return `${user.userId.name}, `;
+                                                else return `${user.userId.name}`
+                                            }else{
+                                                if(index < 2 ){
+                                                    return `${user.userId.name}, `
+                                                }
+                                            }
+                                        })
+                                    }{
+                                        role.users.length >=3 &&
+                                        <React.Fragment>
+                                            <div className="tooltip2">...
+                                                <span className="tooltip2text">
+                                                    {
+                                                        role.users.map((user, index, arr) => {
+                                                            if(index !== arr.length - 1) return `${user.userId.name}, `;
+                                                            else return `${user.userId.name}`
                                                         })
                                                     }
                                                 </span>

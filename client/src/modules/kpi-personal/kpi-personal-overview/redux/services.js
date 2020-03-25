@@ -7,7 +7,9 @@ import {
 import jwt from 'jsonwebtoken';
 import {handleResponse} from '../../../../helpers/HandleResponse';
 export const overviewKpiServices = {
-    getAllKPIPersonalByMember
+    getAllKPIPersonalByMember,
+    getAllKPIPersonalOfTask,
+    getAllKPIPersonalByUserID
 };
 
 // Lấy tất cả kpi cá nhân
@@ -22,4 +24,20 @@ async function getAllKPIPersonalByMember() {//member
     return fetch(`/kpipersonals/user/${id}`, requestOptions).then(handleResponse);
 }
 
+// Lấy tất cả kpi cá nhân
+function getAllKPIPersonalByUserID(member) {
+    const requestOptions = {
+        method: 'GET',
+    };
 
+    return fetch(`/kpipersonals/user/${member}`, requestOptions).then(handleResponse);
+}
+
+// Lấy tất cả kpi cá nhân
+function getAllKPIPersonalOfTask(member) {
+    const requestOptions = {
+        method: 'GET',
+    };
+
+    return fetch(`/kpipersonals/task/${member}`, requestOptions).then(handleResponse);
+}

@@ -13,7 +13,7 @@ export const ComponentServices = {
 
 function get() {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/component`,
+        url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -23,7 +23,7 @@ function get() {
 
 function getPaginate(data) {  
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/component/paginate`,
+        url: `${ LOCAL_SERVER_API }/components-default-management/paginate`,
         method: 'POST',
         data,
         headers: AuthenticateHeader()
@@ -34,7 +34,7 @@ function getPaginate(data) {
 
 function show(id) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/component/${id}`,
+        url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -44,7 +44,7 @@ function show(id) {
 
 function create(component) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/component`,
+        url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'POST',
         data: component,
         headers: AuthenticateHeader()
@@ -55,7 +55,7 @@ function create(component) {
 
 function edit(id, component) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/component/${id}`,
+        url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'PATCH',
         data: component,
         headers: AuthenticateHeader()
@@ -66,7 +66,7 @@ function edit(id, component) {
 
 function destroy(id, component) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/component/${id}`,
+        url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'DELETE',
         headers: AuthenticateHeader()
     };

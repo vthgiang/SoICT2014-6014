@@ -28,7 +28,7 @@ const Log = async (filename, title) => {
 const LogInfo = async(user, content, companyId) => {
     try {
         console.log("INFO: ", content, companyId);
-        if(companyId === null){
+        if(companyId === undefined){
             //Không có id công ty để check trong databse
             const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest
             await Logger.info(user);
@@ -54,7 +54,7 @@ const LogInfo = async(user, content, companyId) => {
 const LogError = async(user, content, companyId) => {
     try {
         console.log("ERR: ", content, companyId);
-        if(companyId === null){
+        if(companyId === undefined){
             //Không có id công ty để check trong databse
             const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest
             await Logger.error(user);

@@ -39,7 +39,7 @@ class CompanyCreateForm extends Component {
             <React.Fragment>
                 <ModalButton modalID="modal-create-company" button_name={translate('manage_company.add')} title={translate('manage_company.add_title')}/>
                 <ModalDialog
-                    modalID="modal-create-company"
+                    modalID="modal-create-company" size="100"
                     formID="form-create-company"
                     title={translate('manage_company.add_title')}
                     msg_success={translate('manage_company.add_success')}
@@ -47,21 +47,34 @@ class CompanyCreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-company">
-                        <div className="form-group">
-                            <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" name="name" onChange={ this.inputChange }/>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" name="short_name" onChange={ this.inputChange }/>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
-                            <textarea style={{ height: '150px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange }/>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('manage_company.super_admin') }<span className="text-red"> * </span></label>
-                            <input type="email" className="form-control" name="email" onChange={ this.inputChange }/>
+                        
+                        <div className="row">
+                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">Thông tin doanh nghiệp</legend>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
+                                        <input type="text" className="form-control" name="name" onChange={ this.inputChange }/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
+                                        <input type="text" className="form-control" name="short_name" onChange={ this.inputChange }/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
+                                        <textarea style={{ height: '150px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange }/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>{ translate('manage_company.super_admin') }<span className="text-red"> * </span></label>
+                                        <input type="email" className="form-control" name="email" onChange={ this.inputChange }/>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <fieldset className="scheduler-border" style={{minHeight: '482.59px'}}>
+                                    <legend className="scheduler-border">Dịch vụ sử dụng</legend>
+                                </fieldset>
+                            </div>
                         </div>
                     </form>
                 </ModalDialog>
