@@ -123,7 +123,6 @@ exports.create = async (data, company) => {
         company: company
     });
     var salary = data.mainSalary + data.unit;
-    //console.log(employeeinfo.map(x=x._id));
     var createSalary = await Salary.create({
         employee: employeeinfo._id,
         company: company,
@@ -177,9 +176,10 @@ exports.delete = async (id) => {
 }
 
 // Update thông tin bảng lương
-exports.update = async (id, data) => {
+exports.update = async (id, data,company) => {
     var employeeinfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber
+        employeeNumber: data.employeeNumber,
+        company:company
     });
     var salaryChange = {
         employee: employeeinfo._id,
@@ -228,4 +228,91 @@ exports.update = async (id, data) => {
         departments
     }
     return content;
+}
+
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
+exports.checkSalary = async (employeeNumber,month, company) => {
+    var employeeinfo = await Employee.findOne({
+        employeeNumber: employeeNumber,
+        company:company
+    });
+    var idSalary = await Salary.find({
+        employee: employeeinfo._id,
+        company: company,
+        month:month
+    }, {
+        field1: 1
+    })
+    var checkSalary = false;
+    if (idSalary.length !== 0) {
+        checkSalary = true
+    }
+    return checkSalary;
+}
+
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
+exports.checkArraySalary = async (data, company) => {
+    var list=[];
+    for(let i=0;i<data.arraySalary.length;i++){
+        let employeeinfo = await Employee.findOne({
+            employeeNumber: data.arraySalary[i].employeeNumber,
+            company:company
+        },{
+            field1: 1
+        });
+        if(employeeinfo!==null){
+            let salary=await Salary.findOne({
+                employee:employeeinfo._id,
+                company: company,
+                month:data.arraySalary[i].month
+            }, {
+                field1: 1
+            })
+            if(salary!==null){
+                list.push(i);
+            }
+        }
+    }
+    console.log(list)
+    return list;
+}
+
+// Import dữ liệu bảng lương
+exports.importSalary = async (data, company) => {
+    var importSalary=[];
+    for(let n in data.rows){
+        var row = data.rows[n];
+        var employeeinfo = await Employee.findOne({
+            employeeNumber: row[3],
+            company: company
+        });
+        var mainSalary = row[5].toString();
+        unit = mainSalary.slice(mainSalary.length-3,mainSalary.length);
+        if( unit !== "VND" && unit !== "USD"){
+            mainSalary = mainSalary + "VND"
+        }
+        var month = "",bonus=[];
+            if (row[1].toString().length === 2) {
+                month = row[1].toString() + "-" + row[2].toString();
+            } else {
+                month = "0" + row[1].toString() + "-" + row[2].toString();
+            }
+            for(let i=6;i<row.length;i++){
+                if(row[i]!==null){
+                    bonus=[...bonus,{
+                        nameBonus:data.cols[i],
+                        number:row[i]
+                    }]
+                }
+            }
+        var newSalary = await Salary.create({
+            employee: employeeinfo._id,
+            company: company,
+            month: month,
+            mainSalary: mainSalary,
+            bonus: bonus
+        });
+        importSalary[n]=newSalary;
+    }
+    return importSalary;
 }

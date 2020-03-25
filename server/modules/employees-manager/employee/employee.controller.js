@@ -288,3 +288,19 @@ exports.delete = async (req, res) => {
         });
     }
 }
+
+// Kiểm tra sự tồn tại của MSNV trong array
+exports.checkArrayMSNV = async (req, res) => {
+    try {
+        var checkArrayMSNV = await EmployeeService.checkArrayMSNV(req.body, req.user.company._id);
+        res.status(200).json({
+            message: "success",
+            content: checkArrayMSNV
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error,
+        });
+    }
+}
+

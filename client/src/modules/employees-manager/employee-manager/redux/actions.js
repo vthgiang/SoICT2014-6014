@@ -16,7 +16,8 @@ export const EmployeeManagerActions = {
     updateInformationEmployee,
     checkMSNV,
     checkEmail,
-    deleteEmployee
+    deleteEmployee,
+    checkArrayMSNV
 
 };
 
@@ -371,6 +372,37 @@ function deleteEmployee(id) {
     function failure(error) {
         return {
             type: EmployeeConstants.DELETE_EMPLOYEE_FAILURE,
+            error
+        };
+    };
+}
+
+// Kiểm tra sự tồn tại của MSNV trong array
+function checkArrayMSNV(arrayMSNV) {
+    return dispatch => {
+        dispatch(request());
+        EmployeeService.checkArrayMSNV(arrayMSNV)
+            .then(
+                checkArrayMSNV => dispatch(success(checkArrayMSNV)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function request() {
+        return {
+            type: EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_REQUEST
+        };
+    };
+
+    function success(checkArrayMSNV) {
+        return {
+            type: EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_SUCCESS,
+            checkArrayMSNV
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_FAILURE,
             error
         };
     };

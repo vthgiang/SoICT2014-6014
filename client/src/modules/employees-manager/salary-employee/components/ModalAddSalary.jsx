@@ -95,6 +95,7 @@ class ModalAddSalary extends Component {
 
     handleSunmit = async () => {
         var { translate } = this.props;
+        
         await this.setState({
             month: this.refs.month.value,
         })
@@ -104,9 +105,10 @@ class ModalAddSalary extends Component {
             this.notifyerror(translate('salary_employee.check_msnv'));
         } else if (this.state.mainSalary === "") {
             this.notifyerror(translate('salary_employee.check_main_salary'));
-        } else if (this.state.endDate === "") {
+        } else if (this.state.month === "") {
             this.notifyerror(translate('salary_employee.check_month'));
         } else {
+            this.props.checkSalary(this.state.employeeNumber, this.state.month);
             this.props.createNewSalary(this.state);
             this.setState({
                 unit: "VND",
@@ -204,6 +206,7 @@ function mapState(state) {
 
 const actionCreators = {
     createNewSalary: SalaryActions.createNewSalary,
+    checkSalary:SalaryActions.checkSalary,
     checkMSNV:EmployeeManagerActions.checkMSNV,
 };
 

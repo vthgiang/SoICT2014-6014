@@ -1,8 +1,10 @@
 import {
     EmployeeConstants
 } from './constants';
-
-export function employeesManager(state = {}, action) {
+const initState = {
+    checkArrayMSNV: []
+}
+export function employeesManager(state = initState, action) {
     switch (action.type) {
         case EmployeeConstants.GETALL_REQUEST:
             return {
@@ -171,6 +173,22 @@ export function employeesManager(state = {}, action) {
         case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
             return {
                 error: action.error,
+            };
+
+        case EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_REQUEST:
+            return {
+                ...state,
+                isloading: true
+            };
+        case EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_SUCCESS:
+            return {
+                ...state,
+                checkArrayMSNV: [...action.checkArrayMSNV.content],
+                    isloading: false
+            };
+        case EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_FAILURE:
+            return {
+                error: action.error
             };
         default:
             return state

@@ -16,4 +16,13 @@ router.delete('/:id',auth, SalaryController.delete);
 // update thông tin bảng lương
 router.put('/:id',auth, SalaryController.update);
 
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
+router.get('/checkSalary/:employeeNumber/:month',auth, SalaryController.checkSalary);
+
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array truyền vào
+router.post('/checkArraySalary',auth, SalaryController.checkArraySalary);
+
+// Import lương nhân viên
+router.post('/import',auth, SalaryController.importSalary);
+
 module.exports = router;
