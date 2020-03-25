@@ -9,6 +9,9 @@ export const SalaryActions = {
     createNewSalary,
     deleteSalary,
     updateSalary,
+    checkSalary,
+    checkArraySalary,
+    importSalary
 };
 
 // lấy danh sách bảng lương
@@ -18,7 +21,7 @@ function getListSalary(data) {
 
         SalaryService.getListSalary(data)
             .then(
-           listSalary      => dispatch(success(listSalary)),
+                listSalary => dispatch(success(listSalary)),
                 error => dispatch(failure(error.toString()))
             );
     }
@@ -45,7 +48,7 @@ function getListSalary(data) {
 }
 
 // tạo mới bảng lương
-function createNewSalary(newSalary){
+function createNewSalary(newSalary) {
     return dispatch => {
         dispatch(request(newSalary));
 
@@ -79,7 +82,7 @@ function createNewSalary(newSalary){
 }
 
 // Xoá một chương trình đào tạo
-function deleteSalary(id){
+function deleteSalary(id) {
     return dispatch => {
         dispatch(request());
 
@@ -112,11 +115,11 @@ function deleteSalary(id){
 }
 
 // cập nhật thông tin của chương trình đào tạo
-function updateSalary(id,infoSalary){
+function updateSalary(id, infoSalary) {
     return dispatch => {
         dispatch(request());
 
-        SalaryService.updateSalary(id,infoSalary)
+        SalaryService.updateSalary(id, infoSalary)
             .then(
                 infoSalary => dispatch(success(infoSalary)),
                 error => dispatch(failure(error.toString()))
@@ -139,6 +142,102 @@ function updateSalary(id,infoSalary){
     function failure(error) {
         return {
             type: SalaryConstants.UPDATE_SALARY_FAILURE,
+            error
+        };
+    };
+}
+
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
+function checkSalary(employeeNumber, month) {
+    return dispatch => {
+        dispatch(request());
+        SalaryService.checkSalary(employeeNumber, month)
+            .then(
+                checkSalary => dispatch(success(checkSalary)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() {
+        return {
+            type: SalaryConstants.CHECK_SALARY_REQUEST
+        };
+    };
+
+    function success(checkSalary) {
+        return {
+            type: SalaryConstants.CHECK_SALARY_SUCCESS,
+            checkSalary
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: SalaryConstants.CHECK_SALARY_FAILURE,
+            error
+        };
+    };
+}
+
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
+function checkArraySalary(arraySalary) {
+    return dispatch => {
+        dispatch(request());
+        SalaryService.checkArraySalary(arraySalary)
+            .then(
+                checkArraySalary => dispatch(success(checkArraySalary)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() {
+        return {
+            type: SalaryConstants.CHECK_ARRAY_SALARY_REQUEST
+        };
+    };
+
+    function success(checkArraySalary) {
+        return {
+            type: SalaryConstants.CHECK_ARRAY_SALARY_SUCCESS,
+            checkArraySalary
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: SalaryConstants.CHECK_ARRAY_SALARY_FAILURE,
+            error
+        };
+    };
+}
+
+// Import lương nhân viên
+function importSalary(data) {
+    return dispatch => {
+        dispatch(request());
+        SalaryService.importSalary(data)
+            .then(
+                importSalary => dispatch(success(importSalary)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() {
+        return {
+            type: SalaryConstants.IMPORT_SALARY_REQUEST
+        };
+    };
+
+    function success(importSalary) {
+        return {
+            type: SalaryConstants.IMPORT_SALARY_SUCCESS,
+            importSalary
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: SalaryConstants.IMPORT_SALARY_FAILURE,
             error
         };
     };

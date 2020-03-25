@@ -662,3 +662,21 @@ exports.delete = async (id) => {
     }
     return content;
 }
+
+// Kiểm tra sự tồn tại của MSNV trong array 
+exports.checkArrayMSNV = async (data, company) => {
+    var list=[];
+    for(let i=0;i<data.arrayMSNV.length;i++){
+        let employee=await Employee.findOne({
+            employeeNumber: data.arrayMSNV[i],
+            company: company
+        }, {
+            field1: 1
+        })
+        if(employee===null){
+            list.push(i);
+        }
+    }
+    return list;
+}
+

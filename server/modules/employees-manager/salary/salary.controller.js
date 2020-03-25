@@ -55,8 +55,8 @@ exports.delete = async (req, res) => {
 // update thông tin bảng lương
 exports.update = async (req, res) => {
     try {
-        var saralyUpdate = await SalaryService.update(req.params.id,req.body);
-        await LogInfo(req.user.email, 'EDIT_SARALY', req.user.company._id );
+        var saralyUpdate = await SalaryService.update(req.params.id,req.body,req.user.company._id);
+        await LogInfo(req.user.email, 'EDIT_SARALY', req.user.company._id);
         res.status(200).json({
             message: "success",
             content: saralyUpdate
@@ -65,6 +65,51 @@ exports.update = async (req, res) => {
         await LogError(req.user.email, 'EDIT_SARALY', req.user.company._id );
         res.status(400).json({
             message: error
+        });
+    }
+}
+
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
+exports.checkSalary = async (req, res) => {
+    try {
+        var checkSalary = await SalaryService.checkSalary(req.params.employeeNumber,req.params.month, req.user.company._id);
+        res.status(200).json({
+            message: "success",
+            content: checkSalary
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error,
+        });
+    }
+}
+
+// Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array truyền vào
+exports.checkArraySalary = async (req, res) => {
+    try {
+        var checkArraySalary = await SalaryService.checkArraySalary(req.body, req.user.company._id);
+        res.status(200).json({
+            message: "success",
+            content: checkArraySalary
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error,
+        });
+    }
+}
+
+// Import dữ liệu bảng lương
+exports.importSalary = async (req, res) => {
+    try {
+        var importSalary = await SalaryService.importSalary(req.body, req.user.company._id);
+        res.status(200).json({
+            message: "success",
+            content: importSalary
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error,
         });
     }
 }
