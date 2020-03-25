@@ -25,24 +25,24 @@ const Log = async (filename, title) => {
     return await createLogger(option);
 }
 
-const LogInfo = async(user, content, companyId) => {
+const LogInfo = async(user, content, company=undefined) => {
     try {
-        console.log("INFO: ", content, companyId);
-        if(companyId === undefined){
+        console.log("INFO: ", content, company);
+        if(company === undefined){
             //Không có id công ty để check trong databse
-            const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest
+            const Logger = await Log('system', content); //Khởi tạo lưu vào thư mục guest
             await Logger.info(user);
         }else{
             //Có id của công ty
-            const company = await Company.findById(companyId); //lấy thông tin về công ty trong hệ thống
-            if(company === null){
+            const com = await Company.findById(company._id); //lấy thông tin về công ty trong hệ thống
+            if(com === null){
                 //Không có dữ liệu về công ty này
                 const Logger = await Log('system', content); //ghi log vào thư mục system - systemadmin
                 await Logger.info(user);
             }else{
                 //Có dữ liệu về công ty
-                const Logger = await Log(company.short_name, content);
-                company.log && await Logger.info(user);
+                const Logger = await Log(com.short_name, content);
+                com.log && await Logger.info(user);
             }
         }
     } catch (error) {
@@ -51,24 +51,24 @@ const LogInfo = async(user, content, companyId) => {
     
 }
 
-const LogError = async(user, content, companyId) => {
+const LogError = async(user, content, company=undefined) => {
     try {
-        console.log("ERR: ", content, companyId);
-        if(companyId === undefined){
+        console.log("ERR: ", content, company);
+        if(company === undefined){
             //Không có id công ty để check trong databse
-            const Logger = await Log('guest', content); //Khởi tạo lưu vào thư mục guest
+            const Logger = await Log('system', content); //Khởi tạo lưu vào thư mục guest
             await Logger.error(user);
         }else{
             //Có id của công ty
-            const company = await Company.findById(companyId); //lấy thông tin về công ty trong hệ thống
-            if(company === null){
+            const com = await Company.findById(company._id); //lấy thông tin về công ty trong hệ thống
+            if(com === null){
                 //Không có dữ liệu về công ty này
-                const Logger = await Log('qlcv', content); //ghi log vào thư mục log chung
+                const Logger = await Log('system', content); //ghi log vào thư mục log chung
                 await Logger.error(user);
             }else{
                 //Có dữ liệu về công ty
-                const Logger = await Log(company.short_name, content);
-                company.log && await Logger.error(user);
+                const Logger = await Log(com.short_name, content);
+                com.log && await Logger.error(user);
             }
         }
     } catch (error) {

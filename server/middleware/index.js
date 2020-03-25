@@ -128,7 +128,7 @@ exports.auth = async (req, res, next) => {
 
         }
 
-        // console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
+        console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
         next();
         
     } catch (error) { 

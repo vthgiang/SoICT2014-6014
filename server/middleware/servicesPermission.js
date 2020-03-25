@@ -20,15 +20,15 @@ exports.checkServicePermission = async(data, path, method, currentRole) => {
                     if(result === true) break;
                     if(element === role){
                         result = true;
-                        await console.log("CHECKED: ", data[index]);
+                        // await console.log("CHECKED: ", data[index]);
                         break;
                     }
                 }
             }
         }
     }
-    await console.log("permission service: ", path);
-    await console.log("result: ", result);
+    // await console.log("permission service: ", path);
+    // await console.log("result: ", result);
     
     return result;
 }
