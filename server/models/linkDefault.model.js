@@ -10,12 +10,7 @@ const LinkDefaultSchema = new Schema({
     },
     description: {
         type: String
-    },
-    type: {
-        type: String ,
-        required: true,
-        default: 'service'
-    },
+    }
 },{
     timestamps: true,
     toJSON: { virtuals: true }

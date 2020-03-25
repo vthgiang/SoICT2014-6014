@@ -1,5 +1,6 @@
 import { SystemServices } from "./services";
 import { SystemConsts } from "./constants";
+import { AlertActions } from "../../../alert/redux/actions";
 
 export const getLogState = () => {
     return dispatch => {
@@ -16,9 +17,7 @@ export const getLogState = () => {
                     type: SystemConsts.GET_LOG_STATE_REQUEST_FAILE,
                     payload: err.response
                 })
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }
@@ -39,9 +38,7 @@ export const toggleLogState = () => {
                     type: SystemConsts.TOGGLE_LOG_STATE_REQUEST_FAILE,
                     payload: err.response
                 })
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }

@@ -76,9 +76,7 @@ function create(link){
                     resolve(res);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
+                    AlertActions.handleAlert(dispatch, err);
                     console.log("Error: ", err);
                     reject(err);
                 })
