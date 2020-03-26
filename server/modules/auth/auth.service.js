@@ -17,8 +17,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             { path: 'company' }
         ]);
 
-    if(!user) throw {msg: "EMAIL_INVALID"};
-    console.log("USER LOGIN: ",user, user.company);
+    if(!user) throw {msg: "email_invalid"};
     const validPass = await bcrypt.compare(data.password, user.password);
     if(!validPass) {
         if(user.active) user.status = user.status + 1;
@@ -26,16 +25,16 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             user.active = false;
             user.status = 0;
             user.save();
-            throw { msg: 'WRONG_5_TIMES_BLOCKED_ACCOUNT'};
+            throw { msg: 'wrong5_block'};
         }
         user.save();
-        throw {msg: 'PASSWORD_INVALID'};
+        throw {msg: 'password_invalid'};
     }
-
+    if(user.roles.length < 1) throw ({msg: 'acc_have_not_role'})
     if(user.roles[0].roleId.name !== 'System Admin'){ 
         //Không phải phiên đăng nhập của system admin 
-        if(!user.active) throw { msg: 'ACCOUNT_HAS_BEEN_LOCKED'};
-        if(!user.company.active) throw ({msg: 'COMPANY_SERVICE_OFF'});
+        if(!user.active) throw { msg: 'acc_blocked'};
+        if(!user.company.active) throw ({msg: 'company_service_off'});
     
         const token = await jwt.sign(
             {

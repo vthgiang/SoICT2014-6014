@@ -18,6 +18,11 @@ export default {
             service_off: 'SERVICE OFF! Dịch vụ của công ty bạn đã tạm ngưng! Phiên làm việc của bạn sẽ bị tạm ngưng!',
             fingerprint_invalid: 'Phiên đăng nhập của bạn không đúng! Vui lòng đăng nhập lại!',
             service_permisson_denied: 'Bạn không có quyền gọi đến service',
+            email_invalid: 'Email không chính xác',
+            password_invalid: 'Mật khẩu không chính xác',
+            wrong5_block: 'Bạn đã nhập sai mật khẩu quá 5 lần. Tài khoản này đã bị khóa!',
+            acc_blocked: 'Tài khoản đã bị khóa',
+            acc_have_not_role: 'Tài khoản chưa được phân quyền'
         },
         auth: {
             login: 'Đăng nhập',

@@ -18,6 +18,11 @@ export default {
             service_off: 'Your company service turning off! Try again!',
             fingerprint_invalid: 'Your token invalid! Log in again!',
             service_permisson_denied: 'You do not have permission call to Service',
+            email_invalid: 'Email invalid',
+            password_invalid: 'Password invalid',
+            wrong5_block: 'Input password wrong 5 times. Accont have been blocked!',
+            acc_blocked: 'Accont have been blocked!',
+            acc_have_not_role: 'Accout have not role'
         },
         auth: {
             login: 'Login',
