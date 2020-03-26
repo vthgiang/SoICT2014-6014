@@ -5,18 +5,17 @@ const generator = require("generate-password");
 
 exports.get = async () => {
     
-    return await Company.find({customer: true});
+    return await Company.find();
 }
 
 exports.getById = async (id) => {
     
-    return await Company.findOne({_id: id, customer: true});
+    return await Company.findOne({_id: id});
 }
 
 exports.getPaginate = async (limit, page, data={}) => {
-    const newData = await Object.assign( {customer: true}, data );
     return await Company
-        .paginate( newData , { 
+        .paginate( data , { 
             page, 
             limit
         });
@@ -98,19 +97,24 @@ exports.create5RoleAbstract = async(companyId) => {
 }
 
 exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleSuperAdminId) => {
+    console.log("Khởi tạo acc super admin")
     //1.Tạo mật khẩu tự động cho acc Super Admin
-    var salt = bcrypt.genSaltSync(10);
-    var password = generator.generate({ length: 10, numbers: true });
-    var hash = bcrypt.hashSync(password, salt);
+    var salt = await bcrypt.genSaltSync(10);
+    // console.log("salt", salt)
+    var password = await generator.generate({ length: 10, numbers: true });
+    // console.log("pass", password)
+    var hash = await bcrypt.hashSync(password, salt);
+    // console.log("Hash", hash)
 
     //2.Thiết lập nội dụng email gửi đến cho Super Admin của công ty
-    var transporter = nodemailer.createTransport({
+    var transporter = await nodemailer.createTransport({
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
+    // console.log("khởi tạo transporter: ", transporter)
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
-        to: data.email,
+        to: userEmail,
         subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyName}`,
         text: `Email thông báo đăng kí thành công sử dụng dịch vụ Quản lý công việc và thông tin về tài khoản SUPER ADMIN của doanh nghiệp/công ty ${companyName}.`,
         html:   
@@ -131,6 +135,7 @@ exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleS
         </div>
         `
     }
+    // console.log("Khởi taoj nd mail: ", mainOptions)
     //Tạo tài khoản Super Admin cho doanh nghiệp/công ty
     var user = await User.create({
         name: `Super Admin ${companyName}`,
@@ -138,43 +143,52 @@ exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleS
         password: hash,
         company: companyId
     });
+
+    
+    // console.log("Tạo user: ", user);
     //Add role Super Admin cho tài khoản trên
-    await UserRole.create({
+    var ur = await UserRole.create({
         userId: user._id,
         roleId: roleSuperAdminId
     });
+    // console.log("tạo ur: ", ur)
     //Gửi email xác thực cho người dùng đó
-    await transporter.sendMail(mainOptions);
+    var sendMail = await transporter.sendMail(mainOptions);
+    // console.log("SEND MAIL: ", sendMail);
     
     return user;
 }
 
 exports.createLinksForCompany = async(companyId, superAdminId, adminId) => {
     //Lấy dữ liệu về các link mặc định 
-    const data = await LinkDefault.find();
+    const linkDefault = await LinkDefault.find();
 
     //Khởi tạo link vào các trang của website cho công ty
-    const links = await data.map( async(link) => {
-        return await Link.create({
+    const dataLinks = linkDefault.map( link => {
+        return {
             url: link.url,
             description: link.description,
             company: companyId
-        });
-    });
+        };
+    })
+    // console.log("datalink: ", dataLinks)
+    const links = await Link.insertMany(dataLinks);
 
     //gán quyền truy cập cho admin và super admin của công ty đó
+    // await console.log("links: ", links)
     await links.map( async(link) => {
+        await console.log("id: ",link._id, superAdminId, adminId)
         var admin =  await Privilege.create({
-            resource: link._id,
-            resource_type: 'Link',
-            role: adminId
+            resourceId: link._id,
+            resourceType: 'Link',
+            roleId: adminId
         });
         var superAdmin = await Privilege.create({
-            resource: link._id,
-            resource_type: 'Link',
-            role: superAdminId
+            resourceId: link._id,
+            resourceType: 'Link',
+            roleId: superAdminId
         });
-
+        // await console.log("pri: ", superAdmin, admin)
         return {superAdmin, admin};
     });
 } 

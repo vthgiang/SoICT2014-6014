@@ -26,10 +26,10 @@ mongoose.connect( db, {
 
 const seedDatabase = async () => {
     await console.log("Đang khởi tạo dữ liệu mẫu ...");
-    //Tạo bản ghi trạng thái log
+    // Tạo bản ghi trạng thái log
     await Log.create({ name: 'log', status: true });
 
-    //Tạo các roletype trong hệ thống
+    // Tạo các roletype trong hệ thống
     await RoleType.insertMany([
         { name: 'abstract' }, 
         { name: 'chucdanh' },
@@ -45,17 +45,17 @@ const seedDatabase = async () => {
         password: hash
     });
 
-    //Tạo role System Admin 
+    // Tạo role System Admin 
     var roleAbstract = await RoleType.findOne({ name: 'abstract' });
     var roleSystemAdmin = await Role.create({
         name: 'System Admin',
         type: roleAbstract._id
     });
 
-    //Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
+    // Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
     await UserRole.create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id });
 
-    //Tạo link cho system 
+    // Tạo link cho system 
     var links = await Link.insertMany([{
             url: '/',
             description: 'Trang chủ'
@@ -74,9 +74,12 @@ const seedDatabase = async () => {
         }
     ]);
 
-    //Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
+    // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
     var linkDefaults = await LinkDefault.insertMany([
         {
+            url: '/',
+            description: 'Trang chủ'
+        },{
             url: '/users-management',
             description: 'Quản lý người dùng'
         },{
@@ -145,11 +148,11 @@ const seedDatabase = async () => {
         }
     ]);
 
-    //Kết thúc việc khởi tạo dữ liệu mẫu
+    // Kết thúc việc khởi tạo dữ liệu mẫu
     await console.log("Đã tạo xong dữ liệu mẫu");
 } 
 
-//Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//
+// Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//
 seedDatabase()
     .then(() => {
         console.log("DONE! :)\n")

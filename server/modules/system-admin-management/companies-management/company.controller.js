@@ -31,22 +31,22 @@ exports.getPaginate = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        console.log("khởi tạo cty mới")
+        // console.log("khởi tạo cty mới")
         //Tạo thông tin công ty mới(tên, tên ngắn, mô tả)
         const company = await CompanyService.create(req.body);
-        console.log("Công ty: ", company);
+        // console.log("Công ty: ", company);
 
         //Tạo 5 role abstract cho công ty mới
         const abstractRoles = await CompanyService.create5RoleAbstract(company._id);
-        console.log("Tạo role abstract: ", abstractRoles);
+        // console.log("Tạo role abstract: ", abstractRoles);
         
         //Tạo tài khoản super admin cho công ty mới
         await CompanyService.createSuperAdminAccount(company._id, company.name, req.body.email, abstractRoles.superAdmin._id);
-        console.log('Tạo và add tài khoản super admin');
+        // console.log('Tạo và add tài khoản super admin');
 
         //Tạo link cho các trang mà công ty được phép truy cập
         const links = await CompanyService.createLinksForCompany(company._id, abstractRoles.superAdmin._id, abstractRoles.admin._id);
-        console.log("Link của cty: ", links);
+        // console.log("Link của cty: ", links);
         
         LogInfo(req.user.email, 'CREATE_NEW_COMPANY');
         res.status(200).json(company);
