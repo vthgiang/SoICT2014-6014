@@ -357,7 +357,7 @@ class ModalAddTask extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTask.responsible.length === 0 ? ' has-error' : '')}>
                                             <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện*</label>
                                             <div className="col-sm-8" style={{ width: '100%' }}>
-                                                <select multiline="true" value={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.responsible : this.state.newTask.responsible} className="form-control select2" multiple="multiple" ref="responsible" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
+                                                <select multiline="true" defaultValue={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.responsible : this.state.newTask.responsible} className="form-control select2" multiple="multiple" ref="responsible" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
                                                     {userdepartments &&
                                                         userdepartments.map(item =>
                                                             <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -383,7 +383,7 @@ class ModalAddTask extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTask.accounatable.length === 0 ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt*</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                <select value={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.accounatable : this.state.newTask.accounatable} className="form-control select2" multiple="multiple" ref="accounatable" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
+                                                <select defaultValue={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.accounatable : this.state.newTask.accounatable} className="form-control select2" multiple="multiple" ref="accounatable" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
                                                     {userdepartments &&
                                                         userdepartments.map(item =>
                                                             <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -407,7 +407,7 @@ class ModalAddTask extends Component {
                                         <div className='form-group has-feedback'>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                <select value={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.consulted : this.state.newTask.consulted} className="form-control select2" multiple="multiple" ref="consulted" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
+                                                <select defaultValue={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.consulted : this.state.newTask.consulted} className="form-control select2" multiple="multiple" ref="consulted" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
                                                     {userdepartments &&
                                                         userdepartments.map(item =>
                                                             <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -428,7 +428,7 @@ class ModalAddTask extends Component {
                                         <div className='form-group has-feedback'>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                <select value={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.informed : this.state.newTask.informed} className="form-control select2" multiple="multiple" ref="informed" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
+                                                <select defaultValue={(currentTemplate && currentTemplate.length !== 0) ? currentTemplate[0].resourceId.informed : this.state.newTask.informed} className="form-control select2" multiple="multiple" ref="informed" data-placeholder="Chọn người thực hiện" style={{ width: '100%' }}>
                                                     {userdepartments &&
                                                         userdepartments.map(item =>
                                                             <optgroup label={item.roleId.name} key={item.roleId._id}>
