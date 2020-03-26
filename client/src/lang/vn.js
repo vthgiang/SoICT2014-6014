@@ -144,6 +144,7 @@ export default {
             kpi_unit_create: 'Khởi tạo KPI đơn vị',
             kpi_unit_evaluate: 'Dữ liệu KPI đơn vị',
             kpi_unit_overview: 'Tổng quan KPI đơn vị',
+            kpi_member: 'Quản lý KPI nhân viên',
             kpi_personal: 'KPI cá nhân',
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',

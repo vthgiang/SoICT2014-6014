@@ -11,19 +11,6 @@ class SideBar extends Component {
         this.state = {}
         this.checkURL = this.checkURL.bind(this);
     }
-    handClick = (event) => {
-        var parent = window.$("a." + event).parent(".treeview");
-        window.$('html,body').animate({
-            scrollTop: parent.offset().top
-        },
-            'slow');
-        if (parent.attr('class') === "treeview") {
-            parent.addClass("active menu-open");
-        } else {
-            parent.removeClass("active");
-            parent.removeClass("menu-open");
-        }
-    }
 
     checkURL = (urlName, linkArr) => {
         var result = false;
@@ -70,7 +57,7 @@ class SideBar extends Component {
                                 <Link to='/notifications'><i className="fa fa-bell text-yellow"></i>{translate('menu.notifications')}</Link>
                             </div>
                         </div>
-                        <ul className="sidebar-menu" data-widget="tree">
+                        <ul className="sidebar-menu" data-widget="tree" ref = "sideBarMenu">
                             <li className="header">SIDEBAR</li>
                             {
                                 this.checkURL('/', links) === true &&
@@ -187,10 +174,8 @@ class SideBar extends Component {
                                 (this.checkURL(url.path1, links) === true || this.checkURL(url.path2, links) === true || this.checkURL(url.path3, links) === true ||
                                     this.checkURL(url.path4, links) === true || this.checkURL(url.path5, links) === true || this.checkURL(url.path12, links) === true ||
                                     this.checkURL(url.path6, links) === true || this.checkURL(url.path7, links) === true) &&
-                                <li className={window.location.pathname === url.path1 || window.location.pathname === url.path2 || window.location.pathname === url.path3 ||
-                                    window.location.pathname === url.path4 || window.location.pathname === url.path5 || window.location.pathname === url.path12 ||
-                                    window.location.pathname === url.path6 || window.location.pathname === url.path7 || window.location.pathname === url.path13 ? "active treeview menu-open" : "treeview"} >
-                                    <a className="tree1" onClick={() => this.handClick("tree1")}>
+                                <li className="treeview" >
+                                    <a href="">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -274,8 +259,8 @@ class SideBar extends Component {
                             }
                             {
                                 (this.checkURL(url.path8, links) === true || this.checkURL(url.path9, links) === true) &&
-                                <li className={window.location.pathname === url.path8 || window.location.pathname === url.path9 ? "active treeview menu-open" : "treeview"}>
-                                    <a className="tree2" onClick={() => this.handClick("tree2")}>
+                                <li className="treeview">
+                                    <a href="">
                                         <i className="fa fa-user-circle" /> <span>{translate(`menu.account`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -303,8 +288,8 @@ class SideBar extends Component {
                             }
                             {
                                 (this.checkURL(url.path10, links) === true || this.checkURL(url.path11, links) === true) &&
-                                <li className={window.location.pathname === url.path10 || window.location.pathname === url.path11 ? "active treeview menu-open" : "treeview"}>
-                                    <a className="tree3" onClick={() => this.handClick("tree3")}>
+                                <li className="treeview">
+                                    <a href = "">
                                         <i className="fa fa-graduation-cap" /> <span>{translate(`menu.manage_training`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -335,7 +320,7 @@ class SideBar extends Component {
                             {
                                 (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
                                 <li className="treeview">
-                                    <a className="tree4" onClick={() => this.handClick("tree4")}>
+                                    <a href="">
                                         <i className="fa fa-dashboard" /> <span>{translate(`menu.manage_kpi`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -345,7 +330,7 @@ class SideBar extends Component {
                                         {
                                             (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true) &&
                                             <li className="treeview">
-                                                <a href="#kpiunit"> {translate(`menu.kpi_unit`)}
+                                                <a href=""> {translate(`menu.kpi_unit`)}
                                                     <span className="pull-right-container">
                                                         <i className="fa fa-angle-left pull-right" />
                                                     </span>
@@ -353,19 +338,31 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-units/overview', links) === true) &&
-                                                        <li><Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link></li>
+                                                        <li className={window.location.pathname === "/kpi-units/overview" ? "active" : ""}>
+                                                            <Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link>
+                                                        </li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-units/create', links) === true) &&
-                                                        <li><Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link></li>
+                                                        <li className={window.location.pathname === "/kpi-units/create" ? "active" : ""}>
+                                                            <Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link>
+                                                        </li>
                                                     }
                                                 </ul>
                                             </li>
                                         }
+
+                                        {
+                                            (this.checkURL('/kpi-member/overview', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-member/overview" ? "active" : ""}>
+                                                <Link to="/kpi-member/overview">{translate(`menu.kpi_member`)}</Link>
+                                            </li>
+                                        }
+
                                         {
                                             (this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
                                             <li className="treeview">
-                                                <a href="#kpipersonnal">{translate(`menu.kpi_personal`)}
+                                                <a href="">{translate(`menu.kpi_personal`)}
                                                     <span className="pull-right-container">
                                                         <i className="fa fa-angle-left pull-right" />
                                                     </span>
@@ -373,11 +370,15 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-personals/overview', links) === true) &&
-                                                        <li><Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link></li>
+                                                        <li className={window.location.pathname === "/kpi-personals/overview" ? "active" : ""}>
+                                                            <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
+                                                        </li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-personals/create', links) === true) &&
-                                                        <li><Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link></li>
+                                                        <li className={window.location.pathname === "/kpi-personals/create" ? "active" : ""}>
+                                                            <Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link>
+                                                        </li>
                                                     }
 
                                                 </ul>
@@ -388,9 +389,9 @@ class SideBar extends Component {
                             }
                             {/* Task management */}
                             {   
-                                ((this.checkURL('/task-management-dashboard', links) === true) || (this.checkURL('/task-management', links) === true)) && 
+                                (this.checkURL('/task-management-dashboard', links) === true || this.checkURL('/task-management', links) === true) && 
                                 <li className="treeview">
-                                    <a className="tree5" onClick={() => this.handClick("tree5")}>
+                                    <a href = "">
                                     <i className="fa fa-tasks"></i> <span>{translate(`menu.tasks`)}</span>
                                         <span className="pull-right-container">
                                             <i className="fa fa-angle-left pull-right" />
@@ -398,27 +399,222 @@ class SideBar extends Component {
                                     </a>
                                     <ul className="treeview-menu">
                                         {
-                                            (this.checkURL('/task-management-dashboard', links) === true) &&
-                                            <li><Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link></li>
+                                            this.checkURL('/task-management-dashboard', links) === true &&
+                                            <li className={window.location.pathname === "/task-management-dashboard" ? "active" : ""}>
+                                                <Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link>
+                                            </li>
                                         }
                                         {
-                                            (this.checkURL('/task-management', links) === true) &&
-                                            <li><Link to="/task-management">{translate(`menu.task_management`)}</Link></li>
+                                            this.checkURL('/task-management', links) === true &&
+                                            <li className={window.location.pathname === "/task-management" ? "active" : ""}>
+                                                <Link to="/task-management">{translate(`menu.task_management`)}</Link>
+                                            </li>
                                         }
                                     </ul>
                                 </li>
                             }
-                            {/* can them cai goi ham checkURL() */}
-                            <li>
-                                <a href="/kpi-member/overview">
-                                    <i className="fa fa-dashboard" /> <span>Quản lý kpi nhân viên</span>
-                                </a>
-                            </li>
                         </ul>
                     </section>
                 </aside>
             </React.Fragment>
         );
+    }
+
+    findActiveMenu = (element) => {
+        if (element.nodeName === "LI" && element.className === "active"){
+            return element;
+        }
+        for (let i = 0; i<element.childNodes.length; ++i){
+            let child = this.findActiveMenu(element.childNodes[i])
+            if (child !== null) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    updateParentMenus = (element) => {
+        element = element.parentNode;
+        if (window.$(element).attr('data-widget') === 'tree'){
+            return;
+        }
+        if (element.nodeName === "LI"){
+            element.className = "active treeview menu-open"
+        }
+        this.updateParentMenus(element);
+    }
+
+    componentDidUpdate(){
+        // Tìm active menu
+        let activeElement = this.findActiveMenu(this.refs.sideBarMenu);
+        
+        if (activeElement !== null) { // Update style của các menu cha
+            this.updateParentMenus(activeElement);
+        }
+    }
+    componentDidMount(){
+        /*
+         * Khắc phục lỗi với menu của template AdminLTE:
+         * Do AdminLTE chỉ quét 1 lần (sự kiện onload) element có data là data-widget = tree để xử lý sự kiện collapse, expand menu
+         * Nên khi chọn 1 menu item để chuyển trang, side menu được tạo lại, không được xử lý sự kiện nữa
+         * Code copy từ file AdminLTE/dist/js/adminlte.min.js
+         * Sửa đoạn cuối:
+         *  $(window).on('load', function () {
+                $(Selector.data).each(function () {
+                    Plugin.call($(this));
+                });
+            });
+            gọi trực tiếp thành:
+            $(Selector.data).each(function () {
+                Plugin.call($(this));
+            });
+        */
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.innerHTML = `
+            +function ($) {
+                'use strict';
+            
+                var DataKey = 'lte.tree';
+            
+                var Default = {
+                animationSpeed: 500,
+                accordion: true,
+                followLink: false,
+                trigger: '.treeview a'
+                };
+            
+                var Selector = {
+                tree: '.tree',
+                treeview: '.treeview',
+                treeviewMenu: '.treeview-menu',
+                open: '.menu-open, .active',
+                li: 'li',
+                data: '[data-widget="tree"]',
+                active: '.active'
+                };
+            
+                var ClassName = {
+                open: 'menu-open',
+                tree: 'tree'
+                };
+            
+                var Event = {
+                collapsed: 'collapsed.tree',
+                expanded: 'expanded.tree'
+                };
+            
+                // Tree Class Definition
+                // =====================
+                var Tree = function (element, options) {
+                this.element = element;
+                this.options = options;
+            
+                $(this.element).addClass(ClassName.tree);
+            
+                $(Selector.treeview + Selector.active, this.element).addClass(ClassName.open);
+            
+                this._setUpListeners();
+                };
+            
+                Tree.prototype.toggle = function (link, event) {
+                var treeviewMenu = link.next(Selector.treeviewMenu);
+                var parentLi = link.parent();
+                var isOpen = parentLi.hasClass(ClassName.open);
+            
+                if (!parentLi.is(Selector.treeview)) {
+                    return;
+                }
+            
+                if (!this.options.followLink || link.attr('href') === '#') {
+                    event.preventDefault();
+                }
+            
+                if (isOpen) {
+                    this.collapse(treeviewMenu, parentLi);
+                } else {
+                    this.expand(treeviewMenu, parentLi);
+                }
+                };
+            
+                Tree.prototype.expand = function (tree, parent) {
+                var expandedEvent = $.Event(Event.expanded);
+            
+                if (this.options.accordion) {
+                    var openMenuLi = parent.siblings(Selector.open);
+                    var openTree = openMenuLi.children(Selector.treeviewMenu);
+                    this.collapse(openTree, openMenuLi);
+                }
+            
+                parent.addClass(ClassName.open);
+                tree.stop().slideDown(this.options.animationSpeed, function () {
+                    $(this.element).trigger(expandedEvent);
+                    parent.height('auto');
+                }.bind(this));
+                };
+            
+                Tree.prototype.collapse = function (tree, parentLi) {
+                var collapsedEvent = $.Event(Event.collapsed);
+            
+                //tree.find(Selector.open).removeClass(ClassName.open);
+                parentLi.removeClass(ClassName.open);
+                tree.stop().slideUp(this.options.animationSpeed, function () {
+                    //tree.find(Selector.open + ' > ' + Selector.treeview).slideUp();
+                    $(this.element).trigger(collapsedEvent);
+            
+                    // Collapse child items
+                    parentLi.find(Selector.treeview).removeClass(ClassName.open).find(Selector.treeviewMenu).hide();
+                }.bind(this));
+                };
+            
+                // Private
+            
+                Tree.prototype._setUpListeners = function () {
+                var that = this;
+            
+                $(this.element).on('click', this.options.trigger, function (event) {
+                    that.toggle($(this), event);
+                });
+                };
+            
+            
+                // Plugin Definition
+                // =================
+                function Plugin(option) {
+                return this.each(function () {
+                    var $this = $(this);
+                    var data = $this.data(DataKey);
+            
+                    if (!data) {
+                    var options = $.extend({}, Default, $this.data(), typeof option == 'object' && option);
+                    $this.data(DataKey, new Tree($this, options));
+                    }
+                });
+                }
+            
+                var old = $.fn.tree;
+            
+                $.fn.tree = Plugin;
+                $.fn.tree.Constructor = Tree;
+            
+                // No Conflict Mode
+                // ================
+                $.fn.tree.noConflict = function () {
+                $.fn.tree = old;
+                return this;
+                };
+            
+                // Tree Data API
+                // =============
+                
+                $(Selector.data).each(function () {
+                Plugin.call($(this));
+                });
+            
+            }(jQuery);
+        `;
+        document.body.appendChild(script);
     }
 }
 
