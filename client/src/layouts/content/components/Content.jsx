@@ -86,6 +86,12 @@ class Content extends Component {
                     // Cập nhật kích thước cột hiện tại và cột kế tiếp
                     window.$(tableHeadings[resizingIndex]).width(originalHeadingWidths[resizingIndex] + additionalWidth);
                     window.$(tableHeadings[resizingIndex + 1]).width(originalHeadingWidths[resizingIndex + 1] - additionalWidth);
+
+                    // Giữ nguyên kích thước các cột còn lại (Khi bảng có nhiều cột, resize 1 cột sẽ làm kích thước các cột khác sẽ bị ảnh hưởng)
+                    for (let i = 0; i<tableHeadings.length; ++i){
+                        if (i !== resizingIndex && i !== resizingIndex + 1)
+                            window.$(tableHeadings[i]).width(originalHeadingWidths[i]);
+                    }
                 }
             });
 
