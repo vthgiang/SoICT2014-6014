@@ -6,6 +6,9 @@ import { DepartmentActions } from '../../super-admin-management/departments-mana
 import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './ModalViewTaskTemplate';
 import { ModalEditTaskTemplate } from './ModalEditTaskTemplate';
+
+import Swal from 'sweetalert2';
+
 class TaskTemplate extends Component {
     componentDidMount() {
         this.props.getDepartment();
@@ -210,6 +213,34 @@ class TaskTemplate extends Component {
         modal.classList.add("in");
         modal.style = "display: block; padding-right: 17px;";
     }
+
+
+    //Xoa tasktemplate theo id
+    handleDelete = (id, count) => {
+        if (count == 0) {
+            Swal.fire({
+                title: "Bạn chắc chắn muốn xóa mẫu công việc này?",
+                type: 'success',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            }).then((res) => {
+                if (res.value){
+                    this.props._delete(id);
+                }
+            });
+        } else {
+            Swal.fire({
+                title: "Không thể xóa mẫu công việc này do đã được sử dụng.",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        }
+        
+    }
+
     handleSearchPage = async () => {
         var newCurrentPage = this.newCurrentPage.value;
         console.log(typeof newCurrentPage);
@@ -355,8 +386,8 @@ class TaskTemplate extends Component {
                                                                         {this.state.showView===item.resourceId._id&&<ModalViewTaskTemplate id={item.resourceId._id} />}
                                                                         {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                                                             <React.Fragment>
-                                                                                <a href="#abc" onClick={()=>this.handleShowEdit(item.resourceId._id)}  data-toggle="modal" className="edit" title="Sửa mẫu công việc này"><i className="material-icons"></i></a>
-                                                                                <a href="#abc" className="delete" title="Xóa mẫu công việc này"><i className="material-icons"></i></a>
+                                                                                <a onClick={()=>this.handleShowEdit(item.resourceId._id)} data-toggle="modal" className="edit" title="Sửa mẫu công việc này"><i className="material-icons"></i></a>
+                                                                                <a onClick={()=>this.handleDelete(item.resourceId._id, item.resourceId.count)} className="delete" title="Xóa mẫu công việc này"><i className="material-icons"></i></a>
                                                                             </React.Fragment>}
                                                                         {this.state.showEdit===item.resourceId._id&&<ModalEditTaskTemplate id={item.resourceId._id} />}
                                                                     </td>
@@ -394,7 +425,8 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-    getDepartment: DepartmentActions.getDepartmentOfUser
+    getDepartment: DepartmentActions.getDepartmentOfUser,
+    _delete: taskTemplateActions._delete
 };
 const connectedTaskTemplate = connect(mapState, actionCreators)(TaskTemplate);
 export { connectedTaskTemplate as TaskTemplate };

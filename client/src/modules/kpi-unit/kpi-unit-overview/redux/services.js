@@ -1,5 +1,7 @@
 import {handleResponse} from '../../../../helpers/HandleResponse';
-
+import {
+    LOCAL_SERVER_API
+} from '../../../../env';
 export const overviewServices = {
     getAllKPIUnit,
     getCurrentKPIUnit,
@@ -14,7 +16,7 @@ function getAllKPIUnit(id) {
         method: 'GET',
     };
 
-    return fetch(`/kpiunits/unit/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/unit/${id}`, requestOptions).then(handleResponse);
 }
 
 // Lấy KPI đơn vị hiện tại
@@ -23,7 +25,7 @@ function getCurrentKPIUnit(id) {
         method: 'GET',
     };
 
-    return fetch(`/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
 }
 
 // Lấy tất cả KPI đơn vị
@@ -32,7 +34,7 @@ function getChildTargetOfCurrentTarget(id) {
         method: 'GET',
     };
 
-    return fetch(`/kpiunits/child-target/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/child-target/${id}`, requestOptions).then(handleResponse);
 }
 
 // Khởi tạo KPI đơn vị 
@@ -43,7 +45,7 @@ function addKPIUnit(newKPI) {
         body: JSON.stringify(newKPI)
     };
 
-    return fetch(`/kpiunits/create`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/create`, requestOptions).then(handleResponse);
 }
 
 
@@ -54,5 +56,5 @@ function evaluateKPIUnit(id) {
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/kpiunits/evaluate/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`, requestOptions).then(handleResponse);
 }

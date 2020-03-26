@@ -84,3 +84,7 @@ exports.searchByName = async (req, res) => {
 exports.getUsersSameDepartment = (req, res) => {
     return UserService.getUsersSameDepartment(req, res);
 }
+
+exports.getUsersOfDepartment = (req, res) => {
+    return UserService.getUsersOfDepartment(req, res);
+}

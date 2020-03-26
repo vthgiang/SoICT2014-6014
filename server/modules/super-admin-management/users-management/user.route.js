@@ -13,6 +13,7 @@ router.delete("/:id", auth, UserController.delete);
 router.post("/search-by-name", auth, UserController.searchByName);
 
 router.get("/same-department/:id", UserController.getUsersSameDepartment);
-//chưa thêm route all-user-of-department
+
+router.get("/users-of-department/:id", UserController.getUsersOfDepartment);
 
 module.exports = router;
