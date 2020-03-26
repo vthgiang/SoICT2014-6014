@@ -77,6 +77,7 @@ class ManageUserTable extends Component {
                                             userEmail={u.email}
                                             userName={u.name}
                                             userActive={u.active}
+                                            userRoles={u.roles.map(role => role.roleId._id)}
                                             editUser={this.editUser}
                                         />
                                         {

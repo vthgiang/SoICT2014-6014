@@ -222,7 +222,8 @@ export default {
             add_success: 'Add new user successfully',
             add_faile: 'Add new user failed',
             edit_success: 'Edit user successfully',
-            edit_faile: 'Edit user failed'
+            edit_faile: 'Edit user failed',
+            roles: 'Roles assigned'
         },
 
         manage_page: {

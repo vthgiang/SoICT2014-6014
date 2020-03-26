@@ -155,12 +155,12 @@ class Routes extends Component {
                         key={ 'links-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/pages-management', name: 'manage_page', icon:'fa fa-link' }
+                            { link: '/links-management', name: 'manage_page', icon:'fa fa-link' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/pages-management' }
-                        path={ '/pages-management' }
+                        link={ '/links-management' }
+                        path={ '/links-management' }
                         pageName={ 'manage_page' }
                         layout={ Layout }
                         component={ ManageLink }

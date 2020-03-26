@@ -238,6 +238,7 @@ export default {
             add_faile: 'Tạo tài khoản thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
+            roles: 'Phân quyền được cấp'
         },
 
         manage_page: {

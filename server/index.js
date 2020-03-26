@@ -34,7 +34,7 @@ const tasktemplates =require ("./modules/task-template-management/task-template-
 const tasks = require("./modules/task-management/task-management/task-management.route");
 const performtask = require("./modules/task-management/perform-task/perform-task.route");
 
-const linksDefault = require('./modules/system-admin-management/links-default-management/link.route');
+const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
 const componentsDefault = require('./modules/system-admin-management/components-default-management/component.route');
 
 const kpimember = require('./modules/kpi-member/kpiMember.route');

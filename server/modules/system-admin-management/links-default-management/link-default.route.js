@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const LinkController = require('./link.controller');
+const LinkController = require('./link-default.controller');
 const { auth } = require('../../../middleware');
 
 //Lấy tất cả các link mặc đinh sẽ tạo cho 1 doanh nghiệp

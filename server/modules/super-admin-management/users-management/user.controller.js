@@ -29,8 +29,10 @@ exports.getPaginate = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         var user = await UserService.create(req.body, req.user.company._id);
+        await UserService.addRolesForUser(user._id, req.body.roles);
+        var result = await UserService.getById(user._id);
 
-        res.status(200).json(user);
+        res.status(200).json(result);
     } catch (error) {
 
         res.status(400).json(error)
@@ -51,8 +53,10 @@ exports.show = async (req, res) => {
 exports.edit = async (req, res) => {
     try {
         var user = await UserService.edit(req.params.id, req.body);
+        await UserService.editRolesForUser(user._id, req.body.roles);
+        var result = await UserService.getById(user._id);
         
-        res.status(200).json(user);
+        res.status(200).json(result);
     } catch (error) {
         
         res.status(400).json(error);

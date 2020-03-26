@@ -10,16 +10,14 @@ const LinkDefaultSchema = new Schema({
     },
     description: {
         type: String
-    }
+    },
+    roles: [{
+        type: Schema.Types.ObjectId,
+        ref: 'roledefaults'
+    }]
 },{
     timestamps: true,
     toJSON: { virtuals: true }
-});
-
-LinkDefaultSchema.virtual('roles', {
-    ref: 'privileges',
-    localField: '_id',
-    foreignField: 'resourceId'
 });
 
 LinkDefaultSchema.plugin(mongoosePaginate);
