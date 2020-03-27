@@ -47,12 +47,10 @@ exports.getByRole = async (id) => {
 }
 
 // lấy tất cả mẫu công việc theo id user
-exports.getByUser = async (req, res) => {
-    try {
-        console.log("****service");
-        console.log(req.params.unit);
+exports.getByUser = async (id, number, unit) => {
+        console.log(unit);
         // Lấy tất cả các role người dùng có
-        var roles = await UserRole.find({ userId: req.params.id }).populate({path: "roleId"});
+        var roles = await UserRole.find({ userId: id }).populate({path: "roleId"});
         var newRoles = roles.map(role => role.roleId);
         // lấy tất cả các role con của role người dùng có
         var allRole = [];
@@ -61,56 +59,52 @@ exports.getByUser = async (req, res) => {
             allRole = allRole.concat(item.abstract); //thêm các role children vào mảng
         })
         var tasktemplates;
-        if(req.params.unit === "[]"){
+        if(unit === "[]"){
             tasktemplates = await Privilege.find({
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
-            }).sort({'createdAt': 'desc'}).skip(1*(req.params.number-1)).limit(5).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
+            }).sort({'createdAt': 'desc'}).skip(5*(number-1)).limit(5).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
         console.log(tasktemplates);
         console.log("role:",allRole);
         } else {
             tasktemplates = await Privilege.find({
-                role: { $in: allRole },
-                resource_type: 'TaskTemplate'})
+                roleId: { $in: allRole },
+                resourceType: 'TaskTemplate'})
                 .sort({'createdAt': 'desc'})
-                .skip(1*(req.params.number-1))
+                .skip(5*(number-1))
                 .limit(5)
                 //TODO:sua sau
                 .populate({ 
                     path: 'resourceId', 
                     model: TaskTemplate, 
-                    match: { unit: { $in: req.params.unit.split(",") }},
+                    match: { unit: { $in: unit.split(",") }},
                     populate: { path: 'creator unit' } });
         }
         
 
         var totalCount = await Privilege.count({
-            role: { $in: allRole },
-            resource_type: 'TaskTemplate'
+            roleId: { $in: allRole },
+            resourceType: 'TaskTemplate'
         });
-        var totalPages = Math.ceil(totalCount / 1);
-        res.status(200).json({"message" : tasktemplates,"pages": totalPages})
-    } catch (error) {
-        res.status(400).json({ msg: error });
-        
-    }
+        var totalPages = Math.ceil(totalCount / 5);
+
+        return ({"message" : tasktemplates,"pages": totalPages});
 }
 
 //Tạo mẫu công việc
-exports.create = async (req, res) => {
-    try {
+exports.create = async (body) => {
         var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc
-            unit: req.body.unit,
-            name: req.body.name,
-            creator: req.body.creator, //id của người tạo
-            responsible: req.body.responsible,
-            accounatable: req.body.accounatable,
-            consulted: req.body.consulted,
-            informed: req.body.informed,
-            description: req.body.description,
-            formula: req.body.formula,
+            unit: body.unit,
+            name: body.name,
+            creator: body.creator, //id của người tạo
+            responsible: body.responsible,
+            accounatable: body.accounatable,
+            consulted: body.consulted,
+            informed: body.informed,
+            description: body.description,
+            formula: body.formula,
         });
-        var reader = req.body.read; //role có quyền đọc
+        var reader = body.read; //role có quyền đọc
         var read = await Action.findOne({ name: "READ" }); //lấy quyền đọc
         var privilege = await Privilege.create({
             roleId: [reader], //id của người đọc cấp quyền đọc
@@ -119,7 +113,7 @@ exports.create = async (req, res) => {
             action: read //quyền READ
         });
        
-        var actions = req.body.listAction.map(item => {
+        var actions = body.listAction.map(item => {
             ActionTask.create({
                 tasktemplate: tasktemplate._id,
                 name: item.name,
@@ -128,7 +122,7 @@ exports.create = async (req, res) => {
                 type: "TaskTemplate"
             })
         });
-        var informations = req.body.listInfo.map((item, key) => {
+        var informations = body.listInfo.map((item, key) => {
             InformationTaskTemplate.create({
                 tasktemplate: tasktemplate._id,
                 code: "p"+parseInt(key+1),
@@ -140,30 +134,21 @@ exports.create = async (req, res) => {
         });
         var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
 
-        res.status(200).json({
-           
+        console.log("Create Task Template sucessfully");
+
+        return ({
             message: "Create Task Template Successfully!",
             data: newTask
         });
-    } catch (error) {
-        res.status(400).json(error);
-    }
-    console.log("Create Task Template sucessfully");
 }
 
 //Xóa mẫu công việc
-exports.delete = async (req, res) => { 
-    try {
-        var template = await TaskTemplate.findByIdAndDelete(req.params.id); // xóa mẫu công việc theo id
+exports.delete = async (id) => { 
+        var template = await TaskTemplate.findByIdAndDelete(id); // xóa mẫu công việc theo id
         var privileges = await Privilege.deleteMany({
-            resourceId: req.params.id, //id của task template
+            resourceId: id, //id của task template
             resourceType: "TaskTemplate"
         });
         
-
-        res.status(200).json("Delete success");
-    } catch (error) {
-        res.status(400).json(error);
-    }
-    console.log("Delete Task Template")
+        return ("Delete success");
 }

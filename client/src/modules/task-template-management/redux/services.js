@@ -60,12 +60,8 @@ async function getAllTaskTemplateByUser(pageNumber,arrayUnit) {
         method: 'GET',
         headers: AuthenticateHeader()
     };
-    console.log("****************asnasasa",pageNumber,arrayUnit);
+
     return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${arrayUnit}`, requestOptions).then(handleResponse);
-
-   
-
-    //sua sau
 }
 
 // add new task template
@@ -77,7 +73,7 @@ async function getAllTaskTemplateByUser(pageNumber,arrayUnit) {
     newTaskTemplate = {...newTaskTemplate, creator: id};
      const requestOptions = {
          method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
+         headers: AuthenticateHeader(),
          body: JSON.stringify(newTaskTemplate)
      };
 

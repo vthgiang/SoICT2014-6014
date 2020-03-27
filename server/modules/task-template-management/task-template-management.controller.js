@@ -13,9 +13,9 @@ exports.getById = (req, res) => {
 }
 
 // Lấy mẫu công việc theo vai trò
-exports.getByRole = async (req, res) => {
+exports.getByRole = (req, res) => {
     try {
-        var tasks = await TaskTemplateService.getByRole(req.params.id);
+        var tasks = TaskTemplateService.getByRole(req.params.id);
         LogInfo(req.user.email, `Get task templates by role ${req.params.id}`, req.user.company);
         res.status(200).json(tasks);
     } catch (error) {
@@ -25,18 +25,40 @@ exports.getByRole = async (req, res) => {
 }
 
 // Lấy mẫu công việc theo người dùng
-exports.getByUser = (req, res) => {
-    return TaskTemplateService.getByUser(req, res);
+exports.getByUser = async (req, res) => {
+    try {
+        var data = await TaskTemplateService.getByUser(req.params.id, req.params.number, req.params.unit);
+        LogInfo(req.user.email, `Get task templates by user ${req.params.id}`, req.user.company);
+        res.status(200).json(data);
+    } catch (error) {
+        LogError(req.user.email, `Get task templates by user ${req.params.id}`, req.user.company);
+        res.status(400).json(error);
+    }
+
 }
 
 // Tạo một mẫu công việc
-exports.create = (req, res) => {
-    return TaskTemplateService.create(req, res);
+exports.create = async (req, res) => {
+    try {
+        var data = await TaskTemplateService.create(req.body);
+        await LogInfo(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
+        res.status(200).json(data);
+    } catch (error) {
+        await LogError(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
+        res.status(400).json(error);
+    }
 }
 
 // Xóa một mẫu công việc
-exports.delete = (req, res) => {
-    return TaskTemplateService.delete(req, res);
+exports.delete = async (req, res) => {
+    try {
+        var data = await TaskTemplateService.delete(req.params.id);
+        await LogInfo(req.user.email, `Delete task templates ${req.params.id}`, req.user.company);
+        res.status(200).json(data);
+    } catch (error) {
+        await LogError(req.user.email, `Delete task templates ${req.params.id}`, req.user.company);
+        res.status(400).json(error);
+    }
 }
 
 // api test dữ liệu

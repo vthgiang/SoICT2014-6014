@@ -477,6 +477,24 @@ export default {
             check_end_Date: 'Bạn chưa nhập ngày kết thúc',
             check_description: 'Bạn chưa nhập mô tả lịch nghỉ'
         },
+
+        // Task template
+        task_template:{
+            search: 'Tìm kiếm',
+            add: 'Thêm mới',
+            confirm: 'Xác nhận',
+            confirm_title: 'Bạn chắc chắn muốn xóa mẫu công việc này?',
+            error_title: 'Không thể xóa mẫu công việc này do đã được sử dụng.',
+            name: 'Tên mẫu',
+            unit: 'Đơn vị',
+            tasktemplate_name: 'Tên mẫu công việc',
+            description: 'Mô tả',
+            count: 'Số lần sử dụng',
+            creator: 'Người tạo mẫu',
+            unit: 'Đơn vị',
+            action: 'Hành động'
+        },
+
         footer: {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
