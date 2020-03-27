@@ -95,6 +95,13 @@ class Content extends Component {
                 }
             });
 
+            window.addEventListener("resize", function(){
+                // Xóa thuộc tính width (nếu đã) thiết lập, để khi resize window, kích thước các cột tự cập nhật lại theo default, tránh bị lỗi
+                for (let i = 0; i<tableHeadings.length; ++i){
+                    window.$(tableHeadings[i]).width("");
+                }
+            });
+
             window.$(document).mouseup(function () {
                 if (pressed) {
                     window.$(tableHeadings[resizingIndex]).removeClass("resizing");

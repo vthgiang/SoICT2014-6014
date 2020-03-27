@@ -35,20 +35,17 @@ class ManageLink extends Component {
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
                     <React.Fragment>
-                        <div className="row">
-                            <SearchBar 
-                                columns={[
-                                    { title: translate('table.url'), value:'url' },
-                                    { title: translate('table.description'), value:'description' },
-                                ]}
-                                option={this.state.option}
-                                setOption={this.setOption}
-                                search={this.searchWithOption}
-                            />
-                            <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <CreateLinkForm/>
-                            </div>
-                        </div>
+                        <CreateLinkForm/>
+                        <SearchBar 
+                            columns={[
+                                { title: translate('table.url'), value:'url' },
+                                { title: translate('table.description'), value:'description' },
+                            ]}
+                            option={this.state.option}
+                            setOption={this.setOption}
+                            search={this.searchWithOption}
+                        />
+                        
                         <table className="table table-hover table-striped table-bordered">
                             <thead>
                                 <tr>

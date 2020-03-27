@@ -47,7 +47,7 @@ export default {
         },
 
         form: {
-            property: 'Property : ',
+            property: 'Property',
             required: 'Information fields required',
             save: 'Save',
             close: 'Close',
