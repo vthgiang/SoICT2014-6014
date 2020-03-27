@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LinkActions } from '../redux/actions';
-import { DeleteNotification } from '../../../../common-components';
 import LinkInfoForm from './LinkInfoForm';
 import CreateLinkForm from './CreateLinkForm';
-import { SearchBar } from '../../../../common-components';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
+import { SearchBar, ActionColumn, PaginateBar, DeleteNotification } from '../../../../common-components';
 
 class ManageLink extends Component {
     constructor(props) {
@@ -74,6 +71,7 @@ class ManageLink extends Component {
                                                     linkId={ link._id }
                                                     linkName={ link.url }
                                                     linkDescription={ link.description }
+                                                    linkRoles={link.roles.map(role => role._id)}
                                                 />
                                                 <DeleteNotification 
                                                     content={{

@@ -22,7 +22,7 @@ function get(){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
+                console.log("Error: ", err.response);
                 AlertActions.handleAlert(dispatch, err);
             })
     }

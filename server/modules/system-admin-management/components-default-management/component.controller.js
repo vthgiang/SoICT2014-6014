@@ -1,5 +1,5 @@
 const ComponentService = require('./component.service');
-const LinkServices = require('../links-management/link.service');
+const LinkServices = require('../links-default-management/link-default.service');
 const { Log } = require('../../../logs');
 
 exports.get = async (req, res) => {

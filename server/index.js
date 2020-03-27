@@ -36,6 +36,7 @@ const performtask = require("./modules/task-management/perform-task/perform-task
 
 const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
 const componentsDefault = require('./modules/system-admin-management/components-default-management/component.route');
+const rolesDefault = require('./modules/system-admin-management/roles-default-management/role-default.route');
 
 const kpimember = require('./modules/kpi-member/kpiMember.route');
 
@@ -89,6 +90,7 @@ app.use("/auth", auth);
 app.use("/company", company);
 app.use("/links-default-management", linksDefault);
 app.use("/components-default-management", componentsDefault);
+app.use("/roles-default-management", rolesDefault);
 app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);

@@ -18,7 +18,8 @@ exports.show = async (id) => {
 }
 
 exports.create = async(url, description, roles) => {
-    const link = LinkDefault.findOne({ url });
+    const link = await LinkDefault.findOne({ url });
+    console.log("LINK NEW: ",link)
     if(link !== null) throw ({msg: 'link_default_does_not_exist'});
 
     return await LinkDefault.create({ url, description, roles });
