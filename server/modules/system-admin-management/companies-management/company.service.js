@@ -2,6 +2,7 @@ const { Company, Link, LinkDefault, Privilege, Role, RoleDefault, RoleType, User
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
+const Terms = require("../../../seed/terms");
 
 exports.get = async () => {
     
@@ -63,7 +64,7 @@ exports.delete = async(id) => {
 
 exports.create5RoleAbstract = async(companyId) => {
     var data = await RoleDefault.find(); //dữ liệu về 5 role abstract có sẵn trong csdl
-    var typeAbstract = await RoleType.findOne({ name: 'abstract' });
+    var typeAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
 
     //Admin
     var admin = await Role.create({

@@ -7,6 +7,7 @@ const Link = require('../models/link.model');
 const Privilege = require('../models/privilege.model');
 const User = require('../models/user.model');
 const UserRole = require('../models/user_role.model');
+const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 require('dotenv').config({path: '../.env'});
@@ -31,9 +32,9 @@ const seedDatabase = async () => {
 
     // Tạo các roletype trong hệ thống
     await RoleType.insertMany([
-        { name: 'abstract' }, 
-        { name: 'chucdanh' },
-        { name: 'tutao' }
+        { name: Terms.ROLE_TYPES.ABSTRACT }, 
+        { name: Terms.ROLE_TYPES.POSITION },
+        { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
 
     //Tạo tài khoản systemadmin cho hệ thống quản lý công việc
@@ -46,9 +47,9 @@ const seedDatabase = async () => {
     });
 
     // Tạo role System Admin 
-    var roleAbstract = await RoleType.findOne({ name: 'abstract' });
+    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT});
     var roleSystemAdmin = await Role.create({
-        name: 'System Admin',
+        name: Terms.PREDEFINED_ROLES.SYSTEM_ADMIN.NAME,
         type: roleAbstract._id
     });
 
@@ -106,20 +107,20 @@ const seedDatabase = async () => {
 
     await RoleDefault.insertMany([
         {
-            name: 'Super Admin',
-            description: 'Super Admin của một doanh nghiệp/công ty'
+            name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
+            description: Terms.PREDEFINED_ROLES.SUPER_ADMIN.DESCRIPTION
         },{
-            name: 'Admin',
-            description: 'Admin của một doanh nghiệp/công ty, Admin sẽ có vai trò bé hơn '
+            name: Terms.PREDEFINED_ROLES.ADMIN.NAME,
+            description: Terms.PREDEFINED_ROLES.ADMIN.DESCRIPTION
         },{
-            name: 'Dean',
-            description: 'Trưởng đơn vị'
+            name: Terms.PREDEFINED_ROLES.DEAN.NAME,
+            description: Terms.PREDEFINED_ROLES.DEAN.DESCRIPTION
         },{
-            name: 'Vice Dean',
-            description: 'Phó đơn vị'
+            name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME,
+            description: Terms.PREDEFINED_ROLES.VICE_DEAN.DESCRIPTION
         },{
-            name: 'Employee',
-            description: 'Nhân viên đơn vị'
+            name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME,
+            description: Terms.PREDEFINED_ROLES.EMPLOYEE.DESCRIPTION
         }
     ])
 
