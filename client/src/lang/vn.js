@@ -47,7 +47,7 @@ export default {
         },
 
         form: {
-            property: 'Thuộc tính : ',
+            property: 'Thuộc tính',
             required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',

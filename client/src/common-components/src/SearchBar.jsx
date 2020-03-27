@@ -28,12 +28,10 @@ class SearchBar extends Component {
                     <input className="form-control" type="text" placeholder={translate('searchByValue')} ref={this.value} onChange={() => setOption("value", { $regex: this.value.current.value, $options: 'i' })}/>
                     <button type="button" className="btn btn-success" onClick={search} title={translate('form.search')}>{translate('form.search')}</button>
                 </div> */}
-                <div className="col-md-3">
-                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <label style={{ paddingTop: 5 }}>{translate('form.property')}</label>
-                    </div>
-                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <select 
+                <div className="form-inline" style={{marginBottom: '10px'}}>
+                    <div class="form-group">
+                        <label className="form-control-static" style={{marginRight: '10px'}}>{translate('form.property')}</label>
+                        <select style={{marginRight: '10px'}}
                             className="form-control"
                             defaultValue={ option } 
                             ref={this.opt} 
@@ -43,16 +41,8 @@ class SearchBar extends Component {
                             columns !== undefined && columns.map( column => <option key={column.value} value={column.value}>{column.title}</option>)
                         }
                         </select>
-                    </div>
-                </div>
-                <div className="col-md-3">
-                    <div className="form-group col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <input className="form-control" type="text" placeholder={translate('searchByValue')} ref={this.value} onChange={() => setOption("value", { $regex: this.value.current.value, $options: 'i' })}/>
-                    </div>
-                </div>
-                <div className="col-md-2">
-                    <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <button type="button" className="btn btn-success" onClick={search} title={translate('form.search')}>{translate('form.search')}</button>
+                        <input className="form-control" style={{marginRight: '10px'}} type="text" placeholder={translate('searchByValue')} ref={this.value} onChange={() => setOption("value", { $regex: this.value.current.value, $options: 'i' })}/>
+                        <button type="button" className="btn btn-success" style={{marginRight: '10px'}} onClick={search} title={translate('form.search')}>{translate('form.search')}</button>
                     </div>
                 </div>
             </React.Fragment>
