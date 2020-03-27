@@ -3,6 +3,7 @@ const RoleType = require('../../../models/role_type.model');
 const User = require('../../../models/user.model');
 const UserRole = require('../../../models/user_role.model');
 const Company = require('../../../models/company.model');
+const Terms = require('../../../seed/terms');
 
 //lay tat ca role cua 1 cong ty
 exports.get = async (company) => {
@@ -45,7 +46,7 @@ exports.getById = async (company, roleId) => {
 }
 
 exports.create = async(data, companyID) => {
-    var roleTuTao = await RoleType.findOne({ name: 'tutao' });
+    var roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
     var role = await Role.create({
         name: data.name,
         company: companyID,
@@ -57,7 +58,7 @@ exports.create = async(data, companyID) => {
 }
 
 exports.createAbstract = async(data, companyID) => {
-    var roleAbstract = await RoleType.findOne({ name: 'abstract' });
+    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
 
     return await Role.create({
         name: data.name,
@@ -68,10 +69,10 @@ exports.createAbstract = async(data, companyID) => {
 }
 
 exports.crt_rolesOfDepartment = async(data, companyID) => {
-    var roleChucDanh = await RoleType.findOne({ name: 'chucdanh' });
-    var deanAb = await Role.findOne({ name: 'Dean' }); //lấy role dean abstract
-    var viceDeanAb = await Role.findOne({ name: 'Vice Dean' }); //lấy role vice dean abstract
-    var employeeAb = await Role.findOne({ name: 'Employee' }); //lấy role employee abstract
+    var roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
+    var deanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.DEAN.NAME }); //lấy role dean abstract
+    var viceDeanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME }); //lấy role vice dean abstract
+    var employeeAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME }); //lấy role employee abstract
     var employee = await Role.create({
         name: data.employee,
         company: companyID,
@@ -82,13 +83,13 @@ exports.crt_rolesOfDepartment = async(data, companyID) => {
         name: data.vice_dean,
         company: companyID,
         type: roleChucDanh._id,
-        parents: [employee._id, employeeAb._id, viceDeanAb._id]
+        parents: [employee._id, viceDeanAb._id]
     });
     var dean = await Role.create({
         name: data.dean,
         company: companyID,
         type: roleChucDanh._id,
-        parents: [employee._id, vice_dean._id, employeeAb._id, viceDeanAb._id, deanAb._id]
+        parents: [employee._id, vice_dean._id, deanAb._id]
     });
 
     return {

@@ -124,7 +124,7 @@ class RoleTable extends Component {
                                             roleUsers={role.users.map(user=>user.userId._id)}
                                         />
                                         {
-                                            role.type.name === 'tutao' && 
+                                            role.type.name === 'Company-Defined' && 
                                             <DeleteNotification 
                                                 content={{
                                                     title: translate('manage_role.delete'),
