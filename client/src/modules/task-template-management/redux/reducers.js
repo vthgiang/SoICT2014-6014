@@ -67,13 +67,21 @@ export function tasktemplates(state = {}, action) {
                 adding: true
             };
         case taskTemplateConstants.ADDNEW_TEMPLATE_SUCCESS:
-            return {
-                ...state,
-                items: [
-                    ...state.items,
-                    action.taskTemplate.data
-                ]
-            };
+            if(state.items.length < 5){ 
+                return {
+                    ...state,
+                    items: [
+                        ...state.items,
+                        action.taskTemplate.data
+                    ]
+                };    
+            }
+            else{
+                return {
+                    ...state
+                };
+            }
+            
         case taskTemplateConstants.ADDNEW_TEMPLATE_FAILURE:
             return {
                 error: action.error

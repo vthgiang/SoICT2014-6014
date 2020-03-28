@@ -47,7 +47,7 @@ export default {
         },
 
         form: {
-            property: 'Property : ',
+            property: 'Property',
             required: 'Information fields required',
             save: 'Save',
             close: 'Close',
@@ -446,6 +446,23 @@ export default {
             check_start_Date: 'Start day required',
             check_end_Date: 'End day required',
             check_description: 'Description required'
+        },
+
+        // Task template
+        task_template:{
+            search: 'Search',
+            add: 'Add new',
+            confirm: 'Confirm',
+            confirm_title: 'Are you sure you want to delete this task template?',
+            error_title: 'This work template cannot be deleted because it is already in use.',
+            name: 'Template name',
+            unit: 'Unit',
+            tasktemplate_name: 'Task template name',
+            description: 'Description',
+            count: 'Number of uses',
+            creator: 'Creator',
+            unit: 'Unit',
+            action: 'Action'
         },
 
         notification: {

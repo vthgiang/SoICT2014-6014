@@ -58,21 +58,17 @@ class CompanyTable extends Component {
         
         return ( 
             <React.Fragment>
-                <div className="row">
-                    <SearchBar 
-                        columns={[
-                            { title: translate('manage_company.name'), value: 'name' },
-                            { title: translate('manage_company.short_name'), value: 'short_name' },
-                            { title: translate('manage_company.description'), value: 'description' },
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    />
-                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        <CompanyCreateForm/>
-                    </div>
-                </div>
+                <CompanyCreateForm/>
+                <SearchBar 
+                    columns={[
+                        { title: translate('manage_company.name'), value: 'name' },
+                        { title: translate('manage_company.short_name'), value: 'short_name' },
+                        { title: translate('manage_company.description'), value: 'description' },
+                    ]}
+                    option={this.state.option}
+                    setOption={this.setOption}
+                    search={this.searchWithOption}
+                />
                 
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
