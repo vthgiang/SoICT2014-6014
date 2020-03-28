@@ -29,6 +29,7 @@ function login(user){
                 })
             })
             .catch(err => {
+                console.log(err.response)
                 dispatch({
                     type: AuthConstants.LOGIN_FAILE,
                     payload: typeof(err.response) !== 'undefined' ? err.response.data : err

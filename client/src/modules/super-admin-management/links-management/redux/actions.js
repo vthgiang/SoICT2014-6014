@@ -1,5 +1,6 @@
 import { LinkServices } from "./services";
 import { LinkConstants } from "./constants";
+import { AlertActions } from "../../../alert/redux/actions";
 
 export const LinkActions = {
     get,
@@ -21,9 +22,7 @@ function get(){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }
@@ -40,9 +39,7 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }
@@ -59,9 +56,7 @@ function show(id){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }
@@ -81,9 +76,7 @@ function create(link){
                     resolve(res);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: err.response.data.msg
-                    })
+                    AlertActions.handleAlert(dispatch, err);
                     console.log("Error: ", err);
                     reject(err);
                 })
@@ -104,9 +97,7 @@ function edit(id, link){
                 resolve(res);
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
                 reject(err);
             })
@@ -125,9 +116,7 @@ function destroy(id, link){
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }

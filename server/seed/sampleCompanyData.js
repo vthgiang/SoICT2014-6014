@@ -14,6 +14,7 @@ const Sabbatical = require('../models/sabbatical.model');
 const Discipline = require('../models/discipline.model');
 const Praise = require('../models/praise.model');
 const EducationProgram = require('../models/educationProgram.model');
+const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 require('dotenv').config({
@@ -151,32 +152,32 @@ const sampleCompanyData = async () => {
 
     console.log("Lấy role mặc định của công ty...");
     const roleAbstract = await RoleType.findOne({
-        name: 'abstract'
+        name: Terms.ROLE_TYPES.ABSTRACT
     });
     const roleChucDanh = await RoleType.findOne({
-        name: 'chucdanh'
+        name: Terms.ROLE_TYPES.POSITION
     });
 
     const admin = await Role.create({
-        name: 'Admin',
+        name: Terms.PREDEFINED_ROLES.ADMIN.NAME,
         company: xyz._id,
         type: roleAbstract._id
     });
     const roles = await Role.insertMany([{
-        name: "nSuper Admi",
+        name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
         company: xyz._id,
         type: roleAbstract._id,
         parents: [admin._id]
     },  {
-        name: "Dean",
+        name: Terms.PREDEFINED_ROLES.DEAN.NAME,
         company: xyz._id,
         type: roleAbstract._id
     }, {
-        name: "Vice Dean",
+        name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME,
         company: xyz._id,
         type: roleAbstract._id
     }, {
-        name: "Employee",
+        name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME,
         company: xyz._id,
         type: roleAbstract._id
     }]);
@@ -188,13 +189,13 @@ const sampleCompanyData = async () => {
         type: roleChucDanh._id
     });
     const phoGiamDoc = await Role.create({
-        parents: [roles[2]._id, roles[3]._id, troLy._id],
+        parents: [roles[2]._id, troLy._id],
         name: "Phó giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const giamDoc = await Role.create({
-        parents: [roles[1]._id, roles[2]._id, roles[3]._id, troLy._id, phoGiamDoc._id],
+        parents: [roles[1]._id, troLy._id, phoGiamDoc._id],
         name: "Giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
@@ -206,13 +207,13 @@ const sampleCompanyData = async () => {
         type: roleChucDanh._id
     });
     const phoPhongHC = await Role.create({
-        parents: [roles[2]._id, roles[3]._id, nvPhongHC._id],
+        parents: [roles[2]._id, nvPhongHC._id],
         name: "Phó phòng hành chính",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const truongPhongHC = await Role.create({
-        parents: [roles[1]._id, roles[2]._id, roles[3]._id, nvPhongHC._id, phoPhongHC._id],
+        parents: [roles[1]._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng hành chính",
         company: xyz._id,
         type: roleChucDanh._id
@@ -321,7 +322,7 @@ const sampleCompanyData = async () => {
             description: 'Quản lý phân quyền',
             company: xyz._id
         }, { // 4
-            url: '/pages-management',
+            url: '/links-management',
             description: 'Quản lý trang web của công ty',
             company: xyz._id
         }, { // 5
@@ -436,7 +437,7 @@ const sampleCompanyData = async () => {
         },
         { // 27
             url: '/task-template',
-            description: 'Quản lý mẫu công việc',
+            description: 'Mẫu công việc',
             company: xyz._id
         },
         { // 28
@@ -444,6 +445,16 @@ const sampleCompanyData = async () => {
             description: 'Quản lí kpi nhân viên',
             company: xyz._id
         },
+        { // 29
+            url: '/task-management',
+            description: 'Xem danh sách công việc',
+            company: xyz._id
+        },
+        { // 30
+            url: '/task-management-dashboard',
+            description: 'Dashboard công việc',
+            company: xyz._id
+        }
     ]);
     console.log("Xong! Đã tạo links: ", links);
 
@@ -623,64 +634,117 @@ const sampleCompanyData = async () => {
         {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[1]._id //Dean
+            roleId: roles[1]._id // Dean
         }, {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[2]._id //Vice Dean
+            roleId: roles[2]._id // Vice Dean
         }, {
             resourceId: links[0]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id //Employee
+            roleId: roles[3]._id // Employee
         },
         {
             resourceId: links[25]._id,
             resourceType: 'Link',
-            roleId: roles[1]._id //Dean
+            roleId: roles[1]._id // Dean
         }, {
             resourceId: links[25]._id,
             resourceType: 'Link',
-            roleId: roles[2]._id //Vice Dean
+            roleId: roles[2]._id // Vice Dean
         }, {
             resourceId: links[25]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id //Employee
+            roleId: roles[3]._id // Employee
         },
-        //gán quyền vào trang kpi cho role Dean, Vice Dean và Employee
+
+        // Gán quyền vào trang kpi cho role Dean, Vice Dean và Employee
         {
-            resourceId: links[21]._id, //Khởi tạo KPI đơn vị
+            resourceId: links[21]._id, // Khởi tạo KPI đơn vị
             resourceType: 'Link',
-            roleId: roles[1]._id //Dean
-        },
-        {
-            resourceId: links[22]._id, //Tổng quan KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[3]._id //Employee
+            roleId: roles[1]._id // Dean
         },
         {
-            resourceId: links[23]._id, //Khởi tạo KPI cá nhân
+            resourceId: links[22]._id, // Tổng quan KPI đơn vị
             resourceType: 'Link',
-            roleId: roles[3]._id //Employee
+            roleId: roles[3]._id // Employee
         },
         {
-            resourceId: links[24]._id, //Tổng quan KPI cá nhân
+            resourceId: links[22]._id, // Tổng quan KPI đơn vị
             resourceType: 'Link',
-            roleId: roles[3]._id //Employee
+            roleId: roles[2]._id // Vice Dean
         },
-        //end
+        {
+            resourceId: links[22]._id, // Tổng quan KPI đơn vị
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[23]._id, // Khởi tạo KPI cá nhân
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[24]._id, // Tổng quan KPI cá nhân
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
 
         // Gán quyền mẫu công việc
         {
-            resourceId: links[27]._id, //Quản lý mẫu công việc
+            resourceId: links[27]._id, // Mẫu công việc
             resourceType: 'Link',
-            roleId: roles[3]._id //Employee
+            roleId: roles[3]._id // Employee
         },
         {
-            resourceId: links[28]._id, //Quản lý công việc
+            resourceId: links[27]._id, // Mẫu công việc
             resourceType: 'Link',
-            roleId: roles[1]._id  //Dean
+            roleId: roles[2]._id // Vice Dean
+        },
+        {
+            resourceId: links[27]._id, //M ẫu công việc
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+
+        // Gán quyền quản lý KPI nhân viên
+        {
+            resourceId: links[28]._id, // Quản lý KPI nhân viên
+            resourceType: 'Link',
+            roleId: roles[1]._id  // Dean
         },
         
+        // Gán quyền quản lý công việc
+        {
+            resourceId: links[29]._id, // Quản lý công việc
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[29]._id, //Quản lý công việc
+            resourceType: 'Link',
+            roleId: roles[2]._id // Vice Dean
+        },
+        {
+            resourceId: links[29]._id, // Quản lý công việc
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[30]._id, // Dashboard công việc
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[30]._id, // Dashboard công việc
+            resourceType: 'Link',
+            roleId: roles[3]._id // Vice Dean
+        },
+        {
+            resourceId: links[30]._id, // Dashboard công việc
+            resourceType: 'Link',
+            roleId: roles[3]._id // Dean
+        }
 
     ]);
     console.log("Gán quyền cho các role: ", privileges);

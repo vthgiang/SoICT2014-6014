@@ -18,6 +18,11 @@ export default {
             service_off: 'SERVICE OFF! Dịch vụ của công ty bạn đã tạm ngưng! Phiên làm việc của bạn sẽ bị tạm ngưng!',
             fingerprint_invalid: 'Phiên đăng nhập của bạn không đúng! Vui lòng đăng nhập lại!',
             service_permisson_denied: 'Bạn không có quyền gọi đến service',
+            email_invalid: 'Email không chính xác',
+            password_invalid: 'Mật khẩu không chính xác',
+            wrong5_block: 'Bạn đã nhập sai mật khẩu quá 5 lần. Tài khoản này đã bị khóa!',
+            acc_blocked: 'Tài khoản đã bị khóa',
+            acc_have_not_role: 'Tài khoản chưa được phân quyền'
         },
         auth: {
             login: 'Đăng nhập',
@@ -42,7 +47,7 @@ export default {
         },
 
         form: {
-            property: 'Thuộc tính : ',
+            property: 'Thuộc tính',
             required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',
@@ -139,12 +144,17 @@ export default {
             kpi_unit_create: 'Khởi tạo KPI đơn vị',
             kpi_unit_evaluate: 'Dữ liệu KPI đơn vị',
             kpi_unit_overview: 'Tổng quan KPI đơn vị',
+            kpi_member: 'Quản lý KPI nhân viên',
             kpi_personal: 'KPI cá nhân',
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
 
             notifications: 'Thông báo',
+            
+            tasks: 'Quản lý công việc',
+            task_management: 'Xem danh sách công việc',
+            task_management_dashboard: 'Dashboard công việc',
         },
 
         manage_system: {
@@ -205,6 +215,7 @@ export default {
         manage_role: {
             add: 'Thêm',
             add_title: 'Thêm phân quyền mới',
+            description: 'Mô tả về phân quyền',
             info: 'Thông tin về phân quyền',
             name: 'Tên phân quyền',
             extends: 'Kế thừa phân quyền',
@@ -229,6 +240,7 @@ export default {
             add_faile: 'Tạo tài khoản thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
+            roles: 'Phân quyền được cấp'
         },
 
         manage_page: {
@@ -236,6 +248,7 @@ export default {
             add_title: 'Thêm link mới cho trang web',
             url: 'Đường link của trang web',
             description: 'Mô tả về trang web',
+            components: 'Chứa các component',
             roles: 'Những role được truy cập',
             info: 'Thông tin về trang web',
             edit: 'Chỉnh sửa thông tin',
@@ -467,6 +480,24 @@ export default {
             check_end_Date: 'Bạn chưa nhập ngày kết thúc',
             check_description: 'Bạn chưa nhập mô tả lịch nghỉ'
         },
+
+        // Task template
+        task_template:{
+            search: 'Tìm kiếm',
+            add: 'Thêm mới',
+            confirm: 'Xác nhận',
+            confirm_title: 'Bạn chắc chắn muốn xóa mẫu công việc này?',
+            error_title: 'Không thể xóa mẫu công việc này do đã được sử dụng.',
+            name: 'Tên mẫu',
+            unit: 'Đơn vị',
+            tasktemplate_name: 'Tên mẫu công việc',
+            description: 'Mô tả',
+            count: 'Số lần sử dụng',
+            creator: 'Người tạo mẫu',
+            unit: 'Đơn vị',
+            action: 'Hành động'
+        },
+
         footer: {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

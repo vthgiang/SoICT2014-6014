@@ -1,6 +1,4 @@
-const User = require('../../../models/user.model');
-const Department = require('../../../models/department.model');
-const UserRole = require('../../../models/user_role.model');
+const { Department, User, UserRole } = require('../../../models/_export').data;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -115,11 +113,27 @@ exports.delete = async (id) => {
     return deleteUser;
 }
 
-exports.relationshipUserRole = async (userId, roleId) => { 
-    var relationship = await UserRole.create({
-        userId,
-        roleId
+exports.addRolesForUser = async (userId, roleIdArr) => { 
+    var data = await roleIdArr.map( roleId => {
+        return {
+            userId,
+            roleId
+        }
     });
+    var relationship = await UserRole.insertMany(data);
+    
+    return relationship;
+}
+
+exports.editRolesForUser = async (userId, roleIdArr) => { 
+    await UserRole.delete({userId});
+    var data = await roleIdArr.map( roleId => {
+        return {
+            userId,
+            roleId
+        }
+    });
+    var relationship = await UserRole.insertMany(data);
     
     return relationship;
 }

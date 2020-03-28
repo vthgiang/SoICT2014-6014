@@ -10,7 +10,10 @@ exports.createValidation = async (req, res, next) => {
                 .required()
                 .email(),
         });
-        const { error } = await schema.validate(req.body);
+        const { error } = await schema.validate({
+            name: req.body.name,
+            email: req.body.email
+        });
         if(error) throw(error);
 
         next();

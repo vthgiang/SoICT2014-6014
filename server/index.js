@@ -31,14 +31,15 @@ const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overvie
 
 const tasktemplates =require ("./modules/task-template-management/task-template-management.route")
 
-const linksDefault = require('./modules/system-admin-management/links-default-management/link.route');
-const componentsDefault = require('./modules/system-admin-management/components-default-management/component.route');
+const tasks = require("./modules/task-management/task-management/task-management.route");
+const performtask = require("./modules/task-management/perform-task/perform-task.route");
 
-<<<<<<< HEAD
+const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
+const componentsDefault = require('./modules/system-admin-management/components-default-management/component-default.route');
+const rolesDefault = require('./modules/system-admin-management/roles-default-management/role-default.route');
+
 const kpimember = require('./modules/kpi-member/kpiMember.route');
 
-=======
->>>>>>> 7b8dbe972d88ad34db040ef885379720f8043711
 // process.env.TZ = 'Asia/Ho_Chi_Minh';
 
 require('dotenv').config();
@@ -89,6 +90,7 @@ app.use("/auth", auth);
 app.use("/company", company);
 app.use("/links-default-management", linksDefault);
 app.use("/components-default-management", componentsDefault);
+app.use("/roles-default-management", rolesDefault);
 app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
@@ -112,7 +114,10 @@ app.use("/kpiunits", overviewKpiUnit);
 app.use("/kpipersonals", createKpiPersonal);
 app.use("/kpipersonals", overviewKpiPersonal);
 app.use("/kpimembers", kpimember);
-app.use  ("/tasktemplates",tasktemplates);
+app.use("/tasktemplates", tasktemplates);
+
+app.use("/tasks", tasks);
+app.use("/performtask", performtask);
 // console.log("ENV: ", process.env);
 const port = process.env.PORT || 5000;
 

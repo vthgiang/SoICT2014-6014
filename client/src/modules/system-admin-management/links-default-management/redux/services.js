@@ -2,7 +2,7 @@ import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
 
-export const LinkServices = {
+export const LinkDefaultServices = {
     get,
     getPaginate,
     show,
@@ -34,7 +34,7 @@ function getPaginate(data) {
 
 function show(id) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
@@ -42,11 +42,11 @@ function show(id) {
     return axios(requestOptions);
 }
 
-function create(link) {
+function create(data) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link`,
+        url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'POST',
-        data: link,
+        data,
         headers: AuthenticateHeader()
     };
 
@@ -55,7 +55,7 @@ function create(link) {
 
 function edit(id, data) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'PATCH',
         data: data,
         headers: AuthenticateHeader()
@@ -66,7 +66,7 @@ function edit(id, data) {
 
 function destroy(id) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'DELETE',
         headers: AuthenticateHeader()
     };

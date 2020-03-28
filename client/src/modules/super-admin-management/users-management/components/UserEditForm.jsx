@@ -20,12 +20,13 @@ class UserEditForm extends Component {
 
         return this.props.edit(this.props.userId, {
             name: this.refs.name.value,
-            active: this.refs.active.value
+            active: this.refs.active.value,
+            roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
         });
     }
 
     render() { 
-        const { userId, userEmail, userName, userActive, translate } = this.props;
+        const { userId, userEmail, userName, userActive, userRoles, translate, role } = this.props;
         const { status } = this.state;
         return ( 
             <React.Fragment>
@@ -67,6 +68,20 @@ class UserEditForm extends Component {
                         <div className="form-group">
                             <label>{ translate('table.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" ref="name" defaultValue={ userName }/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_user.roles') }</label>
+                            <select
+                                className="form-control select2" 
+                                multiple="multiple" 
+                                style={{ width: '100%' }} 
+                                defaultValue={userRoles}
+                                ref="roles"
+                            >
+                                {
+                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                }
+                            </select>
                         </div>
                     </form>
                 </ModalDialog>

@@ -9,7 +9,7 @@ exports.get = async (req, res) => {
            
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_EDUCATIONPROGRAM', req.user.company._id, req.user.company.short_name);
+        await LogError(req.user.email, 'GET_EDUCATIONPROGRAM', req.user.company._id );
         rres.status(400).json({
             message: error
         });
@@ -24,7 +24,7 @@ exports.create = async (req, res) => {
             
         });
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company._id, req.user.company.short_name);
+        await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company._id );
         res.status(400).json({
             message: error
         });

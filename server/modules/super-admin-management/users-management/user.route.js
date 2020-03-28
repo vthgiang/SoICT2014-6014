@@ -14,4 +14,6 @@ router.post("/search-by-name", auth, UserController.searchByName);
 
 router.get("/same-department/:id", UserController.getUsersSameDepartment);
 
+router.get("/users-of-department/:id", UserController.getUsersOfDepartment);
+
 module.exports = router;

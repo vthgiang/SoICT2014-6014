@@ -1,5 +1,5 @@
 import {
-    TOKEN_SECRET
+    TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
@@ -7,7 +7,9 @@ import {
 import jwt from 'jsonwebtoken';
 import {handleResponse} from '../../../../helpers/HandleResponse';
 export const overviewKpiServices = {
-    getAllKPIPersonalByMember
+    getAllKPIPersonalByMember,
+    getAllKPIPersonalOfTask,
+    getAllKPIPersonalByUserID
 };
 
 // Lấy tất cả kpi cá nhân
@@ -19,7 +21,23 @@ async function getAllKPIPersonalByMember() {//member
         method: 'GET',
     };
 
-    return fetch(`/kpipersonals/user/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${id}`, requestOptions).then(handleResponse);
 }
 
+// Lấy tất cả kpi cá nhân
+function getAllKPIPersonalByUserID(member) {
+    const requestOptions = {
+        method: 'GET',
+    };
 
+    return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${member}`, requestOptions).then(handleResponse);
+}
+
+// Lấy tất cả kpi cá nhân
+function getAllKPIPersonalOfTask(member) {
+    const requestOptions = {
+        method: 'GET',
+    };
+
+    return fetch(`${LOCAL_SERVER_API}/kpipersonals/task/${member}`, requestOptions).then(handleResponse);
+}

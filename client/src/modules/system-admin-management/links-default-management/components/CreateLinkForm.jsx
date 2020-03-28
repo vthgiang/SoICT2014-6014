@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
-import { LinkActions } from '../redux/actions';
+import { RoleDefaultActions } from '../../roles-default-management/redux/actions';
+import { LinkDefaultActions } from '../redux/actions';
 import { ModalDialog, ModalButton } from '../../../../common-components';
 
 class CreateLinkForm extends Component {
@@ -13,7 +13,7 @@ class CreateLinkForm extends Component {
     }
 
     render() { 
-        const { translate, role } = this.props;
+        const { translate, rolesDefault } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-page" button_name={translate('manage_page.add')} title={translate('manage_page.add_title')}/>
@@ -45,7 +45,7 @@ class CreateLinkForm extends Component {
                             >
                                 {
                                     
-                                    role.list.map( role => 
+                                    rolesDefault.list.map( role => 
                                         <option key={role._id} value={role._id}>
                                             { role.name }
                                         </option>
@@ -77,8 +77,8 @@ class CreateLinkForm extends Component {
  
 const mapState = state => state;
 const getState = {
-    getRole: RoleActions.get,
-    createLink: LinkActions.create
+    getRole: RoleDefaultActions.get,
+    createLink: LinkDefaultActions.create
 }
  
 export default connect(mapState, getState) (withTranslate(CreateLinkForm));

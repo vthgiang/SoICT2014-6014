@@ -18,6 +18,7 @@ export const EmployeeService = {
     checkMSNV,
     checkEmail,
     deleteEmployee,
+    checkArrayMSNV,
 
 }
 
@@ -42,7 +43,7 @@ function checkMSNV(employeeNumber) {
     return fetch(`${ LOCAL_SERVER_API }/employee/checkMSNV/${employeeNumber}`, requestOptions).then(handleResponse);
 }
 
-// Kiểm tra sự tồn tại của MSNV 
+// Kiểm tra sự tồn tại của email
 function checkEmail(email) {
     const requestOptions = {
         method: 'GET',
@@ -139,4 +140,15 @@ function deleteEmployee(id) {
     };
 
     return fetch(`${ LOCAL_SERVER_API }/employee/${id}`, requestOptions).then(handleResponse);
+}
+
+// Kiểm tra sự tồn tại của MSNV trong array 
+function checkArrayMSNV(arrayMSNV) {
+    const requestOptions = {
+        method: 'POST',
+        headers: AuthenticateHeader(),
+        body: JSON.stringify(arrayMSNV)
+    }
+
+    return fetch(`${ LOCAL_SERVER_API }/employee/checkArrayMSNV`, requestOptions).then(handleResponse);
 }
