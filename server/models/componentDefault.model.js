@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
-const ComponentSchema = new Schema({
+const ComponentDefaultSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -13,23 +13,17 @@ const ComponentSchema = new Schema({
     },
     link: {
         type: Schema.Types.ObjectId,
-        ref: 'links'
+        ref: 'linkdefaults'
     },
-    company: {
+    roles: [{
         type: Schema.Types.ObjectId,
-        ref: 'companies'
-    }
+        ref: 'roledefaults'
+    }]
 },{
     timestamps: true,
     toJSON: { virtuals: true }
 });
 
-ComponentSchema.virtual('roles', {
-    ref: 'privileges',
-    localField: '_id',
-    foreignField: 'resourceId'
-});
+ComponentDefaultSchema.plugin(mongoosePaginate);
 
-ComponentSchema.plugin(mongoosePaginate);
-
-module.exports = Component = mongoose.model("components", ComponentSchema);
+module.exports = Component = mongoose.model("componentdefaults", ComponentDefaultSchema);

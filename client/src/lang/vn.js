@@ -215,6 +215,7 @@ export default {
         manage_role: {
             add: 'Thêm',
             add_title: 'Thêm phân quyền mới',
+            description: 'Mô tả về phân quyền',
             info: 'Thông tin về phân quyền',
             name: 'Tên phân quyền',
             extends: 'Kế thừa phân quyền',
@@ -247,6 +248,7 @@ export default {
             add_title: 'Thêm link mới cho trang web',
             url: 'Đường link của trang web',
             description: 'Mô tả về trang web',
+            components: 'Chứa các component',
             roles: 'Những role được truy cập',
             info: 'Thông tin về trang web',
             edit: 'Chỉnh sửa thông tin',

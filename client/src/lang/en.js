@@ -200,6 +200,7 @@ export default {
         manage_role: {
             add: 'Add',
             add_title: 'Add new role',
+            description: 'Description',
             info: 'Role information',
             name: 'Role name',
             extends: 'Extends of',
@@ -232,6 +233,7 @@ export default {
             add_title: 'Add new link for page',
             url: 'Link of page',
             description: 'Description of page',
+            components: 'Have components',
             roles: 'Roles can access this page',
             info: 'Page information',
             edit: 'Edit page information',

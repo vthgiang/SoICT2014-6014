@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { LinkActions } from '../redux/actions';
+import { LinkDefaultActions } from '../redux/actions';
 import LinkInfoForm from './LinkInfoForm';
 import CreateLinkForm from './CreateLinkForm';
 import { SearchBar, ActionColumn, PaginateBar, DeleteNotification } from '../../../../common-components';
@@ -51,6 +51,8 @@ class ManageLink extends Component {
                                 <tr>
                                     <th>{ translate('manage_page.url') }</th>
                                     <th>{ translate('manage_page.description') }</th>
+                                    <th>{ translate('manage_page.components') }</th>
+                                    <th>{ translate('manage_page.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
@@ -62,16 +64,28 @@ class ManageLink extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    linksDefault.list.length > 0 ? linksDefault.list.map( link => 
+                                    linksDefault.listPaginate.length > 0 ? linksDefault.listPaginate.map( link => 
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.description }</td>
+                                            <td>{ link.components.map((component, i, arr) => {
+                                                if(i !== arr.length - 1)
+                                                    return <span key={component._id}>{component.name}, </span>
+                                                else
+                                                    return <span key={component._id}>{component.name}</span>
+                                            }) }</td>
+                                            <td>{ link.roles.map((role, index, arr) => {
+                                                if(index !== arr.length - 1)
+                                                    return <span key={role._id}>{role.name}, </span>
+                                                else
+                                                    return <span key={role._id}>{role.name}</span>
+                                            }) }</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <LinkInfoForm 
-                                                    linkId={ link._id }
-                                                    linkName={ link.url }
-                                                    linkDescription={ link.description }
-                                                    linkRoles={link.roles.map(role => role._id)}
+                                                    linkDefaultId={ link._id }
+                                                    linkDefaultName={ link.url }
+                                                    linkDefaultDescription={ link.description }
+                                                    linkDefaultRoles={link.roles.map(role => role._id)}
                                                 />
                                                 <DeleteNotification 
                                                     content={{
@@ -81,7 +95,7 @@ class ManageLink extends Component {
                                                     }}
                                                     data={{
                                                         id: link._id,
-                                                        info: link.url+"<br/>"+link.description
+                                                        info: link.url
                                                     }}
                                                     func={this.props.destroy}
                                                 />
@@ -144,15 +158,15 @@ class ManageLink extends Component {
      
     componentDidMount(){
         this.props.getLinks();
-        // this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
 }
  
 const mapState = state => state;
 const getState =  {
-    getLinks: LinkActions.get,
-    getPaginate: LinkActions.getPaginate,
-    destroy: LinkActions.destroy
+    getLinks: LinkDefaultActions.get,
+    getPaginate: LinkDefaultActions.getPaginate,
+    destroy: LinkDefaultActions.destroy
 }
  
 export default connect(mapState, getState) (withTranslate(ManageLink));

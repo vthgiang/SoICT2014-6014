@@ -1,8 +1,8 @@
-import { LinkServices } from "./services";
-import { LinkConstants } from "./constants";
+import { LinkDefaultServices } from "./services";
+import { LinkDefaultConstants } from "./constants";
 import { AlertActions} from '../../../alert/redux/actions';
 
-export const LinkActions = {
+export const LinkDefaultActions = {
     get,
     getPaginate,
     show,
@@ -13,11 +13,11 @@ export const LinkActions = {
 
 function get(){
     return dispatch => {
-        dispatch({ type: LinkConstants.GET_LINKS_DEFAULT_REQUEST});
-        LinkServices.get()
+        dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_REQUEST});
+        LinkDefaultServices.get()
             .then(res => {
                 dispatch({
-                    type: LinkConstants.GET_LINKS_DEFAULT_SUCCESS,
+                    type: LinkDefaultConstants.GET_LINKS_DEFAULT_SUCCESS,
                     payload: res.data
                 })
             })
@@ -30,11 +30,11 @@ function get(){
 
 function getPaginate(data){
     return dispatch => {
-        dispatch({ type: LinkConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST});
-        LinkServices.getPaginate(data)
+        dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST});
+        LinkDefaultServices.getPaginate(data)
             .then(res => {
                 dispatch({
-                    type: LinkConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS,
+                    type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_SUCCESS,
                     payload: res.data
                 })
             })
@@ -47,11 +47,11 @@ function getPaginate(data){
 
 function show(id){
     return dispatch => {
-        dispatch({ type: LinkConstants.SHOW_LINK_DEFAULT_REQUEST});
-        LinkServices.show(id)
+        dispatch({ type: LinkDefaultConstants.SHOW_LINK_DEFAULT_REQUEST});
+        LinkDefaultServices.show(id)
             .then(res => {
                 dispatch({
-                    type: LinkConstants.SHOW_LINK_DEFAULT_SUCCESS,
+                    type: LinkDefaultConstants.SHOW_LINK_DEFAULT_SUCCESS,
                     payload: res.data
                 })
             })
@@ -64,13 +64,13 @@ function show(id){
 
 function create(link){
     return dispatch => {
-        dispatch({ type: LinkConstants.CREATE_LINK_DEFAULT_REQUEST});
+        dispatch({ type: LinkDefaultConstants.CREATE_LINK_DEFAULT_REQUEST});
         return new Promise((resolve, reject) => {
-            LinkServices
+            LinkDefaultServices
                 .create(link)
                 .then(res => {
                     dispatch({
-                        type: LinkConstants.CREATE_LINK_DEFAULT_SUCCESS,
+                        type: LinkDefaultConstants.CREATE_LINK_DEFAULT_SUCCESS,
                         payload: res.data
                     });
                     resolve(res);
@@ -86,12 +86,12 @@ function create(link){
 
 function edit(id, link){
     return dispatch => {
-        dispatch({ type: LinkConstants.EDIT_LINK_DEFAULT_REQUEST});
+        dispatch({ type: LinkDefaultConstants.EDIT_LINK_DEFAULT_REQUEST});
         return new Promise((resolve, reject) => {
-            LinkServices.edit(id, link)
+            LinkDefaultServices.edit(id, link)
             .then(res => {
                 dispatch({
-                    type: LinkConstants.EDIT_LINK_DEFAULT_SUCCESS,
+                    type: LinkDefaultConstants.EDIT_LINK_DEFAULT_SUCCESS,
                     payload: res.data
                 })
                 resolve(res);
@@ -107,11 +107,11 @@ function edit(id, link){
 
 function destroy(id, link){
     return dispatch => {
-        dispatch({ type: LinkConstants.DELETE_LINK_DEFAULT_REQUEST});
-        LinkServices.destroy(id, link)
+        dispatch({ type: LinkDefaultConstants.DELETE_LINK_DEFAULT_REQUEST});
+        LinkDefaultServices.destroy(id, link)
             .then(res => {
                 dispatch({
-                    type: LinkConstants.DELETE_LINK_DEFAULT_SUCCESS,
+                    type: LinkDefaultConstants.DELETE_LINK_DEFAULT_SUCCESS,
                     payload: id
                 })
             })

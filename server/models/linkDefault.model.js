@@ -11,6 +11,10 @@ const LinkDefaultSchema = new Schema({
     description: {
         type: String
     },
+    components: [{
+        type: Schema.Types.ObjectId,
+        ref: 'componentdefaults'
+    }],
     roles: [{
         type: Schema.Types.ObjectId,
         ref: 'roledefaults'

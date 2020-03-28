@@ -98,7 +98,7 @@ exports.auth = async (req, res, next) => {
              */
 
             var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
-            console.log("trang web hiện tại người dùng đang truy cập: ", url);
+            // console.log("trang web hiện tại người dùng đang truy cập: ", url);
             // console.log("ROLE NAME:", role.name, req.user.company._id);
             const link = role.name !== 'System Admin' ?
                 await Link.findOne({
@@ -128,7 +128,7 @@ exports.auth = async (req, res, next) => {
 
         }
 
-        console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
+        // console.log("Xác thực qua authmiddle thành công!-> Bắt đầu thực hiện service")
         next();
         
     } catch (error) { 

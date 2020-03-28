@@ -322,7 +322,7 @@ const sampleCompanyData = async () => {
             description: 'Quản lý phân quyền',
             company: xyz._id
         }, { // 4
-            url: '/pages-management',
+            url: '/links-management',
             description: 'Quản lý trang web của công ty',
             company: xyz._id
         }, { // 5

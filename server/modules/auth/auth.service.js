@@ -154,6 +154,5 @@ exports.getLinksOfRole = async (idRole) => {
         resourceType: 'Link'
     }).populate({ path: 'resourceId', model: Link }); 
     const links = await privilege.map( link => link.resourceId );
-    console.log("link user:",links);
     return links;
 }

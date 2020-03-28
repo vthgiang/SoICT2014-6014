@@ -62,7 +62,7 @@ const seedDatabase = async () => {
             description: 'Trang chủ'
         },{
             url: '/system/settings',
-            description: 'Quản lý thiết lập hệ thống',
+            description: 'Quản lý thiết lập hệ thống'
         },{
             url: '/system/companies-management',
             description: 'Quản lý thông tin doanh nghiệp/công ty'
@@ -72,40 +72,14 @@ const seedDatabase = async () => {
         },{
             url: '/system/components-default-management',
             description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty'
+        },{
+            url: '/system/roles-default-management',
+            description: 'Thông tin về các role default trong csdl'
         }
     ]);
 
-    // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
-    var linkDefaults = await LinkDefault.insertMany([
-        {
-            url: '/',
-            description: 'Trang chủ'
-        },{
-            url: '/users-management',
-            description: 'Quản lý người dùng'
-        },{
-            url: '/roles-management',
-            description: 'Quản lý phân quyền'
-        },{
-            url: '/departments-management',
-            description: 'Quản lý cơ cấu tổ chức'
-        },{
-            url: '/links-management',
-            description: 'Quản lý trang'
-        }
-        ,{
-            url: '/components-management',
-            description: 'Quản lý thành phần UI'
-        },{
-            url: '/documents-management',
-            description: 'Quản lý tài liệu biểu mẫu'
-        },{
-            url: '/notifications',
-            description: 'Thông báo'
-        }
-    ]);
-
-    await RoleDefault.insertMany([
+    // Tạo các role abstract mặc định để khởi tạo cho từng công ty
+    var roleAbstracts = await RoleDefault.insertMany([
         {
             name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
             description: Terms.PREDEFINED_ROLES.SUPER_ADMIN.DESCRIPTION
@@ -123,6 +97,44 @@ const seedDatabase = async () => {
             description: Terms.PREDEFINED_ROLES.EMPLOYEE.DESCRIPTION
         }
     ])
+    // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
+    // index: 0-super admin, 1-admin, 2-dean, 3-vice dean, 4-employee
+    var linkDefaults = await LinkDefault.insertMany([
+        {
+            url: '/',
+            description: 'Trang chủ',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ]
+        },{
+            url: '/users-management',
+            description: 'Quản lý người dùng',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
+        },{
+            url: '/roles-management',
+            description: 'Quản lý phân quyền',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
+        },{
+            url: '/departments-management',
+            description: 'Quản lý cơ cấu tổ chức',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
+        },{
+            url: '/links-management',
+            description: 'Quản lý trang',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
+        }
+        ,{
+            url: '/components-management',
+            description: 'Quản lý thành phần UI',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
+        },{
+            url: '/documents-management',
+            description: 'Quản lý tài liệu biểu mẫu',
+            roles: [ roleAbstracts[2]._id, roleAbstracts[3]._id ] //trưởng và phó 
+        },{
+            url: '/notifications',
+            description: 'Thông báo',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ] // tất cả 
+        }
+    ]);
 
     await Privilege.insertMany([
         {
@@ -144,6 +156,10 @@ const seedDatabase = async () => {
             roleId: roleSystemAdmin._id
         },{
             resourceId: links[4]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
+        },{
+            resourceId: links[5]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
         }

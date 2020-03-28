@@ -1,6 +1,7 @@
 const Action = require('./action.model');
 const Company = require('./company.model');
 const Component = require('./component.model');
+const ComponentDefault = require('./componentDefault.model');
 const Department = require('./department.model');
 const Link = require('./link.model');
 const LinkDefault = require('./linkDefault.model');
@@ -15,6 +16,7 @@ exports.data = {
     Action,
     Company,
     Component,
+    ComponentDefault,
     Department,
     Link,
     LinkDefault,

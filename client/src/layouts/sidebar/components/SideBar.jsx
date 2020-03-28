@@ -87,6 +87,15 @@ class SideBar extends Component {
                                 />
                             }
                             {
+                                this.checkURL('/system/roles-default-management', links) === true &&
+                                <Item
+                                    key='manage_role'
+                                    name='manage_role'
+                                    path='/system/roles-default-management'
+                                    icon='fa fa-lock'
+                                />
+                            }
+                            {
                                 this.checkURL('/system/links-default-management', links) === true &&
                                 <Item
                                     key='manage_page'

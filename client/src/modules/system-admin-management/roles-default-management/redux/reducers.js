@@ -1,14 +1,4 @@
-import { RoleConstants } from "./constants";
-
-var findIndex = (array, id) => {
-    var result = -1;
-    array.forEach((value, index) => {
-        if(value._id === id){
-            result = index;
-        }
-    });
-    return result;
-}
+import { RoleDefaultConstants } from "./constants";
 
 const initState = {
     list: [],
@@ -16,17 +6,15 @@ const initState = {
     isLoading: true
 }
 
-export function role(state = initState, action) {
-    var index = -1;
-    var indexPaginate = -1;
+export function rolesDefault(state = initState, action) {
     switch (action.type) {
-        case RoleConstants.GET_ROLES_REQUEST:
+        case RoleDefaultConstants.GET_ROLES_DEFAULT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             }
 
-        case RoleConstants.GET_ROLES_SUCCESS:
+        case RoleDefaultConstants.GET_ROLES_DEFAULT_SUCCESS:
             return {
                 ...state,
                 list: action.payload,

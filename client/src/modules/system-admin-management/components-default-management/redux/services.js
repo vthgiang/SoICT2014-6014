@@ -2,7 +2,7 @@ import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
 
-export const ComponentServices = {
+export const ComponentDefaultServices = {
     get,
     getPaginate,
     show,
@@ -42,22 +42,22 @@ function show(id) {
     return axios(requestOptions);
 }
 
-function create(component) {
+function create(data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'POST',
-        data: component,
+        data,
         headers: AuthenticateHeader()
     };
 
     return axios(requestOptions);
 }
 
-function edit(id, component) {
+function edit(id, data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'PATCH',
-        data: component,
+        data,
         headers: AuthenticateHeader()
     };
 

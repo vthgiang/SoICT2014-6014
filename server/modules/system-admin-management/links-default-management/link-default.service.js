@@ -1,20 +1,24 @@
-const { LinkDefault, RoleDefault } = require('../../../models/_export').data;
+const { LinkDefault, RoleDefault, ComponentDefault } = require('../../../models/_export').data;
 
 exports.get = async () => {
 
-    return await LinkDefault.find().populate({path: 'roles', model: RoleDefault});
+    return await LinkDefault.find().populate([
+        { path: 'roles', model: RoleDefault },
+        { path: 'components', model: ComponentDefault }
+    ]);
 }
 
 exports.getPaginate = async (limit, page, data={}) => {
     
     return await LinkDefault.paginate( data, {page, limit, populate: [
-        { path: 'roles', model: RoleDefault }
+        { path: 'roles', model: RoleDefault },
+        { path: 'components', model: ComponentDefault }
     ]});
 }
 
 exports.show = async (id) => {
 
-    return await LinkDefault.findById(id);
+    return await LinkDefault.findById(id).populate({path: 'roles', model: RoleDefault});
 }
 
 exports.create = async(url, description, roles) => {

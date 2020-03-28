@@ -29,8 +29,8 @@ exports.create = async (req, res) => {
     try {
         var { url, description, roles } = req.body;
         var link = await LinkDefaultService.create(url, description, roles);
-
-        res.status(200).json(link);
+        var data = await LinkDefaultService.show(link._id);
+        res.status(200).json(data);
     } catch (error) {
         
         res.status(400).json(error);
@@ -39,7 +39,7 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var link = await LinkDefaultService.getById(req.params.id);
+        var link = await LinkDefaultService.show(req.params.id);
         
         res.status(200).json(link);
     } catch (error) {
@@ -52,8 +52,10 @@ exports.edit = async (req, res) => {
     try {
         var { url, description, roles } = req.body;
         var link = await LinkDefaultService.edit(req.params.id, url, description, roles);
-        var data = await LinkDefaultService.getById(link._id);
-
+        
+        console.log("link: ", link);
+        var data = await LinkDefaultService.show(link._id);
+        console.log("Sửa link: ", data);
         res.status(200).json(data);
     } catch (error) {
         
