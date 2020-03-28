@@ -69,9 +69,9 @@ class TableComponent extends Component {
                                     <td>{component.link.url}</td>
                                     <td>{ component.roles.map((role, i, arr) => {
                                         if(i !== arr.length - 1)
-                                            return <span>{role.name}, </span>
+                                            return <span key={role._id}>{role.name}, </span>
                                         else
-                                            return <span>{role.name}</span> 
+                                            return <span key={role._id}>{role.name}</span> 
                                     }) }</td>
                                     <td style={{ textAlign: 'center'}}>
                                         <ComponentInfoForm 
