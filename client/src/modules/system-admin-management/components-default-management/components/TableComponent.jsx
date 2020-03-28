@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ComponentActions } from '../redux/actions';
+import { ComponentDefaultActions } from '../redux/actions';
 import ComponentInfoForm from './ComponentInfoForm';
 import { PaginateBar, ActionColumn, DeleteNotification, SearchBar } from '../../../../common-components';
 import ComponentCreateForm from './ComponentCreateForm';
-import { LinkActions } from '../../../super-admin-management/links-management/redux/actions';
+import { LinkDefaultActions } from '../../links-default-management/redux/actions';
 
 class TableComponent extends Component {
     constructor(props) {
@@ -24,38 +24,32 @@ class TableComponent extends Component {
 
     componentDidMount(){
         this.props.getLinks();
-        this.props.getComponents();
+        this.props.get();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit})
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
     }
 
     render() { 
-        const { component, translate } = this.props;
+        const { componentsDefault, translate } = this.props;
         return ( 
             <React.Fragment>
-                <div className="row">
-                    <SearchBar 
-                        columns={[
-                            { title: translate('table.name'), value:'name' },
-                            { title: translate('table.description'), value:'description' },
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    />
-                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        <ComponentCreateForm />
-                    </div>
-                </div>
+                <ComponentCreateForm />
+                <SearchBar 
+                    columns={[
+                        { title: translate('table.name'), value:'name' },
+                        { title: translate('table.description'), value:'description' },
+                    ]}
+                    option={this.state.option}
+                    setOption={this.setOption}
+                    search={this.searchWithOption}
+                />
+
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>{ translate('table.name') }</th>
-                            <th>{ translate('table.description') }</th>
+                            <th>{ translate('manage_component.name') }</th>
+                            <th>{ translate('manage_component.description') }</th>
+                            <th>{ translate('manage_component.link') }</th>
+                            <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
@@ -67,17 +61,25 @@ class TableComponent extends Component {
                     </thead>
                     <tbody>
                         {
-                            component.listPaginate.length > 0 ?
-                            component.listPaginate.map( component => 
+                            componentsDefault.listPaginate.length > 0 ?
+                            componentsDefault.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
                                     <td>{ component.description }</td>
+                                    <td>{component.link.url}</td>
+                                    <td>{ component.roles.map((role, i, arr) => {
+                                        if(i !== arr.length - 1)
+                                            return <span key={role._id}>{role.name}, </span>
+                                        else
+                                            return <span key={role._id}>{role.name}</span> 
+                                    }) }</td>
                                     <td style={{ textAlign: 'center'}}>
                                         <ComponentInfoForm 
                                             componentId={ component._id }
                                             componentName={ component.name }
                                             componentDescription={ component.description }
-                                            componentRoles={ component.roles.map(role => role.roleId) }
+                                            componentLink={ component.link._id }
+                                            componentRoles={ component.roles.map(role => role._id) }
                                         />
                                         <DeleteNotification 
                                             content={{
@@ -98,7 +100,7 @@ class TableComponent extends Component {
                     </tbody>
                 </table>
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={component.totalPages} currentPage={component.page} func={this.setPage}/>
+                <PaginateBar pageTotal={componentsDefault.totalPages} currentPage={componentsDefault.page} func={this.setPage}/>
             </React.Fragment>
          );
     }
@@ -139,10 +141,10 @@ class TableComponent extends Component {
  
 const mapState = state => state;
 const getState = {
-    getComponents: ComponentActions.get,
-    destroy: ComponentActions.destroy,
-    getPaginate: ComponentActions.getPaginate,
-    getLinks: LinkActions.get,
+    get: ComponentDefaultActions.get,
+    destroy: ComponentDefaultActions.destroy,
+    getPaginate: ComponentDefaultActions.getPaginate,
+    getLinks: LinkDefaultActions.get,
 }
  
 export default connect(mapState, getState) (withTranslate(TableComponent));

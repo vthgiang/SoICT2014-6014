@@ -54,7 +54,7 @@ class Login extends Component {
                     {
                         auth.error !== null &&
                         <div className="alert alert-danger alert-dismissible">
-                            <p><i className="icon fa fa-ban" />{ auth.error }</p>
+                            <p><i className="icon fa fa-ban" />{ translate(`alert.${auth.error}`) }</p>
                         </div>
                     }
                     {/* {

@@ -36,17 +36,16 @@ class TableComponent extends Component {
         const { component, translate } = this.props;
         return ( 
             <React.Fragment>
-                <div className="row">
-                    <SearchBar 
-                        columns={[
-                            { title: translate('table.name'), value:'name' },
-                            { title: translate('table.description'), value:'description' },
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    />
-                </div>
+                <SearchBar 
+                    columns={[
+                        { title: translate('table.name'), value:'name' },
+                        { title: translate('table.description'), value:'description' },
+                    ]}
+                    option={this.state.option}
+                    setOption={this.setOption}
+                    search={this.searchWithOption}
+                />
+                
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>

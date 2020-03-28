@@ -8,4 +8,8 @@ router.get("/logout", auth, AuthController.logout);
 router.get("/logout-all-account", auth, AuthController.logoutAllAccount);
 router.post("/forgot-password", AuthController.forgotPassword);
 router.post("/reset-password", AuthController.resetPassword);
+
+router.get("/profile/:id", auth, AuthController.profile);
+router.get("/get-links-of-role/:id", auth, AuthController.getLinksOfRole);
+
 module.exports = router;

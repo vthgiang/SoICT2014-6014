@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ComponentActions } from '../redux/actions';
+import { ComponentDefaultActions } from '../redux/actions';
 import { ModalButton, ModalDialog} from '../../../../common-components';
 
 class ComponentInfoForm extends Component {
@@ -34,16 +34,8 @@ class ComponentInfoForm extends Component {
         return this.props.editComponent(id, component);
     }
 
-    componentDidMount(){
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-
     render() { 
-        const { componentId, componentName, componentDescription, componentRoles, translate, role } = this.props;
+        const { componentId, componentName, componentDescription, componentLink, componentRoles, translate, linksDefault, rolesDefault } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-component-${componentId}`} button_type="edit" title={translate('manage_component.edit')}/>
@@ -65,6 +57,26 @@ class ComponentInfoForm extends Component {
                             <input name="description" type="text" className="form-control" defaultValue={componentDescription} onChange={this.inputChange} />
                         </div>
                         <div className="form-group">
+                            <label>{ translate('manage_component.link') }</label>
+                            {
+                                linksDefault.list.length > 0 &&
+                                <select 
+                                    className="form-control select2"
+                                    style={{ width: '100%' }} 
+                                    defaultValue={componentLink}
+                                    ref="link"
+                                >
+                                    {
+                                        linksDefault.list.map( link => 
+                                            <option key={link._id} value={link._id}>
+                                                { link.url }
+                                            </option>
+                                        )
+                                    }
+                                </select>
+                            }
+                        </div>
+                        <div className="form-group">
                             <label>{ translate('manage_component.roles') }</label>
                             <select 
                                 className="form-control select2" 
@@ -74,8 +86,7 @@ class ComponentInfoForm extends Component {
                                 ref="roles"
                             >
                                 {
-                                    
-                                    role.list.map( role => 
+                                    rolesDefault.list.map( role => 
                                         <option key={role._id} value={role._id}>
                                             { role.name }
                                         </option>
@@ -92,7 +103,7 @@ class ComponentInfoForm extends Component {
  
 const mapState = state => state;
 const getState = {
-    editComponent: ComponentActions.edit
+    editComponent: ComponentDefaultActions.edit
 }
  
 export default connect(mapState, getState) (withTranslate(ComponentInfoForm));

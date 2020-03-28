@@ -18,6 +18,11 @@ export default {
             service_off: 'Your company service turning off! Try again!',
             fingerprint_invalid: 'Your token invalid! Log in again!',
             service_permisson_denied: 'You do not have permission call to Service',
+            email_invalid: 'Email invalid',
+            password_invalid: 'Password invalid',
+            wrong5_block: 'Input password wrong 5 times. Accont have been blocked!',
+            acc_blocked: 'Accont have been blocked!',
+            acc_have_not_role: 'Accout have not role'
         },
         auth: {
             login: 'Login',
@@ -42,7 +47,7 @@ export default {
         },
 
         form: {
-            property: 'Property : ',
+            property: 'Property',
             required: 'Information fields required',
             save: 'Save',
             close: 'Close',
@@ -136,6 +141,7 @@ export default {
             kpi_unit_create: 'Create unit KPI',
             kpi_unit_evaluate: 'Evaluate unit KPI',
             kpi_unit_overview: 'Overview unit KPI',
+            kpi_member: "Manage Employees' KPI",
             kpi_personal: 'Personal KPI',
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',
@@ -194,6 +200,7 @@ export default {
         manage_role: {
             add: 'Add',
             add_title: 'Add new role',
+            description: 'Description',
             info: 'Role information',
             name: 'Role name',
             extends: 'Extends of',
@@ -217,7 +224,8 @@ export default {
             add_success: 'Add new user successfully',
             add_faile: 'Add new user failed',
             edit_success: 'Edit user successfully',
-            edit_faile: 'Edit user failed'
+            edit_faile: 'Edit user failed',
+            roles: 'Roles assigned'
         },
 
         manage_page: {
@@ -225,6 +233,7 @@ export default {
             add_title: 'Add new link for page',
             url: 'Link of page',
             description: 'Description of page',
+            components: 'Have components',
             roles: 'Roles can access this page',
             info: 'Page information',
             edit: 'Edit page information',
@@ -437,6 +446,23 @@ export default {
             check_start_Date: 'Start day required',
             check_end_Date: 'End day required',
             check_description: 'Description required'
+        },
+
+        // Task template
+        task_template:{
+            search: 'Search',
+            add: 'Add new',
+            confirm: 'Confirm',
+            confirm_title: 'Are you sure you want to delete this task template?',
+            error_title: 'This work template cannot be deleted because it is already in use.',
+            name: 'Template name',
+            unit: 'Unit',
+            tasktemplate_name: 'Task template name',
+            description: 'Description',
+            count: 'Number of uses',
+            creator: 'Creator',
+            unit: 'Unit',
+            action: 'Action'
         },
 
         notification: {
