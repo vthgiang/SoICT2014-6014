@@ -53,6 +53,12 @@ class SideBar extends Component {
             path11: "/hr-training-plan",
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
+            path14: "/kpi-units/create",
+            path15: "/kpi-units/overview",
+            path16: "/kpi-personals/create",
+            path17: "/kpi-personals/overview",
+            path18: "/task-management",
+            path19: "/task-management-dashboard",
 
         }
         const { translate } = this.props;
@@ -334,7 +340,7 @@ class SideBar extends Component {
                             {/* kpi-management */}
                             {
                                 (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
-                                <li className="treeview">
+                                <li className={window.location.pathname === url.path14 || window.location.pathname === url.path15 || window.location.pathname === url.path16 || window.location.pathname === url.path17 ? "active treeview menu-open" : "treeview"}>
                                     <a className="tree4" onClick={() => this.handClick("tree4")}>
                                         <i className="fa fa-dashboard" /> <span>{translate(`menu.manage_kpi`)}</span>
                                         <span className="pull-right-container">
@@ -344,8 +350,8 @@ class SideBar extends Component {
                                     <ul className="treeview-menu">
                                         {
                                             (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true) &&
-                                            <li className="treeview">
-                                                <a href="#kpiunit"> {translate(`menu.kpi_unit`)}
+                                            <li className={window.location.pathname === url.path14 || window.location.pathname === url.path15 ? "active treeview menu-open" : "treeview"}>
+                                                <a className="tree4_1" onClick={ ()=> this.handClick("tree4_1") } > {translate(`menu.kpi_unit`)}
                                                     <span className="pull-right-container">
                                                         <i className="fa fa-angle-left pull-right" />
                                                     </span>
@@ -353,19 +359,23 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-units/overview', links) === true) &&
-                                                        <li><Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link></li>
+                                                        <li className={window.location.pathname === url.path15 ? "active" : ""}>
+                                                            <Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link>
+                                                        </li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-units/create', links) === true) &&
-                                                        <li><Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link></li>
+                                                        <li className={window.location.pathname === url.path14 ? "active" : ""}>
+                                                            <Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link>
+                                                        </li>
                                                     }
                                                 </ul>
                                             </li>
                                         }
                                         {
                                             (this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
-                                            <li className="treeview">
-                                                <a href="#kpipersonnal">{translate(`menu.kpi_personal`)}
+                                            <li className={window.location.pathname === url.path16 || window.location.pathname === url.path17 ? "active treeview menu-open" : "treeview"}>
+                                                <a className="tree4_2" onClick={ ()=> this.handClick("tree4_2") } >{translate(`menu.kpi_personal`)}
                                                     <span className="pull-right-container">
                                                         <i className="fa fa-angle-left pull-right" />
                                                     </span>
@@ -373,11 +383,15 @@ class SideBar extends Component {
                                                 <ul className="treeview-menu">
                                                     {
                                                         (this.checkURL('/kpi-personals/overview', links) === true) &&
-                                                        <li><Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link></li>
+                                                        <li className={window.location.pathname === url.path17 ? "active" : ""}>
+                                                            <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
+                                                        </li>
                                                     }
                                                     {
                                                         (this.checkURL('/kpi-personals/create', links) === true) &&
-                                                        <li><Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link></li>
+                                                        <li className={window.location.pathname === url.path16 ? "active" : ""}>
+                                                            <Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link>
+                                                        </li>
                                                     }
 
                                                 </ul>
@@ -389,7 +403,7 @@ class SideBar extends Component {
                             {/* Task management */}
                             {   
                                 ((this.checkURL('/task-management-dashboard', links) === true) || (this.checkURL('/task-management', links) === true)) && 
-                                <li className="treeview">
+                                <li className={window.location.pathname === url.path18 || window.location.pathname === url.path19 ? "active treeview menu-open" : "treeview"}>
                                     <a className="tree5" onClick={() => this.handClick("tree5")}>
                                     <i className="fa fa-tasks"></i> <span>{translate(`menu.tasks`)}</span>
                                         <span className="pull-right-container">
@@ -399,11 +413,15 @@ class SideBar extends Component {
                                     <ul className="treeview-menu">
                                         {
                                             (this.checkURL('/task-management-dashboard', links) === true) &&
-                                            <li><Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link></li>
+                                            <li className={window.location.pathname === url.path19 ? "active" : ""}>
+                                                <Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link>
+                                            </li>
                                         }
                                         {
                                             (this.checkURL('/task-management', links) === true) &&
-                                            <li><Link to="/task-management">{translate(`menu.task_management`)}</Link></li>
+                                            <li className={window.location.pathname === url.path18 ? "active" : ""}>
+                                                <Link to="/task-management">{translate(`menu.task_management`)}</Link>
+                                            </li>
                                         }
                                     </ul>
                                 </li>
