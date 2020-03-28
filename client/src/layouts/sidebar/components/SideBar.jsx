@@ -60,11 +60,18 @@ class SideBar extends Component {
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
-                                <Link to='/notifications'><i className="fa fa-bell text-yellow"></i>{translate('menu.notifications')}</Link>
+                                {
+                                    this.checkURL('/notifications', links) ?
+                                    <React.Fragment>
+                                        <span style={{fontSize: '10px', marginRight: '10px'}}><i className="fa fa-circle text-success"></i> Online </span>
+                                        <Link to='/notifications'><i className="fa fa-bell text-yellow"></i>{translate('menu.notifications')}</Link>
+                                    </React.Fragment> :
+                                    <p style={{fontSize: '10px'}}><i className="fa fa-circle text-success"></i> Online </p>
+                                }
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref = "sideBarMenu">
-                            <li className="header">SIDEBAR</li>
+                            <li className="header">*MENU*</li>
                             {
                                 this.checkURL('/', links) === true &&
                                 <Item

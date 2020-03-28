@@ -189,6 +189,14 @@ exports.data = [
     { path: '/kpipersonals/target/:kpipersonal/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpipersonals/approve/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/kpipersonals/user/:member', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    
+    { path: '/kpimembers/all-member/:role/:user/:status/:starttime/:endtime', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembets/user/:member', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/:id', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers//member/:id/:time', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/approve/:id', method:'PUT', roles: ['Dean']},
+    { path: '/kpimembers/target/:id', method: 'PUT', roles: ['Dean']},
+    { path: '/kpimembers/status-target/:id/:status', method: 'PUT', roles: ['Dean']},
     // Task-management
     { path: '/tasks/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
