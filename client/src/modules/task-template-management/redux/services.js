@@ -52,7 +52,7 @@ function getAllTaskTemplateByRole(id) {
 }
 
 // get all task template by User
-async function getAllTaskTemplateByUser(pageNumber,arrayUnit) {
+async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
@@ -61,7 +61,7 @@ async function getAllTaskTemplateByUser(pageNumber,arrayUnit) {
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${arrayUnit}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${noResultsPerPage}/${arrayUnit}`, requestOptions).then(handleResponse);
 }
 
 // add new task template

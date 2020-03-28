@@ -27,7 +27,9 @@ exports.getByRole = (req, res) => {
 // Lấy mẫu công việc theo người dùng
 exports.getByUser = async (req, res) => {
     try {
-        var data = await TaskTemplateService.getByUser(req.params.id, req.params.number, req.params.unit);
+        var pageNumber = Number(req.params.pageNumber);
+        var noResultsPerPage = Number(req.params.noResultsPerPage);
+        var data = await TaskTemplateService.getByUser(req.params.id, pageNumber, noResultsPerPage, req.params.unit);
         LogInfo(req.user.email, `Get task templates by user ${req.params.id}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {

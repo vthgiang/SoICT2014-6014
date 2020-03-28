@@ -47,7 +47,7 @@ exports.getByRole = async (id) => {
 }
 
 // lấy tất cả mẫu công việc theo id user
-exports.getByUser = async (id, number, unit) => {
+exports.getByUser = async (id, pageNumber, noResultsPerPage, unit) => {
         console.log(unit);
         // Lấy tất cả các role người dùng có
         var roles = await UserRole.find({ userId: id }).populate({path: "roleId"});
@@ -63,7 +63,7 @@ exports.getByUser = async (id, number, unit) => {
             tasktemplates = await Privilege.find({
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
-            }).sort({'createdAt': 'desc'}).skip(5*(number-1)).limit(5).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
+            }).sort({'createdAt': 'desc'}).skip(noResultsPerPage*(pageNumber-1)).limit(noResultsPerPage).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
         console.log(tasktemplates);
         console.log("role:",allRole);
         } else {
@@ -71,9 +71,8 @@ exports.getByUser = async (id, number, unit) => {
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'})
                 .sort({'createdAt': 'desc'})
-                .skip(5*(number-1))
-                .limit(5)
-                //TODO:sua sau
+                .skip(noResultsPerPage*(pageNumber-1))
+                .limit(noResultsPerPage)
                 .populate({ 
                     path: 'resourceId', 
                     model: TaskTemplate, 
@@ -86,7 +85,7 @@ exports.getByUser = async (id, number, unit) => {
             roleId: { $in: allRole },
             resourceType: 'TaskTemplate'
         });
-        var totalPages = Math.ceil(totalCount / 5);
+        var totalPages = Math.ceil(totalCount / noResultsPerPage);
 
         return ({"message" : tasktemplates,"pages": totalPages});
 }

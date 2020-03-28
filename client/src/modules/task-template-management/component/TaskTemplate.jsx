@@ -14,7 +14,7 @@ class TaskTemplate extends Component {
     componentDidMount() {
         this.props.getDepartment();
         //edit later
-        this.props.getTaskTemplateByUser("1", "[]");
+        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]");
         //get department of current user
         this.loadJSMultiSelect();
         let script = document.createElement('script');
@@ -29,7 +29,7 @@ class TaskTemplate extends Component {
         this.state = {
             status: 'start',
             currentPage: 1,
-            perPage: 15,
+            perPage: 5,
             unit: [],
             currentRole: localStorage.getItem("currentRole"),
             showView: "",
@@ -62,13 +62,16 @@ class TaskTemplate extends Component {
             window.$('th:nth-child(' + test[j] + ')').hide();
         }
         // Cập nhật số dòng trang trên một trang hiển thị
-        await this.setState(state => {
-            return {
-                ...state,
-                perPage: this.perPage.value
-            }
-        })
-        this.props.getTaskTemplateByUser(this.perPage.value, "[]");
+        if (Number(this.perPage.value) !== this.state.perPage) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    perPage: Number(this.perPage.value),
+                    currentPage: 1
+                }
+            })
+            this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]");
+        }
     }
     // handleAction = (id) => {
     //     // Đóng cửa sổ cài đặt
@@ -151,7 +154,7 @@ class TaskTemplate extends Component {
         var test = window.$("#multiSelectUnit").val();
         var oldCurrentPage = this.state.currentPage;
         await this.updateCurrentPage(index);
-        if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, test);
+        if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test);
     }
     nextPage = async (pageTotal) => {
         var test = window.$("#multiSelectUnit").val();
@@ -164,7 +167,7 @@ class TaskTemplate extends Component {
         })
         var newCurrentPage = this.state.currentPage;
         
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, test);
+        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
     }
 
     // Quay lai trang truoc
@@ -178,13 +181,13 @@ class TaskTemplate extends Component {
             }
         })
         var newCurrentPage = this.state.currentPage;  
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, test);
+        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
     }
 
     handleUpdateData = () => {
         var test = window.$("#multiSelectUnit").val();
         console.log(test);
-        this.props.getTaskTemplateByUser(1, test);
+        this.props.getTaskTemplateByUser(1, this.state.perPage, test);
         this.setState(state => {
             return {
                 ...state,
@@ -236,7 +239,7 @@ class TaskTemplate extends Component {
                     this.props._delete(id);
 
                     var test = window.$("#multiSelectUnit").val();
-                    this.props.getTaskTemplateByUser(this.state.currentPage, test);
+                    this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
                 }
             });
         } else { 
@@ -369,7 +372,7 @@ class TaskTemplate extends Component {
                                                                 </div>
                                                                 <div className="col-xs-12" style={{ marginTop: "10px" }}>
                                                                     <label style={{ marginRight: "15px" }}>Số dòng/trang:</label>
-                                                                    <input className="form-control" type="text" defaultValue={1} ref={input => this.perPage = input} />
+                                                                    <input className="form-control" type="text" defaultValue={this.state.perPage} ref={input => this.perPage = input} />
                                                                 </div>
                                                                 <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
                                                                     <button type="button" className="btn btn-success" onClick={this.handleSetting}>Cập nhật</button>
