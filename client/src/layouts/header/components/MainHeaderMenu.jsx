@@ -19,15 +19,31 @@ class MainHeaderMenu extends Component {
     componentDidMount() {
         this.props.refresh();
     }
+    
+    checkURL = (urlName, linkArr) => {
+        var result = false;
+        if (linkArr !== undefined) {
+            linkArr.forEach(link => {
+                if (link.url === urlName) {
+                    result = true;
+                }
+            });
+        }
+
+        return result;
+    }
 
     render() {
-        //const { auth, translate } = this.props;
+        const { auth } = this.props;
         return (
             <React.Fragment>
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
                         <Roles />
-                        <Notifications />
+                        {
+                            this.checkURL('/notifications', auth.links) && 
+                            <Notifications/>
+                        }
                         <Language />
                         <Profile />
                     </ul>
