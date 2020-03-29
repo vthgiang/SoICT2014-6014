@@ -1,11 +1,13 @@
 const Log = require('../models/log.model');
 const RoleType = require('../models/role_type.model');
 const Role = require('../models/role.model');
-const Company = require('../models/company.model');
+const RoleDefault = require('../models/roleDefault.model');
+const LinkDefault = require('../models/linkDefault.model');
 const Link = require('../models/link.model');
 const Privilege = require('../models/privilege.model');
 const User = require('../models/user.model');
 const UserRole = require('../models/user_role.model');
+const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 require('dotenv').config({path: '../.env'});
@@ -25,23 +27,15 @@ mongoose.connect( db, {
 
 const seedDatabase = async () => {
     await console.log("Đang khởi tạo dữ liệu mẫu ...");
-    //Tạo bản ghi trạng thái log
+    // Tạo bản ghi trạng thái log
     await Log.create({ name: 'log', status: true });
 
-    //Tạo các roletype trong hệ thống
+    // Tạo các roletype trong hệ thống
     await RoleType.insertMany([
-        { name: 'abstract' }, 
-        { name: 'chucdanh' },
-        { name: 'tutao' }
+        { name: Terms.ROLE_TYPES.ABSTRACT }, 
+        { name: Terms.ROLE_TYPES.POSITION },
+        { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
-
-    //Tạo dữ liệu về hệ thống quản lý công việc cho system admin
-    var qlcv = await Company.create({
-        name: 'Quản lý công việc',
-        short_name: 'qlcv',
-        customer: false,
-        description: 'Hệ thống quản lý công việc cho các doanh nghiệp/công ty'
-    });
 
     //Tạo tài khoản systemadmin cho hệ thống quản lý công việc
     var salt = await bcrypt.genSaltSync(10);
@@ -49,75 +43,96 @@ const seedDatabase = async () => {
     var systemAdmin = await User.create({
         name: process.env.SYSTEM_ADMIN_NAME,
         email: process.env.SYSTEM_ADMIN_EMAIL,
-        password: hash,
-        company: qlcv._id
+        password: hash
     });
 
-    //Tạo role System Admin 
-    var roleAbstract = await RoleType.findOne({ name: 'abstract' });
+    // Tạo role System Admin 
+    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT});
     var roleSystemAdmin = await Role.create({
-        name: 'System Admin',
-        company: qlcv._id,
+        name: Terms.PREDEFINED_ROLES.SYSTEM_ADMIN.NAME,
         type: roleAbstract._id
     });
 
-    //Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
+    // Gán quyền System Admin cho tài khoản systemAdmin của hệ thống
     await UserRole.create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id });
 
-    //Tạo link của trang quản lý system và thông tin các công ty và gán quyền cho role System Admin
+    // Tạo link cho system 
     var links = await Link.insertMany([{
             url: '/',
-            description: 'Trang chủ',
-            company: qlcv._id
+            description: 'Trang chủ'
         },{
             url: '/system/settings',
-            description: 'Quản lý thiết lập hệ thống',
-            type: 'system',
-            company: qlcv._id
+            description: 'Quản lý thiết lập hệ thống'
         },{
             url: '/system/companies-management',
-            description: 'Quản lý thông tin doanh nghiệp/công ty',
-            type: 'system',
-            company: qlcv._id
+            description: 'Quản lý thông tin doanh nghiệp/công ty'
         },{
             url: '/system/links-default-management',
-            description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty',
-            type: 'system',
-            company: qlcv._id
+            description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty'
         },{
             url: '/system/components-default-management',
-            description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty',
-            type: 'system',
-            company: qlcv._id
+            description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty'
+        },{
+            url: '/system/roles-default-management',
+            description: 'Thông tin về các role default trong csdl'
+        }
+    ]);
+
+    // Tạo các role abstract mặc định để khởi tạo cho từng công ty
+    var roleAbstracts = await RoleDefault.insertMany([
+        {
+            name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
+            description: Terms.PREDEFINED_ROLES.SUPER_ADMIN.DESCRIPTION
+        },{
+            name: Terms.PREDEFINED_ROLES.ADMIN.NAME,
+            description: Terms.PREDEFINED_ROLES.ADMIN.DESCRIPTION
+        },{
+            name: Terms.PREDEFINED_ROLES.DEAN.NAME,
+            description: Terms.PREDEFINED_ROLES.DEAN.DESCRIPTION
+        },{
+            name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME,
+            description: Terms.PREDEFINED_ROLES.VICE_DEAN.DESCRIPTION
+        },{
+            name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME,
+            description: Terms.PREDEFINED_ROLES.EMPLOYEE.DESCRIPTION
+        }
+    ])
+    // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
+    // index: 0-super admin, 1-admin, 2-dean, 3-vice dean, 4-employee
+    var linkDefaults = await LinkDefault.insertMany([
+        {
+            url: '/',
+            description: 'Trang chủ',
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ]
         },{
             url: '/users-management',
             description: 'Quản lý người dùng',
-            company: qlcv._id
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/roles-management',
             description: 'Quản lý phân quyền',
-            company: qlcv._id
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/departments-management',
             description: 'Quản lý cơ cấu tổ chức',
-            company: qlcv._id
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/links-management',
             description: 'Quản lý trang',
-            company: qlcv._id
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         }
         ,{
             url: '/components-management',
             description: 'Quản lý thành phần UI',
-            company: qlcv._id
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/documents-management',
             description: 'Quản lý tài liệu biểu mẫu',
-            company: qlcv._id
+            roles: [ roleAbstracts[2]._id, roleAbstracts[3]._id ] //trưởng và phó 
         },{
             url: '/notifications',
             description: 'Thông báo',
-            company: qlcv._id
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ] // tất cả 
         }
     ]);
 
@@ -143,14 +158,18 @@ const seedDatabase = async () => {
             resourceId: links[4]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
+        },{
+            resourceId: links[5]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
         }
     ]);
 
-    //Kết thúc việc khởi tạo dữ liệu mẫu
+    // Kết thúc việc khởi tạo dữ liệu mẫu
     await console.log("Đã tạo xong dữ liệu mẫu");
 } 
 
-//Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//
+// Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//
 seedDatabase()
     .then(() => {
         console.log("DONE! :)\n")

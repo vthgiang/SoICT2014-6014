@@ -34,8 +34,9 @@ const tasktemplates =require ("./modules/task-template-management/task-template-
 const tasks = require("./modules/task-management/task-management/task-management.route");
 const performtask = require("./modules/task-management/perform-task/perform-task.route");
 
-const linksDefault = require('./modules/system-admin-management/links-default-management/link.route');
-const componentsDefault = require('./modules/system-admin-management/components-default-management/component.route');
+const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
+const componentsDefault = require('./modules/system-admin-management/components-default-management/component-default.route');
+const rolesDefault = require('./modules/system-admin-management/roles-default-management/role-default.route');
 
 const kpimember = require('./modules/kpi-member/kpiMember.route');
 
@@ -89,6 +90,7 @@ app.use("/auth", auth);
 app.use("/company", company);
 app.use("/links-default-management", linksDefault);
 app.use("/components-default-management", componentsDefault);
+app.use("/roles-default-management", rolesDefault);
 app.use("/role", role);
 app.use("/link", link);
 app.use("/department", department);
@@ -112,7 +114,7 @@ app.use("/kpiunits", overviewKpiUnit);
 app.use("/kpipersonals", createKpiPersonal);
 app.use("/kpipersonals", overviewKpiPersonal);
 app.use("/kpimembers", kpimember);
-app.use  ("/tasktemplates",tasktemplates);
+app.use("/tasktemplates", tasktemplates);
 
 app.use("/tasks", tasks);
 app.use("/performtask", performtask);

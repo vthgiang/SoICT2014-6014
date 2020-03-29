@@ -1,6 +1,4 @@
-const User = require('../../../models/user.model');
-const Department = require('../../../models/department.model');
-const UserRole = require('../../../models/user_role.model');
+const { Department, User, UserRole } = require('../../../models/_export').data;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -115,11 +113,27 @@ exports.delete = async (id) => {
     return deleteUser;
 }
 
-exports.relationshipUserRole = async (userId, roleId) => { 
-    var relationship = await UserRole.create({
-        userId,
-        roleId
+exports.addRolesForUser = async (userId, roleIdArr) => { 
+    var data = await roleIdArr.map( roleId => {
+        return {
+            userId,
+            roleId
+        }
     });
+    var relationship = await UserRole.insertMany(data);
+    
+    return relationship;
+}
+
+exports.editRolesForUser = async (userId, roleIdArr) => { 
+    await UserRole.delete({userId});
+    var data = await roleIdArr.map( roleId => {
+        return {
+            userId,
+            roleId
+        }
+    });
+    var relationship = await UserRole.insertMany(data);
     
     return relationship;
 }
@@ -140,7 +154,7 @@ exports.searchByName = async (companyId, name) => {
     return user;
 }
 
-//lấy user trong phòng ban
+//lấy user trong một phòng ban
 exports.getUsersOfDepartment = async (departmentId) => {
     const department = await Department.findById(departmentId); //lấy thông tin phòng ban hiện tại
     const roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của phòng ban vào 1 arr
@@ -151,7 +165,9 @@ exports.getUsersOfDepartment = async (departmentId) => {
     return users.map(user => user.userId); //mảng id của các users trong phòng ban này
 }
 
-//lấy tất cả các user cùng phòng ban với user hiện tại
+/* lấy tất cả các user cùng phòng ban với user hiện tại
+ * do user có thể thuộc về nhiều phòng ban, nên phòng ban được xét sẽ lấy theo id role hiện tại của user
+*/
 exports.getUsersSameDepartment = async(req, res) => {
     console.log("get user of department");
     try {

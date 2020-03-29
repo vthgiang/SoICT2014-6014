@@ -1,7 +1,7 @@
 import {handleResponse} from '../../../../helpers/HandleResponse';
 
 import {
-    TOKEN_SECRET
+    TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
@@ -26,7 +26,7 @@ function getCurrentKPIUnit(id) {
         method: 'GET',
     };
 
-    return fetch(`/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
 }
 
 // Lấy KPI đơn vị cha
@@ -34,7 +34,7 @@ function getKPIParent(parentUnit) {
     const requestOptions = {
         method: 'GET',
     };
-    return fetch(`/kpiunits/parent/${parentUnit}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/parent/${parentUnit}`, requestOptions).then(handleResponse);
 }
 
 // Khởi tạo KPI đơn vị 
@@ -50,7 +50,7 @@ async function addKPIUnit(newKPI) {
         body: JSON.stringify(newKPI)
     };
 
-    return fetch(`/kpiunits/create`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/create`, requestOptions).then(handleResponse);
 }
 
 // Thêm mục tiêu cho KPI đơn vị 
@@ -61,7 +61,7 @@ function addTargetKPIUnit(newTarget) {
         body: JSON.stringify(newTarget)
     };
 
-    return fetch(`/kpiunits/create-target`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/create-target`, requestOptions).then(handleResponse);
 }
 
 // Chỉnh sửa KPI đơn vị
@@ -76,7 +76,7 @@ async function editKPIUnit(id, newKPI) {
         body: JSON.stringify(newKPI)
     };
 
-    return fetch(`/kpiunits/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/${id}`, requestOptions).then(handleResponse);
 }
 
 // Chỉnh sửa trạng thái của KPI đơn vị
@@ -86,7 +86,7 @@ function editStatusKPIUnit(id, status) {
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return fetch(`/kpiunits/status/${id}/${status}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/status/${id}/${status}`, requestOptions).then(handleResponse);
 }
 
 
@@ -98,7 +98,7 @@ function editTargetKPIUnit(id, newTarget) {
         body: JSON.stringify(newTarget)
     };
 
-    return fetch(`/kpiunits/target/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/target/${id}`, requestOptions).then(handleResponse);
 }
 
 
@@ -108,7 +108,7 @@ function deleteKPIUnit(id) {
         method: 'DELETE',
     };
 
-    return fetch(`/kpiunits/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/${id}`, requestOptions).then(handleResponse);
 }
 
 // xóa mục tiêu của KPI đơn vị
@@ -117,5 +117,5 @@ function deleteTargetKPIUnit(id, kpiunit) {
         method: 'DELETE',
     };
 
-    return fetch(`/kpiunits/target/${kpiunit}/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpiunits/target/${kpiunit}/${id}`, requestOptions).then(handleResponse);
 }

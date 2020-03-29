@@ -62,7 +62,7 @@ class RoleInfoForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
                             <input className="form-control" name="name" defaultValue={ roleName } 
-                            disabled={ roleType === 'abstract' ? true : false }
+                            disabled={ roleType === 'Abstract' ? true : false }
                             onChange={ this.inputChange }></input>
                         </div>
                         <div className="form-group">

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
-import { ComponentActions } from '../redux/actions';
+import { RoleDefaultActions } from '../../roles-default-management/redux/actions';
+import { ComponentDefaultActions } from '../redux/actions';
 import { ModalButton, ModalDialog } from '../../../../common-components';
+import { LinkDefaultActions } from '../../links-default-management/redux/actions';
 
 class ComponentCreateForm extends Component {
     constructor(props) {
@@ -13,7 +14,7 @@ class ComponentCreateForm extends Component {
     }
 
     render() { 
-        const { translate, role, link } = this.props;
+        const { translate, rolesDefault, linksDefault } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-component" button_name={translate('manage_component.add')} title={translate('manage_component.add_title')}/>
@@ -37,15 +38,15 @@ class ComponentCreateForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_component.link') }</label>
                             {
-                                link.list.length > 0 &&
+                                linksDefault.list.length > 0 &&
                                 <select 
                                     className="form-control select2"
                                     style={{ width: '100%' }} 
-                                    defaultValue={link.list[0]._id}
-                                    ref="linkId"
+                                    defaultValue={linksDefault.list[0]._id}
+                                    ref="link"
                                 >
                                     {
-                                        link.list.map( link => 
+                                        linksDefault.list.map( link => 
                                             <option key={link._id} value={link._id}>
                                                 { link.url }
                                             </option>
@@ -63,8 +64,7 @@ class ComponentCreateForm extends Component {
                                 ref="roles"
                             >
                                 {
-                                    
-                                    role.list.map( role => 
+                                    rolesDefault.list.map( role => 
                                         <option key={role._id} value={role._id}>
                                             { role.name }
                                         </option>
@@ -79,25 +79,25 @@ class ComponentCreateForm extends Component {
     }
 
     save = () =>{
-        // let select = this.refs.roles;
-        // let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        return this.props.createComponet({
+        return this.props.createComponent({
             name: this.refs.name.value,
             description: this.refs.description.value,
-            linkId: this.refs.linkId.value,
+            link: this.refs.link.value,
             roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
         });
     }
 
     componentDidMount(){
         this.props.getRole();
+        this.props.getLink();
     }
 }
  
 const mapState = state => state;
 const getState = {
-    getRole: RoleActions.get,
-    createComponet: ComponentActions.create
+    getRole: RoleDefaultActions.get,
+    getLink: LinkDefaultActions.get,
+    createComponent: ComponentDefaultActions.create
 }
  
 export default connect(mapState, getState) (withTranslate(ComponentCreateForm));

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
+import { RoleActions } from '../../roles-management/redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalDialog, ModalButton } from '../../../../common-components';
 
@@ -15,12 +16,17 @@ class UserCreateForm extends Component {
         
         return this.props.create({
             name: this.refs.name.value,
-            email: this.refs.email.value
+            email: this.refs.email.value,
+            roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
         });
     }
 
+    componentDidMount(){
+        this.props.getRoles();
+    }
+
     render() { 
-        const{ translate } = this.props;
+        const{ translate, role } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')}/>
@@ -41,6 +47,19 @@ class UserCreateForm extends Component {
                             <label>{ translate('table.email') }<span className="text-red">*</span></label>
                             <input type="email" className="form-control" ref="email"/>
                         </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_user.roles') }</label>
+                            <select
+                                className="form-control select2" 
+                                multiple="multiple" 
+                                style={{ width: '100%' }} 
+                                ref="roles"
+                            >
+                                {
+                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                }
+                            </select>
+                        </div>
                     </form>
                 </ModalDialog>
             </React.Fragment>
@@ -51,7 +70,8 @@ class UserCreateForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    create: UserActions.create
+    create: UserActions.create,
+    getRoles: RoleActions.get
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(UserCreateForm) );

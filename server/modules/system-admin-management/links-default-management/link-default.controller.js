@@ -1,8 +1,8 @@
-const LinkService = require('./link.service');
+const LinkDefaultService = require('./link-default.service');
 
 exports.get = async (req, res) => {
     try {
-        var links = await LinkService.get(req.user.company._id);
+        var links = await LinkDefaultService.get();
         
         res.status(200).json(links);
     } catch (error) {
@@ -16,7 +16,7 @@ exports.getPaginate = async (req, res) => {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var links = await LinkService.getPaginate(req.user.company._id, limit, page, req.body);
+        var links = await LinkDefaultService.getPaginate(limit, page, req.body);
 
         res.status(200).json(links);
     } catch (error) {
@@ -27,11 +27,10 @@ exports.getPaginate = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        var createLink = await LinkService.create(req.body, req.user.company._id);
-        await LinkService.relationshipLinkRole(createLink._id, req.body.roles);
-        var link = await LinkService.getById(createLink._id);
-
-        res.status(200).json(link);
+        var { url, description, roles } = req.body;
+        var link = await LinkDefaultService.create(url, description, roles);
+        var data = await LinkDefaultService.show(link._id);
+        res.status(200).json(data);
     } catch (error) {
         
         res.status(400).json(error);
@@ -40,7 +39,7 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var link = await LinkService.getById(req.params.id);
+        var link = await LinkDefaultService.show(req.params.id);
         
         res.status(200).json(link);
     } catch (error) {
@@ -51,10 +50,12 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
-        await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
-        var link = await LinkService.edit(req.params.id, req.body);
-        var data = await LinkService.getById(link._id);
+        var { url, description, roles } = req.body;
+        var link = await LinkDefaultService.edit(req.params.id, url, description, roles);
         
+        console.log("link: ", link);
+        var data = await LinkDefaultService.show(link._id);
+        console.log("Sửa link: ", data);
         res.status(200).json(data);
     } catch (error) {
         
@@ -64,7 +65,7 @@ exports.edit = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        var link = await LinkService.delete(req.params.id );
+        var link = await LinkDefaultService.delete(req.params.id);
         
         res.status(200).json(link);
     } catch (error) {

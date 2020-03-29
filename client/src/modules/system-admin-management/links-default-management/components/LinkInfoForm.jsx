@@ -1,91 +1,71 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
-import { LinkActions } from '../redux/actions';
+import { RoleDefaultActions } from '../../roles-default-management/redux/actions';
+import { LinkDefaultActions } from '../redux/actions';
 import { ModalDialog, ModalButton } from '../../../../common-components';
 
 class LinkInfoForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            id: this.props.linkId,
-            url: this.props.linkName,
-            description: this.props.linkDescription
-         }
-        this.inputChange = this.inputChange.bind(this);
+        this.state = {}
         this.save = this.save.bind(this);
     }
 
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
+    save(){
+        return this.props.editLink(this.props.linkDefaultId, {
+            url: this.refs.url.value,
+            description: this.refs.description.value,
+            roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
         });
     }
 
-    save(){
-        let select = this.refs.roles;
-        let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        const { id, url, description } = this.state;
-        const link = { url, description, roles };
-
-        return this.props.editLink(id, link);
-    }
-
     componentDidMount(){
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         this.props.getRole();
     }
 
     render() { 
-        const { translate, role, linkId, linkName, linkDescription } = this.props;
+        const { translate, linkDefaultId, linkDefaultName, linkDefaultRoles, linkDefaultDescription, rolesDefault } = this.props;
         
         return ( 
             <React.Fragment>
-                <ModalButton modalID={`modal-edit-link-default-${linkId}`} button_type="edit" title={translate('manage_page.edit')}/>
+                <ModalButton modalID={`modal-edit-link-default-${linkDefaultId}`} button_type="edit" title={translate('manage_page.edit')}/>
                 <ModalDialog
                     size='50' func={this.save} type="edit"
-                    modalID={`modal-edit-link-default-${linkId}`}
-                    formID={`form-edit-link-default-${linkId}`}
+                    modalID={`modal-edit-link-default-${linkDefaultId}`}
+                    formID={`form-edit-link-default-${linkDefaultId}`}
                     title={translate('manage_page.edit')}
                     msg_success={translate('manage_page.edit_success')}
                     msg_faile={translate('manage_page.edit_faile')}
                 >
-                    <form id={`form-edit-link-default-${linkId}`}>
+                    <form id={`form-edit-link-default-${linkDefaultId}`}>
                         <div className="form-group">
                             <label>{ translate('manage_page.url') }<span className="text-red"> * </span></label>
-                            <input name="url" type="text" className="form-control" defaultValue={linkName} onChange={this.inputChange} />
+                            <input ref="url" type="text" className="form-control" defaultValue={linkDefaultName}/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_page.description') }<span className="text-red"> * </span></label>
-                            <input name="description" type="text" className="form-control" defaultValue={linkDescription} onChange={this.inputChange} />
+                            <input ref="description" type="text" className="form-control" defaultValue={linkDefaultDescription}/>
                         </div>
-                        {/* <div className="form-group">
+                        <div className="form-group">
                             <label>{ translate('manage_page.roles') }</label>
                             <select 
                                 className="form-control select2" 
                                 multiple="multiple" 
                                 style={{ width: '100%' }} 
-                                defaultValue={ linkRoles }
+                                defaultValue={ linkDefaultRoles }
                                 ref="roles"
                             >
                                 {
                                     
-                                    role.list.map( role => 
+                                    rolesDefault.list.map( role => 
                                         <option key={role._id} value={role._id}>
                                             { role.name }
                                         </option>
                                     )
                                 }
                             </select>
-                        </div> */}
+                        </div>
                     </form>
                 </ModalDialog>
             </React.Fragment>
@@ -95,8 +75,8 @@ class LinkInfoForm extends Component {
  
 const mapState = state => state;
 const getState = {
-    getRole: RoleActions.get,
-    editLink: LinkActions.edit
+    getRole: RoleDefaultActions.get,
+    editLink: LinkDefaultActions.edit
 }
  
 export default connect(mapState, getState) (withTranslate(LinkInfoForm));

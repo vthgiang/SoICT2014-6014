@@ -17,7 +17,7 @@ function handleAlert(dispatch, err){ //bắt và xử lý các lỗi liên quan 
 }
 
 function reset(){
-    return {
-        type: 'RESET'
+    return dispatch => {
+        dispatch({type: 'RESET'});
     }
 }

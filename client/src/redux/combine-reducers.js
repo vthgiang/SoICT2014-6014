@@ -32,6 +32,8 @@ import {kpimembers} from '../modules/kpi-member/redux/reducers';
 
 import { performtasks } from "./../modules/task-management/perform-task/redux/reducers";
 import { tasks } from "./../modules/task-management/task-management/redux/reducers";
+import { rolesDefault } from "./../modules/system-admin-management/roles-default-management/redux/reducers";
+import { componentsDefault } from "../modules/system-admin-management/components-default-management/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
     alert,
@@ -40,7 +42,8 @@ const appReducer = combineReducers(Object.assign({
     log,
     company,
     linksDefault,
-
+    rolesDefault,
+    componentsDefault,
     //admin
     user,
     role,

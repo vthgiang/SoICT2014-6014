@@ -27,19 +27,16 @@ class RoleTable extends Component {
         console.log()
         return ( 
             <React.Fragment>
-                <div className="row">
-                    <SearchBar 
-                        columns={[
-                            { title: translate('table.name'), value:'name' }
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    />
-                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        <RoleCreateForm />
-                    </div>
-                </div>
+                <RoleCreateForm />
+                <SearchBar 
+                    columns={[
+                        { title: translate('table.name'), value:'name' }
+                    ]}
+                    option={this.state.option}
+                    setOption={this.setOption}
+                    search={this.searchWithOption}
+                />
+                    
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
@@ -124,7 +121,7 @@ class RoleTable extends Component {
                                             roleUsers={role.users.map(user=>user.userId._id)}
                                         />
                                         {
-                                            role.type.name === 'tutao' && 
+                                            role.type.name === 'Company-Defined' && 
                                             <DeleteNotification 
                                                 content={{
                                                     title: translate('manage_role.delete'),

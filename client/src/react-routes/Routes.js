@@ -9,7 +9,8 @@ import LogManagement from '../modules/system-admin-management/logs-management/co
 import Home from '../modules/home/components';
 import ManageCompany from '../modules/system-admin-management/companies-management/components';
 import LinksDefaultManagement from '../modules/system-admin-management/links-default-management/components';
-import ComponentsDefaultManagement from '../modules/system-admin-management/components-management/components';
+import RolesDefaultManagement from '../modules/system-admin-management/roles-default-management/components';
+import ComponentsDefaultManagement from '../modules/system-admin-management/components-default-management/components';
 import ManageUser from '../modules/super-admin-management/users-management/components';
 import ManageRole from '../modules/super-admin-management/roles-management/components';
 import ManageLink from '../modules/super-admin-management/links-management/components';
@@ -65,6 +66,20 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ company.isLoading }
+                        key={ 'manage_roles_default' }
+                        arrPage={[
+                            { link: '/system/roles-default-management', name:'manage_role', icon: 'fa fa-lock'}
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/system/roles-default-management' }
+                        path={ '/system/roles-default-management' }
+                        pageName={ 'manage_role' }
+                        layout={ Layout }
+                        component={ RolesDefaultManagement }
+                    />
+                    <PrivateRoute 
+                        isLoading={ company.isLoading }
                         key={ 'manage_links_default' }
                         arrPage={[
                             { link: '/system/links-default-management', name:'manage_page', icon: 'fa fa-link'}
@@ -81,7 +96,7 @@ class Routes extends Component {
                         isLoading={ company.isLoading }
                         key={ 'manage_components_default' }
                         arrPage={[
-                            { link: '/system/components-default-management', name:'manage_company', icon: 'fa fa-object-group'}
+                            { link: '/system/components-default-management', name:'manage_component', icon: 'fa fa-object-group'}
                         ]}
                         auth={ auth }
                         exact={ true }
@@ -155,12 +170,12 @@ class Routes extends Component {
                         key={ 'links-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/pages-management', name: 'manage_page', icon:'fa fa-link' }
+                            { link: '/links-management', name: 'manage_page', icon:'fa fa-link' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/pages-management' }
-                        path={ '/pages-management' }
+                        link={ '/links-management' }
+                        path={ '/links-management' }
                         pageName={ 'manage_page' }
                         layout={ Layout }
                         component={ ManageLink }

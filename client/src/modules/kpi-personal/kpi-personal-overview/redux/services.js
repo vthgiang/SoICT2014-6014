@@ -1,5 +1,5 @@
 import {
-    TOKEN_SECRET
+    TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
@@ -21,7 +21,7 @@ async function getAllKPIPersonalByMember() {//member
         method: 'GET',
     };
 
-    return fetch(`/kpipersonals/user/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${id}`, requestOptions).then(handleResponse);
 }
 
 // Lấy tất cả kpi cá nhân
@@ -30,7 +30,7 @@ function getAllKPIPersonalByUserID(member) {
         method: 'GET',
     };
 
-    return fetch(`/kpipersonals/user/${member}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${member}`, requestOptions).then(handleResponse);
 }
 
 // Lấy tất cả kpi cá nhân
@@ -39,5 +39,5 @@ function getAllKPIPersonalOfTask(member) {
         method: 'GET',
     };
 
-    return fetch(`/kpipersonals/task/${member}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpipersonals/task/${member}`, requestOptions).then(handleResponse);
 }

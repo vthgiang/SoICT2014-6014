@@ -1,7 +1,8 @@
-import { ComponentServices } from "./services";
-import { ComponentConstants } from "./constants";
+import { ComponentDefaultServices } from "./services";
+import { ComponentDefaultConstants } from "./constants";
+import { AlertActions } from "../../../alert/redux/actions";
 
-export const ComponentActions = {
+export const ComponentDefaultActions = {
     get,
     getPaginate,
     edit,
@@ -13,18 +14,16 @@ export const ComponentActions = {
 
 function get(){
     return dispatch => {
-        dispatch({ type: ComponentConstants.GET_COMPONENTS_DEFAULT_REQUEST});
-        ComponentServices.get()
+        dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_REQUEST});
+        ComponentDefaultServices.get()
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.GET_COMPONENTS_DEFAULT_SUCCESS,
+                    type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_SUCCESS,
                     payload: res.data
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }
@@ -32,18 +31,16 @@ function get(){
 
 function getPaginate(data){
     return dispatch => {
-        dispatch({ type: ComponentConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST});
-        ComponentServices.getPaginate(data)
+        dispatch({ type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_REQUEST});
+        ComponentDefaultServices.getPaginate(data)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
+                    type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
                     payload: res.data
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }
@@ -51,18 +48,16 @@ function getPaginate(data){
 
 function show(id){
     return dispatch => {
-        dispatch({ type: ComponentConstants.SHOW_COMPONENT_DEFAULT_REQUEST});
-        ComponentServices.show(id)
+        dispatch({ type: ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_REQUEST});
+        ComponentDefaultServices.show(id)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.SHOW_COMPONENT_DEFAULT_SUCCESS,
+                    type: ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }
@@ -70,20 +65,18 @@ function show(id){
 
 function create(component){
     return dispatch => {
-        dispatch({ type: ComponentConstants.CREATE_COMPONENT_DEFAULT_REQUEST});
+        dispatch({ type: ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_REQUEST});
         return new Promise((resolve, reject) => {
-            ComponentServices.create(component)
+            ComponentDefaultServices.create(component)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.CREATE_COMPONENT_DEFAULT_SUCCESS,
+                    type: ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data
                 })
                 resolve(res);
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
                 reject(err);
             })
@@ -94,20 +87,18 @@ function create(component){
 
 function edit(id, component){
     return dispatch => {
-        dispatch({ type: ComponentConstants.EDIT_COMPONENT_DEFAULT_REQUEST});
+        dispatch({ type: ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_REQUEST});
         return new Promise((resolve, reject) => {
-            ComponentServices.edit(id, component)
+            ComponentDefaultServices.edit(id, component)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.EDIT_COMPONENT_DEFAULT_SUCCESS,
+                    type: ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_SUCCESS,
                     payload: res.data
                 });
                 resolve(res);
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
                 reject(err);
             })
@@ -117,18 +108,16 @@ function edit(id, component){
 
 function destroy(id, component){
     return dispatch => {
-        dispatch({ type: ComponentConstants.DELETE_COMPONENT_DEFAULT_REQUEST});
-        ComponentServices.destroy(id, component)
+        dispatch({ type: ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_REQUEST});
+        ComponentDefaultServices.destroy(id, component)
             .then(res => {
                 dispatch({
-                    type: ComponentConstants.DELETE_COMPONENT_DEFAULT_SUCCESS,
+                    type: ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_SUCCESS,
                     payload: id
                 })
             })
             .catch(err => {
-                dispatch({
-                    type: err.response.data.msg
-                })
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })
     }

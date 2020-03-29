@@ -1,7 +1,7 @@
 import {handleResponse} from '../../../../helpers/HandleResponse';
 import { AuthenticateHeader } from '../../../../config';//authHeader-cũ
 import {
-    TOKEN_SECRET
+    TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
@@ -27,7 +27,7 @@ function getAll() {
         headers: AuthenticateHeader()
     };
 
-    return fetch('/tasks', requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks`, requestOptions).then(handleResponse);
 }
 
 // get a task by id 
@@ -37,7 +37,7 @@ function getById(id) {
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
 }
 
 // get all task by Role
@@ -47,7 +47,7 @@ function getAllTaskByRole(id, role) {
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/role/${id}/${role}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/role/${id}/${role}`, requestOptions).then(handleResponse);
 
 }
 // get all task by Role
@@ -62,7 +62,7 @@ async function getResponsibleTaskByUser(unit, number, perpage, status, priority,
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/user/task-responsible/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
 }
 // get all task by Role
 async function getAccounatableTaskByUser(unit, number, perpage, status, priority, specical, name) {
@@ -74,7 +74,7 @@ async function getAccounatableTaskByUser(unit, number, perpage, status, priority
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/user/task-accounatable/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/user/task-accounatable/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
 }
 // get all task by Role
 async function getConsultedTaskByUser(unit, number, perpage, status, priority, specical, name) {
@@ -86,7 +86,7 @@ async function getConsultedTaskByUser(unit, number, perpage, status, priority, s
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/user/task-consulted/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
 }
 // get all task by Role
 async function getInformedTaskByUser( unit, number, perpage, status, priority, specical, name) {
@@ -98,7 +98,7 @@ async function getInformedTaskByUser( unit, number, perpage, status, priority, s
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/user/task-informed/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
 }
 // get all task by Role
 async function getCreatorTaskByUser( unit, number, perpage, status, priority, specical, name) {
@@ -110,7 +110,7 @@ async function getCreatorTaskByUser( unit, number, perpage, status, priority, sp
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/user/task-creator/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perpage}/${status}/${priority}/${specical}/${name}`, requestOptions).then(handleResponse);
 }
 
 // add new task
@@ -121,7 +121,7 @@ function addNewTask(newTask) {
         body: JSON.stringify(newTask)
     };
 
-    return fetch(`/tasks/create`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/create`, requestOptions).then(handleResponse);
 }
 
 // edit a task
@@ -132,7 +132,7 @@ function editTask(id, newTask) {
         body: JSON.stringify(newTask)
     };
 
-    return fetch(`/tasks/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
 }
 
 // delete a task
@@ -142,5 +142,5 @@ function deleteTaskById(id) {
         headers: AuthenticateHeader()
     };
 
-    return fetch(`/tasks/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
 }

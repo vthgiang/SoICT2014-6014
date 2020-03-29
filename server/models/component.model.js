@@ -11,6 +11,10 @@ const ComponentSchema = new Schema({
     description: {
         type: String
     },
+    link: {
+        type: Schema.Types.ObjectId,
+        ref: 'links'
+    },
     company: {
         type: Schema.Types.ObjectId,
         ref: 'companies'
