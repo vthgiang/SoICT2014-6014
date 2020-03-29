@@ -756,7 +756,7 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     var listEmployee = await Employee.insertMany([{
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Nguyễn Văn A",
+        fullName: "Vũ Thị C",
         employeeNumber: "MS2015122",
         company:xyz._id,
         MSCC: "123456",
@@ -766,7 +766,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "trancuong@gmail.com",
+        emailCompany: "vtc.xyz@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -826,7 +826,7 @@ const sampleCompanyData = async () => {
         file: [],
     }, {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Nguyễn Văn B",
+        fullName: "Trần Văn B",
         employeeNumber: "MS2015124",
         company:xyz._id,
         MSCC: "123456",
@@ -836,7 +836,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "tranhung@gmail.com",
+        emailCompany: "tvb.xyz@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -946,7 +946,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu nhân viên!");
     var employee = await Employee.create({
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Nguyễn Văn Hưng",
+        fullName: "Nguyễn Văn A",
         employeeNumber: "MS2015123",
         company:xyz._id,
         MSCC: "123456",
@@ -956,7 +956,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "admin.xyz@gmail.com",
+        emailCompany: "nva.xyz@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
