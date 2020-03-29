@@ -877,7 +877,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.diploma')}:</h4></legend>
                                             <ModalAddCertificate handleChange={this.handleChangeCertificate} index={this.state.key} />
-                                            <table className="table table-striped table-bordered table-resizable" >
+                                            <table className="table table-striped table-bordered table-hover" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "18%" }}>{translate('manage_employee.name_diploma')}</th>
@@ -911,7 +911,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_employee.certificate')}:</h4></legend>
                                             <ModalAddCertificateShort handleChange={this.handleChangeCertificateShort} index={this.state.key} />
-                                            <table className="table table-striped table-bordered table-resizable" >
+                                            <table className="table table-striped table-bordered table-hover" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "22%" }}>{translate('manage_employee.name_certificate')}</th>
@@ -977,7 +977,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.work_experience')}</h4></legend>
                                             <ModalAddExperience handleChange={this.handleChangeExperience} index={this.state.key} />
-                                            <table className="table table-striped table-bordered table-resizable" >
+                                            <table className="table table-striped table-bordered table-hover" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: '14%' }}>{translate('manage_employee.from_month_year')}</th>
@@ -1044,7 +1044,7 @@ class AddEmployee extends Component {
                                                 <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>Quá trình đóng bảo hiểm xã hội:</h4>
                                                 <ModalImportFileBHXH index={this.state.key} />
                                                 <ModalAddBHXH handleChange={this.handleChangeBHXH} index={this.state.key} />
-                                                <table className="table table-striped table-bordered table-resizable " >
+                                                <table className="table table-striped table-bordered table-hover " >
                                                     <thead>
                                                         <tr>
                                                             <th style={{ width: "15%" }}>Từ tháng</th>
@@ -1080,7 +1080,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.labor_contract')}</h4></legend>
                                             <ModalAddContract handleChange={this.handleChangeContract} index={this.state.key} />
-                                            <table className="table table-striped table-bordered table-resizable " >
+                                            <table className="table table-striped table-bordered table-hover " >
                                                 <thead>
                                                     <tr>
                                                         <th >{translate('manage_employee.name_contract')}</th>
@@ -1113,7 +1113,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.training_process')}</h4></legend>
                                             <button style={{ marginBottom: 5 }} type="submit" className="btn btn-success pull-right" title="Thêm mới quá trình đào tạo" onClick={this.handleAddNew}>{translate('modal.create')}</button>
-                                            <table className="table table-striped table-bordered table-resizable" >
+                                            <table className="table table-striped table-bordered table-hover" >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: '15%' }}>{translate('manage_employee.course_name')}</th>
@@ -1154,7 +1154,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.Reward')}</h4></legend>
                                             <ModalAddPraise handleChange={this.handleChangePraise} index={this.state.key} />
-                                            <table className="table table-striped table-bordered table-resizable" >
+                                            <table className="table table-striped table-bordered table-hover" >
                                                 <thead>
                                                     <tr>
                                                         <th>{translate('page.number_decisions')}</th>
@@ -1188,7 +1188,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.discipline')}</h4></legend>
                                             <ModalAddDiscipline handleChange={this.handleChangeDiscipline} index={this.state.key} />
-                                            <table className="table table-striped table-bordered table-resizable" >
+                                            <table className="table table-striped table-bordered table-hover" >
                                                 <thead>
                                                     <tr>
                                                         <th>{translate('page.number_decisions')}</th>
@@ -1229,7 +1229,7 @@ class AddEmployee extends Component {
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.historySalary')}</h4></legend>
                                                 <ModalAddSalary handleChange={this.handleChangeSalary} index={this.state.key} />
-                                                <table className="table table-striped table-bordered table-resizable" >
+                                                <table className="table table-striped table-bordered table-hover" >
                                                     <thead>
                                                         <tr>
                                                             <th>{translate('table.month')}</th>
@@ -1272,7 +1272,7 @@ class AddEmployee extends Component {
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.sabbatical')}</h4></legend>
                                                 <ModalAddSabbatical handleChange={this.handleChangeSabbatical} index={this.state.key} />
-                                                <table className="table table-striped table-bordered table-resizable">
+                                                <table className="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
                                                             <th >{translate('table.start_date')}</th>
@@ -1315,7 +1315,7 @@ class AddEmployee extends Component {
                                             <h4 className="col-md-6" style={{ paddingLeft: 0 }}>{translate('manage_employee.list_attachments')}:</h4>
                                             <ModalAddFile handleChange={this.handleChangeFile} index={this.state.key} />
                                             <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
-                                            <table className="table table-striped table-bordered table-resizable " >
+                                            <table className="table table-striped table-bordered table-hover " >
                                                 <thead>
                                                     <tr>
                                                         <th style={{ width: "18%" }}>{translate('manage_employee.file_name')}</th>

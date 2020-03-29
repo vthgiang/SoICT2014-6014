@@ -42,7 +42,7 @@ class ManageHoliday extends Component {
                                         <button type="submit" style={{ marginRight:0 }} className="btn btn-success pull-right" id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
                                         <button type="submit" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Thêm mới lịch nghỉ" data-toggle="modal" data-target="#modal-addHoliday">Thêm mới</button>
                                     </div>
-                                    <table className="table table-bordered">
+                                    <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th style={{ width: "5%" }}>STT</th>
