@@ -52,6 +52,7 @@ function getAllTaskTemplateByRole(id) {
 }
 
 // get all task template by User
+// Để lấy tất cả kết quả: cho pageNumber=1, noResultsPerPage = 0
 async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
