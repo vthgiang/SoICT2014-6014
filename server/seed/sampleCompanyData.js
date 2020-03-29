@@ -738,12 +738,12 @@ const sampleCompanyData = async () => {
         {
             resourceId: links[30]._id, // Dashboard công việc
             resourceType: 'Link',
-            roleId: roles[3]._id // Vice Dean
+            roleId: roles[2]._id // Vice Dean
         },
         {
             resourceId: links[30]._id, // Dashboard công việc
             resourceType: 'Link',
-            roleId: roles[3]._id // Dean
+            roleId: roles[1]._id // Dean
         }
 
     ]);

@@ -53,7 +53,7 @@ class Routes extends Component {
                     <AuthRoute exact auth={ auth } path="/login" component={ Login } />
                     <AuthRoute exact auth={ auth } path="/reset-password" component={ ResetPassword } />
                     <PrivateRoute 
-                        isLoading={ company.isLoading }
+                        isLoading={ false }
                         key={ 'manage_system' }
                         arrPage={[
                             { link: '/system/settings', name:'manage_system', icon: 'fa fa-gears'}
@@ -67,7 +67,7 @@ class Routes extends Component {
                         component={ LogManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ company.isLoading }
+                        isLoading={ false }
                         key={ 'manage_roles_default' }
                         arrPage={[
                             { link: '/system/roles-default-management', name:'manage_role', icon: 'fa fa-lock'}
@@ -81,7 +81,7 @@ class Routes extends Component {
                         component={ RolesDefaultManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ company.isLoading }
+                        isLoading={ false }
                         key={ 'manage_links_default' }
                         arrPage={[
                             { link: '/system/links-default-management', name:'manage_page', icon: 'fa fa-link'}
@@ -95,7 +95,7 @@ class Routes extends Component {
                         component={ LinksDefaultManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ company.isLoading }
+                        isLoading={ false }
                         key={ 'manage_components_default' }
                         arrPage={[
                             { link: '/system/components-default-management', name:'manage_component', icon: 'fa fa-object-group'}
@@ -212,7 +212,8 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ ManageComponent }
                     />
-                    <PrivateRoute 
+                    <PrivateRoute
+                        isLoading={ false }
                         key={ 'manage-document' }
                         auth={ auth }
                         exact={ true }
@@ -224,7 +225,7 @@ class Routes extends Component {
                     />
                     {/* Quan ly nhan su */}
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'add_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -239,7 +240,7 @@ class Routes extends Component {
                         component={ AddEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'detail_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -254,7 +255,7 @@ class Routes extends Component {
                         component={ DetailEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'update_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -285,7 +286,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ user.isLoading }
+                        isLoading={ false }
                         key={ 'manage_unit' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -301,7 +302,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'dashBoard_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -316,7 +317,7 @@ class Routes extends Component {
                         component={ DashBoardEmployees }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'discipline' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -331,7 +332,7 @@ class Routes extends Component {
                         component={ Discipline }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'sabbatical' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -346,7 +347,7 @@ class Routes extends Component {
                         component={ Sabbatical }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'manage_holiday' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -361,7 +362,7 @@ class Routes extends Component {
                         component={ ManageHoliday }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'salary_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -376,7 +377,7 @@ class Routes extends Component {
                         component={ SalaryEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'time_keeping' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -391,7 +392,7 @@ class Routes extends Component {
                         component={ Timekeeping }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'list_course' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -406,7 +407,7 @@ class Routes extends Component {
                         component={ ListCourse }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'training_plan' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -423,7 +424,7 @@ class Routes extends Component {
 
                     {/* kpi - routes */}
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'kpi-unit-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -438,7 +439,7 @@ class Routes extends Component {
                         component={ KPIUnitCreate }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'kpi-unit-evaluate' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -453,7 +454,7 @@ class Routes extends Component {
                         component={ KPIUnitEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'kpi-unit-overview' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -468,7 +469,7 @@ class Routes extends Component {
                         component={ KPIUnitOverview }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'kpi-personal-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -483,7 +484,7 @@ class Routes extends Component {
                         component={ KPIPersonalCreate }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'kpi-personal-overview' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -498,7 +499,7 @@ class Routes extends Component {
                         component={ KPIPersonalOverview }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'kpi-personal-evaluate' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -513,7 +514,7 @@ class Routes extends Component {
                         component={ KPIPersonalEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'task-template-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -529,7 +530,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ company.isLoading }
+                        isLoading={ false }
                         key={ 'notifications' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -544,7 +545,7 @@ class Routes extends Component {
                         component={ Notifications }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'kpi_member' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -561,7 +562,7 @@ class Routes extends Component {
 
                      {/* Task Management */}
                      <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'task-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -576,7 +577,7 @@ class Routes extends Component {
                         component={ TaskManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ false }
                         key={ 'task-management-dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
