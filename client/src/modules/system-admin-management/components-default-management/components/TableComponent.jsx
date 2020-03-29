@@ -35,8 +35,8 @@ class TableComponent extends Component {
                 <ComponentCreateForm />
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value:'name' },
-                        { title: translate('table.description'), value:'description' },
+                        { title: translate('manage_component.name'), value:'name' },
+                        { title: translate('manage_component.description'), value:'description' },
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}

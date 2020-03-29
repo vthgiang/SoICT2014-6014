@@ -61,21 +61,9 @@ class ForgotPassword extends Component {
                                 <div className="alert alert-success alert-dismissible">
                                     <p>Mã xác thực đã được gửi đến <strong>{ this.state.email }</strong></p>
                                 </div>
-                                <div className="form-group">
-                                    <label>{ translate('form.otp') }</label>
-                                    <input type="text" className="form-control" name="otp" onChange={ this.handleChange }/><br/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{ translate('form.new_password') }</label>
-                                    <input type="password" className="form-control" name="password" onChange={ this.handleChange }/><br/>
-                                </div>
-                                <div className="form-group">
-                                    <label>{ translate('form.confirm') }</label>
-                                    <input type="password" className="form-control" name="confirm" onChange={ this.handleChange }/><br/>
-                                </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={this.resetPassword} data-dismiss="modal">{ translate('form.save') }</button>
+                                <a href="https://mail.google.com/" className="btn btn-primary" > Kiểm tra email </a>
                             </div>
                         </React.Fragment>
                     }

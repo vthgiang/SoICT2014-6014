@@ -119,9 +119,34 @@ exports.forgotPassword = async (email) => {
         from: 'vnist.qlcv@gmail.com',
         to: email,
         subject: 'VNIST-QLCV : Thay đổi mật khẩu - Change password',
-        html:   
-                '<p>Mã xác thực của bạn: ' + code + '</p>' +
-                '<p>Your OTP: ' + code + '</p>'
+        html: `
+        <div style="
+            background-color:azure;
+            padding: 100px;
+            text-align: center;
+        ">
+            <h3>
+                Yêu cầu xác thực thay đổi mật khẩu
+            </h3>
+            <p>Mã xác thực: <b style="color: red">${code}</b></p>
+            <button style="
+                padding: 8px 8px 8px 8px; 
+                border: 1px solid rgb(4, 197, 30); 
+                border-radius: 5px;
+                background-color: #4CAF50"
+            >
+                <a 
+                    style="
+                        text-decoration: none;
+                        color: white;
+                        " 
+                    href="http://localhost:3000/reset-password?otp=${code}&email=${email}"
+                >
+                    Xác thực
+                </a>
+            </button>
+        </div>
+        `
     }
     await transporter.sendMail(mainOptions);
 

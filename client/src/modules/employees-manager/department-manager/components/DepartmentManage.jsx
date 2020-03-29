@@ -3,52 +3,19 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer } from 'react-toastify';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
-import { UserActions } from '../../../super-admin-management/users-management/redux/actions';
 import { ModalEditDepartmentManage } from './ModalEditDepartmentManage';
 class DepartmentManage extends Component {
     constructor(props) {
         super(props);
         this.state = {
         }
-        this.handleResizeColumn();
         this.loadJS = this.loadJS.bind(this);
     }
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getRole();
-        this.props.getUser();
     }
-    componentWillMount() {
+    componentDidUpdate(){
         this.loadJS();
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     loadJS() {
         let script = document.createElement('script');
@@ -129,14 +96,12 @@ class DepartmentManage extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, department } = state;
-    return { employeesManager, department };
+    const { department } = state;
+    return { department };
 }
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
-    getRole: RoleActions.get,
-    getUser: UserActions.get,
 }
 const departmentManage = connect(mapState, actionCreators)(DepartmentManage);
 
