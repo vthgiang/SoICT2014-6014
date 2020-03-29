@@ -6,7 +6,6 @@ import { ModalAddTrainingPlan } from './ModalAddTrainingPlan';
 class TrainingPlan extends Component {
     constructor(props) {
         super(props);
-        this.handleResizeColumn();
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -14,34 +13,6 @@ class TrainingPlan extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     render() {
         return (
@@ -80,7 +51,7 @@ class TrainingPlan extends Component {
                                     <div className="col-md-3" style={{ paddingTop: 5, paddingRight: 0 }}>
                                         <button type="submit" className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addTrainingPlan" >Thêm khoá đào tạo</button>
                                     </div>
-                                    <table id="listexample" className="table table-striped table-bordered table-resizable">
+                                    <table id="listexample" className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Mã đào tạo</th>
