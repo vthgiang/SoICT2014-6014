@@ -35,8 +35,8 @@ class ManageLink extends Component {
                         <CreateLinkForm/>
                         <SearchBar 
                             columns={[
-                                { title: translate('table.url'), value:'url' },
-                                { title: translate('table.description'), value:'description' },
+                                { title: translate('manage_page.url'), value:'url' },
+                                { title: translate('manage_page.description'), value:'description' },
                             ]}
                             option={this.state.option}
                             setOption={this.setOption}

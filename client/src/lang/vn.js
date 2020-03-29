@@ -22,7 +22,9 @@ export default {
             password_invalid: 'Mật khẩu không chính xác',
             wrong5_block: 'Bạn đã nhập sai mật khẩu quá 5 lần. Tài khoản này đã bị khóa!',
             acc_blocked: 'Tài khoản đã bị khóa',
-            acc_have_not_role: 'Tài khoản chưa được phân quyền'
+            acc_have_not_role: 'Tài khoản chưa được phân quyền',
+            reset_password_success: 'Reset mật khẩu thành công!',
+            reset_password_faile: 'Reset mật khẩu thất bại!'
         },
         auth: {
             login: 'Đăng nhập',

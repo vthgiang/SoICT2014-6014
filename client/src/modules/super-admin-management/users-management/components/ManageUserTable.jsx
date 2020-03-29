@@ -63,7 +63,6 @@ class ManageUserTable extends Component {
                             user.listPaginate.length > 0 ? user.listPaginate.map(u => (
                                 <tr
                                     key={u._id}
-                                    // style={{ backgroundColor: u.active ? "white" : "#E2DFE7" }}
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
@@ -74,7 +73,7 @@ class ManageUserTable extends Component {
                                             userEmail={u.email}
                                             userName={u.name}
                                             userActive={u.active}
-                                            userRoles={u.roles.map(role => role.roleId._id)}
+                                            userRoles={u.roles}
                                             editUser={this.editUser}
                                         />
                                         {
