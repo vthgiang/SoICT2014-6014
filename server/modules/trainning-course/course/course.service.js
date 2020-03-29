@@ -1,6 +1,7 @@
 const Course = require('../../../models/course.model');
-//get list course
-exports.get = async () => {
+//Lấy danh sách khoá học theo chương trình đào tạo
+exports.getByEducation = async (EducationProgram) => {
+    
     
 }
 

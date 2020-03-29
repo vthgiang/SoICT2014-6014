@@ -24,7 +24,7 @@ import { Discipline} from '../modules/employees-manager/discipline/components/Di
 import { Sabbatical} from '../modules/employees-manager/sabbatical/components/Sabbatical';
 import { SalaryEmployee} from '../modules/employees-manager/salary-employee/components/SalaryEmployee';
 import { Timekeeping} from '../modules/employees-manager/timekeeping/components/Timekeeping';
-import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
+import { ListEducation} from '../modules/training-course/list-education/components/ListEducation';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
 import { DepartmentManage} from '../modules/employees-manager/department-manager/components/DepartmentManage';
 import { ManageHoliday } from '../modules/employees-manager/holiday/components/ManageHoliday';
@@ -390,18 +390,18 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }
-                        key={ 'list_course' }
+                        key={ 'list_education' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/hr-list-course', name: 'list_course', icon:'fa fa-university' }
+                            { link: '/hr-list-education', name: 'list_education', icon:'fa fa-university' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/hr-list-course' }
-                        path={ '/hr-list-course' }
-                        pageName={'list_course' }
+                        link={ '/hr-list-education' }
+                        path={ '/hr-list-education' }
+                        pageName={'list_education' }
                         layout={ Layout }
-                        component={ ListCourse }
+                        component={ ListEducation }
                     />
                     <PrivateRoute 
                         isLoading={ component.isLoading }

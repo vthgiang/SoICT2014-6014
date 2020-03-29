@@ -399,7 +399,7 @@ const sampleCompanyData = async () => {
             company: xyz._id
         },
         { // 20
-            url: '/hr-list-course',
+            url: '/hr-list-education',
             description: 'Chương trình đào tạo bắt buộc',
             company: xyz._id
         },

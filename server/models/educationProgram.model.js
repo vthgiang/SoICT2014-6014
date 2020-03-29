@@ -15,10 +15,12 @@ const EducationProgramSchema = new Schema({
         required: true
     },
     unitEducation: [{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'departments'
     }],
     positionEducation: [{
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'roles'
     }]
 })
 

@@ -7,6 +7,10 @@ const CourseSchema = new Schema({
         type: String,
         required: true
     },
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: 'companies'
+    },
     numberCourse: {
         type: String,
         required: true

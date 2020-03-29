@@ -11,9 +11,9 @@ router.get('/',auth, CourseController.get);
 router.post('/',auth, CourseController.create);
 
 // delete a educationProgram
-router.delete('/:numberEducation',auth, CourseController.delete);
+// router.delete('/:number',auth, CourseController.delete);
 
 // update a educationProgram
-router.put('/:numberEducation',auth, CourseController.update);
+// router.put('/:number',auth, CourseController.update);
 
 module.exports = router;

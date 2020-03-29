@@ -36,11 +36,10 @@ class SideBar extends Component {
             path7: "/hr-sabbatical",
             path8: "/hr-detail-employee",
             path9: "/hr-update-employee",
-            path10: "/hr-list-course",
+            path10: "/hr-list-education",
             path11: "/hr-training-plan",
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
-
         }
         const { translate } = this.props;
         const { user, links } = this.props.auth;
@@ -316,7 +315,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url.path10 ? "active" : ""}>
                                                 <Link to={url.path10}>
                                                     <i className="fa fa-university" />
-                                                    {translate(`menu.list_course`)}
+                                                    {translate(`menu.list_education`)}
                                                 </Link>
                                             </li>
                                         }

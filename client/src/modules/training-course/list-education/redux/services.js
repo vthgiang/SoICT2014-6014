@@ -5,15 +5,15 @@ import { LOCAL_SERVER_API } from '../../../../env';
 import {
     AuthenticateHeader
 } from '../../../../config';
-export const CourseService = {
-    getListCourse,
-    createNewCourse,
-    deleteCourse,
-    updateCourse,
+export const EducationService = {
+    getListEducation,
+    createNewEducation,
+    deleteEducation,
+    updateEducation,
 }
 
 // Lấy danh sách các chương trình đào tạo 
-function getListCourse(data) {
+function getListEducation(data) {
     const requestOptions = {
         method: 'POST',
         headers: AuthenticateHeader(),
@@ -25,7 +25,7 @@ function getListCourse(data) {
 }
 
 // tạo mới một chương trình đào tạo
-function createNewCourse(data) {
+function createNewEducation(data) {
     const requestOptions ={
         method: 'POST',
         headers: AuthenticateHeader(),
@@ -36,21 +36,21 @@ function createNewCourse(data) {
 }
 
 // Xoá một chương trình đào tạo
-function deleteCourse(numberEducation) {
+function deleteEducation(id) {
     const requestOptions = {
         method: 'DELETE',
         headers: AuthenticateHeader(),
     };
 
-    return fetch(`${ LOCAL_SERVER_API }/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/educationProgram/${id}`, requestOptions).then(handleResponse);
 }
 
 // Cập nhật thông tin chương trình đào tạo
-function updateCourse(numberEducation, data) {
+function updateEducation(id, data) {
     const requestOptions ={
         method: 'PUT',
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     };
-    return fetch(`${ LOCAL_SERVER_API }/educationProgram/${numberEducation}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/educationProgram/${id}`, requestOptions).then(handleResponse);
 }

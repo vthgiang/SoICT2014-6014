@@ -111,11 +111,9 @@ class Sabbatical extends Component {
         await this.setState({
             month: this.refs.month.value
         });
-        console.log(this.state);
         this.props.getListSabbatical(this.state);
     }
     render() {
-        console.log(this.state);
         const { tree, list } = this.props.department;
         const { translate } = this.props;
         var listSabbatical = "", listDepartment = list, listPosition;

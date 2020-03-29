@@ -1,38 +1,93 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDetailCourse } from './ModalDetailCourse';
-import { ModalEditCourse } from './ModalEditCourse';
-import { ModalAddCourse } from './ModalAddCourse';
-import { CourseActions } from '../redux/actions';
+import { ToastContainer, toast } from 'react-toastify';
+import { ModalDetailEducation } from './ModalDetailEducation';
+import { ModalEditEducation } from './ModalEditEducation';
+import { ModalAddEducation } from './ModalAddEducation';
+import { EducationActions } from '../redux/actions';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DeleteNotification } from '../../../../common-components';
 
-class ListCourse extends Component {
+class ListEducation extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            position: "All",
+            department: "All",
             page: 0,
             limit: 5,
+
         };
         this.setLimit = this.setLimit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 
     }
     componentDidMount() {
-        this.props.getListCourse(this.state);
+        this.props.getListEducation(this.state);
+        this.props.getDepartment();
+        let script1 = document.createElement('script');
+        script1.src = 'lib/main/js/GridSelect.js';
+        script1.async = true;
+        script1.defer = true;
+        document.body.appendChild(script1);
+    }
+
+    displayTreeSelect = (data, i) => {
+        i = i + 1;
+        if (data !== undefined) {
+            if (typeof (data.children) === 'undefined') {
+                return (
+                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
+                )
+            } else {
+                return (
+                    <React.Fragment key={data.id}>
+                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
+                        {
+                            data.children.map(tag => this.displayTreeSelect(tag, i))
+                        }
+                    </React.Fragment>
+                )
+            }
+
+        }
+        else return null
+    }
+
+    handleChange(event) {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    handleSunmitSearch = () => {
+        this.props.getListEducation(this.state);
     }
 
     setLimit = async (number) => {
         await this.setState({ limit: parseInt(number) });
-        this.props.getListCourse(this.state);
+        this.props.getListEducation(this.state);
         window.$(`#setting-table`).collapse("hide");
     }
 
     render() {
-        var lists = this.props.course.listCourse;
+        var lists = this.props.education.listEducation;
+        const { tree, list } = this.props.department;
         const { translate } = this.props;
-        console.log(lists);
+        var listDepartment = list, listPosition;
+        for (let n in listDepartment) {
+            if (listDepartment[n]._id === this.state.department) {
+                listPosition = [
+                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
+                    { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
+                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
+                ]
+            }
+        }
         return (
             <React.Fragment>
                 <div className="row">
@@ -44,59 +99,41 @@ class ListCourse extends Component {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label style={{ paddingTop: 5 }}>Đơn vị:</label>
+                                        <label style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-control">
-                                            <option value="các đơn vị">-- Tất cả --</option>
-                                            <optgroup label="MARKETING & NCPT sản phẩm">
-                                                <option value="Phòng MARKETING">Phòng MARKETING</option>
-                                                <option value="Phòng nghiên cứu phát triển sản phẩm">Phòng nghiên cứu phát triển sản phẩm</option>
-                                            </optgroup>
-                                            <optgroup label="Quản trị nhân sự">
-                                                <option value="Phòng hành chính - quản trị">Phòng hành chính - quản trị</option>
-                                                <option value="Tổ hỗ trợ">Tổ hỗ trợ</option>
-                                            </optgroup>
-                                            <optgroup label="Tài chính - kế toán">
-                                                <option>Phòng kế toàn doanh nghiệp</option>
-                                                <option>Phòng kế toàn ADMIN</option>
-                                            </optgroup>
-                                            <optgroup label="Nhà máy sản xuất">
-                                                <option>Phòng công nghệ phát triển sản phẩm</option>
-                                                <option>Văn phòng xưởng</option>
-                                                <option>Phòng đảm bảo chất lượng</option>
-                                                <option>Phòng kiểm tra chất lượng</option>
-                                                <option>Phòng kế hoạch vật tư</option>
-                                                <option>Xưởng thuốc bột GMP</option>
-                                                <option>Xưởng thuốc nước GMP</option>
-                                                <option>Xưởng thực phẩm chức năng</option>
-                                            </optgroup>
-                                            <option value="Phòng kinh doanh VIAVET">Phòng kinh doanh VIAVET</option>
-                                            <option value="Phòng kinh doanh SANFOVET">Phòng kinh doanh SANFOVET</option>
-                                            <option value="">Ban kinh doanh dự án</option>
+                                        <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
+                                            <option value="All" level={1}>--Tất cả---</option>
+                                            {
+                                                tree !== null &&
+                                                tree.map((tree, index) => this.displayTreeSelect(tree, 0))
+                                            }
                                         </select>
                                     </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label style={{ paddingTop: 5 }}>Chức vụ:</label>
+                                        <label style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
                                     </div>
                                     <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-control">
-                                            <option>--Tất cả--</option>
-                                            <option>Trưởng phòng</option>
-                                            <option>Phó trưởng phòng</option>
-                                            <option>Nhân viên</option>
+                                        <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
+                                            <option value="All">--Tất cả--</option>
+                                            {
+                                                listPosition !== undefined &&
+                                                listPosition.map((position, index) => (
+                                                    <option key={index} value={position._id}>{position.name}</option>
+                                                ))
+                                            }
                                         </select>
                                     </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <button type="submit" className="btn btn-success" title="Tìm kiếm" >Tìm kiếm</button>
+                                        <button type="submit" className="btn btn-success" onClick={this.handleSunmitSearch} title="Tìm kiếm" >Tìm kiếm</button>
                                     </div>
                                 </div>
                                 <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addCourse">Thêm chương trình đào tạo</button>
+                                    <button type="submit" style={{ marginBottom: 15 }} className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addEducation">Thêm chương trình đào tạo</button>
                                 </div>
                                 <table className="table table-striped table-bordered table-hover">
                                     <thead>
@@ -121,14 +158,24 @@ class ListCourse extends Component {
                                                     <td>{x.nameEducation}</td>
                                                     <td>{x.numberEducation}</td>
                                                     <td>{(typeof x.unitEducation === 'undefined' || x.unitEducation.length === 0) ? "" :
-                                                        x.unitEducation.map(y => y + ", ")}
+                                                        x.unitEducation.map((y, indexs) => {
+                                                            if (indexs === 0) {
+                                                                return y.name
+                                                            }
+                                                            return ", " + y.name
+                                                        })}
                                                     </td>
                                                     <td>{(typeof x.positionEducation === 'undefined' || x.positionEducation.length === 0) ? "" :
-                                                        x.positionEducation.map(y => y + ", ")}
+                                                        x.positionEducation.map((y, indexs) => {
+                                                            if (indexs === 0) {
+                                                                return y.name
+                                                            }
+                                                            return ", " + y.name
+                                                        })}
                                                     </td>
                                                     <td>
-                                                        <ModalDetailCourse data={x} />
-                                                        <ModalEditCourse data={x} />
+                                                        <ModalDetailEducation data={x} />
+                                                        <ModalEditEducation data={x} />
                                                         <DeleteNotification
                                                             content={{
                                                                 title: "Xoá chương trình đào tạo",
@@ -136,10 +183,10 @@ class ListCourse extends Component {
                                                                 btnYes: translate('confirm.yes'),
                                                             }}
                                                             data={{
-                                                                id: x.numberEducation,
+                                                                id: x._id,
                                                                 info: x.nameEducation + " - " + x.numberEducation
                                                             }}
-                                                            func={this.props.deleteCourse}
+                                                            func={this.props.deleteEducation}
                                                         />
                                                     </td>
                                                 </tr>))
@@ -153,21 +200,23 @@ class ListCourse extends Component {
                     </div>
                     {/* /.col */}
                 </div>
-                <ModalAddCourse />
+                <ToastContainer />
+                <ModalAddEducation />
             </React.Fragment >
         );
     };
 };
 
 function mapState(state) {
-    const { course } = state;
-    return { course };
+    const { education, department } = state;
+    return { education, department };
 };
 
 const actionCreators = {
-    getListCourse: CourseActions.getListCourse,
-    deleteCourse: CourseActions.deleteCourse,
+    getDepartment: DepartmentActions.get,
+    getListEducation: EducationActions.getListEducation,
+    deleteEducation: EducationActions.deleteEducation,
 };
 
-const connectedListCourse = connect(mapState, actionCreators)(withTranslate(ListCourse));
-export { connectedListCourse as ListCourse };
+const connectedListEducation = connect(mapState, actionCreators)(withTranslate(ListEducation));
+export { connectedListEducation as ListEducation };

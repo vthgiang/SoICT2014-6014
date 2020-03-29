@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class ModalDetailCourse extends Component {
+class ModalDetailEducation extends Component {
     constructor(props) {
         super(props);
     }
@@ -8,8 +8,8 @@ class ModalDetailCourse extends Component {
         var { data } = this.props;
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-viewCourse-${data.numberEducation}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">view_list</i></a>
-                <div className="modal modal-full fade" id={`modal-viewCourse-${data.numberEducation}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <a href={`#modal-viewEducation-${data.numberEducation}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <div className="modal modal-full fade" id={`modal-viewEducation-${data.numberEducation}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog-full">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -111,13 +111,13 @@ class ModalDetailCourse extends Component {
 };
 
 // function mapState(state) {
-//     const { listCourse } = state;
-//     return { listCourse };
+//     const { listEducation } = state;
+//     return { listEducation };
 // };
 
 // const actionCreators = {
-//     addNewCourse: CourseActions.createNewCourse,
+//     addNewEducation: EducationActions.createNewEducation,
 // };
 
-// const connectedAddCourse = connect(mapState, actionCreators)(ModalDetailCourse);
-export { ModalDetailCourse };
+// const connectedAddEducation = connect(mapState, actionCreators)(ModalDetailEducation);
+export { ModalDetailEducation };
