@@ -41,7 +41,7 @@ class CompanyEditForm extends Component {
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-company-${companyID}`} button_type="edit" button_name={translate('manage_company.add')} title={translate('manage_company.edit')}/>
                 <ModalDialog
-                    modalID={`modal-edit-company-${companyID}`} type="edit" size="100"
+                    modalID={`modal-edit-company-${companyID}`} type="edit"
                     formID={`form-edit-company-${companyID}`}
                     title={translate('manage_company.edit')}
                     msg_success={translate('manage_company.add_success')}
@@ -50,9 +50,9 @@ class CompanyEditForm extends Component {
                 >
                     <form id={`form-edit-company-${companyID}`}>
                         <div className="row">
-                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">Thông tin doanh nghiệp</legend>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                {/* <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">Thông tin doanh nghiệp</legend> */}
                                     <div className="form-group">
                                         <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
                                         <input type="text" className="form-control" name="name" onChange={ this.inputChange } defaultValue={ companyName }/>
@@ -74,13 +74,13 @@ class CompanyEditForm extends Component {
                                         <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
                                         <textarea  style={{ height: '250px' }}  type="text" className="form-control" name="description" onChange={ this.inputChange } defaultValue={ companyDescription }/>
                                     </div>
-                                </fieldset>
+                                {/* </fieldset> */}
                             </div>
-                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                 <fieldset className="scheduler-border" style={{minHeight: '504.59px'}}>
                                     <legend className="scheduler-border">Dịch vụ hoạt động</legend>
                                 </fieldset>
-                            </div>
+                            </div> */}
                         </div>
                     </form>
                 </ModalDialog>

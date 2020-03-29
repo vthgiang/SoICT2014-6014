@@ -41,6 +41,7 @@ import { Notifications } from "../modules/combine-modules";
 
 import { TaskManagement } from "../modules/task-management/task-management/component/TaskManagement";
 import { TaskDashboard } from "../modules/task-management/task-management/component/TaskDashboard";
+import ResetPassword from '../modules/auth/components/ResetPassword';
 
 class Routes extends Component {
 
@@ -50,6 +51,7 @@ class Routes extends Component {
             <React.Fragment>
                 <Switch>
                     <AuthRoute exact auth={ auth } path="/login" component={ Login } />
+                    <AuthRoute exact auth={ auth } path="/reset-password" component={ ResetPassword } />
                     <PrivateRoute 
                         isLoading={ company.isLoading }
                         key={ 'manage_system' }

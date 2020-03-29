@@ -16,6 +16,19 @@ class UserEditForm extends Component {
         this.save = this.save.bind(this);
     }
 
+    chechSuperAdmin = (roleArr) => {
+        var result = false;
+        for (let i = 0; i < roleArr.length; i++) {
+            const role = roleArr[i];
+            if(role.roleId.name === 'Super Admin'){
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     save = () => {
 
         return this.props.edit(this.props.userId, {
@@ -55,10 +68,9 @@ class UserEditForm extends Component {
                                 <select 
                                     className="form-control" 
                                     style={{width: '100%'}} 
-                                    name="active" 
                                     defaultValue={ userActive }
                                     ref="active"
-                                    onChange={this.inputChange}>
+                                    disabled={this.chechSuperAdmin(userRoles) ? true : false}>
                                     {   
                                         status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
                                     }
@@ -75,7 +87,7 @@ class UserEditForm extends Component {
                                 className="form-control select2" 
                                 multiple="multiple" 
                                 style={{ width: '100%' }} 
-                                defaultValue={userRoles}
+                                defaultValue={userRoles.map(role => role.roleId._id)}
                                 ref="roles"
                             >
                                 {

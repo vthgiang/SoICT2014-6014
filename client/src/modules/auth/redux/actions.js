@@ -143,16 +143,21 @@ function forgotPassword(email){
 
 function resetPassword(otp, email, password){
     return dispatch => {
-        AuthService.resetPassword(otp, email, password)
-            .then(res => {
-                dispatch({
-                    type: AuthConstants.RESET_PASSWORD_SUCCESS,
-                    payload: res.data
+        return new Promise((resolve, reject) => {
+            AuthService.resetPassword(otp, email, password)
+                .then(res => {
+                    dispatch({
+                        type: AuthConstants.RESET_PASSWORD_SUCCESS,
+                        payload: res.data
+                    });
+                    resolve(res);
                 })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
+                .catch(err => {
+                    console.log("Error: ", err);
+                    reject(err);
+                })
+        });
+        
     }
 }
 
