@@ -94,13 +94,14 @@ async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit)
 // edit a task template
 function editTaskTemplate(id, newTaskTemplate) {
     const requestOptions = {
-        method: 'PUT',
+        method: 'PATCH',
         headers: AuthenticateHeader(),
         body: JSON.stringify(newTaskTemplate)
     };
 
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasktemplates/edit/${id}`, requestOptions).then(handleResponse);
 }
+
 
 // delete a task template
 function deleteTaskTemplateById(id) {
