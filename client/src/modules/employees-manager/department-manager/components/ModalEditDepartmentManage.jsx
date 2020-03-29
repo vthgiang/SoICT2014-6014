@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
+import { UserActions } from '../../../super-admin-management/users-management/redux/actions';
 import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
 import 'react-toastify/dist/ReactToastify.css';
 class ModalEditDepartmentManage extends Component {
@@ -14,10 +15,11 @@ class ModalEditDepartmentManage extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmit = this.handleSunmit.bind(this);
-        //this.handleAdd = this.handleAdd.bind(this);
-        //this.handleDelete = this.handleDelete.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
     componentDidMount() {
+        this.props.getRole();
+        this.props.getUser();
         let script = document.createElement('script');
         script.src = 'lib/main/js/CoCauToChuc.js';
         script.async = true;
@@ -36,6 +38,9 @@ class ModalEditDepartmentManage extends Component {
             [name]: value
         });
     }
+    handleClick() {
+        window.$('#setting-table').collapse('show');
+    }
     handleDelete = (id) => {
         this.setState({
             deleteEmployee: [...this.state.deleteEmployee, id],
@@ -48,14 +53,16 @@ class ModalEditDepartmentManage extends Component {
         var deleteEmployee = this.state.deleteEmployee;
         for (let n in usersEmployee) {
             deleteEmployee = deleteEmployee.filter(user => user !== usersEmployee[n])
+            window.$(`select.${this.props.data.id} option.${usersEmployee[n]}`).remove();
         }
         this.setState({
             addEmployee: [...this.state.addEmployee, ...usersEmployee],
             deleteEmployee: deleteEmployee
         })
+
     }
     handleSunmit(event) {
-        // Khai báo các biến cần dùng và lấy biết trong store 
+        // Khai báo các biến cần dùng và lấy biến trong store 
         let infoRoleDean,
             infoRoleViceDean,
             infoRoleEmployee,
@@ -76,7 +83,7 @@ class ModalEditDepartmentManage extends Component {
             this.notifyerror("Bạn chưa thêm nhân viên vào đơn vị");
         } else {
             // Lấy thông tin các Role tương ứng với trưởng đơn vị, phó đơn vị và nhân viên đơn vị
-            if (role.list.lenght !== 0) {
+            if (role.list.length !== 0) {
                 for (let n in role.list) {
                     if (role.list[n]._id === data.dean) {
                         infoRoleDean = role.list[n]
@@ -91,11 +98,11 @@ class ModalEditDepartmentManage extends Component {
                 }
             }
             //Thêm nhân viên vào đơn vị
-            if (this.state.addEmployee.lenght !== 0) {
+            if (this.state.addEmployee.length !== 0) {
                 userRoleEmployee = this.state.addEmployee.concat(userRoleEmployee);
             }
             // Xoá nhân viên đơn vị
-            if (this.state.deleteEmployee.lenght !== 0) {
+            if (this.state.deleteEmployee.length !== 0) {
                 for (let n in this.state.deleteEmployee) {
                     userRoleEmployee = userRoleEmployee.filter(user => user !== this.state.deleteEmployee[n]);
                 }
@@ -116,8 +123,8 @@ class ModalEditDepartmentManage extends Component {
     }
     render() {
         var userRoleDean, userRoleViceDean = [], userRoleEmployee = [], infoEmployee = [];
-        const { role, user, translate, data } = this.props;
-        if (role.list.lenght !== 0) {
+        var { role, user, translate, data } = this.props;
+        if (role.list.length !== 0) {
             for (let n in role.list) {
                 if (role.list[n]._id === data.dean) {
                     userRoleDean = role.list[n].users.map(user => user.userId)
@@ -131,11 +138,11 @@ class ModalEditDepartmentManage extends Component {
             }
         }
         //Thêm nhân viên vào đơn vị
-        if (this.state.addEmployee.lenght !== 0) {
+        if (this.state.addEmployee.length !== 0) {
             userRoleEmployee = this.state.addEmployee.concat(userRoleEmployee);
         }
         // Xoá nhân viên đơn vị
-        if (this.state.deleteEmployee.lenght !== 0) {
+        if (this.state.deleteEmployee.length !== 0) {
             for (let n in this.state.deleteEmployee) {
                 userRoleEmployee = userRoleEmployee.filter(user => user !== this.state.deleteEmployee[n]);
             }
@@ -146,9 +153,19 @@ class ModalEditDepartmentManage extends Component {
         }
         // Lấy danh sách người dùng không phải là nhân viên của đơn vị
         var userlist = user.list;
+        if (userRoleViceDean.length !== 0) {
+            var userRoleViceDeanId = userRoleViceDean.map(user => user.userId);
+            for (let n in userRoleViceDeanId) {
+                userlist = userlist.filter(user => user._id !== userRoleViceDeanId[n])
+            }
+        }
+        if (userRoleDean !== undefined) {
+            userlist = userlist.filter(user => user._id !== userRoleDean[0])
+        }
         for (let n in userRoleEmployee) {
             userlist = userlist.filter(user => user._id !== userRoleEmployee[n])
         }
+        console.log(userlist);
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-viewUnit-${data.id}`} className="edit" title="Chỉnh sửa nhân viên các đơn vị" data-toggle="modal"><i className="material-icons"></i></a>
@@ -163,12 +180,13 @@ class ModalEditDepartmentManage extends Component {
                             <div className="modal-body">
                                 <div className="col-md-12 " >
                                     <div className="col-md-12">
-                                        < div className="form-group col-md-10" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                        < div className="form-group col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                             <label className="pull-left">Trưởng đơn vị:</label>
                                             <select
                                                 name="dean"
                                                 className="form-control select2 pull-left"
                                                 onChange={this.handleChange}
+                                                onClick={this.handleClick}
                                                 style={{ width: '100%' }}
                                                 value={userRoleDean !== undefined ? userRoleDean[0] : "null"}
                                                 ref="dean"
@@ -177,12 +195,23 @@ class ModalEditDepartmentManage extends Component {
                                                 {
                                                     user.list.map(user => <option key={user._id} value={user._id}>{`${user.email} - ${user.name}`}</option>)
                                                 }
-
                                             </select>
+                                            {/* <div id="setting-table" className="row collapse">
+                                                <span className="pop-arw arwTop L-auto" style={{ right: "13px" }}></span>
+
+                                                <div className="col-xs-12" style={{ marginTop: "10px" }}>
+                                                    <label style={{ marginRight: "15px" }}>{translate('table.line_per_page')}</label>
+                                                    <input className="form-control" type="text" defaultValue={5} ref={this.record} />
+                                                </div>
+                                                <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
+                                                    <button type="button" className="btn btn-success" onClick={this.setLimit}>{translate('table.update')}</button>
+                                                </div>
+                                            </div> */}
+
                                         </div>
                                     </div>
                                     <div className="col-md-12">
-                                        <div className="form-group col-md-10" style={{ paddingLeft: 0, paddingRight: 0 }} >
+                                        <div className="form-group col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }} >
                                             <label className="pull-left">Phó đơn vị:</label>
                                             <select
                                                 name="vice_dean"
@@ -200,57 +229,60 @@ class ModalEditDepartmentManage extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-12">
-                                        <div className="form-group col-md-10" style={{ paddingRight: 0, paddingLeft: 0 }} >
-                                            <label className="pull-left">Thêm nhân viên đơn vị:</label>
-                                            <select
-                                                name="employee"
-                                                className="form-control select2"
-                                                multiple="multiple"
-                                                onChange={this.handleChange}
-                                                style={{ width: '100%' }}
-                                                ref="employee"
-                                            >
-                                                {
-                                                    userlist.map((user, index) => <option key={index} value={user._id}>{`${user.email} - ${user.name}`}</option>)
-                                                }
-                                            </select>
-                                        </div>
-                                        <div className="form-group col-md-2" style={{ paddingTop: 24, paddingRight: 0 }}>
-                                            <button type="submit" style={{ height: 34 }} className="btn btn-success pull-right" onClick={() => this.handleAdd()} title="Thêm nhân viên đơn vị">Thêm nhân viên</button>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-12">
-                                        <div className=" col-md-12 pull-left" style={{ paddingLeft: 0, paddingRight: 0, width: "100%" }}>
-                                            <div className="box-header pull-left" style={{ paddingLeft: 0, paddingTop: 0 }}>
-                                                <h3 className="box-title pull-left">Danh sách nhân viên đơn vị:</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-12" style={{ marginTop: 5 }}>
-                                        <table className="table table-striped table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Tên nhân viên</th>
-                                                    <th>Email nhân viên</th>
-                                                    <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    infoEmployee.lenght === 0 ? <tr><td colSpan={3}><center> Không có dữ liệu</center></td></tr> :
-                                                        infoEmployee.map((user, index) => (
-                                                            <tr key={index}>
-                                                                <td style={{ textAlign: "left" }}>{user.name}</td>
-                                                                <td style={{ textAlign: "left" }}>{user.email}</td>
-                                                                <td>
-                                                                    <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDelete(user._id)}><i className="material-icons"></i></a>
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                }
+                                        <label className="pull-left">Nhân viên đơn vị:</label>
+                                        <div className="form-group col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }} >
+                                            <fieldset className="scheduler-border">
+                                                <div className="form-group col-md-10" style={{ paddingRight: 0, paddingLeft: 0, paddingTop: 5 }} >
+                                                    <label className="pull-left">Thêm nhân viên:</label>
+                                                    <select
+                                                        name="employee"
+                                                        
+                                                        className={`form-control select2 ${data.id}`}
+                                                        multiple="multiple"
+                                                        onChange={this.handleChange}
+                                                        style={{ width: '100%' }}
+                                                        ref="employee"
+                                                    >
+                                                        {userlist &&
+                                                            userlist.map((user, index) => <option key={index} className={user._id} value={user._id}>{`${user.email} - ${user.name}`}</option>)
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div className="form-group col-md-2" style={{ paddingTop: 24, paddingRight: 0 }}>
+                                                    <button type="submit" style={{ height: 34 }} className="btn btn-success pull-right" onClick={() => this.handleAdd()} title="Thêm nhân viên đơn vị">Thêm nhân viên</button>
+                                                </div>
+                                                <div className=" col-md-12 pull-left" style={{ paddingLeft: 0, paddingRight: 0, width: "100%" }}>
+                                                    <div className="box-header pull-left" style={{ paddingLeft: 0, paddingTop: 0 }}>
+                                                        <h3 className="box-title pull-left">Danh sách nhân viên đơn vị:</h3>
+                                                    </div>
+                                                </div>
+                                                <table className="table table-striped table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Tên nhân viên</th>
+                                                            <th>Email nhân viên</th>
+                                                            <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            infoEmployee.length === 0 ? <tr><td colSpan={3}><center> Không có dữ liệu</center></td></tr> :
+                                                                infoEmployee.map((user, index) => (
+                                                                    <tr key={index}>
+                                                                        <td style={{ textAlign: "left" }}>{user.name}</td>
+                                                                        <td style={{ textAlign: "left" }}>{user.email}</td>
+                                                                        <td>
+                                                                            <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDelete(user._id)}><i className="material-icons"></i></a>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))
+                                                        }
 
-                                            </tbody>
-                                        </table>
+                                                    </tbody>
+                                                </table>
+                                            </fieldset>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -266,12 +298,14 @@ class ModalEditDepartmentManage extends Component {
     }
 };
 function mapState(state) {
-    const { role, user } = state;
+    var { role, user } = state;
     return { role, user };
 };
 
 const actionCreators = {
-    edit: RoleActions.edit
+    edit: RoleActions.edit,
+    getRole: RoleActions.get,
+    getUser: UserActions.get,
 };
 
 const editDepartmentManage = connect(mapState, actionCreators)(withTranslate(ModalEditDepartmentManage));

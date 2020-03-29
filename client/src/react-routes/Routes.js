@@ -268,7 +268,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ department.isLoading }
+                        isLoading={ user.isLoading }
                         key={ 'manage_unit' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
