@@ -5,6 +5,8 @@ import Alert from '../../../modules/alert/components';
 
 import { Loading } from '../../../common-components';
 
+import './Content.css'
+
 class Content extends Component {
     constructor(props) {
         super(props);
