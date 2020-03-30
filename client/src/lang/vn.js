@@ -27,11 +27,19 @@ export default {
             reset_password_faile: 'Reset mật khẩu thất bại!'
         },
         auth: {
+            security: {
+                label: 'Bảo mật',
+                title: 'Thay đổi mật khẩu người dùng',
+                old_password: 'Mật khẩu cũ',
+                new_password: 'Mật khẩu mới',
+                confirm_password: 'Xác thực mật khẩu'
+            },
             login: 'Đăng nhập',
             logout: 'Đăng xuất',
             logout_all_account: 'Đăng xuất khỏi tất cả các thiết bị',
             profile: {
-                title: 'Thông tin tài khoản',
+                label: 'Thông tin',
+                title: 'Thông tin tài khoản người dùng',
                 name: 'Tên người dùng',
                 email: 'Địa chỉ email',
                 password: 'Mật khẩu mới',

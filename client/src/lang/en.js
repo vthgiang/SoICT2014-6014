@@ -25,6 +25,7 @@ export default {
             acc_have_not_role: 'Accout have not role'
         },
         auth: {
+            security: 'security',
             login: 'Login',
             logout: 'Logout',
             logout_all_account: 'Log out all account',

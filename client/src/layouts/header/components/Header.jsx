@@ -16,9 +16,12 @@ class Header extends Component {
     save = () => {
         return this.props.editProfile({
             name: this.refs.name.value,
-            email: this.refs.email.value,
-            password: this.refs.password.value
+            email: this.refs.email.value
         });
+    }
+
+    changePassword = () => {
+        
     }
 
     render() { 
@@ -63,6 +66,31 @@ class Header extends Component {
                         <div className="form-group">
                             <label>{ translate('auth.profile.confirm') }</label>
                             <input type="password" className="form-control" ref="confirm"/>
+                        </div>
+                    </form>
+                </ModalDialog>
+
+                {/* Modal Security */}
+                <ModalDialog
+                    modalID="modal-security"
+                    formID="form-security" size="30"
+                    title={translate('auth.security.title')}
+                    msg_success={translate('auth.profile.edit_success')}
+                    msg_faile={translate('auth.profile.edit_faile')}
+                    func={this.save}
+                >
+                    <form id="form-security">
+                        <div className="form-group">
+                            <label>{ translate('auth.security.old_password') }</label>
+                            <input type="password" className="form-control" ref="old_pasword"/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('auth.security.new_password') }</label>
+                            <input type="password" className="form-control" ref="new_passwordail"/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('auth.security.confirm_password') }</label>
+                            <input type="password" className="form-control" ref="confirm_password"/>
                         </div>
                     </form>
                 </ModalDialog>
