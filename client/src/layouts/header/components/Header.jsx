@@ -17,26 +17,39 @@ class Header extends Component {
     }
 
     changeInformation = () => {
-        if(this.refs.name.value.length < 10){
-            toast.warning('Tên phải ít nhất 10 kí tự', {containerId: 'toast-notification'});
-        }else{
+        const regex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
+        const name = this.refs.name.value;
 
+        if(regex.test(name) === false)
+            toast.warning('Tên không được chứa các kí tự đặc biệt', {containerId: 'toast-notification'});
+        else if(name.length < 10)
+            toast.warning('Tên phải ít nhất 10 kí tự', {containerId: 'toast-notification'});
+        else
             return this.props.changeInformation({
                 name: this.refs.name.value
             });
-        }
     }
 
     changePassword = () => {
-        if(this.refs.new_password.value !== this.refs.confirm_password.value){
+        const password = this.refs.password.value;
+        const new_password = this.refs.new_password.value;
+        const confirm_password = this.refs.confirm_password;
+        const regex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
+
+        if ( regex.test(new_password) ===  false || regex.test(confirm_password) ===  false ) {
+            toast.warning(`Mật khẩu không được chứa các kí tự đặc biệt`, {containerId: 'toast-notification'});
+        }else if(new_password.length < 6 || new_password.length > 20)
+            toast.warning('Mật khẩu phải có độ dài từ 6 đến 20 kí tự', {containerId: 'toast-notification'});
+        else if(new_password.value !== confirm_password)
             toast.warning('Mật khẩu không khớp', {containerId: 'toast-notification'});
-        }else{
+        else{
 
             return this.props.changePassword({
-                password: this.refs.password.value,
-                new_password: this.refs.new_password.value
+                password,
+                new_password
             });
         }
+        
     }
 
     render() { 

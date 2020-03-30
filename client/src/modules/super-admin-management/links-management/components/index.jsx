@@ -139,7 +139,9 @@ class ManageLink extends Component {
                                                 />
                                             </td>
                                         </tr> 
-                                    ): <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                                    ): link.isLoading ?
+                                    <tr><td colSpan={4}>{translate('confirm.loading')}</td></tr>:
+                                    <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>

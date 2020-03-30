@@ -54,6 +54,7 @@ export default {
             no: 'KHÔNG',
             no_data: 'Không có dữ liệu',
             field_invalid: "Giá trị trường nhập vào không hợp lệ. Vui lòng kiểm tra lại!",
+            loading: 'Đang tải dữ liệu ...'
         },
 
         form: {

@@ -137,7 +137,9 @@ class RoleTable extends Component {
                                         }
                                     </td>
                                 </tr>       
-                            ): <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
+                            ): role.isLoading ?
+                            <tr><td colSpan={'2'}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
