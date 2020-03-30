@@ -22,9 +22,9 @@ class ModalDialog extends Component {
     }
 
     save = (translate) => {
-        this.props
-            .func()
-            .then(res => {
+        const func = this.props.func();
+        if(func !== undefined){
+            func.then(res => {
                 if(this.props.type === 'edit') this.closeModal(false);
                 else this.closeModal();
                 toast.success(this.props.msg_success, {containerId: 'toast-notification'});
@@ -41,6 +41,7 @@ class ModalDialog extends Component {
                 }else
                     toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });
+        }
     }
 
     componentDidUpdate(){

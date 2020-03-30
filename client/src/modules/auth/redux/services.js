@@ -12,7 +12,9 @@ export const AuthService = {
     logoutAllAccount,
     forgotPassword,
     resetPassword,
-    getComponentOfUserInLink
+    getComponentOfUserInLink,
+    changeInformation,
+    changePassword
 };
 
 async function login(user) {
@@ -55,6 +57,34 @@ function editProfile(data) {
     var id = verified._id;
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
+        method: 'PATCH',
+        data: data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function changeInformation(data) {
+    const token = getStorage();
+    const verified = jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
+        method: 'PATCH',
+        data: data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function changePassword(data) {
+    const token = getStorage();
+    const verified = jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
         method: 'PATCH',
         data: data,
         headers: AuthenticateHeader()

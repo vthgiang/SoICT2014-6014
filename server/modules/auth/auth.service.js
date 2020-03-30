@@ -165,8 +165,36 @@ exports.resetPassword = async (otp, email, password) => {
     return true;
 }
 
-exports.profile = async (id) => {
+exports.changeInformation = async (id, name) => {
+    var user = await User.findById(id).populate([
+        { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+        { path: 'company' }
+    ]);
+    user.name = name;
+    await user.save();
 
+    return user;
+}
+
+exports.changePassword = async (id, password, new_password) => {
+    const user = await User.findById(id).populate([
+        { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+        { path: 'company' }
+    ]);
+    const validPass = await bcrypt.compare(password, user.password);
+    // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
+    if(!validPass) throw ({
+        success: false,
+        message: 'password_invalid'
+    });
+
+    // Lưu mật khẩu mới
+    const salt = await bcrypt.genSaltSync(10);
+    const hash = await bcrypt.hashSync(new_password, salt);
+    user.password = hash;
+    await user.save();
+
+    return user;
 }
 
 exports.getLinksOfRole = async (idRole) => {

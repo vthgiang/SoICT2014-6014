@@ -34,6 +34,10 @@ exports.checkServicePermission = async(data, path, method, currentRole) => {
 }
 
 exports.data = [
+    // Authentication
+    { path: '/auth/profile/:id/change-information', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/auth/profile/:id/change-password', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
+
     // Service của riêng Systemadmin
     { path: '/roles-default-management', method: 'GET', roles: ['System Admin']},
     { path: '/links-default-management', method: 'GET', roles: ['System Admin']},

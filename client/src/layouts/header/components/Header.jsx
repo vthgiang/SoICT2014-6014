@@ -5,23 +5,38 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 import { ModalDialog } from '../../../common-components';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.save = this.save.bind(this);
+        this.changeInformation = this.changeInformation.bind(this);
+        this.changePassword = this.changePassword.bind(this);
     }
 
-    save = () => {
-        return this.props.editProfile({
-            name: this.refs.name.value,
-            email: this.refs.email.value
-        });
+    changeInformation = () => {
+        if(this.refs.name.value.length < 10){
+            toast.warning('Tên phải ít nhất 10 kí tự', {containerId: 'toast-notification'});
+        }else{
+
+            return this.props.changeInformation({
+                name: this.refs.name.value
+            });
+        }
     }
 
     changePassword = () => {
-        
+        if(this.refs.new_password.value !== this.refs.confirm_password.value){
+            toast.warning('Mật khẩu không khớp', {containerId: 'toast-notification'});
+        }else{
+
+            return this.props.changePassword({
+                password: this.refs.password.value,
+                new_password: this.refs.new_password.value
+            });
+        }
     }
 
     render() { 
@@ -48,7 +63,7 @@ class Header extends Component {
                     title={translate('auth.profile.title')}
                     msg_success={translate('auth.profile.edit_success')}
                     msg_faile={translate('auth.profile.edit_faile')}
-                    func={this.save}
+                    func={this.changeInformation}
                 >
                     <form id="form-profile">
                         <div className="form-group">
@@ -58,14 +73,6 @@ class Header extends Component {
                         <div className="form-group">
                             <label>{ translate('auth.profile.email') }</label>
                             <input type="email" className="form-control" ref="email" defaultValue={ auth.user.email } disabled/>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('auth.profile.password') }</label>
-                            <input type="password" className="form-control" ref="password"/>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('auth.profile.confirm') }</label>
-                            <input type="password" className="form-control" ref="confirm"/>
                         </div>
                     </form>
                 </ModalDialog>
@@ -77,16 +84,16 @@ class Header extends Component {
                     title={translate('auth.security.title')}
                     msg_success={translate('auth.profile.edit_success')}
                     msg_faile={translate('auth.profile.edit_faile')}
-                    func={this.save}
+                    func={this.changePassword}
                 >
                     <form id="form-security">
                         <div className="form-group">
                             <label>{ translate('auth.security.old_password') }</label>
-                            <input type="password" className="form-control" ref="old_pasword"/>
+                            <input type="password" className="form-control" ref="password"/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('auth.security.new_password') }</label>
-                            <input type="password" className="form-control" ref="new_passwordail"/>
+                            <input type="password" className="form-control" ref="new_password"/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('auth.security.confirm_password') }</label>
@@ -104,7 +111,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    editProfile: AuthActions.editProfile
+    changeInformation: AuthActions.changeInformation,
+    changePassword: AuthActions.changePassword
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Header) );
