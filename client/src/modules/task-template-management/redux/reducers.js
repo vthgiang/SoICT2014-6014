@@ -88,21 +88,21 @@ export function tasktemplates(state = {}, action) {
             };
         case taskTemplateConstants.EDIT_TEMPLATE_REQUEST:
             return {
-                ...state,
-                items: state.items.map(template =>
-                    template._id === action.id
-                        ? { ...template, editing: true }
-                        : template
-                )
-            };
+                    ...state,
+                    items: state.items.map(template =>
+                         template._id === action.id
+                             ? { ...template, editing: true }
+                             : template
+                     )
+                };
         case taskTemplateConstants.EDIT_TEMPLATE_SUCCESS:
             return {
-                ...state,
-                items: state.items.map(template =>
-                    template._id === action.taskTemplate.tasktemplate._id
-                        ? action.taskTemplate.tasktemplate : template
-                )
-            };
+                    ...state,
+                    items: state.items.map(template =>
+                        template._id === action.taskTemplate.data._id
+                            ? action.taskTemplate.data :  template
+                    )
+                };
         case taskTemplateConstants.EDIT_TEMPLATE_FAILURE:
             return {
                 error: action.error

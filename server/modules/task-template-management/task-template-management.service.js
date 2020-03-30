@@ -151,3 +151,23 @@ exports.delete = async (id) => {
         
         return ("Delete success");
 }
+
+//sửa mẫu công việc
+exports.edit =async(data,id)=>{
+ 
+       
+       var tasktemplate =await TaskTemplate.findById(id).select('-name -description') ;
+       if(data.name != null && data.description!=null)
+       {
+        tasktemplate.name =data.name;
+        tasktemplate.description=data.description;
+       }
+       tasktemplate.save();
+     
+    return ({
+        message: "Edit Task Template Successfully!",
+        data : tasktemplate
+    });
+       
+
+}
