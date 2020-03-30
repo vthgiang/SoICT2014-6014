@@ -43,26 +43,26 @@ class LinkInfoForm extends Component {
         var { translate, role, linkId, linkName, linkDescription, linkRoles } = this.props;
         return ( 
             <React.Fragment>
-                <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_page.edit')}/>
+                <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_link.edit')}/>
                 <ModalDialog
                     size='50' func={this.save} type="edit"
                     modalID={`modal-edit-page-${linkId}`}
                     formID={`form-edit-page-${linkId}`}
-                    title={translate('manage_page.edit')}
-                    msg_success={translate('manage_page.edit_success')}
-                    msg_faile={translate('manage_page.edit_faile')}
+                    title={translate('manage_link.edit')}
+                    msg_success={translate('manage_link.edit_success')}
+                    msg_faile={translate('manage_link.edit_faile')}
                 >
                     <form id={`form-edit-page-${linkId}`}>
                         <div className="form-group">
-                            <label>{ translate('manage_page.url') }<span className="text-red"> * </span></label>
+                            <label>{ translate('manage_link.url') }<span className="text-red"> * </span></label>
                             <input name="url" type="text" className="form-control" defaultValue={linkName} onChange={this.inputChange} />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_page.description') }<span className="text-red"> * </span></label>
+                            <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
                             <input name="description" type="text" className="form-control" defaultValue={linkDescription} onChange={this.inputChange} />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_page.roles') }</label>
+                            <label>{ translate('manage_link.roles') }</label>
                             <select 
                                 className="form-control select2" 
                                 multiple="multiple" 

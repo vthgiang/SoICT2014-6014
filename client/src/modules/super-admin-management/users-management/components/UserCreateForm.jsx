@@ -56,7 +56,9 @@ class UserCreateForm extends Component {
                                 ref="roles"
                             >
                                 {
-                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                    role.list.map( role => {
+                                        if(role.name !== 'Super Admin') return <option key={role._id} value={role._id}>{role.name}</option>;
+                                    })
                                 }
                             </select>
                         </div>

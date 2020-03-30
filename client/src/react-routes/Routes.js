@@ -67,7 +67,7 @@ class Routes extends Component {
                         component={ LogManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.rolesDefault.isLoading }
                         key={ 'manage_roles_default' }
                         arrPage={[
                             { link: '/system/roles-default-management', name:'manage_role', icon: 'fa fa-lock'}
@@ -81,21 +81,21 @@ class Routes extends Component {
                         component={ RolesDefaultManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.linksDefault.isLoading }
                         key={ 'manage_links_default' }
                         arrPage={[
-                            { link: '/system/links-default-management', name:'manage_page', icon: 'fa fa-link'}
+                            { link: '/system/links-default-management', name:'manage_link', icon: 'fa fa-link'}
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={ '/system/links-default-management' }
                         path={ '/system/links-default-management' }
-                        pageName={ 'manage_page' }
+                        pageName={ 'manage_link' }
                         layout={ Layout }
                         component={ LinksDefaultManagement }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.componentsDefault.isLoading }
                         key={ 'manage_components_default' }
                         arrPage={[
                             { link: '/system/components-default-management', name:'manage_component', icon: 'fa fa-object-group'}
@@ -123,7 +123,7 @@ class Routes extends Component {
                         component={ Home }
                     />
                     <PrivateRoute 
-                        isLoading={ company.isLoading }
+                        isLoading={ this.props.company.isLoading }
                         key={ 'companies-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -138,7 +138,7 @@ class Routes extends Component {
                         component={ ManageCompany }
                     />
                     <PrivateRoute 
-                        isLoading={ user.isLoading }
+                        isLoading={ this.props.user.isLoading }
                         key={ 'users-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -153,7 +153,7 @@ class Routes extends Component {
                         component={ ManageUser }
                     />
                     <PrivateRoute 
-                        isLoading={ role.isLoading }
+                        isLoading={ this.props.role.isLoading }
                         arrPage={[
                             { link: '/', name:'home', icon:'fa fa-home' },
                             { link: '/roles-management', name: 'manage_role', icon:'fa fa-lock'}
@@ -168,22 +168,22 @@ class Routes extends Component {
                         component={ ManageRole }
                     />
                     <PrivateRoute 
-                        isLoading={ link.isLoading }
+                        isLoading={ this.props.link.isLoading }
                         key={ 'links-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/links-management', name: 'manage_page', icon:'fa fa-link' }
+                            { link: '/links-management', name: 'manage_link', icon:'fa fa-link' }
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={ '/links-management' }
                         path={ '/links-management' }
-                        pageName={ 'manage_page' }
+                        pageName={ 'manage_link' }
                         layout={ Layout }
                         component={ ManageLink }
                     />
                     <PrivateRoute 
-                        isLoading={ department.isLoading }
+                        isLoading={ this.props.department.isLoading }
                         key={ 'departments-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -198,7 +198,7 @@ class Routes extends Component {
                         component={ ManageDepartment }
                     />
                     <PrivateRoute 
-                        isLoading={ component.isLoading }
+                        isLoading={ this.props.component.isLoading }
                         key={ 'components-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

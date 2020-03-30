@@ -16,26 +16,26 @@ class CreateLinkForm extends Component {
         const { translate, rolesDefault } = this.props;
         return ( 
             <React.Fragment>
-                <ModalButton modalID="modal-create-page" button_name={translate('manage_page.add')} title={translate('manage_page.add_title')}/>
+                <ModalButton modalID="modal-create-page" button_name={translate('manage_link.add')} title={translate('manage_link.add_title')}/>
                 <ModalDialog
                     modalID="modal-create-page"
                     formID="form-create-page"
-                    title={translate('manage_page.add_title')}
-                    msg_success={translate('manage_page.add_success')}
-                    msg_faile={translate('manage_page.add_faile')}
+                    title={translate('manage_link.add_title')}
+                    msg_success={translate('manage_link.add_success')}
+                    msg_faile={translate('manage_link.add_faile')}
                     func={this.save}
                 >
                     <form id="form-create-page">
                         <div className="form-group">
-                            <label>{ translate('manage_page.url') }<span className="text-red">*</span></label>
+                            <label>{ translate('manage_link.url') }<span className="text-red">*</span></label>
                             <input ref="url" type="text" className="form-control"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_page.description') }<span className="text-red">*</span></label>
+                            <label>{ translate('manage_link.description') }<span className="text-red">*</span></label>
                             <input ref="description" type="text" className="form-control"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_page.roles') }</label>
+                            <label>{ translate('manage_link.roles') }</label>
                             <select 
                                 className="form-control select2" 
                                 multiple="multiple" 

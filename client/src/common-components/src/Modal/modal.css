@@ -17,6 +17,12 @@
     to {display: block;}
 }
 
+.modal-size-30 {
+    margin-top: 10px;
+    width: 30%;
+    margin-bottom: 10px
+}
+
 .modal-size-50 {
     margin-top: 10px;
     width: 50%;
@@ -30,6 +36,13 @@
 }
 
 @media only screen and (max-width: 800px) {
+    .modal-size-25{
+        margin-top: 0px;
+        margin-left: 0px;
+        width: 100%;
+        margin-bottom: 0px
+    }
+
     .modal-size-50{
         margin-top: 0px;
         margin-left: 0px;

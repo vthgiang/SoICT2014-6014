@@ -22,9 +22,9 @@ class ModalDialog extends Component {
     }
 
     save = (translate) => {
-        this.props
-            .func()
-            .then(res => {
+        const func = this.props.func();
+        if(func !== undefined){
+            func.then(res => {
                 if(this.props.type === 'edit') this.closeModal(false);
                 else this.closeModal();
                 toast.success(this.props.msg_success, {containerId: 'toast-notification'});
@@ -41,6 +41,7 @@ class ModalDialog extends Component {
                 }else
                     toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });
+        }
     }
 
     componentDidUpdate(){
@@ -66,9 +67,15 @@ class ModalDialog extends Component {
                                 {this.props.children}
                             </div>
                             <div className="modal-footer">
-                                <p className="pull-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
-                                <button type="submit" className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
-                                <button type="button" className="btn btn-default" onClick={this.closeModal}>{translate('form.close')}</button>
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <button type="submit" className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        <button type="button" className="btn btn-default" onClick={this.closeModal}>{translate('form.close')}</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

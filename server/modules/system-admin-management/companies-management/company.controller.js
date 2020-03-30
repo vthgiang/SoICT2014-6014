@@ -54,7 +54,7 @@ exports.create = async (req, res) => {
         console.log('Tạo và add tài khoản super admin');
 
         //Tạo link cho các trang mà công ty được phép truy cập
-        const links = await CompanyService.createLinksForCompany(company._id, abstractRoles);
+        const links = await CompanyService.createLinksForCompany(company._id, req.body.links, abstractRoles);
         console.log("Link của cty: ", links);
         
         LogInfo(req.user.email, 'CREATE_NEW_COMPANY');
