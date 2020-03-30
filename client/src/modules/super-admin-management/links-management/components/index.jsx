@@ -84,9 +84,9 @@ class ManageLink extends Component {
                         <table className="table table-hover table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>{ translate('manage_page.url') }</th>
-                                    <th>{ translate('manage_page.description') }</th>
-                                    <th>{ translate('manage_page.roles') }</th>
+                                    <th>{ translate('manage_link.url') }</th>
+                                    <th>{ translate('manage_link.description') }</th>
+                                    <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
                                             columnName={translate('table.action')} 

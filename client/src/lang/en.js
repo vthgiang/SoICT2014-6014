@@ -111,7 +111,7 @@ export default {
             manage_department: 'Manage Departments',
             manage_user: 'Manage Users',
             manage_role: 'Manage Roles',
-            manage_page: 'Manage Pages',
+            manage_link: 'Manage Pages',
             manage_component: 'Manage ComponentUI',
             manage_document: 'Manage Documents',
 
@@ -228,7 +228,7 @@ export default {
             roles: 'Roles assigned'
         },
 
-        manage_page: {
+        manage_link: {
             add: 'Add',
             add_title: 'Add new link for page',
             url: 'Link of page',

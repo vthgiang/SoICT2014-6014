@@ -1,3 +1,7 @@
+.bg-loader {
+    background-color: rgba(255, 255, 255, 0);
+}
+
 .loader {
     width: 1em;
     height: 1em;

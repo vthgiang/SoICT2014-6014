@@ -84,13 +84,13 @@ class Routes extends Component {
                         isLoading={ false }
                         key={ 'manage_links_default' }
                         arrPage={[
-                            { link: '/system/links-default-management', name:'manage_page', icon: 'fa fa-link'}
+                            { link: '/system/links-default-management', name:'manage_link', icon: 'fa fa-link'}
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={ '/system/links-default-management' }
                         path={ '/system/links-default-management' }
-                        pageName={ 'manage_page' }
+                        pageName={ 'manage_link' }
                         layout={ Layout }
                         component={ LinksDefaultManagement }
                     />
@@ -172,13 +172,13 @@ class Routes extends Component {
                         key={ 'links-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/links-management', name: 'manage_page', icon:'fa fa-link' }
+                            { link: '/links-management', name: 'manage_link', icon:'fa fa-link' }
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={ '/links-management' }
                         path={ '/links-management' }
-                        pageName={ 'manage_page' }
+                        pageName={ 'manage_link' }
                         layout={ Layout }
                         component={ ManageLink }
                     />

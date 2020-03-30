@@ -35,8 +35,8 @@ class ManageLink extends Component {
                         <CreateLinkForm/>
                         <SearchBar 
                             columns={[
-                                { title: translate('manage_page.url'), value:'url' },
-                                { title: translate('manage_page.description'), value:'description' },
+                                { title: translate('manage_link.url'), value:'url' },
+                                { title: translate('manage_link.description'), value:'description' },
                             ]}
                             option={this.state.option}
                             setOption={this.setOption}
@@ -46,10 +46,10 @@ class ManageLink extends Component {
                         <table className="table table-hover table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>{ translate('manage_page.url') }</th>
-                                    <th>{ translate('manage_page.description') }</th>
-                                    <th>{ translate('manage_page.components') }</th>
-                                    <th>{ translate('manage_page.roles') }</th>
+                                    <th>{ translate('manage_link.url') }</th>
+                                    <th>{ translate('manage_link.description') }</th>
+                                    {/* <th>{ translate('manage_link.components') }</th> */}
+                                    <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
@@ -65,12 +65,12 @@ class ManageLink extends Component {
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.description }</td>
-                                            <td>{ link.components.map((component, i, arr) => {
+                                            {/* <td>{ link.components.map((component, i, arr) => {
                                                 if(i !== arr.length - 1)
                                                     return <span key={component._id}>{component.name}, </span>
                                                 else
                                                     return <span key={component._id}>{component.name}</span>
-                                            }) }</td>
+                                            }) }</td> */}
                                             <td>{ link.roles.map((role, index, arr) => {
                                                 if(index !== arr.length - 1)
                                                     return <span key={role._id}>{role.name}, </span>
@@ -86,7 +86,7 @@ class ManageLink extends Component {
                                                 />
                                                 <DeleteNotification 
                                                     content={{
-                                                        title: translate('manage_page.delete'),
+                                                        title: translate('manage_link.delete'),
                                                         btnNo: translate('confirm.no'),
                                                         btnYes: translate('confirm.yes'),
                                                     }}

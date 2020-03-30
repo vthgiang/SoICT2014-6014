@@ -72,6 +72,8 @@ exports.create = async (data, company) => {
                 '</ul>' + 
                 `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
     }
+    var checkUser = await User.findOne({ email: data.email });
+    if(checkUser !== null) throw({msg: 'email_does_not_exit'});
     var user = await User.create({
         name: data.name,
         email: data.email,

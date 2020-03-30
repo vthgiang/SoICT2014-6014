@@ -114,7 +114,7 @@ export default {
             manage_department: 'Quản lý cơ cấu tổ chức',
             manage_user: 'Quản lý người dùng',
             manage_role: 'Quản lý phân quyền',
-            manage_page: 'Quản lý trang',
+            manage_link: 'Quản lý trang',
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
 
@@ -245,7 +245,7 @@ export default {
             roles: 'Phân quyền được cấp'
         },
 
-        manage_page: {
+        manage_link: {
             add: 'Thêm',
             add_title: 'Thêm link mới cho trang web',
             url: 'Đường link của trang web',
@@ -259,6 +259,7 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
+            all: 'Tất cả'
         },
 
         manage_component: {
