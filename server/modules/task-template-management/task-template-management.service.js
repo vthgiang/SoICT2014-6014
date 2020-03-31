@@ -12,7 +12,7 @@ const InformationTaskTemplate = require('../../models/informationTaskTemplate.mo
 exports.get = (req, res) => {
     TaskTemplate.find()
         .then(templates => res.status(200).json(templates))
-        .catch(err => res.status(400).json({ msg: err }));
+        .catch(err => res.status(400).json({ message: err }));
     console.log("Get Task Template");
 }
 
@@ -28,7 +28,7 @@ exports.getById = async (req, res) => {
             "informations": informationTemplate
         })
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -150,4 +150,24 @@ exports.delete = async (id) => {
         });
         
         return ("Delete success");
+}
+
+//sửa mẫu công việc
+exports.edit =async(data,id)=>{
+ 
+       
+       var tasktemplate =await TaskTemplate.findById(id).select('-name -description') ;
+       if(data.name != null && data.description!=null)
+       {
+        tasktemplate.name =data.name;
+        tasktemplate.description=data.description;
+       }
+       tasktemplate.save();
+     
+    return ({
+        message: "Edit Task Template Successfully!",
+        data : tasktemplate
+    });
+       
+
 }

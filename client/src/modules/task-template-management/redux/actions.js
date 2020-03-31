@@ -124,7 +124,7 @@ function editTaskTemplate(id, taskTemplate) {
             );
     };
 
-    function request(id) { return { type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST, id } }
+    function request(id) { return { type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST, taskTemplate } }
     function success(taskTemplate) { return { type: taskTemplateConstants.EDIT_TEMPLATE_SUCCESS, taskTemplate } }
     function failure(error) { return { type: taskTemplateConstants.EDIT_TEMPLATE_FAILURE, error } }
 }

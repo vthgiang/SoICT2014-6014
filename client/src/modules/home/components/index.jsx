@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { RoleActions } from '../../super-admin-management/roles-management/redux/actions';
+import { LinkActions } from '../../super-admin-management/links-management/redux/actions';
 
 class Home extends Component {
     constructor(props) {
@@ -8,12 +10,17 @@ class Home extends Component {
         
     }
 
+    componentDidMount(){
+        this.props.getRoles();
+        this.props.getLinks();
+    }
+
     render() { 
 
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
-                    Home
+                    
                 </div>
             </div>
          );
@@ -26,6 +33,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return{
+        getRoles: RoleActions.get,
+        getLinks: LinkActions.get
     }
 }
 

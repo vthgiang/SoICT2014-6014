@@ -67,7 +67,7 @@ function getAll() {
         method: 'GET',
     };
 
-    return fetch('/departments', requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/departments`, requestOptions).then(handleResponse);
 }
 async function getDepartmentOfUser() {
     const token = getStorage();
@@ -76,8 +76,9 @@ async function getDepartmentOfUser() {
     console.log(id);
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
-    return fetch(`/department/department-of-user/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${ LOCAL_SERVER_API }/department/department-of-user/${id}`, requestOptions).then(handleResponse);
 }
 

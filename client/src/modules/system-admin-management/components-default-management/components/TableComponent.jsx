@@ -35,8 +35,8 @@ class TableComponent extends Component {
                 <ComponentCreateForm />
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value:'name' },
-                        { title: translate('table.description'), value:'description' },
+                        { title: translate('manage_component.name'), value:'name' },
+                        { title: translate('manage_component.description'), value:'description' },
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -95,7 +95,9 @@ class TableComponent extends Component {
                                         />
                                     </td>
                                 </tr>
-                            ):<tr><td colSpan={"3"}>{translate('confirm.no_data')}</td></tr>
+                            ): componentsDefault.isLoading ?
+                            <tr><td colSpan={"3"}>{translate('confirm.loading')}</td></tr> : 
+                            <tr><td colSpan={"3"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

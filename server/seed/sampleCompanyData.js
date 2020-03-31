@@ -182,20 +182,20 @@ const sampleCompanyData = async () => {
         type: roleAbstract._id
     }]);
 
-    const troLy = await Role.create({
+    const thanhVienBGĐ = await Role.create({
         parents: [roles[3]._id],
-        name: "Trợ lý giám đốc",
+        name: "Thành viên ban giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const phoGiamDoc = await Role.create({
-        parents: [roles[2]._id, troLy._id],
+        parents: [roles[2]._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const giamDoc = await Role.create({
-        parents: [roles[1]._id, troLy._id, phoGiamDoc._id],
+        parents: [roles[1]._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
@@ -219,7 +219,7 @@ const sampleCompanyData = async () => {
         type: roleChucDanh._id
     });
 
-    console.log("Đã tạo xong các role mặc định của công ty: ", admin, roles, troLy, phoGiamDoc, giamDoc, nvPhongHC, phoPhongHC, truongPhongHC);
+    console.log("Đã tạo xong các role mặc định của công ty: ", admin, roles, thanhVienBGĐ, phoGiamDoc, giamDoc, nvPhongHC, phoPhongHC, truongPhongHC);
     //END
 
 
@@ -247,13 +247,17 @@ const sampleCompanyData = async () => {
         userId: users[3]._id,
         roleId: phoGiamDoc._id
     },
-    {//Trợ lý giám đốc Vũ Thị C
+    {//Thành viên ban giám đốc Vũ Thị C
         userId: users[4]._id,
-        roleId: troLy._id
+        roleId: thanhVienBGĐ._id
     },
     {//Trưởng phòng hành chính Nguyễn Văn D
         userId: users[5]._id,
         roleId: truongPhongHC._id
+    },
+    {//Nguyễn Văn D cũng là thành viên ban giám đốc
+        userId: users[5]._id,
+        roleId: thanhVienBGĐ._id
     },
     {//Phó phòng hành chính Trần Thị E
         userId: users[6]._id,
@@ -279,7 +283,7 @@ const sampleCompanyData = async () => {
         company:  xyz._id,
         dean: giamDoc._id,
         vice_dean: phoGiamDoc._id,
-        employee: troLy._id,
+        employee: thanhVienBGĐ._id,
         parent: null
     });
     const departments = await Department.insertMany([
@@ -738,12 +742,12 @@ const sampleCompanyData = async () => {
         {
             resourceId: links[30]._id, // Dashboard công việc
             resourceType: 'Link',
-            roleId: roles[3]._id // Vice Dean
+            roleId: roles[2]._id // Vice Dean
         },
         {
             resourceId: links[30]._id, // Dashboard công việc
             resourceType: 'Link',
-            roleId: roles[3]._id // Dean
+            roleId: roles[1]._id // Dean
         }
 
     ]);
@@ -756,7 +760,7 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     var listEmployee = await Employee.insertMany([{
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Nguyễn Văn A",
+        fullName: "Vũ Thị C",
         employeeNumber: "MS2015122",
         company:xyz._id,
         MSCC: "123456",
@@ -766,7 +770,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "trancuong@gmail.com",
+        emailCompany: "vtc.xyz@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -826,7 +830,7 @@ const sampleCompanyData = async () => {
         file: [],
     }, {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Nguyễn Văn B",
+        fullName: "Trần Văn B",
         employeeNumber: "MS2015124",
         company:xyz._id,
         MSCC: "123456",
@@ -836,7 +840,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "tranhung@gmail.com",
+        emailCompany: "tvb.xyz@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -946,7 +950,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu nhân viên!");
     var employee = await Employee.create({
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Nguyễn Văn Hưng",
+        fullName: "Nguyễn Văn A",
         employeeNumber: "MS2015123",
         company:xyz._id,
         MSCC: "123456",
@@ -956,7 +960,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "admin.xyz@gmail.com",
+        emailCompany: "nva.xyz@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",

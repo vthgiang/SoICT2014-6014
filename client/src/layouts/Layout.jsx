@@ -5,7 +5,6 @@ import Footer from './footer/components/Footer';
 import Content from './content/components/Content';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { Loading } from '../common-components';
 
 class Layout extends Component {
     constructor(props) {
@@ -17,12 +16,9 @@ class Layout extends Component {
         
         return ( 
             <React.Fragment>
-                {/* {
-                    isLoading && <Loading/>
-                } */}
                 <Header />
                 <Sidebar />
-                <Content arrPage={this.props.arrPage} pageName={ translate(`menu.${this.props.pageName}`) }>{ this.props.children }</Content>
+                <Content arrPage={this.props.arrPage} isLoading={this.props.isLoading} pageName={ translate(`menu.${this.props.pageName}`) }>{ this.props.children }</Content>
                 <Footer />
             </React.Fragment>
          );

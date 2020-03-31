@@ -45,6 +45,7 @@ class Login extends Component {
 
     render() { 
         const { auth, translate } = this.props;
+        console.log("PROPS:", this.props);
         return ( 
             <div className="hold-transition login-page" style={{ minHeight: '100vh' }}>
                 <div className="login-box" style={{ marginTop: 0, marginBottom: 0, paddingTop: '7vh' }}>
@@ -57,11 +58,7 @@ class Login extends Component {
                             <p><i className="icon fa fa-ban" />{ translate(`alert.${auth.error}`) }</p>
                         </div>
                     }
-                    {/* {
-                        user.msg !== null && <h4 style={{ backgroundColor: 'yellow', color: 'green', textAlign: 'center' }}>{ user.msg }</h4>
-                    } */}
                     <div className="login-box-body">
-                        {/* <p className="login-box-msg">Sign in to start your session</p> */}
                         <form onSubmit={this.handleSubmit}> 
                             <div className="form-group has-feedback">
                                 <input name="email" onChange={this.handleChange} type="email" className="form-control" placeholder={ translate('form.email') } required/>
@@ -73,11 +70,6 @@ class Login extends Component {
                             </div>
                             <div className="row">
                                 <div className="col-xs-8">
-                                    {/* <div className="checkbox">
-                                        <label>
-                                            <input type="checkbox" /> Remember Me
-                                    </label>
-                                    </div> */}
                                     <a data-toggle="modal" href='#modal-reset-password'>{ translate('form.forgot_password') }</a><br />
                                     <ForgotPassword />
                                 </div>

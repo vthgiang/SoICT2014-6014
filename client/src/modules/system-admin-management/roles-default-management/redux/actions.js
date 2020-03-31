@@ -13,10 +13,11 @@ function get(){
             .then(res => {
                 dispatch({
                     type: RoleDefaultConstants.GET_ROLES_DEFAULT_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
+                dispatch({ type: RoleDefaultConstants.GET_ROLES_DEFAULT_FAILE});
                 console.log("Error: ", err.response);
                 AlertActions.handleAlert(dispatch, err);
             })

@@ -45,15 +45,16 @@ class ManageUserTable extends Component {
                             <th>{translate('table.email')}</th>
                             <th>{translate('table.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
-                                <ActionColumn 
-                                    tableId="user-table"
+                                <ActionColumn
                                     columnName={translate('table.action')} 
                                     columnArr={[
                                         translate('table.name'),
                                         translate('table.email'),
                                         translate('table.status')
                                     ]}
-                                    setLimit={this.setLimit} 
+                                    limit={this.state.limit}
+                                    setLimit={this.setLimit}
+                                    hideColumnOption = {true}
                                 />
                             </th>
                         </tr>
@@ -63,7 +64,6 @@ class ManageUserTable extends Component {
                             user.listPaginate.length > 0 ? user.listPaginate.map(u => (
                                 <tr
                                     key={u._id}
-                                    // style={{ backgroundColor: u.active ? "white" : "#E2DFE7" }}
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
@@ -74,7 +74,7 @@ class ManageUserTable extends Component {
                                             userEmail={u.email}
                                             userName={u.name}
                                             userActive={u.active}
-                                            userRoles={u.roles.map(role => role.roleId._id)}
+                                            userRoles={u.roles}
                                             editUser={this.editUser}
                                         />
                                         {
@@ -91,7 +91,9 @@ class ManageUserTable extends Component {
                                         }
                                     </td>
                                 </tr>
-                            )) : <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                            )) : user.isLoading ?
+                            <tr><td colSpan={4}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
@@ -140,12 +142,14 @@ class ManageUserTable extends Component {
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { limit: number, page: this.state.page };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
+        if (this.state.limit !== number){
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page };
+            if(this.state.value !== null){
+                data[this.state.option] = this.state.value;
+            }
+            this.props.getPaginate(data);
         }
-        this.props.getPaginate(data);
     }
 
     componentDidMount(){

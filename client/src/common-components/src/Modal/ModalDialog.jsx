@@ -5,6 +5,8 @@ import './modal.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import {Loading} from '../Loading/Loading';
+
 class ModalDialog extends Component {
     constructor(props) {
         super(props);
@@ -22,25 +24,23 @@ class ModalDialog extends Component {
     }
 
     save = (translate) => {
-        this.props
-            .func()
-            .then(res => {
+        const func = this.props.func();
+        if(func !== undefined){
+            func.then(res => {
                 if(this.props.type === 'edit') this.closeModal(false);
                 else this.closeModal();
                 toast.success(this.props.msg_success, {containerId: 'toast-notification'});
             }).catch(err => {
                 document.getElementById(this.props.formID).reset();
                 if(err.response.data.message){
-                    if( 
-                        err.response.data.message.length < 15 &&
-                        translate(`confirm.${err.response.data.message}`) !== undefined
-                    )
-                        toast.warning(translate(`confirm.${err.response.data.message}`), {containerId: 'toast-notification'});
+                    if(translate(`error.${err.response.data.message}`) !== undefined)
+                        toast.warning(translate(`error.${err.response.data.message}`), {containerId: 'toast-notification'});
                     else
                         toast.warning(err.response.data.message, {containerId: 'toast-notification'});
                 }else
                     toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });
+        }
     }
 
     componentDidUpdate(){
@@ -60,15 +60,21 @@ class ModalDialog extends Component {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={this.closeModal}>&times;</button>
-                                <h4 className="modal-title text-center">{this.props.title}</h4>
+                                <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
                             <div className="modal-body text-left">
                                 {this.props.children}
                             </div>
                             <div className="modal-footer">
-                                <p className="pull-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
-                                <button type="submit" className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
-                                <button type="button" className="btn btn-default" onClick={this.closeModal}>{translate('form.close')}</button>
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <button type="submit" className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        <button type="button" className="btn btn-default" onClick={this.closeModal}>{translate('form.close')}</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

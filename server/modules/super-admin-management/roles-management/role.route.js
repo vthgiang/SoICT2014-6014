@@ -10,8 +10,5 @@ router.post("/", auth, createValidation, RoleController.create);
 router.get("/:id", auth, RoleController.show);
 router.patch("/:id", auth, editValidation, RoleController.edit);
 router.delete("/:id", auth, RoleController.delete);
-
-router.patch("/test/:id", auth, RoleController.test);
-
-router.get('/same-department/:id', RoleController.getRoleSameDepartment);
+router.get('/same-department/:id', auth, RoleController.getRoleSameDepartment);
 module.exports = router;

@@ -12,7 +12,9 @@ export const AuthService = {
     logoutAllAccount,
     forgotPassword,
     resetPassword,
-    getComponentOfUserInLink
+    getComponentOfUserInLink,
+    changeInformation,
+    changePassword
 };
 
 async function login(user) {
@@ -63,9 +65,37 @@ function editProfile(data) {
     return axios(requestOptions);
 }
 
+function changeInformation(data) {
+    const token = getStorage();
+    const verified = jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
+        method: 'PATCH',
+        data: data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function changePassword(data) {
+    const token = getStorage();
+    const verified = jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
+        method: 'PATCH',
+        data: data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
 async function getLinksOfRole(idRole) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/privilege/get-links-of-role/${idRole}`,
+        url: `${ LOCAL_SERVER_API }/auth/get-links-of-role/${idRole}`,
         method: 'GET',
         headers: await AuthenticateHeader()
     };
@@ -80,7 +110,7 @@ async function refresh() {
     console.log("verified: ", verified)
     
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/user/${id}`,
+        url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
         method: 'GET',
         headers: await AuthenticateHeader()
     };
@@ -116,6 +146,7 @@ function resetPassword(otp, email, password) {
 
 function getComponentOfUserInLink(currentRole, linkId) {
     const requestOptions = {
+        // url: `${ LOCAL_SERVER_API }/auth/role/${currentRole}/link/${linkId}`,
         url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
         method: 'GET',
         headers: AuthenticateHeader()

@@ -1,6 +1,4 @@
-const Department = require('../../../models/department.model');
-const UserRole = require('../../../models/user_role.model');
-const Role = require('../../../models/role.model')
+const { Department, UserRole, Role } = require('../../../models/_export').data;
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -46,7 +44,8 @@ exports.getById = async (req, res) => {
 }
 
 exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
-
+    const check = await Department.findOne({name: data.name, company: companyID});
+    if(check !== null) throw({message: 'department_name_exist'});
     const department = await Department.create({
         name: data.name,
         description: data.description,
@@ -56,58 +55,47 @@ exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
         employee: employeeId,
         parent: ObjectId.isValid(data.parent) ? data.parent : null
     });
-    console.log("DEPARTMENT: ", department);
 
     return department;
 }
 
 exports.edit = async(id, data) => {
     var department = await Department.findById(id);
-    console.log("old: ",department);
+    if(department === null) throw({message: 'department_not_found'});
     department.name = data.name;
     department.description = data.description;
     department.parent = data.parent;
     department.save();
-    console.log("new: ",department);
 
     return department;
 }
 
 exports.delete = async(departmentId) => {
     var department = await Department.findById(departmentId); //tìm phòng ban hiện tại
-    console.log("Phong hien tai: ", department.name);
     if(department.parent !== undefined || department.parent !== null){
         await Department.updateMany({ 
             parent: department._id
         },{
             $set :{ parent: department.parent }
         }); 
-        console.log("update xong")
+
         return await Department.deleteOne({ _id: departmentId });
     }
 
     return {};
 }
-exports.getDepartmentOfUser = async (req, res) => {
-    console.log('get department of user')
-    try {
-        var roles = await UserRole.find({userId: req.params.id});
-        // console.log(roles);
-        var newRoles = roles.map( role => role.roleId);
-        var departments = await Department.find({
-            $or: [
-                {'dean': { $in: newRoles }}, 
-                {'vice_dean':{ $in: newRoles }}, 
-                {'employee':{ $in: newRoles }}
-            ]  
-        });
-        console.log(departments);
+exports.getDepartmentOfUser = async (userId) => {
+    var roles = await UserRole.find({ userId });
+    var newRoles = roles.map( role => role.roleId);
+    var departments = await Department.find({
+        $or: [
+            {'dean': { $in: newRoles }}, 
+            {'vice_dean':{ $in: newRoles }}, 
+            {'employee':{ $in: newRoles }}
+        ]  
+    });
 
-        res.status(200).json(departments);
-    } catch (error) {
-
-        res.status(400).json({msg: error});
-    }
+    return departments;
 }
 
 /**
@@ -123,22 +111,17 @@ exports.getDepartmentOfUser = async (req, res) => {
  * 3. roleId - xác định vai trò truy cập hiện tại của người dùng trên website (vd: đang truy cập với quyền là Nhân viên phòng hành chính,...)
  */
 exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
-    try {
-        const department = await Department.findOne({
-            $or: [
-                {'dean': roleId, company: companyId }, 
-                {'vice_dean': roleId, company: companyId }, 
-                {'employee': roleId, company: companyId }
-            ]
-        }).populate([
-            { path: 'dean', model: Role, populate: { path: 'users', model: UserRole} },
-            { path: 'vice_dean', model: Role, populate: { path: 'users', model: UserRole}  },
-            { path: 'employee', model: Role, populate: { path: 'users', model: UserRole}  }
-        ]);
+    const department = await Department.findOne({
+        $or: [
+            {'dean': roleId, company: companyId }, 
+            {'vice_dean': roleId, company: companyId }, 
+            {'employee': roleId, company: companyId }
+        ]
+    }).populate([
+        { path: 'dean', model: Role, populate: { path: 'users', model: UserRole} },
+        { path: 'vice_dean', model: Role, populate: { path: 'users', model: UserRole}  },
+        { path: 'employee', model: Role, populate: { path: 'users', model: UserRole}  }
+    ]);
 
-        res.status(200).json(department);
-    } catch (error) {
-
-        res.status(400).json({msg: error});
-    }
+    return department;
 }

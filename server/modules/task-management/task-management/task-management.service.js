@@ -9,7 +9,7 @@ const Department = require('../../../models/department.model');
 exports.get = (req, res) => {
     Task.find()
         .then(tasks => res.status(200).json(tasks))
-        .catch(err => res.status(400).json({ msg: err }));
+        .catch(err => res.status(400).json({ message: err }));
     console.log("Get All Task");
 }
 
@@ -30,7 +30,7 @@ exports.getById = async (req, res) => {
             res.status(200).json({"info": task});
         }
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -43,7 +43,7 @@ exports.getByRole = async (req, res) => {
         }).populate({ path: 'tasktemplate', model: TaskTemplate });
         res.status(200).json(tasks)
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -74,7 +74,7 @@ exports.getTaskResponsibleByUser = async (req, res) => {
             "totalpage": totalPages
         })
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -104,7 +104,7 @@ exports.getTaskAccounatableByUser = async (req, res) => {
             "totalpage": totalPages
         })
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -134,7 +134,7 @@ exports.getTaskConsultedByUser = async (req, res) => {
             "totalpage": totalPages
         })
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -164,7 +164,7 @@ exports.getTaskCreatorByUser = async (req, res) => {
             "totalpage": totalPages
         })
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -195,7 +195,7 @@ exports.getTaskInformedByUser = async (req, res) => {
             "totalpage": totalPages
         })
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 

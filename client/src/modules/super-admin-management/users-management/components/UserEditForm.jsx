@@ -16,6 +16,19 @@ class UserEditForm extends Component {
         this.save = this.save.bind(this);
     }
 
+    chechSuperAdmin = (roleArr) => {
+        var result = false;
+        for (let i = 0; i < roleArr.length; i++) {
+            const role = roleArr[i];
+            if(role.roleId.name === 'Super Admin'){
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     save = () => {
 
         return this.props.edit(this.props.userId, {
@@ -37,7 +50,7 @@ class UserEditForm extends Component {
                     color="yellow"
                 />
                 <ModalDialog
-                    size='50' func={this.save} type="edit"
+                    size='50' func={this.save} type="edit" isLoading={this.props.user.isLoading}
                     modalID={`modal-edit-user-${userId}`}
                     formID={`form-edit-user-${userId}`}
                     title={translate('manage_user.edit')}
@@ -55,10 +68,9 @@ class UserEditForm extends Component {
                                 <select 
                                     className="form-control" 
                                     style={{width: '100%'}} 
-                                    name="active" 
                                     defaultValue={ userActive }
                                     ref="active"
-                                    onChange={this.inputChange}>
+                                    disabled={this.chechSuperAdmin(userRoles) ? true : false}>
                                     {   
                                         status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
                                     }
@@ -75,11 +87,16 @@ class UserEditForm extends Component {
                                 className="form-control select2" 
                                 multiple="multiple" 
                                 style={{ width: '100%' }} 
-                                defaultValue={userRoles}
+                                defaultValue={userRoles.map(role => role.roleId._id)}
                                 ref="roles"
                             >
                                 {
-                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                    this.chechSuperAdmin(userRoles) ? //neu tai khoan nay hien tai khong co role la Super Admin
+                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>):
+                                    role.list.map( role => {
+                                        if(role.name !== 'Super Admin')
+                                            return <option key={role._id} value={role._id}>{role.name}</option>;
+                                    })
                                 }
                             </select>
                         </div>

@@ -18,7 +18,7 @@ function get(){
             .then(res => {
                 dispatch({
                     type: LinkConstants.GET_LINKS_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -35,7 +35,7 @@ function getPaginate(data){
             .then(res => {
                 dispatch({
                     type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -52,7 +52,7 @@ function show(id){
             .then(res => {
                 dispatch({
                     type: LinkConstants.SHOW_LINK_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -71,7 +71,7 @@ function create(link){
                 .then(res => {
                     dispatch({
                         type: LinkConstants.CREATE_LINK_SUCCESS,
-                        payload: res.data
+                        payload: res.data.content
                     });
                     resolve(res);
                 })
@@ -92,7 +92,7 @@ function edit(id, link){
             .then(res => {
                 dispatch({
                     type: LinkConstants.EDIT_LINK_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
                 resolve(res);
             })

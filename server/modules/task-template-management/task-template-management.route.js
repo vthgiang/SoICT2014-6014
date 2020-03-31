@@ -11,5 +11,6 @@ router.get('/user/:id/:pageNumber/:noResultsPerPage/:unit', auth, TaskTemplateCo
 router.post('/create', auth, TaskTemplateController.create);
 router.delete('/:id', auth, TaskTemplateController.delete);
 router.post('/test', auth, TaskTemplateController.test);
+router.patch('/edit/:id',auth,TaskTemplateController.edit);
 
 module.exports = router;
