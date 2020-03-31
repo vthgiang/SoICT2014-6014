@@ -32,21 +32,6 @@ class TaskTemplate extends Component {
         };
         this.handleUpdateData = this.handleUpdateData.bind(this);
     }
-    // handleInputSearchPage = (e) => {
-    //     // if (e.key === 'Enter') {
-    //     //     console.log('do validate');
-    //     // }
-    //     var input = document.getElementById("input-search-page");
-    //     input.addEventListener("keyup", function(event) {
-    //         // Number 13 is the "Enter" key on the keyboard
-    //         if (event.keyCode === 13) {
-    //           // Cancel the default action, if needed
-    //           event.preventDefault();
-    //           // Trigger the button element with a click
-    //           document.getElementById("search-page").click();
-    //         }
-    //       });
-    // }
     handleSetting = async () => {
         // Cập nhật cột muốn ấn
         var test = window.$("#multiSelectShowColumn").val();
@@ -154,14 +139,14 @@ class TaskTemplate extends Component {
 
     handleUpdateData = () => {
         var test = window.$("#multiSelectUnit").val();
-        console.log(test);
-        this.props.getTaskTemplateByUser(1, this.state.perPage, test);
-        this.setState(state => {
-            return {
-                ...state,
-                currentPage: 1
-            }
-        })
+        var name=this.name.value;
+        this.props.getTaskTemplateByUser( 1, this.state.perPage, test,name);
+                this.setState(state => {
+                    return {
+                        ...state,
+                        currentPage: 1
+                    }
+                })
     }
     handleShowView = async (id) => {
         await this.setState(state=>{
@@ -294,7 +279,7 @@ class TaskTemplate extends Component {
                     <div className="form-inline">
                         <div className = "form-group">
                             <label className = "form-control-static">{translate('task_template.name')}:</label>
-                            <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
+                            <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" ref={input => this.name = input}/>
                         </div>
                     </div>
 
