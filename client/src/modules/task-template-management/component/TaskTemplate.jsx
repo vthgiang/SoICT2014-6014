@@ -7,7 +7,8 @@ import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './ModalViewTaskTemplate';
 import { ModalEditTaskTemplate } from './ModalEditTaskTemplate';
 
-import { SelectMulti } from '../../../common-components/src/SelectMulti/SelectMulti.jsx';
+import { SelectMulti } from '../../../common-components/src/SelectMulti/SelectMulti';
+import { ActionColumn } from '../../../common-components/src/ActionColumn';
 
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -41,12 +42,14 @@ class TaskTemplate extends Component {
             window.$('td:nth-child(' + test[j] + ')').hide();
             window.$('th:nth-child(' + test[j] + ')').hide();
         }
+    }
+    setLimit = async (limit) => {
         // Cập nhật số dòng trang trên một trang hiển thị
-        if (Number(this.perPage.value) !== this.state.perPage) {
+        if (Number(limit) !== this.state.perPage) {
             await this.setState(state => {
                 return {
                     ...state,
-                    perPage: Number(this.perPage.value),
+                    perPage: Number(limit),
                     currentPage: 1
                 }
             })
@@ -286,8 +289,8 @@ class TaskTemplate extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className = "form-control-static">{translate('task_template.unit')}:</label>
-                            {units && <SelectMulti id="multiSelectUnit" items={units} 
-                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả đơn vị"></SelectMulti>}
+                            {units && <SelectMulti id="multiSelectUnit" selectAllByDefault={true} items={units.map(item => {return {value: item._id, text: item.name}})} 
+                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả các đơn vị"></SelectMulti>}
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
@@ -301,30 +304,21 @@ class TaskTemplate extends Component {
                                 <th title="Người tạo mẫu">{translate('task_template.creator')}</th>
                                 <th title="Đơn vị">{translate('task_template.unit')}</th>
 
-                                <th style={{ width: "121px" }}>
-                                    Hoạt động
-                                    <button type="button" data-toggle="collapse" data-target="#setting-table" style={{ border: "none", background: "none" }}><i className="fa fa-gear"></i></button>
-                                    <div id="setting-table" className="row collapse" style={{ width: "26%" }}>
-                                        <span className="pop-arw arwTop L-auto" style={{ right: "13px" }}></span>
-                                        <div className="col-xs-12">
-                                            <label style={{ marginRight: "15px" }}>Ẩn cột:</label>
-                                            <select id="multiSelectShowColumn" multiple="multiple">
-                                                <option value="1">Tên mẫu</option>
-                                                <option value="2">Mô tả</option>
-                                                <option value="3">Số lần sử dụng</option>
-                                                <option value="4">Người tạo</option>
-                                                <option value="5">Đơn vị</option>
-                                                <option value="6">Hoạt động</option>
-                                            </select>
-                                        </div>
-                                        <div className="col-xs-12" style={{ marginTop: "10px" }}>
-                                            <label style={{ marginRight: "15px" }}>Số dòng/trang:</label>
-                                            <input className="form-control" type="text" defaultValue={this.state.perPage} ref={input => this.perPage = input} />
-                                        </div>
-                                        <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
-                                            <button type="button" className="btn btn-success" onClick={this.handleSetting}>Cập nhật</button>
-                                        </div>
-                                    </div>
+                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                    <ActionColumn 
+                                        tableId="user-table"
+                                        columnName={translate('table.action')} 
+                                        columnArr={[
+                                            'Tên mẫu công việc',
+                                            'Mô tả',
+                                            'Số lần sử dụng',
+                                            'Người tạo mẫu',
+                                            'Đơn vị'
+                                        ]}
+                                        limit = {this.state.perPage}
+                                        setLimit = {this.setLimit}
+                                        hideColumnOption = {true}
+                                    />
                                 </th>
                             </tr>
                         </thead>

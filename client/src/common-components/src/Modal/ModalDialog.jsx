@@ -33,11 +33,8 @@ class ModalDialog extends Component {
             }).catch(err => {
                 document.getElementById(this.props.formID).reset();
                 if(err.response.data.message){
-                    if( 
-                        err.response.data.message.length < 15 &&
-                        translate(`confirm.${err.response.data.message}`) !== undefined
-                    )
-                        toast.warning(translate(`confirm.${err.response.data.message}`), {containerId: 'toast-notification'});
+                    if(translate(`error.${err.response.data.message}`) !== undefined)
+                        toast.warning(translate(`error.${err.response.data.message}`), {containerId: 'toast-notification'});
                     else
                         toast.warning(err.response.data.message, {containerId: 'toast-notification'});
                 }else

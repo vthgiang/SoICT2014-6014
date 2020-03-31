@@ -14,24 +14,22 @@ class SelectMulti extends Component {
         script.defer = true;
         document.body.appendChild(script);
 
-        const { nonSelectedText, allSelectedText } = this.props;
+        const { nonSelectedText, allSelectedText, id } = this.props;
 
-        window.$(document).ready(function () {
-            window.$('#multiSelectUnit').multiselect({
-                //   includeSelectAllOption : true,
-                nonSelectedText: nonSelectedText,
-                allSelectedText: allSelectedText
-            });
+        window.$("#" + id).multiselect({
+            nonSelectedText: nonSelectedText,
+            allSelectedText: allSelectedText
         });
     }
     render() { 
-        const { id, items } = this.props;
+        const { id, items, selectAllByDefault } = this.props;
+        console.log(items);
         return ( 
             <React.Fragment>
                 <div className="selectmulti">
-                    <select className="form-control" style ={{display: "none"}}id={id} multiple="multiple" defaultValue={items.map(item => item._id)}>
+                    <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={selectAllByDefault?items.map(item => item.value):[]}>
                         {items.map(item => {
-                            return <option key={item._id} value={item._id}>{item.name}</option>
+                            return <option key={item.value} value={item.value}>{item.text}</option>
                         })}
                     </select>
                 </div>

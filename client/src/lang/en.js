@@ -1,6 +1,10 @@
 export default {
     locale: 'en',
     messages: {
+        error: {
+            email_does_not_exist: 'Email does not exist',
+            field_invalid: 'Field input invaid',
+        },
         not_found: {
             title: 'Qpps! Page not found',
             content: 'We could not find the page you were looking for',
