@@ -151,10 +151,9 @@ class CompanyTable extends Component {
                                         </tr>    
                                     )
                                 }
-                            </React.Fragment> : 
-                            <tr>
-                                <td colSpan='5'>{translate('confirm.no_data')}</td>
-                            </tr>
+                            </React.Fragment> : company.isLoading ?
+                            <tr><td colSpan='6'>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan='6'>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

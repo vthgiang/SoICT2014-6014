@@ -12,7 +12,9 @@ export const AuthActions = {
     refresh,
     resetPassword,
     forgotPassword,
-    getComponentOfUserInLink
+    getComponentOfUserInLink,
+    changeInformation,
+    changePassword
 }
 
 function login(user){
@@ -87,6 +89,50 @@ function editProfile(data){
     }
 }
 
+function changeInformation(data){
+    return dispatch => {
+        dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_REQUEST});
+        return new Promise((resolve, reject) => {
+            AuthService.changeInformation(data)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.CHANGE_USER_INFORMATION_SUCCESS,
+                    payload: res.data
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                console.log("Error: ", err.response);
+                dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                reject(err);
+            })
+        });
+    }
+}
+
+function changePassword(data){
+    return dispatch => {
+        dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_REQUEST });
+        return new Promise((resolve, reject) => {
+            AuthService.changePassword(data)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.CHANGE_USER_INFORMATION_SUCCESS,
+                    payload: res.data
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                console.log("Error: ", err);
+                dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_FAILE });
+                AlertActions.handleAlert(dispatch, err);
+                reject(err);
+            })
+        });
+    }
+}
+
 function getLinksOfRole(idRole){
     return dispatch => {
         return new Promise((resolve, reject) => {
@@ -143,16 +189,21 @@ function forgotPassword(email){
 
 function resetPassword(otp, email, password){
     return dispatch => {
-        AuthService.resetPassword(otp, email, password)
-            .then(res => {
-                dispatch({
-                    type: AuthConstants.RESET_PASSWORD_SUCCESS,
-                    payload: res.data
+        return new Promise((resolve, reject) => {
+            AuthService.resetPassword(otp, email, password)
+                .then(res => {
+                    dispatch({
+                        type: AuthConstants.RESET_PASSWORD_SUCCESS,
+                        payload: res.data
+                    });
+                    resolve(res);
                 })
-            })
-            .catch(err => {
-                console.log("Error: ", err);
-            })
+                .catch(err => {
+                    console.log("Error: ", err);
+                    reject(err);
+                })
+        });
+        
     }
 }
 

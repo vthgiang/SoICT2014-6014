@@ -5,20 +5,42 @@ import  {taskTemplateActions} from '../redux/actions';
 class ModalEditTaskTemplate extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            currentTemplate: this.props.id
+        this.state = {            
+            editing: false,
         }
     }
 
     componentDidMount() {
         this.props.getTaskTemplate(this.props.id);
     }
+    
+    
     handleCloseModal = (id) => {
         var element = document.getElementsByTagName("BODY")[0];
         element.classList.remove("modal-open");
         var modal = document.getElementById(`editTaskTemplate${id}`);
         modal.classList.remove("in");
         modal.style = "display: none;";
+    }
+
+    // Submit edit template in data
+    handleSubmit = async (event,id) => {
+        event.preventDefault();
+        await this.setState({
+            editing: false,
+            newTemplate: {
+                name: this.name.value,
+                description :this.description.value,
+            }            
+        });
+        const { newTemplate } = this.state;
+            if (newTemplate.name && newTemplate.description) {
+                this.props.editTaskTemplate(id, newTemplate);
+                this.handleCloseModal(this.props.id);
+            }
+        
+            
+            //window.$(`#editTaskTemplate${id}`).modal("hide");
     }
     render() {
         var template;
@@ -40,18 +62,18 @@ class ModalEditTaskTemplate extends Component {
                                             <div className="box-body">
                                                 <div className="form-group">
                                                     <label>Tên mẫu công việc</label>
-                                                    <input name="url" type="text" className="form-control" defaultValue={template.info.name} />
+                                                    <input name="url" type="text" className="form-control" ref={input => this.name = input} defaultValue={template.info.name} />
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Mô tả mẫu công việc</label>
-                                                    <input name="description" type="text" className="form-control" defaultValue={template.info.description} />
+                                                    <input name="description" type="text" className="form-control" ref={input => this.description = input} defaultValue={template.info.description} />
                                                 </div>
                                             </div>
                                         </form> : null
                                 }
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-success" >Lưu</button>
+                                <button className="btn btn-success" onClick={(event)=>this.handleSubmit(event, this.props.id)} >Lưu</button>
                                 <button type="cancel" className="btn btn-primary" data-dismiss="modal" onClick={()=>this.handleCloseModal(this.props.id)}>Hủy bỏ</button>
                             </div>
                         </div>

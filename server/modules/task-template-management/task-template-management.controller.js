@@ -67,3 +67,16 @@ exports.delete = async (req, res) => {
 exports.test = (req, res) => {
     return TaskTemplateService.test(req, res);
 }
+
+//api sửa 1 lỗi công việc
+exports.edit = async(req, res) => {
+    try {
+        var data = await TaskTemplateService.edit(req.body,req.params.id);
+        await LogInfo(req.user.email, `Edit task templates ${req.body.name}`, req.user.company);
+        res.status(200).json(data);
+    } catch (error) {
+        await LogError(req.user.email, `Edit task templates ${req.body.name}`, req.user.company);
+        res.status(400).json(error);
+    }
+}
+ 

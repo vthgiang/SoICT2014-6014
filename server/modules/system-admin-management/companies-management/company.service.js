@@ -142,9 +142,11 @@ exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleS
     return user;
 }
 
-exports.createLinksForCompany = async(companyId, roleArr) => {
+exports.createLinksForCompany = async(companyId, linkArr, roleArr) => {
     // Lấy dữ liệu về các link mặc định ( url, thông tin, các role được phép truy cập)
-    const linkDefaults = await LinkDefault.find().populate({ path: 'roles', model: RoleDefault });
+    const linkDefaults = await LinkDefault.find({
+        _id: { $in: linkArr }
+    }).populate({ path: 'roles', model: RoleDefault });
 
     // Khởi tạo link vào các trang của website cho công ty
     const dataLinks = linkDefaults.map( link => {

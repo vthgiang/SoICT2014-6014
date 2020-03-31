@@ -119,9 +119,34 @@ exports.forgotPassword = async (email) => {
         from: 'vnist.qlcv@gmail.com',
         to: email,
         subject: 'VNIST-QLCV : Thay đổi mật khẩu - Change password',
-        html:   
-                '<p>Mã xác thực của bạn: ' + code + '</p>' +
-                '<p>Your OTP: ' + code + '</p>'
+        html: `
+        <div style="
+            background-color:azure;
+            padding: 100px;
+            text-align: center;
+        ">
+            <h3>
+                Yêu cầu xác thực thay đổi mật khẩu
+            </h3>
+            <p>Mã xác thực: <b style="color: red">${code}</b></p>
+            <button style="
+                padding: 8px 8px 8px 8px; 
+                border: 1px solid rgb(4, 197, 30); 
+                border-radius: 5px;
+                background-color: #4CAF50"
+            >
+                <a 
+                    style="
+                        text-decoration: none;
+                        color: white;
+                        " 
+                    href="http://localhost:3000/reset-password?otp=${code}&email=${email}"
+                >
+                    Xác thực
+                </a>
+            </button>
+        </div>
+        `
     }
     await transporter.sendMail(mainOptions);
 
@@ -140,8 +165,36 @@ exports.resetPassword = async (otp, email, password) => {
     return true;
 }
 
-exports.profile = async (id) => {
+exports.changeInformation = async (id, name) => {
+    var user = await User.findById(id).populate([
+        { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+        { path: 'company' }
+    ]);
+    user.name = name;
+    await user.save();
 
+    return user;
+}
+
+exports.changePassword = async (id, password, new_password) => {
+    const user = await User.findById(id).populate([
+        { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+        { path: 'company' }
+    ]);
+    const validPass = await bcrypt.compare(password, user.password);
+    // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
+    if(!validPass) throw ({
+        success: false,
+        message: 'password_invalid'
+    });
+
+    // Lưu mật khẩu mới
+    const salt = await bcrypt.genSaltSync(10);
+    const hash = await bcrypt.hashSync(new_password, salt);
+    user.password = hash;
+    await user.save();
+
+    return user;
 }
 
 exports.getLinksOfRole = async (idRole) => {

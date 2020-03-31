@@ -20,7 +20,6 @@ class TabPraise extends Component {
             page: 0,
             limit: 5,
         }
-        this.handleResizeColumn();
         this.setLimit = this.setLimit.bind(this);
         this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -61,35 +60,6 @@ class TabPraise extends Component {
 
         }
         else return null
-    }
-
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     setLimit = async (number) => {
         await this.setState({ limit: parseInt(number) });
@@ -196,7 +166,7 @@ class TabPraise extends Component {
                             </div>
                         </div>
                         <div className="col-sm-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                            <table className="table table-striped table-bordered" >
+                            <table className="table table-striped table-bordered table-hover" >
                                 <thead>
                                     <tr>
                                         <th style={{ width: "12%" }}>{translate('table.employee_number')}</th>

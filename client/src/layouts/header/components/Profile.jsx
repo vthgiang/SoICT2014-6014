@@ -25,14 +25,20 @@ class Profile extends Component {
                         </p>
                     </li>
                     <li className="user-footer">
-                        <div className="pull-left">
-                            <a href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i> {translate('auth.profile.title')} </a>
-                        </div>
-                        <div className="pull-right">
-                            <button type="button" className="btn btn-default btn-flat" onClick={this.props.logout}><i className="fa fa-sign-out"></i> {translate('auth.logout')} </button>
-                        </div>
-                        <div style={{ marginTop: '45px' }}>
-                            <button style={{ width: '100%' }} type="button" className="btn btn-default btn-flat" onClick={this.props.logoutAllAccount}><i className="fa fa-power-off"></i> {translate('auth.logout_all_account')} </button>
+                        
+                        <div className="row">
+                            <div style={{marginTop: '10px'}} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <a style={{ width: '100%' }} href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i> {translate('auth.profile.title')} </a>
+                            </div>
+                            <div style={{marginTop: '10px'}} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <a style={{ width: '100%' }} href="#modal-security" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-gear"></i> {translate('auth.security.label')} </a>
+                            </div>
+                            <div style={{marginTop: '10px'}} className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                <button style={{ width: '100%' }} type="button" className="btn btn-default btn-flat pull-right" onClick={this.props.logout}><i className="fa fa-sign-out"></i> {translate('auth.logout')} </button>
+                            </div>
+                            <div style={{marginTop: '10px'}} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button style={{ width: '100%' }} type="button" className="btn btn-default btn-flat" onClick={this.props.logoutAllAccount}><i className="fa fa-power-off"></i> {translate('auth.logout_all_account')} </button>
+                            </div>
                         </div>
                     </li>
                 </ul>

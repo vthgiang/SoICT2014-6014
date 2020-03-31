@@ -67,15 +67,37 @@ exports.resetPassword = async (req, res) => {
     }
 };
 
-exports.profile = async (req, res) => {
+exports.changeInformation = async (req, res) => {
     try {
-        var profile = await AuthService.profile(req.params.id);
-
-        await LogInfo(req.user.email, 'GET_PROFILE', req.user.company);
-        res.status(200).json(profile);
+        console.log("profile change")
+        var profile = await AuthService.changeInformation(req.params.id, req.body.name);
+        console.log("profile: ", profile)
+        await LogInfo(req.user.email, 'CHANGE USER INFORMATION', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'change_user_information',
+            content: profile
+        });
     } catch (error) {
 
-        await LogError(req.user.email,'GET_PROFILE');
+        await LogError(req.user.email,'CHANGE USER INFORMATION', req.user.company);
+        res.status(400).json(error);
+    }
+};
+
+exports.changePassword = async (req, res) => {
+    try {
+        var user = await AuthService.changePassword(req.params.id, req.body.password, req.body.new_password);
+
+        await LogInfo(req.user.email, 'CHANGE USER PASSWORD', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'change_user_password',
+            content: user
+        });
+    } catch (error) {
+
+        await LogError(req.user.email,'CHANGE USER PASSWORD', req.user.company);
         res.status(400).json(error);
     }
 };

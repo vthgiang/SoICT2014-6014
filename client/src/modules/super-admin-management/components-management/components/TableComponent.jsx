@@ -76,7 +76,9 @@ class TableComponent extends Component {
                                         />
                                     </td>
                                 </tr>
-                            ):<tr><td colSpan={"3"}>{translate('confirm.no_data')}</td></tr>
+                            ): component.isLoading ?
+                            <tr><td colSpan={"3"}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={"3"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

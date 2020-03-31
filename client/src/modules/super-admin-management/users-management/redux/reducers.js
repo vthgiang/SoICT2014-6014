@@ -152,6 +152,7 @@ export function user(state = initState, action) {
         case UserConstants.GETROLE_SAMEDEPARTMENT_SUCCESS:
             return {
                 ...state,
+                isLoading: false,
                 roledepartments: action.roleDepartment.data
             };
         case UserConstants.GETALLUSER_OFDEPARTMENT_REQUEST:
@@ -168,6 +169,7 @@ export function user(state = initState, action) {
             };
         case UserConstants.GETALLUSER_OFDEPARTMENT_FAILURE:
             return {
+                isLoading: false,
                 error: action.error
             };
         case UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST:
@@ -184,23 +186,22 @@ export function user(state = initState, action) {
             };
         case UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE:
             return {
+                isLoading: false,
                 error: action.error
             };
         case UserConstants.GETALLUSER_OFCOMPANY_SUCCESS:
             return {
                 ...state,
+                isLoading: false,
                 usercompanys: action.users.data
             };
         case UserConstants.GETALLUSER_OFCOMPANY_FAILURE:
             return {
+                isLoading: false,
                 error: action.error
             };
-        case 'LOGOUT':
-
-            return initState;
 
         default:
-
             return state;
     }
 }

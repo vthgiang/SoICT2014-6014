@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Alert from '../../../modules/alert/components';
 
+import { Loading } from '../../../common-components';
+
+import './Content.css'
+
 class Content extends Component {
     constructor(props) {
         super(props);
@@ -125,13 +129,13 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, pageName, arrPage } = this.props;
-        
+        const { translate, pageName, arrPage, isLoading } = this.props;
         return (
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
-                        <h1> {pageName} </h1>
+                        <h1> {pageName} { isLoading && <Loading/> } </h1>
+                        
                         <ol className="breadcrumb">
                             {
                                 arrPage !== undefined && arrPage.map( page => 

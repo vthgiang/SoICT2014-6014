@@ -111,8 +111,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/system/links-default-management', links) === true &&
                                 <Item
-                                    key='manage_page'
-                                    name='manage_page'
+                                    key='manage_link'
+                                    name='manage_link'
                                     path='/system/links-default-management'
                                     icon='fa fa-link'
                                 />
@@ -156,8 +156,8 @@ class SideBar extends Component {
                             {
                                 this.checkURL('/links-management', links) === true &&
                                 <Item
-                                    key='manage_page'
-                                    name='manage_page'
+                                    key='manage_link'
+                                    name='manage_link'
                                     path='/links-management'
                                     icon='fa fa-link'
                                 />

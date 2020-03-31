@@ -401,8 +401,9 @@ class ModalAddTaskTemplate extends Component {
                     submitted: false
                 }
             });
+            window.$("#addTaskTemplate").modal("hide");
         }
-        window.$("#addTaskTemplate").modal("hide");
+        
     }
     render() {
         var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments;

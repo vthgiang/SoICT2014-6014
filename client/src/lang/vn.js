@@ -22,14 +22,24 @@ export default {
             password_invalid: 'Mật khẩu không chính xác',
             wrong5_block: 'Bạn đã nhập sai mật khẩu quá 5 lần. Tài khoản này đã bị khóa!',
             acc_blocked: 'Tài khoản đã bị khóa',
-            acc_have_not_role: 'Tài khoản chưa được phân quyền'
+            acc_have_not_role: 'Tài khoản chưa được phân quyền',
+            reset_password_success: 'Reset mật khẩu thành công!',
+            reset_password_faile: 'Reset mật khẩu thất bại!'
         },
         auth: {
+            security: {
+                label: 'Bảo mật',
+                title: 'Thay đổi mật khẩu người dùng',
+                old_password: 'Mật khẩu cũ',
+                new_password: 'Mật khẩu mới',
+                confirm_password: 'Xác thực mật khẩu'
+            },
             login: 'Đăng nhập',
             logout: 'Đăng xuất',
             logout_all_account: 'Đăng xuất khỏi tất cả các thiết bị',
             profile: {
-                title: 'Thông tin tài khoản',
+                label: 'Thông tin',
+                title: 'Thông tin tài khoản người dùng',
                 name: 'Tên người dùng',
                 email: 'Địa chỉ email',
                 password: 'Mật khẩu mới',
@@ -44,6 +54,7 @@ export default {
             no: 'KHÔNG',
             no_data: 'Không có dữ liệu',
             field_invalid: "Giá trị trường nhập vào không hợp lệ. Vui lòng kiểm tra lại!",
+            loading: 'Đang tải dữ liệu ...'
         },
 
         form: {
@@ -112,7 +123,7 @@ export default {
             manage_department: 'Quản lý cơ cấu tổ chức',
             manage_user: 'Quản lý người dùng',
             manage_role: 'Quản lý phân quyền',
-            manage_page: 'Quản lý trang',
+            manage_link: 'Quản lý trang',
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
 
@@ -243,7 +254,7 @@ export default {
             roles: 'Phân quyền được cấp'
         },
 
-        manage_page: {
+        manage_link: {
             add: 'Thêm',
             add_title: 'Thêm link mới cho trang web',
             url: 'Đường link của trang web',
@@ -257,6 +268,7 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
+            all: 'Tất cả'
         },
 
         manage_component: {

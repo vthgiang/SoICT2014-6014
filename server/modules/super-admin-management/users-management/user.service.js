@@ -72,6 +72,8 @@ exports.create = async (data, company) => {
                 '</ul>' + 
                 `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
     }
+    var checkUser = await User.findOne({ email: data.email });
+    if(checkUser !== null) throw({msg: 'email_does_not_exit'});
     var user = await User.create({
         name: data.name,
         email: data.email,
@@ -154,7 +156,7 @@ exports.searchByName = async (companyId, name) => {
     return user;
 }
 
-//lấy user trong phòng ban
+//lấy user trong một phòng ban
 exports.getUsersOfDepartment = async (departmentId) => {
     const department = await Department.findById(departmentId); //lấy thông tin phòng ban hiện tại
     const roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của phòng ban vào 1 arr
@@ -165,7 +167,9 @@ exports.getUsersOfDepartment = async (departmentId) => {
     return users.map(user => user.userId); //mảng id của các users trong phòng ban này
 }
 
-//lấy tất cả các user cùng phòng ban với user hiện tại
+/* lấy tất cả các user cùng phòng ban với user hiện tại
+ * do user có thể thuộc về nhiều phòng ban, nên phòng ban được xét sẽ lấy theo id role hiện tại của user
+*/
 exports.getUsersSameDepartment = async(req, res) => {
     console.log("get user of department");
     try {

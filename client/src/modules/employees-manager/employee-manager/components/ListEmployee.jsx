@@ -24,7 +24,6 @@ class ListEmployee extends Component {
             limit: 5,
 
         }
-        this.handleResizeColumn();
         this.setLimit = this.setLimit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
@@ -43,35 +42,6 @@ class ListEmployee extends Component {
         script1.defer = true;
         document.body.appendChild(script1);
 
-    }
-
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
 
     displayTreeSelect = (data, i) => {
@@ -217,7 +187,7 @@ class ListEmployee extends Component {
                                 </div>
                             </div>
                             <div className="col-md-12">
-                                <table className="table table-striped table-bordered" id="myTable" >
+                                <table className="table table-striped table-bordered table-hover" id="myTable" >
                                     <thead>
                                         <tr>
                                             <th style={{ width: "15%" }}>Mã nhân viên</th>
@@ -275,17 +245,7 @@ class ListEmployee extends Component {
                                             )
                                             )}
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Mã nhân viên</th>
-                                            <th>Họ và tên</th>
-                                            <th>Giới tính</th>
-                                            <th>Ngày sinh</th>
-                                            <th>Chức vụ</th>
-                                            <th>Đơn vị</th>
-                                            <th>Hành động</th>
-                                        </tr>
-                                    </tfoot>
+                                    
                                 </table>
                                 <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                             </div>
