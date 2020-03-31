@@ -19,6 +19,7 @@ export function auth(state = initState, action) {
         case AuthConstants.EDIT_PROFILE_REQUEST:
         case AuthConstants.CHANGE_USER_INFORMATION_REQUEST:
         case AuthConstants.CHANGE_USER_PASSWORD_REQUEST:
+        case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST:
             return {
                 ...state,
                 isLoading: true,

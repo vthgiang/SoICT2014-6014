@@ -146,6 +146,7 @@ function resetPassword(otp, email, password) {
 
 function getComponentOfUserInLink(currentRole, linkId) {
     const requestOptions = {
+        // url: `${ LOCAL_SERVER_API }/auth/role/${currentRole}/link/${linkId}`,
         url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
         method: 'GET',
         headers: AuthenticateHeader()
