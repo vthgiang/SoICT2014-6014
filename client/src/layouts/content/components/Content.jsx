@@ -5,6 +5,8 @@ import Alert from '../../../modules/alert/components';
 
 import { Loading } from '../../../common-components';
 
+import './Content.css'
+
 class Content extends Component {
     constructor(props) {
         super(props);
@@ -132,7 +134,7 @@ class Content extends Component {
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
-                        <h1> {pageName} { isLoading && <Loading/> } </h1>
+                        <h1> {pageName} &nbsp; { isLoading && <Loading/> } </h1>
                         
                         <ol className="breadcrumb">
                             {

@@ -40,11 +40,12 @@ class LinkInfoForm extends Component {
     }
 
     render() { 
-        var { translate, role, linkId, linkName, linkDescription, linkRoles } = this.props;
+        var { translate, role, linkId, linkName, linkDescription, linkRoles, link } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_link.edit')}/>
                 <ModalDialog
+                    isLoading={link.isLoading}
                     size='50' func={this.save} type="edit"
                     modalID={`modal-edit-page-${linkId}`}
                     formID={`form-edit-page-${linkId}`}
