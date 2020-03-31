@@ -431,7 +431,7 @@ class ModalAddTaskTemplate extends Component {
         
     }
 
-    //
+    //function: show selection input
     showSelection = () => { 
         if(this.typeInfo.value === 'Selection'){
             this.setState(state => {
