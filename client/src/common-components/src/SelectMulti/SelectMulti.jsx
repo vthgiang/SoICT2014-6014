@@ -29,7 +29,7 @@ class SelectMulti extends Component {
                 <div className="selectmulti">
                     <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={selectAllByDefault?items.map(item => item.value):[]}>
                         {items.map(item => {
-                            return <option value={item.value}>{item.text}</option>
+                            return <option key={item.value} value={item.value}>{item.text}</option>
                         })}
                     </select>
                 </div>
