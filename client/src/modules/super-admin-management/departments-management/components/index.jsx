@@ -17,11 +17,6 @@ class ManageDepartment extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-        let script2 = document.createElement('script');
-        script2.src = '/lib/main/js/defindMultiSelect.js';
-        script2.async = true;
-        script2.defer = true;
-        document.body.appendChild(script2);
     }
 
     render() { 
