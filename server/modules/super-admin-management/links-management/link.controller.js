@@ -1,109 +1,158 @@
 const LinkService = require('./link.service');
-const { Log } = require('../../../logs');
+const { LogInfo, LogError } = require('../../../logs');
 
 exports.get = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'GET LINKS');
     try {
         var links = await LinkService.get(req.user.company._id);
         
-        isLog && Logger.info(req.user.email);
-        res.status(200).json(links);
+        await LogInfo(req.user.email, 'GET_LINKS', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'get_links_success',
+            content: links
+        });
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
-        res.status(400).json(error);
+        await LogError(req.user.email, 'GET_LINKS', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'get_links_faile',
+            content: error
+        });
     }
 };
 
 exports.getPaginate = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'GET PAGINATE LINKS');
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
         var links = await LinkService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
 
-        isLog && Logger.info(req.user.email);
-        res.status(200).json(links);
+        await LogInfo(req.user.email, 'PAGINATE_LINKS', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'paginate_links_success',
+            content: links
+        });
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
-        res.status(400).json(error);
+        await LogError(req.user.email, 'PAGINATE_LINKS', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'paginate_links_faile',
+            content: error
+        });
     }
 };
 
 exports.create = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'CREATE LINK');
     try {
         var createLink = await LinkService.create(req.body, req.user.company._id);
         await LinkService.relationshipLinkRole(createLink._id, req.body.roles);
         var link = await LinkService.getById(createLink._id);
 
-        isLog && Logger.info(req.user.email);
-        res.status(200).json(link);
+        await LogInfo(req.user.email, 'CREATE_LINK', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'create_link_success',
+            content: link
+        });
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
-        res.status(400).json(error);
+        await LogError(req.user.email, 'CREATE_LINK', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'create_link_faile',
+            content: error
+        });
     }
 };
 
 exports.show = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'SHOW LINK');
     try {
         var link = await LinkService.getById(req.params.id);
         
-        isLog && Logger.info(req.user.email);
-        res.status(200).json(link);
+        await LogInfo(req.user.email, 'SHOW_LINK', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'show_link_success',
+            content: link
+        });
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
-        res.status(400).json(error);
+        await LogError(req.user.email, 'SHOW_LINK', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'show_link_faile',
+            content: error
+        });
     }
 };
 
 exports.edit = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'EDIT LINK');
     try {
         await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
         var link = await LinkService.edit(req.params.id, req.body);
         var data = await LinkService.getById(link._id);
         
-        isLog && Logger.info(req.user.email);
-        res.status(200).json(data);
+        await LogInfo(req.user.email, 'EDIT_LINK', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'edit_link_success',
+            content: data
+        });
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
-        res.status(400).json(error);
+        await LogError(req.user.email, 'EDIT_LINK', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'edit_link_faile',
+            content: error
+        });
     }
 };
 
 exports.delete = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'DELETE LINK');
     try {
         var link = await LinkService.delete(req.params.id );
         
-        isLog && Logger.info(req.user.email);
-        res.status(200).json(link);
+        await LogInfo(req.user.email, 'DELETE_LINK', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'delete_link_success',
+            content: link
+        });
     } catch (error) {
         
-        isLog && Logger.error(req.user.email);
-        res.status(400).json(error);
+        await LogError(req.user.email, 'DELETE_LINK', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'delete_link_faile',
+            content: error
+        });
     }
 };
 
 
 /* ------manage links of 1 company ------------------*/
 exports.getLinksOfCompany = async (req, res) => {
-    const Logger = await Log(req.user.company.short_name, 'GET LINK OF COMPANY');
     try {
         var links = await LinkService.getLinksOfCompany(req.user.company._id);
 
-        isLog && Logger.info(req.user.email);
-        res.status(200).json(links);
+        await LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'get_links_of_company_success',
+            content: links
+        });
     } catch (error) {
 
-        isLog && Logger.error(req.user.email);
-        res.status(400).json(error);
+        await LogError(req.user.email, 'GET_LINKS_OF_COMPANY', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'get_links_of_company_faile',
+            content: error
+        });
     }
 }

@@ -73,7 +73,7 @@ exports.create = async (data, company) => {
                 '</ul>' + 
                 `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
     }
-    var checkUser = await User.findOne({ email: data.email });
+    var checkUser = await User.findOne({ email: data.email, company});
     if(checkUser !== null) throw({message: 'email_exist'}); // Email đã được sử dụng
     var user = await User.create({
         name: data.name,

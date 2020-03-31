@@ -48,7 +48,7 @@ exports.getById = async (company, roleId) => {
 
 exports.create = async(data, companyID) => {
     var roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
-    var check = await Role.findOne({name: data.name});
+    var check = await Role.findOne({name: data.name, company: companyID});
     if(check !== null) throw({message: 'role_name_exist'});
     var role = await Role.create({
         name: data.name,
@@ -62,7 +62,7 @@ exports.create = async(data, companyID) => {
 
 exports.createAbstract = async(data, companyID) => {
     var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
-    const check = await Role.findOne({name: data.name}); 
+    const check = await Role.findOne({name: data.name, company: companyID}); 
     if(check !== null) throw ({message: 'role_name_exist'});
     const role = await Role.create({
         name: data.name,
@@ -75,9 +75,9 @@ exports.createAbstract = async(data, companyID) => {
 }
 
 exports.crt_rolesOfDepartment = async(data, companyID) => {
-    var checkDean = await Role.findOne({name: data.dean }); if(checkDean !== null) throw ({message: 'role_dean_exist'});
-    var checkViceDean = await Role.findOne({name: data.dean }); if(checkViceDean !== null) throw ({message: 'role_vice_dean_exist'});
-    var checkEmployee = await Role.findOne({name: data.dean }); if(checkEmployee !== null) throw ({message: 'role_employee_exist'});
+    var checkDean = await Role.findOne({name: data.dean, company: companyID }); if(checkDean !== null) throw ({message: 'role_dean_exist'});
+    var checkViceDean = await Role.findOne({name: data.dean, company: companyID}); if(checkViceDean !== null) throw ({message: 'role_vice_dean_exist'});
+    var checkEmployee = await Role.findOne({name: data.dean, company: companyID }); if(checkEmployee !== null) throw ({message: 'role_employee_exist'});
 
     var roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
     var deanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.DEAN.NAME }); //lấy role dean abstract
