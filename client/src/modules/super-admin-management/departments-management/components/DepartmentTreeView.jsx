@@ -174,13 +174,6 @@ class DepartmentTreeView extends Component {
         }
         else return null
     }
-    componentDidMount() {
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/defindMultiSelect.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
 }
  
 const mapState = state => state;

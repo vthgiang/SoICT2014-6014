@@ -32,7 +32,6 @@ class TabTaskContent extends Component {
             this.props.getInformedTaskByUser( "[]", 1, 20, "[]", "[]", "[]", null);
         }
         this.defindMultiSelect();
-        this.loadJS();
         this.handleResizeColumn();
     }
 
@@ -42,13 +41,6 @@ class TabTaskContent extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-    }
-    loadJS = () => {
-        let script1 = document.createElement('script');
-        script1.src = '../lib/main/js/defindMultiSelect.js';//fix /lib/...
-        script1.async = true;
-        script1.defer = true;
-        document.body.appendChild(script1);
     }
     handleResizeColumn = () => {
         window.$(function () {
