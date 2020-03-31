@@ -5,6 +5,8 @@ import './modal.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import {Loading} from '../Loading/Loading';
+
 class ModalDialog extends Component {
     constructor(props) {
         super(props);
@@ -61,7 +63,7 @@ class ModalDialog extends Component {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={this.closeModal}>&times;</button>
-                                <h4 className="modal-title text-center">{this.props.title}</h4>
+                                <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
                             <div className="modal-body text-left">
                                 {this.props.children}

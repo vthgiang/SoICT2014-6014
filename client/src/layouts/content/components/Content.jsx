@@ -134,7 +134,7 @@ class Content extends Component {
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
-                        <h1> {pageName} { isLoading && <Loading/> } </h1>
+                        <h1> {pageName} &nbsp; { isLoading && <Loading/> } </h1>
                         
                         <ol className="breadcrumb">
                             {
