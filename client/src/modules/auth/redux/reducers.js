@@ -45,7 +45,7 @@ export function auth(state = initState, action) {
                     roles: null,
                     company: null
                 },
-                error: action.payload.msg
+                error: action.payload.message
             };
 
         case AuthConstants.EDIT_PROFILE_SUCCESS:
@@ -116,6 +116,6 @@ export function auth(state = initState, action) {
             }
 
         default:
-            return state;
+            return {...state};
     }
 }

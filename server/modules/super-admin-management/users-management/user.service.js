@@ -3,8 +3,8 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 
-//lay danh sach thong tin tat ca nguoi dung trong cong ty
-exports.get = async (company) => { //id cua cong ty do
+// Lấy tất cả các user trong 1 công ty
+exports.get = async (company) => {
     const users = await User
         .find({ company })
         .select('-password -status -delete_soft -token')
@@ -40,6 +40,7 @@ exports.getById = async (id) => { //tim user theo id
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
+    if(user === null) throw ({ message: 'user_not_found'});
     
     return user;
 }
@@ -73,7 +74,7 @@ exports.create = async (data, company) => {
                 `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
     }
     var checkUser = await User.findOne({ email: data.email });
-    if(checkUser !== null) throw({msg: 'email_does_not_exit'});
+    if(checkUser !== null) throw({message: 'email_exist'}); // Email đã được sử dụng
     var user = await User.create({
         name: data.name,
         email: data.email,
@@ -93,7 +94,7 @@ exports.edit = async (id, data) => {
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    
+    if(user === null) throw ({ message: 'user_not_found'}); //Không tìm thấy dữ liệu về user với id 
     user.name = data.name;
     if(data.password !== undefined && data.password !== null){
         var salt = bcrypt.genSaltSync(10);
@@ -128,7 +129,7 @@ exports.addRolesForUser = async (userId, roleIdArr) => {
 }
 
 exports.editRolesForUser = async (userId, roleIdArr) => { 
-    await UserRole.delete({userId});
+    await UserRole.deleteMany({userId});
     var data = await roleIdArr.map( roleId => {
         return {
             userId,
@@ -138,22 +139,6 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
     var relationship = await UserRole.insertMany(data);
     
     return relationship;
-}
-
-//search user with name
-exports.searchByName = async (companyId, name) => {
-    var user = await User
-        .find({
-            company: companyId,
-            name: new RegExp(name, "i")
-        })
-        .select('-password -status -delete_soft')
-        .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
-            { path: 'company' }
-        ]);
-    
-    return user;
 }
 
 //lấy user trong một phòng ban
@@ -170,26 +155,20 @@ exports.getUsersOfDepartment = async (departmentId) => {
 /* lấy tất cả các user cùng phòng ban với user hiện tại
  * do user có thể thuộc về nhiều phòng ban, nên phòng ban được xét sẽ lấy theo id role hiện tại của user
 */
-exports.getUsersSameDepartment = async(req, res) => {
-    console.log("get user of department");
-    try {
-        const id_role = req.params.id; //lấy id role hiện tại của user
-        var department = await Department.findOne({ 
-            $or:[
-                {'dean': id_role}, 
-                {'vice_dean': id_role}, 
-                {'employee': id_role}
-            ]  
-        });
-        
-        var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
-        var vice_dean = await UserRole.findOne({ roleId: department.vice_dean}).populate('userId roleId');
-        var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');
-        var users = [];
-        users = users.concat(dean, vice_dean, employee);
+exports.getUsersSameDepartment = async(id_role) => {
+    var department = await Department.findOne({ 
+        $or:[
+            {'dean': id_role}, 
+            {'vice_dean': id_role}, 
+            {'employee': id_role}
+        ]  
+    });
+    if(department === null) throw({message: 'department_not_found'});
+    var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
+    var vice_dean = await UserRole.findOne({ roleId: department.vice_dean}).populate('userId roleId');
+    var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');
+    var users = [];
+    users = users.concat(dean, vice_dean, employee);
 
-        res.status(200).json(users); //tra ve list cac user theo 3 chuc danh cua phong ban
-    } catch (error) {
-        res.status(400).json({msg: error});
-    }
+    return users;
 }

@@ -95,7 +95,7 @@ function changePassword(data) {
 
 async function getLinksOfRole(idRole) {
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/privilege/get-links-of-role/${idRole}`,
+        url: `${ LOCAL_SERVER_API }/auth/get-links-of-role/${idRole}`,
         method: 'GET',
         headers: await AuthenticateHeader()
     };
@@ -110,7 +110,7 @@ async function refresh() {
     console.log("verified: ", verified)
     
     const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/user/${id}`,
+        url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
         method: 'GET',
         headers: await AuthenticateHeader()
     };

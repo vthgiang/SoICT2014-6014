@@ -106,7 +106,7 @@ exports.getDepartmentOfUser = async (req, res) => {
         res.status(200).json(departments);
     } catch (error) {
 
-        res.status(400).json({msg: error});
+        res.status(400).json({message: error});
     }
 }
 
@@ -139,6 +139,6 @@ exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
         res.status(200).json(department);
     } catch (error) {
 
-        res.status(400).json({msg: error});
+        res.status(400).json({message: error});
     }
 }
