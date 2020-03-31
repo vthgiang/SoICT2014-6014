@@ -115,6 +115,10 @@ class Content extends Component {
         });
     }
 
+    componentDidUpdate() {
+        this.handleResizeColumn();
+    }
+
     render() {
         const { translate, pageName, arrPage, isLoading } = this.props;
         return (
