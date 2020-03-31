@@ -14,18 +14,16 @@ class SelectMulti extends Component {
         script.defer = true;
         document.body.appendChild(script);
 
-        const { nonSelectedText, allSelectedText } = this.props;
+        const { nonSelectedText, allSelectedText, id } = this.props;
 
-        window.$(document).ready(function () {
-            window.$('#multiSelectUnit').multiselect({
-                //   includeSelectAllOption : true,
-                nonSelectedText: nonSelectedText,
-                allSelectedText: allSelectedText
-            });
+        window.$("#" + id).multiselect({
+            nonSelectedText: nonSelectedText,
+            allSelectedText: allSelectedText
         });
     }
     render() { 
         const { id, items, selectAllByDefault } = this.props;
+        console.log(items);
         return ( 
             <React.Fragment>
                 <div className="selectmulti">
