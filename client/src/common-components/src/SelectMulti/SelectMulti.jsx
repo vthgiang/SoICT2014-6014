@@ -25,13 +25,13 @@ class SelectMulti extends Component {
         });
     }
     render() { 
-        const { id, items } = this.props;
+        const { id, items, selectAllByDefault } = this.props;
         return ( 
             <React.Fragment>
                 <div className="selectmulti">
-                    <select className="form-control" style ={{display: "none"}}id={id} multiple="multiple" defaultValue={items.map(item => item._id)}>
+                    <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={selectAllByDefault?items.map(item => item.value):[]}>
                         {items.map(item => {
-                            return <option key={item._id} value={item._id}>{item.name}</option>
+                            return <option value={item.value}>{item.text}</option>
                         })}
                     </select>
                 </div>

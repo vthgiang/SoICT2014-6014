@@ -301,8 +301,8 @@ class TaskTemplate extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className = "form-control-static">{translate('task_template.unit')}:</label>
-                            {units && <SelectMulti id="multiSelectUnit" items={units} 
-                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả đơn vị"></SelectMulti>}
+                            {units && <SelectMulti id="multiSelectUnit" selectAllByDefault={true} items={units.map(item => {return {value: item._id, text: item.name}})} 
+                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả các đơn vị"></SelectMulti>}
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
@@ -323,14 +323,15 @@ class TaskTemplate extends Component {
                                         <span className="pop-arw arwTop L-auto" style={{ right: "13px" }}></span>
                                         <div className="col-xs-12">
                                             <label style={{ marginRight: "15px" }}>Ẩn cột:</label>
-                                            <select id="multiSelectShowColumn" multiple="multiple">
-                                                <option value="1">Tên mẫu</option>
-                                                <option value="2">Mô tả</option>
-                                                <option value="3">Số lần sử dụng</option>
-                                                <option value="4">Người tạo</option>
-                                                <option value="5">Đơn vị</option>
-                                                <option value="6">Hoạt động</option>
-                                            </select>
+                                            <SelectMulti id="multiSelectUnit" items={[
+                                                {value: "1", text: "Tên mẫu"},
+                                                {value: "2", text: "Mô tả"},
+                                                {value: "3", text: "Số lần sử dụng"},
+                                                {value: "4", text: "Người tạo"},
+                                                {value: "5", text: "Đơn vị"},
+                                                {value: "6", text: "Hoạt động"},
+                                            ]} 
+                                            nonSelectedText = "Chọn cột muốn ẩn" allSelectedText= "Tất cả các cột"></SelectMulti>}
                                         </div>
                                         <div className="col-xs-12" style={{ marginTop: "10px" }}>
                                             <label style={{ marginRight: "15px" }}>Số dòng/trang:</label>
