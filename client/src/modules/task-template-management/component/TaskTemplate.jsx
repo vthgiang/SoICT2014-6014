@@ -17,7 +17,7 @@ class TaskTemplate extends Component {
     componentDidMount() {
         this.props.getDepartment();
         //edit later
-        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]");
+        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
         this.loadJSMultiSelect();
     }
     constructor(props) {
@@ -53,7 +53,7 @@ class TaskTemplate extends Component {
                     currentPage: 1
                 }
             })
-            this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]");
+            this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", this.name.value);
         }
     }
     // handleAction = (id) => {
@@ -110,7 +110,7 @@ class TaskTemplate extends Component {
         var test = window.$("#multiSelectUnit").val();
         var oldCurrentPage = this.state.currentPage;
         await this.updateCurrentPage(index);
-        if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test);
+        if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test, this.name.value);
     }
     nextPage = async (pageTotal) => {
         var test = window.$("#multiSelectUnit").val();
@@ -123,7 +123,7 @@ class TaskTemplate extends Component {
         })
         var newCurrentPage = this.state.currentPage;
         
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
+        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
     }
 
     // Quay lai trang truoc
@@ -137,13 +137,12 @@ class TaskTemplate extends Component {
             }
         })
         var newCurrentPage = this.state.currentPage;  
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
+        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
     }
 
     handleUpdateData = () => {
         var test = window.$("#multiSelectUnit").val();
-        var name=this.name.value;
-        this.props.getTaskTemplateByUser( 1, this.state.perPage, test,name);
+        this.props.getTaskTemplateByUser( 1, this.state.perPage, test, this.name.value);
                 this.setState(state => {
                     return {
                         ...state,
@@ -195,7 +194,7 @@ class TaskTemplate extends Component {
                     this.props._delete(id);
 
                     var test = window.$("#multiSelectUnit").val();
-                    this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
+                    this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, "");
                 }
             });
         } else { 
