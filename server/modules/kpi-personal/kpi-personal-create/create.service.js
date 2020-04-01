@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
             listtarget: []
         });
         // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
-        var kpiUnit = await KPIUnit.findOne({ unit: req.body.unit, status: 0 }).populate("listtarget");//status = 1 là kpi đã đc phê duyệt
+        var kpiUnit = await KPIUnit.findOne({ unit: req.body.unit, status: 1 }).populate("listtarget");//status = 1 là kpi đã đc phê duyệt
         //lỗi ở dòng tr3n k tim dc thang kpiunit do bon minh chua co db nen chua phe duyet ben kia dc. h muon chay dc thi sua thah 0
         var defaultKPIUnit;
         if (kpiUnit.listtarget) defaultKPIUnit = kpiUnit.listtarget.filter(item => item.default !== 0);
