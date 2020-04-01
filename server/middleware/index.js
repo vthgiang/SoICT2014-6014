@@ -97,7 +97,8 @@ exports.auth = async (req, res, next) => {
              * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
              */
 
-            var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+            //var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+            var url = req.header('current-page');
             // console.log("trang web hiện tại người dùng đang truy cập: ", url);
             // console.log("ROLE NAME:", role.name, req.user.company._id);
             const link = role.name !== 'System Admin' ?

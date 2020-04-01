@@ -41,6 +41,7 @@ export const AuthenticateHeaderPATCH = (name='jwt') => {
     const currentRole = getStorage('currentRole');
     const fingerprint = getBrowserFingerprint();
     return {
+        'current-page': window.location.pathname,
         'auth-token': token,
         'current-role': currentRole,
         'fingerprint': fingerprint,

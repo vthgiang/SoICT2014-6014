@@ -81,28 +81,15 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
                 path: 'resourceId', 
                 model: TaskTemplate, 
                 match: { unit: { $in: unit.split(",") }},
+                match: { name: { "$regex": name, "$options": "i" }},
                 populate: { path: 'creator unit' } 
             });
-            var task=[];
-            var len = tasktemplates.length;
-            var task_len=0;
-            for (var i=0;i<len;i++){
-                if (tasktemplates[i].resourceId.name==name){
-                    task[task_len]=tasktemplates[i];
-                    task_len++;
-                }
-            }
-            tasktemplates=task;
         }
-        
-        if (tasktemplates[0].resourceId.name==name){
-            var totalCount = task_len;
-        }else{
-            var totalCount = await Privilege.count({
-                role: { $in: allRole },
-                resource_type: 'TaskTemplate'
-            });
-        }
+        console.log(tasktemplates)
+        var totalCount = await Privilege.count({
+            role: { $in: allRole },
+            resource_type: 'TaskTemplate'
+        });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
 
         return ({"message" : tasktemplates,"pages": totalPages});
