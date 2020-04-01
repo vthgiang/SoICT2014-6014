@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CourseActions } from '../../training-plan/redux/actions';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { PaginateBarModal } from './PaginateBarModal';
 class ModalDetailEducation extends Component {
     constructor(props) {
         super(props);
@@ -37,19 +37,20 @@ class ModalDetailEducation extends Component {
     render() {
         var { data } = this.props;
         var { listCourse } = data;
-        var pageTotal =data.totalList;
+        var totalList =data.totalList;
         var { courseByEducation } = this.props.course;
         if (courseByEducation._id !== undefined && courseByEducation._id === data._id) {
             listCourse = courseByEducation.allList
+            totalList = courseByEducation.totalList
         }
-        // var pageTotal = (listcourse.totalList % this.state.limit === 0) ?
-        //     parseInt(listcourse.totalList / this.state.limit) :
-        //     parseInt((listcourse.totalList / this.state.limit) + 1);
+        var pageTotal = (totalList % this.state.limit === 0) ?
+            parseInt(totalList / this.state.limit) :
+            parseInt((totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-viewEducation-${data.numberEducation}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">view_list</i></a>
-                <div className="modal modal-full fade" id={`modal-viewEducation-${data.numberEducation}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <a href={`#modal-viewEducation-${data._id}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <div className="modal modal-full fade" id={`modal-viewEducation-${data._id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-size-75">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -117,7 +118,7 @@ class ModalDetailEducation extends Component {
                                             }
                                         </tbody>
                                     </table>
-                                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                                    <PaginateBarModal  pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} _id={data._id} />
                                 </div>
                             </div>
                             <div className="modal-footer">
