@@ -1159,23 +1159,23 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
-    var educationProgram = await EducationProgram.insertMany([{
+    await EducationProgram.insertMany([{
         company:xyz._id,
         unitEducation: [
-            "Phòng Kinh doanh"
+            departments[0]._id
         ],
         positionEducation: [
-            "Trưởng phòng"
+            nvPhongHC._id
         ],
         nameEducation: "An toan lao dong",
         numberEducation: "M123",
     }, {
         company:xyz._id,
         unitEducation: [
-            "Phòng Kinh doanh"
+            departments[0]._id
         ],
         positionEducation: [
-            "Trưởng phòng"
+            nvPhongHC._id
         ],
         nameEducation: "kỹ năng giao tiếp",
         numberEducation: "M1234",

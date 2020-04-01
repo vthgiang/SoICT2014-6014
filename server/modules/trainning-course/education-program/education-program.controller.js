@@ -1,6 +1,23 @@
 const EducationProgramService = require('./education-program.service');
 const { LogInfo, LogError } = require('../../../logs');
 
+// Lấy danh sách tất cả các chương trình đào tạo
+exports.getAll = async (req, res) => {
+    try {
+        var allList = await EducationProgramService.getAll(req.user.company._id);
+        await LogInfo(req.user.email, 'GET_ALL_EDUCATIONPROGRAM', req.user.company);
+        res.status(200).json({
+            message: "success",
+            content: allList
+        });
+    } catch (error) {
+        await LogError(req.user.email, 'GET_ALL_EDUCATIONPROGRAM', req.user.company);
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
 // get all list educationProgram
 exports.get = async (req, res) => {
     try {

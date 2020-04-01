@@ -20,7 +20,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.GETALL_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.ADDEMPLOYEE_REQUEST:
             return {
@@ -35,7 +36,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.ADDEMPLOYEE_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST:
             return {
@@ -50,7 +52,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.UPLOAD_AVATAR_REQUEST:
             return {
@@ -65,7 +68,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.UPLOAD_AVATAR_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.UPDATE_CONTRACT_REQUEST:
             return {
@@ -80,7 +84,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.UPDATE_CONTRACT_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
 
         case EmployeeConstants.UPDATE_CERTIFICATE_REQUEST:
@@ -96,7 +101,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.UPDATE_CERTIFICATE_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.UPDATE_CERTIFICATESHORT_REQUEST:
             return {
@@ -111,7 +117,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.UPDATE_CERTIFICATESHORT_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.UPDATE_FILE_REQUEST:
             return {
@@ -126,7 +133,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.UPDATE_FILE_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.CHECK_EMPLOYEENUMBER_REQUEST:
             return {
@@ -141,7 +149,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.CHECK_EMPLOYEENUMBER_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EmployeeConstants.CHECK_EMAILCOMPANY_REQUEST:
             return {
@@ -156,7 +165,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.CHECK_EMAILCOMPANY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
 
         case EmployeeConstants.DELETE_EMPLOYEE_REQUEST:
@@ -173,6 +183,7 @@ export function employeesManager(state = initState, action) {
         case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
 
         case EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_REQUEST:
@@ -188,7 +199,8 @@ export function employeesManager(state = initState, action) {
             };
         case EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         default:
             return state

@@ -6,10 +6,22 @@ import {
     AuthenticateHeader
 } from '../../../../config';
 export const EducationService = {
+    getAll,
     getListEducation,
     createNewEducation,
     deleteEducation,
     updateEducation,
+}
+
+// Lấy danh sách tất cả các chương trình đào tạo 
+function getAll() {
+    const requestOptions = {
+        method: 'GET',
+        headers: AuthenticateHeader(),
+    };
+
+    return fetch(`${ LOCAL_SERVER_API }/educationProgram/`, requestOptions).then(handleResponse);
+
 }
 
 // Lấy danh sách các chương trình đào tạo 

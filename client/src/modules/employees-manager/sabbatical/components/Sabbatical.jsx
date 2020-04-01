@@ -24,8 +24,6 @@ class Sabbatical extends Component {
             limit: 5,
 
         }
-        this.setLimit = this.setLimit.bind(this);
-        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
 

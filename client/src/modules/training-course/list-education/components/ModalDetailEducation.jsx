@@ -1,21 +1,30 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { CourseActions } from '../../training-plan/redux/actions';
 class ModalDetailEducation extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            numberCourse: "",
+            typeCourse: "All",
+            page: 0,
+            limit: 5,
+        }
     }
     render() {
         var { data } = this.props;
+        var { listCourse } = data;
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-viewEducation-${data.numberEducation}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">view_list</i></a>
                 <div className="modal modal-full fade" id={`modal-viewEducation-${data.numberEducation}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div className="modal-dialog-full">
+                    <div className="modal-dialog modal-size-75">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">Chi tiết chương trình đào tạo: {data.nameEducation + "-" + data.numberEducation}</h4>
+                                <h4 style={{textAlign:"center"}} className="modal-title">Chi tiết chương trình đào tạo: {data.nameEducation + "-" + data.numberEducation}</h4>
                             </div>
                             <div className="modal-body" style={{ paddingTop: 0 }}>
                                 <div className="col-md-12">
@@ -46,54 +55,30 @@ class ModalDetailEducation extends Component {
                                     <table id="listexample" className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th style={{ width: "20%" }}>Tên khoá đào tạo</th>
                                                 <th title="Mã khoá đào tạo" style={{ width: "14%" }}>Mã khoá đào tạo</th>
+                                                <th style={{ width: "20%" }}>Tên khoá đào tạo</th>
                                                 <th title="Thời gian bắt đầu">Bắt đầu</th>
                                                 <th title="Thời gian kết thúc">Kết thúc</th>
-                                                <th title="Địa điểm đào tạo">Địa điểm</th>
+                                                <th title="Địa điểm đào tạo">Địa điểm đào tạo</th>
                                                 <th style={{ width: "20%" }}>Đơn vị đào tạo</th>
                                                 <th style={{ width: "12%" }}>Loại đào tạo</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>An toàn lao động 2019</td>
-                                                <td>10987</td>
-                                                <td>5/5/2018</td>
-                                                <td>9/10/2018</td>
-                                                <td>P-901</td>
-                                                <td>Công ty an toan thong tin va truyen thong Viet Nam</td>
-                                                <td>Đào tạo nội bộ</td>
-                                            </tr>
-                                            <tr>
-                                                <td>An toàn lao động 2018</td>
-                                                <td>10987</td>
-                                                <td>06/5/2019</td>
-                                                <td>20/11/2019</td>
-                                                <td>P-901</td>
-                                                <td>Công ty an toan thong tin va truyen thong Viet Nam</td>
-                                                <td>Đào tạo nội bộ</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>An toàn lao động 2017</td>
-                                                <td>10987</td>
-                                                <td>06/5/2019</td>
-                                                <td>20/11/2019</td>
-                                                <td>P-901</td>
-                                                <td>Công ty an toan thong tin va truyen thong Viet Nam</td>
-                                                <td>Đào tạo nội bộ</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>An toàn lao động 2016</td>
-                                                <td>10987</td>
-                                                <td>06/5/2019</td>
-                                                <td>20/11/2019</td>
-                                                <td>P-901</td>
-                                                <td>Công ty an toan thong tin va truyen thong Viet Nam</td>
-                                                <td>Đào tạo nội bộ</td>
-                                            </tr>
+                                            {
+                                                (listCourse.length === 0 || listCourse === []) ?<tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                                                    listCourse.map((x, index) => (
+                                                        <tr key={index}>
+                                                            <td>{x.numberCourse}</td>
+                                                            <td>{x.nameCourse}</td>
+                                                            <td>{x.startDate}</td>
+                                                            <td>{x.endDate}</td>
+                                                            <td>{x.address}</td>
+                                                            <td>{x.unitCourse}</td>
+                                                            <td>{x.typeCourse}</td>
+                                                        </tr>
+                                                    ))
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -110,14 +95,14 @@ class ModalDetailEducation extends Component {
     }
 };
 
-// function mapState(state) {
-//     const { listEducation } = state;
-//     return { listEducation };
-// };
+function mapState(state) {
+    const { course } = state;
+    return { course };
+};
 
-// const actionCreators = {
-//     addNewEducation: EducationActions.createNewEducation,
-// };
+const actionCreators = {
+    getCourseByEducation: CourseActions.getCourseByEducation,
+};
 
-// const connectedAddEducation = connect(mapState, actionCreators)(ModalDetailEducation);
-export { ModalDetailEducation };
+const connectedDetailEducation = connect(mapState, actionCreators)(ModalDetailEducation);
+export { connectedDetailEducation as ModalDetailEducation };

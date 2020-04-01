@@ -24,8 +24,6 @@ class SalaryEmployee extends Component {
             limit: 5,
 
         }
-        this.setLimit = this.setLimit.bind(this);
-        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
     }
@@ -238,7 +236,7 @@ class SalaryEmployee extends Component {
                                                             total = total + parseInt(x.bonus[count].number)
                                                         }
                                                     }
-                                                    var unit = x.mainSalary.slice(-3, x.mainSalary.length);
+                                                    var unit = x.mainSalary.slice(x.mainSalary.length - 3, x.mainSalary.length);
                                                     return (
                                                         <tr key={index}>
                                                             <td>{x.employee.employeeNumber}</td>

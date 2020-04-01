@@ -4,6 +4,9 @@ const { auth } = require('../../../middleware');
 
 const EducationProgramController = require("./education-program.controller");
 
+// Lấy danh sách tất cả các chương trình đào tạo
+router.get('/',auth, EducationProgramController.getAll);
+
 // get all list educationProgram
 router.post('/paginate',auth, EducationProgramController.get);
 

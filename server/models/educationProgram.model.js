@@ -24,4 +24,4 @@ const EducationProgramSchema = new Schema({
     }]
 })
 
-module.exports = EducationProgram = mongoose.model("educationsprograms", EducationProgramSchema);
+module.exports = EducationProgram = mongoose.model("educationprograms", EducationProgramSchema);

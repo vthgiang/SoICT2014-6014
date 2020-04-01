@@ -93,7 +93,7 @@ class ModalEditEducation extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title">Chỉnh sửa chương trình đào tạo: {data.nameEducation + "-" + data.numberEducation}</h4>
+                                <h4 style={{textAlign:"center"}} className="modal-title">Chỉnh sửa chương trình đào tạo: {data.nameEducation + "-" + data.numberEducation}</h4>
                             </div>
                             <div className="modal-body">
                                 {/* /.box-header */}

@@ -5,11 +5,45 @@ import {
     EducationService
 } from "./services";
 export const EducationActions = {
+    getAll,
     getListEducation,
     createNewEducation,
     deleteEducation,
     updateEducation,
 };
+
+// lấy danh sách tất cả các chương trình đào tạo bắt buộc
+function getAll() {
+    return dispatch => {
+        dispatch(request());
+        EducationService.getAll()
+            .then(
+                listAll => dispatch(success(listAll)),
+                error => dispatch(failure(error.toString()))
+            );
+    }
+
+    function request() {
+        return {
+            type: EducationConstants.GET_LIST_ALL_EDUCATION_REQUEST,
+        };
+    };
+
+    function success(listAll) {
+        return {
+            type: EducationConstants.GET_LIST_ALL_EDUCATION_SUCCESS,
+            listAll
+        };
+    };
+
+    function failure(error) {
+        return {
+            type: EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE,
+            error
+        };
+    };
+}
+
 
 // lấy danh sách các chương trình đào tạo bắt buộc
 function getListEducation(data) {

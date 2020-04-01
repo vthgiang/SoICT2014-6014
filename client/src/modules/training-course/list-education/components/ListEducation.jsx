@@ -21,9 +21,7 @@ class ListEducation extends Component {
             limit: 5,
 
         };
-        this.setLimit = this.setLimit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-
     }
     componentDidMount() {
         this.props.getListEducation(this.state);
@@ -74,6 +72,14 @@ class ListEducation extends Component {
         window.$(`#setting-table`).collapse("hide");
     }
 
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getListEducation(this.state);
+    }
+
     render() {
         var lists = this.props.education.listEducation;
         const { tree, list } = this.props.department;
@@ -88,6 +94,10 @@ class ListEducation extends Component {
                 ]
             }
         }
+        var pageTotal = (this.props.education.totalList % this.state.limit === 0) ?
+            parseInt(this.props.education.totalList / this.state.limit) :
+            parseInt((this.props.education.totalList / this.state.limit) + 1);
+        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <React.Fragment>
                 <div className="row">
@@ -193,6 +203,7 @@ class ListEducation extends Component {
                                         }
                                     </tbody>
                                 </table>
+                                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                             </div>
                             {/* /.box-body */}
 

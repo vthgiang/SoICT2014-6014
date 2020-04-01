@@ -4,6 +4,23 @@ import {
 
 export function education(state = {}, action) {
     switch (action.type) {
+        case EducationConstants.GET_LIST_ALL_EDUCATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+
+            };
+        case EducationConstants.GET_LIST_ALL_EDUCATION_SUCCESS:
+            return {
+                ...state,
+                listAll: action.listAll.content,
+                    isLoading: false,
+            };
+        case EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false,
+            };
         case EducationConstants.GET_LISTEDUCATION_REQUEST:
             return {
                 ...state,
@@ -14,11 +31,13 @@ export function education(state = {}, action) {
             return {
                 ...state,
                 listEducation: action.listEducation.content.allList,
+                    totalList: action.listEducation.content.totalList,
                     isLoading: false,
             };
         case EducationConstants.GET_LISTEDUCATION_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EducationConstants.CREATE_EDUCATION_REQUEST:
             return {
@@ -36,7 +55,8 @@ export function education(state = {}, action) {
             };
         case EducationConstants.CREATE_EDUCATION_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EducationConstants.DELETE_EDUCATION_REQUEST:
             return {
@@ -51,7 +71,8 @@ export function education(state = {}, action) {
             };
         case EducationConstants.DELETE_EDUCATION_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case EducationConstants.UPDATE_EDUCATION_REQUEST:
             return {
@@ -69,7 +90,8 @@ export function education(state = {}, action) {
             };
         case EducationConstants.UPDATE_EDUCATION_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         default:
             return state

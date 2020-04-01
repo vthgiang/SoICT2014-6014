@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const EducationProgram = require("./EducationProgram.model");
+const EducationProgram = require("./educationProgram.model");
 
 const CourseSchema = new Schema({
     nameCourse: {
@@ -33,7 +33,10 @@ const CourseSchema = new Schema({
     teacherCourse: {
         type: String
     },
-    EducationProgram: {
+    time: {
+        type: String
+    },
+    educationProgram: {
         type: Schema.Types.ObjectId,
         ref: 'educationprograms',
         required: true

@@ -19,8 +19,6 @@ class TabDiscipline extends Component {
             page: 0,
             limit: 5,
         }
-        this.setLimit = this.setLimit.bind(this);
-        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }

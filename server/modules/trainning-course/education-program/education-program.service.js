@@ -1,26 +1,35 @@
 const EducationProgram = require('../../../models/educationProgram.model');
 const Department = require('../../../models/department.model');
+const Course = require('../../../models/course.model');
 const Role = require('../../../models/role.model')
+
+// Lấy danh sách tất cả các chương trình đào tạo
+exports.getAll = async (company) => {
+    return await EducationProgram.find({
+        company: company
+    })
+}
+
 //get list educationProgram
 exports.get = async (data, company) => {
     var keySearch = {
         company: company
     }
     // Bắt sựu kiện đơn vị tìm kiếm khác All 
-    if(data.department!=="All"){
-        keySearch={
+    if (data.department !== "All") {
+        keySearch = {
             ...keySearch,
-            unitEducation:data.department
+            unitEducation: data.department
         }
     }
-    if(data.position!=="All"){
-        keySearch={
+    if (data.position !== "All") {
+        keySearch = {
             ...keySearch,
-            positionEducation:data.position
+            positionEducation: data.position
         }
     }
     var totalList = await EducationProgram.count(keySearch);
-    var allList = await EducationProgram.find(keySearch)
+    var allEducation = await EducationProgram.find(keySearch)
         .skip(data.page).limit(data.limit)
         .populate([{
             path: 'unitEducation',
@@ -29,7 +38,21 @@ exports.get = async (data, company) => {
             path: 'positionEducation',
             model: Role
         }]);
-    var content ={
+    var allList = []
+    for (let n in allEducation) {
+        let total = await Course.count({
+            educationProgram: allEducation[n]._id
+        });
+        let listCourse = await Course.find({
+            educationProgram: allEducation[n]._id
+        }).skip(0).limit(5)
+        allList[n] = {
+            ...allEducation[n]._doc,
+            listCourse: listCourse,
+            totalList: total
+        }
+    }
+    var content = {
         totalList,
         allList
     }
@@ -57,7 +80,6 @@ exports.create = async (data, company) => {
 
 // Delete educationProgram
 exports.delete = async (id) => {
-    console.log(id);
     var educationDelete = await EducationProgram.findOneAndDelete({
         _id: id
     });

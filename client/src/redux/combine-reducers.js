@@ -14,6 +14,7 @@ import { department } from '../modules/super-admin-management/departments-manage
 import {employeesInfo} from '../modules/employees-manager/employee-info/redux/reducers';
 import {employeesManager} from '../modules/employees-manager/employee-manager/redux/reducers';
 import {education} from '../modules/training-course/list-education/redux/reducers';
+import {course} from '../modules/training-course/training-plan/redux/reducers';
 import {salary} from '../modules/employees-manager/salary-employee/redux/reducers';
 import {discipline} from '../modules/employees-manager/discipline/redux/reducers';
 import {sabbatical} from '../modules/employees-manager/sabbatical/redux/reducers';
@@ -57,6 +58,7 @@ const appReducer = combineReducers(Object.assign({
     employeesInfo,
     employeesManager,
     education,
+    course,
     salary,
     discipline,
     sabbatical,

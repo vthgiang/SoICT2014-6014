@@ -115,7 +115,7 @@ class ModalAddEducation extends Component {
                         <div className="modal-header">
                             <button type="button" className="close" onClick={() => this.handleCloseModal()}>
                                 <span aria-hidden="true">×</span></button>
-                            <h4 className="modal-title">Thêm chương trình đào tạo</h4>
+                            <h4 style={{textAlign:"center"}} className="modal-title">Thêm chương trình đào tạo</h4>
                         </div>
                         <div className="modal-body">
                             {/* /.box-header */}

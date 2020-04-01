@@ -24,7 +24,6 @@ class ListEmployee extends Component {
             limit: 5,
 
         }
-        this.setLimit = this.setLimit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
