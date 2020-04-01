@@ -155,8 +155,15 @@ class ListEducation extends Component {
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
                                                     columnName="Hành động"
-                                                    hideColumn={false}
+                                                    columnArr={[
+                                                        "Tên chương trình đào tạo",
+                                                        "Mã chương trình",
+                                                        "Áp dụng cho đơn vị",
+                                                        "Áp dụng cho chức vụ"
+                                                    ]}
+                                                    limit={this.state.limit}
                                                     setLimit={this.setLimit}
+                                                    hideColumnOption={true}
                                                 />
                                             </th>
                                         </tr>

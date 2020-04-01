@@ -228,8 +228,19 @@ class Sabbatical extends Component {
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
                                                     columnName={translate('table.action')}
-                                                    hideColumn={false}
+                                                    columnArr={[
+                                                        translate('table.employee_number'),
+                                                        translate('table.employee_name'),
+                                                        translate('table.start_date'),
+                                                        translate('table.end_date'),
+                                                        translate('sabbatical.reason'),
+                                                        translate('table.unit'),
+                                                        translate('table.position'),
+                                                        translate('table.status')
+                                                    ]}
+                                                    limit={this.state.limit}
                                                     setLimit={this.setLimit}
+                                                    hideColumnOption={true}
                                                 />
                                             </th>
                                         </tr>

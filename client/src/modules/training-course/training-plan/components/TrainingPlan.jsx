@@ -116,8 +116,16 @@ class TrainingPlan extends Component {
                                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                                     <ActionColumn
                                                         columnName="Hành động"
-                                                        hideColumn={false}
+                                                        columnArr={[
+                                                            "Tên khoá đào tạo",
+                                                            "Bắt đầu",
+                                                            "Kết thúc",
+                                                            "Địa điểm đào tạo",
+                                                            "Đơn vị đào tạo"
+                                                        ]}
+                                                        limit={this.state.limit}
                                                         setLimit={this.setLimit}
+                                                        hideColumnOption={true}
                                                     />
                                                 </th>
                                             </tr>

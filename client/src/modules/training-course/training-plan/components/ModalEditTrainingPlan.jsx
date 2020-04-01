@@ -100,7 +100,7 @@ class ModalEditTrainingPlan extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={() => this.handleCloseModal()}>
                                     <span aria-hidden="true">×</span></button>
-                                <h4 style={{ textAlign: "center" }} className="modal-title">Chỉnh sửa khoá đào tạo:{data.numberCourse} - {data.nameCourse}</h4>
+                                <h4 style={{ textAlign: "center" }} className="modal-title">Chỉnh sửa khoá đào tạo:{data.nameCourse} - {data.numberCourse}</h4>
                             </div>
                             <div className="modal-body" style={{ paddingTop: 0 }}>
                                 {/* /.box-header */}

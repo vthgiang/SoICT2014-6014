@@ -45,7 +45,7 @@ exports.get = async (data, company) => {
         });
         let listCourse = await Course.find({
             educationProgram: allEducation[n]._id
-        }).skip(0).limit(5)
+        }).skip(0).limit(1)
         allList[n] = {
             ...allEducation[n]._doc,
             listCourse: listCourse,

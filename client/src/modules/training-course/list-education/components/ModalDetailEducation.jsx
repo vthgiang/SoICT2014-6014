@@ -2,19 +2,50 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CourseActions } from '../../training-plan/redux/actions';
+import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 class ModalDetailEducation extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            _id: this.props.data._id,
             numberCourse: "",
             typeCourse: "All",
             page: 0,
             limit: 5,
-        }
+        };
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getCourseByEducation(this.state);
+    }
+
+    handleSunmitSearch = () => {
+        this.props.getCourseByEducation(this.state);
     }
     render() {
         var { data } = this.props;
         var { listCourse } = data;
+        var pageTotal =data.totalList;
+        var { courseByEducation } = this.props.course;
+        if (courseByEducation._id !== undefined && courseByEducation._id === data._id) {
+            listCourse = courseByEducation.allList
+        }
+        // var pageTotal = (listcourse.totalList % this.state.limit === 0) ?
+        //     parseInt(listcourse.totalList / this.state.limit) :
+        //     parseInt((listcourse.totalList / this.state.limit) + 1);
+        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-viewEducation-${data.numberEducation}`} title="Xem chi tiết chương trình đào tạo" data-toggle="modal"><i className="material-icons">view_list</i></a>
@@ -24,7 +55,7 @@ class ModalDetailEducation extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 style={{textAlign:"center"}} className="modal-title">Chi tiết chương trình đào tạo: {data.nameEducation + "-" + data.numberEducation}</h4>
+                                <h4 style={{ textAlign: "center" }} className="modal-title">Chi tiết chương trình đào tạo: {data.nameEducation + "-" + data.numberEducation}</h4>
                             </div>
                             <div className="modal-body" style={{ paddingTop: 0 }}>
                                 <div className="col-md-12">
@@ -32,41 +63,46 @@ class ModalDetailEducation extends Component {
                                         <h3 className="box-title">Danh sách khoá đào tạo của chương trình đào tạo:</h3>
                                     </div>
                                     <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0 }}>
-                                            <label htmlFor="fullname" >Mã khoá đào tạo:</label>
+                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                            <label htmlFor="numberCourse" >Mã khoá đào tạo:</label>
                                         </div>
                                         <div className="form-group col-md-8" style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
-                                            <input type="text" className="form-control" name="fullName" />
+                                            <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} />
                                         </div>
                                     </div>
                                     <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0 }}>
-                                            <label htmlFor="fullname" style={{ paddingTop: 5 }}>Loại đào tạo:</label>
+                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                            <label htmlFor="typeCourse" style={{ paddingTop: 5 }}>Loại đào tạo:</label>
                                         </div>
                                         <div className="form-group col-md-8" style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
-                                            <input type="text" className="form-control" name="fullName" />
+                                            <select className="form-control" defaultValue="All" name="typeCourse" onChange={this.handleChange}>
+                                                <option value="All">--Tất cả--</option>
+                                                <option value="Đào tạo nội bộ">Đào tạo nội bộ</option>
+                                                <option value="Đào tạo ngoài">Đào tạo ngoài</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div className="col-md-3">
-                                        <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0, paddingTop: 5 }}>
-                                            <button type="submit" className="btn btn-success" title="Tìm kiếm" >Tìm kiếm</button>
+                                    <div className="col-md-3" style={{ paddingTop: 5 }}>
+                                        <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                                            <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()} title="Tìm kiếm" >Tìm kiếm</button>
                                         </div>
                                     </div>
-                                    <table id="listexample" className="table table-striped table-bordered table-hover">
+                                    <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th title="Mã khoá đào tạo" style={{ width: "14%" }}>Mã khoá đào tạo</th>
                                                 <th style={{ width: "20%" }}>Tên khoá đào tạo</th>
                                                 <th title="Thời gian bắt đầu">Bắt đầu</th>
                                                 <th title="Thời gian kết thúc">Kết thúc</th>
-                                                <th title="Địa điểm đào tạo">Địa điểm đào tạo</th>
-                                                <th style={{ width: "20%" }}>Đơn vị đào tạo</th>
-                                                <th style={{ width: "12%" }}>Loại đào tạo</th>
+                                                <th style={{ width: "18%" }} title="Địa điểm đào tạo">Địa điểm đào tạo</th>
+                                                <th style={{ width: "18%" }}>Đơn vị đào tạo</th>
+                                                <th style={{ width: "140px" }}>Loại đào tạo
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
-                                                (listCourse.length === 0 || listCourse === []) ?<tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                                                (listCourse.length === 0 || listCourse === []) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
                                                     listCourse.map((x, index) => (
                                                         <tr key={index}>
                                                             <td>{x.numberCourse}</td>
@@ -81,6 +117,7 @@ class ModalDetailEducation extends Component {
                                             }
                                         </tbody>
                                     </table>
+                                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                                 </div>
                             </div>
                             <div className="modal-footer">

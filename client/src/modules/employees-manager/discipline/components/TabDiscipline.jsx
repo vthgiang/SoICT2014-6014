@@ -171,8 +171,18 @@ class TabDiscipline extends Component {
                                         <th style={{ width: '120px', textAlign: 'center' }}>
                                             <ActionColumnDiscipline
                                                 columnName={translate('table.action')}
-                                                hideColumn={false}
-                                                setLimit={this.setLimit}
+                                                    columnArr={[
+                                                        translate('table.employee_number'),
+                                                        translate('table.employee_name'),
+                                                        translate('discipline.start_date'),
+                                                        translate('discipline.end_date'),
+                                                        translate('page.number_decisions'),
+                                                        translate('table.unit'),
+                                                        translate('table.position')
+                                                    ]}
+                                                    limit={this.state.limit}
+                                                    setLimit={this.setLimit}
+                                                    hideColumnOption={true}
                                             />
                                         </th>
                                     </tr>

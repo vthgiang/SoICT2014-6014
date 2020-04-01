@@ -2,7 +2,10 @@ import {
     CourseConstants
 } from './constants';
 const initState = {
-    listCourse: []
+    listCourse: [],
+    courseByEducation:{
+        allList:[]
+    }
 }
 export function course(state = initState, action) {
     switch (action.type) {
@@ -33,7 +36,7 @@ export function course(state = initState, action) {
         case CourseConstants.GET_COURSE_BY_EDUCATION_SUCCESS:
             return {
                 ...state,
-                CourseByEducation: action.CourseByEducation.content,
+                courseByEducation: action.courseByEducation.content,
                     isLoading: false,
             };
         case CourseConstants.GET_COURSE_BY_EDUCATION_FAILURE:

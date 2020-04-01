@@ -106,8 +106,6 @@ class ModalAddEducation extends Component {
             { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }]
             listPosition = listPosition.concat(position)
         }
-        console.log(listPosition);
-        console.log(this.state);
         return (
             <div className="modal fade" id="modal-addEducation" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">

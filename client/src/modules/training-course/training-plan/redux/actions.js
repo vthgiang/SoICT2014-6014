@@ -52,7 +52,7 @@ function getCourseByEducation(data) {
 
         CourseService.getCourseByEducation(data)
             .then(
-                CourseByEducation => dispatch(success(CourseByEducation)),
+                courseByEducation => dispatch(success(courseByEducation)),
                 error => dispatch(failure(error.toString()))
             );
     }
@@ -63,10 +63,10 @@ function getCourseByEducation(data) {
         };
     };
 
-    function success(CourseByEducation) {
+    function success(courseByEducation) {
         return {
             type: CourseConstants.GET_COURSE_BY_EDUCATION_SUCCESS,
-            CourseByEducation
+            courseByEducation
         };
     };
 

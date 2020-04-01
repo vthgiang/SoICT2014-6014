@@ -43,3 +43,29 @@
 .L-auto {
     left: auto!important;
 }
+
+/*Start  Add css action column in page have many table */
+.setting-table {
+    z-index: 1000;
+    position: absolute;
+    right: 0px;
+    width: 250px;
+    padding: 15px;
+    background-color: rgb(249, 250, 252);
+    border: 1px solid black;
+    margin-top: 5px;
+    text-align: left;
+}
+@media (max-width: 300px){
+    .setting-table {
+        width: 100%;
+    }
+}
+.setting-table div.selectmulti {
+    display: block;
+}
+.setting-table div.selectmulti > div.btn-group, .setting-table div.selectmulti > div.btn-group> button{
+    width: 100%;
+}
+
+/*End  Add css action column in page have many table */

@@ -198,8 +198,18 @@ class ListEmployee extends Component {
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
                                                     columnName="Hành động"
-                                                    hideColumn={false}
+                                                    columnName={translate('table.action')}
+                                                    columnArr={[
+                                                       "Mã nhân viên",
+                                                        "Họ và tên",
+                                                        "Giới tính",
+                                                        "Ngày sinh",
+                                                        "Đơn vị",
+                                                        "Chức vụ"
+                                                    ]}
+                                                    limit={this.state.limit}
                                                     setLimit={this.setLimit}
+                                                    hideColumnOption={true}
                                                 />
                                             </th>
                                         </tr>
@@ -244,7 +254,7 @@ class ListEmployee extends Component {
                                             )
                                             )}
                                     </tbody>
-                                    
+
                                 </table>
                                 <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                             </div>
