@@ -5,6 +5,9 @@ import { ModalAddTask } from './ModalAddTask';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import Swal from 'sweetalert2';
+
+import { SelectMulti } from '../../../../common-components/src/SelectMulti/SelectMulti';
+
 class TabTaskContent extends Component {
     constructor(props) {
         super(props);
@@ -32,7 +35,6 @@ class TabTaskContent extends Component {
             this.props.getInformedTaskByUser( "[]", 1, 20, "[]", "[]", "[]", null);
         }
         this.defindMultiSelect();
-        this.loadJS();
         this.handleResizeColumn();
     }
 
@@ -42,13 +44,6 @@ class TabTaskContent extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-    }
-    loadJS = () => {
-        let script1 = document.createElement('script');
-        script1.src = '../lib/main/js/defindMultiSelect.js';//fix /lib/...
-        script1.async = true;
-        script1.defer = true;
-        document.body.appendChild(script1);
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -371,11 +366,8 @@ class TabTaskContent extends Component {
                     <div className="col-xs-6 item-container">
                         <label>Đơn vị:</label>
                         {units &&
-                            <select id="multiSelectUnit1" multiple="multiple" defaultValue={units.map(item => item._id)}>
-                                {units.map(item => {
-                                    return <option key={item._id} value={item._id}>{item.name}</option>
-                                })}
-                            </select>
+                            <SelectMulti id="multiSelectUnit1" selectAllByDefault={true} items={units.map(item => {return {value: item._id, text: item.name}})} 
+                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả các đơn vị"></SelectMulti>
                         }
                     </div>
                     <div className="col-xs-6 item-container">

@@ -11,8 +11,8 @@ router.get("/:id", auth, UserController.show);
 router.patch("/:id", auth, editValidation, UserController.edit);
 router.delete("/:id", auth, UserController.delete);
 
-router.get("/same-department/:id", UserController.getUsersSameDepartment);
+router.get("/same-department/:id", auth, UserController.getUsersSameDepartment);
 
-router.get("/users-of-department/:id", UserController.getUsersOfDepartment);
+router.get("/users-of-department/:id", auth, UserController.getUsersOfDepartment);
 
 module.exports = router;

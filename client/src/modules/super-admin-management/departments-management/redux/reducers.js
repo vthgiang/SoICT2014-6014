@@ -88,7 +88,7 @@ export function department(state = initState, action) {
                 };
         case DepartmentConstants.GETALL_SUCCESS:
                 return {
-                  items: action.departments
+                  items: action.departments.content
                 };
         case DepartmentConstants.GETALL_FAILURE:
                 return { 
@@ -101,7 +101,7 @@ export function department(state = initState, action) {
         case DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS:
             return {
                 ...state,
-                unitofuser: action.departments
+                unitofuser: action.departments.content
             };
         case DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE:
             return { 
