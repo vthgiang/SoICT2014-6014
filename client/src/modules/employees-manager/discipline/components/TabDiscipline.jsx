@@ -5,8 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddDiscipline } from './ModalAddDiscipline';
 import { ModalEditDiscipline } from './ModalEditDiscipline';
-import { ActionColumnDiscipline } from './ActionColumDiscipline';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DeleteNotification } from '../../../../common-components';
 class TabDiscipline extends Component {
     constructor(props) {
@@ -169,20 +169,20 @@ class TabDiscipline extends Component {
                                         <th>{translate('table.unit')}</th>
                                         <th style={{ width: "15%"}}>{translate('table.position')}</th>
                                         <th style={{ width: '120px', textAlign: 'center' }}>
-                                            <ActionColumnDiscipline
+                                            <ActionColumn
                                                 columnName={translate('table.action')}
-                                                    columnArr={[
-                                                        translate('table.employee_number'),
-                                                        translate('table.employee_name'),
-                                                        translate('discipline.start_date'),
-                                                        translate('discipline.end_date'),
-                                                        translate('page.number_decisions'),
-                                                        translate('table.unit'),
-                                                        translate('table.position')
-                                                    ]}
-                                                    limit={this.state.limit}
-                                                    setLimit={this.setLimit}
-                                                    hideColumnOption={true}
+                                                columnArr={[
+                                                    translate('table.employee_number'),
+                                                    translate('table.employee_name'),
+                                                    translate('discipline.start_date'),
+                                                    translate('discipline.end_date'),
+                                                    translate('page.number_decisions'),
+                                                    translate('table.unit'),
+                                                    translate('table.position')
+                                                ]}
+                                                limit={this.state.limit}
+                                                setLimit={this.setLimit}
+                                                hideColumnOption={true}
                                             />
                                         </th>
                                     </tr>

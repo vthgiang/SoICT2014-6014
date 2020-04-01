@@ -7,7 +7,7 @@ import { ModalEditTrainingPlan } from './ModalEditTrainingPlan';
 import { ModalAddTrainingPlan } from './ModalAddTrainingPlan';
 import { CourseActions } from '../redux/actions';
 import { EducationActions } from '../../list-education/redux/actions';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { ActionColumn } from '../../../../common-components';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DeleteNotification } from '../../../../common-components';
 class TrainingPlan extends Component {

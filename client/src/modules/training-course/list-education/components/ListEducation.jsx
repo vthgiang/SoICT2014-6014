@@ -6,7 +6,7 @@ import { ModalDetailEducation } from './ModalDetailEducation';
 import { ModalEditEducation } from './ModalEditEducation';
 import { ModalAddEducation } from './ModalAddEducation';
 import { EducationActions } from '../redux/actions';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { ActionColumn } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DeleteNotification } from '../../../../common-components';
