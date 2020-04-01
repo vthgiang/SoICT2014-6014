@@ -85,7 +85,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
                 populate: { path: 'creator unit' } 
             });
         }
-        console.log(tasktemplates)
+        
         var totalCount = await Privilege.count({
             role: { $in: allRole },
             resource_type: 'TaskTemplate'
