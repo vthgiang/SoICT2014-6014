@@ -14,6 +14,12 @@ export function rolesDefault(state = initState, action) {
                 isLoading: true,
             }
 
+        case RoleDefaultConstants.GET_ROLES_DEFAULT_REQUEST:
+            return {
+                ...state,
+                isLoading: false,
+            }
+
         case RoleDefaultConstants.GET_ROLES_DEFAULT_SUCCESS:
             return {
                 ...state,

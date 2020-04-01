@@ -52,7 +52,8 @@ function getAllTaskTemplateByRole(id) {
 }
 
 // get all task template by User
-async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit) {
+// Để lấy tất cả kết quả: cho pageNumber=1, noResultsPerPage = 0
+async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name="") {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
@@ -60,8 +61,12 @@ async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit)
         method: 'GET',
         headers: AuthenticateHeader()
     };
-
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${noResultsPerPage}/${arrayUnit}`, requestOptions).then(handleResponse);
+    if (name!=""){
+        return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${noResultsPerPage}/${arrayUnit}/${name}`, requestOptions).then(handleResponse);
+    }
+    else{
+        return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${noResultsPerPage}/${arrayUnit}`, requestOptions).then(handleResponse);
+    }
 }
 
 // add new task template
@@ -94,13 +99,14 @@ async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit)
 // edit a task template
 function editTaskTemplate(id, newTaskTemplate) {
     const requestOptions = {
-        method: 'PUT',
+        method: 'PATCH',
         headers: AuthenticateHeader(),
         body: JSON.stringify(newTaskTemplate)
     };
 
-    return fetch(`${LOCAL_SERVER_API}/tasktemplates/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/tasktemplates/edit/${id}`, requestOptions).then(handleResponse);
 }
+
 
 // delete a task template
 function deleteTaskTemplateById(id) {

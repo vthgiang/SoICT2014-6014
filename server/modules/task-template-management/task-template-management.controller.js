@@ -29,7 +29,7 @@ exports.getByUser = async (req, res) => {
     try {
         var pageNumber = Number(req.params.pageNumber);
         var noResultsPerPage = Number(req.params.noResultsPerPage);
-        var data = await TaskTemplateService.getByUser(req.params.id, pageNumber, noResultsPerPage, req.params.unit);
+        var data = await TaskTemplateService.getByUser(req.params.id, pageNumber, noResultsPerPage, req.params.unit, req.params.name);
         LogInfo(req.user.email, `Get task templates by user ${req.params.id}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {
@@ -67,3 +67,16 @@ exports.delete = async (req, res) => {
 exports.test = (req, res) => {
     return TaskTemplateService.test(req, res);
 }
+
+//api sửa 1 lỗi công việc
+exports.edit = async(req, res) => {
+    try {
+        var data = await TaskTemplateService.edit(req.body,req.params.id);
+        await LogInfo(req.user.email, `Edit task templates ${req.body.name}`, req.user.company);
+        res.status(200).json(data);
+    } catch (error) {
+        await LogError(req.user.email, `Edit task templates ${req.body.name}`, req.user.company);
+        res.status(400).json(error);
+    }
+}
+ 

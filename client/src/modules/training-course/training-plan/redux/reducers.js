@@ -10,7 +10,6 @@ export function course(state = initState, action) {
             return {
                 ...state,
                 isLoading: true,
-
             };
         case CourseConstants.GET_LISTCOURSE_SUCCESS:
             return {

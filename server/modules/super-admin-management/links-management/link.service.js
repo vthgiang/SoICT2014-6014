@@ -27,7 +27,7 @@ exports.getById = async (id) => {
 }
 
 exports.create = async(data, companyId) => {
-    if(data.url === '/system') throw { msg: 'The url " /system " cannot create'};
+    if(data.url === '/system') throw { message: 'The url " /system " cannot create'};
     return await Link.create({
         url: data.url,
         description: data.description,

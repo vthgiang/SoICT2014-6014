@@ -1,6 +1,10 @@
 export default {
     locale: 'en',
     messages: {
+        error: {
+            email_does_not_exist: 'Email does not exist',
+            field_invalid: 'Field input invaid',
+        },
         not_found: {
             title: 'Qpps! Page not found',
             content: 'We could not find the page you were looking for',
@@ -25,6 +29,7 @@ export default {
             acc_have_not_role: 'Accout have not role'
         },
         auth: {
+            security: 'security',
             login: 'Login',
             logout: 'Logout',
             logout_all_account: 'Log out all account',
@@ -111,7 +116,7 @@ export default {
             manage_department: 'Manage Departments',
             manage_user: 'Manage Users',
             manage_role: 'Manage Roles',
-            manage_page: 'Manage Pages',
+            manage_link: 'Manage Pages',
             manage_component: 'Manage ComponentUI',
             manage_document: 'Manage Documents',
 
@@ -228,7 +233,7 @@ export default {
             roles: 'Roles assigned'
         },
 
-        manage_page: {
+        manage_link: {
             add: 'Add',
             add_title: 'Add new link for page',
             url: 'Link of page',

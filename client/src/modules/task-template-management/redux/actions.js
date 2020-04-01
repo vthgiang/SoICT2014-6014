@@ -46,11 +46,11 @@ function getAllTaskTemplateByRole(id) {
 }
 
 // Get all task template by user
-function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit) {
+function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name="") {
     return dispatch => {
         dispatch(request());
 
-        taskTemplateService.getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit)
+        taskTemplateService.getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name)
             .then(
                 tasktemplates => dispatch(success(tasktemplates)),
                 error => dispatch(failure(error.toString()))
@@ -124,7 +124,7 @@ function editTaskTemplate(id, taskTemplate) {
             );
     };
 
-    function request(id) { return { type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST, id } }
+    function request(id) { return { type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST, taskTemplate } }
     function success(taskTemplate) { return { type: taskTemplateConstants.EDIT_TEMPLATE_SUCCESS, taskTemplate } }
     function failure(error) { return { type: taskTemplateConstants.EDIT_TEMPLATE_FAILURE, error } }
 }

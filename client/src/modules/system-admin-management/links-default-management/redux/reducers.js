@@ -43,6 +43,17 @@ export function linksDefault (state = initState, action) {
                 isLoading: true
             };
 
+        case LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE:
+            case LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE:
+            case LinkDefaultConstants.SHOW_LINK_DEFAULT_FAILE:
+            case LinkDefaultConstants.CREATE_LINK_DEFAULT_FAILE:
+            case LinkDefaultConstants.EDIT_LINK_DEFAULT_FAILE:
+            case LinkDefaultConstants.DELETE_LINK_DEFAULT_FAILE:
+                return {
+                    ...state,
+                    isLoading: false
+                };
+
         case LinkDefaultConstants.GET_LINKS_DEFAULT_SUCCESS:
             return {
                 ...state,
@@ -114,9 +125,6 @@ export function linksDefault (state = initState, action) {
                 ...state,
                 isLoading: false
             };
-
-        case 'LOGOUT':
-            return initState;
 
         default:
             return state;

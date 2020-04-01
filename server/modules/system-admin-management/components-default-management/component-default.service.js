@@ -35,7 +35,7 @@ exports.create = async(name, description, link, roles) => {
 }
 
 exports.edit = async(id, name, description, link, roles) => {
-    var component = ComponentDefault.findById(id);
+    var component = await ComponentDefault.findById(id);
     component.name = name;
     component.description = description;
     component.link = link;
@@ -53,26 +53,19 @@ exports.delete = async(id) => {
 }
 
 exports.addComponentsToLink = async(linkId, componentId) => {
-    console.log("Thêm component cho link: ", linkId, componentId);
     var link = await LinkDefault.findById(linkId);
-    
-    console.log("Link tìm thấy: ", link);
     link.components.push(componentId);
     await link.save();
 
-    console.log("Link sau chỉnh sửa: ", link);
     return link;
 }
 
 exports.deleteComponentInLink = async(linkId, componentId) => {
     var link = await LinkDefault.findById(linkId);
-    console.log("Link có component tìm thấy: ", link);
     var index = link.components.indexOf(componentId);
-    console.log("INDEX: ", index)
     if(index !== -1) link.components.slice(index, 1); //xóa component khỏi link
     await link.save();
 
-    console.log("Link xóa component sau chỉnh sửa: ", link);
     return link;
 }
 

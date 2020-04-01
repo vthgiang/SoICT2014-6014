@@ -50,7 +50,7 @@ class UserEditForm extends Component {
                     color="yellow"
                 />
                 <ModalDialog
-                    size='50' func={this.save} type="edit"
+                    size='50' func={this.save} type="edit" isLoading={this.props.user.isLoading}
                     modalID={`modal-edit-user-${userId}`}
                     formID={`form-edit-user-${userId}`}
                     title={translate('manage_user.edit')}
@@ -91,7 +91,12 @@ class UserEditForm extends Component {
                                 ref="roles"
                             >
                                 {
-                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                    this.chechSuperAdmin(userRoles) ? //neu tai khoan nay hien tai khong co role la Super Admin
+                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>):
+                                    role.list.map( role => {
+                                        if(role.name !== 'Super Admin')
+                                            return <option key={role._id} value={role._id}>{role.name}</option>;
+                                    })
                                 }
                             </select>
                         </div>

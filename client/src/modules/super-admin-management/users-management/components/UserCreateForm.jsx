@@ -31,7 +31,7 @@ class UserCreateForm extends Component {
             <React.Fragment>
                 <ModalButton modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')}/>
                 <ModalDialog
-                    modalID="modal-create-user"
+                    modalID="modal-create-user" isLoading={this.props.user.isLoading}
                     formID="form-create-user"
                     title={translate('manage_user.add_title')}
                     msg_success={translate('manage_user.add_success')}
@@ -56,7 +56,9 @@ class UserCreateForm extends Component {
                                 ref="roles"
                             >
                                 {
-                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>)
+                                    role.list.map( role => {
+                                        if(role.name !== 'Super Admin') return <option key={role._id} value={role._id}>{role.name}</option>;
+                                    })
                                 }
                             </select>
                         </div>

@@ -21,11 +21,12 @@ function get(){
         .then(res => {
             dispatch({
                 type: UserConstants.GET_USERS_SUCCESS,
-                payload: res.data
+                payload: res.data.content
             })
         })
         .catch(err => {
             console.log("Error: ", err);
+            dispatch({ type: UserConstants.GET_USERS_FAILE});
             AlertActions.handleAlert(dispatch, err);
         })
     }
@@ -38,11 +39,12 @@ function getPaginate(data){
             .then(res => {
                 dispatch({
                     type: UserConstants.GET_USERS_PAGINATE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
                 console.log("Error: ", err);
+                dispatch({ type: UserConstants.GET_USERS_PAGINATE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }
@@ -56,12 +58,13 @@ function edit(id, data){
             .then(res => {
                 dispatch({
                     type: UserConstants.EDIT_USER_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
-                resolve(res.data);
+                resolve(res.data.content);
             })
             .catch(err => {
                 console.log("Error: ", err);
+                dispatch({ type: UserConstants.EDIT_USER_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
             })
@@ -77,12 +80,13 @@ function create(data){
                 .then(res => {
                     dispatch({
                         type: UserConstants.CREATE_USER_SUCCESS,
-                        payload: res.data
+                        payload: res.data.content
                     })
-                    resolve(res.data);
+                    resolve(res.data.content);
                 })
                 .catch(err => {
                     console.log("Error: ", err);
+                    dispatch({ type: UserConstants.CREATE_USER_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
@@ -103,6 +107,7 @@ function destroy(id){
             })
             .catch(err => {
                 console.log("Error: ", err);
+                dispatch({ type: UserConstants.DELETE_USER_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }
@@ -110,10 +115,11 @@ function destroy(id){
 
 export const getRoles = () => {
     return dispatch => {
+        dispatch({ type: UserConstants.GET_USER_ROLES_REQUEST});
         UserServices.getRoles()
             .then(res => {
                 let roles = [];
-                res.data.forEach(data => {
+                res.data.content.forEach(data => {
                     roles.push({
                         id: data.id_role._id,
                         name: data.id_role.name
@@ -126,6 +132,7 @@ export const getRoles = () => {
             })
             .catch(err => {
                 console.log("Error: ", err);
+                dispatch({ type: UserConstants.GET_USER_ROLES_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }
@@ -133,15 +140,17 @@ export const getRoles = () => {
 
 export const getLinkOfRole = () => {
     return dispatch => {
+        dispatch({ type: UserConstants.GET_LINK_OF_ROLE_REQUEST});
         UserServices.getLinkOfRole()
             .then(res => {
                 dispatch({
                     type: UserConstants.GET_LINK_OF_ROLE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
                 console.log("Error: ", err);
+                dispatch({ type: UserConstants.GET_LINK_OF_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }

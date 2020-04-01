@@ -45,15 +45,16 @@ class ManageUserTable extends Component {
                             <th>{translate('table.email')}</th>
                             <th>{translate('table.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
-                                <ActionColumn 
-                                    tableId="user-table"
+                                <ActionColumn
                                     columnName={translate('table.action')} 
                                     columnArr={[
                                         translate('table.name'),
                                         translate('table.email'),
                                         translate('table.status')
                                     ]}
-                                    setLimit={this.setLimit} 
+                                    limit={this.state.limit}
+                                    setLimit={this.setLimit}
+                                    hideColumnOption = {true}
                                 />
                             </th>
                         </tr>
@@ -90,7 +91,9 @@ class ManageUserTable extends Component {
                                         }
                                     </td>
                                 </tr>
-                            )) : <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                            )) : user.isLoading ?
+                            <tr><td colSpan={4}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
@@ -139,12 +142,14 @@ class ManageUserTable extends Component {
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { limit: number, page: this.state.page };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
+        if (this.state.limit !== number){
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page };
+            if(this.state.value !== null){
+                data[this.state.option] = this.state.value;
+            }
+            this.props.getPaginate(data);
         }
-        this.props.getPaginate(data);
     }
 
     componentDidMount(){

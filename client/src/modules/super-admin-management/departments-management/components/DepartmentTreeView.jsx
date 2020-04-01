@@ -30,7 +30,7 @@ class DepartmentTreeView extends Component {
                     <DepartmentCreateForm />
                 </div>
                 {
-                    department.list.length > 0 &&
+                    department.list.length > 0 ?
                     <React.Fragment >
                         <div className="pull-left">
                             <i className="btn btn-sm btn-default fa fa-plus" onClick={ this.zoomIn } title={translate('manage_department.zoom_in')}></i>
@@ -61,7 +61,10 @@ class DepartmentTreeView extends Component {
                             >{translate('form.search')}</a>
                         </div> */}
                     </React.Fragment>
-                }
+                    : department.isLoading ?
+                    <p className="text-center">{translate('confirm.loading')}</p>:
+                    <p className="text-center">{translate('confirm.no_data')}</p>
+            }
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         {
@@ -170,13 +173,6 @@ class DepartmentTreeView extends Component {
             )
         }
         else return null
-    }
-    componentDidMount() {
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/defindMultiSelect.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
     }
 }
  

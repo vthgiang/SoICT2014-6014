@@ -17,6 +17,9 @@ export function auth(state = initState, action) {
         case AuthConstants.FORGOT_PASSWORD_REQUEST:
         case AuthConstants.RESET_PASSWORD_REQUEST:
         case AuthConstants.EDIT_PROFILE_REQUEST:
+        case AuthConstants.CHANGE_USER_INFORMATION_REQUEST:
+        case AuthConstants.CHANGE_USER_PASSWORD_REQUEST:
+        case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -43,7 +46,7 @@ export function auth(state = initState, action) {
                     roles: null,
                     company: null
                 },
-                error: action.payload.msg
+                error: action.payload.message
             };
 
         case AuthConstants.EDIT_PROFILE_SUCCESS:
@@ -52,6 +55,17 @@ export function auth(state = initState, action) {
                 calledAPI: true,
                 isLoading: false,
                 user: action.payload
+            };
+
+        case AuthConstants.CHANGE_USER_INFORMATION_SUCCESS:
+        case AuthConstants.CHANGE_USER_PASSWORD_SUCCESS:
+            console.log()
+            return {
+                ...state,
+                calledAPI: true,
+                user: action.payload,
+                isLoading: false,
+                error: null
             };
 
         case AuthConstants.REFRESH_DATA_USER_SUCCESS:
@@ -95,6 +109,8 @@ export function auth(state = initState, action) {
         case AuthConstants.REFRESH_DATA_USER_FAILE:
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE:
         case AuthConstants.GET_LINKS_OF_ROLE_FAILE:
+        case AuthConstants.CHANGE_USER_INFORMATION_FAILE:
+        case AuthConstants.CHANGE_USER_PASSWORD_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -102,6 +118,6 @@ export function auth(state = initState, action) {
             }
 
         default:
-            return state;
+            return {...state};
     }
 }

@@ -1,13 +1,24 @@
 const RoleService = require('./role.service');
+const {LogInfo, LogError} = require('../../../logs');
 
 exports.get = async (req, res) => {
     try {
         var roles = await RoleService.get(req.user.company._id); //truyen vao id cua cong ty
         
-        res.status(200).json(roles);
+        LogInfo(req.user.email, 'GET_ROLES', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'get_roles_success',
+            content: roles
+        });
     } catch (error) {
         
-        res.status(400).json(error);
+        LogError(req.user.email, 'GET_ROLES', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'get_roles_faile',
+            content: error
+        });
     }
 };
 
@@ -18,10 +29,20 @@ exports.getPaginate = async (req, res) => {
         delete req.body.page;
         var roles = await RoleService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
 
-        res.status(200).json(roles);
+        LogInfo(req.user.email, 'PAGINATE_ROLES', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'paginate_roles_success',
+            content: roles
+        });
     } catch (error) {
-        
-        res.status(400).json(error);
+
+        LogError(req.user.email, 'PAGINATE_ROLES', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'paginate_roles_faile',
+            content: error
+        });
     }
 };
 
@@ -31,10 +52,20 @@ exports.create = async (req, res) => {
         await RoleService.editRelationshiopUserRole(role._id, req.body.users);
         var data = await RoleService.getById(req.user.company._id, role._id);
         
-        res.status(200).json(data);
+        LogInfo(req.user.email, 'CREATE_ROLE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'create_role_success',
+            content: data
+        });
     } catch (error) {
         
-        res.status(400).json(error);
+        LogError(req.user.email, 'CREATE_ROLE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'create_role_faile',
+            content: error
+        });
     }
 };
 
@@ -42,10 +73,20 @@ exports.show = async (req, res) => {
     try {
         var role = await RoleService.getById(req.user.company._id, req.params.id);
         
-        res.status(200).json(role);
+        LogInfo(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'show_role_success',
+            content: role
+        });
     } catch (error) {
         
-        res.status(400).json(error);
+        LogError(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'show_role_faile',
+            content: error
+        });
     }
 };
 
@@ -55,10 +96,20 @@ exports.edit = async (req, res) => {
         var role = await RoleService.edit(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
         var data = await RoleService.getById(req.user.company._id, role._id);
         
-        res.status(200).json(data);
+        LogInfo(req.user.email, 'EDIT_ROLE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'edit_role_success',
+            content: data
+        });
     } catch (error) {
         
-        res.status(400).json(error);
+        LogError(req.user.email, 'EDIT_ROLE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'edit_role_faile',
+            content: error
+        });
     }
 };
 
@@ -66,24 +117,40 @@ exports.delete = async (req, res) => {
     try {
         var role = await RoleService.delete(req.params.id);
         
-        res.status(200).json(role);
+        LogInfo(req.user.email, 'DELETE_ROLE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'delete_role_success',
+            content: role
+        });
     } catch (error) {
         
-        res.status(400).json(error);
+        LogError(req.user.email, 'DELETE_ROLE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'delete_role_faile',
+            content: error
+        });
     }
 };
 
-exports.test = async (req, res) => {
+exports.getRoleSameDepartment = async (req, res) => {
     try {
-        var role = await RoleService.editRelationshiopUserRole( req.params.id, req.body.users );
-        
-        res.status(200).json(role);
-    } catch (error) {
-             
-        res.status(400).json(error);
-    }
-};
+        const roles = await RoleService.getRoleSameDepartment(req.params.id);
 
-exports.getRoleSameDepartment = (req, res) => {
-    return RoleService.getRoleSameDepartment(req, res);
+        LogInfo(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'get_roles_same_department',
+            content: roles
+        });
+    } catch (error) {
+
+        LogError(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'get_roles_faile',
+            content: error
+        });
+    }
 };

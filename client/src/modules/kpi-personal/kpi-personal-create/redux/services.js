@@ -46,13 +46,13 @@ async function editKPIPersonal(id, newTarget) {
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/${id}`, requestOptions).then(handleResponse);
 }
 // chỉnh sửa trạng thái của kpi cá nhân
-function editStatusKPIPersonal(id) {
+function editStatusKPIPersonal(id, status) {
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/status/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`, requestOptions).then(handleResponse);
 }
 // Xóa KPI cá nhân
 function deleteKPIPersonal(id) {
