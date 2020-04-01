@@ -76,6 +76,7 @@ async function getDepartmentOfUser() {
     console.log(id);
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${ LOCAL_SERVER_API }/department/department-of-user/${id}`, requestOptions).then(handleResponse);

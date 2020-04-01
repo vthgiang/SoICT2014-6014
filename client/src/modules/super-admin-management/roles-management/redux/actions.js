@@ -18,7 +18,7 @@ function get(){
             .then(res => {
                 dispatch({
                     type: RoleConstants.GET_ROLES_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -35,7 +35,7 @@ function getPaginate(data){
             .then(res => {
                 dispatch({
                     type: RoleConstants.GET_ROLES_PAGINATE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -52,7 +52,7 @@ function show(id){
             .then(res => {
                 dispatch({
                     type: RoleConstants.SHOW_ROLE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -71,9 +71,9 @@ function create(role){
                 .then(res => {
                     dispatch({
                         type: RoleConstants.CREATE_ROLE_SUCCESS,
-                        payload: res.data
+                        payload: res.data.content
                     });
-                    resolve(res.data);
+                    resolve(res.data.content);
                 })
                 .catch(err => {
                     console.log("Error: ", err);
@@ -92,9 +92,9 @@ function edit(role){
             .then(res => {
                 dispatch({
                     type: RoleConstants.EDIT_ROLE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
-                resolve(res.data);
+                resolve(res.data.content);
             })
             .catch(err => {
                 console.log("Error: ", err);

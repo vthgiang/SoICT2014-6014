@@ -19,12 +19,13 @@ function get(){
                 .then(res => {
                     dispatch({
                         type: DepartmentConstants.GET_DEPARTMENTS_SUCCESS,
-                        payload: res.data
+                        payload: res.data.content
                     });
                     resolve(res);
                 })
                 .catch(err => {
                     console.log("Error: ", err.response);
+                    dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
@@ -41,12 +42,13 @@ function create(data){
                 .then(res => {
                     dispatch({
                         type: DepartmentConstants.CREATE_DEPARTMENT_SUCCESS,
-                        payload: res.data
+                        payload: res.data.content
                     });
-                    resolve(res.data);
+                    resolve(res.data.content);
                 })
                 .catch(err => {
                     console.log("Error: ", err);
+                    dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
@@ -63,12 +65,13 @@ function edit(data){
                 .then(res => {
                     dispatch({
                         type: DepartmentConstants.EDIT_DEPARTMENT_SUCCESS,
-                        payload: res.data
+                        payload: res.data.content
                     });
-                    resolve(res.data);
+                    resolve(res.data.content);
                 })
                 .catch(err => {
                     console.log("Error: ", err);
+                    dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
                 })
@@ -84,13 +87,14 @@ function destroy(departmentId){
                 dispatch({
                     type: DepartmentConstants.DELETE_DEPARTMENT_SUCCESS,
                     payload: {
-                        data: res.data,
+                        data: res.data.content,
                         id: departmentId
                     }
                 })
             })
             .catch(err => {
                 console.log("Error: ", err);
+                dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
     }

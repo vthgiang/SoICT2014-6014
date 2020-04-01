@@ -116,15 +116,6 @@ class Content extends Component {
     }
 
     componentDidUpdate() {
-        let script = document.createElement('script');
-        script.src = '/lib/main/js/defindMultiSelect.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-        script.src = '/lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         this.handleResizeColumn();
     }
 
@@ -134,7 +125,7 @@ class Content extends Component {
             <React.Fragment>
                 <div className="content-wrapper">
                     <section className="content-header">
-                        <h1> {pageName} { isLoading && <Loading/> } </h1>
+                        <h1> {pageName} &nbsp; { isLoading && <Loading/> } </h1>
                         
                         <ol className="breadcrumb">
                             {

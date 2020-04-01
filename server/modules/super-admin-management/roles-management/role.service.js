@@ -11,6 +11,7 @@ exports.get = async (company) => {
         .find({company})
         .populate([
             { path: 'users', model: UserRole},
+            { path: 'parents', model: Role },
             { path: 'type', model: RoleType }
         ]);
 }
@@ -47,6 +48,8 @@ exports.getById = async (company, roleId) => {
 
 exports.create = async(data, companyID) => {
     var roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
+    var check = await Role.findOne({name: data.name, company: companyID});
+    if(check !== null) throw({message: 'role_name_exist'});
     var role = await Role.create({
         name: data.name,
         company: companyID,
@@ -59,20 +62,28 @@ exports.create = async(data, companyID) => {
 
 exports.createAbstract = async(data, companyID) => {
     var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
-
-    return await Role.create({
+    const check = await Role.findOne({name: data.name, company: companyID}); 
+    if(check !== null) throw ({message: 'role_name_exist'});
+    const role = await Role.create({
         name: data.name,
         company: companyID,
         type: roleAbstract._id,
         parents: data.parents
     });
+
+    return role;
 }
 
 exports.crt_rolesOfDepartment = async(data, companyID) => {
+    var checkDean = await Role.findOne({name: data.dean, company: companyID }); if(checkDean !== null) throw ({message: 'role_dean_exist'});
+    var checkViceDean = await Role.findOne({name: data.dean, company: companyID}); if(checkViceDean !== null) throw ({message: 'role_vice_dean_exist'});
+    var checkEmployee = await Role.findOne({name: data.dean, company: companyID }); if(checkEmployee !== null) throw ({message: 'role_employee_exist'});
+
     var roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
     var deanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.DEAN.NAME }); //lấy role dean abstract
     var viceDeanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME }); //lấy role vice dean abstract
     var employeeAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME }); //lấy role employee abstract
+
     var employee = await Role.create({
         name: data.employee,
         company: companyID,
@@ -152,27 +163,20 @@ exports.editRelationshiopUserRole = async( roleId, userArr ) => {
         relationshipUpdated
     };
 }
-exports.getRoleSameDepartment = async (req, res) => {
-    var id = req.params.id;
-    try {
-        var roles = await Department.findOne({ 
-            $or:[
-                {'dean':id}, 
-                {'vice_dean':id}, 
-                {'employee':id}
-            ]  
-        }).populate([
-            {path:'dean'}, 
-            {path:'vice_dean'}, 
-            {path:'employee'}]
-        );
-        
-        res.status(200).json(roles);
-    } catch (error) {
-
-        res.status(400).json({msg: error});
-    }
-    console.log("get roles same");
+exports.getRoleSameDepartment = async (id) => {
+    var roles = await Department.findOne({ 
+        $or:[
+            {'dean':id}, 
+            {'vice_dean':id}, 
+            {'employee':id}
+        ]  
+    }).populate([
+        {path:'dean'}, 
+        {path:'vice_dean'}, 
+        {path:'employee'}]
+    );
+    
+    return roles;
 }
 
 

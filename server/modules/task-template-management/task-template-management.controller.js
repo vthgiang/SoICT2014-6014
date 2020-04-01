@@ -29,7 +29,7 @@ exports.getByUser = async (req, res) => {
     try {
         var pageNumber = Number(req.params.pageNumber);
         var noResultsPerPage = Number(req.params.noResultsPerPage);
-        var data = await TaskTemplateService.getByUser(req.params.id, pageNumber, noResultsPerPage, req.params.unit);
+        var data = await TaskTemplateService.getByUser(req.params.id, pageNumber, noResultsPerPage, req.params.unit, req.params.name);
         LogInfo(req.user.email, `Get task templates by user ${req.params.id}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {

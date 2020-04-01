@@ -1,6 +1,10 @@
 export default {
     locale: 'vn',
     messages: {
+        error: {
+            email_does_not_exist: 'Email này đã được sử dụng',
+            field_invalid: 'Trường nhập vào không hợp lệ',
+        },
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
             content: 'Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm',

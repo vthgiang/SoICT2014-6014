@@ -89,11 +89,11 @@ class RoleTable extends Component {
                                     <td> { 
                                         role.users.map((user, index, arr) => {
                                             if(arr.length < 3){
-                                                if(index !== arr.length - 1) return `${user.userId.name}, `;
-                                                else return `${user.userId.name}`
+                                                if(index !== arr.length - 1) return `${user.userId !== null ? user.userId.name : null}, `;
+                                                else return `${user.userId !== null ? user.userId.name : null}`
                                             }else{
                                                 if(index < 2 ){
-                                                    return `${user.userId.name}, `
+                                                    return `${user.userId !== null ? user.userId.name : null}, `
                                                 }
                                             }
                                         })
@@ -118,7 +118,7 @@ class RoleTable extends Component {
                                             roleId={role._id}
                                             roleName={role.name}
                                             roleParents={role.parents.map(parent => parent._id)}
-                                            roleUsers={role.users.map(user=>user.userId._id)}
+                                            roleUsers={role.users.map(user=>user.userId !== null ? user.userId._id : null)}
                                         />
                                         {
                                             role.type.name === 'Company-Defined' && 

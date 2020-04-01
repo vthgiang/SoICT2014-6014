@@ -182,20 +182,20 @@ const sampleCompanyData = async () => {
         type: roleAbstract._id
     }]);
 
-    const troLy = await Role.create({
+    const thanhVienBGĐ = await Role.create({
         parents: [roles[3]._id],
-        name: "Trợ lý giám đốc",
+        name: "Thành viên ban giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const phoGiamDoc = await Role.create({
-        parents: [roles[2]._id, troLy._id],
+        parents: [roles[2]._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const giamDoc = await Role.create({
-        parents: [roles[1]._id, troLy._id, phoGiamDoc._id],
+        parents: [roles[1]._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
@@ -219,7 +219,7 @@ const sampleCompanyData = async () => {
         type: roleChucDanh._id
     });
 
-    console.log("Đã tạo xong các role mặc định của công ty: ", admin, roles, troLy, phoGiamDoc, giamDoc, nvPhongHC, phoPhongHC, truongPhongHC);
+    console.log("Đã tạo xong các role mặc định của công ty: ", admin, roles, thanhVienBGĐ, phoGiamDoc, giamDoc, nvPhongHC, phoPhongHC, truongPhongHC);
     //END
 
 
@@ -247,13 +247,17 @@ const sampleCompanyData = async () => {
         userId: users[3]._id,
         roleId: phoGiamDoc._id
     },
-    {//Trợ lý giám đốc Vũ Thị C
+    {//Thành viên ban giám đốc Vũ Thị C
         userId: users[4]._id,
-        roleId: troLy._id
+        roleId: thanhVienBGĐ._id
     },
     {//Trưởng phòng hành chính Nguyễn Văn D
         userId: users[5]._id,
         roleId: truongPhongHC._id
+    },
+    {//Nguyễn Văn D cũng là thành viên ban giám đốc
+        userId: users[5]._id,
+        roleId: thanhVienBGĐ._id
     },
     {//Phó phòng hành chính Trần Thị E
         userId: users[6]._id,
@@ -279,7 +283,7 @@ const sampleCompanyData = async () => {
         company:  xyz._id,
         dean: giamDoc._id,
         vice_dean: phoGiamDoc._id,
-        employee: troLy._id,
+        employee: thanhVienBGĐ._id,
         parent: null
     });
     const departments = await Department.insertMany([

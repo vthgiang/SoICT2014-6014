@@ -22,12 +22,16 @@ Ví dụ:
         width: 200px;
         margin-right: 10px;
     }
+    div#qlcv.box .form-inline .form-group{
+        margin-bottom: 10px;
+    }
     div#qlcv.box .form-inline .form-control {
         width: 200px;
+        margin-right: 10px;
     }
     div#qlcv.box .form-inline label {
         width: 100px;
-        margin: 0 10px 10px 0;
+        margin-right: 10px;
     }
     div#qlcv.box .form-inline .checkbox input[type=checkbox]{
         margin-left: -20px;
