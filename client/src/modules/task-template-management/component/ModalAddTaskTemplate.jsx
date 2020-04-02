@@ -687,8 +687,8 @@ class ModalAddTaskTemplate extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="col-sm-4 control-label">Kiểu dữ liệu:</label>
-                                                    <div onClick={() => this.showSelection()} className="col-sm-10" style={{ width: '100%' }}>
-                                                        <select className="form-control" id="seltype" defaultValue='Văn bản' name="type" ref={select => this.typeInfo = select} >
+                                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                                        <select onClick={() => this.showSelection()} className="form-control" id="seltype" defaultValue='Văn bản' name="type" ref={input => this.typeInfo = input} >
                                                             <option value="Văn bản">Văn bản</option>
                                                             <option value="Số">Số</option>
                                                             <option value="Ngày tháng">Ngày tháng</option>
@@ -741,7 +741,7 @@ class ModalAddTaskTemplate extends Component {
                                                                         <td>{index + 1}</td>
                                                                         <td>{item.name}</td>
                                                                         <td>{item.description}</td>
-                                                                        <td>{item.type !== "Văn bản" && item.type !== "Số" && item.type !== "Ngày tháng" && item.type !== "Boolean" ? `Tập giá trị (${item.type})` : item.type }</td>
+                                                                        <td>{item.type}</td>
                                                                         <td>{item.mandatary ? "Có" : "Không"}</td>
                                                                         <td>
                                                                             <a href="#abc" className="edit" title="Edit" onClick={() => this.editInformation(item, index)}><i className="material-icons"></i></a>
