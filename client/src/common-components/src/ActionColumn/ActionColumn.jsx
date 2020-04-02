@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti } from '../SelectMulti/SelectMulti';
+import { SelectMulti } from '../../';
 import './ActionColumn.css';
 
 class ActionColumn extends Component {
@@ -49,7 +49,7 @@ class ActionColumn extends Component {
                         <div className="form-group">
                             <label className="form-control-static">Ẩn cột</label>
                             <SelectMulti id={"multiSelectShowColumn"} multiple="multiple"
-                                nonSelectedText = "Chọn cột muốn ẩn" allSelectedText= "Tất cả các cột"
+                                options= {{nonSelectedText: "Chọn cột muốn ẩn", allSelectedText: "Tất cả các cột"}}
                                 items = { columnArr.map((col,i) => {return {value: i + 1, text: col}}) }>
                             </SelectMulti>
                         </div>

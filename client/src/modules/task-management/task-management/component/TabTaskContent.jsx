@@ -6,7 +6,8 @@ import { DepartmentActions } from '../../../super-admin-management/departments-m
 import { taskManagementActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 
-import { SelectMulti } from '../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
+import { SelectMulti, ActionColumn } from '../../../../common-components';
 
 class TabTaskContent extends Component {
     constructor(props) {
@@ -34,8 +35,6 @@ class TabTaskContent extends Component {
         } else {
             this.props.getInformedTaskByUser( "[]", 1, 20, "[]", "[]", "[]", null);
         }
-        this.defindMultiSelect();
-        this.handleResizeColumn();
     }
 
     UNSAFE_componentWillUpdate() {
@@ -44,34 +43,6 @@ class TabTaskContent extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     formatDate(date) {
         var d = new Date(date),
@@ -86,40 +57,7 @@ class TabTaskContent extends Component {
 
         return [day, month, year].join('-');
     }
-    defindMultiSelect = () => {
-        window.$(document).ready(function () {
-            window.$('#multiSelectShowColumn1').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn cột muốn ẩn',
-                allSelectedText: 'Ẩn tất cả các cột'
-            });
-        });
-        window.$(document).ready(function () {
-            window.$('#multiSelectStatus').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn trạng thái',
-                allSelectedText: 'Tất cả trạng thái'
-            });
-        });
-        window.$(document).ready(function () {
-            window.$('#multiSelectPriority').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn độ ưu tiên',
-                allSelectedText: 'Tất cả độ ưu tiên'
-            });
-        });
-        window.$(document).ready(function () {
-            window.$('#multiSelectCharacteristic').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn đặc tính',
-                allSelectedText: 'Tất cả đặc tính'
-            });
-        });
-    }
+
     list_to_tree = (list) => {
         var map = {}, node, roots = [], i, newarr = [];
         for (i = 0; i < list.length; i += 1) {
@@ -147,30 +85,20 @@ class TabTaskContent extends Component {
         let flat = change(roots).map(x => delete x.children && x);
         return flat;
     }
-    handleSetting = async () => {
-        console.log("----------------------Cập nhật cột muốn ấn------------------------");
-        // Cập nhật cột muốn ấn
-        var test = window.$("#multiSelectShowColumn1").val();
-        window.$("td").show();
-        window.$("th").show();
-        for (var j = 0, len = test.length; j < len; j++) {
-            window.$('td:nth-child(' + test[j] + ')').hide();
-            window.$('th:nth-child(' + test[j] + ')').hide();
+    
+    setLimit = async (limit) => {
+        if (Number(limit) !== this.state.perPage){
+            // Cập nhật số dòng trang trên một trang hiển thị
+            await this.setState(state => {
+                return {
+                    ...state,
+                    perPage: Number(limit)
+                }
+            })
+            // TODO: send query
         }
-        // Cập nhật số dòng trang trên một trang hiển thị
-        await this.setState(state => {
-            return {
-                ...state,
-                perPage: this.perPage.value
-            }
-        })
-        // Đóng cửa sổ cài đặt
-        var element = document.getElementById("setting-table");
-        element.classList.remove("in");
-        element.setAttribute("aria-expanded", "false");
     }
     handleExtendProperties = async () => {
-        await this.defindMultiSelect();
         await this.setState(state => {
             return {
                 ...state,
@@ -329,7 +257,7 @@ class TabTaskContent extends Component {
     render() {
         var currentTasks, units;
         var pageTotals;
-        const { tasks, department } = this.props;
+        const { tasks, department, translate } = this.props;
         const { extendProperties, startTimer, currentTimer, currentPage } = this.state;
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
@@ -364,44 +292,57 @@ class TabTaskContent extends Component {
             <React.Fragment>
                 <div className="col-xs-7">
                     <div className="col-xs-6 item-container">
-                        <label>Đơn vị:</label>
+                        <label>Đơn vị</label>
                         {units &&
-                            <SelectMulti id="multiSelectUnit1" selectAllByDefault={true} items={units.map(item => {return {value: item._id, text: item.name}})} 
-                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả các đơn vị"></SelectMulti>
+                            <SelectMulti id="multiSelectUnit1"
+                                defaultValue = {units.map(item => {return item._id})}
+                                items = {units.map(item => {return {value: item._id, text: item.name}})} 
+                                options = {{nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị"}}>
+                            </SelectMulti>
                         }
                     </div>
                     <div className="col-xs-6 item-container">
-                        <label style={{ width: "48%" }}>Tên công việc:</label>
+                        <label style={{ width: "48%" }}>Tên công việc</label>
                         <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
                     </div>
                     <div className="col-xs-6 item-container">
-                        <label>Trạng thái:</label>
-                        <select id="multiSelectStatus" style={{ marginLeft: "0" }} multiple="multiple" defaultValue={["Đang chờ", "Đang thực hiện"]}>
-                            <option value="Đang chờ">Đang chờ</option>
-                            <option value="Đang thực hiện">Đang thực hiện</option>
-                            <option value="Quá hạn">Quá hạn</option>
-                            <option value="Chờ phê duyệt">Chờ phê duyệt</option>
-                            <option value="Đã hoàn thành">Đã hoàn thành</option>
-                            <option value="Đã hủy">Đã hủy</option>
-                            <option value="Tạm dừng">Tạm dừng</option>
-                        </select>
+                        <label>Trạng thái</label>
+                        <SelectMulti id="multiSelectStatus" defaultValue={["Đang chờ", "Đang thực hiện"]}
+                            items = {[
+                                {value: "Đang chờ", text: "Đang chờ"},
+                                {value: "Đang thực hiện", text: "Đang thực hiện"},
+                                {value: "Quá hạn", text: "Quá hạn"},
+                                {value: "Chờ phê duyệt", text: "Chờ phê duyệt"},
+                                {value: "Đã hoàn thành", text: "Đã hoàn thành"},
+                                {value: "Đã hủy", text: "Đã hủy"},
+                                {value: "Tạm dừng", text: "Tạm dừng"}
+                            ]}
+                            options = {{nonSelectedText: "Chọn trạng thái", allSelectedText: "Tất cả các trạng thái"}}>
+                        </SelectMulti>
+
                     </div>
                     {extendProperties &&
                         <React.Fragment>
                             <div className="col-xs-6 item-container">
-                                <label style={{ marginRight: "9%" }}>Độ ưu tiên:</label>
-                                <select id="multiSelectPriority" style={{ marginLeft: "0" }} multiple="multiple" defaultValue={["Đang chờ", "Đang thực hiện", "Quá hạn", "Đã hoàn thành", "Đã hủy", "Tạm dừng"]}>
-                                    <option value="Cao">Cao</option>
-                                    <option value="Trung bình">Trung bình</option>
-                                    <option value="Thấp">Thấp</option>
-                                </select>
+                                <label style={{ marginRight: "9%" }}>Độ ưu tiên</label>
+                                <SelectMulti id="multiSelectPriority" defaultValue={["Cao", "Trung bình", "Thấp"]}
+                                    items = {[
+                                        {value: "Cao", text: "Cao"},
+                                        {value: "Trung bình", text: "Trung bình"},
+                                        {value: "Thấp", text: "Thấp"}
+                                    ]}
+                                    options = {{nonSelectedText: "Chọn mức độ ưu tiên", allSelectedText: "Tất cả các mức"}}>
+                                </SelectMulti>
                             </div>
                             <div className="col-xs-6 item-container">
-                                <label>Đặc tính:</label>
-                                <select id="multiSelectCharacteristic" style={{ marginLeft: "0" }} multiple="multiple" defaultValue={["Đang chờ", "Đang thực hiện", "Quá hạn", "Đã hoàn thành", "Đã hủy", "Tạm dừng"]}>
-                                    <option value="1">Lưu trong kho</option>
-                                    <option value="2">Tháng hiện tại</option>
-                                </select>
+                                <label>Đặc tính</label>
+                                <SelectMulti id="multiSelectCharacteristic" defaultValue={["Lưu trong kho", "Tháng hiện tại"]}
+                                    items = {[
+                                        {value: "Lưu trong kho", text: "Lưu trong kho"},
+                                        {value: "Tháng hiện tại", text: "Tháng hiện tại"}
+                                    ]}
+                                    options = {{nonSelectedText: "Chọn đặc tính", allSelectedText: "Tất cả các đặc tính"}}>
+                                </SelectMulti>
                             </div>
                         </React.Fragment>}
                     <div className="col-xs-3 item-container">
@@ -420,41 +361,31 @@ class TabTaskContent extends Component {
                 <table id="tree-table" className="table table-hover table-bordered">
                     <thead>
                         <tr id="task">
-                            <th style={{ width: "9%" }} title="Tên công việc">Tên công việc</th>
-                            <th style={{ width: "14%" }} title="Đơn vị">Đơn vị</th>
-                            <th style={{ width: "7%" }} title="Độ ưu tiên">Độ ưu tiên</th>
-                            <th style={{ width: "7%" }} title="Ngày bắt đầu">Bắt đầu</th>
-                            <th style={{ width: "7%" }} title="Ngày kết thúc">Kết thúc</th>
-                            <th style={{ width: "8%" }} title="Trạng thái">Trạng thái</th>
-                            <th style={{ width: "6%" }} title="Tiến độ">Tiến độ</th>
-                            <th style={{ width: "7%" }} title="Thời gian thực hiện">Thời gian</th>
-                            <th style={{ width: "9%" }}>
-                                Hành động
-                                <button type="button" data-toggle="collapse" data-target="#setting-table" style={{ border: "none", background: "none" }}><i className="fa fa-gear"></i></button>
-                                <div id="setting-table" className="row collapse">
-                                    <span className="pop-arw arwTop L-auto R10"></span>
-                                    <div className="col-xs-12">
-                                        <label style={{ marginRight: "15px" }}>Ẩn cột:</label>
-                                        <select id="multiSelectShowColumn1" multiple="multiple">
-                                            <option value="1">Tên công việc</option>
-                                            <option value="2">Đơn vị</option>
-                                            <option value="3">Độ ưu tiên</option>
-                                            <option value="4">Thời gian bắt đầu</option>
-                                            <option value="5">Thời gian kết thúc</option>
-                                            <option value="6">Trạng thái</option>
-                                            <option value="7">Tiến độ</option>
-                                            <option value="8">Thời gian</option>
-                                            <option value="9">Hành động</option>
-                                        </select>
-                                    </div>
-                                    <div className="col-xs-12" style={{ marginTop: "10px" }}>
-                                        <label style={{ marginRight: "15px" }}>Số dòng/trang:</label>
-                                        <input className="form-control" type="text" defaultValue={10} ref={input => this.perPage = input} />
-                                    </div>
-                                    <div className="col-xs-2 col-xs-offset-6" style={{ marginTop: "10px" }}>
-                                        <button type="button" className="btn btn-success" onClick={this.handleSetting}>Cập nhật</button>
-                                    </div>
-                                </div>
+                            <th style={{ width: "300px" }} title="Tên công việc">Tên công việc</th>
+                            <th title="Đơn vị">Đơn vị</th>
+                            <th title="Độ ưu tiên">Độ ưu tiên</th>
+                            <th title="Ngày bắt đầu">Bắt đầu</th>
+                            <th title="Ngày kết thúc">Kết thúc</th>
+                            <th title="Trạng thái">Trạng thái</th>
+                            <th title="Tiến độ">Tiến độ</th>
+                            <th title="Thời gian thực hiện">Thời gian</th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>
+                                <ActionColumn
+                                    columnName={translate('table.action')} 
+                                    columnArr={[
+                                        'Tên công việc',
+                                        'Đơn vị',
+                                        'Độ ưu tiên',
+                                        'Ngày bắt đầu',
+                                        'Ngày kết thúc',
+                                        'Trạng thái',
+                                        'Tiến độ',
+                                        'Thời gian thực hiện'
+                                    ]}
+                                    limit = {this.state.perPage}
+                                    setLimit = {this.setLimit}
+                                    hideColumnOption = {true}
+                                />
                             </th>
                         </tr>
                     </thead>
@@ -519,5 +450,5 @@ const actionCreators = {
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getDepartment: DepartmentActions.getDepartmentOfUser
 };
-const connectedTabTaskContent = connect(mapState, actionCreators)(TabTaskContent);
+const connectedTabTaskContent = connect(mapState, actionCreators)(withTranslate(TabTaskContent))
 export { connectedTabTaskContent as TabTaskContent };

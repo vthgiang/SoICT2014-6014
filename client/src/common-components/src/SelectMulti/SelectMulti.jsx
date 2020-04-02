@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './SelectMulti.css';
-import { selelectMultiScript } from './SelectMulti.js'
+import { selelectMultiScript } from './bootstrap-multiselect.js'
 
 class SelectMulti extends Component {
     constructor(props) {
@@ -17,19 +17,16 @@ class SelectMulti extends Component {
             document.body.appendChild(script);
         }
 
-        const { nonSelectedText, allSelectedText, id } = this.props;
+        const { id, options } = this.props;
 
-        window.$("#" + id).multiselect({
-            nonSelectedText: nonSelectedText,
-            allSelectedText: allSelectedText
-        });
+        window.$("#" + id).multiselect({options});
     }
     render() { 
-        const { id, items, selectAllByDefault } = this.props;
+        const { id, items, defaultValue } = this.props;
         return ( 
             <React.Fragment>
                 <div className="selectmulti">
-                    <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={selectAllByDefault?items.map(item => item.value):[]}>
+                    <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={defaultValue}>
                         {items.map(item => {
                             return <option key={item.value} value={item.value}>{item.text}</option>
                         })}
