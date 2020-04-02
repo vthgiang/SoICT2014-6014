@@ -18,22 +18,23 @@ Ví dụ:
 */
 
 @media (min-width: 768px){
-    div#qlcv.box div.selectmulti > div.btn-group, div.selectmulti > div.btn-group > button {
+    div#qlcv div.selectmulti > div.btn-group, div.selectmulti > div.btn-group > button {
         width: 200px;
         margin-right: 10px;
     }
-    div#qlcv.box .form-inline .form-group{
+    div#qlcv .form-inline .form-group{
         margin-bottom: 10px;
     }
-    div#qlcv.box .form-inline .form-control {
+    div#qlcv .form-inline .form-control {
         width: 200px;
         margin-right: 10px;
     }
-    div#qlcv.box .form-inline label {
+    div#qlcv .form-inline > label, div#qlcv .form-inline > .form-group> label{
         width: 100px;
         margin-right: 10px;
+        text-align: right;
     }
-    div#qlcv.box .form-inline .checkbox input[type=checkbox]{
+    div#qlcv .form-inline .checkbox input[type=checkbox]{
         margin-left: -20px;
     }
 }

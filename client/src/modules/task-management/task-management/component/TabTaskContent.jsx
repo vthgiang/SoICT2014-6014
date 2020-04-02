@@ -14,7 +14,6 @@ class TabTaskContent extends Component {
         super(props);
         this.state = {
             perPage: 20,
-            extendProperties: false,
             startTimer: false,
             currentTimer: "",
             currentPage: 1,
@@ -98,14 +97,7 @@ class TabTaskContent extends Component {
             // TODO: send query
         }
     }
-    handleExtendProperties = async () => {
-        await this.setState(state => {
-            return {
-                ...state,
-                extendProperties: !state.extendProperties
-            }
-        })
-    }
+    
     handleCountTime = async (id) => {
         const { startTimer } = this.state;
         if (startTimer) {
@@ -258,7 +250,7 @@ class TabTaskContent extends Component {
         var currentTasks, units;
         var pageTotals;
         const { tasks, department, translate } = this.props;
-        const { extendProperties, startTimer, currentTimer, currentPage } = this.state;
+        const { startTimer, currentTimer, currentPage } = this.state;
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
             pageTotals = tasks.pages
@@ -290,106 +282,109 @@ class TabTaskContent extends Component {
         }
         return (
             <React.Fragment>
-                <div className="col-xs-7">
-                    <div className="col-xs-6 item-container">
-                        <label>Đơn vị</label>
-                        {units &&
-                            <SelectMulti id="multiSelectUnit1"
-                                defaultValue = {units.map(item => {return item._id})}
-                                items = {units.map(item => {return {value: item._id, text: item.name}})} 
-                                options = {{nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị"}}>
-                            </SelectMulti>
-                        }
-                    </div>
-                    <div className="col-xs-6 item-container">
-                        <label style={{ width: "48%" }}>Tên công việc</label>
-                        <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
-                    </div>
-                    <div className="col-xs-6 item-container">
-                        <label>Trạng thái</label>
-                        <SelectMulti id="multiSelectStatus" defaultValue={["Đang chờ", "Đang thực hiện"]}
-                            items = {[
-                                {value: "Đang chờ", text: "Đang chờ"},
-                                {value: "Đang thực hiện", text: "Đang thực hiện"},
-                                {value: "Quá hạn", text: "Quá hạn"},
-                                {value: "Chờ phê duyệt", text: "Chờ phê duyệt"},
-                                {value: "Đã hoàn thành", text: "Đã hoàn thành"},
-                                {value: "Đã hủy", text: "Đã hủy"},
-                                {value: "Tạm dừng", text: "Tạm dừng"}
-                            ]}
-                            options = {{nonSelectedText: "Chọn trạng thái", allSelectedText: "Tất cả các trạng thái"}}>
-                        </SelectMulti>
+                <div className="" id="qlcv">
 
+                    <div className = "form-group">
+                        {this.props.role !== "informed" &&
+                            <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một công việc" data-target="#addNewTask" data-backdrop="static" data-keyboard="false">Thêm mới</button>
+                        }
+                        <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0)&&this.list_to_tree(currentTasks)} id=""/>
                     </div>
-                    {extendProperties &&
-                        <React.Fragment>
-                            <div className="col-xs-6 item-container">
-                                <label style={{ marginRight: "9%" }}>Độ ưu tiên</label>
-                                <SelectMulti id="multiSelectPriority" defaultValue={["Cao", "Trung bình", "Thấp"]}
-                                    items = {[
-                                        {value: "Cao", text: "Cao"},
-                                        {value: "Trung bình", text: "Trung bình"},
-                                        {value: "Thấp", text: "Thấp"}
-                                    ]}
-                                    options = {{nonSelectedText: "Chọn mức độ ưu tiên", allSelectedText: "Tất cả các mức"}}>
+
+                    <div className="form-inline">
+                        <div className = "form-group">
+                            <label>Đơn vị</label>
+                            {units &&
+                                <SelectMulti id="multiSelectUnit1"
+                                    defaultValue = {units.map(item => {return item._id})}
+                                    items = {units.map(item => {return {value: item._id, text: item.name}})} 
+                                    options = {{nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị"}}>
                                 </SelectMulti>
-                            </div>
-                            <div className="col-xs-6 item-container">
-                                <label>Đặc tính</label>
-                                <SelectMulti id="multiSelectCharacteristic" defaultValue={["Lưu trong kho", "Tháng hiện tại"]}
-                                    items = {[
-                                        {value: "Lưu trong kho", text: "Lưu trong kho"},
-                                        {value: "Tháng hiện tại", text: "Tháng hiện tại"}
-                                    ]}
-                                    options = {{nonSelectedText: "Chọn đặc tính", allSelectedText: "Tất cả các đặc tính"}}>
-                                </SelectMulti>
-                            </div>
-                        </React.Fragment>}
-                    <div className="col-xs-3 item-container">
-                        <button type="button" className="btn btn-success" onClick={this.handleUpdateData} style={{ width: "135%" }}>Tìm kiếm</button>
+                            }
+                        </div>
+                        <div className = "form-group">
+                            <label>Trạng thái</label>
+                            <SelectMulti id="multiSelectStatus" defaultValue={["Đang chờ", "Đang thực hiện"]}
+                                items = {[
+                                    {value: "Đang chờ", text: "Đang chờ"},
+                                    {value: "Đang thực hiện", text: "Đang thực hiện"},
+                                    {value: "Quá hạn", text: "Quá hạn"},
+                                    {value: "Chờ phê duyệt", text: "Chờ phê duyệt"},
+                                    {value: "Đã hoàn thành", text: "Đã hoàn thành"},
+                                    {value: "Đã hủy", text: "Đã hủy"},
+                                    {value: "Tạm dừng", text: "Tạm dừng"}
+                                ]}
+                                options = {{nonSelectedText: "Chọn trạng thái", allSelectedText: "Tất cả các trạng thái"}}>
+                            </SelectMulti>
+                        </div>
                     </div>
-                    <div className="col-xs-8" style={{ marginLeft: "-12px" }}>
-                        <button className="btn btn-default" style={{ background: "none", border: "none", fontWeight: "700" }} onClick={this.handleExtendProperties}>{extendProperties ? "Cơ bản " : "Nâng cao "}<i className={extendProperties?"fa fa-angle-double-up":"fa fa-angle-double-down"}></i></button>
+
+                    <div className="form-inline">
+                        <div className = "form-group">
+                            <label>Độ ưu tiên</label>
+                            <SelectMulti id="multiSelectPriority" defaultValue={["Cao", "Trung bình", "Thấp"]}
+                                items = {[
+                                    {value: "Cao", text: "Cao"},
+                                    {value: "Trung bình", text: "Trung bình"},
+                                    {value: "Thấp", text: "Thấp"}
+                                ]}
+                                options = {{nonSelectedText: "Chọn mức độ ưu tiên", allSelectedText: "Tất cả các mức"}}>
+                            </SelectMulti>
+                        </div>
+                        <div className = "form-group">
+                            <label>Đặc tính</label>
+                            <SelectMulti id="multiSelectCharacteristic" defaultValue={["Lưu trong kho", "Tháng hiện tại"]}
+                                items = {[
+                                    {value: "Lưu trong kho", text: "Lưu trong kho"},
+                                    {value: "Tháng hiện tại", text: "Tháng hiện tại"}
+                                ]}
+                                options = {{nonSelectedText: "Chọn đặc tính", allSelectedText: "Tất cả các đặc tính"}}>
+                            </SelectMulti>
+                        </div>
                     </div>
-                </div>
-                <div className="col-xs-2 col-xs-offset-3" style={{ marginTop: "4.5%" }}>
-                    {this.props.role !== "informed" &&
-                        <button type="button" className="btn btn-success" data-toggle="modal" title="Thêm mới một công việc" data-target="#addNewTask" data-backdrop="static" data-keyboard="false" style={{ width: "100%" }}>Thêm mới</button>
-                    }
-                    <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0)&&this.list_to_tree(currentTasks)} id=""/>
-                </div>
-                <table id="tree-table" className="table table-hover table-bordered">
-                    <thead>
-                        <tr id="task">
-                            <th style={{ width: "300px" }} title="Tên công việc">Tên công việc</th>
-                            <th title="Đơn vị">Đơn vị</th>
-                            <th title="Độ ưu tiên">Độ ưu tiên</th>
-                            <th title="Ngày bắt đầu">Bắt đầu</th>
-                            <th title="Ngày kết thúc">Kết thúc</th>
-                            <th title="Trạng thái">Trạng thái</th>
-                            <th title="Tiến độ">Tiến độ</th>
-                            <th title="Thời gian thực hiện">Thời gian</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>
-                                <ActionColumn
-                                    columnName={translate('table.action')} 
-                                    columnArr={[
-                                        'Tên công việc',
-                                        'Đơn vị',
-                                        'Độ ưu tiên',
-                                        'Ngày bắt đầu',
-                                        'Ngày kết thúc',
-                                        'Trạng thái',
-                                        'Tiến độ',
-                                        'Thời gian thực hiện'
-                                    ]}
-                                    limit = {this.state.perPage}
-                                    setLimit = {this.setLimit}
-                                    hideColumnOption = {true}
-                                />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="taskTable" className="task-table">
+
+                    <div className="form-inline">
+                        <div className = "form-group">
+                            <label>Tên công việc</label>
+                            <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
+                            <label></label>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Tìm kiếm</button>
+                        </div>
+                    </div>
+
+
+                    <table id="tree-table" className="table table-hover table-bordered">
+                        <thead>
+                            <tr id="task">
+                                <th style={{ width: "300px" }} title="Tên công việc">Tên công việc</th>
+                                <th title="Đơn vị">Đơn vị</th>
+                                <th title="Độ ưu tiên">Độ ưu tiên</th>
+                                <th title="Ngày bắt đầu">Bắt đầu</th>
+                                <th title="Ngày kết thúc">Kết thúc</th>
+                                <th title="Trạng thái">Trạng thái</th>
+                                <th title="Tiến độ">Tiến độ</th>
+                                <th title="Thời gian thực hiện">Thời gian</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                    <ActionColumn
+                                        columnName={translate('table.action')} 
+                                        columnArr={[
+                                            'Tên công việc',
+                                            'Đơn vị',
+                                            'Độ ưu tiên',
+                                            'Ngày bắt đầu',
+                                            'Ngày kết thúc',
+                                            'Trạng thái',
+                                            'Tiến độ',
+                                            'Thời gian thực hiện'
+                                        ]}
+                                        limit = {this.state.perPage}
+                                        setLimit = {this.setLimit}
+                                        hideColumnOption = {true}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTable" className="task-table">
                         {
                             (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) ?
                                 this.list_to_tree(currentTasks).map(item =>
@@ -421,17 +416,20 @@ class TabTaskContent extends Component {
                                             <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0)&&this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
                                         </td>
                                     </tr>
-                                ) : null
+                                ):null
                         }
-                    </tbody>
-                </table>
-                <div className="row pagination-new">
-                    <ul className="pagination" style={{ margin: "auto" }}>
-                        <li><a href="#abc" onClick={() => this.backPage()}>«</a></li>
-                        {items}
-                        <li><a href="#abc" onClick={() => this.nextPage(pageTotals)}>»</a></li>
-                    </ul>
+                        </tbody>
+                    </table>
+                    <div className="row pagination-new">
+                        <ul className="pagination" style={{ margin: "auto" }}>
+                            <li><a href="#abc" onClick={() => this.backPage()}>«</a></li>
+                            {items}
+                            <li><a href="#abc" onClick={() => this.nextPage(pageTotals)}>»</a></li>
+                        </ul>
+                    </div>
+
                 </div>
+                
             </React.Fragment>
         );
     }

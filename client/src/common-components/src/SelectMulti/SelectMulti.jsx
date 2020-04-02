@@ -18,8 +18,7 @@ class SelectMulti extends Component {
         }
 
         const { id, options } = this.props;
-
-        window.$("#" + id).multiselect({options});
+        window.$("#" + id).multiselect(options);
     }
     render() { 
         const { id, items, defaultValue } = this.props;
