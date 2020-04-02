@@ -58,6 +58,7 @@ class ActionColumn extends Component {
                     height: '100%'
                 });
             } else {
+                window.$(`#${tableContainerId}`)[0].style= "";
                 window.$(`#${tableId}`)[0].style= "";
             }
         }
