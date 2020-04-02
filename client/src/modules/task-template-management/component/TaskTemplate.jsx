@@ -241,9 +241,9 @@ class TaskTemplate extends Component {
             }
         }
         return ( 
-            <div className="box" id="qlcv">
+            <div className="box">
                 {/* /.box-header */}
-                <div className="box-body">
+                <div className="box-body" id="qlcv">
 
                     <div className = "form-group">
                         {this.checkPermisson(currentUnit && currentUnit[0].dean) &&

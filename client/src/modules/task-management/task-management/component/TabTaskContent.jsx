@@ -284,7 +284,7 @@ class TabTaskContent extends Component {
             <React.Fragment>
                 <div className="" id="qlcv">
 
-                    <div className = "form-group">
+                    <div style={{height: "40px"}}>
                         {this.props.role !== "informed" &&
                             <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một công việc" data-target="#addNewTask" data-backdrop="static" data-keyboard="false">Thêm mới</button>
                         }
@@ -347,11 +347,14 @@ class TabTaskContent extends Component {
                         <div className = "form-group">
                             <label>Tên công việc</label>
                             <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
+                        </div>
+                        <div className = "form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Tìm kiếm</button>
                         </div>
                     </div>
-
+                    
+                    
 
                     <table id="tree-table" className="table table-hover table-bordered">
                         <thead>
