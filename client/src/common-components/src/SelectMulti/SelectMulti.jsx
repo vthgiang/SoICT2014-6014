@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './SelectMulti.css';
+import { selelectMultiScript } from './SelectMulti.js'
 
 class SelectMulti extends Component {
     constructor(props) {
@@ -8,11 +9,13 @@ class SelectMulti extends Component {
     }
 
     componentDidMount(){
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/SelectMulti.js'
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+        if (document.getElementById("script-select-multi") === null){
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.id = "script-select-multi";
+            script.innerHTML = selelectMultiScript
+            document.body.appendChild(script);
+        }
 
         const { nonSelectedText, allSelectedText, id } = this.props;
 
@@ -23,7 +26,6 @@ class SelectMulti extends Component {
     }
     render() { 
         const { id, items, selectAllByDefault } = this.props;
-        console.log(items);
         return ( 
             <React.Fragment>
                 <div className="selectmulti">

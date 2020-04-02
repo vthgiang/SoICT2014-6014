@@ -18,7 +18,6 @@ class TaskTemplate extends Component {
         this.props.getDepartment();
         //edit later
         this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
-        this.loadJSMultiSelect();
     }
     constructor(props) {
         super(props);
@@ -33,16 +32,7 @@ class TaskTemplate extends Component {
         };
         this.handleUpdateData = this.handleUpdateData.bind(this);
     }
-    handleSetting = async () => {
-        // Cập nhật cột muốn ấn
-        var test = window.$("#multiSelectShowColumn").val();
-        window.$("td").show();
-        window.$("th").show();
-        for (var j = 0, len = test.length; j < len; j++) {
-            window.$('td:nth-child(' + test[j] + ')').hide();
-            window.$('th:nth-child(' + test[j] + ')').hide();
-        }
-    }
+
     setLimit = async (limit) => {
         // Cập nhật số dòng trang trên một trang hiển thị
         if (Number(limit) !== this.state.perPage) {
@@ -62,23 +52,6 @@ class TaskTemplate extends Component {
     //     element.classList.remove("in");
     //     element.setAttribute("aria-expanded", "false");
     // }
-    loadJSMultiSelect = () => {
-        window.$(document).ready(function () {
-            window.$('#multiSelectShowColumn').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn cột muốn ẩn'
-            });
-        });
-    }
-    // getSelectedValues = () => {
-    //     var selectedVal = window.$("#multiSelectUnit").val();
-    //     for (var i = 0; i < selectedVal.length; i++) {
-    //         //abc
-    //     }
-    //     console.log(selectedVal);
-    // }
-    //
 
     myFunction = () => {
         var input, filter, table, tr, td, i, txtValue;
