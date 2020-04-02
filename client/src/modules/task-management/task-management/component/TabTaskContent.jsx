@@ -355,7 +355,7 @@ class TabTaskContent extends Component {
                     </div>
                     
                     
-
+                    <div id="tree-table-container">
                     <table id="tree-table" className="table table-hover table-bordered">
                         <thead>
                             <tr id="task">
@@ -369,6 +369,9 @@ class TabTaskContent extends Component {
                                 <th title="Thời gian thực hiện">Thời gian</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                     <ActionColumn
+                                        tableId = "tree-table"
+                                        tableContainerId = "tree-table-container"
+                                        tableWidth = "1300px"
                                         columnName={translate('table.action')} 
                                         columnArr={[
                                             'Tên công việc',
@@ -387,7 +390,7 @@ class TabTaskContent extends Component {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody id="taskTable" className="task-table">
+                        <tbody className="task-table">
                         {
                             (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) ?
                                 this.list_to_tree(currentTasks).map(item =>
@@ -423,6 +426,8 @@ class TabTaskContent extends Component {
                         }
                         </tbody>
                     </table>
+                    </div>
+                    
                     <div className="row pagination-new">
                         <ul className="pagination" style={{ margin: "auto" }}>
                             <li><a href="#abc" onClick={() => this.backPage()}>«</a></li>

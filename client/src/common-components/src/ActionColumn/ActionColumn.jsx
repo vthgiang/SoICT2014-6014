@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti } from '../../';
+import { slimScrollScript } from './jquery.slimscroll.min';
 import './ActionColumn.css';
 
 class ActionColumn extends Component {
@@ -10,6 +11,15 @@ class ActionColumn extends Component {
         super(props);
         this.record = React.createRef();
         this.state = {}
+    }
+    componentDidMount(){
+        if (document.getElementById("script-slim-scroll") === null){
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.id = "script-slim-scroll";
+            script.innerHTML = slimScrollScript
+            document.body.appendChild(script);
+        }
     }
 
     handleEnterLimitSetting = (event) => {
@@ -35,8 +45,27 @@ class ActionColumn extends Component {
         await this.props.setLimit(this.record.current.value);
     }
 
+    configTableWidth = async() => {
+        const { tableId, tableContainerId, tableWidth } = this.props;
+        console.log(window.$(`#${tableContainerId}`)[0]);
+
+        if ( window.$(`#${tableContainerId}`)[0] !== undefined){
+            if (this.refs.configCheckbox.checked === true){
+                window.$(`#${tableId}`)[0].style = "width: " + tableWidth;
+                window.$(`#${tableContainerId}`).slimscroll({
+                    axis: 'x',
+                    width: '100%',
+                    height: '100%'
+                });
+            } else {
+                window.$(`#${tableId}`)[0].style= "";
+            }
+        }
+        window.$(`#setting-table`).collapse("hide");
+    }
+
     render() {
-        const { columnName, translate, columnArr, hideColumnOption, limit=5 } = this.props;
+        const { columnName, translate, columnArr, hideColumnOption, tableContainerId, limit=5 } = this.props;
         
         return (
             <React.Fragment>
@@ -59,6 +88,11 @@ class ActionColumn extends Component {
                         <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} defaultValue={limit} ref={this.record} />
                     </div>
                     <div className="form-group">
+                        { window.$(`#${tableContainerId}`)[0] !== undefined &&
+                            <div className="checkbox">
+                                <label><input type="checkbox" ref="configCheckbox" onClick={this.configTableWidth}/>Cố định chiều rộng bảng</label>
+                            </div>
+                        }
                         <button type="button" className="btn btn-success pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
                     </div>
                 </div>
