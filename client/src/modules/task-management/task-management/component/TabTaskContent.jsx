@@ -247,7 +247,7 @@ class TabTaskContent extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
     render() {
-        var currentTasks, units;
+        var currentTasks, units = [];
         var pageTotals;
         const { tasks, department, translate } = this.props;
         const { startTimer, currentTimer, currentPage } = this.state;

@@ -196,7 +196,7 @@ class TaskTemplate extends Component {
     }
     render() {
         const { translate } = this.props;
-        var list, pageTotal, units, currentUnit;
+        var list, pageTotal, units = [], currentUnit;
         const { tasktemplates, department } = this.props;
         const { currentPage } = this.state;
         if (tasktemplates.pageTotal) pageTotal = tasktemplates.pageTotal;

@@ -20,6 +20,14 @@ class SelectMulti extends Component {
         const { id, options } = this.props;
         window.$("#" + id).multiselect(options);
     }
+
+    componentDidUpdate() {
+        // Cập nhật lại danh sách lựa chọn (theo select với id là this.props.id)
+        const { id, defaultValue } = this.props;
+        window.$("#" + id).multiselect('rebuild');
+        window.$("#" + id).multiselect('select', defaultValue);
+    }
+
     render() { 
         const { id, items, defaultValue } = this.props;
         return ( 
