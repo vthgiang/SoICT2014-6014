@@ -7,8 +7,8 @@ import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './ModalViewTaskTemplate';
 import { ModalEditTaskTemplate } from './ModalEditTaskTemplate';
 
-import { SelectMulti } from '../../../common-components/src/SelectMulti/SelectMulti';
-import { ActionColumn } from '../../../common-components/src/ActionColumn';
+import { SelectMulti } from '../../../common-components';
+import { ActionColumn } from '../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';

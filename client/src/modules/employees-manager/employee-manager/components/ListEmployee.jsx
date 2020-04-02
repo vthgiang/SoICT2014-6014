@@ -7,8 +7,8 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 

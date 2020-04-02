@@ -6,7 +6,7 @@ import { DepartmentActions } from '../../../super-admin-management/departments-m
 import { taskManagementActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 
-import { SelectMulti } from '../../../../common-components/src/SelectMulti/SelectMulti';
+import { SelectMulti } from '../../../../common-components';
 
 class TabTaskContent extends Component {
     constructor(props) {
