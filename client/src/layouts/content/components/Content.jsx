@@ -5,6 +5,9 @@ import Alert from '../../../modules/alert/components';
 
 import { Loading } from '../../../common-components';
 
+import { NonPassiveEventListenerWarningFix } from '../../../common-components';
+
+
 import './Content.css'
 
 class Content extends Component {
@@ -123,6 +126,7 @@ class Content extends Component {
         const { translate, pageName, arrPage, isLoading } = this.props;
         return (
             <React.Fragment>
+                <NonPassiveEventListenerWarningFix/>
                 <div className="content-wrapper">
                     <section className="content-header">
                         <h1> {pageName} &nbsp; { isLoading && <Loading/> } </h1>
