@@ -5,8 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
 import { ModalEditPraise } from './ModalEditPraise';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 class TabPraise extends Component {
@@ -20,8 +20,6 @@ class TabPraise extends Component {
             page: 0,
             limit: 5,
         }
-        this.setLimit = this.setLimit.bind(this);
-        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
@@ -178,8 +176,17 @@ class TabPraise extends Component {
                                         <th style={{ width: '120px', textAlign: 'center' }}>
                                             <ActionColumn
                                                 columnName={translate('table.action')}
-                                                hideColumn={false}
+                                                columnArr={[
+                                                    translate('table.employee_number'),
+                                                    translate('table.employee_name'),
+                                                    translate('discipline.decision_day'),
+                                                    translate('page.number_decisions'),
+                                                    translate('table.unit'),
+                                                    translate('table.position')
+                                                ]}
+                                                limit={this.state.limit}
                                                 setLimit={this.setLimit}
+                                                hideColumnOption={true}
                                             />
                                         </th>
                                     </tr>

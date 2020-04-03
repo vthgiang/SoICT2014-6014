@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti } from './SelectMulti/SelectMulti';
+import { SelectMulti } from '../../';
+import { SlimScroll } from '../../';
 import './ActionColumn.css';
 
 class ActionColumn extends Component {
     constructor(props) {
         super(props);
         this.record = React.createRef();
-        this.state = {}
+        this.state = {fixTableWidth: false};
     }
 
     handleEnterLimitSetting = (event) => {
@@ -35,9 +36,29 @@ class ActionColumn extends Component {
         await this.props.setLimit(this.record.current.value);
     }
 
+    configTableWidth = async() => {
+        const { tableId, tableContainerId, tableWidth } = this.props;
+
+        await this.setState(state => {
+            return {
+                ...state,
+                fixTableWidth: this.refs.configCheckbox.checked
+            }
+        })
+
+        if ( window.$(`#${tableContainerId}`)[0] !== undefined){
+            if (this.state.fixTableWidth === true){
+                window.$(`#${tableId}`)[0].style = `width: ${tableWidth}; max-width: ${tableWidth}`;
+            } else {
+                window.$(`#${tableId}`)[0].style= "";
+            }
+        }
+        window.$(`#setting-table`).collapse("hide");
+    }
+
     render() {
-        const { columnName, translate, columnArr=[], hideColumnOption=true, limit=5 } = this.props;
-        console.log(this.props)
+        const { columnName, translate, columnArr=[], hideColumnOption=true, tableContainerId, limit=5 } = this.props;
+        
         return (
             <React.Fragment>
                 {columnName}
@@ -49,7 +70,7 @@ class ActionColumn extends Component {
                         <div className="form-group">
                             <label className="form-control-static">Ẩn cột</label>
                             <SelectMulti id={"multiSelectShowColumn"} multiple="multiple"
-                                nonSelectedText = "Chọn cột muốn ẩn" allSelectedText= "Tất cả các cột"
+                                options= {{nonSelectedText: "Chọn cột muốn ẩn", allSelectedText: "Tất cả các cột"}}
                                 items = { columnArr.map((col,i) => {return {value: i + 1, text: col}}) }>
                             </SelectMulti>
                         </div>
@@ -59,6 +80,14 @@ class ActionColumn extends Component {
                         <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} defaultValue={limit} ref={this.record} />
                     </div>
                     <div className="form-group">
+                        { window.$(`#${tableContainerId}`)[0] !== undefined &&
+                            <React.Fragment>
+                                <div className="checkbox">
+                                    <label><input type="checkbox" checked={this.state.fixTableWidth} ref="configCheckbox" onClick={this.configTableWidth}/>Cố định chiều rộng bảng</label>
+                                </div>
+                                <SlimScroll id={tableContainerId} active={this.state.fixTableWidth}/>
+                            </React.Fragment>
+                        }
                         <button type="button" className="btn btn-success pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
                     </div>
                 </div>

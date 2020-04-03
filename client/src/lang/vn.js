@@ -151,7 +151,7 @@ export default {
             sabbatical: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
             time_keeping: 'Chấm công nhân viên',
-            list_course: 'Chương trình đào tạo bắt buộc',
+            list_education: 'Chương trình đào tạo bắt buộc',
             training_plan: 'Quản lý khoá đào tạo',
 
             manage_kpi: 'Quản lý KPI',

@@ -138,7 +138,7 @@ export default {
             sabbatical: 'Manage Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
-            list_course: 'Training Programs',
+            list_education: 'Training Programs',
             training_plan: 'Manage Training Courses',
 
             manage_kpi: 'Manage KPI',

@@ -7,8 +7,8 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 
@@ -24,7 +24,6 @@ class ListEmployee extends Component {
             limit: 5,
 
         }
-        this.setLimit = this.setLimit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
@@ -199,8 +198,18 @@ class ListEmployee extends Component {
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
                                                     columnName="Hành động"
-                                                    hideColumn={false}
+                                                    columnName={translate('table.action')}
+                                                    columnArr={[
+                                                       "Mã nhân viên",
+                                                        "Họ và tên",
+                                                        "Giới tính",
+                                                        "Ngày sinh",
+                                                        "Đơn vị",
+                                                        "Chức vụ"
+                                                    ]}
+                                                    limit={this.state.limit}
                                                     setLimit={this.setLimit}
+                                                    hideColumnOption={true}
                                                 />
                                             </th>
                                         </tr>
@@ -245,7 +254,7 @@ class ListEmployee extends Component {
                                             )
                                             )}
                                     </tbody>
-                                    
+
                                 </table>
                                 <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                             </div>

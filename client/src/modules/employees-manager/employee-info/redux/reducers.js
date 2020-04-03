@@ -22,7 +22,8 @@ export function employeesInfo(state = {}, action) {
             };
         case Constants.GET_INFOR_PERSONAL_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case Constants.UPDATE_INFOR_PERSONAL_REQUEST:
             return {
@@ -37,7 +38,8 @@ export function employeesInfo(state = {}, action) {
             };
         case Constants.UPDATE_INFOR_PERSONAL_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         default:
             return state

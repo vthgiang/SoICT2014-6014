@@ -22,7 +22,8 @@ export function salary(state = initState, action) {
             };
         case SalaryConstants.GET_SALARY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case SalaryConstants.CREATE_SALARY_REQUEST:
             return {
@@ -40,7 +41,8 @@ export function salary(state = initState, action) {
             };
         case SalaryConstants.CREATE_SALARY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case SalaryConstants.DELETE_SALARY_REQUEST:
             return {
@@ -55,7 +57,8 @@ export function salary(state = initState, action) {
             };
         case SalaryConstants.DELETE_SALARY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case SalaryConstants.UPDATE_SALARY_REQUEST:
             return {
@@ -73,7 +76,8 @@ export function salary(state = initState, action) {
             };
         case SalaryConstants.UPDATE_SALARY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
 
         case SalaryConstants.CHECK_ARRAY_SALARY_REQUEST:
@@ -89,7 +93,8 @@ export function salary(state = initState, action) {
             };
         case SalaryConstants.CHECK_ARRAY_SALARY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case SalaryConstants.CHECK_SALARY_REQUEST:
             return {
@@ -104,7 +109,8 @@ export function salary(state = initState, action) {
             };
         case SalaryConstants.CHECK_SALARY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
 
         case SalaryConstants.IMPORT_SALARY_REQUEST:
@@ -120,7 +126,8 @@ export function salary(state = initState, action) {
             };
         case SalaryConstants.IMPORT_SALARY_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         default:
             return state
