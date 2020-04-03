@@ -14,6 +14,7 @@ exports.PREDEFINED_ROLES = {
 }
 
 exports.CATEGORY_LINKS = {
+    COMMON: {NAME: "common", DESCRIPTION: "Các trang web dùng chung cho mọi người dùng"},
     RBAC_MANAGEMENT: {NAME: "rbac-management", DESCRIPTION: "Quản lý phân quyền, người dùng, cơ cấu tổ chức, phân trang, component"},
     KPI_MANAGEMENT: {NAME: "kpi-management", DESCRIPTION: "Quản lý KPI"},
     TASK_MANAGEMENT: {NAME: "task-management", DESCRIPTION: "Quản lý công việc"},

@@ -33,14 +33,8 @@ exports.create = async(data) => {
 }
 
 exports.edit = async(id, data) => {
-    console.log("data com:", data);
     var company = await Company.findOne({_id: id});
     if(company === null) throw ({message: 'company_not_found'});
-    if(company.short_name !== data.short_name){
-        //check shortname invalid?
-        var test = await Company.findOne({ short_name: data.short_name }); 
-        if(test) throw { message: 'short_name_does_not_exist' }; 
-    }
     company.name = data.name;
     company.description = data.description;
     company.short_name = data.short_name;
