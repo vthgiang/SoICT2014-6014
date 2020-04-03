@@ -30,7 +30,7 @@ class DepartmentCreateForm extends Component {
             <React.Fragment>
                 <ModalButton modalID="modal-create-department" button_name={translate('manage_department.add')} title={translate('manage_department.add_title')}/>
                 <ModalDialog
-                    size="75"
+                    size="75" isLoading={department.isLoading}
                     modalID="modal-create-department"
                     formID="form-create-department"
                     title={translate('manage_department.add_title')}
