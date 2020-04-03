@@ -1,0 +1,3 @@
+tbody#actions td:not(:last-child) {
+    cursor: move;
+}

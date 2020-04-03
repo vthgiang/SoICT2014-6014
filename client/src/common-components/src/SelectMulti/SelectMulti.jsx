@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './SelectMulti.css';
+import './bootstrap-multiselect.css';
 import { selelectMultiScript } from './bootstrap-multiselect.js'
 
 class SelectMulti extends Component {

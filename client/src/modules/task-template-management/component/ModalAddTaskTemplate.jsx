@@ -5,6 +5,8 @@ import { UserActions } from '../../super-admin-management/users-management/redux
 import  {taskTemplateActions} from '../redux/actions';
 import Sortable from 'sortablejs';
 
+import './tasktemplate.css';
+
 class ModalAddTaskTemplate extends Component {
     componentDidMount() {
         // get department of current user

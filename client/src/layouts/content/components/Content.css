@@ -38,3 +38,23 @@ Ví dụ:
         margin-left: -20px;
     }
 }
+
+
+
+
+/*
+CSS cho bảng dữ liệu
+*/
+.table-hover tbody tr:hover{
+    background-color: #d7d6ee;
+}
+table thead tr th.resizing {
+    background-color: #d7d6ee;
+}
+table thead tr th:not(:last-child) {
+    cursor: ew-resize;
+}
+td {
+    word-wrap: break-word;
+    white-space: normal;
+}
