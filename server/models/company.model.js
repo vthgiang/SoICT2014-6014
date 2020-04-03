@@ -9,8 +9,7 @@ const CompanySchema = new Schema({
     },
     short_name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     description: {
         type: String

@@ -23,17 +23,11 @@ exports.getPaginate = async (limit, page, data={}) => {
 }
 
 exports.create = async(data) => {
-    // console.log("tạo cty: ",data);
-    var name = await Company.findOne({ name: data.name });
-    var test = await Company.findOne({ short_name: data.short_name });
-    if(name || test) throw { message: 'Short name already exists' };
-    
     const company = await Company.create({
         name: data.name,
         description: data.description,
         short_name: data.short_name
     });
-    // console.log("Đã tạo: ", company)
 
     return company;
 }
