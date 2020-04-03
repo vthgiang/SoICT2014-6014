@@ -45,16 +45,80 @@ Ví dụ:
 /*
 CSS cho bảng dữ liệu
 */
-.table-hover tbody tr:hover{
+.table-hover tbody tr:hover{ /* Hight light dòng con trỏ đang trỏ tới */
     background-color: #d7d6ee;
 }
-table thead tr th.resizing {
+table thead tr th.resizing { /* Màu header cột đang được Resize */
     background-color: #d7d6ee;
 }
-table thead tr th:not(:last-child) {
+table thead tr th:not(:last-child) { /* Hiện con trỏ khi trỏ vào header bảng */
     cursor: ew-resize;
 }
-td {
+td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
     word-wrap: break-word;
     white-space: normal;
+}
+
+
+/*
+CSS cho cột cuối trong bảng (có các hành động edit, delete, save, ...) và các icon trong đó
+*/
+table.table td:last-child, table.table th:last-child { /* Căn giữa cho cột cuối */
+    text-align: center;
+}
+
+table.table td a {
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+table.table td i {
+    font-size: 19px;
+}
+
+table.table td a.add {
+    color: #27C46B;
+}
+table.table td a.copy {
+    color: #27C46B;
+}
+
+table.table td a.edit {
+    color: #FFC107;
+}
+
+table.table td a.star {
+    color: #FFC107;
+}
+
+table.table td a.timer {
+    color: black;
+}
+
+table.table td a.default {
+    color: black;
+}
+
+table.table td a.all_inbox {
+    color: darkred;
+}
+
+table.table td a.add_circle {
+    color: green;
+}
+
+table.table td a.save_result {
+    color: green;
+}
+
+table.table td a.timer:hover {
+    color: #FFC107;
+}
+
+table.table td a.delete {
+    color: #E34724;
+}
+
+table.table td a.approve {
+    color: deepskyblue;
 }

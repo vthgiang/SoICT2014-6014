@@ -67,7 +67,9 @@ class ManageUserTable extends Component {
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    <td>{u.active ? <p><i className="fa fa-circle text-success" /> {translate('manage_user.enable')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_user.disable')} </p>}</td>
+                                    <td>{u.active 
+                                        ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.enable')} </p>
+                                        : <p><i className="fa fa-circle text-danger" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{textAlign: 'center'}}>
                                         <UserEditForm
                                             userId={u._id}

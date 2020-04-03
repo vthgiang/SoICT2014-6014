@@ -1,3 +1,13 @@
 tbody#actions td:not(:last-child) {
     cursor: move;
 }
+
+#actions tr.chosen {
+    background-color: rgba(41, 103, 182, 0.89);
+    color: #FFF;
+}
+
+#informations tr.chosen {
+    background-color: rgba(41, 103, 182, 0.89);
+    color: #FFF;
+}
