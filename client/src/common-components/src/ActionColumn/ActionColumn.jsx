@@ -3,23 +3,14 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti } from '../../';
-import { slimScrollScript } from './jquery.slimscroll.min';
+import { SlimScroll } from '../../';
 import './ActionColumn.css';
 
 class ActionColumn extends Component {
     constructor(props) {
         super(props);
         this.record = React.createRef();
-        this.state = {}
-    }
-    componentDidMount(){
-        if (document.getElementById("script-slim-scroll") === null){
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-slim-scroll";
-            script.innerHTML = slimScrollScript
-            document.body.appendChild(script);
-        }
+        this.state = {fixTableWidth: false};
     }
 
     handleEnterLimitSetting = (event) => {
@@ -47,20 +38,18 @@ class ActionColumn extends Component {
 
     configTableWidth = async() => {
         const { tableId, tableContainerId, tableWidth } = this.props;
-        console.log(window.$(`#${tableContainerId}`)[0]);
+
+        await this.setState(state => {
+            return {
+                ...state,
+                fixTableWidth: this.refs.configCheckbox.checked
+            }
+        })
 
         if ( window.$(`#${tableContainerId}`)[0] !== undefined){
-            if (this.refs.configCheckbox.checked === true){
+            if (this.state.fixTableWidth === true){
                 window.$(`#${tableId}`)[0].style = `width: ${tableWidth}; max-width: ${tableWidth}`;
-                window.$(`#${tableContainerId}`).slimscroll({
-                    axis: 'x',
-                    width: '100%',
-                    height: '100%',
-                    disableFadeOut: true,
-                    allowPageScroll: true
-                });
             } else {
-                window.$(`#${tableContainerId}`)[0].style= "";
                 window.$(`#${tableId}`)[0].style= "";
             }
         }
@@ -92,9 +81,12 @@ class ActionColumn extends Component {
                     </div>
                     <div className="form-group">
                         { window.$(`#${tableContainerId}`)[0] !== undefined &&
-                            <div className="checkbox">
-                                <label><input type="checkbox" ref="configCheckbox" onClick={this.configTableWidth}/>Cố định chiều rộng bảng</label>
-                            </div>
+                            <React.Fragment>
+                                <div className="checkbox">
+                                    <label><input type="checkbox" checked={this.state.fixTableWidth} ref="configCheckbox" onClick={this.configTableWidth}/>Cố định chiều rộng bảng</label>
+                                </div>
+                                <SlimScroll id={tableContainerId} active={this.state.fixTableWidth}/>
+                            </React.Fragment>
                         }
                         <button type="button" className="btn btn-success pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
                     </div>

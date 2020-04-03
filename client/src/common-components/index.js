@@ -5,4 +5,5 @@ export * from './src/DeleteNotification';
 export * from './src/Loading/Loading';
 export * from './src/PaginateBar';
 export * from './src/SearchBar';
-export * from './src/SelectMulti/SelectMulti'
+export * from './src/SelectMulti/SelectMulti';
+export * from './src/SlimScroll/SlimScroll';
