@@ -30,7 +30,7 @@ class RoleTable extends Component {
                 <RoleCreateForm />
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value:'name' }
+                        { title: translate('manage_role.name'), value:'name' }
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -47,8 +47,11 @@ class RoleTable extends Component {
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     columnArr={[
-                                        translate('table.name')
+                                        translate('manage_role.name'),
+                                        translate('manage_role.extends'),
+                                        translate('manage_role.users')
                                     ]}
+                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
                                 />
                             </th>

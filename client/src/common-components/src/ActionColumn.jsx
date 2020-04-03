@@ -36,7 +36,7 @@ class ActionColumn extends Component {
     }
 
     render() {
-        const { columnName, translate, columnArr, hideColumnOption, limit=5 } = this.props;
+        const { columnName, translate, columnArr=[], hideColumnOption=true, limit=5 } = this.props;
         console.log(this.props)
         return (
             <React.Fragment>

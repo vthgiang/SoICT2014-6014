@@ -255,7 +255,10 @@ export default {
             add_faile: 'Tạo tài khoản thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            roles: 'Phân quyền được cấp'
+            roles: 'Phân quyền được cấp',
+            name: 'Tên người dùng',
+            email: 'Địa chỉ email',
+            status: 'Trạng thái tài khoản'
         },
 
         manage_link: {
