@@ -51,11 +51,13 @@ class ActionColumn extends Component {
 
         if ( window.$(`#${tableContainerId}`)[0] !== undefined){
             if (this.refs.configCheckbox.checked === true){
-                window.$(`#${tableId}`)[0].style = "width: " + tableWidth;
+                window.$(`#${tableId}`)[0].style = `width: ${tableWidth}; max-width: ${tableWidth}`;
                 window.$(`#${tableContainerId}`).slimscroll({
                     axis: 'x',
                     width: '100%',
-                    height: '100%'
+                    height: '100%',
+                    disableFadeOut: true,
+                    allowPageScroll: true
                 });
             } else {
                 window.$(`#${tableContainerId}`)[0].style= "";
