@@ -14,11 +14,8 @@ class SlimScroll extends Component {
             document.body.appendChild(script);
         }
     }
-    componentDidMount(){
-        
-    }
-
-    render() {
+    
+    componentDidUpdate(){
         const { id, active, options = {
                     axis: 'x',
                     width: '100%',
@@ -27,12 +24,15 @@ class SlimScroll extends Component {
                     allowPageScroll: true
                 }
         } = this.props;
+
         if (active) {
-            window.$(`#${id}`).slimscroll(options); // TODO: thêm 0
+            window.$(`#${id}`).slimscroll(options);
         } else {
             window.$(`#${id}`)[0].style= "";
         }
+    }
 
+    render() {
         return null;
     }
 }
