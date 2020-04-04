@@ -7,7 +7,9 @@ export const NotificationServices = {
     get,
     getNotificationReceivered,
     getNotificationSent,
-    create
+    create,
+    deleteNotificationReceivered,
+    deleteNotificationSent
 };
 
 function get() {
@@ -53,6 +55,29 @@ function create(data) {
         url: `${ LOCAL_SERVER_API }/notifications`,
         method: 'POST',
         data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function deleteNotificationReceivered(notificationId) {
+    const token = getStorage();
+    const verified = jwt.verify(token, TOKEN_SECRET);
+    var userId = verified._id;
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/notifications/receivered/${userId}/${notificationId}`,
+        method: 'DELETE',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function deleteNotificationSent(id) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
+        method: 'DELETE',
         headers: AuthenticateHeader()
     };
 

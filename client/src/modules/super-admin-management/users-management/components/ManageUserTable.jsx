@@ -110,11 +110,7 @@ class ManageUserTable extends Component {
                                         {
                                             !this.checkSuperRole(u.roles) && 
                                             <DeleteNotification 
-                                                content={{
-                                                    title: translate('manage_user.delete'),
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content={translate('manage_user.delete')}
                                                 data={{ id: u._id, info: u.email }}
                                                 func={this.props.destroy}
                                             />

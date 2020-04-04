@@ -82,11 +82,7 @@ class TableComponent extends Component {
                                             componentRoles={ component.roles.map(role => role._id) }
                                         />
                                         <DeleteNotification 
-                                            content={{
-                                                title: translate('manage_component.delete'),
-                                                btnNo: translate('confirm.no'),
-                                                btnYes: translate('confirm.yes'),
-                                            }}
+                                            content={translate('manage_component.delete')}
                                             data={{
                                                 id: component._id,
                                                 info: component.name

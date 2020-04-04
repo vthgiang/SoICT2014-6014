@@ -15,8 +15,7 @@ exports.get = async (req, res) => {
         LogError(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_components_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -39,8 +38,7 @@ exports.getPaginate = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'paginate_components_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -63,8 +61,7 @@ exports.create = async (req, res) => {
         LogError(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_component_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -84,8 +81,7 @@ exports.show = async (req, res) => {
         LogError(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_component_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -106,8 +102,7 @@ exports.edit = async (req, res) => {
         LogError(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_component_default_faile',
-            content: error
+            message: errorr
         });
     }
 };
@@ -128,8 +123,7 @@ exports.delete = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_component_default_faile',
-            content: error
+            message: error
         });
     }
 };

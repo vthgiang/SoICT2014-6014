@@ -6,7 +6,9 @@ export const NotificationActions = {
     get,
     getNotificationReceivered,
     getNotificationSent,
-    create
+    create,
+    deleteNotificationReceiverd,
+    deleteNotificationSent
 }
 
 function get(){
@@ -89,6 +91,52 @@ function create(data){
                     resolve(res.data);
                 })
                 .catch(err => {
+                    AlertActions.handleAlert(dispatch, err);
+                    console.log("Error: ", err);
+                    reject(err);
+                })
+        })
+    }
+}
+
+function deleteNotificationReceiverd(notificationId){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_REQUEST});
+        return new Promise((resolve, reject) => {
+            NotificationServices
+                .deleteNotificationReceiverd(notificationId)
+                .then(res => {
+                    dispatch({
+                        type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_SUCCESS,
+                        payload: notificationId
+                    });
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_FAILE});
+                    AlertActions.handleAlert(dispatch, err);
+                    console.log("Error: ", err);
+                    reject(err);
+                })
+        })
+    }
+}
+
+function deleteNotificationSent(id){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_SENT_REQUEST});
+        return new Promise((resolve, reject) => {
+            NotificationServices
+                .deleteNotificationSent(id)
+                .then(res => {
+                    dispatch({
+                        type: NotificationConstants.DELETE_NOTIFICATION_SENT_SUCCESS,
+                        payload: id
+                    });
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_SENT_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     console.log("Error: ", err);
                     reject(err);

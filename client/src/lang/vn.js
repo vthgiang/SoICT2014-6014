@@ -492,7 +492,8 @@ export default {
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
             news: 'Thông báo mới',
-            see_all: 'Xem tất cả'
+            see_all: 'Xem tất cả',
+            delete: 'Xóa thông báo'
         },
         holiday: {
             start_date: 'Ngày bắt đầu',
@@ -518,6 +519,56 @@ export default {
             creator: 'Người tạo mẫu',
             unit: 'Đơn vị',
             action: 'Hành động'
+        },
+
+        kpi_unit_create: {
+            general_information: 'Thông tin chung',
+            target_list: 'Danh sách mục tiêu',
+            target_name: 'Tên mục tiêu',
+            criteria: 'Tiêu chí đánh giá',
+            weight: 'Trọng số',
+            action: 'Hành động',
+            num_target: 'Số mục tiêu',
+            weight_total: 'Tổng trọng số',
+            time: 'Thời gian',
+            status: 'Trạng thái',
+            note: 'Ghi chú',
+            add_target: 'Thêm mục tiêu',
+            start_kpi: 'Khởi tạo KPI tháng mới',
+            approve: 'Kích hoạt',
+            cancel_approve: 'Bỏ kích hoạt',
+            on_target: 'Thuộc mục tiêu',
+            confirm: 'Xác nhận',
+            add_title: 'Thêm mục tiêu KPI đơn vị',
+            edit_title: 'Chỉnh sửa mục tiêu KPI đơn vị',
+            init_title: 'Khởi tạo KPI đơn vị',
+            unit: 'Tên đơn vị',
+            month: 'Tháng',
+            default_target: 'Mục tiêu mặc định',
+            add_new: 'Thêm mới',
+            cancel: 'Hủy bỏ',
+            init: 'Khởi tạo',
+            save_change: 'Lưu thay đổi',
+
+            confirm_unapprove_success: 'Bạn chắc chắn muốn hủy kích hoạt KPI này?',
+            confirm_approve_success: 'Bạn chắc chắn muốn kích hoạt KPI này?',
+            confirm_approve_error: 'Tổng trọng số phải bằng 100',
+            approve_already: 'KPI đã kích hoạt!',
+            confirm_delete_success: 'Bạn chắc chắn muốn xóa toàn bộ KPI này?',
+            confirm_delete_error: 'KPI đã kích hoạt, bạn không thể xóa!',
+            confirm_delete_target_success: 'Bạn chắc chắn muốn xóa mục tiêu này?',
+            confirm_delete_target_error: 'KPI đã kích hoạt, Bạn không thể xóa!',
+
+            edit_success: 'Chỉnh sửa KPI thành công',
+            error: 'Bạn chưa nhập đủ thông tin',
+            unapprove_success: 'Hủy kích hoạt KPI thành công',
+            approve_success: 'Kích hoạt KPI thành công',
+            delete_success: 'Xóa KPI thành công',
+            delete_target_succees: 'Xóa mục tiêu thành công',
+            add_target_success: 'Thêm mục tiêu thành công',
+            edit_target_success: 'Sửa mục tiêu thành công',
+            init_success: 'Khởi tạo KPI tháng mới thành công',
+
         },
 
         footer: {

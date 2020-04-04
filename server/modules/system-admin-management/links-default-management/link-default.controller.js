@@ -13,11 +13,10 @@ exports.get = async (req, res) => {
         });
     } catch (error) {
         
-        LogError(req.user.email, '');
+        LogError(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_links_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -40,8 +39,7 @@ exports.getPaginate = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'paginate_links_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -63,8 +61,7 @@ exports.create = async (req, res) => {
         LogError(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_link_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -84,8 +81,7 @@ exports.show = async (req, res) => {
         LogError(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_link_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -107,8 +103,7 @@ exports.edit = async (req, res) => {
         LogError(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_link_default_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -128,8 +123,7 @@ exports.delete = async (req, res) => {
         LogError(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_link_default_faile',
-            content: error
+            message: error
         });
     }
 };

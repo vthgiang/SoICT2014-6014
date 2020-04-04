@@ -27,7 +27,9 @@ exports.getById = async (id) => {
 }
 
 exports.create = async(data, companyId) => {
-    if(data.url === '/system') throw { message: 'The url " /system " cannot create'};
+    if(data.url === '/system') throw ('cannot_create_this_url');
+    const check = await Link.findOne({company: componentId, url: data.url});
+    if(check !== null) throw ('url_exist');
     return await Link.create({
         url: data.url,
         description: data.description,
