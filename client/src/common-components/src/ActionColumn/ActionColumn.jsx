@@ -83,7 +83,7 @@ class ActionColumn extends Component {
                         { window.$(`#${tableContainerId}`)[0] !== undefined &&
                             <React.Fragment>
                                 <div className="checkbox">
-                                    <label><input type="checkbox" checked={this.state.fixTableWidth} ref="configCheckbox" onClick={this.configTableWidth}/>Cố định chiều rộng bảng</label>
+                                    <label><input type="checkbox" checked={this.state.fixTableWidth} ref="configCheckbox" onChange={this.configTableWidth}/>Cố định chiều rộng bảng</label>
                                 </div>
                                 <SlimScroll id={tableContainerId} active={this.state.fixTableWidth}/>
                             </React.Fragment>
