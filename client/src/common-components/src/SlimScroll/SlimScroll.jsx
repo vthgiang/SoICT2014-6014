@@ -20,6 +20,7 @@ class SlimScroll extends Component {
                     axis: 'x',
                     width: '100%',
                     height: '100%',
+                    touchScrollStep: 0.2,
                     disableFadeOut: false,
                     allowPageScroll: true,
                     railVisible: true
