@@ -68,9 +68,9 @@ class ActionColumn extends Component {
                     {
                         hideColumnOption && columnArr.length > 0 &&
                         <div className="form-group">
-                            <label className="form-control-static">Ẩn cột</label>
+                            <label className="form-control-static">{translate('table.hidden_column')}</label>
                             <SelectMulti id={"multiSelectShowColumn"} multiple="multiple"
-                                options= {{nonSelectedText: "Chọn cột muốn ẩn", allSelectedText: "Tất cả các cột"}}
+                                options= {{nonSelectedText: translate('table.choose_hidden_column'), allSelectedText: translate('table.all')}}
                                 items = { columnArr.map((col,i) => {return {value: i + 1, text: col}}) }>
                             </SelectMulti>
                         </div>

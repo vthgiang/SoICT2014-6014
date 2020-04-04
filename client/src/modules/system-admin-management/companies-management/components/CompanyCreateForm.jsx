@@ -111,7 +111,7 @@ class CompanyCreateForm extends Component {
                 <ModalButton modalID="modal-create-company" button_name={translate('manage_company.add')} title={translate('manage_company.add_title')}/>
                 <ModalDialog
                     modalID="modal-create-company" size="100"
-                    formID="form-create-company"
+                    formID="form-create-company" isLoading={this.props.company.isLoading}
                     title={translate('manage_company.add_title')}
                     msg_success={translate('manage_company.add_success')}
                     msg_faile={translate('manage_company.add_faile')}

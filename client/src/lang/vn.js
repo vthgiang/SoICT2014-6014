@@ -101,6 +101,7 @@ export default {
             no_data: 'Không có dữ liệu',
             start_date: 'Từ ngày',
             end_date: 'Đến ngày',
+            hidden_column: 'Ẩn cột'
         },
 
         modal: {
@@ -275,7 +276,9 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            all: 'Tất cả'
+            all: 'Tất cả',
+            choose_hidden_columns: 'Chọn cột muốn ẩn',
+            category: 'Danh mục'
         },
 
         manage_component: {

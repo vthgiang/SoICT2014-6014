@@ -4,6 +4,9 @@ import { UserActions } from '../redux/actions';
 import { RoleActions } from '../../roles-management/redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalDialog, ModalButton } from '../../../../common-components';
+import { VALIDATE } from '../../../../helpers/Validate';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class UserCreateForm extends Component {
     constructor(props) {
@@ -13,8 +16,14 @@ class UserCreateForm extends Component {
     }
 
     save = () => {
-        
-        return this.props.create({
+        const errorArr = [];
+        const name = this.refs.name.value;
+        const email = this.refs.email.value;
+        if(name.length < 1) errorArr.push('Tên không được để trống');
+        if(!VALIDATE.testName(name)) errorArr.push('Tên không được chứa kí tự đặc biệt');
+        if(!VALIDATE.testEmail(email)) errorArr.push('Email không hợp lệ');
+        if(errorArr.length > 0) errorArr.map(e => toast.warning(e, {containerId: 'toast-notification'}));
+        else return this.props.create({
             name: this.refs.name.value,
             email: this.refs.email.value,
             roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
