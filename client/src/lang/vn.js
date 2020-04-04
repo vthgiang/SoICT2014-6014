@@ -101,6 +101,7 @@ export default {
             no_data: 'Không có dữ liệu',
             start_date: 'Từ ngày',
             end_date: 'Đến ngày',
+            hidden_column: 'Ẩn cột'
         },
 
         modal: {
@@ -255,7 +256,10 @@ export default {
             add_faile: 'Tạo tài khoản thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            roles: 'Phân quyền được cấp'
+            roles: 'Phân quyền được cấp',
+            name: 'Tên người dùng',
+            email: 'Địa chỉ email',
+            status: 'Trạng thái tài khoản'
         },
 
         manage_link: {
@@ -272,7 +276,9 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            all: 'Tất cả'
+            all: 'Tất cả',
+            choose_hidden_columns: 'Chọn cột muốn ẩn',
+            category: 'Danh mục'
         },
 
         manage_component: {
@@ -486,7 +492,8 @@ export default {
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
             news: 'Thông báo mới',
-            see_all: 'Xem tất cả'
+            see_all: 'Xem tất cả',
+            delete: 'Xóa thông báo'
         },
         holiday: {
             start_date: 'Ngày bắt đầu',

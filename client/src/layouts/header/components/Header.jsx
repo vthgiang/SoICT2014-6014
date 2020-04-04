@@ -80,11 +80,11 @@ class Header extends Component {
                 >
                     <form id="form-profile">
                         <div className="form-group">
-                            <label>{ translate('auth.profile.name') }</label>
+                            <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" ref="name" defaultValue={ auth.user.name } />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('auth.profile.email') }</label>
+                            <label>{ translate('auth.profile.email') }<span className="text-red">*</span></label>
                             <input type="email" className="form-control" ref="email" defaultValue={ auth.user.email } disabled/>
                         </div>
                     </form>
@@ -99,17 +99,17 @@ class Header extends Component {
                     msg_faile={translate('auth.profile.edit_faile')}
                     func={this.changePassword}
                 >
-                    <form id="form-security">
+                    <form id="form-security" style={{padding: '10px 20px 10px 20px'}}>
                         <div className="form-group">
-                            <label>{ translate('auth.security.old_password') }</label>
+                            <label>{ translate('auth.security.old_password') }<span className="text-red">*</span></label>
                             <input type="password" className="form-control" ref="password"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('auth.security.new_password') }</label>
+                            <label>{ translate('auth.security.new_password') }<span className="text-red">*</span></label>
                             <input type="password" className="form-control" ref="new_password"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('auth.security.confirm_password') }</label>
+                            <label>{ translate('auth.security.confirm_password') }<span className="text-red">*</span></label>
                             <input type="password" className="form-control" ref="confirm_password"/>
                         </div>
                     </form>

@@ -19,8 +19,8 @@ class RoleCreateForm extends Component {
             <React.Fragment>
                 <ModalButton modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')}/>
                 <ModalDialog
-                    modalID="modal-create-role"
-                    formID="form-create-role"
+                    modalID="modal-create-role" isLoading={role.isLoading}
+                    formID="form-create-role" 
                     title={translate('manage_role.add_title')}
                     msg_success={translate('manage_role.add_success')}
                     msg_faile={translate('manage_role.add_faile')}

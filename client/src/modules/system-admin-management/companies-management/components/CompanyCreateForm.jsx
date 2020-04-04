@@ -25,8 +25,6 @@ class CompanyCreateForm extends Component {
 
     checkCheckBoxAll = (arr) => {
         if(arr.length > 0 && arr.length === this.state.linkDefaultArr.length){
-            console.log("ALL ALLLLL:", arr.length, this.state.linkDefaultArr.length);
-            console.log("CHECK ALL TRUE");
             return true;
         }
         else{
@@ -37,7 +35,6 @@ class CompanyCreateForm extends Component {
 
     checkedCheckbox = (item, arr) => {
         var index = arr.indexOf(item);
-
         if(index !== -1){
             return true;
         }
@@ -62,7 +59,6 @@ class CompanyCreateForm extends Component {
     handleCheckbox = (e) => {
         const {value, checked} = e.target;
         if(checked){
-            //Thêm phàn tử vào mảng
             this.setState({
                 linkDefaultArr: [
                     ...this.state.linkDefaultArr,
@@ -111,7 +107,7 @@ class CompanyCreateForm extends Component {
                 <ModalButton modalID="modal-create-company" button_name={translate('manage_company.add')} title={translate('manage_company.add_title')}/>
                 <ModalDialog
                     modalID="modal-create-company" size="100"
-                    formID="form-create-company"
+                    formID="form-create-company" isLoading={this.props.company.isLoading}
                     title={translate('manage_company.add_title')}
                     msg_success={translate('manage_company.add_success')}
                     msg_faile={translate('manage_company.add_faile')}
@@ -179,8 +175,8 @@ class CompanyCreateForm extends Component {
                                                         </td>
                                                     </tr> 
                                                 ): linksDefault.isLoading ?
-                                                <tr><td colSpan={3}>Loading...</td></tr>:
-                                                <tr><td colSpan={3}>{translate('confirm.no_data')}</td></tr>
+                                                <tr><td colSpan={4}>Loading...</td></tr>:
+                                                <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
                                             }
                                         </tbody>
                                     </table>

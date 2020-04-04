@@ -16,8 +16,7 @@ exports.get = async (req, res) => {
         await LogError(req.user.email, 'GET_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_links_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -40,8 +39,7 @@ exports.getPaginate = async (req, res) => {
         await LogError(req.user.email, 'PAGINATE_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'paginate_links_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -63,8 +61,7 @@ exports.create = async (req, res) => {
         await LogError(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_link_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -84,8 +81,7 @@ exports.show = async (req, res) => {
         await LogError(req.user.email, 'SHOW_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_link_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -107,8 +103,7 @@ exports.edit = async (req, res) => {
         await LogError(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_link_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -128,8 +123,7 @@ exports.delete = async (req, res) => {
         await LogError(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_link_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -151,8 +145,7 @@ exports.getLinksOfCompany = async (req, res) => {
         await LogError(req.user.email, 'GET_LINKS_OF_COMPANY', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_links_of_company_faile',
-            content: error
+            message: error
         });
     }
 }

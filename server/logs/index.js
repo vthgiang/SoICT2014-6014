@@ -40,7 +40,7 @@ const LogInfo = async(user, content, company=undefined) => {
                 await Logger.info(user);
             }else{
                 //Có dữ liệu về công ty
-                const Logger = await Log(com.short_name, content);
+                const Logger = await Log(`${company.short_name}-${company._id}`, content);
                 com.log && await Logger.info(user);
             }
         }
@@ -65,7 +65,7 @@ const LogError = async(user, content, company=undefined) => {
                 await Logger.error(user);
             }else{
                 //Có dữ liệu về công ty
-                const Logger = await Log(com.short_name, content);
+                const Logger = await Log(`${company.short_name}-${company._id}`, content);
                 com.log && await Logger.error(user);
             }
         }

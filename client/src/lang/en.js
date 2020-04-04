@@ -91,6 +91,7 @@ export default {
             no_data: 'No data',
             start_date: 'Start day',
             end_date: 'End day',
+            hidden_column: 'Hidden columns'
         },
         modal: {
             update: 'Save',
@@ -247,6 +248,9 @@ export default {
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
+            all: 'All',
+            choose_hidden_columns: 'Choose column want to hide',
+            category: 'Category'
         },
 
         manage_component: {

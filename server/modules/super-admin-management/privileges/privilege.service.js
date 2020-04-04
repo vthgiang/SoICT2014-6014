@@ -25,8 +25,6 @@ exports.addRoleToLink = async (idLink, arrRole) => {
 
 //Lay cac links tuong ung voi role hien tai
 exports.getLinksOfRole = async (idRole) => {
-    
-    console.log("get link of role service")
     const role = await Role.findById(idRole); //lay duoc role hien tai
     var roles = [role._id];
     roles = roles.concat(role.parents);
@@ -35,6 +33,7 @@ exports.getLinksOfRole = async (idRole) => {
         resourceType: 'Link'
     }).populate({ path: 'resourceId', model: Link }); 
     const links = await privilege.map( link => link.resourceId );
+
     return links;
 }
 
@@ -45,7 +44,7 @@ exports.addRolesToLink = async (linkId, roleArr) => {
             resourceId: linkId,
             resourceType: 'Link'
         }
-    }); // tao data de truyen vao ham insert
+    });
     const privilege = await Privilege.insertMany(data);
 
     return privilege;

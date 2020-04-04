@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import './SelectMulti.css';
+import './bootstrap-multiselect.css';
+import { selelectMultiScript } from './bootstrap-multiselect.js'
 
 class SelectMulti extends Component {
     constructor(props) {
@@ -8,26 +10,31 @@ class SelectMulti extends Component {
     }
 
     componentDidMount(){
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/SelectMulti.js'
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+        if (document.getElementById("script-select-multi") === null){
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.id = "script-select-multi";
+            script.innerHTML = selelectMultiScript
+            document.body.appendChild(script);
+        }
 
-        const { nonSelectedText, allSelectedText, id } = this.props;
-
-        window.$("#" + id).multiselect({
-            nonSelectedText: nonSelectedText,
-            allSelectedText: allSelectedText
-        });
+        const { id, options } = this.props;
+        window.$("#" + id).multiselect(options);
     }
+
+    componentDidUpdate() {
+        // Cập nhật lại danh sách lựa chọn (theo select với id là this.props.id)
+        const { id, defaultValue } = this.props;
+        window.$("#" + id).multiselect('rebuild');
+        window.$("#" + id).multiselect('select', defaultValue);
+    }
+
     render() { 
-        const { id, items, selectAllByDefault } = this.props;
-        console.log(items);
+        const { id, items, defaultValue } = this.props;
         return ( 
             <React.Fragment>
                 <div className="selectmulti">
-                    <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={selectAllByDefault?items.map(item => item.value):[]}>
+                    <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={defaultValue}>
                         {items.map(item => {
                             return <option key={item.value} value={item.value}>{item.text}</option>
                         })}

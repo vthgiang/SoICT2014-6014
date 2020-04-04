@@ -8,6 +8,8 @@ div.selectmulti > div.btn-group {
 div.selectmulti > div.btn-group > button {
     width: 100%;
     text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 div.selectmulti > div.btn-group > button > b.caret {
