@@ -1,36 +1,28 @@
 import { Component } from 'react';
-import { slimScrollScript } from './jquery.slimscroll.min';
+import "./SlimScroll.css";
 
 class SlimScroll extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-
-        if (document.getElementById("script-slim-scroll") === null){
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = "script-slim-scroll";
-            script.innerHTML = slimScrollScript
-            document.body.appendChild(script);
-        }
     }
     
     componentDidUpdate(){
-        const { id, active, options = {
-                    axis: 'x',
-                    width: '100%',
-                    height: '100%',
-                    touchScrollStep: 0.2,
-                    disableFadeOut: false,
-                    allowPageScroll: true,
-                    railVisible: true
-                }
-        } = this.props;
+        const { outerComponentId, innerComponentId, innerComponentWidth, activate } = this.props;
 
-        if (active) {
-            window.$(`#${id}`).slimscroll(options);
-        } else {
-            window.$(`#${id}`)[0].style= "";
+        let outer = window.$(`#${outerComponentId}`);
+        let inner = window.$(`#${innerComponentId}`);
+
+        if (outer !== undefined && inner !== undefined ){
+            if (activate) {
+                outer.addClass("StyleScrollDiv");
+                inner.width(innerComponentWidth);
+                inner.css("maxWidth", innerComponentWidth); // Safari
+            } else {
+                outer.removeClass("StyleScrollDiv");
+                inner.width("");
+                inner.css("maxWidth", ""); // Safari
+            }
         }
     }
 
