@@ -11,6 +11,23 @@ class ActionColumn extends Component {
         super(props);
         this.record = React.createRef();
         this.state = {fixTableWidth: false};
+
+        window.addEventListener("resize", () => {
+            this.adjustSize(window.innerWidth);
+        }, {passive: true});
+    }
+
+    componentDidMount() {
+        this.adjustSize(window.innerWidth);
+    }
+
+    adjustSize = async (innerWidth) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                fixTableWidth: (innerWidth > 992 ? false : true) // 992: kích thước Bootstrap md
+            }
+        })
     }
 
     handleEnterLimitSetting = (event) => {
@@ -37,8 +54,6 @@ class ActionColumn extends Component {
     }
 
     configTableWidth = async() => {
-        const { tableId, tableContainerId, tableWidth } = this.props;
-
         await this.setState(state => {
             return {
                 ...state,
@@ -46,18 +61,11 @@ class ActionColumn extends Component {
             }
         })
 
-        if ( window.$(`#${tableContainerId}`)[0] !== undefined){
-            if (this.state.fixTableWidth === true){
-                window.$(`#${tableId}`)[0].style = `width: ${tableWidth}; max-width: ${tableWidth}`;
-            } else {
-                window.$(`#${tableId}`)[0].style= "";
-            }
-        }
         window.$(`#setting-table`).collapse("hide");
     }
 
     render() {
-        const { columnName, translate, columnArr=[], hideColumnOption=true, tableContainerId, limit=5 } = this.props;
+        const { columnName, translate, columnArr=[], hideColumnOption=true, tableContainerId, tableId, tableWidth, limit=5 } = this.props;
         
         return (
             <React.Fragment>
@@ -83,9 +91,9 @@ class ActionColumn extends Component {
                         { window.$(`#${tableContainerId}`)[0] !== undefined &&
                             <React.Fragment>
                                 <div className="checkbox">
-                                    <label><input type="checkbox" checked={this.state.fixTableWidth} ref="configCheckbox" onChange={this.configTableWidth}/>Cố định chiều rộng bảng</label>
+                                    <label><input type="checkbox" checked={this.state.fixTableWidth} ref="configCheckbox" onChange={this.configTableWidth}/>Dùng thanh cuộn bảng</label>
                                 </div>
-                                <SlimScroll id={tableContainerId} active={this.state.fixTableWidth}/>
+                                <SlimScroll outerComponentId={tableContainerId} innerComponentId={tableId} innerComponentWidth={tableWidth} activate={this.state.fixTableWidth}/>
                             </React.Fragment>
                         }
                         <button type="button" className="btn btn-success pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
