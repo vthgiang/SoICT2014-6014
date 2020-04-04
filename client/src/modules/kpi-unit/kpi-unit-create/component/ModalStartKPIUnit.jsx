@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 // import { kpiUnitActions as createUnitKpiActions } from '../../../redux-actions/CombineActions';
 import { createUnitKpiActions } from '../redux/actions';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { withTranslate } from 'react-redux-multilingual';
+
 class ModalStartKPIUnit extends Component {
     constructor(props) {
         super(props);
@@ -21,6 +25,12 @@ class ModalStartKPIUnit extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
+    notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
+
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -36,6 +46,9 @@ class ModalStartKPIUnit extends Component {
     }
     handleSubmit = async (event, unit) => {
         event.preventDefault();
+        
+        const { translate } = this.props;
+
         console.log('clicked');
         await this.setState(state => {
             return {
@@ -50,27 +63,38 @@ class ModalStartKPIUnit extends Component {
         var { kpiunit } = this.state;
         if (kpiunit.unit && kpiunit.time) {
             this.props.addKPIUnit(kpiunit);
+
+            this.notifysuccess(translate('kpi_unit_create.init_success'));
+
+            window.$("#startKPIUnit").modal("hide");
         }
-        window.$("#startKPIUnit").modal("hide");
+        else{
+            this.notifyerror(translate('kpi_unit_create.error'));
+        }
     }
+    
     render() {
         console.log(this.state);
         const { unit } = this.props;
+
+        // hàm để chuyển sang song ngữ
+        const { translate } = this.props;
+
         return (
             <div className="modal fade" id="startKPIUnit">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 className="modal-title">Khởi tạo KPI đơn vị</h3>
+                            <h3 className="modal-title">{translate('kpi_unit_create.init_title')}</h3>
                         </div>
                         <div className="modal-body">
                             <div className="form-group">
-                                <label className="col-sm-2">Đơn vị:</label>
-                                <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
+                                <label className="col-sm-3">{translate('kpi_unit_create.unit')}:</label>
+                                <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
                             </div>
                             <div className="form-group" >
-                                <label className="col-sm-2">Tháng:</label>
+                                <label className="col-sm-2">{translate('kpi_unit_create.month')}:</label>
                                 <div className='input-group col-sm-10 date has-feedback'>
                                     <div className="input-group-addon">
                                         <i className="fa fa-calendar" />
@@ -79,7 +103,7 @@ class ModalStartKPIUnit extends Component {
                                 </div>
                             </div>
                             <div className="form-group" >
-                                <label className="col-sm-12">Mục tiêu mặc định:</label>
+                                <label className="col-sm-12">{translate('kpi_unit_create.default_target')}:</label>
                                 <ul>
                                     <li>Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)</li>
                                     <li>Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)</li>
@@ -87,8 +111,8 @@ class ModalStartKPIUnit extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, unit && unit._id)}>Khởi tạo</button>
-                            <button type="cancel" className="btn btn-primary" data-dismiss="modal">Hủy bỏ</button>
+                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, unit && unit._id)}>{translate('kpi_unit_create.init')}</button>
+                            <button type="cancel" className="btn btn-primary" data-dismiss="modal">{translate('kpi_unit_create.cancel')}</button>
                         </div>
                     </div>
                 </div>
@@ -106,5 +130,5 @@ function mapState(state) {
 const actionCreators = {
     addKPIUnit: createUnitKpiActions.addKPIUnit
 };
-const connectedModalStartKPIUnit = connect(mapState, actionCreators)(ModalStartKPIUnit);
+const connectedModalStartKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalStartKPIUnit));
 export { connectedModalStartKPIUnit as ModalStartKPIUnit };
