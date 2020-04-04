@@ -21,7 +21,8 @@ class SlimScroll extends Component {
                     width: '100%',
                     height: '100%',
                     disableFadeOut: false,
-                    allowPageScroll: true
+                    allowPageScroll: true,
+                    railVisible: true
                 }
         } = this.props;
 
