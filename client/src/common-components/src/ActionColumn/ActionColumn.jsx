@@ -69,10 +69,9 @@ class ActionColumn extends Component {
         
         return (
             <React.Fragment>
-                {columnName}
-                <button type="button" data-toggle="collapse" data-target="#setting-table" style={{ border: "none", background: "none" }}><i className="fa fa-gear"></i></button>
+                <button type="button" data-toggle="collapse" data-target="#setting-table" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{fontSize: "19px"}}></i></button>
                 <div id="setting-table" className="box collapse">
-                    <span className="pop-arw arwTop L-auto" style={{ right: "30px" }}></span>
+                    <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
                     {
                         hideColumnOption && columnArr.length > 0 &&
                         <div className="form-group">

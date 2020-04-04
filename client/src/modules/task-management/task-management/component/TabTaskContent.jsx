@@ -282,7 +282,7 @@ class TabTaskContent extends Component {
         }
         return (
             <React.Fragment>
-                <div className="" id="qlcv">
+                <div className="qlcv">
 
                     <div style={{height: "40px"}}>
                         {this.props.role !== "informed" &&
@@ -355,6 +355,24 @@ class TabTaskContent extends Component {
                     </div>
                     
                     
+                    <ActionColumn
+                        tableId = "tree-table"
+                        tableContainerId = "tree-table-container"
+                        tableWidth = "1300px"
+                        columnArr={[
+                            'Tên công việc',
+                            'Đơn vị',
+                            'Độ ưu tiên',
+                            'Ngày bắt đầu',
+                            'Ngày kết thúc',
+                            'Trạng thái',
+                            'Tiến độ',
+                            'Thời gian thực hiện'
+                        ]}
+                        limit = {this.state.perPage}
+                        setLimit = {this.setLimit}
+                        hideColumnOption = {true}
+                    />
                     <div id="tree-table-container">
                     <table id="tree-table" className="table table-hover table-bordered">
                         <thead>
@@ -367,27 +385,7 @@ class TabTaskContent extends Component {
                                 <th title="Trạng thái">Trạng thái</th>
                                 <th title="Tiến độ">Tiến độ</th>
                                 <th title="Thời gian thực hiện">Thời gian</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                    <ActionColumn
-                                        tableId = "tree-table"
-                                        tableContainerId = "tree-table-container"
-                                        tableWidth = "1300px"
-                                        columnName={translate('table.action')} 
-                                        columnArr={[
-                                            'Tên công việc',
-                                            'Đơn vị',
-                                            'Độ ưu tiên',
-                                            'Ngày bắt đầu',
-                                            'Ngày kết thúc',
-                                            'Trạng thái',
-                                            'Tiến độ',
-                                            'Thời gian thực hiện'
-                                        ]}
-                                        limit = {this.state.perPage}
-                                        setLimit = {this.setLimit}
-                                        hideColumnOption = {true}
-                                    />
-                                </th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                             </tr>
                         </thead>
                         <tbody className="task-table">
@@ -403,7 +401,7 @@ class TabTaskContent extends Component {
                                         <td title={item.status}>{item.status}</td>
                                         <td title={item.progress + "%"}>{item.progress + "%"}</td>
                                         <td title={this.convertTime(item.time)}>{this.convertTime(item.time)}</td>
-                                        <td >
+                                        <td>
                                             <a href={`#modelPerformTask${item._id}`} className="edit" data-toggle="modal" onClick={() => this.handleShowModal(item._id)} title={"Bắt đầu" + item.name}><i className="material-icons">edit</i></a>
                                             {this.state.showModal === item._id ? <ModalPerformTask responsible={item.responsible} unit={item.unit._id} id={item._id} role={this.props.role} /> : null}
                                             {
