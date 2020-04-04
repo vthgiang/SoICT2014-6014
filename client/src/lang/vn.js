@@ -492,7 +492,8 @@ export default {
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
             news: 'Thông báo mới',
-            see_all: 'Xem tất cả'
+            see_all: 'Xem tất cả',
+            delete: 'Xóa thông báo'
         },
         holiday: {
             start_date: 'Ngày bắt đầu',

@@ -34,7 +34,7 @@ exports.create = async(data) => {
 
 exports.edit = async(id, data) => {
     var company = await Company.findOne({_id: id});
-    if(company === null) throw ({message: 'company_not_found'});
+    if(company === null) throw ('company_not_found');
     company.name = data.name;
     company.description = data.description;
     company.short_name = data.short_name;
@@ -67,7 +67,7 @@ exports.create5RoleAbstract = async(companyId) => {
 
 exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleSuperAdminId) => {
     var checkEmail = await User.findOne({email: userEmail});
-    if(checkEmail !== null) throw ({message: 'email_exist'});
+    if(checkEmail !== null) throw ('email_exist');
     // 1.Tạo mật khẩu tự động cho acc Super Admin
     var salt = await bcrypt.genSaltSync(10);
     var password = await generator.generate({ length: 10, numbers: true });

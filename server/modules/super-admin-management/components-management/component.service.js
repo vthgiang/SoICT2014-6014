@@ -30,6 +30,9 @@ exports.getById = async (id) => {
 }
 
 exports.create = async(data) => {
+    const check = await Component.findOne({name: data.name});
+    if(check !== null) throw ('component_name_exist');
+
     return await Component.create({
         name: data.name,
         description: data.description,
@@ -65,7 +68,6 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         resourceId: componentId,
         resourceType: 'Component'
     });
-    console.log('creat data')
     var data = roleArr.map( role => {
         return {
             resourceId: componentId,
