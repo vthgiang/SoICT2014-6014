@@ -15,8 +15,9 @@ require('dotenv').config({path: '../.env'});
 // DB Config
 const db = process.env.DATABASE;
 
-// Connect to MongoDB
-mongoose.connect( db, { 
+const seedDatabase = async () => {
+    // Connect to MongoDB
+    await mongoose.connect( db, { 
         useNewUrlParser: true, 
         useUnifiedTopology: true,
         useCreateIndex: true,
@@ -25,7 +26,9 @@ mongoose.connect( db, {
         console.log("Kết nối thành công đến MongoDB!\n");
     }).catch(err => console.log("ERROR! :(\n", err));
 
-const seedDatabase = async () => {
+    await mongoose.connection.db.dropDatabase(
+        console.log("Khởi tạo lại môi trường để cài đặt dữ liệu mẫu.")
+    );
     await console.log("Đang khởi tạo dữ liệu mẫu ...");
     // Tạo bản ghi trạng thái log
     await Log.create({ name: 'log', status: true });
@@ -103,36 +106,68 @@ const seedDatabase = async () => {
         {
             url: '/',
             description: 'Trang chủ',
+            category: Terms.CATEGORY_LINKS.COMMON.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ]
         },{
             url: '/users-management',
             description: 'Quản lý người dùng',
+            category: Terms.CATEGORY_LINKS.RBAC_MANAGEMENT.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/roles-management',
             description: 'Quản lý phân quyền',
+            category: Terms.CATEGORY_LINKS.RBAC_MANAGEMENT.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/departments-management',
             description: 'Quản lý cơ cấu tổ chức',
+            category: Terms.CATEGORY_LINKS.RBAC_MANAGEMENT.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/links-management',
             description: 'Quản lý trang',
+            category: Terms.CATEGORY_LINKS.RBAC_MANAGEMENT.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         }
         ,{
             url: '/components-management',
             description: 'Quản lý thành phần UI',
+            category: Terms.CATEGORY_LINKS.RBAC_MANAGEMENT.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
         },{
             url: '/documents-management',
             description: 'Quản lý tài liệu biểu mẫu',
+            category: Terms.CATEGORY_LINKS.DOCUMENT_MANAGEMENT.NAME,
             roles: [ roleAbstracts[2]._id, roleAbstracts[3]._id ] //trưởng và phó 
         },{
             url: '/notifications',
             description: 'Thông báo',
+            category: Terms.CATEGORY_LINKS.COMMON.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ] // tất cả 
+        },{
+            url: '/kpi-units/create',
+            description: 'Khởi tạo Kpi đơn vị',
+            role: [ roleAbstracts[2]._id]
+        },{
+            url: '/kpi-units/overview',
+            description: 'Tổng quan Kpi đơn vị',
+            role: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{
+            url: '/kpi-personals/create',
+            description: 'Khởi tạo Kpi cá nhân',
+            role: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{
+            url: '/kpi-personals/overview',
+            description:'Tổng quan Kpi cá nhân',
+            role:[roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{
+            url:'/task-management',
+            description:'Xem danh sáng công việc',
+            role: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{ // 15
+            url: '/task-management-dashboard',
+            description: 'Dashboard công việc',
+            roles: [ roleAbstracts[4]._id, roleAbstracts[3]._id, roleAbstracts[2]._id]
         }
     ]);
 

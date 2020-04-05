@@ -64,6 +64,10 @@ class ModalDetailEmployee extends Component {
                                                                         {x.gender}
                                                                     </div>
                                                                     <div className="form-group">
+                                                                        <strong>Tình trạng:&emsp; </strong>
+                                                                        {x.status}
+                                                                    </div>
+                                                                    <div className="form-group">
                                                                         <strong>Ngày sinh:&emsp; </strong>
                                                                         {x.brithday}
                                                                     </div>

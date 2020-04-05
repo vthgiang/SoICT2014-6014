@@ -16,8 +16,7 @@ exports.get = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_companies_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -41,8 +40,7 @@ exports.getPaginate = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_COMPANIES');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'paginate_companies_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -80,8 +78,7 @@ exports.create = async (req, res) => {
         LogError(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_company_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -101,8 +98,7 @@ exports.show = async (req, res) => {
         LogError(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_company_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -122,8 +118,7 @@ exports.edit = async (req, res) => {
         LogError(req.user.email, 'EDIT_COMPANY');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_company_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -143,8 +138,7 @@ exports.delete = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPANY');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_company_faile',
-            content: error
+            message: error
         });
     }
 };

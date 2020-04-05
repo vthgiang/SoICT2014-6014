@@ -91,6 +91,7 @@ export default {
             no_data: 'No data',
             start_date: 'Start day',
             end_date: 'End day',
+            hidden_column: 'Hidden columns'
         },
         modal: {
             update: 'Save',
@@ -105,7 +106,7 @@ export default {
             status: 'Status',
             staff_number: 'Staff code',
             add_search: 'Search',
-            number_decisions: 'Decisions number',
+            number_decisions: 'Decis number',
             add_success: 'Add new success'
         },
 
@@ -138,7 +139,7 @@ export default {
             sabbatical: 'Manage Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
-            list_course: 'Training Programs',
+            list_education: 'Training Programs',
             training_plan: 'Manage Training Courses',
 
             manage_kpi: 'Manage KPI',
@@ -247,6 +248,9 @@ export default {
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
+            all: 'All',
+            choose_hidden_columns: 'Choose column want to hide',
+            category: 'Category'
         },
 
         manage_component: {
@@ -310,8 +314,8 @@ export default {
             reason_discipline: 'Reason',
             check_null_msnv: 'Staff code required',
             check_msnv: 'Not find staff code',
-            check_number: 'Decisions number required',
-            check_unit: 'Decision unit required',
+            check_number: 'Decis number required',
+            check_unit: 'Decis unit required',
             check_start_day: 'Effective date required',
             check_end_day: 'Expiration date required',
             check_reason_discipline: 'Reason required',
@@ -322,11 +326,11 @@ export default {
             add_praise_title: 'Add new reward',
             infor_praise: 'Reward information',
             delete_praise: 'Delete reward',
-            decision_day: 'Decision day',
-            decision_unit: 'Decision unit',
+            decision_day: 'Decis day',
+            decision_unit: 'Decis unit',
             reward_forms: 'Reward forms',
             reason_praise: 'Reason',
-            check_start_date: 'Decision day required',
+            check_start_date: 'Decis day required',
             check_reason_praise: 'Reason required',
             check_type_praise: 'Reward forms required',
         },
@@ -468,6 +472,56 @@ export default {
             creator: 'Creator',
             unit: 'Unit',
             action: 'Action'
+        },
+
+        kpi_unit_create: {
+            general_information: 'General information',
+            target_list: 'Target list',
+            target_name: 'Target name',
+            criteria: 'Evaluation criteria',
+            weight: 'Weight',
+            action: 'Action',
+            num_target: 'Number of target',
+            weight_total: 'Weight total',
+            time: 'Time',
+            status: 'Status',
+            note: 'Note',
+            add_target: 'Add target',
+            start_kpi: 'Initialize a new month KPI',
+            approve: 'Approve',
+            cancel_approve: 'Unapprove',
+            on_target: 'On target',
+            confirm: 'Confirm',
+            add_title: 'Add target KPI units',
+            edit_title: 'Edit target KPI units',
+            init_title: 'Initialize KPI units',
+            unit: 'Unit name',
+            month: 'Month',
+            default_target: 'Default target',
+            add_new: 'Add new',
+            cancel: 'Cancel',
+            init: 'Initialization',
+            save_change: 'Save changes',
+
+            confirm_unapprove_success: 'Are you sure you want to unapprove this KPI?',
+            confirm_approve_success: 'Are you sure you want to approve this KPI?',
+            confirm_approve_error: 'The total weight must be 100',
+            approve_already: 'KPI is approved!',
+            confirm_delete_success: 'Are you sure you want to delete this entire KPI?',
+            confirm_delete_error: 'KPI is approved, you cannot delete!',
+            confirm_delete_target_success: 'Are you sure you want to delete this target?',
+            confirm_delete_target_error: 'KPI has been approved, You cannot delete!',
+
+            edit_success: 'KPI editing successful',
+            error: 'You have not entered enough information',
+            unapprove_success: 'KPI unapprove was successful',
+            approve_success: 'KPI approve was successful',
+            delete_success: 'Deleted the KPI successfully',
+            delete_target_succees: 'Deleted target successfully',
+            add_target_success: 'Add target successfully',
+            edit_target_success: 'Edit target successfully',
+            init_success: 'New KPI initialization successful',
+
         },
 
         notification: {

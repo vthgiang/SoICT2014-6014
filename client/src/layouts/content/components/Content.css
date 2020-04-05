@@ -1,15 +1,14 @@
 /*
 Chuẩn tắc css cho các form control:
-1. Đặt trong thẻ gốc: div, class là box, id là qlcv
-2. Đặt các control trong div form-group, div form-inline
-3. label có class là form-control-static
-4. control có class là form-control
+1. Tính từ thẻ gốc class là qlcv
+2. Tiép đến là thẻ form-inline, thẻ form-group. Sau đó đặt các control trong div form-group (Cũng có thể đặt trực tiếp trong form-inline)
+3. control có class là form-control
 Ví dụ:
-<div className="box" id="qlcv">
-    <div className="box-body">
+<div className="box">
+    <div className="box-body qlcv">
         <div className="form-inline">
             <div className = "form-group">
-                <label className = "form-control-static">Abc def</label>
+                <label>Abc def</label>
                 <input className="form-control" type="text"/>
             </div>
         </div>
@@ -17,23 +16,119 @@ Ví dụ:
 </div>
 */
 
+div.qlcv div.selectmulti,
+div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
+div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
+div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
+    margin: 5px 0 5px 0;
+}
+div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> label:empty{
+    display: none;
+}
+
+
 @media (min-width: 768px){
-    div#qlcv.box div.selectmulti > div.btn-group, div.selectmulti > div.btn-group > button {
+    div.qlcv div.selectmulti,
+    div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
+    div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
+    div.qlcv > .form-inline .input-group {
+        margin: 5px;
+    }
+    div.selectmulti {
         width: 200px;
-        margin-right: 10px;
     }
-    div#qlcv.box .form-inline .form-group{
-        margin-bottom: 10px;
-    }
-    div#qlcv.box .form-inline .form-control {
+    div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
+    div.qlcv > .form-inline .input-group {
         width: 200px;
-        margin-right: 10px;
     }
-    div#qlcv.box .form-inline label {
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
         width: 100px;
-        margin-right: 10px;
+        text-align: right;
     }
-    div#qlcv.box .form-inline .checkbox input[type=checkbox]{
-        margin-left: -20px;
+    div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> label:empty{
+        display: inline-block;
     }
+}
+
+
+/*
+CSS cho bảng dữ liệu
+*/
+.table-hover tbody tr:hover{ /* Hight light dòng con trỏ đang trỏ tới */
+    background-color: #d7d6ee;
+}
+table thead tr th.resizing { /* Màu header cột đang được Resize */
+    background-color: #d7d6ee;
+}
+table thead tr th:not(:last-child) { /* Hiện con trỏ khi trỏ vào header bảng */
+    cursor: ew-resize;
+}
+td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+
+/*
+CSS cho cột cuối trong bảng (có các hành động edit, delete, save, ...) và các icon trong đó
+*/
+table.table td:last-child, table.table th:last-child { /* Căn giữa cho cột cuối */
+    text-align: center;
+}
+
+table.table td a {
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+table.table td i {
+    font-size: 19px;
+}
+
+table.table td a.add {
+    color: #27C46B;
+}
+table.table td a.copy {
+    color: #27C46B;
+}
+
+table.table td a.edit {
+    color: #FFC107;
+}
+
+table.table td a.star {
+    color: #FFC107;
+}
+
+table.table td a.timer {
+    color: black;
+}
+
+table.table td a.default {
+    color: black;
+}
+
+table.table td a.all_inbox {
+    color: darkred;
+}
+
+table.table td a.add_circle {
+    color: green;
+}
+
+table.table td a.save_result {
+    color: green;
+}
+
+table.table td a.timer:hover {
+    color: #FFC107;
+}
+
+table.table td a.delete {
+    color: #E34724;
+}
+
+table.table td a.approve {
+    color: deepskyblue;
 }

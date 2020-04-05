@@ -2,6 +2,9 @@ import {handleResponse} from '../../../../helpers/HandleResponse';
 import {
     LOCAL_SERVER_API
 } from '../../../../env';
+import {
+    getStorage, AuthenticateHeader
+} from '../../../../config';
 export const overviewServices = {
     getAllKPIUnit,
     getCurrentKPIUnit,
@@ -14,6 +17,7 @@ export const overviewServices = {
 function getAllKPIUnit(id) {
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/unit/${id}`, requestOptions).then(handleResponse);
@@ -23,6 +27,7 @@ function getAllKPIUnit(id) {
 function getCurrentKPIUnit(id) {
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
@@ -32,6 +37,7 @@ function getCurrentKPIUnit(id) {
 function getChildTargetOfCurrentTarget(id) {
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/child-target/${id}`, requestOptions).then(handleResponse);
@@ -41,7 +47,7 @@ function getChildTargetOfCurrentTarget(id) {
 function addKPIUnit(newKPI) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newKPI)
     };
 
@@ -53,7 +59,7 @@ function addKPIUnit(newKPI) {
 function evaluateKPIUnit(id) {
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`, requestOptions).then(handleResponse);

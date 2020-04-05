@@ -88,13 +88,9 @@ function addTaskTemplate(taskTemplate) {
             .then(
                 taskTemplate => { 
                     dispatch(success(taskTemplate));
-                    //dispatch(alertActions.success('Add task template successful'));
-                    console.log("Add task template successful on Client");
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    //dispatch(alertActions.error(error.toString()));
-                    console.log(error.toString());
                 }
             );
     };

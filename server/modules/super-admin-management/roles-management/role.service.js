@@ -49,7 +49,7 @@ exports.getById = async (company, roleId) => {
 exports.create = async(data, companyID) => {
     var roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
     var check = await Role.findOne({name: data.name, company: companyID});
-    if(check !== null) throw({message: 'role_name_exist'});
+    if(check !== null) throw('role_name_exist');
     var role = await Role.create({
         name: data.name,
         company: companyID,
@@ -63,7 +63,7 @@ exports.create = async(data, companyID) => {
 exports.createAbstract = async(data, companyID) => {
     var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
     const check = await Role.findOne({name: data.name, company: companyID}); 
-    if(check !== null) throw ({message: 'role_name_exist'});
+    if(check !== null) throw ('role_name_exist');
     const role = await Role.create({
         name: data.name,
         company: companyID,

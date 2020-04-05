@@ -18,7 +18,8 @@ export function sabbatical(state = {listSabbatical:[]}, action) {
             };
         case SabbaticalConstants.GET_SABBATICAL_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case SabbaticalConstants.CREATE_SABBATICAL_REQUEST:
             return {
@@ -36,7 +37,8 @@ export function sabbatical(state = {listSabbatical:[]}, action) {
             };
         case SabbaticalConstants.CREATE_SABBATICAL_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case SabbaticalConstants.DELETE_SABBATICAL_REQUEST:
             return {
@@ -51,7 +53,8 @@ export function sabbatical(state = {listSabbatical:[]}, action) {
             };
         case SabbaticalConstants.DELETE_SABBATICAL_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         case SabbaticalConstants.UPDATE_SABBATICAL_REQUEST:
             return {
@@ -69,7 +72,8 @@ export function sabbatical(state = {listSabbatical:[]}, action) {
             };
         case SabbaticalConstants.UPDATE_SABBATICAL_FAILURE:
             return {
-                error: action.error
+                error: action.error,
+                isLoading: false,
             };
         default:
             return state

@@ -22,6 +22,7 @@ export function holiday(state = initState, action) {
         case HolidayConstants.GET_HOLIDAY_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case HolidayConstants.CREATE_HOLIDAY_REQUEST:
             return {
@@ -40,6 +41,7 @@ export function holiday(state = initState, action) {
         case HolidayConstants.CREATE_HOLIDAY_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case HolidayConstants.DELETE_HOLIDAY_REQUEST:
             return {
@@ -55,6 +57,7 @@ export function holiday(state = initState, action) {
         case HolidayConstants.DELETE_HOLIDAY_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case HolidayConstants.UPDATE_HOLIDAY_REQUEST:
             return {
@@ -73,6 +76,7 @@ export function holiday(state = initState, action) {
         case HolidayConstants.UPDATE_HOLIDAY_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         default:
             return state

@@ -30,6 +30,8 @@ exports.show = async (id) => {
 }
 
 exports.create = async(name, description, link, roles) => {
+    const component = await ComponentDefault.findOne({name});
+    if(component !== null) throw ('component_name_exist');
 
     return await ComponentDefault.create({ name, description, link, roles });
 }

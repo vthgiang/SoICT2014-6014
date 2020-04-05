@@ -95,12 +95,12 @@ function getCommentTask(task) {
 
     return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${task}`, requestOptions).then(handleResponse);
 }
-
 // add comment task
 function addCommentTask(newComment) {
     const requestOptions = {
         method: 'POST',
-        body: newComment
+        body: JSON.stringify(newComment),
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/create`, requestOptions).then(handleResponse);
@@ -111,7 +111,8 @@ function editCommentTask(id, newComment) {
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newComment)
+        body: JSON.stringify(newComment),
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${id}`, requestOptions).then(handleResponse);
@@ -121,6 +122,7 @@ function editCommentTask(id, newComment) {
 function deleteCommentTask(id) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${id}`, requestOptions).then(handleResponse);

@@ -99,19 +99,19 @@ class ModalEditCertificate extends Component {
                                                         </label>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="nameCertificate">Tên bằng cấp:<span className="required">&#42;</span></label>
+                                        <label htmlFor="nameCertificate">Tên bằng cấp:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" style={{ height: 34 }} name="nameCertificate" defaultValue={this.state.nameCertificate} onChange={this.handleChange} autoComplete="off" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="addressCertificate">Nơi đào tạo:<span className="required">&#42;</span></label>
+                                        <label htmlFor="addressCertificate">Nơi đào tạo:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" style={{ height: 34 }} name="addressCertificate" defaultValue={this.state.addressCertificate} onChange={this.handleChange} autoComplete="off" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="yearCertificate">Năm tốt nghiệp:<span className="required">&#42;</span></label>
+                                        <label htmlFor="yearCertificate">Năm tốt nghiệp:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" style={{ height: 34 }} name="yearCertificate" defaultValue={this.state.yearCertificate} onChange={this.handleChange} autoComplete="off" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="typeCertificate">Xếp loại:<span className="required">&#42;</span></label>
+                                        <label htmlFor="typeCertificate">Xếp loại:<span className="text-red">&#42;</span></label>
                                         <select className="form-control" style={{ height: 34 }} name="typeCertificate" defaultValue={this.state.typeCertificate} onChange={this.handleChange}>
                                             <option value="Xuất sắc">Xuất sắc</option>
                                             <option value="Giỏi">Giỏi</option>

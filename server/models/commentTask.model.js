@@ -18,7 +18,7 @@ const CommentTaskSchema = new Schema({
     },
     parent: {// Có thể là comment cha hoặc là action task
         type: Schema.Types.ObjectId,
-        // replies: this
+         replies: this
     },
     content: {
         type: String,
@@ -28,11 +28,11 @@ const CommentTaskSchema = new Schema({
         default: 0,
         required: true
     },
-    file: {
-        type: Schema.Types.ObjectId,
-        ref: TaskFile,
-        required: true
-    }
+    // file: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: TaskFile,
+    //     required: true
+    // }
 }, {
     timestamps: true
 });

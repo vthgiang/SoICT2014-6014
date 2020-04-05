@@ -77,7 +77,7 @@ class ModalEditHoliday extends Component {
                                         <div className="box-body">
                                             <div className="col-md-12">
                                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                                    <label htmlFor="startDate">Ngày bắt đầu:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="startDate">Ngày bắt đầu:<span className="text-red">&#42;</span></label>
                                                     <div className={'input-group date has-feedback'}>
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
@@ -86,7 +86,7 @@ class ModalEditHoliday extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                                    <label htmlFor="endDate">Ngày kết thúc:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="endDate">Ngày kết thúc:<span className="text-red">&#42;</span></label>
                                                     <div className={'input-group date has-feedback'}>
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
@@ -95,7 +95,7 @@ class ModalEditHoliday extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="reason">Mô tả lịch nghỉ:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="reason">Mô tả lịch nghỉ:<span className="text-red">&#42;</span></label>
                                                     <textarea className="form-control" rows="3" style={{ height: 72 }} defaultValue={data.reason} name="reason" ref="reason"></textarea>
                                                 </div>
 

@@ -18,7 +18,10 @@ const LinkDefaultSchema = new Schema({
     roles: [{
         type: Schema.Types.ObjectId,
         ref: 'roledefaults'
-    }]
+    }],
+    category: {
+        type: String
+    },
 },{
     timestamps: true,
     toJSON: { virtuals: true }

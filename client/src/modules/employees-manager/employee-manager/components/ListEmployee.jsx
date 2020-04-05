@@ -7,8 +7,8 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 
@@ -20,11 +20,11 @@ class ListEmployee extends Component {
             gender: "All",
             employeeNumber: "",
             department: "All",
+            status: "All",
             page: 0,
             limit: 5,
 
         }
-        this.setLimit = this.setLimit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
@@ -114,148 +114,138 @@ class ListEmployee extends Component {
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="row">
-                <div className="col-xs-12">
-                    <div className="box box-info">
-                        {/* /.box-header */}
-                        <div className="box-body">
-                            <div className="col-md-12">
-                                <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <div className="box-header col-md-6" style={{ paddingLeft: 0 }}>
-                                        <h3 className="box-title">Danh sách nhân viên:</h3>
-                                    </div>
-                                </div>
-                                <div className="col-md-3">
-                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="tree-select" style={{ paddingTop: 5 }}>Đơn vị:</label>
-                                    </div>
-                                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-control" id="tree-select" name="department" onChange={this.handleChange}>
-                                            <option value="All" level={1}>-- Tất cả --</option>
-                                            {
-                                                tree !== null &&
-                                                tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-md-3">
-                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="position" style={{ paddingTop: 5 }}>Chức vụ:</label>
-                                    </div>
-                                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-control" defaultValue="1" name="position" onChange={this.handleChange}>
-                                            <option value="All">--Tất cả--</option>
-                                            {
-                                                listPosition !== undefined &&
-                                                listPosition.map((position, index) => (
-                                                    <option key={index} value={position._id}>{position.name}</option>
-                                                ))
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-12">
-                                <div className="col-md-3">
-                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="employeeNumber" style={{ paddingTop: 5 }}>Mã NV:</label>
-                                    </div>
-                                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-md-3">
-                                    <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <label htmlFor="gender" style={{ paddingTop: 5 }}>Giới tính:</label>
-                                    </div>
-                                    <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <select className="form-control" defaultValue="1" name="gender" onChange={this.handleChange}>
-                                            <option value="All">--Tất cả--</option>
-                                            <option value="male">Nam</option>
-                                            <option value="female">Nữ</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-md-3">
-                                    <div className="form-group" style={{ paddingLeft: 0 }}>
-                                        <button type="submit" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
-                                    </div>
-                                </div>
-                                <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                    <ModalAddEmployee initState={this.state} />
-                                </div>
-                            </div>
-                            <div className="col-md-12">
-                                <table className="table table-striped table-bordered table-hover" id="myTable" >
-                                    <thead>
-                                        <tr>
-                                            <th style={{ width: "15%" }}>Mã nhân viên</th>
-                                            <th>Họ và tên</th>
-                                            <th style={{ width: "10%" }}>Giới tính</th>
-                                            <th style={{ width: "12%" }}>Ngày sinh</th>
-                                            <th style={{ width: "15%" }}>Đơn vị</th>
-                                            <th style={{ width: "18%" }}>Chức vụ</th>
-                                            <th style={{ width: '120px', textAlign: 'center' }}>
-                                                <ActionColumn
-                                                    columnName="Hành động"
-                                                    hideColumn={false}
-                                                    setLimit={this.setLimit}
-                                                />
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
-                                            lists.map((x, index) => (
-                                                <tr key={index}>
-                                                    <td>{x.employee.map(y => y.employeeNumber)}</td>
-                                                    <td>{x.employee.map(y => y.fullName)}</td>
-                                                    <td>{x.employee.map(y => y.gender)}</td>
-                                                    <td>{x.employee.map(y => y.brithday)}</td>
-                                                    <td>{x.departments.length !== 0 ? x.departments.map(unit => (
-                                                        <React.Fragment key={unit._id}>
-                                                            {unit.name}<br />
-                                                        </React.Fragment>
-                                                    )) : null}</td>
-                                                    <td>{x.roles.length !== 0 ? x.roles.map(role => (
-                                                        <React.Fragment key={role._id}>
-                                                            {role.roleId.name}<br />
-                                                        </React.Fragment>
-                                                    )) : null}</td>
-                                                    < td >
-                                                        <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
-                                                            sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />
-                                                        <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary} initState={this.state}
-                                                            sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
-                                                        <DeleteNotification
-                                                            content={{
-                                                                title: "Xoá thông tin nhân viên",
-                                                                btnNo: translate('confirm.no'),
-                                                                btnYes: translate('confirm.yes'),
-                                                            }}
-                                                            data={{
-                                                                id: x.employee.map(y => y._id),
-                                                                info: x.employee.map(y => y.fullName) + " - " + x.employee.map(y => y.employeeNumber)
-                                                            }}
-                                                            func={this.props.deleteEmployee}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            )
-                                            )}
-                                    </tbody>
-                                    
-                                </table>
-                                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
-                            </div>
+            <div className="box">
+                <div className="box-body qlcv">
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <h4 className="box-title">Danh sách nhân viên:</h4>
                         </div>
-                        {/* /.box-body */}
+                        <ModalAddEmployee initState={this.state} />
                     </div>
-                    {/* /.box */}
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.unit')}:</label>
+                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
+                                <option value="All" level={1}>--Tất cả---</option>
+                                {
+                                    tree !== null &&
+                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
+                                }
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.position')}:</label>
+                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                {
+                                    listPosition !== undefined &&
+                                    listPosition.map((position, index) => (
+                                        <option key={index} value={position._id}>{position.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        <div className="form-group">
+                            <label htmlFor="employeeNumber" className="form-control-static">{translate('page.staff_number')}:</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="gender" className="form-control-static">Giới tính:</label>
+                            <select className="form-control" defaultValue="All" name="gender" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                            </select>
+
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.status')}:</label>
+                            <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                <option value="active">Đang làm việc</option>
+                                <option value="leave">Đã nghỉ làm</option>
+                            </select>
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
+                        </div>
+                    </div>
+                    <table className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã nhân viên</th>
+                                <th>Họ và tên</th>
+                                <th>Giới tính</th>
+                                <th>Ngày sinh</th>
+                                <th>Đơn vị</th>
+                                <th>Chức vụ</th>
+                                <th>Trạng thái</th>
+                                <th style={{ width: '120px' }}>
+                                    <ActionColumn
+                                        columnName="Hành động"
+                                        columnName={translate('table.action')}
+                                        columnArr={[
+                                            "Mã nhân viên",
+                                            "Họ và tên",
+                                            "Giới tính",
+                                            "Ngày sinh",
+                                            "Đơn vị",
+                                            "Chức vụ"
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                                lists.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.employee.map(y => y.employeeNumber)}</td>
+                                        <td>{x.employee.map(y => y.fullName)}</td>
+                                        <td>{x.employee.map(y => y.gender)}</td>
+                                        <td>{x.employee.map(y => y.brithday)}</td>
+                                        <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                            <React.Fragment key={unit._id}>
+                                                {unit.name}<br />
+                                            </React.Fragment>
+                                        )) : null}</td>
+                                        <td>{x.roles.length !== 0 ? x.roles.map(role => (
+                                            <React.Fragment key={role._id}>
+                                                {role.roleId.name}<br />
+                                            </React.Fragment>
+                                        )) : null}</td>
+                                         <td>{x.employee.map(y => y.status)}</td>
+                                        < td >
+                                            <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
+                                                sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />
+                                            <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary} initState={this.state}
+                                                sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
+                                            <DeleteNotification
+                                                content={{
+                                                    title: "Xoá thông tin nhân viên",
+                                                    btnNo: translate('confirm.no'),
+                                                    btnYes: translate('confirm.yes'),
+                                                }}
+                                                data={{
+                                                    id: x.employee.map(y => y._id),
+                                                    info: x.employee.map(y => y.fullName) + " - " + x.employee.map(y => y.employeeNumber)
+                                                }}
+                                                func={this.props.deleteEmployee}
+                                            />
+                                        </td>
+                                    </tr>
+                                )
+                                )}
+                        </tbody>
+
+                    </table>
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <ToastContainer />
-            </div >
+            </div>
         );
     };
 }

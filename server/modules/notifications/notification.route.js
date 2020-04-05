@@ -27,4 +27,10 @@ router.patch("/:id", auth, NotificationController.edit);
 //Xóa thông báo
 router.delete("/:id", auth, NotificationController.delete);
 
+//Xóa thông báo đã nhận
+router.delete("/receivered/:userId/:notificationId", auth, NotificationController.deleteNotificationReceivered);
+
+//Xóa thông báo đã gửi
+router.delete("/sent/:id", auth, NotificationController.deleteNotificationSent);
+
 module.exports = router;

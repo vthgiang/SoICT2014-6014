@@ -16,8 +16,7 @@ exports.get = async (req, res) => {
         LogError(req.user.email, 'GET_USERS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_users_faile',
-            content: error
+            message: error
         })
     }
 };
@@ -40,8 +39,7 @@ exports.getPaginate = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_USERS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'paginate_users_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -63,8 +61,7 @@ exports.create = async (req, res) => {
         LogError(req.user.email, 'CREATE_USER', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_user_faile',
-            content: error
+            message: error
         })
     }
 };
@@ -84,8 +81,7 @@ exports.show = async (req, res) => {
         LogError(req.user.email, 'SHOW_USER', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_user_faile',
-            content: error
+            message: error
         })
     }
 };
@@ -107,8 +103,7 @@ exports.edit = async (req, res) => {
         LogError(req.user.email, 'EDIT_USER', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_user_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -128,8 +123,7 @@ exports.delete = async (req, res) => {
         LogError(req.user.email, 'DELETE_USER', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_user_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -149,8 +143,7 @@ exports.getUsersSameDepartment = async (req, res) => {
         LogError(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_users_same_department_faile',
-            content: error
+            message: error
         })
     }
 }
@@ -170,8 +163,7 @@ exports.getUsersOfDepartment = async (req, res) => {
         LogError(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_users_of_department_faile',
-            content: error
+            message: error
         })
     }
 }

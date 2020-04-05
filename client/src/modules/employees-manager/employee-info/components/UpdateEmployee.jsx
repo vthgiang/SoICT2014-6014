@@ -131,7 +131,7 @@ class UpdateEmployee extends Component {
         if (employeesInfo.employeeContact) employeeContact = employeesInfo.employeeContact;
         return (
             <React.Fragment>
-                {(typeof employee === 'undefined' || employee.length === 0) ? <span className="required">Chưa có thông tin cá nhân</span> :
+                {(typeof employee === 'undefined' || employee.length === 0) ? <span className="text-red">Chưa có thông tin cá nhân</span> :
                     employee.map((x, index) => (
                         <div className="row" key={index}>
                             {/* left column */}

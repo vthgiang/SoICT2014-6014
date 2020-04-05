@@ -17,10 +17,10 @@ const PrivilegeSchema = new Schema({
         ref: 'roles',
         required: true
     },
-    action: { //luu id cua hanh dong tuong ung
+    action: [{ //luu id cua hanh dong tuong ung
         type: Schema.Types.ObjectId,
         ref: 'actions'
-    }
+    }]
 });
 
 module.exports = Privilege = mongoose.model("privileges", PrivilegeSchema);

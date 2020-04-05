@@ -60,7 +60,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
         var tasktemplates;
         if(unit === "[]"){
             tasktemplates = await Privilege.find({
-                roleId: { $in: allRole },
+                action: { $in: allRole },
                 resourceType: 'TaskTemplate'
             }).sort({'createdAt': 'desc'})
             .skip(noResultsPerPage*(pageNumber-1))
@@ -72,7 +72,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             });
         } else {
             tasktemplates = await Privilege.find({
-                roleId: { $in: allRole },
+                action: { $in: allRole },
                 resourceType: 'TaskTemplate'
             }).sort({'createdAt': 'desc'})
             .skip(noResultsPerPage*(pageNumber-1))
@@ -81,28 +81,15 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
                 path: 'resourceId', 
                 model: TaskTemplate, 
                 match: { unit: { $in: unit.split(",") }},
+                match: { name: { "$regex": name, "$options": "i" }},
                 populate: { path: 'creator unit' } 
             });
-            var task=[];
-            var len = tasktemplates.length;
-            var task_len=0;
-            for (var i=0;i<len;i++){
-                if (tasktemplates[i].resourceId.name==name){
-                    task[task_len]=tasktemplates[i];
-                    task_len++;
-                }
-            }
-            tasktemplates=task;
         }
         
-        if (tasktemplates[0].resourceId.name==name){
-            var totalCount = task_len;
-        }else{
-            var totalCount = await Privilege.count({
-                role: { $in: allRole },
-                resource_type: 'TaskTemplate'
-            });
-        }
+        var totalCount = await Privilege.count({
+            action: { $in: allRole },
+            resourceType: 'TaskTemplate'
+        });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
 
         return ({"message" : tasktemplates,"pages": totalPages});
@@ -114,6 +101,7 @@ exports.create = async (body) => {
             unit: body.unit,
             name: body.name,
             creator: body.creator, //id của người tạo
+            read: body.read, //id của người có quyền xem
             responsible: body.responsible,
             accounatable: body.accounatable,
             consulted: body.consulted,
@@ -121,13 +109,13 @@ exports.create = async (body) => {
             description: body.description,
             formula: body.formula,
         });
-        var reader = body.read; //role có quyền đọc
-        var read = await Action.findOne({ name: "READ" }); //lấy quyền đọc
+        // var reader = body.read; //role có quyền đọc
+        // var read = await Action.findOne({ name: "READ" }); //lấy quyền đọc
         var privilege = await Privilege.create({
-            roleId: [reader], //id của người đọc cấp quyền đọc
+            roleId: body.read[0], //id của người cấp quyền xem
             resourceId: tasktemplate._id,
             resourceType: "TaskTemplate",
-            action: read //quyền READ
+            action: body.read //quyền READ
         });
        
         var actions = body.listAction.map(item => {

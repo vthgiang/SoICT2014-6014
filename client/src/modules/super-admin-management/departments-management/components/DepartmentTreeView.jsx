@@ -135,11 +135,7 @@ class DepartmentTreeView extends Component {
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <DeleteNotification 
-                                content={{
-                                    title: translate('manage_department.delete'),
-                                    btnNo: translate('confirm.no'),
-                                    btnYes: translate('confirm.yes'),
-                                }}
+                                content={translate('manage_department.delete')}
                                 data={{
                                     id: data.id,
                                     info: data.name

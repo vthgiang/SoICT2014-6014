@@ -24,6 +24,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.GET_DISCIPLINE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case DisciplineConstants.CREATE_DISCIPLINE_REQUEST:
             return {
@@ -42,6 +43,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.CREATE_DISCIPLINE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case DisciplineConstants.DELETE_DISCIPLINE_REQUEST:
             return {
@@ -57,6 +59,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.DELETE_DISCIPLINE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case DisciplineConstants.UPDATE_DISCIPLINE_REQUEST:
             return {
@@ -75,6 +78,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.UPDATE_DISCIPLINE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
             // reducer khen thưởng
         case DisciplineConstants.GET_PRAISE_REQUEST:
@@ -92,6 +96,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.GET_PRAISE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case DisciplineConstants.CREATE_PRAISE_REQUEST:
             return {
@@ -110,6 +115,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.CREATE_PRAISE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case DisciplineConstants.DELETE_PRAISE_REQUEST:
             return {
@@ -125,6 +131,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.DELETE_PRAISE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         case DisciplineConstants.UPDATE_PRAISE_REQUEST:
             return {
@@ -143,6 +150,7 @@ export function discipline(state = initState, action) {
         case DisciplineConstants.UPDATE_PRAISE_FAILURE:
             return {
                 error: action.error,
+                isLoading: false,
             };
         default:
             return state

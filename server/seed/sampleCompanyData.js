@@ -14,6 +14,7 @@ const Sabbatical = require('../models/sabbatical.model');
 const Discipline = require('../models/discipline.model');
 const Praise = require('../models/praise.model');
 const EducationProgram = require('../models/educationProgram.model');
+const Course = require('../models/course.model')
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -403,7 +404,7 @@ const sampleCompanyData = async () => {
             company: xyz._id
         },
         { // 20
-            url: '/hr-list-course',
+            url: '/hr-list-education',
             description: 'Chương trình đào tạo bắt buộc',
             company: xyz._id
         },
@@ -762,6 +763,7 @@ const sampleCompanyData = async () => {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
         fullName: "Vũ Thị C",
         employeeNumber: "MS2015122",
+        status:"active",
         company:xyz._id,
         MSCC: "123456",
         gender: "male",
@@ -832,6 +834,7 @@ const sampleCompanyData = async () => {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
         fullName: "Trần Văn B",
         employeeNumber: "MS2015124",
+        status:"active",
         company:xyz._id,
         MSCC: "123456",
         gender: "male",
@@ -952,6 +955,7 @@ const sampleCompanyData = async () => {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
         fullName: "Nguyễn Văn A",
         employeeNumber: "MS2015123",
+        status:"active",
         company:xyz._id,
         MSCC: "123456",
         gender: "male",
@@ -1158,33 +1162,69 @@ const sampleCompanyData = async () => {
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU KỶ LUẬT NHÂN VIÊN
+        TẠO DỮ LIỆU CHƯƠNG TRÌNH ĐÀO TẠO
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-    console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
+    console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
     var educationProgram = await EducationProgram.insertMany([{
         company:xyz._id,
         unitEducation: [
-            "Phòng Kinh doanh"
+            departments[0]._id
         ],
         positionEducation: [
-            "Trưởng phòng"
+            nvPhongHC._id
         ],
         nameEducation: "An toan lao dong",
         numberEducation: "M123",
     }, {
         company:xyz._id,
         unitEducation: [
-            "Phòng Kinh doanh"
+            departments[0]._id
         ],
         positionEducation: [
-            "Trưởng phòng"
+            nvPhongHC._id
         ],
         nameEducation: "kỹ năng giao tiếp",
         numberEducation: "M1234",
     }])
-    console.log(`Xong! Thông tin kỷ luật đã được tạo`);
+    console.log(`Xong! Thông tin chương trình đào tạo  đã được tạo`);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU KHOÁ ĐÀO TẠO
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+
+    console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
+    var course= await Course.insertMany([{
+        company:xyz._id,
+        nameCourse : "An toàn lao động 1",
+        numberCourse : "LD1233",
+        unitCourse : "Vnists",
+        address : "P9.01",
+        startDate : "03-03-2020",
+        endDate : "21-03-2020",
+        costsCourse : "1200000",
+        teacherCourse : "Nguyễn B",
+        typeCourse : "Đào tạo ngoài",
+        educationProgram : educationProgram[0]._id,
+        time : "6",
+    }, {
+        company:xyz._id,
+        nameCourse : "An toàn lao động 2",
+        numberCourse : "LD123",
+        unitCourse : "Vnists",
+        address : "P9.01",
+        startDate : "03-03-2020",
+        endDate : "21-03-2020",
+        costsCourse : "1200000",
+        teacherCourse : "Nguyễn Văn B",
+        typeCourse : "Đào tạo ngoài",
+        educationProgram : educationProgram[0]._id,
+        time : "6",
+    }])
+    console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 }
 
 //Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//

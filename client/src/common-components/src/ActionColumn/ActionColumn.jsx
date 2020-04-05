@@ -2,14 +2,32 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti } from './SelectMulti/SelectMulti';
+import { SelectMulti } from '../../';
+import { SlimScroll } from '../../';
 import './ActionColumn.css';
 
 class ActionColumn extends Component {
     constructor(props) {
         super(props);
         this.record = React.createRef();
-        this.state = {}
+        this.state = {fixTableWidth: false};
+
+        window.addEventListener("resize", () => {
+            this.adjustSize(window.innerWidth);
+        }, {passive: true});
+    }
+
+    componentDidMount() {
+        this.adjustSize(window.innerWidth);
+    }
+
+    adjustSize = async (innerWidth) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                fixTableWidth: (innerWidth > 992 ? false : true) // 992: kích thước Bootstrap md
+            }
+        })
     }
 
     handleEnterLimitSetting = (event) => {
@@ -35,21 +53,31 @@ class ActionColumn extends Component {
         await this.props.setLimit(this.record.current.value);
     }
 
+    configTableWidth = async() => {
+        await this.setState(state => {
+            return {
+                ...state,
+                fixTableWidth: this.refs.configCheckbox.checked
+            }
+        })
+
+        window.$(`#setting-table`).collapse("hide");
+    }
+
     render() {
-        const { columnName, translate, columnArr, hideColumnOption, limit=5 } = this.props;
-        console.log(this.props)
+        const { columnName, translate, columnArr=[], hideColumnOption=true, tableContainerId, tableId, tableWidth, limit=5 } = this.props;
+        
         return (
             <React.Fragment>
-                {columnName}
-                <button type="button" data-toggle="collapse" data-target="#setting-table" style={{ border: "none", background: "none" }}><i className="fa fa-gear"></i></button>
+                <button type="button" data-toggle="collapse" data-target="#setting-table" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{fontSize: "19px"}}></i></button>
                 <div id="setting-table" className="box collapse">
-                    <span className="pop-arw arwTop L-auto" style={{ right: "30px" }}></span>
+                    <span className="pop-arw arwTop L-auto" style={{ right: "26px" }}></span>
                     {
                         hideColumnOption && columnArr.length > 0 &&
                         <div className="form-group">
-                            <label className="form-control-static">Ẩn cột</label>
+                            <label className="form-control-static">{translate('table.hidden_column')}</label>
                             <SelectMulti id={"multiSelectShowColumn"} multiple="multiple"
-                                nonSelectedText = "Chọn cột muốn ẩn" allSelectedText= "Tất cả các cột"
+                                options= {{nonSelectedText: translate('table.choose_hidden_column'), allSelectedText: translate('table.all')}}
                                 items = { columnArr.map((col,i) => {return {value: i + 1, text: col}}) }>
                             </SelectMulti>
                         </div>
@@ -59,6 +87,14 @@ class ActionColumn extends Component {
                         <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} defaultValue={limit} ref={this.record} />
                     </div>
                     <div className="form-group">
+                        { window.$(`#${tableContainerId}`)[0] !== undefined &&
+                            <React.Fragment>
+                                <div className="checkbox">
+                                    <label><input type="checkbox" checked={this.state.fixTableWidth} ref="configCheckbox" onChange={this.configTableWidth}/>Dùng thanh cuộn bảng</label>
+                                </div>
+                                <SlimScroll outerComponentId={tableContainerId} innerComponentId={tableId} innerComponentWidth={tableWidth} activate={this.state.fixTableWidth}/>
+                            </React.Fragment>
+                        }
                         <button type="button" className="btn btn-success pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
                     </div>
                 </div>
