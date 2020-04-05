@@ -424,7 +424,7 @@ class Routes extends Component {
 
                     {/* kpi - routes */}
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.createKpiUnit.isLoading }
                         key={ 'kpi-unit-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -454,7 +454,7 @@ class Routes extends Component {
                         component={ KPIUnitEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.overviewKpiUnit.isLoading }
                         key={ 'kpi-unit-overview' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -469,7 +469,7 @@ class Routes extends Component {
                         component={ KPIUnitOverview }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.createKpiPersonal.isLoading }
                         key={ 'kpi-personal-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -484,7 +484,7 @@ class Routes extends Component {
                         component={ KPIPersonalCreate }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.overviewKpiPersonal.isLoading }
                         key={ 'kpi-personal-overview' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -514,7 +514,7 @@ class Routes extends Component {
                         component={ KPIPersonalEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.tasktemplates.isLoading }
                         key={ 'task-template-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -545,7 +545,7 @@ class Routes extends Component {
                         component={ Notifications }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.kpimembers.isLoading }
                         key={ 'kpi_member' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -562,7 +562,7 @@ class Routes extends Component {
 
                      {/* Task Management */}
                      <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.tasks.isLoading }
                         key={ 'task-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

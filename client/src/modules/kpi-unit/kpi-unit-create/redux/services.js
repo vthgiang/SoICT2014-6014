@@ -4,7 +4,7 @@ import {
     TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../env';
 import {
-    getStorage
+    getStorage, AuthenticateHeader
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 
@@ -24,6 +24,7 @@ export const createUnitKpiServices = {
 function getCurrentKPIUnit(id) {
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
@@ -33,6 +34,7 @@ function getCurrentKPIUnit(id) {
 function getKPIParent(parentUnit) {
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
     return fetch(`${LOCAL_SERVER_API}/kpiunits/parent/${parentUnit}`, requestOptions).then(handleResponse);
 }
@@ -46,7 +48,7 @@ async function addKPIUnit(newKPI) {
     newKPI = {...newKPI, creater: id};
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newKPI)
     };
 
@@ -57,7 +59,7 @@ async function addKPIUnit(newKPI) {
 function addTargetKPIUnit(newTarget) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newTarget)
     };
 
@@ -72,7 +74,7 @@ async function editKPIUnit(id, newKPI) {
     newKPI = {...newKPI, creater: creater};
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newKPI)
     };
 
@@ -83,7 +85,7 @@ async function editKPIUnit(id, newKPI) {
 function editStatusKPIUnit(id, status) {
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/status/${id}/${status}`, requestOptions).then(handleResponse);
@@ -94,7 +96,7 @@ function editStatusKPIUnit(id, status) {
 function editTargetKPIUnit(id, newTarget) {
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newTarget)
     };
 
@@ -106,6 +108,7 @@ function editTargetKPIUnit(id, newTarget) {
 function deleteKPIUnit(id) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/${id}`, requestOptions).then(handleResponse);
@@ -115,6 +118,7 @@ function deleteKPIUnit(id) {
 function deleteTargetKPIUnit(id, kpiunit) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpiunits/target/${kpiunit}/${id}`, requestOptions).then(handleResponse);

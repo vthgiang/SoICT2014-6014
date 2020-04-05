@@ -15,8 +15,7 @@ exports.get = async (req, res) => {
         LogError(req.user.email, 'GET_ROLES_DEFAULT');
         res.status(200).json({
             success: true,
-            message: error.message !== undefined ? error.message : 'get_roles_default_faile',
-            content: error
+            message: error
         });
     }
 };

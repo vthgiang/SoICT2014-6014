@@ -91,6 +91,7 @@ export default {
             no_data: 'No data',
             start_date: 'Start day',
             end_date: 'End day',
+            hidden_column: 'Hidden columns'
         },
         modal: {
             update: 'Save',
@@ -247,6 +248,9 @@ export default {
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
+            all: 'All',
+            choose_hidden_columns: 'Choose column want to hide',
+            category: 'Category'
         },
 
         manage_component: {
@@ -468,6 +472,56 @@ export default {
             creator: 'Creator',
             unit: 'Unit',
             action: 'Action'
+        },
+
+        kpi_unit_create: {
+            general_information: 'General information',
+            target_list: 'Target list',
+            target_name: 'Target name',
+            criteria: 'Evaluation criteria',
+            weight: 'Weight',
+            action: 'Action',
+            num_target: 'Number of target',
+            weight_total: 'Weight total',
+            time: 'Time',
+            status: 'Status',
+            note: 'Note',
+            add_target: 'Add target',
+            start_kpi: 'Initialize a new month KPI',
+            approve: 'Approve',
+            cancel_approve: 'Unapprove',
+            on_target: 'On target',
+            confirm: 'Confirm',
+            add_title: 'Add target KPI units',
+            edit_title: 'Edit target KPI units',
+            init_title: 'Initialize KPI units',
+            unit: 'Unit name',
+            month: 'Month',
+            default_target: 'Default target',
+            add_new: 'Add new',
+            cancel: 'Cancel',
+            init: 'Initialization',
+            save_change: 'Save changes',
+
+            confirm_unapprove_success: 'Are you sure you want to unapprove this KPI?',
+            confirm_approve_success: 'Are you sure you want to approve this KPI?',
+            confirm_approve_error: 'The total weight must be 100',
+            approve_already: 'KPI is approved!',
+            confirm_delete_success: 'Are you sure you want to delete this entire KPI?',
+            confirm_delete_error: 'KPI is approved, you cannot delete!',
+            confirm_delete_target_success: 'Are you sure you want to delete this target?',
+            confirm_delete_target_error: 'KPI has been approved, You cannot delete!',
+
+            edit_success: 'KPI editing successful',
+            error: 'You have not entered enough information',
+            unapprove_success: 'KPI unapprove was successful',
+            approve_success: 'KPI approve was successful',
+            delete_success: 'Deleted the KPI successfully',
+            delete_target_succees: 'Deleted target successfully',
+            add_target_success: 'Add target successfully',
+            edit_target_success: 'Edit target successfully',
+            init_success: 'New KPI initialization successful',
+
         },
 
         notification: {

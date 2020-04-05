@@ -73,8 +73,8 @@ class ManageLink extends Component {
                     <React.Fragment>
                         <SearchBar 
                             columns={[
-                                { title: translate('table.url'), value:'url' },
-                                { title: translate('table.description'), value:'description' },
+                                { title: translate('manage_link.url'), value:'url' },
+                                { title: translate('manage_link.description'), value:'description' },
                             ]}
                             option={this.state.option}
                             setOption={this.setOption}
@@ -89,8 +89,13 @@ class ManageLink extends Component {
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
-                                            columnName={translate('table.action')} 
-                                            hideColumn={false}
+                                            columnName={translate('table.action')}
+                                            columnArr={[
+                                                translate('manage_link.url'),
+                                                translate('manage_link.description'),
+                                                translate('manage_link.roles')
+                                            ]}
+                                            limit={this.state.limit}
                                             setLimit={this.setLimit}
                                         /> 
                                     </th>

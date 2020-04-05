@@ -7,8 +7,8 @@ import { SalaryActions } from '../redux/actions';
 import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalEditSalary } from './ModalEditSalary';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification, DatePicker } from '../../../../common-components';
 
@@ -123,8 +123,8 @@ class SalaryEmployee extends Component {
             parseInt((this.props.salary.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
                             <h4 className="box-title">{translate('salary_employee.list_salary')}:</h4>

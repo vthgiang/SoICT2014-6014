@@ -23,30 +23,18 @@ exports.getPaginate = async (limit, page, data={}) => {
 }
 
 exports.create = async(data) => {
-    // console.log("tạo cty: ",data);
-    var name = await Company.findOne({ name: data.name });
-    var test = await Company.findOne({ short_name: data.short_name });
-    if(name || test) throw { message: 'Short name already exists' };
-    
     const company = await Company.create({
         name: data.name,
         description: data.description,
         short_name: data.short_name
     });
-    // console.log("Đã tạo: ", company)
 
     return company;
 }
 
 exports.edit = async(id, data) => {
-    console.log("data com:", data);
     var company = await Company.findOne({_id: id});
-    if(company === null) throw ({message: 'company_not_found'});
-    if(company.short_name !== data.short_name){
-        //check shortname invalid?
-        var test = await Company.findOne({ short_name: data.short_name }); 
-        if(test) throw { message: 'short_name_does_not_exist' }; 
-    }
+    if(company === null) throw ('company_not_found');
     company.name = data.name;
     company.description = data.description;
     company.short_name = data.short_name;
@@ -79,7 +67,7 @@ exports.create5RoleAbstract = async(companyId) => {
 
 exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleSuperAdminId) => {
     var checkEmail = await User.findOne({email: userEmail});
-    if(checkEmail !== null) throw ({message: 'email_exist'});
+    if(checkEmail !== null) throw ('email_exist');
     // 1.Tạo mật khẩu tự động cho acc Super Admin
     var salt = await bcrypt.genSaltSync(10);
     var password = await generator.generate({ length: 10, numbers: true });

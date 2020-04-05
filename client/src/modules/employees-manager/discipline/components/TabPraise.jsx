@@ -100,7 +100,7 @@ class TabPraise extends Component {
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div id="khenthuong" className="tab-pane active">
-                <div className="box-body">
+                <div className="box-body qlcv">
                     <div className="form-group">
                         <button type="button" className="btn btn-success pull-right" title={translate('discipline.add_praise_title')} data-toggle="modal" data-target="#modal-addPraise" >{translate('discipline.add_praise')}</button>
                     </div>

@@ -33,8 +33,8 @@ class DashBoardEmployees extends Component {
     }
     render() {
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="row">
                         <LineAndBarChart
                             dataset={this.state.dataset}

@@ -57,8 +57,8 @@ class DepartmentManage extends Component {
         const { tree } = this.props.department;
         const { translate } = this.props;
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="form-group">
                         <h4 className="box-title">Danh sách các đơn vị:</h4>
                     </div>

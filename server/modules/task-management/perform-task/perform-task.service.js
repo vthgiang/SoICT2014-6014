@@ -117,28 +117,32 @@ exports.getCommentTask = (req, res) => {
 // Thêm bình luận: Update nội dung bình luận và file đính kèm
 exports.createCommentTask = async (req, res) => {
     try {
-        var file = await TaskFile.create({
-            name: req.file.filename,
-            url: '/uploadfiles/'+req.file.filename
-        })
-        var comment = await CommentTask.create({
+        // var file = await TaskFile.create({
+        //     name: req.file.filename,
+        //     url: '/uploadfiles/'+req.file.filename
+        // })
+        console.log(req.body);
+        var commenttasks = await CommentTask.create({
             task: req.body.task,
             creator: req.body.creator,
             parent: req.body.parent==="null"?null:req.body.parent,
             content: req.body.content,
-            file: file._id
-        });
+            //  file: file._id
+        }); 
+
         // var task = await Task.findByIdAndUpdate(
-        //     req.body.task, {$push: {comments: comment._id}}, {new: true}
+        //     req.body.task, {$push: {commenttasks: commenttasks._id}}, {new: true}
         // );
-        comment = await comment.populate('creator file').execPopulate();
-        res.json({
+
+        // commenttasks = await CommentTask.populate('creator').execPopulate();//file
+        console.log("**************************************")
+        res.status(200).json({
             message: "Thêm bình luận thành công",
-            commentTask: comment
+            commentTask: commenttasks
         });
-    } catch (error) {
-        res.json({ message: error });
-    }
+    }catch (error) {
+        res.status(400).json({ message: "Hello" });
+     }
 }
 // Sửa bình luận: Sửa nội dung bình luận và file đính kèm
 exports.editCommentTask = async (req, res) => {

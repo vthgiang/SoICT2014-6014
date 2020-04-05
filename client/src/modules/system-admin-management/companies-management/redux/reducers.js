@@ -35,7 +35,7 @@ export function company(state = initState, action) {
         case CompanyConstants.GET_COMPANIES_REQUEST:
         case CompanyConstants.GET_COMPANIES_PAGINATE_REQUEST:
         case CompanyConstants.CREATE_COMPANY_REQUEST:
-        case CompanyConstants.EDIT_COMPANY_FAILE:
+        case CompanyConstants.EDIT_COMPANY_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -93,8 +93,14 @@ export function company(state = initState, action) {
                 isLoading: false
             };
 
-        case 'LOGOUT':
-            return initState;
+        case CompanyConstants.GET_COMPANIES_FAILE:
+        case CompanyConstants.GET_COMPANIES_PAGINATE_FAILE:
+        case CompanyConstants.EDIT_COMPANY_FAILE:
+        case CompanyConstants.CREATE_COMPANY_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            };
 
         default:
             return state;

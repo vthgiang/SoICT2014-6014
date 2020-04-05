@@ -7,8 +7,8 @@ import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './ModalViewTaskTemplate';
 import { ModalEditTaskTemplate } from './ModalEditTaskTemplate';
 
-import { SelectMulti } from '../../../common-components/src/SelectMulti/SelectMulti';
-import { ActionColumn } from '../../../common-components/src/ActionColumn';
+import { SelectMulti } from '../../../common-components';
+import { ActionColumn } from '../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -18,7 +18,6 @@ class TaskTemplate extends Component {
         this.props.getDepartment();
         //edit later
         this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
-        this.loadJSMultiSelect();
     }
     constructor(props) {
         super(props);
@@ -33,16 +32,7 @@ class TaskTemplate extends Component {
         };
         this.handleUpdateData = this.handleUpdateData.bind(this);
     }
-    handleSetting = async () => {
-        // Cập nhật cột muốn ấn
-        var test = window.$("#multiSelectShowColumn").val();
-        window.$("td").show();
-        window.$("th").show();
-        for (var j = 0, len = test.length; j < len; j++) {
-            window.$('td:nth-child(' + test[j] + ')').hide();
-            window.$('th:nth-child(' + test[j] + ')').hide();
-        }
-    }
+
     setLimit = async (limit) => {
         // Cập nhật số dòng trang trên một trang hiển thị
         if (Number(limit) !== this.state.perPage) {
@@ -62,23 +52,6 @@ class TaskTemplate extends Component {
     //     element.classList.remove("in");
     //     element.setAttribute("aria-expanded", "false");
     // }
-    loadJSMultiSelect = () => {
-        window.$(document).ready(function () {
-            window.$('#multiSelectShowColumn').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn cột muốn ẩn'
-            });
-        });
-    }
-    // getSelectedValues = () => {
-    //     var selectedVal = window.$("#multiSelectUnit").val();
-    //     for (var i = 0; i < selectedVal.length; i++) {
-    //         //abc
-    //     }
-    //     console.log(selectedVal);
-    // }
-    //
 
     myFunction = () => {
         var input, filter, table, tr, td, i, txtValue;
@@ -223,7 +196,7 @@ class TaskTemplate extends Component {
     }
     render() {
         const { translate } = this.props;
-        var list, pageTotal, units, currentUnit;
+        var list, pageTotal, units = [], currentUnit;
         const { tasktemplates, department } = this.props;
         const { currentPage } = this.state;
         if (tasktemplates.pageTotal) pageTotal = tasktemplates.pageTotal;
@@ -268,9 +241,9 @@ class TaskTemplate extends Component {
             }
         }
         return ( 
-            <div className="box" id="qlcv">
+            <div className="box">
                 {/* /.box-header */}
-                <div className="box-body">
+                <div className="box-body qlcv">
 
                     <div className = "form-group">
                         {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
@@ -288,13 +261,31 @@ class TaskTemplate extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className = "form-control-static">{translate('task_template.unit')}:</label>
-                            {units && <SelectMulti id="multiSelectUnit" selectAllByDefault={true} items={units.map(item => {return {value: item._id, text: item.name}})} 
-                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả các đơn vị"></SelectMulti>}
+                            {units &&
+                                <SelectMulti id="multiSelectUnit"
+                                    defaultValue = {units.map(item => {return item._id})}
+                                    items = {units.map(item => {return {value: item._id, text: item.name}})} 
+                                    options = {{nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị"}}>
+                                </SelectMulti>
+                            }
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
-
-                    <table className="table table-bordered table-striped table-hover">
+                    <ActionColumn 
+                        tableId="user-table"
+                        columnArr={[
+                            'Tên mẫu công việc',
+                            'Mô tả',
+                            'Số lần sử dụng',
+                            'Người tạo mẫu',
+                            'Đơn vị'
+                        ]}
+                        limit = {this.state.perPage}
+                        setLimit = {this.setLimit}
+                        hideColumnOption = {true}
+                    />
+                    
+                    <table className="table table-bordered table-striped table-hover" id="myTable">
                         <thead>
                             <tr>
                                 <th title="Tên mẫu công việc">{translate('task_template.tasktemplate_name')}</th>
@@ -303,22 +294,7 @@ class TaskTemplate extends Component {
                                 <th title="Người tạo mẫu">{translate('task_template.creator')}</th>
                                 <th title="Đơn vị">{translate('task_template.unit')}</th>
 
-                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                    <ActionColumn 
-                                        tableId="user-table"
-                                        columnName={translate('table.action')} 
-                                        columnArr={[
-                                            'Tên mẫu công việc',
-                                            'Mô tả',
-                                            'Số lần sử dụng',
-                                            'Người tạo mẫu',
-                                            'Đơn vị'
-                                        ]}
-                                        limit = {this.state.perPage}
-                                        setLimit = {this.setLimit}
-                                        hideColumnOption = {true}
-                                    />
-                                </th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                             </tr>
                         </thead>
                         <tbody className="task-table">

@@ -244,8 +244,8 @@ class KPIPersonalCreate extends Component {
             return "Đã kết thúc"
         }
     }
-    requestApproveKPI = (kpiersonal) => {
-        var totalWeight = kpiersonal.listtarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
+    requestApproveKPI = (kpipersonal) => {
+        var totalWeight = kpipersonal.listtarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
         if (totalWeight === 100) {
             Swal.fire({
                 title: "Bạn chắc chắn muốn quản lý phê quyệt KPI này?",
@@ -256,7 +256,7 @@ class KPIPersonalCreate extends Component {
                 confirmButtonText: 'Xác nhận'
             }).then((res) => {
                 if (res.value) {
-                    this.props.editStatusKPIPersonal(kpiersonal._id, 1);
+                    this.props.editStatusKPIPersonal(kpipersonal._id, 1);
                 }
             });
         } else {
@@ -268,8 +268,8 @@ class KPIPersonalCreate extends Component {
             })
         }
     }
-    cancelApproveKPI = (kpiersonal) => {
-        if (kpiersonal.status === 1) {
+    cancelApproveKPI = (kpipersonal) => {
+        if (kpipersonal.status === 1) {
             Swal.fire({
                 title: "Bạn chắc chắn muốn hủy yêu cầu phê duyệt KPI này?",
                 type: 'success',
@@ -279,7 +279,7 @@ class KPIPersonalCreate extends Component {
                 confirmButtonText: 'Xác nhận'
             }).then((res) => {
                 if (res.value) {
-                    this.props.editStatusKPIPersonal(kpiersonal._id, 0);
+                    this.props.editStatusKPIPersonal(kpipersonal._id, 0);
                 }
             });
         } else {

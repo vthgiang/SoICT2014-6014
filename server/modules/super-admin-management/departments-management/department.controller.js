@@ -18,8 +18,7 @@ exports.get = async (req, res) => {
         await LogError(req.user.email, 'GET_DEPARTMENTS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_departments_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -44,8 +43,7 @@ exports.create = async (req, res) => {
         await LogError(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_department_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -65,8 +63,7 @@ exports.show = async (req, res) => {
         await LogError(req.user.email, 'SHOW_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_department_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -93,8 +90,7 @@ exports.edit = async (req, res) => {
         await LogError(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_department_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -115,8 +111,7 @@ exports.delete = async (req, res) => {
         await LogError(req.user.email, 'DELETE_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_department_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -137,8 +132,7 @@ exports.getDepartmentOfUser = async (req, res) => {
         await LogError(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_department_of_user_faile',
-            content: error
+            message: error
         });
     }
 }

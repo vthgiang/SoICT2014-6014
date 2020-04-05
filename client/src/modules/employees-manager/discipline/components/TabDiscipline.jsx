@@ -5,8 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddDiscipline } from './ModalAddDiscipline';
 import { ModalEditDiscipline } from './ModalEditDiscipline';
-import { ActionColumnDiscipline } from './ActionColumDiscipline';
-import { PaginateBar, DeleteNotification } from '../../../../common-components';
+import { PaginateBar, ActionColumn, DeleteNotification } from '../../../../common-components';
 class TabDiscipline extends Component {
     constructor(props) {
         super(props);
@@ -94,7 +93,7 @@ class TabDiscipline extends Component {
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div id="kyluat" className="tab-pane">
-                <div className="box-body">
+                <div className="box-body qlcv">
                     <div className="form-group">
                         <button type="button" className="btn btn-success pull-right" title={translate('discipline.add_discipline_title')} data-toggle="modal" data-target="#modal-addNewDiscipline" >{translate('discipline.add_discipline')}</button>
                     </div>
@@ -144,7 +143,7 @@ class TabDiscipline extends Component {
                                 <th>{translate('table.unit')}</th>
                                 <th style={{ width: "15%" }}>{translate('table.position')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>
-                                    <ActionColumnDiscipline
+                                    <ActionColumn
                                         columnName={translate('table.action')}
                                         columnArr={[
                                             translate('table.employee_number'),

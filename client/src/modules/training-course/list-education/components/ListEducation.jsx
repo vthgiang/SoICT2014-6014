@@ -97,8 +97,8 @@ class ListEducation extends Component {
             parseInt((this.props.education.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
                             <h4 className="box-title">Danh sách chương trình đào tạo bắt buộc:</h4>

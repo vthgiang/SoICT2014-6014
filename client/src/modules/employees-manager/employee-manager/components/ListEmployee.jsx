@@ -7,8 +7,8 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { ModalDetailEmployee } from './ModalDetailEmployee';
 import { ModalAddEmployee } from './ModalAddEmployee';
 import { ModalEditEmployee } from './ModalEditEmployee';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 
@@ -113,8 +113,8 @@ class ListEmployee extends Component {
             parseInt((employeesManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
                             <h4 className="box-title">Danh sách nhân viên: :</h4>

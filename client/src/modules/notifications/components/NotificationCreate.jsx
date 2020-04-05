@@ -86,7 +86,7 @@ class NotificationCreate extends Component {
                                 ref="users"
                             >
                                 {
-                                    user.list.map( user => <option key={user._id} value={user._id}>{user.name}</option>)
+                                    user.list.map( user => <option key={user._id} value={user._id}>{`${user.email} (${user.name})`}</option>)
                                 }
                             </select>
                         </div>

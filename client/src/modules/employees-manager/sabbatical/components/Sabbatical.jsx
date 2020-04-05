@@ -6,8 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
 import { ModalAddSabbatical } from './ModalAddSabbatical';
 import { ModalEditSabbatical } from './ModalEditSabbatical';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification, DatePicker } from '../../../../common-components';
 
@@ -126,8 +126,8 @@ class Sabbatical extends Component {
             parseInt((this.props.sabbatical.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box" >
+                <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
                             <h4 className="box-title">{translate('sabbatical.list_sabbatical')} :</h4>

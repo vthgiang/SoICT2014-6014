@@ -7,7 +7,7 @@ import { ModalEditTrainingPlan } from './ModalEditTrainingPlan';
 import { ModalAddTrainingPlan } from './ModalAddTrainingPlan';
 import { CourseActions } from '../redux/actions';
 import { EducationActions } from '../../list-education/redux/actions';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
+import { ActionColumn } from '../../../../common-components';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DeleteNotification } from '../../../../common-components';
 class TrainingPlan extends Component {
@@ -65,8 +65,8 @@ class TrainingPlan extends Component {
             parseInt((this.props.course.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
                             <h4 className="box-title">Danh sách các khoá đào tạo:</h4>

@@ -12,8 +12,8 @@ class Timekeeping extends Component {
     }
     render() {
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     {/* <div className="box-header with-border">
                                     <h3 class="box-title">Bảng lương nhân viên</h3>
                                     <button type="submit" className="btn btn-success pull-right" id="" title="Thêm mới bảng lương">Thêm bảng lương</button>

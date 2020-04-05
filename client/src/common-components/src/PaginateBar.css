@@ -1,0 +1,15 @@
+.pagination-new {
+    padding-left: 63%;
+    padding-top: 5px;
+    text-align: center;
+}
+#search-page {
+    z-index: 1000;
+    position: absolute;
+    right: 59px;
+    width: 8%;
+    background-color: rgb(249, 250, 252);
+    padding: 15px;
+    border: 1px solid black;
+    margin-top: 6px;
+}

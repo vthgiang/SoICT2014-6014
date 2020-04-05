@@ -67,3 +67,16 @@ exports.getNotificationSent = async (userId) => {
 
     return notifications;
 }
+
+// Xóa thông báo đã nhận - xóa trong collection NotificationUser
+exports.deleteNotificationReceivered = async (userId, notificationId) => {
+
+    return await NotificationUser.deleteOne({userId, notificationId});
+}
+
+// Xóa thông báo đã gửi - xóa trực tiếp trong collection notifications
+exports.deleteNotificationSent = async (notificationId) => {
+    await NotificationUser.deleteMany({notificationId});
+
+    return await Notification.deleteOne({_id: notificationId});
+}

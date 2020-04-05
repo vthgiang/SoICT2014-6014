@@ -29,8 +29,8 @@ class ManageHoliday extends Component {
         }
         var { translate } = this.props;
         return (
-            <div className="box" id="qlcv">
-                <div className="box-body">
+            <div className="box">
+                <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
                             <h4 className="box-title">Danh sách lịch nghỉ ngày lễ (ngày tết):</h4>

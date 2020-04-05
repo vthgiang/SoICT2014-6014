@@ -30,7 +30,7 @@ class RoleTable extends Component {
                 <RoleCreateForm />
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value:'name' }
+                        { title: translate('manage_role.name'), value:'name' }
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -47,8 +47,11 @@ class RoleTable extends Component {
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     columnArr={[
-                                        translate('table.name')
+                                        translate('manage_role.name'),
+                                        translate('manage_role.extends'),
+                                        translate('manage_role.users')
                                     ]}
+                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
                                 />
                             </th>
@@ -123,23 +126,16 @@ class RoleTable extends Component {
                                         {
                                             role.type.name === 'Company-Defined' && 
                                             <DeleteNotification 
-                                                content={{
-                                                    title: translate('manage_role.delete'),
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
-                                                data={{
-                                                    id: role._id,
-                                                    info: role.name
-                                                }}
+                                                content={translate('manage_role.delete')}
+                                                data={{id: role._id, info: role.name}}
                                                 func={this.props.destroy}
                                             />
                                         }
                                     </td>
                                 </tr>       
                             ): role.isLoading ?
-                            <tr><td colSpan={'2'}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={'4'}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={'4'}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

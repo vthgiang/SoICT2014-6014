@@ -8,7 +8,7 @@ class Discipline extends Component {
     render() {
         const { translate } = this.props;
         return (
-            <div className="box" id="qlcv">
+            <div className="box">
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
                             <li className="active"><a style={{ paddingLeft: 10, paddingRight: 10 }} title={translate('discipline.list_praise_title')} data-toggle="tab" href="#khenthuong">{translate('discipline.list_praise')}</a></li>
