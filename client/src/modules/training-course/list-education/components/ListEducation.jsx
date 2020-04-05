@@ -118,7 +118,7 @@ class ListEducation extends Component {
                             </select>
                         </div>
                     </div>
-                    <div className="form-inline">
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.position')}:</label>
                             <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
@@ -140,7 +140,7 @@ class ListEducation extends Component {
                                 <th>Mã chương trình</th>
                                 <th>Áp dụng cho đơn vị</th>
                                 <th>Áp dụng cho chức vụ</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px'}}>
                                     <ActionColumn
                                         columnName="Hành động"
                                         columnArr={[

@@ -79,7 +79,7 @@ class TrainingPlan extends Component {
                             <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} autoComplete="off" />
                         </div>
                     </div>
-                    <div className="form-inline">
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label htmlFor="typeCourse" style={{width:110}} className="form-control-static">Loại đào tạo:</label>
                             <select className="form-control" defaultValue="All" name="typeCourse" onChange={this.handleChange}>
@@ -99,7 +99,7 @@ class TrainingPlan extends Component {
                                 <th>Kết thúc</th>
                                 <th>Địa điểm đào tạo</th>
                                 <th>Đơn vị đào tạo</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px'}}>
                                     <ActionColumn
                                         columnName="Hành động"
                                         columnArr={[

@@ -20,6 +20,7 @@ class ListEmployee extends Component {
             gender: "All",
             employeeNumber: "",
             department: "All",
+            status: "All",
             page: 0,
             limit: 5,
 
@@ -117,7 +118,7 @@ class ListEmployee extends Component {
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">Danh sách nhân viên: :</h4>
+                            <h4 className="box-title">Danh sách nhân viên:</h4>
                         </div>
                         <ModalAddEmployee initState={this.state} />
                     </div>
@@ -145,7 +146,7 @@ class ListEmployee extends Component {
                             </select>
                         </div>
                     </div>
-                    <div className="form-inline">
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label htmlFor="employeeNumber" className="form-control-static">{translate('page.staff_number')}:</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
@@ -157,19 +158,29 @@ class ListEmployee extends Component {
                                 <option value="male">Nam</option>
                                 <option value="female">Nữ</option>
                             </select>
+
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.status')}:</label>
+                            <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                <option value="active">Đang làm việc</option>
+                                <option value="leave">Đã nghỉ làm</option>
+                            </select>
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
                         </div>
                     </div>
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "15%" }}>Mã nhân viên</th>
+                                <th>Mã nhân viên</th>
                                 <th>Họ và tên</th>
-                                <th style={{ width: "10%" }}>Giới tính</th>
-                                <th style={{ width: "12%" }}>Ngày sinh</th>
-                                <th style={{ width: "15%" }}>Đơn vị</th>
-                                <th style={{ width: "18%" }}>Chức vụ</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th>Giới tính</th>
+                                <th>Ngày sinh</th>
+                                <th>Đơn vị</th>
+                                <th>Chức vụ</th>
+                                <th>Trạng thái</th>
+                                <th style={{ width: '120px' }}>
                                     <ActionColumn
                                         columnName="Hành động"
                                         columnName={translate('table.action')}
@@ -206,6 +217,7 @@ class ListEmployee extends Component {
                                                 {role.roleId.name}<br />
                                             </React.Fragment>
                                         )) : null}</td>
+                                         <td>{x.employee.map(y => y.status)}</td>
                                         < td >
                                             <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
                                                 sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />

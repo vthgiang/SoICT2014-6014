@@ -72,6 +72,13 @@ exports.get = async (data, company) => {
             }
         }
     };
+    // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
+    if (data.status !== "All") {
+        keySearch = {
+            ...keySearch,
+            status: data.status
+        }
+    };
     // Số lượng danh sách nhân viên
     var totalList = await Employee.count(keySearch);
 

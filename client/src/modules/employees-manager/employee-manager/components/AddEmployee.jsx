@@ -569,10 +569,8 @@ class AddEmployee extends Component {
         const { translate } = this.props;
         var formatter = new Intl.NumberFormat();
         return (
-            <React.Fragment>
-                <div className="row">
-                    {/* left column */}
-                    <div className="col-md-12">
+            <div className="box" >
+                <div className="box-body qlcv">
                         <div className="nav-tabs-custom" >
                             <ul className="nav nav-tabs">
                                 <li className="active"><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#thongtinchung">{translate('manage_employee.menu_general_infor')}</a></li>
@@ -1353,9 +1351,8 @@ class AddEmployee extends Component {
                             </div>
                         </div>
                         <ToastContainer />
-                    </div>
                 </div>
-            </React.Fragment>
+            </div>
         );
     };
 }

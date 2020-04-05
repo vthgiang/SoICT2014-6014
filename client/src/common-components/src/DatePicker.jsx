@@ -18,6 +18,7 @@ const loadJS = () => {
 }
 const datePicker = React.forwardRef((props, ref) => {
     loadJS();
+    
     /* classDataPicker ==="datepicker month-year" là các datepicker hiện thị tháng năm
      * classDataPicker === "datepicker month-year" là các datepicker hiện thị ngày tháng năm
     */

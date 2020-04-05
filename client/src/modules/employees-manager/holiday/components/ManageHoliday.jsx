@@ -31,7 +31,7 @@ class ManageHoliday extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <div className="form-inline">
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <h4 className="box-title">Danh sách lịch nghỉ ngày lễ (ngày tết):</h4>
                         </div>
@@ -45,7 +45,7 @@ class ManageHoliday extends Component {
                                 <th style={{ width: "5%" }}>STT</th>
                                 <th style={{ width: "30%" }}>Các mốc thời gian</th>
                                 <th style={{ width: "55%" }}>Mô tả các mốc thời gian</th>
-                                <th style={{width:120}}>Hành động</th>
+                                <th style={{ width: 120 }}>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>

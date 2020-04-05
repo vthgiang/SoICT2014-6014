@@ -157,17 +157,8 @@ class Sabbatical extends Component {
                                 }
                             </select>
                         </div>
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}:</label>
-                            <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                <option value="Đã chấp nhận">Đã chấp nhận</option>
-                                <option value="Chờ phê duyệt">Chờ phê duyệt</option>
-                                <option value="Không chấp nhận">Không chấp nhận</option>
-                            </select>
-                        </div>
                     </div>
-                    <div className="form-inline">
+                    <div className="form-inline" style={{marginBottom:10}}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}:</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')}  autoComplete="off" />
@@ -179,6 +170,16 @@ class Sabbatical extends Component {
                                 defaultValue={this.formatDate(Date.now())}
                                 ref="month"
                             />
+                            
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.status')}:</label>
+                            <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                <option value="Đã chấp nhận">Đã chấp nhận</option>
+                                <option value="Chờ phê duyệt">Chờ phê duyệt</option>
+                                <option value="Không chấp nhận">Không chấp nhận</option>
+                            </select>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
