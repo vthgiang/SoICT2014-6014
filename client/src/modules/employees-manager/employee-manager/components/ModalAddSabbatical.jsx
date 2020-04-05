@@ -85,7 +85,7 @@ class ModalAddSabbatical extends Component {
                                                         </label>
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                            <label htmlFor="startDate">Ngày bắt đầu:<span className="required">&#42;</span></label>
+                                            <label htmlFor="startDate">Ngày bắt đầu:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -94,7 +94,7 @@ class ModalAddSabbatical extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                            <label htmlFor="endDate">Ngày kết thúc:<span className="required">&#42;</span></label>
+                                            <label htmlFor="endDate">Ngày kết thúc:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -103,11 +103,11 @@ class ModalAddSabbatical extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="reason">Lý do:<span className="required">&#42;</span></label>
+                                            <label htmlFor="reason">Lý do:<span className="text-red">&#42;</span></label>
                                             <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" onChange={this.handleChange}></textarea>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="employeeNumber">Trạng thái:<span className="required">&#42;</span></label>
+                                            <label htmlFor="employeeNumber">Trạng thái:<span className="text-red">&#42;</span></label>
                                             <select className="form-control" defaultValue="Đã chấp nhận" name="status" onChange={this.handleChange}>
                                                 <option value="Đã chấp nhận">Đã chấp nhận</option>
                                                 <option value="Chờ phê duyệt">Chờ phê duyệt</option>

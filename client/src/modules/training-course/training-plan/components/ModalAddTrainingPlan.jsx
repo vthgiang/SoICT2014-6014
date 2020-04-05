@@ -117,15 +117,15 @@ class ModalAddTrainingPlan extends Component {
                                         </div>
                                         <div className="col-md-6" style={{ paddingLeft: 20, paddingRight: 20 }}>
                                             <div className="form-group">
-                                                <label htmlFor="numberCourse">Mã khoá đào tạo:<span className="required">&#42;</span></label>
+                                                <label htmlFor="numberCourse">Mã khoá đào tạo:<span className="text-red">&#42;</span></label>
                                                 <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="startDate">Thời gian bắt đầu:<span className="required">&#42;</span></label>
+                                                <label htmlFor="startDate">Thời gian bắt đầu:<span className="text-red">&#42;</span></label>
                                                 <input type="text" style={{ height: 33 }} className="form-control datepicker" name="startDate" ref="startDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="address">Địa điểm đào tạo:<span className="required">&#42;</span></label>
+                                                <label htmlFor="address">Địa điểm đào tạo:<span className="text-red">&#42;</span></label>
                                                 <input type="text" className="form-control" name="address" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
@@ -133,7 +133,7 @@ class ModalAddTrainingPlan extends Component {
                                                 <input type="text" className="form-control" name="teacherCourse" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="educationProgram">Thuộc chương trình đào tạo:<span className="required">&#42;</span></label>
+                                                <label htmlFor="educationProgram">Thuộc chương trình đào tạo:<span className="text-red">&#42;</span></label>
                                                 <select
                                                     name="educationProgram"
                                                     className="form-control select2 pull-left"
@@ -150,27 +150,27 @@ class ModalAddTrainingPlan extends Component {
                                                 </select>
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="time">Thời gian cam kết (đơn vị: Tháng):<span className="required">&#42;</span></label>
+                                                <label htmlFor="time">Thời gian cam kết (đơn vị: Tháng):<span className="text-red">&#42;</span></label>
                                                 <input type="number" className="form-control" name="time" onChange={this.handleChange} autoComplete="off" />
                                             </div>
 
                                         </div>
                                         <div className="col-md-6" style={{ paddingLeft: 20, paddingRight: 20 }}>
                                             <div className="form-group">
-                                                <label htmlFor="nameCourse">Tên khoá đào tạo:<span className="required">&#42;</span></label>
+                                                <label htmlFor="nameCourse">Tên khoá đào tạo:<span className="text-red">&#42;</span></label>
                                                 <input type="text" className="form-control" name="nameCourse" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="endDate">Thời gian kết thúc:<span className="required">&#42;</span></label>
+                                                <label htmlFor="endDate">Thời gian kết thúc:<span className="text-red">&#42;</span></label>
                                                 <input type="text" style={{ height: 33 }} className="form-control datepicker" name="endDate" ref="endDate" autoComplete="off" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" />
                                             </div>
 
                                             <div className="form-group">
-                                                <label htmlFor="unitCourse">Đơn vị đào tạo:<span className="required">&#42;</span></label>
+                                                <label htmlFor="unitCourse">Đơn vị đào tạo:<span className="text-red">&#42;</span></label>
                                                 <input type="text" className="form-control" name="unitCourse" onChange={this.handleChange} autoComplete="off" />
                                             </div>
                                             <div className="form-group">
-                                                <label htmlFor="typeCourse">Loại đào tạo:<span className="required">&#42;</span></label>
+                                                <label htmlFor="typeCourse">Loại đào tạo:<span className="text-red">&#42;</span></label>
                                                 <select className="form-control" defaultValue="All" name="typeCourse" onChange={this.handleChange}>
                                                     <option value="Đào tạo nội bộ">Đào tạo nội bộ</option>
                                                     <option value="Đào tạo ngoài">Đào tạo ngoài</option>
@@ -178,7 +178,7 @@ class ModalAddTrainingPlan extends Component {
                                             </div>
                                             {/* TODO */}
                                             <div className="form-group">
-                                                <label htmlFor="costsCourse">Chi phí đào tạo:<span className="required">&#42;</span></label>
+                                                <label htmlFor="costsCourse">Chi phí đào tạo:<span className="text-red">&#42;</span></label>
                                                 <input style={{ display: "inline", width: "80%" }} type="number" className="form-control" name="costsCourse" onChange={this.handleChange} autoComplete="off" />
                                                 <select name="unit" id="" className="form-control" onChange={this.handleChange} style={{ height: 34, display: "inline", width: "20%" }}>
                                                     <option value="VND">VND</option>

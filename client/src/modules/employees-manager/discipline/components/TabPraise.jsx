@@ -5,10 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DisciplineActions } from '../redux/actions';
 import { ModalAddPraise } from './ModalAddPraise';
 import { ModalEditPraise } from './ModalEditPraise';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification } from '../../../../common-components';
+import { DeleteNotification, PaginateBar, ActionColumn } from '../../../../common-components';
 class TabPraise extends Component {
     constructor(props) {
         super(props);
@@ -101,141 +99,116 @@ class TabPraise extends Component {
             parseInt((this.props.discipline.totalListPraise / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <React.Fragment>
-                <div id="khenthuong" className="tab-pane active">
-                    <div className="box-body">
-                        <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                            <div className="col-md-3">
-                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <label htmlFor="fullname" style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
-                                </div>
-                                <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
-                                        <option value="All" level={1}>--Tất cả---</option>
-                                        {
-                                            tree !== null &&
-                                            tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <label htmlFor="fullname" style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
-                                </div>
-                                <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                        <option value="All">--Tất cả--</option>
-                                        {
-                                            listPosition !== undefined &&
-                                            listPosition.map((position, index) => (
-                                                <option key={index} value={position._id}>{position.name}</option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 10 }}>
-                            <div className="col-md-3">
-                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
-                                    <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
-                                </div>
-                                <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
-                                    <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} autoComplete="off" />
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
-                                    <label htmlFor="number" style={{ marginTop: -5 }}>{translate('page.number_decisions')}:</label>
-                                </div>
-                                <input type="text" style={{ width: "66%" }} className="form-control" onChange={this.handleChange} name="number" placeholder={translate('page.number_decisions')} autoComplete="off" />
-                            </div>
-                            <div className="col-md-3">
-                                <div className="form-group" style={{ paddingLeft: 0, marginBottom: 0 }}>
-                                    <button type="submit" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
-                                </div>
-                            </div>
-                            <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                <div className="form-group pull-right" style={{ marginBottom: 0 }} >
-                                    <button type="button" className="btn btn-success" title={translate('discipline.add_praise_title')} data-toggle="modal" data-target="#modal-addPraise" >{translate('discipline.add_praise')}</button>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                            <table className="table table-striped table-bordered table-hover" >
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "12%" }}>{translate('table.employee_number')}</th>
-                                        <th>{translate('table.employee_name')}</th>
-                                        <th style={{ width: "15%" }}>{translate('discipline.decision_day')}</th>
-                                        <th style={{ width: "12%" }}>{translate('page.number_decisions')}</th>
-                                        <th>{translate('table.unit')}</th>
-                                        <th style={{ width: "18%" }}>{translate('table.position')}</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}>
-                                            <ActionColumn
-                                                columnName={translate('table.action')}
-                                                columnArr={[
-                                                    translate('table.employee_number'),
-                                                    translate('table.employee_name'),
-                                                    translate('discipline.decision_day'),
-                                                    translate('page.number_decisions'),
-                                                    translate('table.unit'),
-                                                    translate('table.position')
-                                                ]}
-                                                limit={this.state.limit}
-                                                setLimit={this.setLimit}
-                                                hideColumnOption={true}
-                                            />
-                                        </th>
-                                    </tr>
-
-                                </thead>
-                                <tbody>
-                                    {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
-                                        listPraise.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{x.employee.employeeNumber}</td>
-                                                <td>{x.employee.fullName}</td>
-                                                <td>{x.startDate}</td>
-                                                <td>{x.number}</td>
-                                                <td>{x.departments.length !== 0 ? x.departments.map(unit => (
-                                                    <React.Fragment key={unit._id}>
-                                                        {unit.name}<br />
-                                                    </React.Fragment>
-                                                )) : null}</td>
-                                                <td>{x.roles.length !== 0 ? x.roles.map(role => (
-                                                    <React.Fragment key={role._id}>
-                                                        {role.roleId.name}<br />
-                                                    </React.Fragment>
-                                                )) : null}</td>
-                                                <td style={{ textAlign: "center" }}>
-                                                    <ModalEditPraise data={x} />
-                                                    <DeleteNotification
-                                                        content={{
-                                                            title: "Xoá thông tin khen thưởng",
-                                                            btnNo: translate('confirm.no'),
-                                                            btnYes: translate('confirm.yes'),
-                                                        }}
-                                                        data={{
-                                                            id: x._id,
-                                                            info: x.employee.employeeNumber + " - Số quyết định: " + x.number
-                                                        }}
-                                                        func={this.props.deletePraise}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+            <div id="khenthuong" className="tab-pane active">
+                <div className="box-body">
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success pull-right" title={translate('discipline.add_praise_title')} data-toggle="modal" data-target="#modal-addPraise" >{translate('discipline.add_praise')}</button>
                     </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.unit')}:</label>
+                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
+                                <option value="All" level={1}>--Tất cả---</option>
+                                {
+                                    tree !== null &&
+                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
+                                }
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.position')}:</label>
+                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                {
+                                    listPosition !== undefined &&
+                                    listPosition.map((position, index) => (
+                                        <option key={index} value={position._id}>{position.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.staff_number')}:</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')}  autoComplete="off" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="number" className="form-control-static">{translate('page.number_decisions')}:</label>
+                            <input type="text" className="form-control" name="number" onChange={this.handleChange} placeholder={translate('page.number_decisions')} autoComplete="off" />
+                            <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
+                        </div>
+                    </div>
+                    <table className="table table-striped table-bordered table-hover" >
+                        <thead>
+                            <tr>
+                                <th style={{ width: "12%" }}>{translate('table.employee_number')}</th>
+                                <th>{translate('table.employee_name')}</th>
+                                <th style={{ width: "15%" }}>{translate('discipline.decision_day')}</th>
+                                <th style={{ width: "12%" }}>{translate('page.number_decisions')}</th>
+                                <th>{translate('table.unit')}</th>
+                                <th style={{ width: "18%" }}>{translate('table.position')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                    <ActionColumn
+                                        columnName={translate('table.action')}
+                                        columnArr={[
+                                            translate('table.employee_number'),
+                                            translate('table.employee_name'),
+                                            translate('discipline.decision_day'),
+                                            translate('page.number_decisions'),
+                                            translate('table.unit'),
+                                            translate('table.position')
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                                listPraise.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.employee.employeeNumber}</td>
+                                        <td>{x.employee.fullName}</td>
+                                        <td>{x.startDate}</td>
+                                        <td>{x.number}</td>
+                                        <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                            <React.Fragment key={unit._id}>
+                                                {unit.name}<br />
+                                            </React.Fragment>
+                                        )) : null}</td>
+                                        <td>{x.roles.length !== 0 ? x.roles.map(role => (
+                                            <React.Fragment key={role._id}>
+                                                {role.roleId.name}<br />
+                                            </React.Fragment>
+                                        )) : null}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <ModalEditPraise data={x} />
+                                            <DeleteNotification
+                                                content={{
+                                                    title: "Xoá thông tin khen thưởng",
+                                                    btnNo: translate('confirm.no'),
+                                                    btnYes: translate('confirm.yes'),
+                                                }}
+                                                data={{
+                                                    id: x._id,
+                                                    info: x.employee.employeeNumber + " - Số quyết định: " + x.number
+                                                }}
+                                                func={this.props.deletePraise}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
                 </div>
+                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 <ModalAddPraise />
-            </React.Fragment>
+            </div>
         )
     };
 }

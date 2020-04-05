@@ -99,11 +99,11 @@ class ModalEditSalary extends Component {
                                                         </label>
                                         </div>
                                         <div className="form-group col-md-12" style={{paddingLeft:0, paddingRight:0}}>
-                                            <label className="pull-left" htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
+                                            <label className="pull-left" htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" defaultValue={data.employeeNumber} name="employeeNumber" disabled />
                                         </div>
                                         <div className="form-group col-md-12" style={{paddingLeft:0, paddingRight:0}}>
-                                            <label className="pull-left" htmlFor="month">{translate('page.month')}:<span className="required">&#42;</span></label>
+                                            <label className="pull-left" htmlFor="month">{translate('page.month')}:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback pull-left'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -112,7 +112,7 @@ class ModalEditSalary extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="pull-left" htmlFor="mainSalary">{translate('salary_employee.main_salary')}:<span className="required">&#42;</span></label>
+                                            <label className="pull-left" htmlFor="mainSalary">{translate('salary_employee.main_salary')}:<span className="text-red">&#42;</span></label>
                                             <input style={{ display: "inline", width: "85%" }} type="number" className="form-control" name="mainSalary" defaultValue={parseInt(data.mainSalary)} onChange={this.handleChange} autoComplete="off" />
                                             <select name="unit" id="" className="form-control" defaultValue={data.unit} onChange={this.handleChange} style={{ height: 33, display: "inline", width: "15%" }}>
                                                 <option value="VND">VND</option>

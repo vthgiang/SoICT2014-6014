@@ -14,7 +14,7 @@ class DepartmentManage extends Component {
     componentDidMount() {
         this.props.getDepartment();
     }
-    componentDidUpdate(){
+    componentDidUpdate() {
         this.loadJS();
     }
     loadJS() {
@@ -57,37 +57,26 @@ class DepartmentManage extends Component {
         const { tree } = this.props.department;
         const { translate } = this.props;
         return (
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="box box-info">
-                        {/* /.box-header */}
-                        <div className="box-body">
-                            <div className="col-md-12">
-                                <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <div className="box-header col-md-6" style={{ paddingLeft: 0 }}>
-                                        <h3 className="box-title">Danh sách các đơn vị:</h3>
-                                    </div>
-                                </div>
-                                <table id="tree-table" className="table table-hover table-bordered">
-                                    <thead>
-                                        <tr id="task">
-                                            <th style={{ width: "40%" }}>Tên đơn vị</th>
-                                            <th style={{ width: "50" }} >Mô tả đơn vị</th>
-                                            <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="taskTable" className="task-table">
-                                        {
-                                            tree !== null &&
-                                            tree.map((tree, index) => this.displayTreeView(tree, 0))
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        {/* /.box-body */}
+            <div className="box" id="qlcv">
+                <div className="box-body">
+                    <div className="form-group">
+                        <h4 className="box-title">Danh sách các đơn vị:</h4>
                     </div>
-                    {/* /.box */}
+                    <table id="tree-table" className="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr id="task">
+                                <th style={{ width: "40%" }}>Tên đơn vị</th>
+                                <th style={{ width: "50" }} >Mô tả đơn vị</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTable" className="task-table">
+                            {
+                                tree !== null &&
+                                tree.map((tree, index) => this.displayTreeView(tree, 0))
+                            }
+                        </tbody>
+                    </table>
                 </div>
                 <ToastContainer />
             </div >

@@ -43,12 +43,12 @@ class ModalAddCourse extends Component {
                                                         </label>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="unit">Đơn vị công tác:<span className="required">&#42;</span></label>
+                                    <label htmlFor="unit">Đơn vị công tác:<span className="text-red">&#42;</span></label>
                                     <input type="text" className="form-control" name="unit" onChange={this.handleChange} autoComplete="off" />
                                 </div>
                                 
                                 <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                    <label htmlFor="startDate">Từ tháng/năm:<span className="required">&#42;</span></label>
+                                    <label htmlFor="startDate">Từ tháng/năm:<span className="text-red">&#42;</span></label>
                                     <div className={'input-group date has-feedback'}>
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
@@ -57,7 +57,7 @@ class ModalAddCourse extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                    <label htmlFor="endDate">Đến tháng/năm:<span className="required">&#42;</span></label>
+                                    <label htmlFor="endDate">Đến tháng/năm:<span className="text-red">&#42;</span></label>
                                     <div className={'input-group date has-feedback'}>
                                         <div className="input-group-addon">
                                             <i className="fa fa-calendar" />
@@ -66,7 +66,7 @@ class ModalAddCourse extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="position">chức vụ:<span className="required">&#42;</span></label>
+                                    <label htmlFor="position">chức vụ:<span className="text-red">&#42;</span></label>
                                     <input type="text" className="form-control" name="position" onChange={this.handleChange} autoComplete="off" />
                                 </div>
                             </div>

@@ -97,7 +97,7 @@ class ModalImportFileSalary extends Component {
                                     </div>
                                 </form>
                                 {this.state.checkFile !== undefined && this.state.checkFile === false &&
-                                    <span className="required">File đã chọn không đúng chuẩn mẫu</span>
+                                    <span className="text-red">File đã chọn không đúng chuẩn mẫu</span>
                                 }
                             </div>
                             {
@@ -108,7 +108,7 @@ class ModalImportFileSalary extends Component {
                                     </div>
                                     <div className="timekeeping col-md-12">
                                         {
-                                            arrayCheck.length !== 0 && <span className="required"> Lỗi dữ liệu ở dòng: {arrayCheck.map(row => {
+                                            arrayCheck.length !== 0 && <span className="text-red"> Lỗi dữ liệu ở dòng: {arrayCheck.map(row => {
                                                 var newRow = parseInt(row) + 1;
                                                 return " " + newRow + ","
                                             })}</span>

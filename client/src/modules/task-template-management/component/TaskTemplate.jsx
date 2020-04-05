@@ -294,7 +294,7 @@ class TaskTemplate extends Component {
                         </div>
                     </div>
 
-                    <table className="table table-bordered table-striped table-hover" id="myTable">
+                    <table className="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th title="Tên mẫu công việc">{translate('task_template.tasktemplate_name')}</th>

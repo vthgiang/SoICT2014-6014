@@ -22,17 +22,10 @@ class SalaryEmployee extends Component {
             department: "All",
             page: 0,
             limit: 5,
-
         }
         this.handleChange = this.handleChange.bind(this);
-
     }
     componentDidMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/AddEmployee.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         this.props.getListSalary(this.state);
         this.props.getDepartment();
         let script1 = document.createElement('script');
@@ -40,9 +33,7 @@ class SalaryEmployee extends Component {
         script1.async = true;
         script1.defer = true;
         document.body.appendChild(script1);
-
     }
-
     displayTreeSelect = (data, i) => {
         i = i + 1;
         if (data !== undefined) {
@@ -138,7 +129,7 @@ class SalaryEmployee extends Component {
                         <div className="form-group">
                             <h4 className="box-title">{translate('salary_employee.list_salary')}:</h4>
                         </div>
-                        <div className="dropdown pull-right">
+                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('salary_employee.add_salary_title')} >{translate('salary_employee.add_salary')}</button>
                             <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
                                 <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
@@ -173,7 +164,7 @@ class SalaryEmployee extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}:</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <DatePicker
