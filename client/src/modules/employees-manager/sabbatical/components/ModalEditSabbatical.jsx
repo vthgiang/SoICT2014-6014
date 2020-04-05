@@ -62,7 +62,7 @@ class ModalEditSabbatical extends Component {
         console.log(data)
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editSabbatical-${data.id}`} title={translate('sabbatical.infor_sabbatical')} data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <a href={`#modal-editSabbatical-${data.id}`} title={translate('sabbatical.infor_sabbatical')} className="edit" data-toggle="modal"><i className="material-icons"></i></a>
                 <div className="modal fade" id={`modal-editSabbatical-${data.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">

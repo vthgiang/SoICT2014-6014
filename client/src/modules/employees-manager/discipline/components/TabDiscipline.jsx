@@ -53,7 +53,6 @@ class TabDiscipline extends Component {
     setLimit = async (number) => {
         await this.setState({ limit: parseInt(number) });
         this.props.getListDiscipline(this.state);
-        window.$(`#setting-table2`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
@@ -132,7 +131,7 @@ class TabDiscipline extends Component {
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover" >
+                    <table id="discipline-table" className="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
                                 <th style={{ width: "10%" }}>{translate('table.employee_number')}</th>
@@ -142,9 +141,9 @@ class TabDiscipline extends Component {
                                 <th>{translate('page.number_decisions')}</th>
                                 <th>{translate('table.unit')}</th>
                                 <th style={{ width: "15%" }}>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="discipline-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),

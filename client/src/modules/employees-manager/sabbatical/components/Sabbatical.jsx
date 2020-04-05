@@ -184,7 +184,7 @@ class Sabbatical extends Component {
                         </div>
                     </div>
 
-                    <table className="table table-striped table-bordered table-hover">
+                    <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "10%" }}>{translate('table.employee_number')}</th>
@@ -195,9 +195,9 @@ class Sabbatical extends Component {
                                 <th style={{ width: "12%" }}>{translate('table.unit')}</th>
                                 <th style={{ width: "14%" }}>{translate('table.position')}</th>
                                 <th style={{ width: "11%" }}>{translate('table.status')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="sabbatical-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),

@@ -90,7 +90,7 @@ class TrainingPlan extends Component {
                             <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()} title="Tìm kiếm" >Tìm kiếm</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover">
+                    <table id="course-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>Mã khoá đào tạo</th>
@@ -99,10 +99,11 @@ class TrainingPlan extends Component {
                                 <th>Kết thúc</th>
                                 <th>Địa điểm đào tạo</th>
                                 <th>Đơn vị đào tạo</th>
-                                <th style={{ width: '120px'}}>
+                                <th style={{ width: '120px'}}>Hành động
                                     <ActionColumn
-                                        columnName="Hành động"
+                                        tableId="course-table"
                                         columnArr={[
+                                            "Mã khoá đào tạo",
                                             "Tên khoá đào tạo",
                                             "Bắt đầu",
                                             "Kết thúc",

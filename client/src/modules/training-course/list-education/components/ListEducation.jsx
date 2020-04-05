@@ -133,16 +133,16 @@ class ListEducation extends Component {
                             <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} title="Tìm kiếm" >Tìm kiếm</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover">
+                    <table id="education-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Tên chương trình đào tạo</th>
-                                <th>Mã chương trình</th>
+                                <th title="Tên chương trình đào tạo">Tên chương trình</th>
+                                <th title="Mã chương trình đào tạo">Mã chương trình</th>
                                 <th>Áp dụng cho đơn vị</th>
                                 <th>Áp dụng cho chức vụ</th>
-                                <th style={{ width: '120px'}}>
-                                    <ActionColumn
-                                        columnName="Hành động"
+                                <th style={{ width: '120px'}}>Hành động
+                                <ActionColumn
+                                        tableId="education-table"
                                         columnArr={[
                                             "Tên chương trình đào tạo",
                                             "Mã chương trình",
@@ -153,7 +153,7 @@ class ListEducation extends Component {
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
-                                </th>
+                                    </th>
                             </tr>
                         </thead>
                         <tbody>

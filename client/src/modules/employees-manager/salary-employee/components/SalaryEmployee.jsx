@@ -177,7 +177,7 @@ class SalaryEmployee extends Component {
                         </div>
                     </div>
 
-                    <table className="table table-bordered table-striped table-hover">
+                    <table className="table table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th>{translate('table.employee_number')}</th>
@@ -188,7 +188,7 @@ class SalaryEmployee extends Component {
                                 <th>{translate('table.position')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="discipline-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),

@@ -170,7 +170,7 @@ class ListEmployee extends Component {
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover">
+                    <table id="employee-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>Mã nhân viên</th>
@@ -180,17 +180,17 @@ class ListEmployee extends Component {
                                 <th>Đơn vị</th>
                                 <th>Chức vụ</th>
                                 <th>Trạng thái</th>
-                                <th style={{ width: '120px' }}>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName="Hành động"
-                                        columnName={translate('table.action')}
+                                        tableId="employee-table"
                                         columnArr={[
                                             "Mã nhân viên",
                                             "Họ và tên",
                                             "Giới tính",
                                             "Ngày sinh",
                                             "Đơn vị",
-                                            "Chức vụ"
+                                            "Chức vụ",
+                                            "Trạng thái"
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -259,8 +259,6 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
-    //getInformationEmployee: EmployeeInfoActions.getInformationEmployee,
-    //getListEmployee: EmployeeManagerActions.getListEmployee,
 };
 const connectedEmplyee = connect(mapState, actionCreators)(withTranslate(ListEmployee));
 

@@ -60,7 +60,6 @@ class TabPraise extends Component {
     setLimit = async (number) => {
         await this.setState({ limit: parseInt(number) });
         this.props.getListPraise(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
@@ -139,18 +138,18 @@ class TabPraise extends Component {
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover" >
+                    <table id="praise-table" className="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
-                                <th style={{ width: "12%" }}>{translate('table.employee_number')}</th>
+                                <th >{translate('table.employee_number')}</th>
                                 <th>{translate('table.employee_name')}</th>
-                                <th style={{ width: "15%" }}>{translate('discipline.decision_day')}</th>
-                                <th style={{ width: "12%" }}>{translate('page.number_decisions')}</th>
+                                <th >{translate('discipline.decision_day')}</th>
+                                <th >{translate('page.number_decisions')}</th>
                                 <th>{translate('table.unit')}</th>
-                                <th style={{ width: "18%" }}>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th >{translate('table.position')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="praise-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),
@@ -165,7 +164,6 @@ class TabPraise extends Component {
                                     />
                                 </th>
                             </tr>
-
                         </thead>
                         <tbody>
                             {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :

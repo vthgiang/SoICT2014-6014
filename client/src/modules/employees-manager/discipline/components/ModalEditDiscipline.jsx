@@ -66,7 +66,7 @@ class ModalEditDiscipline extends Component {
         var data = this.state;
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-viewDiscipline-${data.id}`} title={translate('discipline.infor_discipline')} data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <a href={`#modal-viewDiscipline-${data.id}`} title={translate('discipline.infor_discipline')} className="edit" data-toggle="modal"><i className="material-icons"></i></a>
                 <div className="modal fade" id={`modal-viewDiscipline-${data.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
