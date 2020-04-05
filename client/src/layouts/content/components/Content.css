@@ -31,13 +31,15 @@ div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> labe
     div.qlcv div.selectmulti,
     div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
     div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
-    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
+    div.qlcv > .form-inline .input-group {
         margin: 5px;
     }
     div.selectmulti {
         width: 200px;
     }
-    div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control {
+    div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
+    div.qlcv > .form-inline .input-group {
         width: 200px;
     }
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
@@ -46,10 +48,6 @@ div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> labe
     }
     div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> label:empty{
         display: inline-block;
-    }
-    div#qlcv.box .form-inline .form-group .datepicker {
-        width: 162px !important; 
-        margin-right: 10px !important;
     }
 }
 

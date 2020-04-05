@@ -14,6 +14,10 @@ const EmployeeSchema = new Schema({
         type: String,
         required: true
     },
+    status:{
+        type:String,
+        default: "active"
+    },
     company: {
         type: Schema.Types.ObjectId,
         ref: 'companies'
