@@ -24,6 +24,7 @@ Ví dụ:
     }
     div#qlcv.box .form-inline .form-group{
         margin-bottom: 10px;
+        margin-right: 20px;
     }
     div#qlcv.box .form-inline .form-control {
         width: 200px;
@@ -35,5 +36,9 @@ Ví dụ:
     }
     div#qlcv.box .form-inline .checkbox input[type=checkbox]{
         margin-left: -20px;
+    }
+    div#qlcv.box .form-inline .form-group .datepicker {
+        width: 162px !important; 
+        margin-right: 10px !important;
     }
 }

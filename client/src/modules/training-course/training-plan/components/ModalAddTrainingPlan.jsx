@@ -67,7 +67,7 @@ class ModalAddTrainingPlan extends Component {
             this.notifyerror("Bạn chưa nhập địa chỉ đào tạo");
         } else if (this.state.unitCourse === "") {
             this.notifyerror("Bạn chưa nhập đơn vị đào tạo");
-        } else if (this.state.educationProgram === "Null") {
+        } else if (this.state.educationProgram === "None") {
             this.notifyerror("Bạn chưa chọn thuộc chương trình đào tạo");
         } else if (this.state.costsCourse === "") {
             this.notifyerror("Bạn chưa nhập chi phí đào tạo");
@@ -139,10 +139,10 @@ class ModalAddTrainingPlan extends Component {
                                                     className="form-control select2 pull-left"
                                                     onChange={this.handleChange}
                                                     style={{ width: '100%' }}
-                                                    value="Null"
+                                                    value="None"
                                                     ref="educationProgram"
                                                 >
-                                                    <option value="Null">Hãy chọn chương trình đào tạo</option>
+                                                    <option value="None">Hãy chọn chương trình đào tạo</option>
                                                     {
                                                         listEducation.length !== 0 &&
                                                         listEducation.map((education, index) => <option key={index} value={education._id}>{education.numberEducation} - {education.nameEducation}</option>)

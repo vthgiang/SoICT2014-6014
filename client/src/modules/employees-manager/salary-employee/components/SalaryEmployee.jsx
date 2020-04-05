@@ -10,7 +10,7 @@ import { ModalEditSalary } from './ModalEditSalary';
 import { ActionColumn } from '../../../../common-components/src/ActionColumn';
 import { PaginateBar } from '../../../../common-components/src/PaginateBar';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification } from '../../../../common-components';
+import { DeleteNotification, DatePicker } from '../../../../common-components';
 
 class SalaryEmployee extends Component {
     constructor(props) {
@@ -91,6 +91,7 @@ class SalaryEmployee extends Component {
     }
 
     handleSunmitSearch = async () => {
+        console.log(this.refs.month.value);
         await this.setState({
             month: this.refs.month.value
         })
@@ -131,176 +132,149 @@ class SalaryEmployee extends Component {
             parseInt((this.props.salary.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <React.Fragment>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="box box-info">
-                            <div className="box-body">
-                                <div className="col-md-12">
-                                    <div className="box-header col-md-12" style={{ paddingLeft: 0 }}>
-                                        <h3 className="box-title">{translate('salary_employee.list_salary')}:</h3>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label style={{ paddingTop: 5 }}>{translate('page.unit')}:</label>
-                                        </div>
-                                        <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
-                                                <option value="All" level={1}>--Tất cả---</option>
-                                                {
-                                                    tree !== null &&
-                                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label style={{ paddingTop: 5 }}>{translate('page.position')}:</label>
-                                        </div>
-                                        <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                                <option value="All">--Tất cả--</option>
-                                                {
-                                                    listPosition !== undefined &&
-                                                    listPosition.map((position, index) => (
-                                                        <option key={index} value={position._id}>{position.name}</option>
-                                                    ))
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-md-12" style={{ marginBottom: 10 }} >
-                                    <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
-                                            <label htmlFor="employeeNumber">{translate('page.staff_number')}:</label>
-                                        </div>
-                                        <div className="form-group col-md-8" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
-                                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0, marginBottom: 0 }}>
-                                            <label htmlFor="month" style={{ paddingTop: 5 }}>{translate('page.month')}:</label>
-                                        </div>
-                                        <div className={'input-group date has-feedback'}>
-                                            <div className="input-group-addon">
-                                                <i className="fa fa-calendar" />
-                                            </div>
-                                            <input type="text" className="form-control" name="month" id="employeedatepicker4" defaultValue={this.formatDate(Date.now())} ref="month" placeholder="Tháng tính lương" data-date-format="mm-yyyy" autoComplete="off" />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <div className="form-group" style={{ paddingLeft: 0, marginBottom: 0 }}>
-                                            <button type="submit" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3" style={{ paddingRight: 0 }}>
-                                        <div className="form-group pull-right" style={{ marginBottom: 0 }} >
-                                            <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title={translate('salary_employee.add_salary_title')} >{translate('salary_employee.add_salary')}</button>
-                                            <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
-                                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
-                                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_by_hand_title')} data-toggle="modal" data-target="#modal-addNewSalary">{translate('salary_employee.add_by_hand')}</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-md-12">
-                                    <table className="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: "13%" }}>{translate('table.employee_number')}</th>
-                                                <th style={{ width: "18%" }}>{translate('table.employee_name')}</th>
-                                                <th style={{ width: "10%" }}>{translate('table.month')}</th>
-                                                <th style={{ width: "13%" }}>{translate('table.total_salary')}</th>
-                                                <th style={{ width: "15%" }}>{translate('table.unit')}</th>
-                                                <th style={{ width: "18%" }}>{translate('table.position')}</th>
-                                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                                    <ActionColumn
-                                                        columnName={translate('table.action')}
-                                                        columnArr={[
-                                                            translate('table.employee_number'),
-                                                            translate('table.employee_name'),
-                                                            translate('table.month'),
-                                                            translate('table.total_salary'),
-                                                            translate('table.unit'),
-                                                            translate('table.position'),
-                                                        ]}
-                                                        limit={this.state.limit}
-                                                        setLimit={this.setLimit}
-                                                        hideColumnOption={true}
-                                                    />
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('table.no_data')}</center></td></tr> :
-                                                listSalary.map((x, index) => {
-
-                                                    let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
-                                                    if (x.bonus.length !== 0) {
-                                                        var total = 0;
-                                                        for (let count in x.bonus) {
-                                                            total = total + parseInt(x.bonus[count].number)
-                                                        }
-                                                    }
-                                                    var unit = x.mainSalary.slice(x.mainSalary.length - 3, x.mainSalary.length);
-                                                    return (
-                                                        <tr key={index}>
-                                                            <td>{x.employee.employeeNumber}</td>
-                                                            <td>{x.employee.fullName}</td>
-                                                            <td>{x.month}</td>
-                                                            <td>
-                                                                {
-                                                                    (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
-                                                                        formatter.format(parseInt(salary)) :
-                                                                        formatter.format(total + parseInt(salary))
-                                                                } {unit}
-                                                            </td>
-                                                            <td>{x.departments.length !== 0 ? x.departments.map(unit => (
-                                                                <React.Fragment key={unit._id}>
-                                                                    {unit.name}<br />
-                                                                </React.Fragment>
-                                                            )) : null}</td>
-                                                            <td>{x.roles.length !== 0 ? x.roles.map(role => (
-                                                                <React.Fragment key={role._id}>
-                                                                    {role.roleId.name}<br />
-                                                                </React.Fragment>
-                                                            )) : null}</td>
-                                                            <td style={{ textAlign: 'center' }}>
-                                                                <ModalEditSalary data={x} />
-                                                                <DeleteNotification
-                                                                    content={{
-                                                                        title: "Xoá bảng lương",
-                                                                        btnNo: translate('confirm.no'),
-                                                                        btnYes: translate('confirm.yes'),
-                                                                    }}
-                                                                    data={{
-                                                                        id: x._id,
-                                                                        info: x.employee.employeeNumber + "- tháng: " + x.month
-                                                                    }}
-                                                                    func={this.props.deleteSalary}
-                                                                />
-                                                            </td>
-                                                        </tr>)
-                                                })
-                                            }
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
-                            </div>
+            <div className="box" id="qlcv">
+                <div className="box-body">
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <h4 className="box-title">{translate('salary_employee.list_salary')}:</h4>
                         </div>
-
+                        <div className="dropdown pull-right">
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('salary_employee.add_salary_title')} >{translate('salary_employee.add_salary')}</button>
+                            <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
+                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
+                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_by_hand_title')} data-toggle="modal" data-target="#modal-addNewSalary">{translate('salary_employee.add_by_hand')}</a></li>
+                            </ul>
+                        </div>
                     </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.unit')}:</label>
+                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
+                                <option value="All" level={1}>--Tất cả---</option>
+                                {
+                                    tree !== null &&
+                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
+                                }
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.position')}:</label>
+                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                {
+                                    listPosition !== undefined &&
+                                    listPosition.map((position, index) => (
+                                        <option key={index} value={position._id}>{position.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.staff_number')}:</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <DatePicker
+                                nameLabel={translate('page.month')}
+                                classDatePicker="datepicker month-year"
+                                defaultValue={this.formatDate(Date.now())}
+                                ref="month"
+                            />
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                        </div>
+                    </div>
+
+                    <table className="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>{translate('table.employee_number')}</th>
+                                <th>{translate('table.employee_name')}</th>
+                                <th>{translate('table.month')}</th>
+                                <th>{translate('table.total_salary')}</th>
+                                <th>{translate('table.unit')}</th>
+                                <th>{translate('table.position')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                    <ActionColumn
+                                        columnName={translate('table.action')}
+                                        columnArr={[
+                                            translate('table.employee_number'),
+                                            translate('table.employee_name'),
+                                            translate('table.month'),
+                                            translate('table.total_salary'),
+                                            translate('table.unit'),
+                                            translate('table.position'),
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('table.no_data')}</center></td></tr> :
+                                listSalary.map((x, index) => {
+
+                                    let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
+                                    if (x.bonus.length !== 0) {
+                                        var total = 0;
+                                        for (let count in x.bonus) {
+                                            total = total + parseInt(x.bonus[count].number)
+                                        }
+                                    }
+                                    var unit = x.mainSalary.slice(x.mainSalary.length - 3, x.mainSalary.length);
+                                    return (
+                                        <tr key={index}>
+                                            <td>{x.employee.employeeNumber}</td>
+                                            <td>{x.employee.fullName}</td>
+                                            <td>{x.month}</td>
+                                            <td>
+                                                {
+                                                    (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
+                                                        formatter.format(parseInt(salary)) :
+                                                        formatter.format(total + parseInt(salary))
+                                                } {unit}
+                                            </td>
+                                            <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                                <React.Fragment key={unit._id}>
+                                                    {unit.name}<br />
+                                                </React.Fragment>
+                                            )) : null}</td>
+                                            <td>{x.roles.length !== 0 ? x.roles.map(role => (
+                                                <React.Fragment key={role._id}>
+                                                    {role.roleId.name}<br />
+                                                </React.Fragment>
+                                            )) : null}</td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <ModalEditSalary data={x} />
+                                                <DeleteNotification
+                                                    content={{
+                                                        title: "Xoá bảng lương",
+                                                        btnNo: translate('confirm.no'),
+                                                        btnYes: translate('confirm.yes'),
+                                                    }}
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.employee.employeeNumber + "- tháng: " + x.month
+                                                    }}
+                                                    func={this.props.deleteSalary}
+                                                />
+                                            </td>
+                                        </tr>)
+                                })
+                            }
+                        </tbody>
+                    </table>
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <ToastContainer />
                 <ModalAddSalary />
                 <ModalImportFileSalary />
+            </div>
 
-            </React.Fragment>
+
         );
     }
 }

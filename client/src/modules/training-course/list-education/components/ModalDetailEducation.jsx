@@ -95,9 +95,9 @@ class ModalDetailEducation extends Component {
                                                 <th style={{ width: "20%" }}>Tên khoá đào tạo</th>
                                                 <th title="Thời gian bắt đầu">Bắt đầu</th>
                                                 <th title="Thời gian kết thúc">Kết thúc</th>
-                                                <th style={{ width: "18%" }} title="Địa điểm đào tạo">Địa điểm đào tạo</th>
-                                                <th style={{ width: "18%" }}>Đơn vị đào tạo</th>
-                                                <th style={{ width: "140px" }}>Loại đào tạo
+                                                <th style={{ width: "15%" }} title="Địa điểm đào tạo">Địa điểm đào tạo</th>
+                                                <th style={{ width: "15%" }}>Đơn vị đào tạo</th>
+                                                <th style={{ width: "120px" }}>Loại đào tạo
                                                 </th>
                                             </tr>
                                         </thead>

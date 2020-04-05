@@ -65,7 +65,7 @@
     display: block;
 }
 .setting-table div.selectmulti > div.btn-group, .setting-table div.selectmulti > div.btn-group> button{
-    width: 100%;
+    width: 100% !important;
 }
 
 /*End  Add css action column in page have many table */
