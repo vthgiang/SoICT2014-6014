@@ -1,5 +1,22 @@
-const EducationProgramService = require('./educationProgram.service');
+const EducationProgramService = require('./education-program.service');
 const { LogInfo, LogError } = require('../../../logs');
+
+// Lấy danh sách tất cả các chương trình đào tạo
+exports.getAll = async (req, res) => {
+    try {
+        var allList = await EducationProgramService.getAll(req.user.company._id);
+        await LogInfo(req.user.email, 'GET_ALL_EDUCATIONPROGRAM', req.user.company);
+        res.status(200).json({
+            message: "success",
+            content: allList
+        });
+    } catch (error) {
+        await LogError(req.user.email, 'GET_ALL_EDUCATIONPROGRAM', req.user.company);
+        res.status(400).json({
+            message: error
+        });
+    }
+}
 
 // get all list educationProgram
 exports.get = async (req, res) => {
@@ -38,7 +55,7 @@ exports.create = async (req, res) => {
 // delete a educationProgram
 exports.delete = async (req, res) => {
     try {
-        var educationDelete = await EducationProgramService.delete(req.params.numberEducation);
+        var educationDelete = await EducationProgramService.delete(req.params.id);
         await LogInfo(req.user.email, 'DELETE_EDUCATIONPROGRAM', req.user.company);
         if (educationDelete !== null) {
             res.status(200).json({
@@ -61,7 +78,7 @@ exports.delete = async (req, res) => {
 // update a educationProgram
 exports.update = async (req, res) => {
     try {
-        var educationUpdate = await EducationProgramService.update(req.params.numberEducation, req.body);
+        var educationUpdate = await EducationProgramService.update(req.params.id, req.body);
         await LogInfo(req.user.email, 'EDIT_EDUCATIONPROGRAM', req.user.company);
         res.status(200).json({
             message: "success",

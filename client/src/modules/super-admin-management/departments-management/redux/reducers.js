@@ -23,6 +23,7 @@ export function department(state = initState, action) {
     switch (action.type) {
         case DepartmentConstants.GET_DEPARTMENTS_REQUEST:
         case DepartmentConstants.CREATE_DEPARTMENT_REQUEST:
+        case DepartmentConstants.EDIT_DEPARTMENT_REQUEST:
         case DepartmentConstants.DELETE_DEPARTMENT_REQUEST:
             return {
                 ...state,
@@ -31,6 +32,7 @@ export function department(state = initState, action) {
 
         case DepartmentConstants.GET_DEPARTMENTS_FAILE:
         case DepartmentConstants.CREATE_DEPARTMENT_FAILE:
+        case DepartmentConstants.EDIT_DEPARTMENT_FAILE:
         case DepartmentConstants.DELETE_DEPARTMENT_FAILE:
             return {
                 ...state,
@@ -86,7 +88,7 @@ export function department(state = initState, action) {
                 };
         case DepartmentConstants.GETALL_SUCCESS:
                 return {
-                  items: action.departments
+                  items: action.departments.content
                 };
         case DepartmentConstants.GETALL_FAILURE:
                 return { 
@@ -99,7 +101,7 @@ export function department(state = initState, action) {
         case DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS:
             return {
                 ...state,
-                unitofuser: action.departments
+                unitofuser: action.departments.content
             };
         case DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE:
             return { 

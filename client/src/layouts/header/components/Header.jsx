@@ -22,8 +22,8 @@ class Header extends Component {
 
         if(regex.test(name) === false)
             toast.warning('Tên không được chứa các kí tự đặc biệt', {containerId: 'toast-notification'});
-        else if(name.length < 10)
-            toast.warning('Tên phải ít nhất 10 kí tự', {containerId: 'toast-notification'});
+        else if(name.length < 6)
+            toast.warning('Tên phải ít nhất 6 kí tự', {containerId: 'toast-notification'});
         else
             return this.props.changeInformation({
                 name: this.refs.name.value
@@ -33,14 +33,14 @@ class Header extends Component {
     changePassword = () => {
         const password = this.refs.password.value;
         const new_password = this.refs.new_password.value;
-        const confirm_password = this.refs.confirm_password;
+        const confirm_password = this.refs.confirm_password.value;
         const regex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
 
         if ( regex.test(new_password) ===  false || regex.test(confirm_password) ===  false ) {
             toast.warning(`Mật khẩu không được chứa các kí tự đặc biệt`, {containerId: 'toast-notification'});
         }else if(new_password.length < 6 || new_password.length > 20)
             toast.warning('Mật khẩu phải có độ dài từ 6 đến 20 kí tự', {containerId: 'toast-notification'});
-        else if(new_password.value !== confirm_password)
+        else if(new_password !== confirm_password)
             toast.warning('Mật khẩu không khớp', {containerId: 'toast-notification'});
         else{
 
@@ -80,11 +80,11 @@ class Header extends Component {
                 >
                     <form id="form-profile">
                         <div className="form-group">
-                            <label>{ translate('auth.profile.name') }</label>
+                            <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" ref="name" defaultValue={ auth.user.name } />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('auth.profile.email') }</label>
+                            <label>{ translate('auth.profile.email') }<span className="text-red">*</span></label>
                             <input type="email" className="form-control" ref="email" defaultValue={ auth.user.email } disabled/>
                         </div>
                     </form>
@@ -99,17 +99,17 @@ class Header extends Component {
                     msg_faile={translate('auth.profile.edit_faile')}
                     func={this.changePassword}
                 >
-                    <form id="form-security">
+                    <form id="form-security" style={{padding: '10px 20px 10px 20px'}}>
                         <div className="form-group">
-                            <label>{ translate('auth.security.old_password') }</label>
+                            <label>{ translate('auth.security.old_password') }<span className="text-red">*</span></label>
                             <input type="password" className="form-control" ref="password"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('auth.security.new_password') }</label>
+                            <label>{ translate('auth.security.new_password') }<span className="text-red">*</span></label>
                             <input type="password" className="form-control" ref="new_password"/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('auth.security.confirm_password') }</label>
+                            <label>{ translate('auth.security.confirm_password') }<span className="text-red">*</span></label>
                             <input type="password" className="form-control" ref="confirm_password"/>
                         </div>
                     </form>

@@ -24,7 +24,7 @@ exports.auth = async (req, res, next) => {
         /**
          * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
          */
-        if(!token) throw ({ msg: 'ACCESS_DENIED' });
+        if(!token) throw ({ message: 'access_denied' });
 
         /**
          * Giải mã token gửi lên để check dữ liệu trong token
@@ -38,11 +38,11 @@ exports.auth = async (req, res, next) => {
             const fingerprint = req.header('fingerprint'); //chữ ký của trình duyệt người dùng - fingerprint
             const currentRole = req.header('current-role');
             if(!ObjectId.isValid(currentRole)){
-                throw ({ msg: "ROLE_INVALID"}); //trả về lỗi nếu current role là một giá trị không xác định
+                throw ({ message: "role_invalid"}); //trả về lỗi nếu current role là một giá trị không xác định
             }
 
             const role = await Role.findById(currentRole); //current role của người dùng
-            if(role === null) throw ({ msg: "ROLE_INVALID"});
+            if(role === null) throw ({ message: "role_invalid"});
             // console.log("CURRENT ROLE: ", role);
             /**
              * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
@@ -51,7 +51,7 @@ exports.auth = async (req, res, next) => {
              */
             // console.log("fingerprint 1 : ", verified.fingerprint);
             // console.log("fingerprint 2 : ", fingerprint);
-            if(verified.fingerprint !== fingerprint) throw ({ msg: 'FINGERPRINT_INVALID' }); // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
+            if(verified.fingerprint !== fingerprint) throw ({ message: 'fingerprint_invalid' }); // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
             /**
              * Kiểm tra xem token có còn hoạt động hay không ?
@@ -60,7 +60,7 @@ exports.auth = async (req, res, next) => {
              * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
              */
             var userToken = await User.findOne({ _id: req.user._id,  token: token });
-            if(userToken === null) throw ({ msg: 'ACC_LOGGED_OUT'});
+            if(userToken === null) throw ({ message: 'acc_log_out'});
             // console.log("usertoken: ", userToken);
 
             /**
@@ -71,7 +71,7 @@ exports.auth = async (req, res, next) => {
             // console.log("userid: ", userId)
             // console.log("userrole1: ", role._id, userId);
             const userrole = await UserRole.findOne({userId, roleId: role._id});
-            if(userrole === null) throw ({msg: 'USER_ROLE_INVALID'});
+            if(userrole === null) throw ({ message: 'user_role_invalid'});
             // console.log("userrole2: ", userrole);
             /**
              * Riêng đối với system admin của hệ thống thì bỏ qua bước này
@@ -85,7 +85,7 @@ exports.auth = async (req, res, next) => {
                     const resetUser = await User.findById(req.user._id);
                     resetUser.token = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
                     await resetUser.save();
-                    throw ({msg: 'SERVICE_OFF'});
+                    throw ({ message: 'service_off'});
                 };
             }
 
@@ -97,7 +97,8 @@ exports.auth = async (req, res, next) => {
              * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
              */
 
-            var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+            //var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+            var url = req.header('current-page');
             // console.log("trang web hiện tại người dùng đang truy cập: ", url);
             // console.log("ROLE NAME:", role.name, req.user.company._id);
             const link = role.name !== 'System Admin' ?
@@ -109,7 +110,7 @@ exports.auth = async (req, res, next) => {
                     url
                 });
             // console.log("LINK ACCESS: ", link);
-            if(link === null) throw ({msg: 'URL_INVALID'});
+            if(link === null) throw ({ message: 'url_invalid'});
             const roleArr = [currentRole].concat(role.parents);
             // console.log("ROLE ARR: ", roleArr);
             const privilege = await Privilege.findOne({
@@ -117,14 +118,14 @@ exports.auth = async (req, res, next) => {
                 resourceType: 'Link',
                 roleId: { $in: roleArr }
             });
-            if(privilege === null) throw ({ msg: 'PAGE_ACCESS_DENIED' });
+            if(privilege === null) throw ({ message: 'page_access_denied' });
 
             /**
              * Kiểm tra xem user này có được gọi tới service này hay không?
              */
             const path = req.route.path !== '/' ? req.baseUrl + req.route.path : req.baseUrl;
             const checkSP = await checkServicePermission(data, path, req.method, currentRole);
-            if(!checkSP) throw ({msg: 'SERVICE_PERMISSION_INVALID'});
+            if(!checkSP) throw ({ message: 'service_permission_invalid'});
 
         }
 
@@ -132,7 +133,11 @@ exports.auth = async (req, res, next) => {
         next();
         
     } catch (error) { 
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            message: error.message !== undefined ? error.message : 'call_api_faile',
+            content: error
+        });
     }   
 }
 

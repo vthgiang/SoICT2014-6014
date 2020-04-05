@@ -30,8 +30,8 @@ class ManageUserTable extends Component {
                 <UserCreateForm />
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value: 'name' },
-                        { title: translate('table.email'), value: 'email' }
+                        { title: translate('manage_user.name'), value: 'name' },
+                        { title: translate('manage_user.email'), value: 'email' }
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -41,19 +41,22 @@ class ManageUserTable extends Component {
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>{translate('table.name')}</th>
-                            <th>{translate('table.email')}</th>
-                            <th>{translate('table.status')}</th>
+                            <th>{translate('manage_user.name')}</th>
+                            <th>{translate('manage_user.email')}</th>
+                            <th>{translate('manage_user.roles')}</th>
+                            <th>{translate('manage_user.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
-                                <ActionColumn 
-                                    tableId="user-table"
+                                <ActionColumn
                                     columnName={translate('table.action')} 
                                     columnArr={[
-                                        translate('table.name'),
-                                        translate('table.email'),
-                                        translate('table.status')
+                                        translate('manage_user.name'),
+                                        translate('manage_user.email'),
+                                        translate('manage_user.roles'),
+                                        translate('manage_user.status')
                                     ]}
-                                    setLimit={this.setLimit} 
+                                    limit={this.state.limit}
+                                    setLimit={this.setLimit}
+                                    hideColumnOption = {true}
                                 />
                             </th>
                         </tr>
@@ -66,7 +69,35 @@ class ManageUserTable extends Component {
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    <td>{u.active ? <p><i className="fa fa-circle text-success" /> {translate('manage_user.enable')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_user.disable')} </p>}</td>
+                                    <td>{
+                                        u.roles.map((role, index, arr) => {
+                                            if(arr.length < 4){
+                                                if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                else return `${role.roleId.name}`
+                                            }else{
+                                                if(index < 3 ){
+                                                    return `${role.roleId.name}, `
+                                                }
+                                            }
+                                        })
+                                    }{
+                                        u.roles.length >=4 &&
+                                        <React.Fragment>
+                                            <div className="tooltip2">...
+                                                <span className="tooltip2text">
+                                                    {
+                                                        u.roles.map((role, index, arr) => {
+                                                            if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                            else return `${role.roleId.name}`
+                                                        })
+                                                    }
+                                                </span>
+                                            </div>
+                                        </React.Fragment>
+                                    }</td>
+                                    <td>{u.active 
+                                        ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.enable')} </p>
+                                        : <p><i className="fa fa-circle text-danger" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{textAlign: 'center'}}>
                                         <UserEditForm
                                             userId={u._id}
@@ -141,12 +172,14 @@ class ManageUserTable extends Component {
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { limit: number, page: this.state.page };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
+        if (this.state.limit !== number){
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page };
+            if(this.state.value !== null){
+                data[this.state.option] = this.state.value;
+            }
+            this.props.getPaginate(data);
         }
-        this.props.getPaginate(data);
     }
 
     componentDidMount(){

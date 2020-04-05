@@ -1,12 +1,22 @@
 const RoleDefaultServices = require('./role-default.service');
+const {LogInfo, LogError} = require('../../../logs');
 
 exports.get = async (req, res) => {
     try {
         var roleDefaults = await RoleDefaultServices.get();
-        
-        res.status(200).json(roleDefaults);
+        LogInfo(req.user.email, 'GET_ROLES_DEFAULT');
+        res.status(200).json({
+            success: true,
+            message: 'get_roles_default_success',
+            content: roleDefaults
+        });
     } catch (error) {
         
-        res.status(400).json(error);
+        LogError(req.user.email, 'GET_ROLES_DEFAULT');
+        res.status(200).json({
+            success: true,
+            message: error.message !== undefined ? error.message : 'get_roles_default_faile',
+            content: error
+        });
     }
 };

@@ -1,6 +1,10 @@
 export default {
     locale: 'en',
     messages: {
+        error: {
+            email_does_not_exist: 'Email does not exist',
+            field_invalid: 'Field input invaid',
+        },
         not_found: {
             title: 'Qpps! Page not found',
             content: 'We could not find the page you were looking for',
@@ -87,6 +91,7 @@ export default {
             no_data: 'No data',
             start_date: 'Start day',
             end_date: 'End day',
+            hidden_column: 'Hidden columns'
         },
         modal: {
             update: 'Save',
@@ -134,7 +139,7 @@ export default {
             sabbatical: 'Manage Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
-            list_course: 'Training Programs',
+            list_education: 'Training Programs',
             training_plan: 'Manage Training Courses',
 
             manage_kpi: 'Manage KPI',
@@ -243,6 +248,9 @@ export default {
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
+            all: 'All',
+            choose_hidden_columns: 'Choose column want to hide',
+            category: 'Category'
         },
 
         manage_component: {

@@ -6,8 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
 import { ModalAddSabbatical } from './ModalAddSabbatical';
 import { ModalEditSabbatical } from './ModalEditSabbatical';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 
@@ -24,8 +24,6 @@ class Sabbatical extends Component {
             limit: 5,
 
         }
-        this.setLimit = this.setLimit.bind(this);
-        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
 
@@ -111,11 +109,9 @@ class Sabbatical extends Component {
         await this.setState({
             month: this.refs.month.value
         });
-        console.log(this.state);
         this.props.getListSabbatical(this.state);
     }
     render() {
-        console.log(this.state);
         const { tree, list } = this.props.department;
         const { translate } = this.props;
         var listSabbatical = "", listDepartment = list, listPosition;
@@ -232,8 +228,19 @@ class Sabbatical extends Component {
                                             <th style={{ width: '120px', textAlign: 'center' }}>
                                                 <ActionColumn
                                                     columnName={translate('table.action')}
-                                                    hideColumn={false}
+                                                    columnArr={[
+                                                        translate('table.employee_number'),
+                                                        translate('table.employee_name'),
+                                                        translate('table.start_date'),
+                                                        translate('table.end_date'),
+                                                        translate('sabbatical.reason'),
+                                                        translate('table.unit'),
+                                                        translate('table.position'),
+                                                        translate('table.status')
+                                                    ]}
+                                                    limit={this.state.limit}
                                                     setLimit={this.setLimit}
+                                                    hideColumnOption={true}
                                                 />
                                             </th>
                                         </tr>

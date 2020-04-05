@@ -12,7 +12,8 @@ const link = require('./modules/super-admin-management/links-management/link.rou
 const department = require('./modules/super-admin-management/departments-management/department.route');
 const privilege = require('./modules/super-admin-management/privileges/privilege.route');
 const component = require('./modules/super-admin-management/components-management/component.route');
-const educationProgram = require('./modules/trainning-Course/education-program/educationProgram.route');
+const educationProgram = require('./modules/trainning-Course/education-program/education-program.route');
+const course = require('./modules/trainning-Course/course/course.route');
 const employee = require('./modules/employees-manager/employee/employee.route');
 const salary = require('./modules/employees-manager/salary/salary.route');
 const discipline = require('./modules/employees-manager/discipline/discipline.route');
@@ -80,7 +81,7 @@ Logger.findOne({
         result.status ? isLog = true : isLog = false;
         console.log("Logger status: ", isLog);
     })
-    .catch(err => console.log("msg: ", err));
+    .catch(err => console.log("message: ", err));
 
 
 
@@ -96,6 +97,7 @@ app.use("/link", link);
 app.use("/department", department);
 app.use("/privilege", privilege);
 app.use("/educationProgram", educationProgram);
+app.use("/course",course);
 app.use("/employee", employee);
 app.use("/salary", salary);
 app.use("/discipline", discipline);

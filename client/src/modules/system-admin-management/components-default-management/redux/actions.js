@@ -19,7 +19,7 @@ function get(){
             .then(res => {
                 dispatch({
                     type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -36,7 +36,7 @@ function getPaginate(data){
             .then(res => {
                 dispatch({
                     type: ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -53,7 +53,7 @@ function show(id){
             .then(res => {
                 dispatch({
                     type: ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -71,7 +71,7 @@ function create(component){
             .then(res => {
                 dispatch({
                     type: ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
                 resolve(res);
             })
@@ -93,7 +93,7 @@ function edit(id, component){
             .then(res => {
                 dispatch({
                     type: ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
                 resolve(res);
             })

@@ -14,6 +14,7 @@ const Sabbatical = require('../models/sabbatical.model');
 const Discipline = require('../models/discipline.model');
 const Praise = require('../models/praise.model');
 const EducationProgram = require('../models/educationProgram.model');
+const Course = require('../models/course.model')
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -182,20 +183,20 @@ const sampleCompanyData = async () => {
         type: roleAbstract._id
     }]);
 
-    const troLy = await Role.create({
+    const thanhVienBGĐ = await Role.create({
         parents: [roles[3]._id],
-        name: "Trợ lý giám đốc",
+        name: "Thành viên ban giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const phoGiamDoc = await Role.create({
-        parents: [roles[2]._id, troLy._id],
+        parents: [roles[2]._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
     });
     const giamDoc = await Role.create({
-        parents: [roles[1]._id, troLy._id, phoGiamDoc._id],
+        parents: [roles[1]._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
         company: xyz._id,
         type: roleChucDanh._id
@@ -219,7 +220,7 @@ const sampleCompanyData = async () => {
         type: roleChucDanh._id
     });
 
-    console.log("Đã tạo xong các role mặc định của công ty: ", admin, roles, troLy, phoGiamDoc, giamDoc, nvPhongHC, phoPhongHC, truongPhongHC);
+    console.log("Đã tạo xong các role mặc định của công ty: ", admin, roles, thanhVienBGĐ, phoGiamDoc, giamDoc, nvPhongHC, phoPhongHC, truongPhongHC);
     //END
 
 
@@ -247,13 +248,17 @@ const sampleCompanyData = async () => {
         userId: users[3]._id,
         roleId: phoGiamDoc._id
     },
-    {//Trợ lý giám đốc Vũ Thị C
+    {//Thành viên ban giám đốc Vũ Thị C
         userId: users[4]._id,
-        roleId: troLy._id
+        roleId: thanhVienBGĐ._id
     },
     {//Trưởng phòng hành chính Nguyễn Văn D
         userId: users[5]._id,
         roleId: truongPhongHC._id
+    },
+    {//Nguyễn Văn D cũng là thành viên ban giám đốc
+        userId: users[5]._id,
+        roleId: thanhVienBGĐ._id
     },
     {//Phó phòng hành chính Trần Thị E
         userId: users[6]._id,
@@ -279,7 +284,7 @@ const sampleCompanyData = async () => {
         company:  xyz._id,
         dean: giamDoc._id,
         vice_dean: phoGiamDoc._id,
-        employee: troLy._id,
+        employee: thanhVienBGĐ._id,
         parent: null
     });
     const departments = await Department.insertMany([
@@ -399,7 +404,7 @@ const sampleCompanyData = async () => {
             company: xyz._id
         },
         { // 20
-            url: '/hr-list-course',
+            url: '/hr-list-education',
             description: 'Chương trình đào tạo bắt buộc',
             company: xyz._id
         },
@@ -1154,33 +1159,69 @@ const sampleCompanyData = async () => {
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU KỶ LUẬT NHÂN VIÊN
+        TẠO DỮ LIỆU CHƯƠNG TRÌNH ĐÀO TẠO
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-    console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
+    console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
     var educationProgram = await EducationProgram.insertMany([{
         company:xyz._id,
         unitEducation: [
-            "Phòng Kinh doanh"
+            departments[0]._id
         ],
         positionEducation: [
-            "Trưởng phòng"
+            nvPhongHC._id
         ],
         nameEducation: "An toan lao dong",
         numberEducation: "M123",
     }, {
         company:xyz._id,
         unitEducation: [
-            "Phòng Kinh doanh"
+            departments[0]._id
         ],
         positionEducation: [
-            "Trưởng phòng"
+            nvPhongHC._id
         ],
         nameEducation: "kỹ năng giao tiếp",
         numberEducation: "M1234",
     }])
-    console.log(`Xong! Thông tin kỷ luật đã được tạo`);
+    console.log(`Xong! Thông tin chương trình đào tạo  đã được tạo`);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU KHOÁ ĐÀO TẠO
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+
+    console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
+    var course= await Course.insertMany([{
+        company:xyz._id,
+        nameCourse : "An toàn lao động 1",
+        numberCourse : "LD1233",
+        unitCourse : "Vnists",
+        address : "P9.01",
+        startDate : "03-03-2020",
+        endDate : "21-03-2020",
+        costsCourse : "1200000",
+        teacherCourse : "Nguyễn B",
+        typeCourse : "Đào tạo ngoài",
+        educationProgram : educationProgram[0]._id,
+        time : "6",
+    }, {
+        company:xyz._id,
+        nameCourse : "An toàn lao động 2",
+        numberCourse : "LD123",
+        unitCourse : "Vnists",
+        address : "P9.01",
+        startDate : "03-03-2020",
+        endDate : "21-03-2020",
+        costsCourse : "1200000",
+        teacherCourse : "Nguyễn Văn B",
+        typeCourse : "Đào tạo ngoài",
+        educationProgram : educationProgram[0]._id,
+        time : "6",
+    }])
+    console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 }
 
 //Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//

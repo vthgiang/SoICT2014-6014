@@ -24,7 +24,7 @@ import { Discipline} from '../modules/employees-manager/discipline/components/Di
 import { Sabbatical} from '../modules/employees-manager/sabbatical/components/Sabbatical';
 import { SalaryEmployee} from '../modules/employees-manager/salary-employee/components/SalaryEmployee';
 import { Timekeeping} from '../modules/employees-manager/timekeeping/components/Timekeeping';
-import { ListCourse} from '../modules/training-course/list-course/components/ListCourse';
+import { ListEducation} from '../modules/training-course/list-education/components/ListEducation';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
 import { DepartmentManage} from '../modules/employees-manager/department-manager/components/DepartmentManage';
 import { ManageHoliday } from '../modules/employees-manager/holiday/components/ManageHoliday';
@@ -225,7 +225,7 @@ class Routes extends Component {
                     />
                     {/* Quan ly nhan su */}
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.employeesManager.isLoading }
                         key={ 'add_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -240,7 +240,7 @@ class Routes extends Component {
                         component={ AddEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.employeesInfo.isLoading }
                         key={ 'detail_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -255,7 +255,7 @@ class Routes extends Component {
                         component={ DetailEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.employeesInfo.isLoading }
                         key={ 'update_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -270,7 +270,7 @@ class Routes extends Component {
                         component={ UpdateEmployee }
                     />
                     <PrivateRoute 
-                        isLoading={ employeesManager.isLoading }
+                        isLoading={ this.props.employeesManager.isLoading }
                         key={ 'list_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -286,7 +286,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.user.isLoading }
                         key={ 'manage_unit' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -317,7 +317,7 @@ class Routes extends Component {
                         component={ DashBoardEmployees }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.discipline.isLoading }
                         key={ 'discipline' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -332,7 +332,7 @@ class Routes extends Component {
                         component={ Discipline }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.sabbatical.isLoading }
                         key={ 'sabbatical' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -347,7 +347,7 @@ class Routes extends Component {
                         component={ Sabbatical }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.holiday.isLoading }
                         key={ 'manage_holiday' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -362,7 +362,7 @@ class Routes extends Component {
                         component={ ManageHoliday }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.salary.isLoading }
                         key={ 'salary_employee' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -392,22 +392,22 @@ class Routes extends Component {
                         component={ Timekeeping }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
-                        key={ 'list_course' }
+                        isLoading={ this.props.education.isLoading }
+                        key={ 'list_education' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/hr-list-course', name: 'list_course', icon:'fa fa-university' }
+                            { link: '/hr-list-education', name: 'list_education', icon:'fa fa-university' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/hr-list-course' }
-                        path={ '/hr-list-course' }
-                        pageName={'list_course' }
+                        link={ '/hr-list-education' }
+                        path={ '/hr-list-education' }
+                        pageName={'list_education' }
                         layout={ Layout }
-                        component={ ListCourse }
+                        component={ ListEducation }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.course.isLoading }
                         key={ 'training_plan' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -424,7 +424,7 @@ class Routes extends Component {
 
                     {/* kpi - routes */}
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.createKpiUnit.isLoading }
                         key={ 'kpi-unit-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -454,7 +454,7 @@ class Routes extends Component {
                         component={ KPIUnitEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.overviewKpiUnit.isLoading }
                         key={ 'kpi-unit-overview' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -469,7 +469,7 @@ class Routes extends Component {
                         component={ KPIUnitOverview }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.createKpiPersonal.isLoading }
                         key={ 'kpi-personal-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -484,7 +484,7 @@ class Routes extends Component {
                         component={ KPIPersonalCreate }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.overviewKpiPersonal.isLoading }
                         key={ 'kpi-personal-overview' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -514,7 +514,7 @@ class Routes extends Component {
                         component={ KPIPersonalEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.tasktemplates.isLoading }
                         key={ 'task-template-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -545,7 +545,7 @@ class Routes extends Component {
                         component={ Notifications }
                     />
                     <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.kpimembers.isLoading }
                         key={ 'kpi_member' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -562,7 +562,7 @@ class Routes extends Component {
 
                      {/* Task Management */}
                      <PrivateRoute 
-                        isLoading={ false }
+                        isLoading={ this.props.tasks.isLoading }
                         key={ 'task-management' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

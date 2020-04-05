@@ -1,6 +1,10 @@
 export default {
     locale: 'vn',
     messages: {
+        error: {
+            email_does_not_exist: 'Email này đã được sử dụng',
+            field_invalid: 'Trường nhập vào không hợp lệ',
+        },
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
             content: 'Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm',
@@ -97,6 +101,7 @@ export default {
             no_data: 'Không có dữ liệu',
             start_date: 'Từ ngày',
             end_date: 'Đến ngày',
+            hidden_column: 'Ẩn cột'
         },
 
         modal: {
@@ -147,7 +152,7 @@ export default {
             sabbatical: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
             time_keeping: 'Chấm công nhân viên',
-            list_course: 'Chương trình đào tạo bắt buộc',
+            list_education: 'Chương trình đào tạo bắt buộc',
             training_plan: 'Quản lý khoá đào tạo',
 
             manage_kpi: 'Quản lý KPI',
@@ -251,7 +256,10 @@ export default {
             add_faile: 'Tạo tài khoản thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            roles: 'Phân quyền được cấp'
+            roles: 'Phân quyền được cấp',
+            name: 'Tên người dùng',
+            email: 'Địa chỉ email',
+            status: 'Trạng thái tài khoản'
         },
 
         manage_link: {
@@ -268,7 +276,9 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            all: 'Tất cả'
+            all: 'Tất cả',
+            choose_hidden_columns: 'Chọn cột muốn ẩn',
+            category: 'Danh mục'
         },
 
         manage_component: {

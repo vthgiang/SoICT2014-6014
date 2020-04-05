@@ -1,41 +1,68 @@
 const CourseService = require('./course.service');
-const { LogInfo, LogError } = require('../../../logs');
+const {
+    LogInfo,
+    LogError
+} = require('../../../logs');
 
-// get all list educationProgram
+// Lấy danh sách khoá đào tạo
 exports.get = async (req, res) => {
     try {
+        var allList = await CourseService.get(req.body, req.user.company._id);
+        await LogInfo(req.user.email, 'GET_LIST_COURSE', req.user.company);
         res.status(200).json({
             message: "success",
+            content: allList
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_EDUCATIONPROGRAM', req.user.company);
-        rres.status(400).json({
+        await LogError(req.user.email, 'GET_LIST_COURSE', req.user.company);
+        res.status(400).json({
             message: error
         });
     }
 }
 
-// create a new educationProgram
+// Lấy danh sách khoá đào tạo theo mã chương trình đào tạo
+exports.getByEducation = async (req, res) => {
+    try {
+        var listCourse = await CourseService.getByEducation( req.body, req.user.company._id);
+        await LogInfo(req.user.email, 'GET_LIST_COURSE_BY_EDUCATION', req.user.company);
+        res.status(200).json({
+            message: "success",
+            content: listCourse
+        });
+    } catch (error) {
+        await LogError(req.user.email, 'GET_LIST_COURSE_BY_EDUCATION', req.user.company);
+        res.status(400).json({
+            message: error
+        });
+    }
+}
+
+// Tạo kháo đào tạo
 exports.create = async (req, res) => {
     try {
+        var newCourse = await CourseService.create(req.body, req.user.company._id);
+        await LogInfo(req.user.email, 'CREATE_COURSE', req.user.company);
         res.status(200).json({
             message: "success",
-            
+            content: newCourse
         });
     } catch (error) {
-        await LogError(req.user.email, 'CREATE_EDUCATIONPROGRAM', req.user.company);
+        await LogError(req.user.email, 'CREATE_COURSE', req.user.company);
         res.status(400).json({
             message: error
         });
     }
 }
 
-// delete a educationProgram
+// Xoá kháo đào tạo
 exports.delete = async (req, res) => {
     try {
-
-        res.status(400).json({
-            message: "Not find",
+        var courseDelete = await CourseService.delete(req.params.id);
+        await LogInfo(req.user.email, 'DELETE_COURSE', req.user.company);
+        res.status(200).json({
+            message: "success",
+            content: courseDelete
         });
     } catch (error) {
         res.status(400).json({
@@ -44,15 +71,18 @@ exports.delete = async (req, res) => {
     }
 }
 
-// update a educationProgram
+// Cập nhật thông tin khoá học
 exports.update = async (req, res) => {
     try {
-
-        res.status(400).json({
-            message: "Not find",
+        var courseUpdate = await CourseService.update(req.params.id, req.body);
+        await LogInfo(req.user.email, 'EDIT_COURSE', req.user.company);
+        res.status(200).json({
+            message: "success",
+            content: courseUpdate
         });
 
     } catch (error) {
+        await LogError(req.user.email, 'EDIT_COURSE', req.user.company);
         res.status(400).json({
             message: error
         });

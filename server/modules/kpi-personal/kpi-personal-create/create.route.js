@@ -27,7 +27,7 @@ router.put('/target/:id',auth, KPIPersonalController.editTarget);
 // delete target of personal
 router.delete('/target/:kpipersonal/:id',auth, KPIPersonalController.deleteTarget);
 
-// phê duyệt tất cả mục tiêu của kpi cá nhân
-router.put('/approve/:id',auth, KPIPersonalController.approveAllTarget);
+// // phê duyệt tất cả mục tiêu của kpi cá nhân
+// router.put('/approve/:id',auth, KPIPersonalController.approveAllTarget);
 
 module.exports = router;

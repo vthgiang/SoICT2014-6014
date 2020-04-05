@@ -7,8 +7,8 @@ import { SalaryActions } from '../redux/actions';
 import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalEditSalary } from './ModalEditSalary';
-import { ActionColumn } from '../../../../common-components/src/ActionColumn';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { ActionColumn } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 
@@ -24,8 +24,6 @@ class SalaryEmployee extends Component {
             limit: 5,
 
         }
-        this.setLimit = this.setLimit.bind(this);
-        this.setPage = this.setPage.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
     }
@@ -221,8 +219,17 @@ class SalaryEmployee extends Component {
                                                 <th style={{ width: '120px', textAlign: 'center' }}>
                                                     <ActionColumn
                                                         columnName={translate('table.action')}
-                                                        hideColumn={false}
+                                                        columnArr={[
+                                                            translate('table.employee_number'),
+                                                            translate('table.employee_name'),
+                                                            translate('table.month'),
+                                                            translate('table.total_salary'),
+                                                            translate('table.unit'),
+                                                            translate('table.position'),
+                                                        ]}
+                                                        limit={this.state.limit}
                                                         setLimit={this.setLimit}
+                                                        hideColumnOption={true}
                                                     />
                                                 </th>
                                             </tr>
@@ -238,7 +245,7 @@ class SalaryEmployee extends Component {
                                                             total = total + parseInt(x.bonus[count].number)
                                                         }
                                                     }
-                                                    var unit = x.mainSalary.slice(-3, x.mainSalary.length);
+                                                    var unit = x.mainSalary.slice(x.mainSalary.length - 3, x.mainSalary.length);
                                                     return (
                                                         <tr key={index}>
                                                             <td>{x.employee.employeeNumber}</td>

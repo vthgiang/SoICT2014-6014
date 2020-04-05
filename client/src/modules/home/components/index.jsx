@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { RoleActions } from '../../super-admin-management/roles-management/redux/actions';
+import { LinkActions } from '../../super-admin-management/links-management/redux/actions';
 
 class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
         
+    }
+
+    componentDidMount(){
+        this.props.getRoles();
+        this.props.getLinks();
     }
 
     render() { 
@@ -26,6 +33,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return{
+        getRoles: RoleActions.get,
+        getLinks: LinkActions.get
     }
 }
 

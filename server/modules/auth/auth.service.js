@@ -8,7 +8,7 @@ const { Privilege, Role, User, UserRole } = require('../../models/_export').data
 exports.login = async (fingerprint, data) => { // data bao gom email va password
 
     const {error} = loginValidation(data);
-    if(error) throw {msg: error.details[0].message};
+    if(error) throw {message: error.details[0].message};
 
     const user = await User
         .findOne({email : data.email})
@@ -17,7 +17,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             { path: 'company' }
         ]);
 
-    if(!user) throw {msg: "email_invalid"};
+    if(!user) throw {message: "email_invalid"};
     const validPass = await bcrypt.compare(data.password, user.password);
     if(!validPass) {
         if(user.active) user.status = user.status + 1;
@@ -25,16 +25,16 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             user.active = false;
             user.status = 0;
             user.save();
-            throw { msg: 'wrong5_block'};
+            throw { message: 'wrong5_block'};
         }
         user.save();
-        throw {msg: 'password_invalid'};
+        throw {message: 'password_invalid'};
     }
-    if(user.roles.length < 1) throw ({msg: 'acc_have_not_role'})
+    if(user.roles.length < 1) throw ({message: 'acc_have_not_role'})
     if(user.roles[0].roleId.name !== 'System Admin'){ 
         //Không phải phiên đăng nhập của system admin 
-        if(!user.active) throw { msg: 'acc_blocked'};
-        if(!user.company.active) throw ({msg: 'company_service_off'});
+        if(!user.active) throw { message: 'acc_blocked'};
+        if(!user.company.active) throw ({message: 'company_service_off'});
     
         const token = await jwt.sign(
             {
@@ -183,10 +183,7 @@ exports.changePassword = async (id, password, new_password) => {
     ]);
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
-    if(!validPass) throw ({
-        success: false,
-        message: 'password_invalid'
-    });
+    if(!validPass) throw ({message: 'password_invalid'});
 
     // Lưu mật khẩu mới
     const salt = await bcrypt.genSaltSync(10);
@@ -207,5 +204,19 @@ exports.getLinksOfRole = async (idRole) => {
         resourceType: 'Link'
     }).populate({ path: 'resourceId', model: Link }); 
     const links = await privilege.map( link => link.resourceId );
+
     return links;
+}
+
+exports.show = async (id) => {
+    var user = await User
+        .findById(id)
+        .select('-password -status -delete_soft -token')
+        .populate([
+            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
+            { path: 'company' }
+        ]);
+    if(user === null) throw({message: 'user_not_found'});
+    
+    return user;
 }

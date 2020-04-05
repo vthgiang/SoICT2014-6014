@@ -15,7 +15,7 @@ class DepartmentEditForm extends Component {
         return ( 
             <React.Fragment>
                 <ModalDialog
-                    size="75" type="edit"
+                    size="75" type="edit" isLoading={department.isLoading}
                     modalID={`modal-edit-department-${departmentInfo._id}`}
                     formID={`form-edit-department-${departmentInfo._id}`}
                     title={translate('manage_department.info')}

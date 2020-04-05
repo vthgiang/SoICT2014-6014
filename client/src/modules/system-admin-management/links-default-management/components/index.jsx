@@ -36,6 +36,7 @@ class ManageLink extends Component {
                         <SearchBar 
                             columns={[
                                 { title: translate('manage_link.url'), value:'url' },
+                                { title: translate('manage_link.category'), value:'category' },
                                 { title: translate('manage_link.description'), value:'description' },
                             ]}
                             option={this.state.option}
@@ -47,13 +48,19 @@ class ManageLink extends Component {
                             <thead>
                                 <tr>
                                     <th>{ translate('manage_link.url') }</th>
+                                    <th>{ translate('manage_link.category') }</th>
                                     <th>{ translate('manage_link.description') }</th>
                                     {/* <th>{ translate('manage_link.components') }</th> */}
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
-                                            hideColumn={false}
+                                            columnArr={[
+                                                translate('manage_link.url'),
+                                                translate('manage_link.category'),
+                                                translate('manage_link.description'),
+                                                translate('manage_link.roles')
+                                            ]}
                                             setLimit={this.setLimit}
                                         /> 
                                     </th>
@@ -64,6 +71,7 @@ class ManageLink extends Component {
                                     linksDefault.listPaginate.length > 0 ? linksDefault.listPaginate.map( link => 
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
+                                            <td>{ link.category }</td>
                                             <td>{ link.description }</td>
                                             {/* <td>{ link.components.map((component, i, arr) => {
                                                 if(i !== arr.length - 1)
@@ -99,8 +107,8 @@ class ManageLink extends Component {
                                             </td>
                                         </tr> 
                                     ): linksDefault.isLoading ?
-                                    <tr><td colSpan={3}>{translate('confirm.loading')}</td></tr>:
-                                    <tr><td colSpan={3}>{translate('confirm.no_data')}</td></tr>
+                                    <tr><td colSpan={5}>{translate('confirm.loading')}</td></tr>:
+                                    <tr><td colSpan={5}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>

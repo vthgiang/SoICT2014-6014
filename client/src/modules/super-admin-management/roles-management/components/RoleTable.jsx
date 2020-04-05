@@ -30,7 +30,7 @@ class RoleTable extends Component {
                 <RoleCreateForm />
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value:'name' }
+                        { title: translate('manage_role.name'), value:'name' }
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -47,8 +47,11 @@ class RoleTable extends Component {
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     columnArr={[
-                                        translate('table.name')
+                                        translate('manage_role.name'),
+                                        translate('manage_role.extends'),
+                                        translate('manage_role.users')
                                     ]}
+                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
                                 />
                             </th>
@@ -89,11 +92,11 @@ class RoleTable extends Component {
                                     <td> { 
                                         role.users.map((user, index, arr) => {
                                             if(arr.length < 3){
-                                                if(index !== arr.length - 1) return `${user.userId.name}, `;
-                                                else return `${user.userId.name}`
+                                                if(index !== arr.length - 1) return `${user.userId !== null ? user.userId.name : null}, `;
+                                                else return `${user.userId !== null ? user.userId.name : null}`
                                             }else{
                                                 if(index < 2 ){
-                                                    return `${user.userId.name}, `
+                                                    return `${user.userId !== null ? user.userId.name : null}, `
                                                 }
                                             }
                                         })
@@ -118,7 +121,7 @@ class RoleTable extends Component {
                                             roleId={role._id}
                                             roleName={role.name}
                                             roleParents={role.parents.map(parent => parent._id)}
-                                            roleUsers={role.users.map(user=>user.userId._id)}
+                                            roleUsers={role.users.map(user=>user.userId !== null ? user.userId._id : null)}
                                         />
                                         {
                                             role.type.name === 'Company-Defined' && 
@@ -138,8 +141,8 @@ class RoleTable extends Component {
                                     </td>
                                 </tr>       
                             ): role.isLoading ?
-                            <tr><td colSpan={'2'}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={'4'}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={'4'}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

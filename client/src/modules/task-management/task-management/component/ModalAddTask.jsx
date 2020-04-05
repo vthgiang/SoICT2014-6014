@@ -286,73 +286,6 @@ class ModalAddTask extends Component {
                                 </div>
                                 <div className="col-sm-6">
                                     <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border">Liên kết công việc (Object and Key Results)</legend>
-                                        <div className={'form-group has-feedback' + (submitted && !newTask.unit ? ' has-error' : '')}>
-                                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*</label>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {units &&
-                                                    <select defaultValue={currentUnit[0]._id} className="form-control" style={{ width: '100%' }} onChange={this.handleChangeUnit} ref={input => this.unit = input}>
-                                                        {units.map(x => {
-                                                            return <option key={x._id} value={x._id}>{x.name}</option>
-                                                        })}
-                                                    </select>}
-                                            </div>
-                                            {submitted && !newTask.unit &&
-                                                <div className="col-sm-4 help-block">Hãy chọn đơn vị</div>
-                                            }
-                                        </div>
-                                        <div className="form-group  has-feedback">
-                                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {
-                                                    (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) ?
-                                                        <select className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskTemplate} ref={input => this.tasktemplate = input}>
-                                                            <option value="">--Hãy chọn mẫu công việc--</option>
-                                                            {
-                                                                listTaskTemplate.map(item => {
-                                                                    return <option key={item.resourceId._id} value={item.resourceId._id}>{item.resourceId.name}</option>
-                                                                })
-                                                            }
-                                                        </select> : null
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className="form-group  has-feedback">
-                                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Công việc cha</label>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                <select className="form-control select2" style={{ width: '100%' }} ref={input => this.parent = input} defaultValue={this.props.id !== "" ? this.props.id : null}>
-                                                    <option value="">--Hãy chọn công việc cha--</option>
-                                                    {this.props.currentTasks &&
-                                                        this.props.currentTasks.map(item => {
-                                                            return <option key={item._id} value={item._id}>{item.name}</option>
-                                                        })}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className={'form-group has-feedback' + (submitted && newTask.kpi.length === 0 ? ' has-error' : '')}>
-                                            <label className="col-sm-5 control-label" style={{ width: '20%', textAlign: 'left', marginTop: "-7px" }}>KPI mục tiêu*</label>
-                                            <a style={{ color: "navy" }} href="#abc" onClick={() => this.handleGetTarget()} title="Lấy tất cả mục tiêu KPI cá nhân của người thực hiện" ><i style={{ fontSize: "19px" }} className="material-icons">refresh</i></a>
-                                            <div className="col-sm-10" style={{ width: '100%' }}>
-                                                <select className="form-control select2" multiple="multiple" ref="kpi" data-placeholder="Select a State" style={{ width: '100%' }} >
-                                                    {listKPIPersonal &&
-                                                        listKPIPersonal.map(item => {
-                                                            return <optgroup label={item.creater.name} key={item._id}>
-                                                                {item.listtarget.map(x => {
-                                                                    return <option key={x._id} value={x._id}>{x.name}</option>
-                                                                })}
-                                                            </optgroup>
-                                                        })
-                                                    }
-                                                </select>
-                                            </div>
-                                            {submitted && newTask.kpi.length === 0 &&
-                                                <div className="col-sm-4 help-block">Hãy chọn kpi mục tiêu</div>
-                                            }
-                                        </div>
-                                    </fieldset>
-                                </div>
-                                <div className="col-sm-6">
-                                    <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">Phân định trách nhiệm (RACI)</legend>
                                         <div className={'form-group has-feedback' + (submitted && newTask.responsible.length === 0 ? ' has-error' : '')}>
                                             <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện*</label>
@@ -448,6 +381,75 @@ class ModalAddTask extends Component {
                                         </div>
                                     </fieldset>
                                 </div>
+                                
+                                <div className="col-sm-6">
+                                    <fieldset className="scheduler-border">
+                                        <legend className="scheduler-border">Liên kết công việc (Object and Key Results)</legend>
+                                        <div className={'form-group has-feedback' + (submitted && !newTask.unit ? ' has-error' : '')}>
+                                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*</label>
+                                            <div className="col-sm-10" style={{ width: '100%' }}>
+                                                {units &&
+                                                    <select defaultValue={currentUnit[0]._id} className="form-control" style={{ width: '100%' }} onChange={this.handleChangeUnit} ref={input => this.unit = input}>
+                                                        {units.map(x => {
+                                                            return <option key={x._id} value={x._id}>{x.name}</option>
+                                                        })}
+                                                    </select>}
+                                            </div>
+                                            {submitted && !newTask.unit &&
+                                                <div className="col-sm-4 help-block">Hãy chọn đơn vị</div>
+                                            }
+                                        </div>
+                                        <div className="form-group  has-feedback">
+                                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
+                                            <div className="col-sm-10" style={{ width: '100%' }}>
+                                                {
+                                                    (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) ?
+                                                        <select className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskTemplate} ref={input => this.tasktemplate = input}>
+                                                            <option value="">--Hãy chọn mẫu công việc--</option>
+                                                            {
+                                                                listTaskTemplate.map(item => {
+                                                                    return <option key={item.resourceId._id} value={item.resourceId._id}>{item.resourceId.name}</option>
+                                                                })
+                                                            }
+                                                        </select> : null
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="form-group  has-feedback">
+                                            <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Công việc cha</label>
+                                            <div className="col-sm-10" style={{ width: '100%' }}>
+                                                <select className="form-control select2" style={{ width: '100%' }} ref={input => this.parent = input} defaultValue={this.props.id !== "" ? this.props.id : null}>
+                                                    <option value="">--Hãy chọn công việc cha--</option>
+                                                    {this.props.currentTasks &&
+                                                        this.props.currentTasks.map(item => {
+                                                            return <option key={item._id} value={item._id}>{item.name}</option>
+                                                        })}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className={'form-group has-feedback' + (submitted && newTask.kpi.length === 0 ? ' has-error' : '')}>
+                                            <label className="col-sm-5 control-label" style={{ width: '20%', textAlign: 'left', marginTop: "-7px" }}>KPI mục tiêu*</label>
+                                            <a style={{ color: "navy" }} href="#abc" onClick={() => this.handleGetTarget()} title="Lấy tất cả mục tiêu KPI cá nhân của người thực hiện" ><i style={{ fontSize: "19px" }} className="material-icons">refresh</i></a>
+                                            <div className="col-sm-10" style={{ width: '100%' }}>
+                                                <select className="form-control select2" multiple="multiple" ref="kpi" data-placeholder="Select a State" style={{ width: '100%' }} >
+                                                    {listKPIPersonal &&
+                                                        listKPIPersonal.map(item => {
+                                                            return <optgroup label={item.creater.name} key={item._id}>
+                                                                {item.listtarget.map(x => {
+                                                                    return <option key={x._id} value={x._id}>{x.name}</option>
+                                                                })}
+                                                            </optgroup>
+                                                        })
+                                                    }
+                                                </select>
+                                            </div>
+                                            {submitted && newTask.kpi.length === 0 &&
+                                                <div className="col-sm-4 help-block">Hãy chọn kpi mục tiêu</div>
+                                            }
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                
                             </form>
                         </div>
                         <div className="modal-footer">

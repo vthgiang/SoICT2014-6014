@@ -39,7 +39,7 @@ class UserEditForm extends Component {
     }
 
     render() { 
-        const { userId, userEmail, userName, userActive, userRoles, translate, role } = this.props;
+        const { userId, userEmail, userName, userActive, userRoles, translate, role, user } = this.props;
         const { status } = this.state;
         return ( 
             <React.Fragment>
@@ -50,7 +50,7 @@ class UserEditForm extends Component {
                     color="yellow"
                 />
                 <ModalDialog
-                    size='50' func={this.save} type="edit"
+                    size='50' func={this.save} type="edit" isLoading={user.isLoading}
                     modalID={`modal-edit-user-${userId}`}
                     formID={`form-edit-user-${userId}`}
                     title={translate('manage_user.edit')}

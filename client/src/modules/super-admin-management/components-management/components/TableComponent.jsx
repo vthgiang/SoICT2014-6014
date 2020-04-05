@@ -5,6 +5,7 @@ import { ComponentActions } from '../redux/actions';
 import ComponentInfoForm from './ComponentInfoForm';
 import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
 import { LinkActions } from '../../../super-admin-management/links-management/redux/actions';
+import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
 
 class TableComponent extends Component {
     constructor(props) {
@@ -24,12 +25,13 @@ class TableComponent extends Component {
     componentDidMount(){
         this.props.getLinks();
         this.props.getComponents();
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit})
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
+        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+        this.props.getRoles();
+        // let script = document.createElement('script');
+        // script.src = 'lib/main/js/CoCauToChuc.js';
+        // script.async = true;
+        // script.defer = true;
+        // document.body.appendChild(script);
     }
 
     render() { 
@@ -128,6 +130,7 @@ const getState = {
     destroy: ComponentActions.destroy,
     getPaginate: ComponentActions.getPaginate,
     getLinks: LinkActions.get,
+    getRoles: RoleActions.get
 }
  
 export default connect(mapState, getState) (withTranslate(TableComponent));

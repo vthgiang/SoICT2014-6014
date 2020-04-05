@@ -12,7 +12,7 @@ const InformationTaskTemplate = require('../../models/informationTaskTemplate.mo
 exports.get = (req, res) => {
     TaskTemplate.find()
         .then(templates => res.status(200).json(templates))
-        .catch(err => res.status(400).json({ msg: err }));
+        .catch(err => res.status(400).json({ message: err }));
     console.log("Get Task Template");
 }
 
@@ -28,7 +28,7 @@ exports.getById = async (req, res) => {
             "informations": informationTemplate
         })
     } catch (error) {
-        res.status(400).json({ msg: error });
+        res.status(400).json({ message: error });
     }
 }
 
@@ -47,8 +47,7 @@ exports.getByRole = async (id) => {
 }
 
 // lấy tất cả mẫu công việc theo id user
-exports.getByUser = async (id, pageNumber, noResultsPerPage, unit) => {
-        console.log(unit);
+exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
         // Lấy tất cả các role người dùng có
         var roles = await UserRole.find({ userId: id }).populate({path: "roleId"});
         var newRoles = roles.map(role => role.roleId);
@@ -63,27 +62,33 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit) => {
             tasktemplates = await Privilege.find({
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
-            }).sort({'createdAt': 'desc'}).skip(noResultsPerPage*(pageNumber-1)).limit(noResultsPerPage).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
-        console.log(tasktemplates);
-        console.log("role:",allRole);
+            }).sort({'createdAt': 'desc'})
+            .skip(noResultsPerPage*(pageNumber-1))
+            .limit(noResultsPerPage)
+            .populate({ 
+                path: 'resourceId', 
+                model: TaskTemplate, 
+                populate: { path: 'creator unit' } 
+            });
         } else {
             tasktemplates = await Privilege.find({
                 roleId: { $in: allRole },
-                resourceType: 'TaskTemplate'})
-                .sort({'createdAt': 'desc'})
-                .skip(noResultsPerPage*(pageNumber-1))
-                .limit(noResultsPerPage)
-                .populate({ 
-                    path: 'resourceId', 
-                    model: TaskTemplate, 
-                    match: { unit: { $in: unit.split(",") }},
-                    populate: { path: 'creator unit' } });
+                resourceType: 'TaskTemplate'
+            }).sort({'createdAt': 'desc'})
+            .skip(noResultsPerPage*(pageNumber-1))
+            .limit(noResultsPerPage)
+            .populate({ 
+                path: 'resourceId', 
+                model: TaskTemplate, 
+                match: { unit: { $in: unit.split(",") }},
+                match: { name: { "$regex": name, "$options": "i" }},
+                populate: { path: 'creator unit' } 
+            });
         }
         
-
         var totalCount = await Privilege.count({
-            roleId: { $in: allRole },
-            resourceType: 'TaskTemplate'
+            role: { $in: allRole },
+            resource_type: 'TaskTemplate'
         });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
 

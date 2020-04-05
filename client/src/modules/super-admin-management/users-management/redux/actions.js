@@ -21,7 +21,7 @@ function get(){
         .then(res => {
             dispatch({
                 type: UserConstants.GET_USERS_SUCCESS,
-                payload: res.data
+                payload: res.data.content
             })
         })
         .catch(err => {
@@ -39,7 +39,7 @@ function getPaginate(data){
             .then(res => {
                 dispatch({
                     type: UserConstants.GET_USERS_PAGINATE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {
@@ -58,9 +58,9 @@ function edit(id, data){
             .then(res => {
                 dispatch({
                     type: UserConstants.EDIT_USER_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
-                resolve(res.data);
+                resolve(res.data.content);
             })
             .catch(err => {
                 console.log("Error: ", err);
@@ -80,9 +80,9 @@ function create(data){
                 .then(res => {
                     dispatch({
                         type: UserConstants.CREATE_USER_SUCCESS,
-                        payload: res.data
+                        payload: res.data.content
                     })
-                    resolve(res.data);
+                    resolve(res.data.content);
                 })
                 .catch(err => {
                     console.log("Error: ", err);
@@ -119,7 +119,7 @@ export const getRoles = () => {
         UserServices.getRoles()
             .then(res => {
                 let roles = [];
-                res.data.forEach(data => {
+                res.data.content.forEach(data => {
                     roles.push({
                         id: data.id_role._id,
                         name: data.id_role.name
@@ -145,7 +145,7 @@ export const getLinkOfRole = () => {
             .then(res => {
                 dispatch({
                     type: UserConstants.GET_LINK_OF_ROLE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 })
             })
             .catch(err => {

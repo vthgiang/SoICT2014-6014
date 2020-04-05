@@ -100,8 +100,8 @@ class CompanyTable extends Component {
                                             <td>{ com.name }</td>
                                             <td>{ com.short_name }</td>
                                             <td>{ com.description }</td>
-                                            <td>{ com.log ? <p><i className="fa fa-circle text-success" /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
-                                            <td>{ com.active ? <p><i className="fa fa-circle text-success" /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
+                                            <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
+                                            <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
                                                 <CompanyEditForm
                                                     companyID={ com._id }

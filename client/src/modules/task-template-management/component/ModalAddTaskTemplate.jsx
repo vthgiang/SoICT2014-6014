@@ -5,6 +5,8 @@ import { UserActions } from '../../super-admin-management/users-management/redux
 import  {taskTemplateActions} from '../redux/actions';
 import Sortable from 'sortablejs';
 
+import './tasktemplate.css';
+
 class ModalAddTaskTemplate extends Component {
     componentDidMount() {
         // get department of current user
@@ -49,7 +51,7 @@ class ModalAddTaskTemplate extends Component {
             information: {
                 name: '',
                 description: '',
-                type: 'Văn bản',
+                type: '',
                 mandatary: true
             },
             submitted: false,
@@ -57,7 +59,8 @@ class ModalAddTaskTemplate extends Component {
             addAction: false,
             editInfo: false,
             addInfo: false,
-            currentRole: localStorage.getItem('currentRole')
+            currentRole: localStorage.getItem('currentRole'),
+            isSelection: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -202,7 +205,13 @@ class ModalAddTaskTemplate extends Component {
         this.nameInfo.value = information.name;
         this.desInfo.value = information.description;
         this.mandataryInfo.checked = information.mandatary;
-        this.typeInfo.value = information.type;
+
+        var type = information.type;
+        if(type !== 'Văn bản' && type !== 'Số' && type !== 'Ngày tháng' && type !== 'Boolean'){
+            this.selectionInfo.value = type;
+            type = 'Selection';
+        }
+        this.typeInfo.value = type;
         this.setState({
             editInfo: true,
             indexInfo: index,
@@ -214,10 +223,16 @@ class ModalAddTaskTemplate extends Component {
     saveEditedInformation = (event) => {
         event.preventDefault();
         const { indexInfo } = this.state;
+
+        var type = this.typeInfo.value;
+        if(type === 'Selection'){
+            type = this.selectionInfo.value;
+        }
+        
         const newInformation = {
             name: this.nameInfo.value,
             description: this.desInfo.value,
-            type: this.typeInfo.value,
+            type: type,
             mandatary: this.mandataryInfo.checked
         };
         let { listInfo } = this.state.newTemplate;
@@ -262,17 +277,23 @@ class ModalAddTaskTemplate extends Component {
         event.preventDefault();
         const name = this.nameInfo.value;
         const description = this.desInfo.value;
+
+        var type = this.typeInfo.value;
+        if(type === 'Selection'){
+            type = this.selectionInfo.value;
+        }
+
         this.setState({
             information: {
                 name: name,
                 description: description,
-                type: this.typeInfo.value,
+                type: type,
                 mandatary: this.mandataryInfo.checked
             },
             addInfo: true
         })
         let { newTemplate } = this.state;
-        if (name && description) {
+        if (name && description && type) {
             this.setState(state => {
                 const listInfo = [...(newTemplate.listInfo), state.information];
                 return {
@@ -287,25 +308,31 @@ class ModalAddTaskTemplate extends Component {
     }
 
     // function: reset all data fields of action table
-    handleCancelAction = () => {
+    handleCancelAction = (event) => {
+        event.preventDefault();
         this.nameAction.value = "";
         this.desAction.value = "";
         this.mandataryAction.checked = true;
     }
 
     // function: reset all data fields of information table
-    handleCancelInformation = () => {
+    handleCancelInformation = (event) => {
+        event.preventDefault();
         this.nameInfo.value = "";
         this.desInfo.value = "";
         this.mandataryInfo.checked = true;
         this.typeInfo.value = "Văn bản";
+
+        this.setState({
+            isSelection: false
+        })
     }
 
     // function: reset all data fields
     handleCancel = (event) => {
         event.preventDefault();
-        this.handleCancelInformation();
-        this.handleCancelAction();
+        this.handleCancelInformation(event);
+        this.handleCancelAction(event);
         this.setState(state => {
             return {
                 ...state,
@@ -405,6 +432,25 @@ class ModalAddTaskTemplate extends Component {
         }
         
     }
+
+    //function: show selection input
+    showSelection = () => { 
+        if(this.typeInfo.value === 'Selection'){
+            this.setState(state => {
+                return {
+                    isSelection: true
+                }
+            });
+        }
+        else{
+            this.setState(state => {
+                return {
+                    isSelection: false
+                }
+            });
+        }
+    }
+
     render() {
         var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments;
         const { newTemplate, submitted, action, information, addAction, addInfo } = this.state;
@@ -629,7 +675,7 @@ class ModalAddTaskTemplate extends Component {
                                                         <input type="text" className="form-control" placeholder="Tên thông tin" defaultValue={information.name} ref={input => this.nameInfo = input} />
                                                     </div>
                                                     {addInfo && !information.name &&
-                                                        <div className=" col-sm-4 help-block">Hãy điền tên thông tn</div>
+                                                        <div className=" col-sm-4 help-block">Hãy điền tên thông tin</div>
                                                     }
                                                 </div>
                                                 <div className={'form-group has-feedback' + (addInfo && !information.description ? ' has-error' : '')}>
@@ -644,14 +690,29 @@ class ModalAddTaskTemplate extends Component {
                                                 <div className="form-group">
                                                     <label className="col-sm-4 control-label">Kiểu dữ liệu:</label>
                                                     <div className="col-sm-10" style={{ width: '100%' }}>
-                                                        <select className="form-control" id="seltype" defaultValue={information.type} name="type" ref={select => this.typeInfo = select} >
+                                                        <select onClick={() => this.showSelection()} className="form-control" id="seltype" defaultValue='Văn bản' name="type" ref={input => this.typeInfo = input} >
                                                             <option value="Văn bản">Văn bản</option>
                                                             <option value="Số">Số</option>
                                                             <option value="Ngày tháng">Ngày tháng</option>
                                                             <option value="Boolean">Boolean</option>
+                                                            <option value="Selection">Selection</option>
                                                         </select>
                                                     </div>
                                                 </div>
+
+                                                {   this.state.isSelection ?
+                                                    <div className={'form-group has-feedback' + (addInfo && !information.type ? ' has-error' : '')}>
+                                                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{`Nhập các giá trị cho ${this.nameInfo.value}:`}</label>
+                                                        <div className="col-sm-10" style={{ width: '100%' }}>
+                                                            <input type="text" className="form-control" placeholder={`Các giá trị cho ${this.nameInfo.value}`} ref={input => this.selectionInfo = input} />
+                                                        </div>
+                                                        {addInfo && !information.type &&
+                                                            <div className=" col-sm-4 help-block">{`Hãy điền các giá trị cho ${this.nameInfo.value}`}</div>
+                                                        }
+                                                    </div>
+                                                    : null
+                                                }
+
                                                 <div className="form-group">
                                                     <label className="col-sm-2 control-label">
                                                         Chỉ quản lý được điền? &nbsp;
