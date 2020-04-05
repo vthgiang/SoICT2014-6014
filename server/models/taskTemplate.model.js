@@ -19,6 +19,11 @@ const TaskTemplateSchema = new Schema({
         ref: User,
         required: true
     },
+    read: [{
+        type: Schema.Types.ObjectId,
+        ref: User,
+        required: true
+    }],
     responsible: [{
         type: Schema.Types.ObjectId,
         ref: User

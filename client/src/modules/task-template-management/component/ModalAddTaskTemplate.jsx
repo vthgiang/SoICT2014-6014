@@ -33,7 +33,7 @@ class ModalAddTaskTemplate extends Component {
             newTemplate: {
                 unit: '',
                 name: '',
-                read: '',
+                read: [],
                 responsible: [],
                 accounatable: [],
                 informed: [],
@@ -386,6 +386,8 @@ class ModalAddTaskTemplate extends Component {
             return map;
         })
         // get data in multi select
+        let selectRead = this.refs.read;
+        let read = [].filter.call(selectRead.options, o => o.selected).map(o => o.value);
         let selectResponsible = this.refs.responsible;
         let responsible = [].filter.call(selectResponsible.options, o => o.selected).map(o => o.value);
         let selectAccounatable = this.refs.accounatable;
@@ -403,7 +405,8 @@ class ModalAddTaskTemplate extends Component {
                     listAction: newListActions,
                     listInfo: newListInfos,
                     name: this.name.value,
-                    read: this.refs.read.value,
+                    // read: this.refs.read.value,
+                    read: read,
                     responsible: responsible,
                     accounatable: accounatable,
                     consulted: consulted,
@@ -487,9 +490,9 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTemplate.unit==="" ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {units &&
-                                                    <select defaultValue={currentUnit[0]._id} className="form-control select2" ref="unit" data-placeholder="Chọn đơn vị quản lý mẫu" style={{ width: '100%' }}>
-                                                        {units.map(x => {
+                                                {currentUnit &&
+                                                    <select defaultValue={currentUnit && currentUnit[0].dean} className="form-control select2" ref="unit" data-placeholder="Chọn đơn vị quản lý mẫu" style={{ width: '100%' }}>
+                                                        {currentUnit.map(x => {
                                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                                         })}
                                                     </select>}
@@ -511,8 +514,8 @@ class ModalAddTaskTemplate extends Component {
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
                                                 {listRole &&
-                                                    <select defaultValue={listRole.dean._id} className="form-control select2" ref="read" data-placeholder="Chọn vai trò được phép xem mẫu" style={{ width: '100%' }}>
-                                                        <option value={listRole.dean._id}>{listRole.dean.name}</option>
+                                                    <select  className="form-control select2" multiple="multiple" ref="read" data-placeholder="Chọn vai trò được phép xem mẫu" style={{ width: '100%' }}>
+                                                        <option value={listRole.dean._id} selected>{listRole.dean.name}</option>
                                                         <option value={listRole.vice_dean._id}>{listRole.vice_dean.name}</option>
                                                         <option value={listRole.employee._id}>{listRole.employee.name}</option>
                                                     </select>}
