@@ -53,9 +53,11 @@ class Content extends Component {
             var resizingIndex = -1;
             var startX = undefined;
 
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
+            window.$("table thead tr th:not(:last-child)").on("touchstart mousedown", function (e) {
                 pressed = true;
-                startX = e.pageX;
+                
+                // Touch or mouse
+                startX = (e.changedTouches === undefined)? e.pageX: e.changedTouches[0].pageX;
 
                 let currentTH = window.$(this);
                 window.$(currentTH).addClass("resizing");
@@ -75,14 +77,15 @@ class Content extends Component {
                 }
             });
 
-            window.$(document).mousemove(function (e) {
+            window.$("table thead tr th:not(:last-child)").on("touchmove mousemove", function (e) {
                 if (pressed) {
                     let MINIMUM_WIDTH = 40;
 
                     /* Kích thước cột hiện tại được mượn/cho từ kích thước cột kế tiếp
                      * Điều kiện là cột hiện tại và cột kế tiếp luôn có kích thước tối thiểu nào đó
                      */
-                    let additionalWidth = e.pageX - startX;
+                    let additionalWidth = ((e.changedTouches === undefined)? e.pageX: e.changedTouches[0].pageX )- startX;
+
                     if (additionalWidth > originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH) {
                         additionalWidth = originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH;
                     }
@@ -102,6 +105,13 @@ class Content extends Component {
                 }
             });
 
+            window.$("table thead tr th:not(:last-child)").on("mouseup touchend", function () {
+                if (pressed) {
+                    window.$(tableHeadings[resizingIndex]).removeClass("resizing");
+                    pressed = false;
+                }
+            });
+
             window.addEventListener("resize", function(){
                 // Xóa thuộc tính width (nếu đã) thiết lập, để khi resize window, kích thước các cột tự cập nhật lại theo default, tránh bị lỗi
                 for (let i = 0; i<tableHeadings.length; ++i){
@@ -109,12 +119,6 @@ class Content extends Component {
                 }
             });
 
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(tableHeadings[resizingIndex]).removeClass("resizing");
-                    pressed = false;
-                }
-            });
         });
     }
 

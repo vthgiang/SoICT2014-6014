@@ -1,15 +1,14 @@
 /*
 Chuẩn tắc css cho các form control:
-1. Tính từ thẻ gốc id là qlcv
-2. Tiép đến là thẻ form-inline, thẻ form-group. Sau đó ặt các control trong div form-group.
-3. label có class là form-control-static
-4. control có class là form-control
+1. Tính từ thẻ gốc class là qlcv
+2. Tiép đến là thẻ form-inline, thẻ form-group. Sau đó đặt các control trong div form-group (Cũng có thể đặt trực tiếp trong form-inline)
+3. control có class là form-control
 Ví dụ:
 <div className="box">
-    <div className="box-body" id="qlcv">
+    <div className="box-body qlcv">
         <div className="form-inline">
             <div className = "form-group">
-                <label className = "form-control-static">Abc def</label>
+                <label>Abc def</label>
                 <input className="form-control" type="text"/>
             </div>
         </div>
@@ -17,29 +16,38 @@ Ví dụ:
 </div>
 */
 
-@media (min-width: 768px){
-    div#qlcv > div.selectmulti > div.btn-group, div.selectmulti > div.btn-group > button {
-        width: 200px;
-        margin-right: 10px;
-    }
-    div#qlcv > .form-inline .form-group{
-        margin-bottom: 10px;
-    }
-    div#qlcv > .form-inline .form-control {
-        width: 200px;
-        margin-right: 10px;
-    }
-    div#qlcv > .form-inline > label, div#qlcv .form-inline > .form-group> label{
-        width: 100px;
-        margin-right: 10px;
-        text-align: right;
-    }
-    div#qlcv > .form-inline .checkbox input[type=checkbox]{
-        margin-left: -20px;
-    }
+div.qlcv div.selectmulti,
+div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
+div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
+div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
+    margin: 5px 0 5px 0;
+}
+div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> label:empty{
+    display: none;
 }
 
 
+@media (min-width: 768px){
+    div.qlcv div.selectmulti,
+    div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
+    div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
+        margin: 5px;
+    }
+    div.selectmulti {
+        width: 200px;
+    }
+    div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control {
+        width: 200px;
+    }
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
+        width: 100px;
+        text-align: right;
+    }
+    div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> label:empty{
+        display: inline-block;
+    }
+}
 
 
 /*

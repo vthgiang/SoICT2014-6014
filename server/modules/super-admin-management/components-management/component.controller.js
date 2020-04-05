@@ -17,7 +17,7 @@ exports.get = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_components_faile'
+            message: error
         });
     }
 };
@@ -40,7 +40,7 @@ exports.getPaginate = async (req, res) => {
         await LogError(req.user.email, 'PAGINATE_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'paginate_components_faile'
+            message: error
         });
     }
 };
@@ -64,7 +64,7 @@ exports.create = async (req, res) => {
         await LogError(req.user.email, 'CREATE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_component_faile'
+            message: error
         });
     }
 };
@@ -84,7 +84,7 @@ exports.show = async (req, res) => {
         await LogError(req.user.email, 'SHOW_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_component_faile'
+            message: error
         });
     }
 };
@@ -105,7 +105,7 @@ exports.edit = async (req, res) => {
         await LogError(req.user.email, 'EDIT_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_component_faile'
+            message: error
         });
     }
 };
@@ -125,7 +125,7 @@ exports.delete = async (req, res) => {
         await LogError(req.user.email, 'DELETE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_component_faile'
+            message: error
         });
     }
 };
@@ -146,7 +146,7 @@ exports.getComponentsOfUserInLink = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENTS_OF_USER_IN_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_components_of_user_in_link_faile'
+            message: error
         });
     }
 };

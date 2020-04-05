@@ -18,22 +18,24 @@ const initState = {
     item: null
 }
 
-// var findIndex = (array, id) => {
-//     var result = -1;
-//     array.forEach((value, index) => {
-//         if(value._id === id){
-//             result = index;
-//         }
-//     });
-//     return result;
-// }
+var findIndex = (array, id) => {
+    var result = -1;
+    array.forEach((value, index) => {
+        if(value._id === id){
+            result = index;
+        }
+    });
+    return result;
+}
 
 export function notifications(state = initState, action) {
-    // var index = -1;
+    var index = -1;
     switch (action.type) {
         case NotificationConstants.GET_NOTIFICATIONS_REQUEST:
         case NotificationConstants.CREATE_NOTIFICATION_REQUEST:
         case NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_REQUEST:
+        case NotificationConstants.DELETE_NOTIFICATION_SENT_REQUEST:
+        case NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_REQUEST:
         case NotificationConstants.GET_NOTIFICATIONS_SENT_REQUEST:
             return {
                 ...state,
@@ -71,8 +73,21 @@ export function notifications(state = initState, action) {
                 isLoading: false
             };
 
-        case 'LOGOUT':
-            return initState;
+        case NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_SUCCESS:
+            index = findIndex(state.listReceivered, action.payload);
+            if(index !== -1) state.listReceivered.splice(index, 1);
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case NotificationConstants.DELETE_NOTIFICATION_SENT_SUCCESS:
+            index = findIndex(state.listSent, action.payload);
+            if(index !== -1) state.listSent.splice(index, 1);
+            return {
+                ...state,
+                isLoading: false
+            };
 
         default:
             return state;

@@ -82,7 +82,8 @@ function edit(data){
 function destroy(departmentId){
     return dispatch => {
         dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_REQUEST});
-        DepartmentServices.destroy(departmentId)
+        return new Promise((resolve, reject) => {
+            DepartmentServices.destroy(departmentId)
             .then(res => {
                 dispatch({
                     type: DepartmentConstants.DELETE_DEPARTMENT_SUCCESS,
@@ -90,13 +91,16 @@ function destroy(departmentId){
                         data: res.data.content,
                         id: departmentId
                     }
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 console.log("Error: ", err);
                 dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
+                reject(err);
             })
+        });
     }
 }
 

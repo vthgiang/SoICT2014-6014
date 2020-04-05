@@ -93,11 +93,7 @@ class ManageLink extends Component {
                                                     linkDefaultRoles={link.roles.map(role => role._id)}
                                                 />
                                                 <DeleteNotification 
-                                                    content={{
-                                                        title: translate('manage_link.delete'),
-                                                        btnNo: translate('confirm.no'),
-                                                        btnYes: translate('confirm.yes'),
-                                                    }}
+                                                    content={translate('manage_link.delete')}
                                                     data={{
                                                         id: link._id,
                                                         info: link.url
