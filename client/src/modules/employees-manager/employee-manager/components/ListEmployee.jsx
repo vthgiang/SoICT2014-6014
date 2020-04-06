@@ -222,7 +222,7 @@ class ListEmployee extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><th colSpan={7 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
+                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><th colSpan={8 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.map(y => y.employeeNumber)}</td>

@@ -46,7 +46,7 @@ class ActionColumn extends Component {
         window.$("th").show();
         for (var j = 0, len = hideColumn.length; j < len; j++) {
             window.$(`#${this.props.tableId} td:nth-child(` + hideColumn[j] + `)`).hide();
-            window.$(`#${this.props.tableId} th:nth-child(` + hideColumn[j] + `)`).hide();
+            window.$(`#${this.props.tableId} thead th:nth-child(` + hideColumn[j] + `)`).hide();
         }
 
         await window.$(`#setting-${this.props.tableId}`).collapse("hide");
