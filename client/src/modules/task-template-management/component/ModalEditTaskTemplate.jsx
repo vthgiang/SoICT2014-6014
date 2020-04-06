@@ -14,7 +14,6 @@ class ModalEditTaskTemplate extends Component {
         this.props.getTaskTemplate(this.props.id);
     }
     
-    
     handleCloseModal = (id) => {
         var element = document.getElementsByTagName("BODY")[0];
         element.classList.remove("modal-open");

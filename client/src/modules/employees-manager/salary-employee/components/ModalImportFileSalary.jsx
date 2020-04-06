@@ -78,7 +78,6 @@ class ModalImportFileSalary extends Component {
         if (arraySalary !== [] && arrayMSNV !== []) {
             arrayCheck = arraySalary.concat(arrayMSNV);
         }
-        console.log(arrayCheck);
         return (
             <div className="modal modal-full fade" id="modal-importFileSalary" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">

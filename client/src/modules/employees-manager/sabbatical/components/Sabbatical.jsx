@@ -22,6 +22,7 @@ class Sabbatical extends Component {
             status: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
@@ -35,6 +36,18 @@ class Sabbatical extends Component {
         script1.async = true;
         script1.defer = true;
         document.body.appendChild(script1);
+    }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#sabbatical-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
 
     displayTreeSelect = (data, i) => {
@@ -64,10 +77,12 @@ class Sabbatical extends Component {
     notifyerror = (message) => toast.error(message);
     notifywarning = (message) => toast.warning(message);
 
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getListSabbatical(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
@@ -158,10 +173,10 @@ class Sabbatical extends Component {
                             </select>
                         </div>
                     </div>
-                    <div className="form-inline" style={{marginBottom:10}}>
+                    <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}:</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')}  autoComplete="off" />
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <DatePicker
@@ -170,8 +185,10 @@ class Sabbatical extends Component {
                                 defaultValue={this.formatDate(Date.now())}
                                 ref="month"
                             />
-                            
+
                         </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}:</label>
                             <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
@@ -180,6 +197,9 @@ class Sabbatical extends Component {
                                 <option value="Chờ phê duyệt">Chờ phê duyệt</option>
                                 <option value="Không chấp nhận">Không chấp nhận</option>
                             </select>
+                        </div>
+                        <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
@@ -216,7 +236,7 @@ class Sabbatical extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><td colSpan={9}><center>{translate('table.no_data')}</center></td></tr> :
+                            {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><th colSpan={9-this.state.hideColumn.length}><center>{translate('table.no_data')}</center></th></tr> :
                                 listSabbatical.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>

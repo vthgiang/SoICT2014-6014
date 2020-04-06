@@ -23,6 +23,7 @@ class ListEmployee extends Component {
             status: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
 
         }
         this.handleChange = this.handleChange.bind(this);
@@ -42,6 +43,19 @@ class ListEmployee extends Component {
         script1.defer = true;
         document.body.appendChild(script1);
 
+    }
+
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#employee-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
 
     displayTreeSelect = (data, i) => {
@@ -65,10 +79,12 @@ class ListEmployee extends Component {
         }
         else return null
     }
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getAllEmployee(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
 
     setPage = async (pageNumber) => {
@@ -146,7 +162,7 @@ class ListEmployee extends Component {
                             </select>
                         </div>
                     </div>
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                    <div className="form-inline">
                         <div className="form-group">
                             <label htmlFor="employeeNumber" className="form-control-static">{translate('page.staff_number')}:</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
@@ -160,6 +176,8 @@ class ListEmployee extends Component {
                             </select>
 
                         </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}:</label>
                             <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
@@ -167,6 +185,10 @@ class ListEmployee extends Component {
                                 <option value="active">Đang làm việc</option>
                                 <option value="leave">Đã nghỉ làm</option>
                             </select>
+
+                        </div>
+                        <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
                         </div>
                     </div>
@@ -200,7 +222,7 @@ class ListEmployee extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><th colSpan={7 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.map(y => y.employeeNumber)}</td>
@@ -217,7 +239,7 @@ class ListEmployee extends Component {
                                                 {role.roleId.name}<br />
                                             </React.Fragment>
                                         )) : null}</td>
-                                         <td>{x.employee.map(y => y.status)}</td>
+                                        <td>{x.employee.map(y => y.status)}</td>
                                         < td >
                                             <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
                                                 sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />

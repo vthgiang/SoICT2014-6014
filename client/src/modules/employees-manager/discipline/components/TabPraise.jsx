@@ -17,6 +17,7 @@ class TabPraise extends Component {
             department: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
@@ -34,6 +35,18 @@ class TabPraise extends Component {
         script1.async = true;
         script1.defer = true;
         document.body.appendChild(script1);
+    }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#praise-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
 
     displayTreeSelect = (data, i) => {
@@ -57,8 +70,11 @@ class TabPraise extends Component {
         }
         else return null
     }
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getListPraise(this.state);
     }
     setPage = async (pageNumber) => {
@@ -130,7 +146,7 @@ class TabPraise extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}:</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')}  autoComplete="off" />
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label htmlFor="number" className="form-control-static">{translate('page.number_decisions')}:</label>
@@ -166,7 +182,7 @@ class TabPraise extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                            {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><th colSpan={7-this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
                                 listPraise.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>

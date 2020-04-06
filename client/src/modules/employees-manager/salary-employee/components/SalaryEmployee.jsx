@@ -22,6 +22,7 @@ class SalaryEmployee extends Component {
             department: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
         }
         this.handleChange = this.handleChange.bind(this);
     }
@@ -34,6 +35,19 @@ class SalaryEmployee extends Component {
         script1.defer = true;
         document.body.appendChild(script1);
     }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#salary-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
+    }
+
     displayTreeSelect = (data, i) => {
         i = i + 1;
         if (data !== undefined) {
@@ -61,10 +75,12 @@ class SalaryEmployee extends Component {
     notifyerror = (message) => toast.error(message);
     notifywarning = (message) => toast.warning(message);
 
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getListSalary(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * (this.state.limit);
@@ -177,7 +193,7 @@ class SalaryEmployee extends Component {
                         </div>
                     </div>
 
-                    <table className="table table-hover table-bordered">
+                    <table id="salary-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('table.employee_number')}</th>
@@ -186,9 +202,9 @@ class SalaryEmployee extends Component {
                                 <th>{translate('table.total_salary')}</th>
                                 <th>{translate('table.unit')}</th>
                                 <th>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        tableId="discipline-table"
+                                        tableId="salary-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),
@@ -205,7 +221,7 @@ class SalaryEmployee extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('table.no_data')}</center></td></tr> :
+                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><th colSpan={7 - this.state.hideColumn.length}><center> {translate('table.no_data')}</center></th></tr> :
                                 listSalary.map((x, index) => {
 
                                     let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);

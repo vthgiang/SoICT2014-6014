@@ -32,14 +32,14 @@ div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> labe
     div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
     div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
-    div.qlcv > .form-inline .input-group {
+    div.qlcv > .form-inline .input-group, div.qlcv .form-group >.form-control {
         margin: 5px;
     }
     div.selectmulti {
         width: 200px;
     }
     div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
-    div.qlcv > .form-inline .input-group {
+    div.qlcv > .form-inline .input-group, div.qlcv .form-group >.form-control {
         width: 200px;
     }
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
@@ -67,6 +67,9 @@ table thead tr th:not(:last-child) { /* Hiện con trỏ khi trỏ vào header b
 td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
     word-wrap: break-word;
     white-space: normal;
+}
+table tbody tr th { /* Hiện thông báo không có dữ liệu */
+    font-weight: normal;
 }
 
 

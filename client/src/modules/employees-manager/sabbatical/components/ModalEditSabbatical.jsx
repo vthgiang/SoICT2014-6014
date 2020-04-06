@@ -59,7 +59,6 @@ class ModalEditSabbatical extends Component {
     render() {
         const { translate } = this.props;
         var data = this.state;
-        console.log(data)
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-editSabbatical-${data.id}`} title={translate('sabbatical.infor_sabbatical')} className="edit" data-toggle="modal"><i className="material-icons"></i></a>
