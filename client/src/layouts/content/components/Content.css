@@ -22,9 +22,6 @@ div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.
 div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
     margin: 5px 0 5px 0;
 }
-div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> label:empty{
-    display: none;
-}
 
 
 @media (min-width: 768px){
@@ -45,9 +42,6 @@ div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> labe
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
         width: 100px;
         text-align: right;
-    }
-    div.qlcv > .form-inline > label:empty, div.qlcv .form-inline > .form-group> label:empty{
-        display: inline-block;
     }
 }
 
