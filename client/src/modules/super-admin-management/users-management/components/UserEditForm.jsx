@@ -33,11 +33,13 @@ class UserEditForm extends Component {
     }
 
     save = () => {
-        return this.props.edit(this.props.userId, {
-            name: this.refs.name.value,
-            active: this.refs.active.value,
-            roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
-        });
+        if (this.validateForm()) {
+            return this.props.edit(this.props.userId, {
+                name: this.refs.name.value,
+                active: this.refs.active.value,
+                roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
+            });
+        }
     }
 
 
