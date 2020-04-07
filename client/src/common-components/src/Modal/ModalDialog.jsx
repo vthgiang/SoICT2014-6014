@@ -24,8 +24,15 @@ class ModalDialog extends Component {
     }
 
     save = (translate) => {
+        const validateFunc = this.props.validateFunc; // Hàm validate data trong form
+        if (validateFunc === undefined || !validateFunc()) {
+            return; // Nếu data không hợp lệ, không thực hiện save dữ liệu
+        }
+
         const func = this.props.func();
         const {resetOnSave = false} = this.props;
+        
+
         if(func !== undefined){
             func.then(res => {
                 this.closeModal(resetOnSave);
@@ -53,7 +60,7 @@ class ModalDialog extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {resetOnClose = false} = this.props;
+        const {resetOnClose = false, disableSubmit = false} = this.props;
 
         return ( 
             <React.Fragment>
@@ -73,7 +80,7 @@ class ModalDialog extends Component {
                                         <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
                                     </div>
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <button type="submit" className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
                                         <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>
                                 </div>
