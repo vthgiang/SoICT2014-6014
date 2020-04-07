@@ -25,7 +25,7 @@ class ModalDialog extends Component {
 
     save = (translate) => {
         const validateFunc = this.props.validateFunc; // Hàm validate data trong form
-        if (validateFunc === undefined || !validateFunc()) {
+        if (validateFunc !== undefined && !validateFunc()) {
             return; // Nếu data không hợp lệ, không thực hiện save dữ liệu
         }
 
