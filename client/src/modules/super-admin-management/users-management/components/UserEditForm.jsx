@@ -3,6 +3,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { ModalDialog, ErrorLabel } from '../../../../common-components';
+import { UserFormValidator} from './UserFormValidator';
 
 class UserEditForm extends Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class UserEditForm extends Component {
     }
 
     save = () => {
-        if (this.validateForm()) {
+        if (this.isFormValidated()) {
             return this.props.edit(this.props.userId, {
                 name: this.refs.name.value,
                 active: this.refs.active.value,
@@ -42,32 +43,28 @@ class UserEditForm extends Component {
         }
     }
 
-
-    validateForm = () => {
-        // Kết hợp với kết quả validate các trường khác (nếu có trong form)
-        let result = this.state.errorOnUserName === undefined;
+    isFormValidated = () => {
+        let result = 
+            this.validateUserName(this.state.userName, false); // Kết hợp với kết quả validate các trường khác (nếu có trong form)
         return result;
     }
 
     handleUserNameChange = (e) => {
         let value = e.target.value;
-        let msg = undefined;
-
-        if (value.trim() === ""){
-            msg = "Tên không được để trống";
-        } else if(value.length < 4){
-            msg = "Tên không ít hơn 4 ký tự";
-        } else if(value.length > 50){
-            msg = "Tên không nhiều hơn 50 ký tự";
+        this.validateUserName(value, true);
+    }
+    validateUserName = (value, willUpdateState=true) => {
+        let msg = UserFormValidator.validateName(value);
+        if (willUpdateState){
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnUserName: msg,
+                    userName: value,
+                }
+            });
         }
-
-        this.setState(state => {
-            return {
-                ...state,
-                errorOnUserName: msg,
-                userName: value,
-            }
-        });
+        return msg === undefined;
     }
 
     handleRolesChange = (e) => {
@@ -104,7 +101,7 @@ class UserEditForm extends Component {
                 userName: nextProps.userName,
                 userActive: nextProps.userActive,
                 userRoles: nextProps.userRoles,
-                errorOnUserName: undefined, // Cần lưu ý reset lại các gợi ý nhắc lỗi
+                errorOnUserName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
             } 
         } else {
             return null;
@@ -113,7 +110,7 @@ class UserEditForm extends Component {
 
     render() { 
         const { translate, role, user } = this.props;
-        const { userId, userEmail, userName, userActive, userRoles, status } = this.state;
+        const { userId, userEmail, userName, userActive, userRoles, status, errorOnUserName } = this.state;
         return ( 
             <React.Fragment>
                 <ModalDialog
@@ -123,7 +120,7 @@ class UserEditForm extends Component {
                     title={translate('manage_user.edit')}
                     msg_success={translate('manage_user.edit_success')}
                     msg_faile={translate('manage_user.edit_faile')}
-                    disableSubmit={!this.validateForm()}
+                    disableSubmit={!this.isFormValidated()}
                 >
                     <form id={`form-edit-user`}>
                         <div className="row">
@@ -146,10 +143,10 @@ class UserEditForm extends Component {
                                 </select>
                             </div>
                         </div>
-                        <div className={`form-group ${this.state.errorOnUserName===undefined?"":"has-error"}`}>
+                        <div className={`form-group ${errorOnUserName===undefined?"":"has-error"}`}>
                             <label>{ translate('table.name') }<span className="text-red">*</span></label>
                             <input type="text" className="form-control" ref="name" value={ userName } onChange = {this.handleUserNameChange}/>
-                            <ErrorLabel content={this.state.errorOnUserName}/>
+                            <ErrorLabel content={errorOnUserName}/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_user.roles') }</label>
