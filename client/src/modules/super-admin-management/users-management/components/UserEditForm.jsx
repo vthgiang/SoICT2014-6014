@@ -50,7 +50,7 @@ class UserEditForm extends Component {
                     color="yellow"
                 />
                 <ModalDialog
-                    size='50' func={this.save} type="edit" isLoading={user.isLoading}
+                    size='50' func={this.save} isLoading={user.isLoading}
                     modalID={`modal-edit-user-${userId}`}
                     formID={`form-edit-user-${userId}`}
                     title={translate('manage_user.edit')}

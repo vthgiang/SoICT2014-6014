@@ -31,7 +31,7 @@ class LinkInfoForm extends Component {
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-link-default-${linkDefaultId}`} button_type="edit" title={translate('manage_link.edit')}/>
                 <ModalDialog
-                    size='50' func={this.save} type="edit"
+                    size='50' func={this.save}
                     modalID={`modal-edit-link-default-${linkDefaultId}`}
                     formID={`form-edit-link-default-${linkDefaultId}`}
                     title={translate('manage_link.edit')}

@@ -46,7 +46,7 @@ class LinkInfoForm extends Component {
                 <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_link.edit')}/>
                 <ModalDialog
                     isLoading={link.isLoading}
-                    size='50' func={this.save} type="edit"
+                    size='50' func={this.save}
                     modalID={`modal-edit-page-${linkId}`}
                     formID={`form-edit-page-${linkId}`}
                     title={translate('manage_link.edit')}
