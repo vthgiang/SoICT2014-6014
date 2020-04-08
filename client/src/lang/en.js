@@ -143,12 +143,10 @@ export default {
             training_plan: 'Manage Training Courses',
 
             manage_kpi: 'Manage KPI',
-            kpi_unit: 'Unit KPI',
             kpi_unit_create: 'Create unit KPI',
             kpi_unit_evaluate: 'Evaluate unit KPI',
             kpi_unit_overview: 'Overview unit KPI',
             kpi_member: "Manage Employees' KPI",
-            kpi_personal: 'Personal KPI',
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',
             kpi_personal_overview: 'Overview personal KPI',
