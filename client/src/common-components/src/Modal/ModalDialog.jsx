@@ -15,7 +15,7 @@ class ModalDialog extends Component {
         }
     }
 
-    closeModal = (reset = true) => {
+    closeModal = (reset) => {
         this.setState({
             reload: this.state.reload + 1
         });
@@ -25,10 +25,12 @@ class ModalDialog extends Component {
 
     save = (translate) => {
         const func = this.props.func();
+        const {resetOnSave = false} = this.props;
+        
+
         if(func !== undefined){
             func.then(res => {
-                if(this.props.type === 'edit') this.closeModal(false);
-                else this.closeModal();
+                this.closeModal(resetOnSave);
                 toast.success(this.props.msg_success, {containerId: 'toast-notification'});
             }).catch(err => {
                 document.getElementById(this.props.formID).reset();
@@ -53,13 +55,15 @@ class ModalDialog extends Component {
 
     render() { 
         const {translate} = this.props;
+        const {resetOnClose = false, disableSubmit = false} = this.props;
+
         return ( 
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div  className={`modal-dialog  modal-size-${this.props.size}`}>
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" onClick={this.closeModal}>&times;</button>
+                                <button type="button" className="close" onClick={()=>this.closeModal(resetOnClose)}>&times;</button>
                                 <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
                             <div className="modal-body text-left">
@@ -71,8 +75,8 @@ class ModalDialog extends Component {
                                         <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
                                     </div>
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <button type="submit" className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
-                                        <button type="button" className="btn btn-default" onClick={this.closeModal}>{translate('form.close')}</button>
+                                        <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>
                                 </div>
                             </div>

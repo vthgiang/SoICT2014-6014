@@ -10,3 +10,5 @@ export * from './src/TreeTable/TreeTable';
 export * from './src/SelectMulti/SelectMulti';
 export * from './src/SlimScroll/SlimScroll';
 export * from './src/NonPassiveEventListenerWarningFix/NonPassiveEventListenerWarningFix';
+export * from './src/ErrorLabel/ErrorLabel';
+export * from './src/SelectBox/SelectBox';

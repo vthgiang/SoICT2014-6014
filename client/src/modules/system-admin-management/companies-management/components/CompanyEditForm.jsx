@@ -41,7 +41,7 @@ class CompanyEditForm extends Component {
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-company-${companyID}`} button_type="edit" button_name={translate('manage_company.add')} title={translate('manage_company.edit')}/>
                 <ModalDialog
-                    modalID={`modal-edit-company-${companyID}`} type="edit" size="100"
+                    modalID={`modal-edit-company-${companyID}`} size="100"
                     formID={`form-edit-company-${companyID}`} isLoading={this.props.company.isLoading}
                     title={translate('manage_company.edit')}
                     msg_success={translate('manage_company.add_success')}
