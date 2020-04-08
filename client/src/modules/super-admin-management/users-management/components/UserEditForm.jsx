@@ -157,6 +157,7 @@ class UserEditForm extends Component {
                                 }
                                 onChange={this.handleRolesChange}
                                 value={userRoles}
+                                multiple={true}
                             />
                         </div>
                     </form>

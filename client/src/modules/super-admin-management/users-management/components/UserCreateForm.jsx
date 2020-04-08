@@ -123,6 +123,7 @@ class UserCreateForm extends Component {
                                     style={{width: "100%"}}
                                     items = {items}
                                     onChange={this.handleRolesChange}
+                                    multiple={true}
                                 />
                             }
                         </div>
