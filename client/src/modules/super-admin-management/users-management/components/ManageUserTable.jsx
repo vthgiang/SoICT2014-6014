@@ -67,8 +67,8 @@ class ManageUserTable extends Component {
                             <th>{translate('manage_user.roles')}</th>
                             <th>{translate('manage_user.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
+                                {translate('table.action')}
                                 <ActionColumn
-                                    columnName={translate('table.action')} 
                                     columnArr={[
                                         translate('manage_user.name'),
                                         translate('manage_user.email'),
@@ -168,7 +168,6 @@ class ManageUserTable extends Component {
             page: 1
         };
         data[this.state.option] = this.state.value;
-        console.log(data);
         await this.props.getPaginate(data);
     }
 

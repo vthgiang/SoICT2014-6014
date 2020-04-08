@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { RoleActions } from '../../roles-management/redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ModalButton, ErrorLabel } from '../../../../common-components';
+import { ModalDialog, ModalButton, ErrorLabel, SelectBox } from '../../../../common-components';
 import { UserFormValidator} from './UserFormValidator';
 
 class UserCreateForm extends Component {
@@ -12,6 +12,7 @@ class UserCreateForm extends Component {
         this.state = {
             userName: "",
             userEmail: "",
+            userRoles:[]
         }
         this.save = this.save.bind(this);
     }
@@ -21,7 +22,7 @@ class UserCreateForm extends Component {
             return this.props.create({
                 name: this.state.userName,
                 email: this.state.userEmail,
-                roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
+                roles: this.state.userRoles
             });
         }
     }
@@ -69,6 +70,14 @@ class UserCreateForm extends Component {
         return msg == undefined;
     }
 
+    handleRolesChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                userRoles: value
+            }
+        });
+    }
 
     componentDidMount(){
         this.props.getRoles();
@@ -77,6 +86,11 @@ class UserCreateForm extends Component {
     render() {
         const{ translate, role, user } = this.props;
         const{ userName, userEmail, errorOnUserName, errorOnUserEmail} = this.state;
+        
+        const items = role.list.filter( role => {
+            return role.name !== 'Super Admin'
+        }).map( role => {return {value: role._id, text: role.name}})
+    
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')}/>
@@ -102,18 +116,15 @@ class UserCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_user.roles') }</label>
-                            <select
-                                className="form-control select2" 
-                                multiple="multiple" 
-                                style={{ width: '100%' }} 
-                                ref="roles"
-                            >
-                                {
-                                    role.list.map( role => {
-                                        if(role.name !== 'Super Admin') return <option key={role._id} value={role._id}>{role.name}</option>;
-                                    })
-                                }
-                            </select>
+                            {items.length !== 0 &&
+                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    id={`user-role-form-create`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {items}
+                                    onChange={this.handleRolesChange}
+                                />
+                            }
                         </div>
                     </form>
                 </ModalDialog>

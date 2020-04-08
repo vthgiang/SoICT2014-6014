@@ -44,7 +44,7 @@ class SelectBox extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        if (nextProps.id !== this.state.id)
+        if (nextProps.id !== this.state.id) // Chỉ render 1 lần, trừ khi id thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
