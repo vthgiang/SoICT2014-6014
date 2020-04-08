@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
-import { ModalDialog, ErrorLabel } from '../../../../common-components';
+import { ModalDialog, ErrorLabel, SelectBox } from '../../../../common-components';
 import { UserFormValidator} from './UserFormValidator';
 
 class UserEditForm extends Component {
@@ -36,9 +36,9 @@ class UserEditForm extends Component {
     save = () => {
         if (this.isFormValidated()) {
             return this.props.edit(this.props.userId, {
-                name: this.refs.name.value,
-                active: this.refs.active.value,
-                roles: [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value)
+                name: this.state.userName,
+                active: this.state.userActive,
+                roles: this.state.userRoles
             });
         }
     }
@@ -67,8 +67,7 @@ class UserEditForm extends Component {
         return msg === undefined;
     }
 
-    handleRolesChange = (e) => {
-        let value = [].filter.call(this.refs.roles.options, o => o.selected).map(o => o.value);
+    handleRolesChange = (value) => {
         this.setState(state => {
             return {
                 ...state,
@@ -85,11 +84,6 @@ class UserEditForm extends Component {
                  userActive: value
             }
         });
-    }
-
-    componentDidMount(){
-        window.$(".select2").select2();
-        window.$(".select2").on("change", this.handleRolesChange);
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
@@ -150,23 +144,20 @@ class UserEditForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_user.roles') }</label>
-                            <select
-                                className="form-control select2" 
-                                multiple="multiple" 
-                                style={{ width: '100%' }} 
-                                value={userRoles}
-                                onChange = {() => {}}
-                                ref="roles"
-                            >
-                                {
+                            <SelectBox
+                                id={`user-role-form${userId}`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {
                                     this.checkSuperAdmin(userRoles) ? //neu tai khoan nay hien tai khong co role la Super Admin
-                                    role.list.map( role => <option key={role._id} value={role._id}>{role.name}</option>):
-                                    role.list.map( role => {
-                                        if(role.name !== 'Super Admin')
-                                            return <option key={role._id} value={role._id}>{role.name}</option>;
-                                    })
+                                    role.list.map( role => {return {value: role._id, text: role.name}}):
+                                    role.list.filter( role => {
+                                        return role.name !== 'Super Admin'
+                                    }).map( role => {return {value: role._id, text: role.name}})
                                 }
-                            </select>
+                                onChange={this.handleRolesChange}
+                                value={userRoles}
+                            />
                         </div>
                     </form>
                 </ModalDialog>
