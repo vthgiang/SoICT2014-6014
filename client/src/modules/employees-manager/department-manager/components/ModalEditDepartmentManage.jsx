@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
@@ -165,7 +164,6 @@ class ModalEditDepartmentManage extends Component {
         for (let n in userRoleEmployee) {
             userlist = userlist.filter(user => user._id !== userRoleEmployee[n])
         }
-        console.log(userlist);
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-viewUnit-${data.id}`} className="edit" title="Chỉnh sửa nhân viên các đơn vị" data-toggle="modal"><i className="material-icons"></i></a>

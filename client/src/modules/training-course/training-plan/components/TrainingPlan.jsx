@@ -82,7 +82,7 @@ class TrainingPlan extends Component {
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">Danh sách các khoá đào tạo:</h4>
+                            <h4 className="box-title">Danh sách các khoá đào tạo: &#96;</h4>
                         </div>
                         <button type="button" className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addTrainingPlan" >Thêm khoá đào tạo</button>
                     </div>

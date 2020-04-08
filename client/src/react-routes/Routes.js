@@ -286,7 +286,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ this.props.user.isLoading }
+                        isLoading={ this.props.department.isLoading }
                         key={ 'manage_unit' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
