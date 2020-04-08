@@ -120,7 +120,7 @@ class UserEditForm extends Component {
                         <div className="row">
                             <div className="form-group col-sm-8">
                                 <label>{ translate('table.email') }<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" defaultValue={ userEmail } disabled/>
+                                <input type="text" className="form-control" value={ userEmail } disabled/>
                             </div>
                             <div className="form-group col-sm-4">
                                 <label>{ translate('table.status') }<span className="text-red">*</span></label>
