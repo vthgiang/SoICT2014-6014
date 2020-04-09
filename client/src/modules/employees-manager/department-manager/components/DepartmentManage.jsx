@@ -16,17 +16,26 @@ class DepartmentManage extends Component {
     componentDidMount() {
         this.props.getDepartment();
     }
-    handleShowEdit = (id) => {
-        this.setState({
+    handleShowEdit = async (id) => {
+        await this.setState({
+            ...this.state,
             showEdit: id
         })
+        window.$(`#modal-viewUnit-${id}`).modal('show');
+        // var element = document.getElementsByTagName("BODY")[0];
+        // element.classList.add("modal-open");
+        // var modal = document.getElementById(`modal-viewUnit-${id}`);
+        // modal.classList.add("in");
+        // modal.style = "display: block";
     }
     render() {
+        var data = [];
         const { translate } = this.props;
-        const { list } = this.props.department;
+        var { list } = this.props.department;
         if (list.length !== 0) {
-            for (let n in list) {
-                list[n] = { ...list[n], action: ["edit"] }
+            data = list;
+            for (let n in data) {
+                data[n] = { ...data[n], action: ["edit"] }
             }
         }
         var column = [{ name: "Tên đơn vị", key: "name" }, { name: "Mô tả đơn vị", key: "description" }];
@@ -39,16 +48,16 @@ class DepartmentManage extends Component {
                     <TreeTable
                         nameClass="show-children"
                         column={column}
-                        data={list}
+                        data={data}
                         titleAction={[{
                             edit: "Chỉnh sửa nhân viên các đơn vị",
                         }]}
                         funcEdit={this.handleShowEdit}
                     />
                 </div>
-                {/* {
+                {
                     this.state.showEdit !== "" && <ModalEditDepartmentManage id={this.state.showEdit} />
-                } */}
+                }
                 <ToastContainer />
             </div >
         );

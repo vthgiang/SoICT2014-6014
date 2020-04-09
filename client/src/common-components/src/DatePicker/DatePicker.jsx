@@ -1,20 +1,12 @@
 import React, { Component } from 'react';
+import './bootstrap-datepicker.min.css';
+import {scriptDatePicker} from './bootstrap-datepicker.min';
 const loadJS = () => {
     if (document.getElementById("script-date-picker") === null) {
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.id = "script-date-picker";
-        script.innerHTML = `
-            $(function () {
-                $('.datepicker.month-year').datepicker({
-                autoclose: true,
-                startView: 1,
-                minViewMode: "months"
-                })
-                $('.datepicker.day-year').datepicker({
-                autoclose: true
-                })
-            })`;
+        script.innerHTML = scriptDatePicker;
         document.body.appendChild(script);
     }
 }

@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { treeTableShowChildren, treeTableHideChildren } from './tree-table';
-import { DeleteNotification } from '../../../common-components';
 import './TreeTable.css';
-const arrayToTree = require('array-to-tree');
 
 class TreeTable extends Component {
     constructor(props) {
@@ -30,47 +28,33 @@ class TreeTable extends Component {
         }
     }
 
+
     // function thực hiện format dữ liệu truyền vào
-    dataTreetable = (column, setData) => {
+    dataTreetable = (column, data) => {
         var keyColumn = column.map(col => col.key);
-        var i = 0, data = [];
+        var newarr = [];
+        // function chuyển đổi list thành tree 
+        let listToTree = (items, parent_id = null, link = 'parent') =>
+            items.filter(item => item[link] === parent_id).map(item => ({ ...item, children: listToTree(items, item._id) }));
 
-        // Đệ quy để thêm level tương ứng cho dữ liệu truyền vào
-        let converData = (row, i) => {
-            let newArr = [];
-            i = i + 1;
-            if (row !== undefined && row.length !== 0) {
-                if (row.children === undefined || row.children === null) {
-                    newArr = [...newArr, {
-                        ...row,
-                        "level": i,
-                    }];
-                    return newArr;
-                } else {
-                    newArr = [...newArr, {
-                        ...row,
-                        "level": i,
-                    }];
-                    for (let n in row.children) {
-                        newArr = newArr.concat(converData(row.children[n], i));
-                    }
-                    return newArr
-                }
-            } else return null
-        }
         // Chuyển đổi dữ liệu truyền vào thành dạng tree trước khi gọi đệ quy
-        setData = arrayToTree(setData, {
-            parentProperty: 'parent',
-            customID: '_id'
-        });
-        // Gọi đệ quy để thêm level cho dữ liệu truyền vào
-        for (let n in setData) {
-            data = data.concat(converData(setData[n], i));
-        }
+        data = listToTree(data);
 
-        /* Xoá bỏ dữ liệu dư thừa, sắp xếp dữ liệu của data truyền vào theo thứ tự các cột 
-         * Gộp nội dung cần hiện thị ở mỗi dòng của bảng thành 1 array với tên là row
-        */
+        // function đệ quy để thêm level tương ứng cho dữ liệu truyền vào đã được chuyển thành dạnh tree
+        // trả vể mảng là dữ liệu trước khi thực hiện function listToTree và dữ liệu này đã được sắp xếp
+        let convertData = (arr, level = 1) => {
+            arr.map(item => {
+                newarr.push({ ...item, "level": level });
+                convertData(item.children, level + 1);
+                return true;
+            });
+            return newarr;
+        }
+        // Gọi đệ quy để thêm level cho dữ liệu truyền vào
+        data = convertData(data);
+
+        // Xoá bỏ dữ liệu dư thừa, sắp xếp dữ liệu của data truyền vào theo thứ tự các cột 
+        // Gộp nội dung cần hiện thị ở mỗi dòng của bảng thành 1 array với tên là row
         for (let x in data) {
             let node = data[x], row = [];
             row = keyColumn.map(x => {
@@ -86,6 +70,7 @@ class TreeTable extends Component {
                 "row": row
             }
         }
+        console.log(data);
         return data;
     }
 
@@ -169,8 +154,6 @@ class TreeTable extends Component {
         );
     }
 }
-
-const mapState = state => state;
-const treeTable = connect(mapState, null)(withTranslate(TreeTable));
+const treeTable = connect(null, null)(withTranslate(TreeTable));
 
 export { treeTable as TreeTable }

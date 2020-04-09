@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { UserActions } from '../../../super-admin-management/users-management/redux/actions';
 import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,6 +18,7 @@ class ModalEditDepartmentManage extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
     componentDidMount() {
+        this.props.getDepartment();
         this.props.getRole();
         this.props.getUser();
         let script = document.createElement('script');
@@ -47,12 +49,14 @@ class ModalEditDepartmentManage extends Component {
         })
     }
     handleAdd = () => {
+        var { list } = this.props.department;
+        var data = list.filter(x => x._id === this.props.id);
         let selectEmployee = this.refs.employee;
         let usersEmployee = [].filter.call(selectEmployee.options, o => o.selected).map(o => o.value);
         var deleteEmployee = this.state.deleteEmployee;
         for (let n in usersEmployee) {
             deleteEmployee = deleteEmployee.filter(user => user !== usersEmployee[n])
-            window.$(`select.${this.props.data.id} option.${usersEmployee[n]}`).remove();
+            window.$(`select.${data[0]._id} option.${usersEmployee[n]}`).remove();
         }
         this.setState({
             addEmployee: [...this.state.addEmployee, ...usersEmployee],
@@ -60,14 +64,19 @@ class ModalEditDepartmentManage extends Component {
         })
 
     }
+    handleClose = () => {
+        window.$(`#modal-viewUnit-${this.props.id}`).modal('hide');
+    }
     handleSunmit(event) {
         // Khai báo các biến cần dùng và lấy biến trong store 
         let infoRoleDean,
             infoRoleViceDean,
             infoRoleEmployee,
             userRoleEmployee,
-            { role, data } = this.props;
-
+            { role } = this.props;
+        var { list } = this.props.department;
+        var data = list.filter(x => x._id === this.props.id);
+        data = data[0];
         // lấy danh sách trưởng đơn vị
         let selectDean = this.refs.dean;
         let usersDean = [].filter.call(selectDean.options, o => o.selected).map(o => o.value);
@@ -84,13 +93,13 @@ class ModalEditDepartmentManage extends Component {
             // Lấy thông tin các Role tương ứng với trưởng đơn vị, phó đơn vị và nhân viên đơn vị
             if (role.list.length !== 0) {
                 for (let n in role.list) {
-                    if (role.list[n]._id === data.dean) {
+                    if (role.list[n]._id === data.dean._id) {
                         infoRoleDean = role.list[n]
                     }
-                    if (role.list[n]._id === data.vice_dean) {
+                    if (role.list[n]._id === data.vice_dean._id) {
                         infoRoleViceDean = role.list[n]
                     }
-                    if (role.list[n]._id === data.employee) {
+                    if (role.list[n]._id === data.employee.id) {
                         infoRoleEmployee = role.list[n]
                         userRoleEmployee = role.list[n].users.map(user => user.userId)
                     }
@@ -115,23 +124,28 @@ class ModalEditDepartmentManage extends Component {
             this.props.edit(roleDean);
             this.props.edit(roleViceDean);
             this.props.edit(roleEmployee);
-            window.$(`#modal-viewUnit-${data.id}`).modal("hide");
+
+            window.$(`#modal-viewUnit-${this.props.id}`).modal('hide');
         }
 
 
     }
     render() {
         var userRoleDean, userRoleViceDean = [], userRoleEmployee = [], infoEmployee = [];
-        var { role, user, translate, data } = this.props;
+        var { role, user, translate, id } = this.props;
+        var { list } = this.props.department;
+        var data = list.filter(x => x._id === id);
+        data = data[0];
+        console.log(data)
         if (role.list.length !== 0) {
             for (let n in role.list) {
-                if (role.list[n]._id === data.dean) {
+                if (role.list[n]._id === data.dean._id) {
                     userRoleDean = role.list[n].users.map(user => user.userId)
                 }
-                if (role.list[n]._id === data.vice_dean) {
+                if (role.list[n]._id === data.vice_dean._id) {
                     userRoleViceDean = role.list[n].users
                 }
-                if (role.list[n]._id === data.employee) {
+                if (role.list[n]._id === data.employee._id) {
                     userRoleEmployee = role.list[n].users.map(user => user.userId)
                 }
             }
@@ -166,12 +180,11 @@ class ModalEditDepartmentManage extends Component {
         }
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-viewUnit-${data.id}`} className="edit" title="Chỉnh sửa nhân viên các đơn vị" data-toggle="modal"><i className="material-icons"></i></a>
-                <div className="modal fade" id={`modal-viewUnit-${data.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div className="modal fade" id={`modal-viewUnit-${id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-size-75">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" className="close" onClick={() => this.handleClose()}>
                                     <span aria-hidden="true">×</span></button>
                                 <h4 className="modal-title">Chỉnh sửa nhân sự {data.name.toLowerCase()}</h4>
                             </div>
@@ -234,8 +247,8 @@ class ModalEditDepartmentManage extends Component {
                                                     <label className="pull-left">Thêm nhân viên:</label>
                                                     <select
                                                         name="employee"
-                                                        
-                                                        className={`form-control select2 ${data.id}`}
+
+                                                        className={`form-control select2 ${data._id}`}
                                                         multiple="multiple"
                                                         onChange={this.handleChange}
                                                         style={{ width: '100%' }}
@@ -285,7 +298,7 @@ class ModalEditDepartmentManage extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" data-dismiss="modal">{translate('modal.close')}</button>
+                                <button style={{ marginRight: 15 }} type="button" className="btn btn-default pull-right" onClick={() => this.handleClose()}>{translate('modal.close')}</button>
                                 <button style={{ marginRight: 15 }} type="button" className="btn btn-success" title={translate('modal.update')} onClick={this.handleSunmit} >{translate('modal.update')}</button>
                             </div>
                         </div>
@@ -296,14 +309,15 @@ class ModalEditDepartmentManage extends Component {
     }
 };
 function mapState(state) {
-    var { role, user } = state;
-    return { role, user };
+    var { role, user, department } = state;
+    return { role, user, department };
 };
 
 const actionCreators = {
     edit: RoleActions.edit,
     getRole: RoleActions.get,
     getUser: UserActions.get,
+    getDepartment: DepartmentActions.get,
 };
 
 const editDepartmentManage = connect(mapState, actionCreators)(withTranslate(ModalEditDepartmentManage));
