@@ -20,9 +20,9 @@ exports.getByRole = async (id) => {
 }
 
 // Chỉnh sửa thông tin chung của KPI đơn vị
-exports.editById = async (timeId,id) => {
+exports.editById = async (timeString, id) => {
     //req.body.time,req.params.id
-    var time = timeId.split("-");
+    var time = timeString.split("-");
         var date = new Date(time[1], time[0], 0)
         var kpiunit = await KPIUnit.findByIdAndUpdate(id, { $set: { time: date } }, { new: true });
         kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();

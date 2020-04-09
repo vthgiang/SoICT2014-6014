@@ -20,7 +20,9 @@ exports.getByRole = async (req, res) => {
 // Chỉnh sửa thông tin chung của kpi đơn vị
 exports.edit = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.editById(timeId,id);
+        let timeString = req.body.time;
+        let id = req.params.id;
+        var kpiunit = await KPIUnitService.editById(timeString,id);
         LogInfo(req.user.email, ' Edit kpi unit ',req.user.company);
         res.status(200).json({
             message: "Chỉnh sửa thành công KPI của đơn vị",
