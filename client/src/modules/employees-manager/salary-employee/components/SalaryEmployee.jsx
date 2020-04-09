@@ -7,10 +7,8 @@ import { SalaryActions } from '../redux/actions';
 import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalEditSalary } from './ModalEditSalary';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
+import { ActionColumn, DeleteNotification, PaginateBar, DatePicker } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification, DatePicker } from '../../../../common-components';
 
 class SalaryEmployee extends Component {
     constructor(props) {
@@ -96,12 +94,14 @@ class SalaryEmployee extends Component {
         });
 
     }
+    handleMonthChange = (value) => {
+        this.setState({
+            ...this.state,
+            month: value
+        });
+    }
 
-    handleSunmitSearch = async () => {
-        console.log(this.refs.month.value);
-        await this.setState({
-            month: this.refs.month.value
-        })
+    handleSunmitSearch = () => {
         this.props.getListSalary(this.state);
     }
     formatDate(date) {
@@ -155,7 +155,7 @@ class SalaryEmployee extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}:</label>
+                            <label className="form-control-static">{translate('page.unit')}</label>
                             <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
                                 <option value="All" level={1}>--Tất cả---</option>
                                 {
@@ -165,7 +165,7 @@ class SalaryEmployee extends Component {
                             </select>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}:</label>
+                            <label className="form-control-static">{translate('page.position')}</label>
                             <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
                                 <option value="All">--Tất cả--</option>
                                 {
@@ -179,15 +179,16 @@ class SalaryEmployee extends Component {
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.staff_number')}:</label>
+                            <label className="form-control-static">{translate('page.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
-                                nameLabel={translate('page.month')}
-                                classDatePicker="datepicker month-year"
-                                defaultValue={this.formatDate(Date.now())}
-                                ref="month"
+                                id="month"
+                                dateFormat="month-year"
+                                value={this.formatDate(Date.now())}
+                                onChange={this.handleMonthChange}
                             />
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>

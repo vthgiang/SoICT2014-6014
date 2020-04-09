@@ -70,7 +70,6 @@ class TreeTable extends Component {
                 "row": row
             }
         }
-        console.log(data);
         return data;
     }
 

@@ -1,6 +1,6 @@
 Component này dùng để hiện thị table có dang cây (tre)
 Để sử dụng Componett này ta thực hiện các bước sau:
-(Ví dụ minh hoạ như Componett DepartmentManage.jsx trong modules/employees-manager/department-manager/component)
+(Xem ví dụ minh hoạ trong Componett DepartmentManage.jsx trong modules/employees-manager/department-manager/component)
 
 <--- Import component -->
 ...

@@ -1,12 +1,12 @@
-Componett dùng để thiết lập cài đạt cho table 
+Component dùng để thiết lập cài đạt cho table 
 Để sử dụng Componett này ta thực hiện các bước sau:
-(Ví dụ minh hoạ như Componett SalaryEmpoyee.jsx trong modules/employees-manager/salary-employee/component)
+(Xem ví dụ minh hoạ trong Componett SalaryEmpoyee.jsx trong modules/employees-manager/salary-employee/component)
 
 <--- Import component -->
 ...
 import { ActionColumn } from '../../../../common-components';
 
-<-- thêm nội dung sau vào class SalaryEmployee --> 
+<-- thêm nội dung sau vào class --> 
     ...
     componentDidUpdate() {
         this.hideColumn(); // thực hiện việc ẩn các cột khi load lại dữ liệu
