@@ -51,11 +51,11 @@ class SelectBox extends Component {
     }
 
     render() { 
-        const { id, items, className, style} = this.props;
+        const { id, items, className, style, multiple=false} = this.props;
         return ( 
             <React.Fragment>
                 <div>
-                    <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple="multiple" onChange={() => {}}>
+                    <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => {}}>
                         {items.map(item => {
                             return <option key={item.value} value={item.value}>{item.text}</option>
                         })}
