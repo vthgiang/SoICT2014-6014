@@ -345,7 +345,7 @@ class KPIUnitCreate extends Component {
                                 </table>
                             </div>
                         </div> :
-                        <div className="col-xs-12">
+                        <div>
                             <div style={{marginLeft: "-10px"}}>
                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                     <React.Fragment>
