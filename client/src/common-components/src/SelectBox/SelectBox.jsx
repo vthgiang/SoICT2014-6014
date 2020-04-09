@@ -16,6 +16,7 @@ class SelectBox extends Component {
             document.body.appendChild(script);
         }
     }
+    
 
     componentDidMount(){
         const { id, onChange } = this.props;

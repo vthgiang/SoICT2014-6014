@@ -1,6 +1,6 @@
 Component này dùng để hiện thị table có dang cây (tre)
 Để sử dụng Componett này ta thực hiện các bước sau:
-(Ví dụ minh hoạ như Componett DepartmentManage.jsx trong modules/employees-manager/department-manager/component)
+(Xem ví dụ minh hoạ trong Componett DepartmentManage.jsx trong modules/employees-manager/department-manager/component)
 
 <--- Import component -->
 ...
@@ -60,16 +60,17 @@ import { TreeTable } from '../../../../common-components';
             action: ["edit", "view", "delete"],
             parent: null,
         }, {
+            _id: "3",
+            description: "mo ta phong kinh doanh",
+            name: " phong kinh doanh",
+            action: ["edit", "view", "delete"],
+            parent: "null",
+        },
+        {
             _id: "2",
             description: "mo ta ban giam doc",
             name: "ban gia doc",
             action: ["edit", "view", "delete"],
             parent: 1,
-        }, {
-            _id: "3",
-            description: "mo ta phong kinh doanh",
-            name: " phong kinh doanh",
-            action: ["edit", "view", "delete"],
-            parent: null,
         }
     ];
