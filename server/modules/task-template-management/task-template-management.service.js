@@ -87,7 +87,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
         }
         
         var totalCount = await Privilege.count({
-            action: { $in: allRole },
+            roleId: { $in: allRole },
             resourceType: 'TaskTemplate'
         });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
