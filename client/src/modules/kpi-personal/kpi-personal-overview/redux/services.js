@@ -2,7 +2,7 @@ import {
     TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../env';
 import {
-    getStorage
+    getStorage, AuthenticateHeader
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 import {handleResponse} from '../../../../helpers/HandleResponse';
@@ -19,6 +19,7 @@ async function getAllKPIPersonalByMember() {//member
     var id = verified._id;
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${id}`, requestOptions).then(handleResponse);
@@ -28,6 +29,7 @@ async function getAllKPIPersonalByMember() {//member
 function getAllKPIPersonalByUserID(member) {
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${member}`, requestOptions).then(handleResponse);
@@ -37,6 +39,7 @@ function getAllKPIPersonalByUserID(member) {
 function getAllKPIPersonalOfTask(member) {
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/task/${member}`, requestOptions).then(handleResponse);

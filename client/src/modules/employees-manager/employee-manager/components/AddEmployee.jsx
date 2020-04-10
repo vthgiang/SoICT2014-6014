@@ -7,12 +7,11 @@ import { SabbaticalActions } from '../../sabbatical/redux/actions';
 import { DisciplineActions } from '../../discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import "./add-employee.css";
 import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, ModalAddContract, ModalAddExperience } from './CombineContent';
 import { ModalAddBHXH, ModalAddDiscipline, ModalAddPraise, ModalAddSalary, ModalAddSabbatical, ModalAddFile } from './CombineContent';
 import { ModalEditFile, ModalEditSabbatical, ModalEditSalary, ModalEditPraise, ModalEditDiscipline, ModalEditBHXH } from './CombineContent';
 import { ModalEditExperience, ModalEditContract, ModalEditCertificateShort, ModalEditCertificate } from './CombineContent';
-//import './listemployee.css';
-
 class AddEmployee extends Component {
     constructor(props) {
         super(props);
@@ -570,22 +569,19 @@ class AddEmployee extends Component {
         const { translate } = this.props;
         var formatter = new Intl.NumberFormat();
         return (
-            <React.Fragment>
-                <div className="row">
-                    {/* left column */}
-                    <div className="col-md-12">
+                <div className=" qlcv">
                         <div className="nav-tabs-custom" >
                             <ul className="nav nav-tabs">
-                                <li className="active"><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#thongtinchung">{translate('manage_employee.menu_general_infor')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href="#thongtinlienhe">{translate('manage_employee.menu_contact_infor')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_education_experience_title')} data-toggle="tab" href="#kinhnghiem">{translate('manage_employee.menu_education_experience')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_diploma_certificate_title')} data-toggle="tab" href="#bangcap">{translate('manage_employee.menu_diploma_certificate')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_account_tax_title')} data-toggle="tab" href="#taikhoan">{translate('manage_employee.menu_account_tax')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_insurrance_infor_title')} data-toggle="tab" href="#baohiem">{translate('manage_employee.menu_insurrance_infor')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_contract_training_title')} data-toggle="tab" href="#hopdong">{translate('manage_employee.menu_contract_training')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_reward_discipline_title')} data-toggle="tab" href="#khenthuong">{translate('manage_employee.menu_reward_discipline')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_salary_sabbatical_title')} data-toggle="tab" href="#historySalary">{translate('manage_employee.menu_salary_sabbatical')}</a></li>
-                                <li><a style={{ paddingLeft: 5, }} title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#tailieu">{translate('manage_employee.menu_attachments')}</a></li>
+                                <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#thongtinchung">{translate('manage_employee.menu_general_infor')}</a></li>
+                                <li><a title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href="#thongtinlienhe">{translate('manage_employee.menu_contact_infor')}</a></li>
+                                <li><a title={translate('manage_employee.menu_education_experience_title')} data-toggle="tab" href="#kinhnghiem">{translate('manage_employee.menu_education_experience')}</a></li>
+                                <li><a title={translate('manage_employee.menu_diploma_certificate_title')} data-toggle="tab" href="#bangcap">{translate('manage_employee.menu_diploma_certificate')}</a></li>
+                                <li><a title={translate('manage_employee.menu_account_tax_title')} data-toggle="tab" href="#taikhoan">{translate('manage_employee.menu_account_tax')}</a></li>
+                                <li><a title={translate('manage_employee.menu_insurrance_infor_title')} data-toggle="tab" href="#baohiem">{translate('manage_employee.menu_insurrance_infor')}</a></li>
+                                <li><a title={translate('manage_employee.menu_contract_training_title')} data-toggle="tab" href="#hopdong">{translate('manage_employee.menu_contract_training')}</a></li>
+                                <li><a title={translate('manage_employee.menu_reward_discipline_title')} data-toggle="tab" href="#khenthuong">{translate('manage_employee.menu_reward_discipline')}</a></li>
+                                <li><a title={translate('manage_employee.menu_salary_sabbatical_title')} data-toggle="tab" href="#historySalary">{translate('manage_employee.menu_salary_sabbatical')}</a></li>
+                                <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#tailieu">{translate('manage_employee.menu_attachments')}</a></li>
                             </ul>
                             < div className="tab-content">
                                 <div id="thongtinchung" className="tab-pane active">
@@ -595,8 +591,8 @@ class AddEmployee extends Component {
                                                 <div className="form-group">
                                                     <img className="attachment-img avarta" src={this.state.img} alt="Attachment" />
                                                     <div className="upload btn btn-default" style={{ marginLeft: 55 }}>
-                                                    {translate('manage_employee.upload')}
-                                                    <input className="upload" type="file" name="file" onChange={this.handleUpload} />
+                                                        {translate('manage_employee.upload')}
+                                                        <input className="upload" type="file" name="file" onChange={this.handleUpload} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -607,15 +603,15 @@ class AddEmployee extends Component {
                                                     </label>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="employeeNumber">{translate('manage_employee.staff_number')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="employeeNumber">{translate('manage_employee.staff_number')}:<span className="text-red">&#42;</span></label>
                                                     <input type="text" className="form-control" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChangeMSNV} />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="fullname">{translate('manage_employee.full_name')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="fullname">{translate('manage_employee.full_name')}:<span className="text-red">&#42;</span></label>
                                                     <input type="text" className="form-control" name="fullName" placeholder="Họ và tên" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="brithday">{translate('manage_employee.date_birth')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="brithday">{translate('manage_employee.date_birth')}:<span className="text-red">&#42;</span></label>
                                                     <div className={'input-group date has-feedback'}>
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
@@ -625,17 +621,17 @@ class AddEmployee extends Component {
                                                     {/* <input type="Date" className="form-control" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="emailCompany">{translate('manage_employee.email')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="emailCompany">{translate('manage_employee.email')}:<span className="text-red">&#42;</span></label>
                                                     <input type="email" className="form-control" placeholder="Email công ty" name="emailCompany" onChange={this.handleChangeEmail} autoComplete="off" />
                                                 </div>
                                             </div>
                                             <div className=" col-md-4 " style={{ marginTop: 30 }}>
                                                 <div className="form-group">
-                                                    <label htmlFor="MSCC">{translate('manage_employee.attendance_code')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="MSCC">{translate('manage_employee.attendance_code')}:<span className="text-red">&#42;</span></label>
                                                     <input type="text" className="form-control" placeholder="Mã số chấm công" name="MSCC" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label style={{ display: 'block', paddingBottom: 4 }}>{translate('manage_employee.gender')}:<span className="required">&#42;</span></label>
+                                                    <label style={{ display: 'block', paddingBottom: 4 }}>{translate('manage_employee.gender')}:<span className="text-red">&#42;</span></label>
                                                     <input type="radio" name="gender" value="male" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
                                                     <label>{translate('manage_employee.male')}</label>
                                                     <input type="radio" name="gender" value="female" className="" style={{ marginLeft: 90, marginRight: 5 }} onChange={this.handleChange} />
@@ -657,7 +653,7 @@ class AddEmployee extends Component {
                                         <div className="col-md-12">
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="CMND">{translate('manage_employee.id_card')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="CMND">{translate('manage_employee.id_card')}:<span className="text-red">&#42;</span></label>
                                                     <input type="number" className="form-control" name="CMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
@@ -667,7 +663,7 @@ class AddEmployee extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="dateCMND">{translate('manage_employee.date_issued')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="dateCMND">{translate('manage_employee.date_issued')}:<span className="text-red">&#42;</span></label>
                                                     <div className={'input-group date has-feedback'}>
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
@@ -683,7 +679,7 @@ class AddEmployee extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="addressCMND">{translate('manage_employee.issued_by')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="addressCMND">{translate('manage_employee.issued_by')}:<span className="text-red">&#42;</span></label>
                                                     <input type="text" className="form-control" name="addressCMND" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
@@ -699,7 +695,7 @@ class AddEmployee extends Component {
                                         <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                             <div className="col-md-4">
                                                 <div className="form-group" style={{ paddingTop: 3 }}>
-                                                    <label htmlFor="phoneNumber">{translate('manage_employee.mobile_phone_1')}:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="phoneNumber">{translate('manage_employee.mobile_phone_1')}:<span className="text-red">&#42;</span></label>
                                                     <input type="number" className="form-control" name="phoneNumber" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </div>
@@ -775,17 +771,17 @@ class AddEmployee extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCommune">
-                                                    {translate('manage_employee.wards')}:</label>
+                                                        {translate('manage_employee.wards')}:</label>
                                                     <input type="text" className="form-control " name="localCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localDistrict">
-                                                    {translate('manage_employee.district')}:</label>
+                                                        {translate('manage_employee.district')}:</label>
                                                     <input type="text" className="form-control " name="localDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="localCity">
-                                                    {translate('manage_employee.province')}:</label>
+                                                        {translate('manage_employee.province')}:</label>
                                                     <input type="text" className="form-control " name="localCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
@@ -800,27 +796,27 @@ class AddEmployee extends Component {
 
                                                 <div className="form-group">
                                                     <label htmlFor="nowAddress">
-                                                    {translate('manage_employee.address')}:<span className="required">&#42;</span></label>
+                                                        {translate('manage_employee.address')}:<span className="text-red">&#42;</span></label>
                                                     <input type="text" className="form-control " name="nowAddress" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCommune">
-                                                    {translate('manage_employee.wards')}:</label>
+                                                        {translate('manage_employee.wards')}:</label>
                                                     <input type="text" className="form-control " name="nowCommune" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowDistrict">
-                                                    {translate('manage_employee.district')}:</label>
+                                                        {translate('manage_employee.district')}:</label>
                                                     <input type="text" className="form-control " name="nowDistrict" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowCity">
-                                                    {translate('manage_employee.province')}:</label>
+                                                        {translate('manage_employee.province')}:</label>
                                                     <input type="text" className="form-control " name="nowCity" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="nowNational">
-                                                    {translate('manage_employee.nation')}:</label>
+                                                        {translate('manage_employee.nation')}:</label>
                                                     <input type="text" className="form-control " name="nowNational" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
@@ -849,15 +845,15 @@ class AddEmployee extends Component {
                                     <fieldset className="scheduler-border">
                                         <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{translate('manage_employee.personal_income_tax')}:</h4></legend>
                                         <div className="form-group">
-                                            <label htmlFor="numberTax">{translate('manage_employee.tax_number')}:<span className="required">&#42;</span></label>
+                                            <label htmlFor="numberTax">{translate('manage_employee.tax_number')}:<span className="text-red">&#42;</span></label>
                                             <input type="number" className="form-control" name="numberTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="userTax">{translate('manage_employee.representative')}:<span className="required">&#42;</span></label>
+                                            <label htmlFor="userTax">{translate('manage_employee.representative')}:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" name="userTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="startDate">{translate('manage_employee.day_active')}:<span className="required">&#42;</span></label>
+                                            <label htmlFor="startDate">{translate('manage_employee.day_active')}:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -866,7 +862,7 @@ class AddEmployee extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="unitTax">{translate('manage_employee.managed_by')}:<span className="required">&#42;</span></label>
+                                            <label htmlFor="unitTax">{translate('manage_employee.managed_by')}:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" name="unitTax" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                     </fieldset>
@@ -949,7 +945,7 @@ class AddEmployee extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_employee.academic_level')}</h4></legend>
                                             <div className="form-group">
-                                                <label>{translate('manage_employee.educational_level')}:<span className="required">&#42;</span></label>
+                                                <label>{translate('manage_employee.educational_level')}:<span className="text-red">&#42;</span></label>
                                                 <select className="form-control" name="cultural" onChange={this.handleChange}>
                                                     <option value="12/12">12/12</option>
                                                     <option value="11/12">11/12</option>
@@ -1354,9 +1350,7 @@ class AddEmployee extends Component {
                             </div>
                         </div>
                         <ToastContainer />
-                    </div>
                 </div>
-            </React.Fragment>
         );
     };
 }

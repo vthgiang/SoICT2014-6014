@@ -51,7 +51,7 @@ class RoleInfoForm extends Component {
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-role-${roleId}`} button_type="edit" title={translate('manage_role.edit')}/>
                 <ModalDialog
-                    size='50' func={this.save} type="edit" isLoading={role.isLoading}
+                    size='50' func={this.save} isLoading={role.isLoading}
                     modalID={`modal-edit-role-${roleId}`}
                     formID={`form-edit-role-${roleId}`}
                     title={translate('manage_role.edit')}

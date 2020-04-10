@@ -142,11 +142,11 @@ class ModalAddSalary extends Component {
                                                         </label>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
+                                        <label htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" id="employeeNumber" name="employeeNumber" onChange={this.handleChangeMSNV} placeholder={translate('salary_employee.staff_number')} autoComplete="off" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="month">{translate('page.month')}:<span className="required">&#42;</span></label>
+                                        <label htmlFor="month">{translate('page.month')}:<span className="text-red">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -155,7 +155,7 @@ class ModalAddSalary extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="mainSalary">{translate('salary_employee.main_salary')}:<span className="required">&#42;</span></label>
+                                        <label htmlFor="mainSalary">{translate('salary_employee.main_salary')}:<span className="text-red">&#42;</span></label>
                                         <input style={{ display: "inline", width: "85%" }} type="number" className="form-control" name="mainSalary" onChange={this.handleChange} autoComplete="off" />
                                         <select name="unit" id="" className="form-control" onChange={this.handleChange} style={{ height: 34, display: "inline", width: "15%" }}>
                                             <option value="VND">VND</option>

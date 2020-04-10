@@ -23,7 +23,6 @@ var upload = multer({
     }
 });
 
-
 router.get('/log-timer/:task', PerformTaskController.getLogTimer);
 router.get('/log-timer/currentTimer/:task/:user', auth, PerformTaskController.getTimerStatus);
 router.post('/log-timer/start-timer', PerformTaskController.startTimer);
@@ -31,14 +30,14 @@ router.put('/log-timer/pause-timer/:id', PerformTaskController.pauseTimer);
 router.put('/log-timer/continue-timer/:id', PerformTaskController.continueTimer);
 router.put('/log-timer/stop-timer/:id', PerformTaskController.stopTimer);
 
-router.get('/comment-task/:task', auth, PerformTaskController.getCommentTask);
-router.post('/comment-task/create',upload.single('file'), PerformTaskController.createCommentTask);
+router.get('/comment-task/:task', PerformTaskController.getCommentTask);
+router.post('/comment-task/create', PerformTaskController.createCommentTask);//,upload.single('file')
 router.put('/comment-task/:id', PerformTaskController.editCommentTask);
 router.delete('/comment-task/:id', PerformTaskController.deleteCommentTask);
 
 router.post('/add-result/create', PerformTaskController.createResultInfoTask);
 router.post('/information-task-template/create', PerformTaskController.createResultInformationTask);
 router.put('/information-task-template', PerformTaskController.editResultInformationTask);
-router.post('/result-task/create', PerformTaskController.createResultTask);
+router.post('/result-task/create',auth, PerformTaskController.createResultTask);
 router.put('/result-task', PerformTaskController.editResultTask);
 module.exports = router;

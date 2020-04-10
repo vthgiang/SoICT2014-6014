@@ -99,15 +99,15 @@ class ModalAddCertificateShort extends Component {
                                         </div>
 
                                         <div className="form-group">
-                                            <label htmlFor="nameCertificateShort">Tên chứng chỉ:<span className="required">&#42;</span></label>
+                                            <label htmlFor="nameCertificateShort">Tên chứng chỉ:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" ref="nameCertificateShort" name="nameCertificateShort" autoComplete="off" />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="unit">Nơi cấp:<span className="required">&#42;</span></label>
+                                            <label htmlFor="unit">Nơi cấp:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" ref="unit" name="unit" autoComplete="off" />
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                            <label htmlFor="startDate">Ngày cấp:<span className="required">&#42;</span></label>
+                                            <label htmlFor="startDate">Ngày cấp:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -116,7 +116,7 @@ class ModalAddCertificateShort extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                            <label htmlFor="endDate">Ngày hết hạn:<span className="required">&#42;</span></label>
+                                            <label htmlFor="endDate">Ngày hết hạn:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />

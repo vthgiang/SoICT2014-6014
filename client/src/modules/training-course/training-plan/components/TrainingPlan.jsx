@@ -18,6 +18,7 @@ class TrainingPlan extends Component {
             typeCourse: "All",
             page: 0,
             limit: 5,
+            hideColumn:[]
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -29,6 +30,18 @@ class TrainingPlan extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+    }
+    componentDidUpdate(){
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length!==0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#course-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
 
     handleChange(event) {
@@ -42,10 +55,11 @@ class TrainingPlan extends Component {
         this.props.getListCourse(this.state);
     }
 
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number,hideColumn) => {
+        await this.setState({ 
+            limit: parseInt(number),
+            hideColumn: hideColumn });
         this.props.getListCourse(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
 
     setPage = async (pageNumber) => {
@@ -59,121 +73,100 @@ class TrainingPlan extends Component {
     render() {
         var { listCourse } = this.props.course;
         const { translate } = this.props;
-        console.log(listCourse)
         var pageTotal = (this.props.course.totalList % this.state.limit === 0) ?
             parseInt(this.props.course.totalList / this.state.limit) :
             parseInt((this.props.course.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
-            <React.Fragment>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="box">
-
-                            {/* /.box-header */}
-                            <div className="box-body">
-                                <div className="col-md-12">
-                                    <div className="box-header col-md-12">
-                                        <h3 className="box-title" style={{ marginTop: 10 }}>Danh sách các khoá đào tạo:</h3>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label htmlFor="numberCourse" >Mã khoá đào tạo:</label>
-                                        </div>
-                                        <div className="form-group col-md-8" style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
-                                            <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <div className="form-group col-md-4" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <label htmlFor="typeCourse" style={{ paddingTop: 5 }}>Loại đào tạo:</label>
-                                        </div>
-                                        <div className="form-group col-md-8" style={{ paddingTop: 5, paddingLeft: 0, paddingRight: 0 }}>
-                                            <select className="form-control" defaultValue="All" name="typeCourse" onChange={this.handleChange}>
-                                                <option value="All">--Tất cả--</option>
-                                                <option value="Đào tạo nội bộ">Đào tạo nội bộ</option>
-                                                <option value="Đào tạo ngoài">Đào tạo ngoài</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3" style={{ paddingTop: 5 }}>
-                                        <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                            <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()} title="Tìm kiếm" >Tìm kiếm</button>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3" style={{ paddingTop: 5, paddingRight: 0 }}>
-                                        <button type="submit" className="btn btn-success pull-right" id="" data-toggle="modal" data-target="#modal-addTrainingPlan" >Thêm khoá đào tạo</button>
-                                    </div>
-                                    <table id="listexample" className="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đào tạo</th>
-                                                <th style={{ width: "22%" }}>Tên khoá đào tạo</th>
-                                                <th title="Thời gian bắt đầu">Bắt đầu</th>
-                                                <th title="Thời gian kết thúc">Kết thúc</th>
-                                                <th style={{ width: "15%" }}>Địa điểm đào tạo</th>
-                                                <th style={{ width: "22%" }}>Đơn vị đào tạo</th>
-                                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                                    <ActionColumn
-                                                        columnName="Hành động"
-                                                        columnArr={[
-                                                            "Tên khoá đào tạo",
-                                                            "Bắt đầu",
-                                                            "Kết thúc",
-                                                            "Địa điểm đào tạo",
-                                                            "Đơn vị đào tạo"
-                                                        ]}
-                                                        limit={this.state.limit}
-                                                        setLimit={this.setLimit}
-                                                        hideColumnOption={true}
-                                                    />
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                (listCourse.length === 0 || listCourse === []) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
-                                                    listCourse.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td>{x.numberCourse}</td>
-                                                            <td>{x.nameCourse}</td>
-                                                            <td>{x.startDate}</td>
-                                                            <td>{x.endDate}</td>
-                                                            <td>{x.address}</td>
-                                                            <td>{x.unitCourse}</td>
-                                                            <td>
-                                                                <ModalDetailTrainingPlan data={x} />
-                                                                <ModalEditTrainingPlan data={x} />
-                                                                <DeleteNotification
-                                                                    content={{
-                                                                        title: "Xoá khoá đào tạo",
-                                                                        btnNo: translate('confirm.no'),
-                                                                        btnYes: translate('confirm.yes'),
-                                                                    }}
-                                                                    data={{
-                                                                        id: x._id,
-                                                                        info: x.nameCourse + " - " + x.numberCourse
-                                                                    }}
-                                                                    func={this.props.deleteCourse}
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                            }
-                                        </tbody>
-                                    </table>
-                                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
-                                </div>
-                            </div>
-                            {/* /.box-body */}
+            <div className="box">
+                <div className="box-body qlcv">
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <h4 className="box-title">Danh sách các khoá đào tạo: &#96;</h4>
                         </div>
-                        <ModalAddTrainingPlan />
-                        {/* /.box */}
+                        <button type="button" className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addTrainingPlan" >Thêm khoá đào tạo</button>
                     </div>
-                    {/* /.col */}
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label htmlFor="numberCourse" style={{width:110}} className="form-control-static">Mã khoá đào tạo:</label>
+                            <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} autoComplete="off" />
+                        </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        <div className="form-group">
+                            <label htmlFor="typeCourse" style={{width:110}} className="form-control-static">Loại đào tạo:</label>
+                            <select className="form-control" defaultValue="All" name="typeCourse" onChange={this.handleChange}>
+                                <option value="All">--Tất cả--</option>
+                                <option value="Đào tạo nội bộ">Đào tạo nội bộ</option>
+                                <option value="Đào tạo ngoài">Đào tạo ngoài</option>
+                            </select>
+                            <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()} title="Tìm kiếm" >Tìm kiếm</button>
+                        </div>
+                    </div>
+                    <table id="course-table" className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã khoá đào tạo</th>
+                                <th>Tên khoá đào tạo</th>
+                                <th>Bắt đầu</th>
+                                <th>Kết thúc</th>
+                                <th>Địa điểm đào tạo</th>
+                                <th>Đơn vị đào tạo</th>
+                                <th style={{ width: '120px'}}>Hành động
+                                    <ActionColumn
+                                        tableId="course-table"
+                                        columnArr={[
+                                            "Mã khoá đào tạo",
+                                            "Tên khoá đào tạo",
+                                            "Bắt đầu",
+                                            "Kết thúc",
+                                            "Địa điểm đào tạo",
+                                            "Đơn vị đào tạo"
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                (listCourse.length === 0 || listCourse === []) ? <tr><th colSpan={7-this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
+                                    listCourse.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.numberCourse}</td>
+                                            <td>{x.nameCourse}</td>
+                                            <td>{x.startDate}</td>
+                                            <td>{x.endDate}</td>
+                                            <td>{x.address}</td>
+                                            <td>{x.unitCourse}</td>
+                                            <td>
+                                                <ModalDetailTrainingPlan data={x} />
+                                                <ModalEditTrainingPlan data={x} />
+                                                <DeleteNotification
+                                                    content={{
+                                                        title: "Xoá khoá đào tạo",
+                                                        btnNo: translate('confirm.no'),
+                                                        btnYes: translate('confirm.yes'),
+                                                    }}
+                                                    data={{
+                                                        id: x._id,
+                                                        info: x.nameCourse + " - " + x.numberCourse
+                                                    }}
+                                                    func={this.props.deleteCourse}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))
+                            }
+                        </tbody>
+                    </table>
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
+                <ModalAddTrainingPlan />
                 <ToastContainer />
-            </React.Fragment>
+            </div>
         );
     };
 };

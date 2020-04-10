@@ -98,19 +98,19 @@ class ModalEditFile extends Component {
                                                         </label>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="nameFile">Tên tài liệu đính kèm:<span className="required">&#42;</span></label>
+                                        <label htmlFor="nameFile">Tên tài liệu đính kèm:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" name="nameFile" defaultValue={this.state.nameFile} onChange={this.handleChange} autoComplete="off" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="discFile">Mô tả:<span className="required">&#42;</span></label>
+                                        <label htmlFor="discFile">Mô tả:<span className="text-red">&#42;</span></label>
                                         <textarea className="form-control" rows="3" name="discFile" defaultValue={this.state.discFile} placeholder="Enter ..." onChange={this.handleChange}></textarea>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="number">Số lượng:<span className="required">&#42;</span></label>
+                                        <label htmlFor="number">Số lượng:<span className="text-red">&#42;</span></label>
                                         <input type="number" className="form-control" name="number" defaultValue={this.state.number} onChange={this.handleChange} autoComplete="off" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="status">Trạng thái:<span className="required">&#42;</span></label>
+                                        <label htmlFor="status">Trạng thái:<span className="text-red">&#42;</span></label>
                                         <select className="form-control" defaultValue={this.state.status} name="status" onChange={this.handleChange}>
                                             <option value="Chưa nộp">Chưa nộp</option>
                                             <option value="Đã nộp">Đã nộp</option>

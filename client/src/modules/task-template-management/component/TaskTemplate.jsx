@@ -243,7 +243,7 @@ class TaskTemplate extends Component {
         return ( 
             <div className="box">
                 {/* /.box-header */}
-                <div className="box-body" id="qlcv">
+                <div className="box-body qlcv">
 
                     <div className = "form-group">
                         {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
@@ -271,7 +271,20 @@ class TaskTemplate extends Component {
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
-
+                    <ActionColumn 
+                        tableId="user-table"
+                        columnArr={[
+                            'Tên mẫu công việc',
+                            'Mô tả',
+                            'Số lần sử dụng',
+                            'Người tạo mẫu',
+                            'Đơn vị'
+                        ]}
+                        limit = {this.state.perPage}
+                        setLimit = {this.setLimit}
+                        hideColumnOption = {true}
+                    />
+                    
                     <table className="table table-bordered table-striped table-hover" id="myTable">
                         <thead>
                             <tr>
@@ -281,22 +294,7 @@ class TaskTemplate extends Component {
                                 <th title="Người tạo mẫu">{translate('task_template.creator')}</th>
                                 <th title="Đơn vị">{translate('task_template.unit')}</th>
 
-                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                    <ActionColumn 
-                                        tableId="user-table"
-                                        columnName={translate('table.action')} 
-                                        columnArr={[
-                                            'Tên mẫu công việc',
-                                            'Mô tả',
-                                            'Số lần sử dụng',
-                                            'Người tạo mẫu',
-                                            'Đơn vị'
-                                        ]}
-                                        limit = {this.state.perPage}
-                                        setLimit = {this.setLimit}
-                                        hideColumnOption = {true}
-                                    />
-                                </th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                             </tr>
                         </thead>
                         <tbody className="task-table">

@@ -1,9 +1,10 @@
 import {handleResponse} from '../../../../helpers/HandleResponse';
+
 import {
     TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../env';
 import {
-    getStorage
+    getStorage,AuthenticateHeader
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 export const createKpiService = {
@@ -18,7 +19,6 @@ export const createKpiService = {
     createKPIPersonal,
     approveKPIPersonal
 };
-
 // Lấy KPI cá nhân hiện tại
 async function getCurrentKPIPersonal() {
     const token = getStorage();
@@ -26,6 +26,7 @@ async function getCurrentKPIPersonal() {
     var id = verified._id;
     const requestOptions = {
         method: 'GET',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/current/${id}`, requestOptions).then(handleResponse);
@@ -39,8 +40,8 @@ async function editKPIPersonal(id, newTarget) {
     newTarget = {...newTarget, creater: creater};
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTarget)
+        body: JSON.stringify(newTarget),
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/${id}`, requestOptions).then(handleResponse);
@@ -49,7 +50,7 @@ async function editKPIPersonal(id, newTarget) {
 function editStatusKPIPersonal(id, status) {
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' }
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`, requestOptions).then(handleResponse);
@@ -58,6 +59,7 @@ function editStatusKPIPersonal(id, status) {
 function deleteKPIPersonal(id) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/${id}`, requestOptions).then(handleResponse);
@@ -67,6 +69,7 @@ function deleteKPIPersonal(id) {
 function deleteTarget(id, kpipersonal) {
     const requestOptions = {
         method: 'DELETE',
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`, requestOptions).then(handleResponse);
@@ -76,7 +79,7 @@ function deleteTarget(id, kpipersonal) {
 function addNewTargetPersonal(newTarget) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newTarget)
     };
 
@@ -88,7 +91,7 @@ function addNewTargetPersonal(newTarget) {
 function editTargetKPIPersonal(id, newTarget) {
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newTarget)
     };
 
@@ -104,7 +107,7 @@ async function createKPIPersonal(newKPI) {
     newKPI = {...newKPI, creater: id};
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newKPI)
     };
 
@@ -115,7 +118,7 @@ async function createKPIPersonal(newKPI) {
 function approveKPIPersonal(id) {
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' }
+        headers: AuthenticateHeader()
     };
 
     return fetch(`${LOCAL_SERVER_API}/kpipersonals/approve/${id}`, requestOptions).then(handleResponse);

@@ -144,6 +144,30 @@ const seedDatabase = async () => {
             description: 'Thông báo',
             category: Terms.CATEGORY_LINKS.COMMON.NAME,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ] // tất cả 
+        },{
+            url: '/kpi-units/create',
+            description: 'Khởi tạo Kpi đơn vị',
+            role: [ roleAbstracts[2]._id]
+        },{
+            url: '/kpi-units/overview',
+            description: 'Tổng quan Kpi đơn vị',
+            role: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{
+            url: '/kpi-personals/create',
+            description: 'Khởi tạo Kpi cá nhân',
+            role: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{
+            url: '/kpi-personals/overview',
+            description:'Tổng quan Kpi cá nhân',
+            role:[roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{
+            url:'/task-management',
+            description:'Xem danh sáng công việc',
+            role: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{ // 15
+            url: '/task-management-dashboard',
+            description: 'Dashboard công việc',
+            roles: [ roleAbstracts[4]._id, roleAbstracts[3]._id, roleAbstracts[2]._id]
         }
     ]);
 

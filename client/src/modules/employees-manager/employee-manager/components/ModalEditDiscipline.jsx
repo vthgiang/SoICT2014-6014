@@ -90,15 +90,15 @@ class ModalEditDiscipline extends Component {
                                     </label>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="number">Số quyết định:<span className="required">&#42;</span></label>
+                                        <label htmlFor="number">Số quyết định:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" name="number" defaultValue={this.state.number} onChange={this.handleChange} autoComplete="off" placeholder="Số ra quyết định" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="unit">Cấp ra quyết định:<span className="required">&#42;</span></label>
+                                        <label htmlFor="unit">Cấp ra quyết định:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" name="unit" defaultValue={this.state.unit} onChange={this.handleChange} autoComplete="off" placeholder="Cấp ra quyết định" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="startDate">Ngày có hiệu lực:<span className="required">&#42;</span></label>
+                                        <label htmlFor="startDate">Ngày có hiệu lực:<span className="text-red">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -107,7 +107,7 @@ class ModalEditDiscipline extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="endDate">Ngày hết hiệu lực:<span className="required">&#42;</span></label>
+                                        <label htmlFor="endDate">Ngày hết hiệu lực:<span className="text-red">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -116,11 +116,11 @@ class ModalEditDiscipline extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="type">Hình thức kỷ luật:<span className="required">&#42;</span></label>
+                                        <label htmlFor="type">Hình thức kỷ luật:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" name="type" defaultValue={this.state.type} onChange={this.handleChange} autoComplete="off" />
                                     </div>
                                     <div className="form-group col-md-12" style={{ paddingRight: 0, paddingLeft: 0 }}>
-                                        <label htmlFor="reason">Lý do kỷ luật:<span className="required">&#42;</span></label>
+                                        <label htmlFor="reason">Lý do kỷ luật:<span className="text-red">&#42;</span></label>
                                         <textarea className="form-control" rows="3" style={{ height: 72 }} defaultValue={this.state.reason} name="reason" placeholder="Enter ..." onChange={this.handleChange}></textarea>
                                     </div>
                                 </div>

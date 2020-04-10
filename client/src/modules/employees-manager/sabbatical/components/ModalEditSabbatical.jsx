@@ -59,10 +59,9 @@ class ModalEditSabbatical extends Component {
     render() {
         const { translate } = this.props;
         var data = this.state;
-        console.log(data)
         return (
             <div style={{ display: "inline" }}>
-                <a href={`#modal-editSabbatical-${data.id}`} title={translate('sabbatical.infor_sabbatical')} data-toggle="modal"><i className="material-icons">view_list</i></a>
+                <a href={`#modal-editSabbatical-${data.id}`} title={translate('sabbatical.infor_sabbatical')} className="edit" data-toggle="modal"><i className="material-icons"></i></a>
                 <div className="modal fade" id={`modal-editSabbatical-${data.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -79,11 +78,11 @@ class ModalEditSabbatical extends Component {
                                                         </label>
                                     </div>
                                     <div className="form-group col-md-12" style={{paddingRight:0,paddingLeft:0}}>
-                                        <label className="pull-left" htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="employeeNumber">{translate('page.staff_number')}:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" name="employeeNumber" defaultValue={data.employeeNumber} disabled />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label className="pull-left" htmlFor="startDate">{translate('sabbatical.start_date')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="startDate">{translate('sabbatical.start_date')}:<span className="text-red">&#42;</span></label>
                                         <div className={'input-group date has-feedback pull-left'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -92,7 +91,7 @@ class ModalEditSabbatical extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label className="pull-left" htmlFor="endDate">{translate('sabbatical.end_date')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="endDate">{translate('sabbatical.end_date')}:<span className="text-red">&#42;</span></label>
                                         <div className={'input-group date has-feedback pull-left'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -101,11 +100,11 @@ class ModalEditSabbatical extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label className="pull-left" htmlFor="reason">{translate('sabbatical.reason')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="reason">{translate('sabbatical.reason')}:<span className="text-red">&#42;</span></label>
                                         <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" defaultValue={data.reason} onChange={this.handleChange}></textarea>
                                     </div>
                                     <div className="form-group">
-                                        <label className="pull-left" htmlFor="employeeNumber">{translate('table.status')}:<span className="required">&#42;</span></label>
+                                        <label className="pull-left" htmlFor="employeeNumber">{translate('table.status')}:<span className="text-red">&#42;</span></label>
                                         <select className="form-control" name="status" defaultValue={data.status} onChange={this.handleChange} >
                                             <option value="Đã chấp nhận">Đã chấp nhận</option>
                                             <option value="Chờ phê duyệt">Chờ phê duyệt</option>

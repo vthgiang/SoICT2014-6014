@@ -20,7 +20,7 @@ import ManageFormDocument from '../modules/super-admin-management/documents-mana
 import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
-import { Discipline} from '../modules/employees-manager/discipline/components/Discipline';
+import { Discipline} from '../modules/employees-manager/discipline/components';
 import { Sabbatical} from '../modules/employees-manager/sabbatical/components/Sabbatical';
 import { SalaryEmployee} from '../modules/employees-manager/salary-employee/components/SalaryEmployee';
 import { Timekeeping} from '../modules/employees-manager/timekeeping/components/Timekeeping';
@@ -286,7 +286,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute 
-                        isLoading={ this.props.user.isLoading }
+                        isLoading={ this.props.department.isLoading }
                         key={ 'manage_unit' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

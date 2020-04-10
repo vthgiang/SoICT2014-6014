@@ -1,32 +1,23 @@
 const KPIPersonal = require('../../../models/kpi-personal.model');
 
 // Lấy tất cả KPI cá nhân theo người thiết lập
-exports.getByMember = async (req, res) => {
-    try {
-        var kpipersonals = await KPIPersonal.find({ creater: { $in: req.params.member.split(",") } })
+exports.getByMember = async (member) => {
+    //req.params.member 
+    var kpipersonals = await KPIPersonal.find({ creater: { $in: member.split(",") } })
             .sort({ 'time': 'desc' })
             .populate("unit creater approver")
-            .populate({ path: "listtarget"});
-        res.json({
-            message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
-            content: kpipersonals
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+            .populate({ path: "listtarget"}); 
+        return {
+                message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
+                content: kpipersonals
+        };    
 }
 
 // Lấy tất cả KPI cá nhân của người thực hiện trong công việc
-exports.getKPIResponsible = async (req, res) => {
-    try {
-        var kpipersonals = await KPIPersonal.find({ creater: { $in: req.params.member.split(",") }, status: { $ne: 3 } })
+exports.getKPIResponsible = async (member) => {
+    var kpipersonals = await KPIPersonal.find({ creater: { $in: member.split(",") }, status: { $ne: 3 } })
             .populate("unit creater approver")
             .populate({ path: "listtarget"});
-        res.json({
-            message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
-            content: kpipersonals
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+        return kpipersonals;    
+        
 }

@@ -74,7 +74,6 @@ async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit,
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    console.log(id);
     newTaskTemplate = {...newTaskTemplate, creator: id};
      const requestOptions = {
          method: 'POST',

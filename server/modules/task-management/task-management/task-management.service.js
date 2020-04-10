@@ -14,257 +14,222 @@ exports.get = (req, res) => {
 }
 
 //Lấy mẫu công việc theo Id
-exports.getById = async (req, res) => {
-    try {
-        var task = await Task.findById(req.params.id)
+exports.getById = async (id) => {
+    //req.params.id
+    var task = await Task.findById(id)
             .populate({ path: "unit responsible accounatable consulted informed parent tasktemplate comments" });
         if (task.tasktemplate !== null) {
             var actionTemplates = await ActionTask.find({ tasktemplate: task.tasktemplate._id });
             var informationTemplate = await InformationTaskTemplate.find({ tasktemplate: task.tasktemplate._id });
-            res.status(200).json({
+            return {
                 "info": task,
                 "actions": actionTemplates,
                 "informations": informationTemplate
-            })
+            };
         } else {
-            res.status(200).json({"info": task});
+            return {
+                "info": task
+            };
         }
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
 }
 
 //Lấy mẫu công việc theo chức danh và người dùng
-exports.getByRole = async (req, res) => {
-    try {
-        var tasks = await Task.find({
-            role: req.params.role,
-            creator: req.params.id
-        }).populate({ path: 'tasktemplate', model: TaskTemplate });
-        res.status(200).json(tasks)
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+exports.getByRole = async (roleId,id) => {
+    //req.params.role,req.params.id
+    var tasks = await Task.find({
+        role: roleId,
+        creator: id
+    }).populate({ path: 'tasktemplate', model: TaskTemplate });
+    return tasks;
 }
 
 //Lấy công việc thực hiện chính theo id người dùng
-exports.getTaskResponsibleByUser = async (req, res) => {
-    try {
-        var taskResponsibles;
-        var perPage = Number(req.params.perpage);
-        var page = Number(req.params.number);
-        if (req.params.unit === "[]" && req.params.status === "[]") {
-            taskResponsibles = await Task.find({ responsible: { $in: [req.params.user] } }).sort({ 'createdAt': 'asc' })
+exports.getTaskResponsibleByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+    //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
+    var taskResponsibles;
+        var perPage = Number(perpageId);
+        var page = Number(numberId);
+        if (unitId === "[]" && statusId === "[]") {
+            taskResponsibles = await Task.find({ responsible: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         } else {
             taskResponsibles = await Task.find({
-                responsible: { $in: [req.params.user] },
+                responsible: { $in: [userId] },
                 $or: [
-                    { unit: { $in: req.params.unit.split(",") } },
-                    { status: { $in: req.params.status.split(",") } }
+                    { unit: { $in: unitId.split(",") } },
+                    { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         }
-        var totalCount = await Task.count({ responsible: { $in: [req.params.user] } });
+        var totalCount = await Task.count({ responsible: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
-        console.log('----------------------taskResponsibles------------------------', taskResponsibles);
-        res.status(200).json({
+        return {
             "tasks": taskResponsibles,
             "totalpage": totalPages
-        })
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+        };
 }
 
 //Lấy công việc phê duyệt theo id người dùng
-exports.getTaskAccounatableByUser = async (req, res) => {
-    try {
-        var taskAccounatables;
-        var perPage = Number(req.params.perpage);
-        var page = Number(req.params.number);
-        if (req.params.unit === "[]" && req.params.status === "[]") {
-            taskAccounatables = await Task.find({ accounatable: { $in: [req.params.user] } }).sort({ 'createdAt': 'asc' })
+exports.getTaskAccounatableByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+    //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
+    var taskAccounatables;
+        var perPage = Number(perpageId);
+        var page = Number(numberId);
+        if (unitId === "[]" && statusId === "[]") {
+            taskAccounatables = await Task.find({ accounatable: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         } else {
             taskAccounatables = await Task.find({
-                accounatable: { $in: [req.params.user] },
+                accounatable: { $in: [userId] },
                 $or: [
-                    { unit: { $in: req.params.unit.split(",") } },
-                    { status: { $in: req.params.status.split(",") } }
+                    { unit: { $in: unitId.split(",") } },
+                    { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         }
-        var totalCount = await Task.count({ accounatable: { $in: [req.params.user] } });
+        var totalCount = await Task.count({ accounatable: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
-        res.status(200).json({
+        return {
             "tasks": taskAccounatables,
             "totalpage": totalPages
-        })
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+        };
 }
 
 //Lấy công việc hỗ trợ theo id người dùng
-exports.getTaskConsultedByUser = async (req, res) => {
-    try {
-        var taskConsulteds;
-        var perPage = Number(req.params.perpage);
-        var page = Number(req.params.number);
-        if (req.params.unit === "[]" && req.params.status === "[]") {
-            taskConsulteds = await Task.find({ consulted: { $in: [req.params.user] } }).sort({ 'createdAt': 'asc' })
+exports.getTaskConsultedByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+    //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
+    var taskConsulteds;
+        var perPage = Number(perpageId);
+        var page = Number(numberId);
+        if (unitId === "[]" && statusId === "[]") {
+            taskConsulteds = await Task.find({ consulted: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         } else {
             taskConsulteds = await Task.find({
-                consulted: { $in: [req.params.user] },
+                consulted: { $in: [userId] },
                 $or: [
-                    { unit: { $in: req.params.unit.split(",") } },
-                    { status: { $in: req.params.status.split(",") } }
+                    { unit: { $in: unitId.split(",") } },
+                    { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         }
-        var totalCount = await Task.count({ consulted: { $in: [req.params.user] } });
+        var totalCount = await Task.count({ consulted: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
-        res.status(200).json({
+        return {
             "tasks": taskConsulteds,
             "totalpage": totalPages
-        })
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+        };
 }
 
 //Lấy công việc thiết lập theo id người dùng
-exports.getTaskCreatorByUser = async (req, res) => {
-    try {
-        var taskCreators;
-        var perPage = Number(req.params.perpage);
-        var page = Number(req.params.number);
-        if (req.params.unit === "[]" && req.params.status === "[]") {
-            taskCreators = await Task.find({ creator: { $in: [req.params.user] } }).sort({ 'createdAt': 'asc' })
+exports.getTaskCreatorByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+    //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
+    var taskCreators;
+        var perPage = Number(perpageId);
+        var page = Number(numberId);
+        if (unitId === "[]" && statusId === "[]") {
+            taskCreators = await Task.find({ creator: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         } else {
             taskCreators = await Task.find({
-                creator: { $in: [req.params.user] },
+                creator: { $in: [userId] },
                 $or: [
-                    { unit: { $in: req.params.unit.split(",") } },
-                    { status: { $in: req.params.status.split(",") } }
+                    { unit: { $in: unitId.split(",") } },
+                    { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         }
-        var totalCount = await Task.count({ creator: { $in: [req.params.user] } });
+        var totalCount = await Task.count({ creator: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
-        res.status(200).json({
+        return {
             "tasks": taskCreators,
-            "totalpage": totalPages
-        })
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+            "totalpage": totalPages 
+        };
 }
 
 //Lấy công việc quan sát theo id người dùng
-exports.getTaskInformedByUser = async (req, res) => {
-    try {
-        var taskInformeds;
-        var perPage = Number(req.params.perpage);
-        var page = Number(req.params.number);
-        if (req.params.unit === "[]" && req.params.status === "[]") {
-            taskInformeds = await Task.find({ informed: { $in: [req.params.user] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage)
+exports.getTaskInformedByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+    //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
+    var taskInformeds;
+        var perPage = Number(perpageId);
+        var page = Number(numberId);
+        if (unitId === "[]" && statusId === "[]") {
+            taskInformeds = await Task.find({ informed: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+                .skip(perPage * (page - 1)).limit.apply(perPage)
                 .populate({ path: "unit creator parent" });
         } else {
             taskInformeds = await Task.find({
-                informed: { $in: [req.params.user] },
+                informed: { $in: [userId] },
                 $or: [
-                    { unit: { $in: req.params.unit.split(",") } },
-                    { status: { $in: req.params.status.split(",") } }
+                    { unit: { $in: unitId.split(",") } },
+                    { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
         }
-        var totalCount = await Task.count({ informed: { $in: [req.params.user] } });
+        var totalCount = await Task.count({ informed: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
-        res.status(200).json({
+        return {
             "tasks": taskInformeds,
             "totalpage": totalPages
-        })
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+        };
 }
 
 //Tạo công việc mới
-exports.create = async (req, res) => {
+exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,descriptionId,priorityId,tasktemplateId,roleId,kpiId,responsibleId,accounatableId,consultedId,informedId) => {
+    //req.body.parent,req.body.startdate,req.body.enddate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.tasktemplate,req.body.role,req.body.kpi,req.body.responsible,req.body.accounatable,req.body.consulted,req.body.informed
     console.log('-------------------------đang them cong viec--------------------');
-    try {
-        // console.log(req.body);
+            // console.log(req.body);
         // Lấy thông tin công việc cha
         var level = 1;
-        if (mongoose.Types.ObjectId.isValid(req.body.parent)) {
-            var parent = await Task.findById(req.body.parent);
+        if (mongoose.Types.ObjectId.isValid(parentId)) {
+            var parent = await Task.findById(parentId);
             if (parent) level = parent.level + 1;
         }
         // console.log(parent);
         // convert thời gian từ string sang date
-        var starttime = req.body.startdate.split("-");
+        var starttime = startdateId.split("-");
         var startdate = new Date(starttime[2], starttime[1]-1, starttime[0]);
-        var endtime = req.body.enddate.split("-");
+        var endtime = enddateId.split("-");
         var enddate = new Date(endtime[2], endtime[1]-1, endtime[0]);
         var task = await Task.create({ //Tạo dữ liệu mẫu công việc
-            unit: req.body.unit,
-            creator: req.body.creator, //id của người tạo
-            name: req.body.name,
-            description: req.body.description,
+            unit: unitId,
+            creator: creatorId, //id của người tạo
+            name: nameId,
+            description: descriptionId,
             startdate: startdate,
             enddate: enddate,
-            priority: req.body.priority,
-            tasktemplate: req.body.tasktemplate,
-            role: req.body.role,
-            parent: req.body.parent,
+            priority: priorityId,
+            tasktemplate: tasktemplateId,
+            role: roleId,
+            parent: parentId,
             level: level,
-            kpi: req.body.kpi,
-            responsible: req.body.responsible,
-            accounatable: req.body.accounatable,
-            consulted: req.body.consulted,
-            informed: req.body.informed,
+            kpi: kpiId,
+            responsible: responsibleId,
+            accounatable: accounatableId,
+            consulted: consultedId,
+            informed: informedId,
         });
         console.log('----------------đã thêm task---------------------: ', task);
-        if(req.body.tasktemplate !== null){
+        if(tasktemplateId !== null){
             var tasktemplate = await TaskTemplate.findByIdAndUpdate(
-                req.body.tasktemplate, { $inc: { 'count': 1} }, { new: true }
+                tasktemplateId, { $inc: { 'count': 1} }, { new: true }
             );
         }
         task = await task.populate({path: "unit creator parent"}).execPopulate();
-        res.status(200).json({
-            message: "Create Task Template Successfully!",
-            data: task
-        });
-    } catch (error) {
-        res.status(400).json(error);
-    }
+        return task;
 }
 
-// Sửa thông tin công việc
-
-
 //Xóa công việc
-exports.delete = async () => {
-    try {
-        var template = await WorkTemplate.findByIdAndDelete(req.params.id); // xóa mẫu công việc theo id
+exports.delete = async (id) => {
+    //req.params.id
+    var template = await WorkTemplate.findByIdAndDelete(id); // xóa mẫu công việc theo id
         var privileges = await Privilege.deleteMany({
-            resource: req.params.id, //id của task template
+            resource: id, //id của task template
             resourceType: "TaskTemplate"
         });
-
-        res.status(200).json("Delete success");
-    } catch (error) {
-        res.status(400).json(error);
-    }
-    console.log("Delete Task Template")
 }

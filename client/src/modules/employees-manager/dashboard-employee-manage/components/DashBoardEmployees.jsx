@@ -33,45 +33,47 @@ class DashBoardEmployees extends Component {
     }
     render() {
         return (
-            <React.Fragment>
-                <div className="row">
-                    <LineAndBarChart
-                        dataset={this.state.dataset}
-                        nameChart={"Biểu đồ tỷ lệ % quỹ lương công ty/doanh thu 12 tháng gần nhất"}
-                        calculationUnit={"%"}
-                        nameLableBar={"% Tổng lương"}
-                        nameLableLine={"% Mục tiêu"}
-                    />
-                    <LineAndBarChart
-                        dataset={this.state.dataset}
-                        nameChart={"Biểu đồ tỷ lệ % quỹ lương khối kinh doanh/doanh thu 12 tháng gần nhất"}
-                        calculationUnit={"%"}
-                        nameLableBar={"% Kinh doanh"}
-                        nameLableLine={"% Mục tiêu"}
-                    />
-                    <LineAndBarChart
-                        dataset={this.state.dataset}
-                        nameChart={"Biểu đồ tỷ lệ % quỹ lương khối quản trị/doanh thu 12 tháng gần nhất"}
-                        calculationUnit={"%"}
-                        nameLableBar={"% Quản trị"}
-                        nameLableLine={"% Mục tiêu"}
-                    />
-                    <LineAndBarChart
-                        dataset={this.state.dataset}
-                        nameChart={"Biểu đồ tỷ lệ % quỹ lương khối sản xuất/doanh thu 12 tháng gần nhất"}
-                        calculationUnit={"%"}
-                        nameLableBar={"% Sản xuất"}
-                        nameLableLine={"% Mục tiêu"}
-                    />
-                    <ThreeBarChart
-                        nameChart={"Biểu đồ tỷ lệ % quỹ lương các khối chức năng/doanh thu 12 tháng gần nhất"}
-                        calculationUnit={"%"}
-                        nameField1={"% Kinh doanh"}
-                        nameField2={"% Sản xuất"}
-                        nameField3={"% Quản trị"}
-                    />
+            <div className="box">
+                <div className="box-body qlcv">
+                    <div className="row">
+                        <LineAndBarChart
+                            dataset={this.state.dataset}
+                            nameChart={"Biểu đồ tỷ lệ % quỹ lương công ty/doanh thu 12 tháng gần nhất"}
+                            calculationUnit={"%"}
+                            nameLableBar={"% Tổng lương"}
+                            nameLableLine={"% Mục tiêu"}
+                        />
+                        <LineAndBarChart
+                            dataset={this.state.dataset}
+                            nameChart={"Biểu đồ tỷ lệ % quỹ lương khối kinh doanh/doanh thu 12 tháng gần nhất"}
+                            calculationUnit={"%"}
+                            nameLableBar={"% Kinh doanh"}
+                            nameLableLine={"% Mục tiêu"}
+                        />
+                        <LineAndBarChart
+                            dataset={this.state.dataset}
+                            nameChart={"Biểu đồ tỷ lệ % quỹ lương khối quản trị/doanh thu 12 tháng gần nhất"}
+                            calculationUnit={"%"}
+                            nameLableBar={"% Quản trị"}
+                            nameLableLine={"% Mục tiêu"}
+                        />
+                        <LineAndBarChart
+                            dataset={this.state.dataset}
+                            nameChart={"Biểu đồ tỷ lệ % quỹ lương khối sản xuất/doanh thu 12 tháng gần nhất"}
+                            calculationUnit={"%"}
+                            nameLableBar={"% Sản xuất"}
+                            nameLableLine={"% Mục tiêu"}
+                        />
+                        <ThreeBarChart
+                            nameChart={"Biểu đồ tỷ lệ % quỹ lương các khối chức năng/doanh thu 12 tháng gần nhất"}
+                            calculationUnit={"%"}
+                            nameField1={"% Kinh doanh"}
+                            nameField2={"% Sản xuất"}
+                            nameField3={"% Quản trị"}
+                        />
+                    </div>
                 </div>
-            </React.Fragment>
+            </div>
         );
     }
 };

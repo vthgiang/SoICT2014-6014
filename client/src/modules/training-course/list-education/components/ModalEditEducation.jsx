@@ -105,11 +105,11 @@ class ModalEditEducation extends Component {
                                                         </label>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="numberEducation">Mã chương trình đào tạo:<span className="required">&#42;</span></label>
+                                            <label htmlFor="numberEducation">Mã chương trình đào tạo:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" defaultValue={data.numberEducation} name="numberEducation" disabled />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="nameEducation">Tên chương trình đào tạo:<span className="required">&#42;</span></label>
+                                            <label htmlFor="nameEducation">Tên chương trình đào tạo:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" defaultValue={data.nameEducation} name="nameEducation" onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">

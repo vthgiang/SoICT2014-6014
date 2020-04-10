@@ -12,7 +12,7 @@ class ModalDetailTrainingPlan extends Component {
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 style={{ textAlign: "center" }} className="modal-title">Chi tiết khoá đào tạo: {data.nameCourse} - {data.numberCourse}</h4>
+                                <h4 className="modal-title">Chi tiết khoá đào tạo: {data.nameCourse} - {data.numberCourse}</h4>
                             </div>
                             <div className="modal-body" style={{ paddingTop: 0 }}>
                                 <div className="nav-tabs-custom">
@@ -34,7 +34,7 @@ class ModalDetailTrainingPlan extends Component {
                                                             <strong>Thời gian bắt đầu:&emsp; </strong>
                                                             {data.startDate}
                                                         </div>
-                                                        <div className="form-group">
+                                                        <div className="form-group" >
                                                             <strong>Địa điểm đào tạo:&emsp; </strong>
                                                             {data.address}
                                                         </div>
