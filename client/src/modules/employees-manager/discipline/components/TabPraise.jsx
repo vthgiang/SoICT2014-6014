@@ -17,6 +17,7 @@ class TabPraise extends Component {
             department: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
@@ -34,6 +35,18 @@ class TabPraise extends Component {
         script1.async = true;
         script1.defer = true;
         document.body.appendChild(script1);
+    }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#praise-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
 
     displayTreeSelect = (data, i) => {
@@ -57,10 +70,12 @@ class TabPraise extends Component {
         }
         else return null
     }
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getListPraise(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
@@ -131,7 +146,7 @@ class TabPraise extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}:</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')}  autoComplete="off" />
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label htmlFor="number" className="form-control-static">{translate('page.number_decisions')}:</label>
@@ -139,18 +154,18 @@ class TabPraise extends Component {
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover" >
+                    <table id="praise-table" className="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
-                                <th style={{ width: "12%" }}>{translate('table.employee_number')}</th>
+                                <th >{translate('table.employee_number')}</th>
                                 <th>{translate('table.employee_name')}</th>
-                                <th style={{ width: "15%" }}>{translate('discipline.decision_day')}</th>
-                                <th style={{ width: "12%" }}>{translate('page.number_decisions')}</th>
+                                <th >{translate('discipline.decision_day')}</th>
+                                <th >{translate('page.number_decisions')}</th>
                                 <th>{translate('table.unit')}</th>
-                                <th style={{ width: "18%" }}>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th >{translate('table.position')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="praise-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),
@@ -165,10 +180,9 @@ class TabPraise extends Component {
                                     />
                                 </th>
                             </tr>
-
                         </thead>
                         <tbody>
-                            {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                            {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><th colSpan={7-this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
                                 listPraise.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>

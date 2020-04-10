@@ -63,7 +63,7 @@ class ModalEditHoliday extends Component {
             <React.Fragment>
                 {(typeof data === 'undefined' || data.length === 0) ? <div></div> :
                     <div style={{ display: "inline" }}>
-                        <a href={`#modal-editHoliday-${data._id}`} title="" data-toggle="modal"><i className="material-icons">view_list</i></a>
+                        <a href={`#modal-editHoliday-${data._id}`} title="" className="edit" data-toggle="modal"><i className="material-icons"></i></a>
                         <div className="modal fade" id={`modal-editHoliday-${data._id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div className="modal-dialog">
                                 <div className="modal-content">

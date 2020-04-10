@@ -22,6 +22,7 @@ class Sabbatical extends Component {
             status: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
@@ -35,6 +36,18 @@ class Sabbatical extends Component {
         script1.async = true;
         script1.defer = true;
         document.body.appendChild(script1);
+    }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#sabbatical-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
 
     displayTreeSelect = (data, i) => {
@@ -64,10 +77,12 @@ class Sabbatical extends Component {
     notifyerror = (message) => toast.error(message);
     notifywarning = (message) => toast.warning(message);
 
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getListSabbatical(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
@@ -98,11 +113,14 @@ class Sabbatical extends Component {
         });
 
     }
-
-    handleSunmitSearch = async () => {
-        await this.setState({
-            month: this.refs.month.value
+    handleMonthChange = (value) => {
+        this.setState({
+            ...this.state,
+            month: value
         });
+    }
+
+    handleSunmitSearch = () => {
         this.props.getListSabbatical(this.state);
     }
     render() {
@@ -130,13 +148,13 @@ class Sabbatical extends Component {
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">{translate('sabbatical.list_sabbatical')} :</h4>
+                            <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
                         </div>
                         <button type="button" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title={translate('sabbatical.add_sabbatical_title')} data-toggle="modal" data-target="#modal-addNewSabbatical">{translate('sabbatical.add_sabbatical')}</button>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}:</label>
+                            <label className="form-control-static">{translate('page.unit')}</label>
                             <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
                                 <option value="All" level={1}>--Tất cả---</option>
                                 {
@@ -146,7 +164,7 @@ class Sabbatical extends Component {
                             </select>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}:</label>
+                            <label className="form-control-static">{translate('page.position')}</label>
                             <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
                                 <option value="All">--Tất cả--</option>
                                 {
@@ -158,33 +176,39 @@ class Sabbatical extends Component {
                             </select>
                         </div>
                     </div>
-                    <div className="form-inline" style={{marginBottom:10}}>
+                    <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.staff_number')}:</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')}  autoComplete="off" />
+                            <label className="form-control-static">{translate('page.staff_number')}</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
+                        <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
-                                nameLabel={translate('page.month')}
-                                classDatePicker="datepicker month-year"
-                                defaultValue={this.formatDate(Date.now())}
-                                ref="month"
+                                id="month"
+                                dateFormat="month-year"
+                                value={this.formatDate(Date.now())}
+                                onChange={this.handleMonthChange}
                             />
-                            
+
                         </div>
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}:</label>
+                            <label className="form-control-static">{translate('page.status')}</label>
                             <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
                                 <option value="All">--Tất cả--</option>
                                 <option value="Đã chấp nhận">Đã chấp nhận</option>
                                 <option value="Chờ phê duyệt">Chờ phê duyệt</option>
                                 <option value="Không chấp nhận">Không chấp nhận</option>
                             </select>
+                        </div>
+                        <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
 
-                    <table className="table table-striped table-bordered table-hover">
+                    <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "10%" }}>{translate('table.employee_number')}</th>
@@ -195,9 +219,9 @@ class Sabbatical extends Component {
                                 <th style={{ width: "12%" }}>{translate('table.unit')}</th>
                                 <th style={{ width: "14%" }}>{translate('table.position')}</th>
                                 <th style={{ width: "11%" }}>{translate('table.status')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="sabbatical-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),
@@ -216,7 +240,7 @@ class Sabbatical extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><td colSpan={9}><center>{translate('table.no_data')}</center></td></tr> :
+                            {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><th colSpan={9 - this.state.hideColumn.length}><center>{translate('table.no_data')}</center></th></tr> :
                                 listSabbatical.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>

@@ -16,6 +16,7 @@ class TabDiscipline extends Component {
             department: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
@@ -28,6 +29,19 @@ class TabDiscipline extends Component {
         script.defer = true;
         document.body.appendChild(script);
         this.props.getListDiscipline(this.state);
+    }
+
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#discipline-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
     displayTreeSelect = (data, i) => {
         i = i + 1;
@@ -50,10 +64,12 @@ class TabDiscipline extends Component {
         }
         else return null
     }
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getListDiscipline(this.state);
-        window.$(`#setting-table2`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
@@ -132,19 +148,19 @@ class TabDiscipline extends Component {
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover" >
+                    <table id="discipline-table" className="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>{translate('table.employee_number')}</th>
+                                <th >{translate('table.employee_number')}</th>
                                 <th>{translate('table.employee_name')}</th>
-                                <th style={{ width: "13%" }}>{translate('discipline.start_date')}</th>
-                                <th style={{ width: "13%" }}>{translate('discipline.end_date')}</th>
+                                <th >{translate('discipline.start_date')}</th>
+                                <th >{translate('discipline.end_date')}</th>
                                 <th>{translate('page.number_decisions')}</th>
                                 <th>{translate('table.unit')}</th>
-                                <th style={{ width: "15%" }}>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th >{translate('table.position')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="discipline-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),
@@ -162,7 +178,7 @@ class TabDiscipline extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDiscipline === 'undefined' || listDiscipline.length === 0) ? <tr><td colSpan={8}><center> Không có dữ liệu</center></td></tr> :
+                            {(typeof listDiscipline === 'undefined' || listDiscipline.length === 0) ? <tr><th colSpan={8-this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
                                 listDiscipline.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>

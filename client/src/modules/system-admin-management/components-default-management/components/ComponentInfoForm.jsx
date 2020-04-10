@@ -40,7 +40,7 @@ class ComponentInfoForm extends Component {
             <React.Fragment>
                 <ModalButton modalID={`modal-edit-component-${componentId}`} button_type="edit" title={translate('manage_component.edit')}/>
                 <ModalDialog
-                    size='50' func={this.save} type="edit"
+                    size='50' func={this.save}
                     modalID={`modal-edit-component-${componentId}`}
                     formID={`form-edit-component-${componentId}`}
                     title={translate('manage_component.edit')}

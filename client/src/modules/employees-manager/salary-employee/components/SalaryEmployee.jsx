@@ -7,10 +7,8 @@ import { SalaryActions } from '../redux/actions';
 import { ModalAddSalary } from './ModalAddSalary';
 import { ModalImportFileSalary } from './ModalImportFileSalary';
 import { ModalEditSalary } from './ModalEditSalary';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
+import { ActionColumn, DeleteNotification, PaginateBar, DatePicker } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification, DatePicker } from '../../../../common-components';
 
 class SalaryEmployee extends Component {
     constructor(props) {
@@ -22,6 +20,7 @@ class SalaryEmployee extends Component {
             department: "All",
             page: 0,
             limit: 5,
+            hideColumn: []
         }
         this.handleChange = this.handleChange.bind(this);
     }
@@ -34,6 +33,19 @@ class SalaryEmployee extends Component {
         script1.defer = true;
         document.body.appendChild(script1);
     }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#salary-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
+    }
+
     displayTreeSelect = (data, i) => {
         i = i + 1;
         if (data !== undefined) {
@@ -61,10 +73,12 @@ class SalaryEmployee extends Component {
     notifyerror = (message) => toast.error(message);
     notifywarning = (message) => toast.warning(message);
 
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
         this.props.getListSalary(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * (this.state.limit);
@@ -80,12 +94,14 @@ class SalaryEmployee extends Component {
         });
 
     }
+    handleMonthChange = (value) => {
+        this.setState({
+            ...this.state,
+            month: value
+        });
+    }
 
-    handleSunmitSearch = async () => {
-        console.log(this.refs.month.value);
-        await this.setState({
-            month: this.refs.month.value
-        })
+    handleSunmitSearch = () => {
         this.props.getListSalary(this.state);
     }
     formatDate(date) {
@@ -139,7 +155,7 @@ class SalaryEmployee extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}:</label>
+                            <label className="form-control-static">{translate('page.unit')}</label>
                             <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
                                 <option value="All" level={1}>--Tất cả---</option>
                                 {
@@ -149,7 +165,7 @@ class SalaryEmployee extends Component {
                             </select>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}:</label>
+                            <label className="form-control-static">{translate('page.position')}</label>
                             <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
                                 <option value="All">--Tất cả--</option>
                                 {
@@ -163,21 +179,22 @@ class SalaryEmployee extends Component {
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.staff_number')}:</label>
+                            <label className="form-control-static">{translate('page.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
-                                nameLabel={translate('page.month')}
-                                classDatePicker="datepicker month-year"
-                                defaultValue={this.formatDate(Date.now())}
-                                ref="month"
+                                id="month"
+                                dateFormat="month-year"
+                                value={this.formatDate(Date.now())}
+                                onChange={this.handleMonthChange}
                             />
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
 
-                    <table className="table table-bordered table-striped table-hover">
+                    <table id="salary-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('table.employee_number')}</th>
@@ -186,9 +203,9 @@ class SalaryEmployee extends Component {
                                 <th>{translate('table.total_salary')}</th>
                                 <th>{translate('table.unit')}</th>
                                 <th>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="salary-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),
@@ -205,7 +222,7 @@ class SalaryEmployee extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('table.no_data')}</center></td></tr> :
+                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><th colSpan={7 - this.state.hideColumn.length}><center> {translate('table.no_data')}</center></th></tr> :
                                 listSalary.map((x, index) => {
 
                                     let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
