@@ -471,8 +471,8 @@ const sampleCompanyData = async () => {
             company: xyz._id
         },
         { // Tạo button Thêm mới
-            name: 'create-add-button',
-            description: 'Tạo button thêm mới',
+            name: 'create-task-template-button',
+            description: 'Button thêm mới mẫu công việc',
             company: xyz._id
         }
     ]);
@@ -480,9 +480,9 @@ const sampleCompanyData = async () => {
     await notificationLink.components.push(components[0]._id);
     await notificationLink.save();
 
-    const addButtonLink = await Link.findById(links[27]._id);
-    await addButtonLink.components.push(components[1]._id);
-    await addButtonLink.save();
+    const taskTemplateManagementLink = await Link.findById(links[27]._id);
+    await taskTemplateManagementLink.components.push(components[1]._id);
+    await taskTemplateManagementLink.save();
 
     //gán quyền tạo thông báo cho admin, superadmin
     var data = [roles[0]._id, admin._id].map( role => {
@@ -493,8 +493,8 @@ const sampleCompanyData = async () => {
         };
     });
 
-    //gán quyền tạo button cho admin, superadmin
-    var data2 = [roles[0]._id, admin._id].map( role => {
+    //gán quyền component tạo task template cho Dean
+    var data2 = [roles[1]._id].map( role => {
         return {
             resourceId: components[1]._id,
             resourceType: 'Component',
@@ -504,7 +504,7 @@ const sampleCompanyData = async () => {
 
     var privileges_component = await Privilege.insertMany(data);
     console.log("privilege component: ", privileges_component);
-    var privileges_component2 = await Privilege.insertMany(data2);
+    privileges_component = await Privilege.insertMany(data2);
 
     //END
 
@@ -541,11 +541,6 @@ const sampleCompanyData = async () => {
         },
         {
             resourceId: links[25]._id, //notifications
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        },
-        {
-            resourceId: links[27]._id, //Mẫu công việc
             resourceType: 'Link',
             roleId: roles[0]._id
         },
@@ -657,11 +652,6 @@ const sampleCompanyData = async () => {
         },
         {
             resourceId: links[26]._id,
-            resourceType: 'Link',
-            roleId: admin._id
-        },
-        {
-            resourceId: links[27]._id, //Mẫu công việc
             resourceType: 'Link',
             roleId: admin._id
         },
