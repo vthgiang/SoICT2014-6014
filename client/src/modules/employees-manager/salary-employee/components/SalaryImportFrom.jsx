@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { EmployeeManagerActions } from '../../employee-manager/redux/actions';
 import 'react-toastify/dist/ReactToastify.css';
 import { SalaryActions } from '../redux/actions';
-class ModalImportFileSalary extends Component {
+class SalaryImportFrom extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -206,5 +206,5 @@ const actionCreators = {
     importSalary: SalaryActions.importSalary,
 };
 
-const importSalary = connect(mapState, actionCreators)(withTranslate(ModalImportFileSalary));
-export { importSalary as ModalImportFileSalary };
+const importSalary = connect(mapState, actionCreators)(withTranslate(SalaryImportFrom));
+export { importSalary as SalaryImportFrom };

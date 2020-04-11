@@ -1,12 +1,6 @@
-import {
-    SabbaticalConstants
-} from "./constants";
-import {
-    SabbaticalService
-} from "./services";
-import {
-    AlertActions
-} from "../../../alert/redux/actions";
+import { SabbaticalConstants } from "./constants";
+import { SabbaticalService } from "./services";
+import { AlertActions } from "../../../alert/redux/actions";
 export const SabbaticalActions = {
     getListSabbatical,
     createNewSabbatical,

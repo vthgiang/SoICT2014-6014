@@ -1,134 +1,87 @@
-import {
-    SalaryConstants
-} from './constants';
+import { SalaryConstants } from './constants';
 const initState = {
+    isLoading: "",
     listSalary: [],
+    totalList: "",
+    importSalary:"",
     checkSalary: "",
     checkArraySalary: [],
+    error:"",
 }
 export function salary(state = initState, action) {
     switch (action.type) {
         case SalaryConstants.GET_SALARY_REQUEST:
+        case SalaryConstants.CREATE_SALARY_REQUEST:
+        case SalaryConstants.UPDATE_SALARY_REQUEST:
+        case SalaryConstants.DELETE_SALARY_REQUEST:
+        case SalaryConstants.IMPORT_SALARY_REQUEST:
+        case SalaryConstants.CHECK_ARRAY_SALARY_REQUEST:
+        case SalaryConstants.CHECK_SALARY_REQUEST:
             return {
                 ...state,
-                isLoading: true,
+                isLoading: true
             };
         case SalaryConstants.GET_SALARY_SUCCESS:
             return {
                 ...state,
-                listSalary: action.listSalary.content.listSalary,
-                    totalList: action.listSalary.content.totalList,
-                    isLoading: false,
-            };
-        case SalaryConstants.GET_SALARY_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
+                listSalary: action.payload.listSalary,
+                totalList: action.payload.totalList,
             };
-        case SalaryConstants.CREATE_SALARY_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
-            };
+
         case SalaryConstants.CREATE_SALARY_SUCCESS:
             return {
                 ...state,
+                isLoading: false,
                 listSalary: [
-                        ...state.listSalary,
-                        action.newSalary.content
-                    ],
-                    isLoading: false,
-            };
-        case SalaryConstants.CREATE_SALARY_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-        case SalaryConstants.DELETE_SALARY_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
-            };
-        case SalaryConstants.DELETE_SALARY_SUCCESS:
-            return {
-                ...state,
-                listSalary: state.listSalary.filter(Salary => (Salary._id !== action.salaryDelete.content._id)),
-                    isLoading: false,
-            };
-        case SalaryConstants.DELETE_SALARY_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-        case SalaryConstants.UPDATE_SALARY_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
+                    ...state.listSalary,
+                    action.payload
+                ],  
             };
         case SalaryConstants.UPDATE_SALARY_SUCCESS:
             return {
                 ...state,
-                listSalary: state.listSalary.map(Salary =>
-                        Salary._id === action.infoSalary.content._id ?
-                        action.infoSalary.content : Salary
-                    ),
-                    isLoading: false,
-            };
-        case SalaryConstants.UPDATE_SALARY_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
+                listSalary: state.listSalary.map(salary => salary._id === action.payload._id ? action.payload : salary)   
             };
-
-        case SalaryConstants.CHECK_ARRAY_SALARY_REQUEST:
+        case SalaryConstants.DELETE_SALARY_SUCCESS:
             return {
                 ...state,
-                isloading: true
-            };
-        case SalaryConstants.CHECK_ARRAY_SALARY_SUCCESS:
-            return {
-                ...state,
-                checkArraySalary: [...action.checkArraySalary.content],
-                    isloading: false
-            };
-        case SalaryConstants.CHECK_ARRAY_SALARY_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
-            };
-        case SalaryConstants.CHECK_SALARY_REQUEST:
-            return {
-                ...state,
-                isloading: true
-            };
-        case SalaryConstants.CHECK_SALARY_SUCCESS:
-            return {
-                ...state,
-                checkSalary: action.checkSalary.content,
-                    isloading: false
-            };
-        case SalaryConstants.CHECK_SALARY_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-
-        case SalaryConstants.IMPORT_SALARY_REQUEST:
-            return {
-                ...state,
-                isloading: true
+                listSalary: state.listSalary.filter(salary => (salary._id !== action.payload._id)),
             };
         case SalaryConstants.IMPORT_SALARY_SUCCESS:
             return {
                 ...state,
-                importSalary: action.importSalary.content,
-                    isloading: false
-            };
-        case SalaryConstants.IMPORT_SALARY_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
+                importSalary: action.payload,  
             };
+
+        case SalaryConstants.CHECK_SALARY_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                checkSalary: action.payload,
+            };
+        case SalaryConstants.CHECK_ARRAY_SALARY_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                checkArraySalary: [...action.payload],
+            };
+        case SalaryConstants.GET_SALARY_FAILURE:
+        case SalaryConstants.CREATE_SALARY_FAILURE:
+        case SalaryConstants.UPDATE_SALARY_FAILURE:
+        case SalaryConstants.DELETE_SALARY_FAILURE:
+        case SalaryConstants.IMPORT_SALARY_FAILURE:
+        case SalaryConstants.CHECK_ARRAY_SALARY_FAILURE:
+        case SalaryConstants.CHECK_SALARY_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error.message
+            };
+
         default:
             return state
     }
