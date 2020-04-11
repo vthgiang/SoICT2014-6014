@@ -6,11 +6,11 @@ import { selelectMultiScript } from './bootstrap-multiselect.js'
 class SelectMulti extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
 
-    componentDidMount(){
-        if (document.getElementById("script-select-multi") === null){
+    componentDidMount() {
+        if (document.getElementById("script-select-multi") === null) {
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.id = "script-select-multi";
@@ -18,8 +18,14 @@ class SelectMulti extends Component {
             document.body.appendChild(script);
         }
 
-        const { id, options } = this.props;
+        const { id, options, onChange } = this.props;
         window.$("#" + id).multiselect(options);
+        if (onChange !== undefined) {
+            window.$("#" + id).on("change", () => {
+                let value = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
+                onChange(value)
+            })
+        }
     }
 
     componentDidUpdate() {
@@ -29,20 +35,20 @@ class SelectMulti extends Component {
         window.$("#" + id).multiselect('select', defaultValue);
     }
 
-    render() { 
+    render() {
         const { id, items, defaultValue } = this.props;
-        return ( 
+        return (
             <React.Fragment>
                 <div className="selectmulti">
-                    <select className="form-control" style ={{display: "none"}} id={id} multiple="multiple" defaultValue={defaultValue}>
+                <select className="form-control" style ={{display: "none"}} ref="selectmulti" id={id} multiple="multiple" defaultValue={defaultValue} onChange={()=>{}}>
                         {items.map(item => {
                             return <option key={item.value} value={item.value}>{item.text}</option>
                         })}
                     </select>
                 </div>
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 export { SelectMulti };
