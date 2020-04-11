@@ -4,6 +4,21 @@ export default {
         error: {
             email_does_not_exist: 'Email này đã được sử dụng',
             field_invalid: 'Trường nhập vào không hợp lệ',
+            
+            // Quản lý nghỉ phép
+            staff_code_not_find: 'Mã nhân viên không tồn tại',
+            start_date_sabbatical_required:'Thời gian bắt đầu không được để trống',
+            end_date_sabbatical_required:'Thời gian kết thúc không được để trống',
+            reason_sabbatical_required:'Lý do không được để trống',
+            status_sabbatical_required:'Trạng thái không được để trống',
+            create_sabbatical_success:'Thêm đơn xin nghỉ phép thành công',
+            create_sabbatical_faile: 'Thêm đơn xin nghỉ phép thất bại',
+            delete_sabbatical_success: 'Xoá đơn xin nghỉ phép thành công',
+            delete_sabbatical_faile: 'Xoá đơn xin nghỉ phép thất bại',
+            edit_sabbatical_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
+            edit_sabbatical_faile : 'Chỉnh sửa đơn xin nghỉ phép thất bại',
+
+
         },
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
@@ -109,7 +124,8 @@ export default {
             close: 'Đóng',
             create: 'Thêm mới',
             note: 'là các trường bắt buộc phải nhập',
-            add_success: 'Thêm mới thành công'
+            add_success: 'Thêm mới thành công',
+            add_faile: 'Thêm mới thất bại',
         },
         page: {
             unit: 'Đơn vị',
@@ -118,7 +134,9 @@ export default {
             status: 'Trạng thái',
             staff_number: 'Mã nhân viên',
             add_search: 'Tìm kiếm',
-            number_decisions: 'Số quyết định'
+            number_decisions: 'Số quyết định',
+            all_unit: 'Chọn tất cả các đơn vị',
+            non_unit: 'Chọn đơn vị'
         },
 
         menu: {
@@ -165,7 +183,7 @@ export default {
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
 
             notifications: 'Thông báo',
-            
+
             tasks: 'Quản lý công việc',
             task_management: 'Xem danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
@@ -313,22 +331,28 @@ export default {
             check_msnv: 'Mã số nhân viên không tồn tại',
             check_main_salary: 'Bạn chưa nhập tiền lương chính',
             check_month: 'Bạn chưa nhập tháng lương',
+
         },
         sabbatical: {
             list_sabbatical: 'Danh sách đơn xin nghỉ',
             add_sabbatical: 'Thêm đơn xin nghỉ',
             add_sabbatical_title: 'Thêm mới đơn xin nghỉ phép',
-            infor_sabbatical: 'Thông tin nghỉ phép',
+            edit_sabbatical: 'Chỉnh sửa thông tin nghỉ phép',
             delete_sabbatical: 'Xoá thông tin nghỉ phép',
             start_date: 'Ngày bắt đầu',
             end_date: 'Ngày kết thúc',
             reason: 'Lý do',
-            check_null_msnv: 'Bạn chưa nhập mã nhân viên',
-            check_msnv: 'Mã số nhân viên không tồn tại',
-            check_start_day: 'Bạn chưa nhập ngày bắt đầu',
-            check_end_day: 'Bạn chưa nhập ngày kết thúc',
-            check_reason: 'Bạn chưa nhập lý do',
-            check_status: 'Bạn chưa nhập trạng thái',
+            check_null_msnv: 'Mã nhân viên không được để trống',
+            check_msnv: 'Mã nhân viên không tồn tại',
+            check_start_day: 'Ngày bắt đầu không được để trống',
+            check_end_day: 'Ngày kết thúc không được để trống',
+            check_reason: 'Lý do không được để trống',
+            pass: 'Đã chấp nhận',
+            faile: 'Không chấp nhận',
+            process: 'Chờ phê duyệt',
+            all: '--Tất cả--',
+            edit_succes: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
         discipline: {
             list_discipline: 'Danh sách kỷ luật',
@@ -503,7 +527,7 @@ export default {
         },
 
         // Task template
-        task_template:{
+        task_template: {
             search: 'Tìm kiếm',
             add: 'Thêm mới',
             confirm: 'Xác nhận',

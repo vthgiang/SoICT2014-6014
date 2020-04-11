@@ -10,19 +10,23 @@ const SabbaticalSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: 'companies',
     },
     startDate: {
-        type: String
+        type: String,
+        required: true
     },
     endDate: {
-        type: String
+        type: String,
+        required: true
     },
     reason: {
-        type: String
+        type: String,
+        required: true
     },
     status: {
-        type: String
+        type: String,
+        required: true
     },
     createDate: {
         type: Date,

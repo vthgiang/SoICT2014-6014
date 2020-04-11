@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
-import { ModalAddSabbatical } from './ModalAddSabbatical';
-import { ModalEditSabbatical } from './ModalEditSabbatical';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
+import { SabbaticalCreateForm } from './SabbaticalCreateForm';
+import { SabbaticalEditForm } from './SabbaticalEditForm';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification, DatePicker } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
 
 class Sabbatical extends Component {
     constructor(props) {
@@ -37,10 +33,7 @@ class Sabbatical extends Component {
         script1.defer = true;
         document.body.appendChild(script1);
     }
-    componentDidUpdate() {
-        this.hideColumn();
-    }
-
+    // Function ẩn các cột được chọn
     hideColumn = () => {
         if (this.state.hideColumn.length !== 0) {
             var hideColumn = this.state.hideColumn;
@@ -49,6 +42,20 @@ class Sabbatical extends Component {
             }
         }
     }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    handleEdit = async (sabbatical) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: sabbatical
+            }
+        });
+        window.$('#modal-edit-sabbtical').modal('show');
+    }
+
 
     displayTreeSelect = (data, i) => {
         i = i + 1;
@@ -72,11 +79,7 @@ class Sabbatical extends Component {
         else return null
     }
 
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
-
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number, hideColumn) => {
         await this.setState({
             limit: parseInt(number),
@@ -84,6 +87,8 @@ class Sabbatical extends Component {
         });
         this.props.getListSabbatical(this.state);
     }
+
+    // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
         await this.setState({
@@ -93,6 +98,7 @@ class Sabbatical extends Component {
         this.props.getListSabbatical(this.state);
     }
 
+    // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -106,6 +112,8 @@ class Sabbatical extends Component {
 
         return [month, year].join('-');
     }
+
+    // Function lưu giá trị của các trường thông tin được thay đổi vào state
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
@@ -113,16 +121,25 @@ class Sabbatical extends Component {
         });
 
     }
+    // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
         this.setState({
             ...this.state,
             month: value
         });
     }
-
-    handleSunmitSearch = () => {
-        this.props.getListSabbatical(this.state);
+    handleSelectUnitChange = (value) => {
+        //var unit = window.$("#multiSelectUnit").val();
+        console.log(value);
     }
+
+    // Function bắt sự kiện tìm kiếm 
+    handleSunmitSearch = () => {
+        var unit = window.$("#multiSelectUnit").val();
+        console.log(unit);
+        //this.props.getListSabbatical(this.state);
+    }
+
     render() {
         const { tree, list } = this.props.department;
         const { translate } = this.props;
@@ -146,34 +163,25 @@ class Sabbatical extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
-                        </div>
-                        <button type="button" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title={translate('sabbatical.add_sabbatical_title')} data-toggle="modal" data-target="#modal-addNewSabbatical">{translate('sabbatical.add_sabbatical')}</button>
+                    <SabbaticalCreateForm />
+                    <div className="form-group">
+                        <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
                     </div>
                     <div className="form-inline">
+
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
-                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
-                                <option value="All" level={1}>--Tất cả---</option>
-                                {
-                                    tree !== null &&
-                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                }
-                            </select>
+                            <SelectMulti id={`multiSelectUnit`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleSelectUnitChange}>
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.position')}</label>
-                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                {
-                                    listPosition !== undefined &&
-                                    listPosition.map((position, index) => (
-                                        <option key={index} value={position._id}>{position.name}</option>
-                                    ))
-                                }
-                            </select>
+                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleSelectUnitChange}>
+                            </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline">
@@ -182,7 +190,7 @@ class Sabbatical extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                        <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
@@ -196,10 +204,10 @@ class Sabbatical extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                <option value="Đã chấp nhận">Đã chấp nhận</option>
-                                <option value="Chờ phê duyệt">Chờ phê duyệt</option>
-                                <option value="Không chấp nhận">Không chấp nhận</option>
+                                <option value="All">{translate('sabbatical.all')}</option>
+                                <option value="pass">{translate('sabbatical.pass')}</option>
+                                <option value="process">{translate('sabbatical.process')}</option>
+                                <option value="faile">{translate('sabbatical.fail')}</option>
                             </select>
                         </div>
                         <div className="form-group">
@@ -207,7 +215,6 @@ class Sabbatical extends Component {
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-
                     <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -258,15 +265,11 @@ class Sabbatical extends Component {
                                                 {role.roleId.name}<br />
                                             </React.Fragment>
                                         )) : null}</td>
-                                        <td>{x.status}</td>
+                                        <td>{translate(`sabbatical.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <ModalEditSabbatical data={x} />
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('sabbatical.edit_sabbatical')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={{
-                                                    title: "Xoá thông tin nghỉ phép",
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content={translate('sabbatical.delete_sabbatical')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.startDate.replace(/-/gi, "/") + " - " + x.endDate.replace(/-/gi, "/")
@@ -278,11 +281,19 @@ class Sabbatical extends Component {
                             }
                         </tbody>
                     </table>
-
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                <ToastContainer />
-                <ModalAddSabbatical />
+                {
+                    this.state.currentRow !== undefined &&
+                    <SabbaticalEditForm
+                        _id={this.state.currentRow._id}
+                        employeeNumber={this.state.currentRow.employee.employeeNumber}
+                        endDate={this.state.currentRow.endDate}
+                        startDate={this.state.currentRow.startDate}
+                        reason={this.state.currentRow.reason}
+                        status={this.state.currentRow.status}
+                    />
+                }
             </div >
         );
     }

@@ -22,6 +22,13 @@ div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.
 div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
     margin: 5px 0 5px 0;
 }
+div.qlcv-from > .left {
+    padding: 0;
+}
+div.qlcv-from > .right {
+    padding: 0;
+}
+
 
 
 @media (min-width: 768px){
@@ -29,20 +36,27 @@ div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
     div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
     div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
-    div.qlcv > .form-inline .input-group, div.qlcv .form-group >.form-control {
+    div.qlcv > .form-inline .input-group, div.qlcv > .form-group >.form-control {
         margin: 5px;
     }
     div.selectmulti {
         width: 200px;
     }
     div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
-    div.qlcv > .form-inline .input-group, div.qlcv .form-group >.form-control {
+    div.qlcv > .form-inline .input-group, div.qlcv > .form-group >.form-control {
         width: 200px;
     }
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
         width: 100px;
         text-align: right;
     }
+    div.qlcv-from > .left {
+        padding-right: 15px;
+    }
+    div.qlcv-from > .right {
+        padding-left: 15px;
+    }
+    
 }
 
 
