@@ -419,20 +419,46 @@ class ModalAddTaskTemplate extends Component {
         });
     }
 
+    handlecheckEmpty =async() => {
+        await this.updateState();
+        const { newTemplate } = this.state;
+        if (!((newTemplate.name) && (newTemplate.description) && (newTemplate.formula)) )
+        {
+            this.setState(state => {
+                            
+                return {
+                    checkEmpty: true
+                    
+                }
+            });
+        }
+        console.log(this.state.doNothing);
+    }
+
     // Submit new template in data
     handleSubmit = async (event) => {
         event.preventDefault();
-        await this.updateState();
+        
+        await this.handlecheckEmpty();
         const { newTemplate } = this.state;
+        //|| newTemplate.description || newTemplate.formula || newTemplate.listAction || newTemplate.listInfo
+        
         if (newTemplate.name && newTemplate.description && newTemplate.formula && newTemplate.listAction && newTemplate.listInfo) {
             this.props.addNewTemplate(newTemplate);
             this.setState(state => {
                 return {
-                    submitted: false
+                    submitted: false,
+                    checkEmpty: false
                 }
             });
+            
             window.$("#addTaskTemplate").modal("hide");
         }
+        this.setState(state => {
+            return {
+                checkEmpty: false
+            }
+        });
         
     }
 
@@ -658,7 +684,7 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && !newTemplate.formula ? ' has-error' : '')}>
                                             <label className="col-sm-4 control-label" htmlFor="inputName3" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                <input type="text" className="form-control" id="inputName3" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" defaultValue={newTemplate.name} ref={input => this.formula = input} />
+                                                <input type="text" className="form-control" id="inputName3" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" defaultValue={newTemplate.formula} ref={input => this.formula = input} />
                                             </div>
                                             {submitted && !newTemplate.formula &&
                                                 <div className=" col-sm-4 help-block">Hãy điền công thức tính điểm KPI công việc</div>
@@ -764,7 +790,7 @@ class ModalAddTaskTemplate extends Component {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-success" data-dismiss={this.state.submitted ? "modal" : ""} onClick={this.handleSubmit}>Lưu</button>
+                            <button className="btn btn-success" data-dismiss={this.state.doNothing&&this.state.checkEmpty ? "modal" : ""} onClick={this.handleSubmit}>Lưu</button>
                             <button type="cancel" className="btn btn-primary" data-dismiss="modal" onClick={this.handleCancel}>Xóa trắng</button>
                         </div>
                         {/* Modal Footer */}

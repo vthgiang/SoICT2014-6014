@@ -36,7 +36,7 @@ import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
 import {KPIMember} from "../modules/kpi-member/component/KPIMember";
-import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
+import {Task} from '../modules/task-template-management/component/';
 import { Notifications } from "../modules/combine-modules";
 
 import { TaskManagement } from "../modules/task-management/task-management/component/TaskManagement";
@@ -526,7 +526,7 @@ class Routes extends Component {
                         path={ '/task-template' }
                         pageName={ 'task_template' }
                         layout={ Layout }
-                        component={ TaskTemplate }
+                        component={ Task }
                     />
 
                     <PrivateRoute 
