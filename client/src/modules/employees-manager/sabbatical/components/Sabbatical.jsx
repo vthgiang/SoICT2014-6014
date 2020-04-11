@@ -1,46 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { SabbaticalActions } from '../redux/actions';
-import { ModalAddSabbatical } from './ModalAddSabbatical';
-import { ModalEditSabbatical } from './ModalEditSabbatical';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
+import { SabbaticalCreateForm } from './SabbaticalCreateForm';
+import { SabbaticalEditForm } from './SabbaticalEditForm';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification, DatePicker } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
 
 class Sabbatical extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "All",
-            month: "",
+            unit: null,
+            position: null,
             employeeNumber: "",
-            department: "All",
-            status: "All",
+            month: "",
+            status: null,
             page: 0,
             limit: 5,
             hideColumn: []
         }
-        this.handleChange = this.handleChange.bind(this);
+        //this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
-
     }
     componentDidMount() {
         this.props.getListSabbatical(this.state);
         this.props.getDepartment();
-        let script1 = document.createElement('script');
-        script1.src = 'lib/main/js/GridSelect.js';
-        script1.async = true;
-        script1.defer = true;
-        document.body.appendChild(script1);
     }
-    componentDidUpdate() {
-        this.hideColumn();
-    }
-
+    // Function ẩn các cột được chọn
     hideColumn = () => {
         if (this.state.hideColumn.length !== 0) {
             var hideColumn = this.state.hideColumn;
@@ -49,6 +36,20 @@ class Sabbatical extends Component {
             }
         }
     }
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    handleEdit = async (sabbatical) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: sabbatical
+            }
+        });
+        window.$('#modal-edit-sabbtical').modal('show');
+    }
+
 
     displayTreeSelect = (data, i) => {
         i = i + 1;
@@ -72,11 +73,7 @@ class Sabbatical extends Component {
         else return null
     }
 
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
-
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number, hideColumn) => {
         await this.setState({
             limit: parseInt(number),
@@ -84,6 +81,8 @@ class Sabbatical extends Component {
         });
         this.props.getListSabbatical(this.state);
     }
+
+    // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
         await this.setState({
@@ -93,6 +92,7 @@ class Sabbatical extends Component {
         this.props.getListSabbatical(this.state);
     }
 
+    // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -106,13 +106,17 @@ class Sabbatical extends Component {
 
         return [month, year].join('-');
     }
-    handleChange(event) {
+
+    // Function lưu giá trị mã nhân viên vào state khi thay đổi
+    handleMSNVChange = (event) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
 
     }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
         this.setState({
             ...this.state,
@@ -120,21 +124,63 @@ class Sabbatical extends Component {
         });
     }
 
+    // Function lưu giá trị unit vào state khi thay đổi
+    handleUnitChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            unit: value
+        })
+    }
+
+    // Function lưu giá trị chức vụ vào state khi thay đổi
+    handlePositionChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            position: value
+        })
+    }
+
+    // Function lưu giá trị status vào state khi thay đổi
+    handleStatusChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            status: value
+        })
+    }
+
+    // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = () => {
+        console.log(this.state);
         this.props.getListSabbatical(this.state);
     }
+
     render() {
-        const { tree, list } = this.props.department;
+        const { list } = this.props.department;
         const { translate } = this.props;
-        var listSabbatical = "", listDepartment = list, listPosition;
-        for (let n in listDepartment) {
-            if (listDepartment[n]._id === this.state.department) {
-                listPosition = [
-                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
-                    { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
-                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
-                ]
-            }
+        var listSabbatical = "", listPosition = [];
+        if (this.state.unit !== null) {
+            let unit = this.state.unit;
+            unit.forEach(u => {
+                list.forEach(x => {
+                    if (x._id === u) {
+                        let position = [
+                            { _id: x.dean._id, name: x.dean.name },
+                            { _id: x.vice_dean._id, name: x.vice_dean.name },
+                            { _id: x.employee._id, name: x.employee.name }
+                        ]
+                        listPosition = listPosition.concat(position)
+                    }
+                })
+            })
         }
         if (this.props.sabbatical.isLoading === false) {
             listSabbatical = this.props.sabbatical.listSabbatical;
@@ -146,34 +192,25 @@ class Sabbatical extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
-                        </div>
-                        <button type="button" style={{ marginBottom: 15 }} className="btn btn-success pull-right" title={translate('sabbatical.add_sabbatical_title')} data-toggle="modal" data-target="#modal-addNewSabbatical">{translate('sabbatical.add_sabbatical')}</button>
+                    <SabbaticalCreateForm />
+                    <div className="form-group">
+                        <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
                     </div>
                     <div className="form-inline">
+
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
-                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
-                                <option value="All" level={1}>--Tất cả---</option>
-                                {
-                                    tree !== null &&
-                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                }
-                            </select>
+                            <SelectMulti id={`multiSelectUnit`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.position')}</label>
-                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                {
-                                    listPosition !== undefined &&
-                                    listPosition.map((position, index) => (
-                                        <option key={index} value={position._id}>{position.name}</option>
-                                    ))
-                                }
-                            </select>
+                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
+                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                            </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline">
@@ -182,7 +219,7 @@ class Sabbatical extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                        <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
@@ -195,19 +232,22 @@ class Sabbatical extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
-                            <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                <option value="Đã chấp nhận">Đã chấp nhận</option>
-                                <option value="Chờ phê duyệt">Chờ phê duyệt</option>
-                                <option value="Không chấp nhận">Không chấp nhận</option>
-                            </select>
+                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
+                                onChange={this.handleStatusChange}
+                                items={[
+                                    { value: "pass", text: translate('sabbatical.pass') },
+                                    { value: "process", text: translate('sabbatical.process') },
+                                    { value: "faile", text: translate('sabbatical.faile') }
+                                ]}
+                            >
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-
                     <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -258,15 +298,11 @@ class Sabbatical extends Component {
                                                 {role.roleId.name}<br />
                                             </React.Fragment>
                                         )) : null}</td>
-                                        <td>{x.status}</td>
+                                        <td>{translate(`sabbatical.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <ModalEditSabbatical data={x} />
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('sabbatical.edit_sabbatical')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={{
-                                                    title: "Xoá thông tin nghỉ phép",
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content={translate('sabbatical.delete_sabbatical')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.startDate.replace(/-/gi, "/") + " - " + x.endDate.replace(/-/gi, "/")
@@ -278,11 +314,19 @@ class Sabbatical extends Component {
                             }
                         </tbody>
                     </table>
-
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                <ToastContainer />
-                <ModalAddSabbatical />
+                {
+                    this.state.currentRow !== undefined &&
+                    <SabbaticalEditForm
+                        _id={this.state.currentRow._id}
+                        employeeNumber={this.state.currentRow.employee.employeeNumber}
+                        endDate={this.state.currentRow.endDate}
+                        startDate={this.state.currentRow.startDate}
+                        reason={this.state.currentRow.reason}
+                        status={this.state.currentRow.status}
+                    />
+                }
             </div >
         );
     }

@@ -4,6 +4,20 @@ export default {
         error: {
             email_does_not_exist: 'Email does not exist',
             field_invalid: 'Field input invaid',
+
+            // Quản lý nghỉ phép
+            staff_code_not_find: 'Staff code does not exist',
+            start_date_sabbatical_required:'Start date sabbatical required',
+            end_date_sabbatical_required:'End date sabbatical required',
+            reason_sabbatical_required:'Reason sabbatical required',
+            status_sabbatical_required:'Status sabbatical required',
+            create_sabbatical_success:'Create sabbatical success',
+            create_sabbatical_faile: 'Create sabbatical faile',
+            delete_sabbatical_success: 'Delete sabbatical success',
+            delete_sabbatical_faile: 'Delete sabbatical faile',
+            edit_sabbatical_success: 'Edit sabbatical success',
+            edit_sabbatical_faile : 'Edit sabbatical faile',
+
         },
         not_found: {
             title: 'Qpps! Page not found',
@@ -98,6 +112,8 @@ export default {
             close: 'Close',
             create: 'Add new',
             note: 'Required fields',
+            add_success: 'Add new success',
+            add_faile: 'Add new faile',
         },
         page: {
             unit: 'Unit',
@@ -107,7 +123,13 @@ export default {
             staff_number: 'Staff code',
             add_search: 'Search',
             number_decisions: 'Decis number',
-            add_success: 'Add new success'
+            add_success: 'Add new success',
+            all_unit: 'Select all unit',
+            non_unit: 'Select unit',
+            all_position: 'Select all position',
+            non_position: 'Select position',
+            all_status: 'Select all status',
+            non_status: 'Select status'
         },
 
         menu: {
@@ -287,7 +309,7 @@ export default {
             list_sabbatical: 'List of staff sabbatical',
             add_sabbatical: 'Add sabbatical',
             add_sabbatical_title: 'Add new sabbatical',
-            infor_sabbatical: 'Sabbatical information',
+            edit_sabbatical: 'Edit Sabbatical',
             delete_sabbatical: 'Delete sabbatical',
             start_date: 'Start day',
             end_date: 'End day',
@@ -298,6 +320,12 @@ export default {
             check_end_day: 'End day required',
             check_reason: 'Reason required',
             check_status: 'Status required',
+            pass: 'Accepted',
+            faile: 'Refused',
+            process: 'Awaiting approval',
+            all: '--All--',
+            edit_succes: 'Edit sabbatical success',
+            edit_faile: 'Edit sabbatical faile',
         },
         discipline: {
             list_discipline: 'List of staff discipline',
@@ -456,7 +484,7 @@ export default {
         },
 
         // Task template
-        task_template:{
+        task_template: {
             search: 'Search',
             add: 'Add new',
             confirm: 'Confirm',

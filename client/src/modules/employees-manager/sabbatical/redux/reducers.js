@@ -2,9 +2,14 @@ import {
     SabbaticalConstants
 } from './constants';
 
-export function sabbatical(state = {listSabbatical:[]}, action) {
+export function sabbatical(state = {
+    listSabbatical: []
+}, action) {
     switch (action.type) {
         case SabbaticalConstants.GET_SABBATICAL_REQUEST:
+        case SabbaticalConstants.CREATE_SABBATICAL_REQUEST:
+        case SabbaticalConstants.DELETE_SABBATICAL_REQUEST:
+        case SabbaticalConstants.UPDATE_SABBATICAL_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -12,68 +17,42 @@ export function sabbatical(state = {listSabbatical:[]}, action) {
         case SabbaticalConstants.GET_SABBATICAL_SUCCESS:
             return {
                 ...state,
-                listSabbatical: action.listSabbatical.content.listSabbatical,
-                totalList: action.listSabbatical.content.totalList,
+                listSabbatical: action.payload.listSabbatical,
+                    totalList: action.payload.totalList,
                     isLoading: false,
-            };
-        case SabbaticalConstants.GET_SABBATICAL_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-        case SabbaticalConstants.CREATE_SABBATICAL_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
             };
         case SabbaticalConstants.CREATE_SABBATICAL_SUCCESS:
             return {
                 ...state,
-                listSabbatical: [
-                        ...state.listSabbatical,
-                        action.newSabbatical.content
-                    ],
-                    isLoading: false,
-            };
-        case SabbaticalConstants.CREATE_SABBATICAL_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
-            };
-        case SabbaticalConstants.DELETE_SABBATICAL_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
+                    listSabbatical: [
+                        ...state.listSabbatical,
+                        action.payload
+                    ],
             };
         case SabbaticalConstants.DELETE_SABBATICAL_SUCCESS:
             return {
                 ...state,
-                listSabbatical: state.listSabbatical.filter(Sabbatical => (Sabbatical._id !== action.sabbaticalDelete.content._id)),
-                    isLoading: false,
-            };
-        case SabbaticalConstants.DELETE_SABBATICAL_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
-            };
-        case SabbaticalConstants.UPDATE_SABBATICAL_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
+                    listSabbatical: state.listSabbatical.filter(Sabbatical => (Sabbatical._id !== action.payload._id)),
             };
         case SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS:
             return {
                 ...state,
-                listSabbatical: state.listSabbatical.map(Sabbatical =>
-                        Sabbatical._id === action.infoSabbatical.content._id ?
-                        action.infoSabbatical.content : Sabbatical
+                isLoading: false,
+                    listSabbatical: state.listSabbatical.map(Sabbatical =>
+                        Sabbatical._id === action.payload._id ?
+                        action.payload : Sabbatical
                     ),
-                    isLoading: false,
             };
+        case SabbaticalConstants.GET_SABBATICAL_FAILURE:
+        case SabbaticalConstants.CREATE_SABBATICAL_FAILURE:
+        case SabbaticalConstants.DELETE_SABBATICAL_FAILURE:
         case SabbaticalConstants.UPDATE_SABBATICAL_FAILURE:
             return {
-                error: action.error,
+                ...state,
                 isLoading: false,
+                    error: action.error.message
             };
         default:
             return state

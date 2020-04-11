@@ -1090,14 +1090,14 @@ const sampleCompanyData = async () => {
         company:xyz._id,
         startDate: "04-02-2020",
         endDate: "08-02-2020",
-        status: "Đã chấp nhận",
+        status: "pass",
         reason: "Về quê",
     }, {
         employee: employee._id,
         company:xyz._id,
         startDate: "05-02-2020",
         endDate: "10-02-2020",
-        status: "Chờ phê duyệt",
+        status: "process",
         reason: "Nghỉ tết"
     }])
     console.log(`Xong! Thông tin nghỉ phép đã được tạo`);
