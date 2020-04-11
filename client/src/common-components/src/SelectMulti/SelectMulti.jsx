@@ -46,6 +46,10 @@ class SelectMulti extends Component {
         
     }
 
+    getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
+        return this.state.value;
+    }
+
     componentDidUpdate() {
         // Cập nhật lại danh sách lựa chọn (theo select với id là this.props.id)
         const { id } = this.props;

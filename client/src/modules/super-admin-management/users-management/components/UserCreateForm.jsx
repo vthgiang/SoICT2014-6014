@@ -12,7 +12,6 @@ class UserCreateForm extends Component {
         this.state = {
             userName: "",
             userEmail: "",
-            userRoles:[]
         }
         this.save = this.save.bind(this);
     }
@@ -22,7 +21,7 @@ class UserCreateForm extends Component {
             return this.props.create({
                 name: this.state.userName,
                 email: this.state.userEmail,
-                roles: this.state.userRoles
+                roles: this.refs.selectBoxUserRoles.getValue()
             });
         }
     }
@@ -70,15 +69,6 @@ class UserCreateForm extends Component {
         return msg == undefined;
     }
 
-    handleRolesChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                userRoles: value
-            }
-        });
-    }
-
     componentDidMount(){
         this.props.getRoles();
     }
@@ -122,7 +112,7 @@ class UserCreateForm extends Component {
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {items}
-                                    onChange={this.handleRolesChange}
+                                    ref="selectBoxUserRoles"
                                     multiple={true}
                                 />
                             }
