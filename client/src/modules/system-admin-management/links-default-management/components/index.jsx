@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { LinkDefaultActions } from '../redux/actions';
 import LinkInfoForm from './LinkInfoForm';
 import CreateLinkForm from './CreateLinkForm';
-import { SearchBar, ActionColumn, PaginateBar, DeleteNotification } from '../../../../common-components';
+import { SearchBar, ActionColumn, PaginateBar, DeleteNotification, ModalEditButton } from '../../../../common-components';
 
 class ManageLink extends Component {
     constructor(props) {
@@ -18,21 +18,37 @@ class ManageLink extends Component {
             description: null,
             role: null
         }
-        this.inputChange = this.inputChange.bind(this);
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
+    }
+
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = async (link) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: link
+            }
+        });
+        window.$('#modal-edit-link-default').modal('show');
     }
 
     render() { 
         const { translate, linksDefault } = this.props;
-
+        const {currentRow} = this.state;
+        console.log("rơ: ", currentRow)
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
                     <React.Fragment>
                         <CreateLinkForm/>
+                        {
+                            currentRow !== undefined &&
+                            <LinkInfoForm
+                                linkId={currentRow._id}
+                                linkUrl={currentRow.url}
+                                linkDescription={currentRow.description}
+                                linkRoles={currentRow.roles.map(role => role._id)}
+                            />
+                        }
                         <SearchBar 
                             columns={[
                                 { title: translate('manage_link.url'), value:'url' },
@@ -50,7 +66,6 @@ class ManageLink extends Component {
                                     <th>{ translate('manage_link.url') }</th>
                                     <th>{ translate('manage_link.category') }</th>
                                     <th>{ translate('manage_link.description') }</th>
-                                    {/* <th>{ translate('manage_link.components') }</th> */}
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         <ActionColumn 
@@ -73,12 +88,6 @@ class ManageLink extends Component {
                                             <td>{ link.url }</td>
                                             <td>{ link.category }</td>
                                             <td>{ link.description }</td>
-                                            {/* <td>{ link.components.map((component, i, arr) => {
-                                                if(i !== arr.length - 1)
-                                                    return <span key={component._id}>{component.name}, </span>
-                                                else
-                                                    return <span key={component._id}>{component.name}</span>
-                                            }) }</td> */}
                                             <td>{ link.roles.map((role, index, arr) => {
                                                 if(index !== arr.length - 1)
                                                     return <span key={role._id}>{role.name}, </span>
@@ -86,12 +95,7 @@ class ManageLink extends Component {
                                                     return <span key={role._id}>{role.name}</span>
                                             }) }</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <LinkInfoForm 
-                                                    linkDefaultId={ link._id }
-                                                    linkDefaultName={ link.url }
-                                                    linkDefaultDescription={ link.description }
-                                                    linkDefaultRoles={link.roles.map(role => role._id)}
-                                                />
+                                                <a onClick={() => this.handleEdit(link)} className="edit" title={translate('manage_link.edit')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification 
                                                     content={translate('manage_link.delete')}
                                                     data={{

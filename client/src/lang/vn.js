@@ -216,7 +216,7 @@ export default {
             add_faile: 'Tạo doanh nghiệp thất bại',
             edit_success: 'Chỉnh sửa thông tin thành công',
             edit_faile: 'Chỉnh sửa thông tin thất bại',
-            log: 'Trạng thái ghi log',
+            log: 'Ghi log',
             on: 'Bật',
             off: 'Tắt',
             service: 'Dịch vụ'
