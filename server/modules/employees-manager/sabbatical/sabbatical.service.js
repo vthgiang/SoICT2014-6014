@@ -9,13 +9,20 @@ const Role = require('../../../models/role.model');
 exports.get = async (data, company) => {
     let keySearchEmployee, keySearch = {company: company};
 
-    // Bắt sựu kiện đơn vị tìm kiếm khác All 
-    if (data.department !== "All") {
-        var department = await Department.findById(data.department); //lấy thông tin đơn vị
-        if (data.position === "All") {
-            var roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của đơn vào 1 arr
+    // Bắt sựu kiện đơn vị tìm kiếm khác null 
+    if (data.unit !== null) {
+        let unit = [], roles = [], departmnet = data.unit;
+        for(let n in departmnet){
+            let unitInfo = await Department.findById(departmnet[n]);  // Lấy thông tin đơn vị
+            unit = [...unit, unitInfo]
+        }
+        if (data.position === null) {
+            unit.forEach(u => {
+                let role = [u.dean, u.vice_dean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
+                roles = roles.concat(role); 
+            })
         } else {
-            var roles = [data.position]
+            roles = data.position
         }
 
         // lấy danh sách người dùng theo phòng ban và chức danh
@@ -26,6 +33,7 @@ exports.get = async (data, company) => {
 
         // Lấy email của người dùng theo phòng ban và chức danh
         var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
+
         emailCompany = emailUsers.map(user => user.email)
         keySearchEmployee = {
             ...keySearchEmployee,
@@ -56,12 +64,16 @@ exports.get = async (data, company) => {
         }
 
     }
-    if (data.status !== "All") {
+    //Bắt sựu kiện trạng thái tìm kiếm khác null
+    if (data.status !== null) {
         keySearch = {
             ...keySearch,
-            status: data.status
+            status: {
+                $in: data.status
+            }
         }
     };
+    //Bắt sựu kiện tháng tìm kiếm khác ""
     if (data.month !== "") {
         keySearch = {
             ...keySearch,
@@ -76,27 +88,16 @@ exports.get = async (data, company) => {
         }
     };
     var totalList = await Sabbatical.count(keySearch);
-    var listSabbatical = await Sabbatical.find(keySearch).populate({
-            path: 'employee',
-            model: Employee
-        }).sort({
-            'createDate': 'desc'
-        })
+    var listSabbatical = await Sabbatical.find(keySearch).populate({ path: 'employee', model: Employee })
+        .sort({ 'createDate': 'desc' })
         .skip(data.page)
         .limit(data.limit);
     for (let n in listSabbatical) {
         var roles = [];
         var departments = [];
-        let user = await User.findOne({
-            email: listSabbatical[n].employee.emailCompany
-        })
+        let user = await User.findOne({ email: listSabbatical[n].employee.emailCompany })
         if (user !== null) {
-            roles = await UserRole.find({
-                userId: user._id
-            }).populate([{
-                path: 'roleId',
-                model: Role
-            }]);
+            roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
             let newRoles = roles.map(role => role.roleId._id);
             departments = await Department.find({
                 $or: [

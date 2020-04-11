@@ -136,7 +136,11 @@ export default {
             add_search: 'Tìm kiếm',
             number_decisions: 'Số quyết định',
             all_unit: 'Chọn tất cả các đơn vị',
-            non_unit: 'Chọn đơn vị'
+            non_unit: 'Chọn đơn vị',
+            all_position: 'Chọn tất cả các chức vụ',
+            non_position: 'Chọn chức vụ',
+            all_status: 'Chọn tất cả các trạng thái',
+            non_status: 'Chọn trạng thái'
         },
 
         menu: {

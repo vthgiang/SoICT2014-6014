@@ -11,27 +11,21 @@ class Sabbatical extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "All",
-            month: "",
+            unit: null,
+            position: null,
             employeeNumber: "",
-            department: "All",
-            status: "All",
+            month: "",
+            status: null,
             page: 0,
             limit: 5,
             hideColumn: []
         }
-        this.handleChange = this.handleChange.bind(this);
+        //this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
-
     }
     componentDidMount() {
         this.props.getListSabbatical(this.state);
         this.props.getDepartment();
-        let script1 = document.createElement('script');
-        script1.src = 'lib/main/js/GridSelect.js';
-        script1.async = true;
-        script1.defer = true;
-        document.body.appendChild(script1);
     }
     // Function ẩn các cột được chọn
     hideColumn = () => {
@@ -113,14 +107,15 @@ class Sabbatical extends Component {
         return [month, year].join('-');
     }
 
-    // Function lưu giá trị của các trường thông tin được thay đổi vào state
-    handleChange(event) {
+    // Function lưu giá trị mã nhân viên vào state khi thay đổi
+    handleMSNVChange = (event) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
 
     }
+
     // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
         this.setState({
@@ -128,30 +123,64 @@ class Sabbatical extends Component {
             month: value
         });
     }
-    handleSelectUnitChange = (value) => {
-        //var unit = window.$("#multiSelectUnit").val();
-        console.log(value);
+
+    // Function lưu giá trị unit vào state khi thay đổi
+    handleUnitChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            unit: value
+        })
+    }
+
+    // Function lưu giá trị chức vụ vào state khi thay đổi
+    handlePositionChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            position: value
+        })
+    }
+
+    // Function lưu giá trị status vào state khi thay đổi
+    handleStatusChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            status: value
+        })
     }
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = () => {
-        var unit = window.$("#multiSelectUnit").val();
-        console.log(unit);
-        //this.props.getListSabbatical(this.state);
+        console.log(this.state);
+        this.props.getListSabbatical(this.state);
     }
 
     render() {
-        const { tree, list } = this.props.department;
+        const { list } = this.props.department;
         const { translate } = this.props;
-        var listSabbatical = "", listDepartment = list, listPosition;
-        for (let n in listDepartment) {
-            if (listDepartment[n]._id === this.state.department) {
-                listPosition = [
-                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
-                    { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
-                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
-                ]
-            }
+        var listSabbatical = "", listPosition = [];
+        if (this.state.unit !== null) {
+            let unit = this.state.unit;
+            unit.forEach(u => {
+                list.forEach(x => {
+                    if (x._id === u) {
+                        let position = [
+                            { _id: x.dean._id, name: x.dean.name },
+                            { _id: x.vice_dean._id, name: x.vice_dean.name },
+                            { _id: x.employee._id, name: x.employee.name }
+                        ]
+                        listPosition = listPosition.concat(position)
+                    }
+                })
+            })
         }
         if (this.props.sabbatical.isLoading === false) {
             listSabbatical = this.props.sabbatical.listSabbatical;
@@ -173,14 +202,14 @@ class Sabbatical extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleSelectUnitChange}>
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleSelectUnitChange}>
+                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
+                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>
@@ -203,12 +232,16 @@ class Sabbatical extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
-                            <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
-                                <option value="All">{translate('sabbatical.all')}</option>
-                                <option value="pass">{translate('sabbatical.pass')}</option>
-                                <option value="process">{translate('sabbatical.process')}</option>
-                                <option value="faile">{translate('sabbatical.fail')}</option>
-                            </select>
+                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
+                                onChange={this.handleStatusChange}
+                                items={[
+                                    { value: "pass", text: translate('sabbatical.pass') },
+                                    { value: "process", text: translate('sabbatical.process') },
+                                    { value: "faile", text: translate('sabbatical.faile') }
+                                ]}
+                            >
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label></label>

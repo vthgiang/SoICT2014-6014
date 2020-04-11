@@ -125,7 +125,11 @@ export default {
             number_decisions: 'Decis number',
             add_success: 'Add new success',
             all_unit: 'Select all unit',
-            non_unit: 'Select unit'
+            non_unit: 'Select unit',
+            all_position: 'Select all position',
+            non_position: 'Select position',
+            all_status: 'Select all status',
+            non_status: 'Select status'
         },
 
         menu: {
