@@ -21,6 +21,7 @@ class SelectBox extends Component {
     componentDidMount(){
         const { id, onChange } = this.props;
         window.$("#" + id).select2();
+
         window.$("#" + id).on("change", () => {
             let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
             this.state.value = value;
@@ -33,21 +34,38 @@ class SelectBox extends Component {
         window.$("#" + id).select2();
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.id !== prevState.id){
+    static isEqual = (items1, items2) => {
+        if(!items1 || !items2){
+            return false;
+        }
+        if (items1.length !== items2.length){
+            return false;
+        }
+        for (let i=0; i<items1.length; ++i){
+            if (items1[i].value !== items2[i].value){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id || !SelectBox.isEqual(nextProps.items, prevState.items)){
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
-                id: nextProps.id
+                id: nextProps.id,
+                items: nextProps.items,
             }
         } else {
             return null;
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState){
-        if (nextProps.id !== this.state.id) // Chỉ render 1 lần, trừ khi id thay đổi
+    shouldComponentUpdate(nextProps, nextState) {
+        // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items))
             return true;
-        return false;  // Tự chủ động update (do đã lưu value vào state)
+        return false;
     }
 
     render() { 
