@@ -9,6 +9,55 @@ const UserRole = require('../../../models/user_role.model');
 const User = require('../../../models/user.model');
 const Role = require('../../../models/role.model');
 
+// Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
+exports.getUnitAndPositionEmployee = async (emailCompany)=>{
+    let roles = [], departments = [];
+    let user = await User.findOne({email: emailCompany},{ _id:1 })
+    if (user !== null) {
+        roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
+        let newRoles = roles.map(role => role.roleId._id);
+        departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ] 
+        });
+    }
+    if (roles !== []) {
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+    }
+    return { roles, departments }
+}
+
+// Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
+exports.getEmailCompanyByUnitAndPosition = async(unit, position)=>{
+    let units = [], roles = [];
+        for(let n in unit){
+            let unitInfo = await Department.findById(unit[n]);  // Lấy thông tin đơn vị
+            units = [...units, unitInfo]
+        }
+        if (position === null) {
+            units.forEach(u => {
+                let role = [u.dean, u.vice_dean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
+                roles = roles.concat(role); 
+            })
+        } else {
+            roles = position
+        }
+
+        // lấy danh sách người dùng theo phòng ban và chức danh
+        let userRoles = await UserRole.find({roleId: {$in: roles}});
+
+        //lấy userID vào 1 arr
+        let userId = userRoles.map(userRole => userRole.userId); 
+
+        // Lấy email của người dùng theo phòng ban và chức danh
+        var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
+        return emailUsers.map(user => user.email)
+}
+
+
 // Lấy dánh sách nhân viên
 exports.get = async (data, company) => {
     var keySearch = {

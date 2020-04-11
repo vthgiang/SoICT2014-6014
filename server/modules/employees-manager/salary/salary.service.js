@@ -1,248 +1,104 @@
 const Salary = require('../../../models/salary.model');
 const Employee = require('../../../models/employee.model');
-const Department = require('../../../models/department.model');
-const UserRole = require('../../../models/user_role.model');
-const User = require('../../../models/user.model');
-const Role = require('../../../models/role.model');
-//lấy danh sách các bẳng lương của nhân viên
+const EmployeeService = require('../employee/employee.service');
+
+// Lấy danh sách các bẳng lương của nhân viên
 exports.get = async (data, company) => {
-    var keySearch = {
-        company: company,
-    };
-    var keySearchEmployee;
-    // Bắt sựu kiện đơn vị tìm kiếm khác All 
-    if (data.department !== "All") {
-        var department = await Department.findById(data.department); //lấy thông tin đơn vị
-        if (data.position === "All") {
-            var roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của đơn vào 1 arr
-        } else {
-            var roles = [data.position]
-        }
-        // lấy danh sách người dùng theo phòng ban và chức danh
-        var userRoles = await UserRole.find({
-            roleId: {
-                $in: roles
-            }
-        });
-        var userId = userRoles.map(userRole => userRole.userId); //lấy userID vào 1 arr
-        // Lấy email của người dùng theo phòng ban và chức danh
-        var emailUsers = await User.find({
-            _id: {
-                $in: userId
-            }
-        }, {
-            email: 1
-        });
-        emailCompany = emailUsers.map(user => user.email)
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            emailCompany: {
-                $in: emailCompany
-            }
-        }
+    var keySearchEmployee, keySearch = { company: company};
+    // Bắt sựu kiện đơn vị tìm kiếm khác null 
+    if (data.unit !== null) {
+        let emailCompany =await EmployeeService.getEmailCompanyByUnitAndPosition(data.unit, data.position);
+        keySearchEmployee = {...keySearchEmployee, emailCompany: {$in: emailCompany}}
     }
     //Bắt sựu kiện MSNV tìm kiếm khác ""
     if (data.employeeNumber !== "") {
-        keySearchEmployee = {
-            ...keySearchEmployee,
-            employeeNumber: {
-                $regex: data.employeeNumber,
-                $options: "i"
-            }
-        }
+        keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: data.employeeNumber, $options: "i"}}
     }
     if (keySearchEmployee !== undefined) {
-        var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
-        keySearch = {
-            ...keySearch,
-            employee: {
-                $in: employee
-            }
-        }
-
+        var employeeInfo = await Employee.find(keySearchEmployee);
+        var employee = employeeInfo.map(x => x._id);
+        keySearch = { ...keySearch, employee: { $in: employee }}
     }
+    //Bắt sựu kiện MSNV tìm kiếm khác ""
     if (data.month !== "") {
-        keySearch = {
-            ...keySearch,
-            month: data.month
-        }
+        keySearch = {...keySearch, month: data.month}
     };
+    // Lấy danh sách bảng lương
     var totalList = await Salary.count(keySearch);
-    var listSalary = await Salary.find(keySearch).populate({
-            path: 'employee',
-            model: Employee
-        }).sort({
-            'createDate': 'desc'
-        })
-        .skip(data.page)
-        .limit(data.limit);
+    var listSalary = await Salary.find(keySearch).populate({ path: 'employee', model: Employee})
+        .sort({ 'createDate': 'desc' }).skip(data.page).limit(data.limit);
     for (let n in listSalary) {
-        var roles = [];
-        var departments = [];
-        let user = await User.findOne({
-            email: listSalary[n].employee.emailCompany
-        })
-        if (user !== null) {
-            roles = await UserRole.find({
-                userId: user._id
-            }).populate([{
-                path: 'roleId',
-                model: Role
-            }]);
-            let newRoles = roles.map(role => role.roleId._id);
-            departments = await Department.find({
-                $or: [
-                    {'dean': { $in: newRoles }}, 
-                    {'vice_dean':{ $in: newRoles }}, 
-                    {'employee':{ $in: newRoles }}
-                ] 
-            });
-        }
-        if (roles !== []) {
-            roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
-        }
-        listSalary[n] = {
-            ...listSalary[n]._doc,
-            roles,
-            departments
-        }
+        let value = await EmployeeService.getUnitAndPositionEmployee(listSalary[n].employee.emailCompany);
+        listSalary[n] = {...listSalary[n]._doc, ...value}
     }
-    var content = {
-        totalList,
-        listSalary
-    }
-    return content;
-
+    return {totalList, listSalary}
 }
 
-// thêm mới bẳng lương mới
+// Thêm mới bẳng lương mới
 exports.create = async (data, company) => {
-    var employeeinfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company: company
-    });
-    var salary = data.mainSalary + data.unit;
-    var createSalary = await Salary.create({
-        employee: employeeinfo._id,
-        company: company,
-        month: data.month,
-        mainSalary: salary,
-        bonus: data.bonus
-    });
-    var roles = [];
-    var departments = [];
-    let user = await User.findOne({
-        email: employeeinfo.emailCompany
-    })
-    if (user !== null) {
-        roles = await UserRole.find({
-            userId: user._id
-        }).populate([{
-            path: 'roleId',
-            model: Role
-        }]);
-        let newRoles = roles.map(role => role.roleId._id);
-        departments = await Department.find({
-            $or: [
-                {'dean': { $in: newRoles }}, 
-                {'vice_dean':{ $in: newRoles }}, 
-                {'employee':{ $in: newRoles }}
-            ] 
-        });
-    }
-    if (roles !== []) {
-        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
-    }
-    var newSalary = await Salary.findOne({
-        _id: createSalary._id
-    }).populate([{
-        path: 'employee',
-        model: Employee
-    }])
-    var content = {
-        ...newSalary._doc,
-        roles,
-        departments
-    }
-    return content
+    // Lấy thông tin nhân viên
+    let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailCompany: 1});
+    if(employeeInfo!==null){
+        var isSalary = await Salary.findOne({employee: employeeInfo._id, company: company, month: data.month}, {field1: 1});
+        if (isSalary !== null) {
+            return "have_exist"
+        } else {
+            let salary = data.mainSalary + data.unit;
+            // Thêm bảng lương vào database
+            let createSalary = await Salary.create({
+                employee: employeeInfo._id,
+                company: company,
+                month: data.month,
+                mainSalary: salary,
+                bonus: data.bonus
+            });
+            // Lấy thông tin phòng ban, chức vụ của nhân viên
+            let value = await EmployeeService.getUnitAndPositionEmployee(employeeInfo.emailCompany);
+            //Lấy thông tin bảng lương vừa tạo
+            var newSalary = await Salary.findOne({ _id: createSalary._id }).populate([{ path: 'employee', model: Employee }])
+            return {...newSalary._doc, ...value}
+        }
+        
+    } else return null
 }
 
 // Xoá bẳng lương
 exports.delete = async (id) => {
-    return await Salary.findOneAndDelete({
-        _id: id
-    });
+    return await Salary.findOneAndDelete({ _id: id });
 }
 
 // Update thông tin bảng lương
 exports.update = async (id, data,company) => {
-    var employeeinfo = await Employee.findOne({
-        employeeNumber: data.employeeNumber,
-        company:company
-    });
-    var salaryChange = {
-        employee: employeeinfo._id,
-        month: data.month,
-        mainSalary: data.unit ? (data.mainSalary + data.unit) : data.mainSalary,
-        bonus: data.bonus
-    };
-    await Salary.findOneAndUpdate({
-        _id: id
-    }, {
-        $set: salaryChange
-    });
-    var roles = [];
-    var departments = [];
-    let user = await User.findOne({
-        email: employeeinfo.emailCompany
-    })
-    if (user !== null) {
-        roles = await UserRole.find({
-            userId: user._id
-        }).populate([{
-            path: 'roleId',
-            model: Role
-        }]);
-        let newRoles = roles.map(role => role.roleId._id);
-        departments = await Department.find({
-            $or: [
-                {'dean': { $in: newRoles }}, 
-                {'vice_dean':{ $in: newRoles }}, 
-                {'employee':{ $in: newRoles }}
-            ] 
-        });
-    }
-    if (roles !== []) {
-        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
-    }
-    var updateSalary = await Salary.findOne({
-        _id: id
-    }).populate([{
-        path: 'employee',
-        model: Employee
-    }])
-    var content = {
-        ...updateSalary._doc,
-        roles,
-        departments
-    }
-    return content;
+    // Lấy thông tin nhân viên
+    let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company:company }, { _id: 1, emailCompany: 1});
+    if(employeeInfo!==null){
+        let salaryChange = {
+            employee: employeeInfo._id,
+            month: data.month,
+            mainSalary: data.unit ? (data.mainSalary + data.unit) : data.mainSalary,
+            bonus: data.bonus
+        };
+        // Cập nhật thông tin bảng lương vào database
+        await Salary.findOneAndUpdate({ _id: id }, { $set: salaryChange });
+        // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
+        let value = await EmployeeService.getUnitAndPositionEmployee(employeeInfo.emailCompany);
+        // Lấy thông tin bảng lương vừa cập nhật
+        var updateSalary = await Salary.findOne({ _id: id }).populate([{ path: 'employee', model: Employee }])
+        return {...updateSalary._doc, ...value}
+    } else return null
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
 exports.checkSalary = async (employeeNumber,month, company) => {
-    var employeeinfo = await Employee.findOne({
+    var employeeInfo = await Employee.findOne({
         employeeNumber: employeeNumber,
         company:company
     });
     var idSalary = await Salary.find({
-        employee: employeeinfo._id,
+        employee: employeeInfo._id,
         company: company,
         month:month
-    }, {
-        field1: 1
-    })
+    }, {field1: 1})
     var checkSalary = false;
     if (idSalary.length !== 0) {
         checkSalary = true
@@ -253,16 +109,16 @@ exports.checkSalary = async (employeeNumber,month, company) => {
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
 exports.checkArraySalary = async (data, company) => {
     var list=[];
-    for(let i=0;i<data.arraySalary.length;i++){
-        let employeeinfo = await Employee.findOne({
+    for(let i=0; i<data.arraySalary.length; i++){
+        let employeeInfo = await Employee.findOne({
             employeeNumber: data.arraySalary[i].employeeNumber,
             company:company
         },{
             field1: 1
         });
-        if(employeeinfo!==null){
+        if(employeeInfo!==null){
             let salary=await Salary.findOne({
-                employee:employeeinfo._id,
+                employee:employeeInfo._id,
                 company: company,
                 month:data.arraySalary[i].month
             }, {
@@ -273,7 +129,6 @@ exports.checkArraySalary = async (data, company) => {
             }
         }
     }
-    console.log(list)
     return list;
 }
 
@@ -282,7 +137,7 @@ exports.importSalary = async (data, company) => {
     var importSalary=[];
     for(let n in data.rows){
         var row = data.rows[n];
-        var employeeinfo = await Employee.findOne({
+        var employeeInfo = await Employee.findOne({
             employeeNumber: row[3],
             company: company
         });
@@ -306,7 +161,7 @@ exports.importSalary = async (data, company) => {
                 }
             }
         var newSalary = await Salary.create({
-            employee: employeeinfo._id,
+            employee: employeeInfo._id,
             company: company,
             month: month,
             mainSalary: mainSalary,

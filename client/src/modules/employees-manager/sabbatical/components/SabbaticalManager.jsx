@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SabbaticalActions } from '../redux/actions';
+
 import { SabbaticalCreateForm } from './SabbaticalCreateForm';
 import { SabbaticalEditForm } from './SabbaticalEditForm';
-import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
 
-class Sabbatical extends Component {
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
+import { SabbaticalActions } from '../redux/actions';
+
+class SabbaticalManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -71,25 +73,6 @@ class Sabbatical extends Component {
 
         }
         else return null
-    }
-
-    // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number, hideColumn) => {
-        await this.setState({
-            limit: parseInt(number),
-            hideColumn: hideColumn
-        });
-        this.props.getListSabbatical(this.state);
-    }
-
-    // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
-        await this.setState({
-            page: parseInt(page),
-
-        });
-        this.props.getListSabbatical(this.state);
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -159,7 +142,25 @@ class Sabbatical extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = () => {
-        console.log(this.state);
+        this.props.getListSabbatical(this.state);
+    }
+
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
+        this.props.getListSabbatical(this.state);
+    }
+
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * this.state.limit;
+        await this.setState({
+            page: parseInt(page),
+
+        });
         this.props.getListSabbatical(this.state);
     }
 
@@ -197,7 +198,6 @@ class Sabbatical extends Component {
                         <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
                     </div>
                     <div className="form-inline">
-
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
@@ -343,5 +343,5 @@ const actionCreators = {
     deleteSabbatical: SabbaticalActions.deleteSabbatical,
 };
 
-const connectedListSabbatical = connect(mapState, actionCreators)(withTranslate(Sabbatical));
-export { connectedListSabbatical as Sabbatical };
+const connectedListSabbatical = connect(mapState, actionCreators)(withTranslate(SabbaticalManager));
+export { connectedListSabbatical as SabbaticalManager };

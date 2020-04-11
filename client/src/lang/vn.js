@@ -4,20 +4,34 @@ export default {
         error: {
             email_does_not_exist: 'Email này đã được sử dụng',
             field_invalid: 'Trường nhập vào không hợp lệ',
-            
-            // Quản lý nghỉ phép
+
+            employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_find: 'Mã nhân viên không tồn tại',
-            start_date_sabbatical_required:'Thời gian bắt đầu không được để trống',
-            end_date_sabbatical_required:'Thời gian kết thúc không được để trống',
-            reason_sabbatical_required:'Lý do không được để trống',
-            status_sabbatical_required:'Trạng thái không được để trống',
-            create_sabbatical_success:'Thêm đơn xin nghỉ phép thành công',
+            // Quản lý nghỉ phép
+            start_date_sabbatical_required: 'Thời gian bắt đầu không được để trống',
+            end_date_sabbatical_required: 'Thời gian kết thúc không được để trống',
+            reason_sabbatical_required: 'Lý do không được để trống',
+            status_sabbatical_required: 'Trạng thái không được để trống',
+            get_sabbatical_success: 'Lấy thông tin nghỉ phép thành công',
+            get_sabbatical_faile: 'Lấy thông tin nghỉ phép thất bại',
+            create_sabbatical_success: 'Thêm đơn xin nghỉ phép thành công',
             create_sabbatical_faile: 'Thêm đơn xin nghỉ phép thất bại',
             delete_sabbatical_success: 'Xoá đơn xin nghỉ phép thành công',
             delete_sabbatical_faile: 'Xoá đơn xin nghỉ phép thất bại',
             edit_sabbatical_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
-            edit_sabbatical_faile : 'Chỉnh sửa đơn xin nghỉ phép thất bại',
-
+            edit_sabbatical_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
+            // Quản lý lương nhân viên
+            get_salary_success: 'Lấy thông tin lương nhân viên thành công',
+            get_salary_faile: 'Lấy thông tin lương nhân viên thất bại',
+            month_salary_required: 'Tháng lương không được để trống',
+            money_salary_required: 'Tiền lương chính không được để trống',
+            month_salary_have_exist: 'Tháng lương đã tồn tại',
+            create_salary_success: 'Thêm bảng lương thành công',
+            create_salary_faile: 'Thêm bảng lương thất bại',
+            delete_salary_success: 'Xoá bẳng lương thành công',
+            delete_salary_faile: 'Xoá bảng lương thất bại',
+            edit_salary_success: 'Chỉnh sửa bảng lương thành công',
+            edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
 
         },
         not_found: {
@@ -320,8 +334,8 @@ export default {
             list_salary: 'Danh sách bảng lương nhân viên',
             add_salary: 'Thêm bảng lương',
             add_salary_title: 'Thêm bảng lương nhân viên',
-            infor_salary: 'Thông tin bảng lương',
-            delete_dalary: 'Xoá bảng lương',
+            edit_salary: 'Chỉnh sửa bảng lương nhân viên',
+            delete_salary: 'Xoá bảng lương',
             add_by_hand: 'Thêm bằng tay',
             add_import: 'Import file excel',
             add_by_hand_title: 'Thêm một bảng lương',
@@ -330,12 +344,8 @@ export default {
             other_salary: 'Các loại lương thưởng khác',
             name_salary: 'Tên lương thưởng',
             money_salary: 'Số tiền',
+            add_more_salary: 'Thêm lương thưởng khác',
             add_new_salary: 'Thêm mới bảng lương',
-            check_null_msnv: 'Bạn chưa nhập mã nhân viên',
-            check_msnv: 'Mã số nhân viên không tồn tại',
-            check_main_salary: 'Bạn chưa nhập tiền lương chính',
-            check_month: 'Bạn chưa nhập tháng lương',
-
         },
         sabbatical: {
             list_sabbatical: 'Danh sách đơn xin nghỉ',

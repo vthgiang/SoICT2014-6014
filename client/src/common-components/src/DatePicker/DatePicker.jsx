@@ -60,14 +60,14 @@ class datePicker extends Component {
     }
 
     render() {
-        const { id, dateFormat } = this.props;
+        const { id, dateFormat, disabled = false } = this.props;
         return (
             <React.Fragment>
                 <div className={'input-group date has-feedback'} id={id} data-date-format={dateFormat === "month-year" ? "mm-yyyy" : "dd-mm-yyyy"}>
                     <div className="input-group-addon">
                         <i className="fa fa-calendar" />
                     </div>
-                    <input type="text" className="form-control" value={this.state.value} ref="datePicker" onChange={() => { }} />
+                    <input type="text" className="form-control" value={this.state.value} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );
