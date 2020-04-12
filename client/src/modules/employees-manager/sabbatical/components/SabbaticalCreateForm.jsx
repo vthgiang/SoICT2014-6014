@@ -36,7 +36,7 @@ class SabbaticalCreateForm extends Component {
         this.validateEmployeeNumber(value, true);
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateEmployeeNumber(value)
+        let msg = SabbaticalFormValidator.validateEmployeeNumber(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -70,7 +70,7 @@ class SabbaticalCreateForm extends Component {
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateReason(value)
+        let msg = SabbaticalFormValidator.validateReason(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -125,7 +125,7 @@ class SabbaticalCreateForm extends Component {
                     <form className="form-group" id="form-create-sabbtical">
                         <div className={`form-group ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
                             <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} />
+                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
                             <ErrorLabel content={errorOnEmployeeNumber} />
                         </div>
                         <div className="qlcv-from">
@@ -148,7 +148,7 @@ class SabbaticalCreateForm extends Component {
                         </div>
                         <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
                             <label>{translate('sabbatical.reason')}<span className="text-red">*</span></label>
-                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange}></textarea>
+                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off"></textarea>
                             <ErrorLabel content={errorOnReason} />
                         </div>
                         <div className="form-group">

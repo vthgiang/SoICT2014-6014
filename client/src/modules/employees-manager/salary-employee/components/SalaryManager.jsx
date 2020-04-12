@@ -133,7 +133,7 @@ class SalaryManager extends Component {
     render() {
         const { list } = this.props.department;
         const { translate } = this.props;
-        var formatter = new Intl.NumberFormat();
+        var formater = new Intl.NumberFormat();
         var listSalary = "", listPosition = [];
         if (this.state.unit !== null) {
             let unit = this.state.unit;
@@ -251,8 +251,8 @@ class SalaryManager extends Component {
                                             <td>
                                                 {
                                                     (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
-                                                        formatter.format(parseInt(salary)) :
-                                                        formatter.format(total + parseInt(salary))
+                                                        formater.format(parseInt(salary)) :
+                                                        formater.format(total + parseInt(salary))
                                                 } {unit}
                                             </td>
                                             <td>{x.departments.length !== 0 ? x.departments.map(unit => (

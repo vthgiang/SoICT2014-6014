@@ -8,20 +8,20 @@ export const SabbaticalFormValidator = {
 
 }
 
-function validateEmployeeNumber(value) {
+// Kiểm tra mã nhân viên nhập vào
+function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Mã nhân viên không được để trống";
+        msg = translate('error.employee_number_required');
     } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
-        msg = "Mã nhân viên không chứa ký tự đặc biệt";
+        msg = translate('error.staff_code_not_special');
     }
     return msg;
 }
-
-function validateReason(value) {
+function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Lý do không được để trống";
+        msg = translate('error.reason_sabbatical_required');
     }
     return msg;
 }

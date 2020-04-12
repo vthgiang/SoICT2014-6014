@@ -42,11 +42,11 @@ class SabbaticalManager extends Component {
         this.hideColumn();
     }
     // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
-    handleEdit = async (sabbatical) => {
+    handleEdit = async (value) => {
         await this.setState(state => {
             return {
                 ...state,
-                currentRow: sabbatical
+                currentRow: value
             }
         });
         window.$('#modal-edit-sabbtical').modal('show');

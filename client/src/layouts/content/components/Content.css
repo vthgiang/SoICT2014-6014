@@ -28,6 +28,9 @@ div.qlcv-from > .left {
 div.qlcv-from > .right {
     padding: 0;
 }
+div.qlcv-from.row {
+    margin: 0;
+}
 
 
 
@@ -58,6 +61,9 @@ div.qlcv-from > .right {
     }
     div.qlcv-from > .input-group {
         width: 100%;
+    }
+    div.qlcv-from.row {
+        margin: 0;
     }
     
 }

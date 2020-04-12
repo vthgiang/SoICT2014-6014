@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
-import { DisciplineActions } from '../../discipline/redux/actions';
+import { DisciplineActions } from '../../praise-discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "./add-employee.css";

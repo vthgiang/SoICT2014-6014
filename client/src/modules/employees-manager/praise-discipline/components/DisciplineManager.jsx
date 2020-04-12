@@ -1,40 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import 'react-toastify/dist/ReactToastify.css';
+
+import { DisciplineCreateForm } from './DisciplineCreateForm';
+import { DisciplineEditForm } from './DisciplineEditForm';
+import { ActionColumn, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+
 import { DisciplineActions } from '../redux/actions';
-import { ModalAddDiscipline } from './ModalAddDiscipline';
-import { ModalEditDiscipline } from './ModalEditDiscipline';
-import { PaginateBar, ActionColumn, DeleteNotification } from '../../../../common-components';
-class TabDiscipline extends Component {
+class DisciplineManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "All",
+            position: null,
             number: "",
             employeeNumber: "",
-            department: "All",
+            unit: null,
             page: 0,
             limit: 5,
             hideColumn: []
         }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
-
     componentDidMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/AddEmployee.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         this.props.getListDiscipline(this.state);
     }
-
     componentDidUpdate() {
         this.hideColumn();
     }
 
+    // Function ẩn các cột được chọn
     hideColumn = () => {
         if (this.state.hideColumn.length !== 0) {
             var hideColumn = this.state.hideColumn;
@@ -43,27 +36,54 @@ class TabDiscipline extends Component {
             }
         }
     }
-    displayTreeSelect = (data, i) => {
-        i = i + 1;
-        if (data !== undefined) {
-            if (typeof (data.children) === 'undefined') {
-                return (
-                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
-                )
-            } else {
-                return (
-                    <React.Fragment key={data.id}>
-                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
-                        {
-                            data.children.map(tag => this.displayTreeSelect(tag, i))
-                        }
-                    </React.Fragment>
-                )
-            }
 
-        }
-        else return null
+    // Bắt sự kiện click chỉnh sửa thông tin khen thưởng
+    handleEdit = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: value
+            }
+        });
+        window.$('#modal-edit-discipline').modal('show');
     }
+
+    // Function lưu giá trị unit vào state khi thay đổi
+    handleUnitChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            unit: value
+        })
+    }
+
+    // Function lưu giá trị chức vụ vào state khi thay đổi
+    handlePositionChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            position: value
+        })
+    }
+
+    // Function bắt sự kiện thay đổi mã nhân viên và số quyết định
+    handleChange = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    // Function bắt sự kiện tìm kiếm 
+    handleSubmitSearch = () => {
+        this.props.getListDiscipline(this.state);
+    }
+
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
     setLimit = async (number, hideColumn) => {
         await this.setState({
             limit: parseInt(number),
@@ -71,6 +91,8 @@ class TabDiscipline extends Component {
         });
         this.props.getListDiscipline(this.state);
     }
+
+    // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
         await this.setState({
@@ -78,27 +100,24 @@ class TabDiscipline extends Component {
         });
         this.props.getListDiscipline(this.state);
     }
-    handleChange(event) {
-        const { name, value } = event.target;
-        this.setState({
-            [name]: value
-        });
-    }
-    handleSubmitSearch(event) {
-        this.props.getListDiscipline(this.state);
-    }
     render() {
-        const { tree, list } = this.props.department;
+        const { list } = this.props.department;
         const { translate } = this.props;
-        var listDiscipline = "", listDepartment = list, listPosition;
-        for (let n in listDepartment) {
-            if (listDepartment[n]._id === this.state.department) {
-                listPosition = [
-                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
-                    { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
-                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
-                ]
-            }
+        var listDiscipline = "", listPosition = [];
+        if (this.state.unit !== null) {
+            let unit = this.state.unit;
+            unit.forEach(u => {
+                list.forEach(x => {
+                    if (x._id === u) {
+                        let position = [
+                            { _id: x.dean._id, name: x.dean.name },
+                            { _id: x.vice_dean._id, name: x.vice_dean.name },
+                            { _id: x.employee._id, name: x.employee.name }
+                        ]
+                        listPosition = listPosition.concat(position)
+                    }
+                })
+            })
         }
         if (this.props.discipline.isLoading === false) {
             listDiscipline = this.props.discipline.listDiscipline;
@@ -110,40 +129,30 @@ class TabDiscipline extends Component {
         return (
             <div id="kyluat" className="tab-pane">
                 <div className="box-body qlcv">
-                    <div className="form-group">
-                        <button type="button" className="btn btn-success pull-right" title={translate('discipline.add_discipline_title')} data-toggle="modal" data-target="#modal-addNewDiscipline" >{translate('discipline.add_discipline')}</button>
-                    </div>
+                    <DisciplineCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}:</label>
-                            <select className="form-control" defaultValue="All" id="tree-select2" name="department" onChange={this.handleChange}>
-                                <option value="All" level={1}>--Tất cả---</option>
-                                {
-                                    tree !== null &&
-                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                }
-                            </select>
+                            <label className="form-control-static">{translate('page.unit')}</label>
+                            <SelectMulti id={`multiSelectUnitDiscipline`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}:</label>
-                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                {
-                                    listPosition !== undefined &&
-                                    listPosition.map((position, index) => (
-                                        <option key={index} value={position._id}>{position.name}</option>
-                                    ))
-                                }
-                            </select>
+                            <label className="form-control-static">{translate('page.position')}</label>
+                            <SelectMulti id={`multiSelectPositionDiscipline`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
+                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                            </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.staff_number')}:</label>
+                            <label className="form-control-static">{translate('page.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="number" className="form-control-static">{translate('page.number_decisions')}:</label>
+                            <label htmlFor="number" className="form-control-static">{translate('page.number_decisions')}</label>
                             <input type="text" className="form-control" name="number" onChange={this.handleChange} placeholder={translate('page.number_decisions')} autoComplete="off" />
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
@@ -178,7 +187,7 @@ class TabDiscipline extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDiscipline === 'undefined' || listDiscipline.length === 0) ? <tr><th colSpan={8-this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
+                            {(typeof listDiscipline === 'undefined' || listDiscipline.length === 0) ? <tr><th colSpan={8 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
                                 listDiscipline.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
@@ -197,16 +206,12 @@ class TabDiscipline extends Component {
                                             </React.Fragment>
                                         )) : null}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <ModalEditDiscipline data={x} />
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_discipline')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={{
-                                                    title: "Xoá thông tin kỷ luật",
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content={translate('discipline.delete_discipline')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.employee.employeeNumber + " - Số quyết định: " + x.number
+                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.number
                                                 }}
                                                 func={this.props.deleteDiscipline}
                                             />
@@ -217,7 +222,19 @@ class TabDiscipline extends Component {
                         </tbody>
                     </table>
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
-                    <ModalAddDiscipline />
+                    {
+                        this.state.currentRow !== undefined &&
+                        <DisciplineEditForm
+                            _id={this.state.currentRow._id}
+                            employeeNumber={this.state.currentRow.employee.employeeNumber}
+                            number={this.state.currentRow.number}
+                            unit={this.state.currentRow.unit}
+                            startDate={this.state.currentRow.startDate}
+                            endDate={this.state.currentRow.endDate}
+                            type={this.state.currentRow.type}
+                            reason={this.state.currentRow.reason}
+                        />
+                    }
                 </div>
             </div>
         )
@@ -233,5 +250,5 @@ const actionCreators = {
     deleteDiscipline: DisciplineActions.deleteDiscipline,
 };
 
-const connectedListDiscipline = connect(mapState, actionCreators)(withTranslate(TabDiscipline));
-export { connectedListDiscipline as TabDiscipline };
+const disciplineManager = connect(mapState, actionCreators)(withTranslate(DisciplineManager));
+export { disciplineManager as DisciplineManager };
