@@ -146,3 +146,13 @@ table.table td a.delete {
 table.table td a.approve {
     color: deepskyblue;
 }
+
+
+/*
+* CSS cho thông báo bảng không có dữ liệu
+*/
+div.no-data-panel {
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 10px;
+}
