@@ -49,7 +49,8 @@ BƯỚC 3: sử dụng component
             </tr>
         </tbody>
     </table>
-    {(typeof listSalary === 'undefined' || listSalary.length === 0)&& // Khi bảng không có dữ liệu, hiển thị thông báo với div sau
-        <div className="no-data-panel">{translate('table.no_data')}</div>
+    {salary.isLoading?
+        <div className="table-info-panel">{translate('confirm.loading')}</div>:
+        (typeof listSalary === 'undefined' || listSalary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
     }
 </div>

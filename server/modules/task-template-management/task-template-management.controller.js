@@ -27,14 +27,16 @@ exports.getByRole = (req, res) => {
 // Lấy mẫu công việc theo người dùng
 exports.getByUser = async (req, res) => {
     try {
-        var pageNumber = Number(req.params.pageNumber);
-        var noResultsPerPage = Number(req.params.noResultsPerPage);
-        var data = await TaskTemplateService.getByUser(req.params.id, pageNumber, noResultsPerPage, req.params.unit, req.params.name);
-        LogInfo(req.user.email, `Get task templates by user ${req.params.id}`, req.user.company);
+        var pageNumber = Number(req.body.pageNumber);
+        var noResultsPerPage = Number(req.body.noResultsPerPage);
+        var data = await TaskTemplateService.getByUser(req.body.id, pageNumber, noResultsPerPage, req.body.arrayUnit, req.body.name);
+        LogInfo(req.user.email, `Get task templates by user ${req.body.id}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {
-        LogError(req.user.email, `Get task templates by user ${req.params.id}`, req.user.company);
-        res.status(400).json(error);
+        LogError(req.user.email, `Get task templates by user ${req.body.id}`, req.user.company);
+        res.status(400).json({
+            message: error
+        });
     }
 
 }

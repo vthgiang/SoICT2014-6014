@@ -196,7 +196,7 @@ class TaskTemplate extends Component {
     }
     
     checkHasComponent = (name) => {
-        var {auth} = this.props;
+        var { auth } = this.props;
         var result = false;
         auth.components.forEach(component => {
             if(component.name === name) result=true;
@@ -347,7 +347,6 @@ class TaskTemplate extends Component {
                     </div>
                 </div>
             </div>
-              
         );
     }
 }

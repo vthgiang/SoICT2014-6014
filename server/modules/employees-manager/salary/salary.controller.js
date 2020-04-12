@@ -48,7 +48,7 @@ exports.create = async (req, res) => {
     }
 }
 
-// delete thông tin bảng lương
+// Xoá thông tin bảng lương
 exports.delete = async (req, res) => {
     try {
         var saralyDelete = await SalaryService.delete(req.params.id);
@@ -60,7 +60,7 @@ exports.delete = async (req, res) => {
     }
 }
 
-// update thông tin bảng lương
+// Chỉnh sửa thông tin bảng lương
 exports.update = async (req, res) => {
     try {
         if(req.body.employeeNumber.trim()===""){

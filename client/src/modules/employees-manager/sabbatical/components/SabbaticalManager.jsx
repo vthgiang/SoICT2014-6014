@@ -20,7 +20,6 @@ class SabbaticalManager extends Component {
             status: null,
             page: 0,
             limit: 5,
-            hideColumn: []
         }
         //this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
@@ -29,50 +28,15 @@ class SabbaticalManager extends Component {
         this.props.getListSabbatical(this.state);
         this.props.getDepartment();
     }
-    // Function ẩn các cột được chọn
-    hideColumn = () => {
-        if (this.state.hideColumn.length !== 0) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#sabbatical-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
-    }
-    componentDidUpdate() {
-        this.hideColumn();
-    }
     // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
-    handleEdit = async (sabbatical) => {
+    handleEdit = async (value) => {
         await this.setState(state => {
             return {
                 ...state,
-                currentRow: sabbatical
+                currentRow: value
             }
         });
         window.$('#modal-edit-sabbtical').modal('show');
-    }
-
-
-    displayTreeSelect = (data, i) => {
-        i = i + 1;
-        if (data !== undefined) {
-            if (typeof (data.children) === 'undefined') {
-                return (
-                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
-                )
-            } else {
-                return (
-                    <React.Fragment key={data.id}>
-                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
-                        {
-                            data.children.map(tag => this.displayTreeSelect(tag, i))
-                        }
-                    </React.Fragment>
-                )
-            }
-
-        }
-        else return null
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -141,15 +105,19 @@ class SabbaticalManager extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = () => {
+    handleSunmitSearch = async () => {
+        if (this.state.month === "") {
+            await this.setState({
+                month: this.formatDate(Date.now())
+            })
+        }
         this.props.getListSabbatical(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number, hideColumn) => {
+    setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
-            hideColumn: hideColumn
         });
         this.props.getListSabbatical(this.state);
     }
@@ -166,7 +134,7 @@ class SabbaticalManager extends Component {
 
     render() {
         const { list } = this.props.department;
-        const { translate } = this.props;
+        const { translate, sabbatical } = this.props;
         var listSabbatical = "", listPosition = [];
         if (this.state.unit !== null) {
             let unit = this.state.unit;
@@ -216,7 +184,7 @@ class SabbaticalManager extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
@@ -280,7 +248,7 @@ class SabbaticalManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSabbatical === 'undefined' || listSabbatical.length === 0) ? <tr><th colSpan={9 - this.state.hideColumn.length}><center>{translate('table.no_data')}</center></th></tr> :
+                            {(typeof listSabbatical !== 'undefined' && listSabbatical.length !== 0) &&
                                 listSabbatical.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
@@ -314,6 +282,10 @@ class SabbaticalManager extends Component {
                             }
                         </tbody>
                     </table>
+                    {sabbatical.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listSabbatical === 'undefined' || listSabbatical.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 {

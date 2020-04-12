@@ -32,7 +32,7 @@ class SabbaticalEditForm extends Component {
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateReason(value)
+        let msg = SabbaticalFormValidator.validateReason(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {

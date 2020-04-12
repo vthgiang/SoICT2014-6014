@@ -1,6 +1,6 @@
 import { SabbaticalConstants } from './constants';
 const initState = {
-    isLoading: "",
+    isLoading: false,
     listSabbatical: [],
     totalList: "",
     error:"",

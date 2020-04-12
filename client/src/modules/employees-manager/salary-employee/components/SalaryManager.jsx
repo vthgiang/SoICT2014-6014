@@ -81,7 +81,12 @@ class SalaryManager extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = () => {
+    handleSunmitSearch = async () => {
+        if (this.state.month === "") {
+            await this.setState({
+                month: this.formatDate(Date.now())
+            })
+        }
         this.props.getListSalary(this.state);
     }
 
@@ -117,7 +122,7 @@ class SalaryManager extends Component {
     render() {
         const { list } = this.props.department;
         const { translate, salary } = this.props;
-        var formatter = new Intl.NumberFormat();
+        var formater = new Intl.NumberFormat();
         var listSalary = "", listPosition = [];
         if (this.state.unit !== null) {
             let unit = this.state.unit;
@@ -235,8 +240,8 @@ class SalaryManager extends Component {
                                             <td>
                                                 {
                                                     (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
-                                                        formatter.format(parseInt(salary)) :
-                                                        formatter.format(total + parseInt(salary))
+                                                        formater.format(parseInt(salary)) :
+                                                        formater.format(total + parseInt(salary))
                                                 } {unit}
                                             </td>
                                             <td>{x.departments.length !== 0 ? x.departments.map(unit => (
@@ -265,8 +270,8 @@ class SalaryManager extends Component {
                             }
                         </tbody>
                     </table>
-                    {salary.isLoading?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div>:
+                    {salary.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listSalary === 'undefined' || listSalary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />

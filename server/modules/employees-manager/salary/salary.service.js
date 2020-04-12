@@ -67,8 +67,8 @@ exports.delete = async (id) => {
     return await Salary.findOneAndDelete({ _id: id });
 }
 
-// Update thông tin bảng lương
-exports.update = async (id, data,company) => {
+// Chỉnh sửa thông tin bảng lương
+exports.update = async (id, data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company:company }, { _id: 1, emailCompany: 1});
     if(employeeInfo!==null){
@@ -76,7 +76,8 @@ exports.update = async (id, data,company) => {
             employee: employeeInfo._id,
             month: data.month,
             mainSalary: data.unit ? (data.mainSalary + data.unit) : data.mainSalary,
-            bonus: data.bonus
+            bonus: data.bonus,
+            updateDate: Date.now()
         };
         // Cập nhật thông tin bảng lương vào database
         await Salary.findOneAndUpdate({ _id: id }, { $set: salaryChange });

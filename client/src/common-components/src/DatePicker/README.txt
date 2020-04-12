@@ -29,5 +29,6 @@ import { DatePicker } from '../../../../common-components';
         id="month"      
         dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
         value={}                            // giá trị mặc định cho datePicker    
-        onChange={this.handleMonthChange}    
+        onChange={this.handleMonthChange}
+        disabled={true}                     // sử dụng khi muốn disabled, mặc định là false
     />

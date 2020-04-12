@@ -22,13 +22,6 @@ div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.
 div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
     margin: 5px 0 5px 0;
 }
-div.qlcv-from > .left {
-    padding: 0;
-}
-div.qlcv-from > .right {
-    padding: 0;
-}
-
 
 
 @media (min-width: 768px){

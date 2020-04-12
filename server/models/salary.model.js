@@ -14,9 +14,11 @@ const SalarySchema = new Schema({
     },
     month: {
         type: String,
+        require: true,
     },
     mainSalary: {
-        type: String
+        type: String,
+        require: true,
     },
     bonus: [{
         nameBonus: String,
