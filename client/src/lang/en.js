@@ -80,6 +80,7 @@ export default {
 
         form: {
             property: 'Property',
+            value: 'Value',
             required: 'Information fields required',
             save: 'Save',
             close: 'Close',

@@ -92,6 +92,7 @@ export default {
 
         form: {
             property: 'Thuộc tính',
+            value: 'Giá trị',
             required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',
