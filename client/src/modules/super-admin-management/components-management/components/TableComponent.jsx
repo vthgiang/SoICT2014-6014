@@ -16,10 +16,6 @@ class TableComponent extends Component {
             option: 'name', //mặc định tìm kiếm theo tên
             value: null
         }
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
     }
 
     componentDidMount(){
@@ -27,21 +23,26 @@ class TableComponent extends Component {
         this.props.getComponents();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
         this.props.getRoles();
-        // let script = document.createElement('script');
-        // script.src = 'lib/main/js/CoCauToChuc.js';
-        // script.async = true;
-        // script.defer = true;
-        // document.body.appendChild(script);
     }
 
     render() { 
         const { component, translate } = this.props;
+        const { currentRow } = this.state;
         return ( 
             <React.Fragment>
+                {
+                    currentRow !== undefined &&
+                    <ComponentInfoForm 
+                        componentId={ currentRow._id }
+                        componentName={ currentRow.name }
+                        componentDescription={ currentRow.description }
+                        componentRoles={ currentRow.roles.map(role => role.roleId._id) }
+                    />
+                }
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value:'name' },
-                        { title: translate('table.description'), value:'description' },
+                        { title: translate('manage_component.name'), value:'name' },
+                        { title: translate('manage_component.description'), value:'description' },
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -51,12 +52,18 @@ class TableComponent extends Component {
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>{ translate('table.name') }</th>
-                            <th>{ translate('table.description') }</th>
+                            <th>{ translate('manage_component.name') }</th>
+                            <th>{ translate('manage_component.description') }</th>
+                            <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
+                                { translate('table.action') }
                                 <ActionColumn 
-                                    columnName={translate('table.action')} 
-                                    hideColumn={false}
+                                    columnArr={[
+                                        translate('manage_component.name'),
+                                        translate('manage_component.description'),
+                                        translate('manage_component.roles')
+                                    ]}
+                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
                                 />
                             </th>
@@ -69,13 +76,34 @@ class TableComponent extends Component {
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
                                     <td>{ component.description }</td>
+                                    <td>{
+                                        component.roles.map((role, index, arr) => {
+                                            if(arr.length < 4){
+                                                if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                else return `${role.roleId.name}`
+                                            }else{
+                                                if(index < 3 ){
+                                                    return `${role.roleId.name}, `
+                                                }
+                                            }
+                                        })
+                                    }{
+                                        component.roles.length >=4 &&
+                                        <React.Fragment>
+                                            <div className="tooltip2">...
+                                                <span className="tooltip2text">
+                                                    {
+                                                        component.roles.map((role, index, arr) => {
+                                                            if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                            else return `${role.roleId.name}`
+                                                        })
+                                                    }
+                                                </span>
+                                            </div>
+                                        </React.Fragment>
+                                    }</td>
                                     <td style={{ textAlign: 'center'}}>
-                                        <ComponentInfoForm 
-                                            componentId={ component._id }
-                                            componentName={ component.name }
-                                            componentDescription={ component.description }
-                                            componentRoles={ component.roles.map(role => role.roleId) }
-                                        />
+                                        <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
                                     </td>
                                 </tr>
                             ): component.isLoading ?
@@ -121,6 +149,18 @@ class TableComponent extends Component {
             data[this.state.option] = this.state.value;
         }
         this.props.getPaginate(data);
+    }
+
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = async (component) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: component
+            }
+        });
+
+        window.$('#modal-edit-component').modal('show');
     }
 }
  
