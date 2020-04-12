@@ -17,24 +17,10 @@ class DisciplineManager extends Component {
             unit: null,
             page: 0,
             limit: 5,
-            hideColumn: []
         }
     }
     componentDidMount() {
         this.props.getListDiscipline(this.state);
-    }
-    componentDidUpdate() {
-        this.hideColumn();
-    }
-
-    // Function ẩn các cột được chọn
-    hideColumn = () => {
-        if (this.state.hideColumn.length !== 0) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#discipline-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin khen thưởng
@@ -84,10 +70,9 @@ class DisciplineManager extends Component {
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number, hideColumn) => {
+    setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
-            hideColumn: hideColumn
         });
         this.props.getListDiscipline(this.state);
     }
@@ -102,7 +87,7 @@ class DisciplineManager extends Component {
     }
     render() {
         const { list } = this.props.department;
-        const { translate } = this.props;
+        const { translate, discipline } = this.props;
         var listDiscipline = "", listPosition = [];
         if (this.state.unit !== null) {
             let unit = this.state.unit;
@@ -187,7 +172,7 @@ class DisciplineManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDiscipline === 'undefined' || listDiscipline.length === 0) ? <tr><th colSpan={8 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
+                            {(typeof listDiscipline !== 'undefined' && listDiscipline.length !== 0) &&
                                 listDiscipline.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
@@ -221,6 +206,10 @@ class DisciplineManager extends Component {
                             }
                         </tbody>
                     </table>
+                    {discipline.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listDiscipline === 'undefined' || listDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                     {
                         this.state.currentRow !== undefined &&

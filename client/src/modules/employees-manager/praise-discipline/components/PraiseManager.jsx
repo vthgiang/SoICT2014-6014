@@ -17,24 +17,10 @@ class PraiseManager extends Component {
             unit: null,
             page: 0,
             limit: 5,
-            hideColumn: []
         }
     }
     componentDidMount() {
         this.props.getListPraise(this.state);
-    }
-    componentDidUpdate() {
-        this.hideColumn();
-    }
-
-    // Function ẩn các cột được chọn
-    hideColumn = () => {
-        if (this.state.hideColumn.length !== 0) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#praise-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin khen thưởng
@@ -84,10 +70,9 @@ class PraiseManager extends Component {
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number, hideColumn) => {
+    setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
-            hideColumn: hideColumn
         });
         this.props.getListPraise(this.state);
     }
@@ -103,7 +88,7 @@ class PraiseManager extends Component {
 
     render() {
         const { list } = this.props.department;
-        const { translate } = this.props;
+        const { translate, discipline } = this.props;
         var listPraise = "", listPosition = [];
         if (this.state.unit !== null) {
             let unit = this.state.unit;
@@ -186,7 +171,7 @@ class PraiseManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listPraise === 'undefined' || listPraise.length === 0) ? <tr><th colSpan={7 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
+                            {(typeof listPraise !== 'undefined' && listPraise.length !== 0) &&
                                 listPraise.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
@@ -219,9 +204,12 @@ class PraiseManager extends Component {
                             }
                         </tbody>
                     </table>
-                </div>
-                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
-                {
+                    {discipline.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listPraise === 'undefined' || listPraise.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    {
                     this.state.currentRow !== undefined &&
                     <PraiseEditForm
                         _id={this.state.currentRow._id}
@@ -233,6 +221,7 @@ class PraiseManager extends Component {
                         reason={this.state.currentRow.reason}
                     />
                 }
+                </div>
             </div>
         )
     };
