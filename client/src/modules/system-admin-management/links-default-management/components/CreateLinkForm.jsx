@@ -13,7 +13,7 @@ class CreateLinkForm extends Component {
     }
 
     render() { 
-        const { translate, rolesDefault } = this.props;
+        const { translate, rolesDefault, linksDefault } = this.props;
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-page" button_name={translate('manage_link.add')} title={translate('manage_link.add_title')}/>
@@ -33,6 +33,18 @@ class CreateLinkForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_link.description') }<span className="text-red">*</span></label>
                             <input ref="description" type="text" className="form-control"/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_link.category') }<span className="text-red">*</span></label>
+                            <select
+                                className="form-control select2"
+                                onChange={this.handleCategory}
+                                style={{ width: '100%' }} 
+                            >
+                                {
+                                    linksDefault.categories.map(category => <option key={category.name} value={category.name}>{category.name+" - "+category.description}</option>)
+                                }
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_link.roles') }</label>

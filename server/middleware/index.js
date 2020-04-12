@@ -57,6 +57,7 @@ exports.auth = async (req, res, next) => {
              * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
              */
             var userToken = await User.findOne({ _id: req.user._id,  token: token });
+            console.log("user tìm thấy là : ", userToken);
             if(userToken === null) throw ('acc_log_out');
 
             /**

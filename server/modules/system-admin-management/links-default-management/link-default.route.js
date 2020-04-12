@@ -6,6 +6,9 @@ const { auth } = require('../../../middleware');
 //Lấy tất cả các link mặc đinh sẽ tạo cho 1 doanh nghiệp
 router.get("/", auth, LinkController.get);
 
+//Lấy tất cả các category link mặc định
+router.get("/categories", auth, LinkController.getCategories);
+
 //Lấy giới hạn link mặc đinh sẽ tạo cho 1 doanh nghiệp ( bao nhiêu giá trị / bảng quản lý trang )
 router.post("/paginate", auth, LinkController.getPaginate);
 

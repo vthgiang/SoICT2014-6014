@@ -21,6 +21,26 @@ exports.get = async (req, res) => {
     }
 };
 
+exports.getCategories = async (req, res) => {
+    try {
+        const categories = await LinkDefaultService.getCategories();
+        
+        LogInfo(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
+        res.status(200).json({
+            success: true,
+            message: 'get_links_default_categories_success',
+            content: categories
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
 exports.getPaginate = async (req, res) => {
     try {
         var { limit, page } = req.body;

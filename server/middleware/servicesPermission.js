@@ -39,6 +39,7 @@ exports.data = [
 
     // Service của riêng Systemadmin
     { path: '/roles-default-management', method: 'GET', roles: ['System Admin']},
+    { path: '/links-default-management/categories', method: 'GET', roles: ['System Admin']},
     { path: '/links-default-management', method: 'GET', roles: ['System Admin']},
     { path: '/links-default-management', method: 'POST', roles: ['System Admin']},
     { path: '/links-default-management/paginate', method: 'POST', roles: ['System Admin']},

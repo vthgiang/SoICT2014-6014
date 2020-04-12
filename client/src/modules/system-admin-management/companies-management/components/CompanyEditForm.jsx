@@ -14,7 +14,7 @@ class CompanyEditForm extends Component {
     render() { 
         const { translate } = this.props;
         const {companyName, companyShortName, companyLinks, companyDescription, companyLog, companyActive, companyEmail, nameError, shortNameError, descriptionError, emailError} = this.state;
-        console.log("edit company: ", this.state)
+        
         return ( 
             <React.Fragment>
                 <ModalDialog

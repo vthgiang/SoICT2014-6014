@@ -1,4 +1,5 @@
 const { LinkDefault, RoleDefault, ComponentDefault } = require('../../../models/_export').data;
+const {CATEGORY_LINKS} = require('../../../seed/terms');
 
 exports.get = async () => {
 
@@ -6,6 +7,11 @@ exports.get = async () => {
         { path: 'roles', model: RoleDefault },
         { path: 'components', model: ComponentDefault }
     ]);
+}
+
+exports.getCategories = async () => {
+    
+    return CATEGORY_LINKS;
 }
 
 exports.getPaginate = async (limit, page, data={}) => {

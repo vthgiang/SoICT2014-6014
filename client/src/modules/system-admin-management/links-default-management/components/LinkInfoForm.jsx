@@ -13,9 +13,8 @@ class LinkInfoForm extends Component {
     }
 
     render() { 
-        const { translate, rolesDefault } = this.props;
-        const {linkId, linkUrl, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
-        console.log("link: ", this.state)
+        const { translate, rolesDefault, linksDefault } = this.props;
+        const {linkId, linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
 
         return ( 
             <ModalDialog
@@ -37,6 +36,19 @@ class LinkInfoForm extends Component {
                         <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
                         <input type="text" className="form-control" value={linkDescription} onChange={this.handleDescription}/>
                         <ErrorLabel content={linkDescriptionError}/>
+                    </div>
+                    <div className="form-group">
+                        <label>{ translate('manage_link.category') }<span className="text-red"> * </span></label>
+                        <select
+                            className="form-control select2"
+                            onChange={this.handleCategory}
+                            value={linkCategory}
+                            style={{ width: '100%' }} 
+                        >
+                            {
+                                linksDefault.categories.map(category => <option key={category.name} value={category.name}>{category.name+" - "+category.description}</option>)
+                            }
+                        </select>
                     </div>
                     <div className="form-group">
                         <label>{ translate('manage_link.roles') }</label>
@@ -64,6 +76,7 @@ class LinkInfoForm extends Component {
                 ...prevState,
                 linkId: nextProps.linkId,
                 linkUrl: nextProps.linkUrl,
+                linkCategory: nextProps.linkCategory,
                 linkDescription: nextProps.linkDescription,
                 linkRoles: nextProps.linkRoles,
                 linkUrlError: undefined,

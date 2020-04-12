@@ -4,6 +4,7 @@ import { AlertActions} from '../../../alert/redux/actions';
 
 export const LinkDefaultActions = {
     get,
+    getCategories,
     getPaginate,
     show,
     create,
@@ -23,6 +24,24 @@ function get(){
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+            })
+    }
+}
+
+function getCategories(){
+    return dispatch => {
+        dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_REQUEST});
+        LinkDefaultServices.getCategories()
+            .then(res => {
+                dispatch({
+                    type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
             })

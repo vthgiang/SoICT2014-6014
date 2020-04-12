@@ -45,7 +45,7 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu công ty!");
-    var xyz = await Company.create({
+    const xyz = await Company.create({
         name: 'Công ty TNHH XYZ',
         short_name: 'xyz',
         description: 'Công ty TNHH XYZ'
@@ -461,6 +461,11 @@ const sampleCompanyData = async () => {
             company: xyz._id
         }
     ]);
+    // Gán id của các link vào cho collection company
+    const updateXYZ = await Company.findById(xyz._id);
+    updateXYZ.links = links.map(link => link._id);
+    updateXYZ.super_admin = users[0]._id;
+    await updateXYZ.save();
     console.log("Xong! Đã tạo links: ", links);
 
     //Thêm component -------------------------------------------------------

@@ -80,7 +80,7 @@ class CompanyTable extends Component {
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.super_admin !== undefined && currentRow.super_admin.email}
+                        companyEmail={currentRow.super_admin !== undefined ? currentRow.super_admin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }

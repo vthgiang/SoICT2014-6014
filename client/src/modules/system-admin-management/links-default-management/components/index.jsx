@@ -34,7 +34,7 @@ class ManageLink extends Component {
     render() { 
         const { translate, linksDefault } = this.props;
         const {currentRow} = this.state;
-        console.log("rơ: ", currentRow)
+        
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
@@ -45,6 +45,7 @@ class ManageLink extends Component {
                             <LinkInfoForm
                                 linkId={currentRow._id}
                                 linkUrl={currentRow.url}
+                                linkCategory={currentRow.category}
                                 linkDescription={currentRow.description}
                                 linkRoles={currentRow.roles.map(role => role._id)}
                             />
@@ -145,15 +146,6 @@ class ManageLink extends Component {
         this.props.getPaginate(data);
     }
     
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-    
     setLimit = (number) => {
         this.setState({ limit: number });
         const data = { limit: number, page: this.state.page };
@@ -165,6 +157,7 @@ class ManageLink extends Component {
      
     componentDidMount(){
         this.props.getLinks();
+        this.props.getCategories();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
 }
@@ -172,6 +165,7 @@ class ManageLink extends Component {
 const mapState = state => state;
 const getState =  {
     getLinks: LinkDefaultActions.get,
+    getCategories: LinkDefaultActions.getCategories,
     getPaginate: LinkDefaultActions.getPaginate,
     destroy: LinkDefaultActions.destroy
 }

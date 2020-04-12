@@ -17,7 +17,7 @@ class Alert extends Component {
     }
 
     render() { 
-        const { display, msg } = this.props.alert;
+        const { display, message } = this.props.alert;
         const { translate } = this.props;
         return ( 
             <React.Fragment>
@@ -29,7 +29,7 @@ class Alert extends Component {
                             </div>
                             <div className="modal-body text-center">
                                 <strong>
-                                    { msg !== null ? translate(`alert.${msg}`) : translate('alert.log_again') }
+                                    { message !== null ? translate(`alert.${message}`) : translate('alert.log_again') }
                                 </strong>
                             </div>
                             <div className="modal-footer">
