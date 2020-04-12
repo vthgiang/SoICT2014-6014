@@ -10,36 +10,36 @@ export const SalaryFormValidator = {
 
 }
 // Function kiểm tra mã nhân viên
-function validateEmployeeNumber(value) {
+function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Mã nhân viên không được để trống";
+        msg = translate('error.employee_number_required');
     } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
-        msg = "Mã nhân viên không chứa ký tự đặc biệt";
+        msg = translate('error.staff_code_not_special');
     }
     return msg;
 }
 // Function kiểm tra tiền lương chính
-function validateMainSalary(value) {
+function validateMainSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Tiền lương chính không được để trống";
+        msg = translate('error.money_salary_required');
     }
     return msg;
 }
 // Function kiểm tra tên lương thưởng khác
-function validateNameSalary(value) {
+function validateNameSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Tên lương thưởng khác không được để trống";
+        msg = translate('error.name_other_salary_required');
     }
     return msg;
 }
 // Function kiểm tra tiền lương thưởng khác
-function validateMoreMoneySalary(value) {
+function validateMoreMoneySalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Tiền lương thưởng khác không được để trống";
+        msg = translate('error.money_other_salary_required');
     }
     return msg;
 }

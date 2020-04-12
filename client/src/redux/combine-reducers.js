@@ -16,7 +16,7 @@ import {employeesManager} from '../modules/employees-manager/employee-manager/re
 import {education} from '../modules/training-course/list-education/redux/reducers';
 import {course} from '../modules/training-course/training-plan/redux/reducers';
 import {salary} from '../modules/employees-manager/salary-employee/redux/reducers';
-import {discipline} from '../modules/employees-manager/discipline/redux/reducers';
+import {discipline} from '../modules/employees-manager/praise-discipline/redux/reducers';
 import {sabbatical} from '../modules/employees-manager/sabbatical/redux/reducers';
 import {holiday} from '../modules/employees-manager/holiday/redux/reducers';
 import {notifications} from '../modules/notifications/redux/reducers';

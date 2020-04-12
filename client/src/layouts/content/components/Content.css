@@ -22,44 +22,25 @@ div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.
 div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
     margin: 5px 0 5px 0;
 }
-div.qlcv-from > .left {
-    padding: 0;
-}
-div.qlcv-from > .right {
-    padding: 0;
-}
-
 
 
 @media (min-width: 768px){
-    div.qlcv div.selectmulti,
+    div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
     div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
-    div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
-    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
-    div.qlcv > .form-inline .input-group, div.qlcv > .form-group >.form-control {
+    div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group > .form-control,
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label,
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
         margin: 5px;
     }
-    div.selectmulti {
-        width: 200px;
-    }
+    div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
     div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
-    div.qlcv > .form-inline .input-group, div.qlcv > .form-group >.form-control {
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
         width: 200px;
     }
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
         width: 100px;
         text-align: right;
     }
-    div.qlcv-from > .left {
-        padding-right: 15px;
-    }
-    div.qlcv-from > .right {
-        padding-left: 15px;
-    }
-    div.qlcv-from > .input-group {
-        width: 100%;
-    }
-    
 }
 
 
@@ -145,4 +126,14 @@ table.table td a.delete {
 
 table.table td a.approve {
     color: deepskyblue;
+}
+
+
+/*
+* CSS cho thông báo với bảng (đang load dữ liệu, không có dữ liệu, ...)
+*/
+div.table-info-panel {
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 10px;
 }

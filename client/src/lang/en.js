@@ -4,14 +4,23 @@ export default {
         error: {
             email_does_not_exist: 'Email does not exist',
             field_invalid: 'Field input invaid',
-            employee_number_required:'Staff code required',
+
+            /** 
+             * Start 
+             * Chức năng quản lý nhân sự
+             */
+            employee_number_required: 'Staff code required',
+            staff_code_not_special: 'Staff code does not contain special characters',
             staff_code_not_find: 'Staff code does not exist',
+            number_decisions_required: 'Decis number required',
+            number_decisions_have_exist: 'Decis number have exist',
+            unit_decisions_required: 'Decis unit required',
             // Quản lý nghỉ phép
             start_date_sabbatical_required: 'Start date sabbatical required',
             end_date_sabbatical_required: 'End date sabbatical required',
             reason_sabbatical_required: 'Reason sabbatical required',
             status_sabbatical_required: 'Status sabbatical required',
-            get_sabbatical_success:'Get sabbatical success',
+            get_sabbatical_success: 'Get sabbatical success',
             get_sabbatical_faile: 'Get sabbatical faile',
             create_sabbatical_success: 'Create sabbatical success',
             create_sabbatical_faile: 'Create sabbatical faile',
@@ -20,17 +29,49 @@ export default {
             edit_sabbatical_success: 'Edit sabbatical success',
             edit_sabbatical_faile: 'Edit sabbatical faile',
             // Quản lý lương nhân viên
-            get_salary_success:'Get salary success',
-            get_salary_faile:'Get salary faile',
-            month_salary_required:'Month salary required',
-            money_salary_required:'Money_salary required',
-            month_salary_have_exist:'Month salary have exist',
-            create_salary_success:'Create salary success',
-            create_salary_faile:'Create salary faile',
-            delete_salary_success:'Delete salary success',
-            delete_salary_faile:'Delete salary faile',
-            edit_salary_success:'Edit salary success',
-            edit_salary_faile:'Edit salary faile',
+            name_other_salary_required:'Name other salary required',
+            money_other_salary_required:'Money other salary required',
+            month_salary_required: 'Month salary required',
+            money_salary_required: 'Money_salary required',
+            month_salary_have_exist: 'Month salary have exist',
+            get_salary_success: 'Get salary success',
+            get_salary_faile: 'Get salary faile',
+            create_salary_success: 'Create salary success',
+            create_salary_faile: 'Create salary faile',
+            delete_salary_success: 'Delete salary success',
+            delete_salary_faile: 'Delete salary faile',
+            edit_salary_success: 'Edit salary success',
+            edit_salary_faile: 'Edit salary faile',
+            // Quản lý khen thưởng
+            type_praise_required: 'Reward forms required',
+            reason_praise_required: 'Reason required',
+            decisions_date_required: 'Decis day required',
+            get_praise_success: 'Get Reward success',
+            get_praise_faile: 'Get Reward faile',
+            create_praise_success: 'Create Reward success',
+            create_praise_faile: 'Create Reward faile',
+            delete_praise_success: 'Delete Reward success',
+            delete_praise_faile: 'Delete Reward faile',
+            edit_praise_success: 'Edit Reward success',
+            edit_praise_faile: 'Edit Reward faile',
+            // Quản lý kỷ luật
+            type_discipline_required: 'Discipline forms required',
+            reason_discipline_required: 'Reason required',
+            start_date_discipline_required: 'Effective date required',
+            end_date_discipline_required: 'Expiration date required',
+            get_discipline_success: 'Get discipline success',
+            get_discipline_faile: 'Get discipline faile',
+            create_discipline_success: 'Create discipline success',
+            create_discipline_faile: 'Create discipline faile',
+            delete_discipline_success: 'Delete discipline success',
+            delete_discipline_faile: 'Delete discipline faile',
+            edit_discipline_success: 'Edit discipline success',
+            edit_discipline_faile: 'Edit discipline faile',
+
+            /** 
+             * End
+             * Chức năng quản lý nhân sự
+             */
         },
         not_found: {
             title: 'Qpps! Page not found',
@@ -80,6 +121,7 @@ export default {
 
         form: {
             property: 'Property',
+            value: 'Value',
             required: 'Information fields required',
             save: 'Save',
             close: 'Close',
@@ -118,7 +160,9 @@ export default {
             no_data: 'No data',
             start_date: 'Start day',
             end_date: 'End day',
-            hidden_column: 'Hidden columns'
+            hidden_column: 'Hidden columns',
+            choose_hidden_columns: 'Select columns to hide',
+            hide_all_columns: 'Hide all columns',
         },
         modal: {
             update: 'Save',
@@ -164,7 +208,7 @@ export default {
             manage_training: 'Manage Training',
             account: 'Account',
             manage_unit: 'manage units',
-            manage_holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Work plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -281,8 +325,6 @@ export default {
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
-            all: 'All',
-            choose_hidden_columns: 'Choose column want to hide',
             category: 'Category'
         },
 
@@ -346,7 +388,7 @@ export default {
             list_discipline_title: 'List of staff discipline',
             add_discipline: 'Add discipline',
             add_discipline_title: 'Add new discipline',
-            infor_discipline: 'Discipline information',
+            edit_discipline: 'Edit Discipline',
             delete_discipline: 'Delete discipline',
             start_date: 'Effective date',
             end_date: 'Expiration date',
@@ -364,15 +406,12 @@ export default {
             list_praise_title: 'List of staff reward',
             add_praise: 'Add reward',
             add_praise_title: 'Add new reward',
-            infor_praise: 'Reward information',
+            edit_praise: 'Edit Reward',
             delete_praise: 'Delete reward',
             decision_day: 'Decis day',
             decision_unit: 'Decis unit',
             reward_forms: 'Reward forms',
             reason_praise: 'Reason',
-            check_start_date: 'Decis day required',
-            check_reason_praise: 'Reason required',
-            check_type_praise: 'Reward forms required',
         },
         manage_employee: {
             menu_general_infor: 'General information',

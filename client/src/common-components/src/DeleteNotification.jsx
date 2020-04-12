@@ -27,9 +27,12 @@ class DeleteNotification extends Component {
             confirmButtonText: this.props.translate('confirm.yes'),
         }).then((result) => {
             if (result.value) {
-                func(data.id)
-                .then(res => toast.success(res.message, {containerId: 'toast-notification'}))
-                .catch(err => toast.error(err.response.data.message, {containerId: 'toast-notification'}))
+                const handleFunction = func(data.id);
+                if(handleFunction !== undefined){
+                    handleFunction
+                        .then(res => toast.success(res.message, {containerId: 'toast-notification'}))
+                        .catch(err => toast.error(err.response.data.message, {containerId: 'toast-notification'}))
+                }
             }
         })
     }

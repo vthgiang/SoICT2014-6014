@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
-import { DisciplineActions } from '../../discipline/redux/actions';
+import { DisciplineActions } from '../../praise-discipline/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, ModalAddContract, ModalAddExperience } from './CombineContent';

@@ -20,7 +20,7 @@ import ManageFormDocument from '../modules/super-admin-management/documents-mana
 import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
-import { Discipline} from '../modules/employees-manager/discipline/components';
+import { ManagerPraiseDiscipline} from '../modules/employees-manager/praise-discipline/components';
 import ManagerSabbatical from '../modules/employees-manager/sabbatical/components';
 import ManagerSalary from '../modules/employees-manager/salary-employee/components';
 import { Timekeeping} from '../modules/employees-manager/timekeeping/components/Timekeeping';
@@ -329,7 +329,7 @@ class Routes extends Component {
                         path={ '/hr-discipline' }
                         pageName={'discipline' }
                         layout={ Layout }
-                        component={ Discipline }
+                        component={ ManagerPraiseDiscipline }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.sabbatical.isLoading }

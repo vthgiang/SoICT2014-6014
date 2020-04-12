@@ -55,12 +55,12 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
         var allRole = [];
         newRoles.map(item => {
             allRole = allRole.concat(item._id); //thêm id role hiện tại vào 1 mảng
-            allRole = allRole.concat(item.abstract); //thêm các role children vào mảng
+            allRole = allRole.concat(item.parents); //thêm các role children vào mảng
         })
         var tasktemplates;
         if(unit === "[]"){
             tasktemplates = await Privilege.find({
-                action: { $in: allRole },
+                roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
             }).sort({'createdAt': 'desc'})
             .skip(noResultsPerPage*(pageNumber-1))
@@ -72,7 +72,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             });
         } else {
             tasktemplates = await Privilege.find({
-                action: { $in: allRole },
+                roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
             }).sort({'createdAt': 'desc'})
             .skip(noResultsPerPage*(pageNumber-1))
@@ -80,12 +80,10 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             .populate({ 
                 path: 'resourceId', 
                 model: TaskTemplate, 
-                match: { unit: { $in: unit.split(",") }},
                 match: { name: { "$regex": name, "$options": "i" }},
                 populate: { path: 'creator unit' } 
             });
         }
-        
         var totalCount = await Privilege.count({
             roleId: { $in: allRole },
             resourceType: 'TaskTemplate'

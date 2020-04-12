@@ -1,6 +1,6 @@
 import { SalaryConstants } from './constants';
 const initState = {
-    isLoading: "",
+    isLoading: false,
     listSalary: [],
     totalList: "",
     importSalary:"",

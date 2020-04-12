@@ -36,7 +36,7 @@ class SalaryCreateForm extends Component {
     }
     // function kiểm tra mã nhân viên nhập vào có hợp lệ hay không
     validateEmployeeNumber = (value, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateEmployeeNumber(value);
+        let msg = SalaryFormValidator.validateEmployeeNumber(value, this.props.translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -64,7 +64,7 @@ class SalaryCreateForm extends Component {
     }
     // Function kiem tra tiền lương chính nhập vào có hợp lệ không
     validateMainSalary = (value, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateMainSalary(value);
+        let msg = SalaryFormValidator.validateMainSalary(value, this.props.translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -120,7 +120,7 @@ class SalaryCreateForm extends Component {
     }
     // Function kiểm tra tên lương thưởng nhập vào có hợp lệ không
     validateNameSalary = (value, className, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateNameSalary(value);
+        let msg = SalaryFormValidator.validateNameSalary(value, this.props.translate);
         if (willUpdateState) {
             var { bonus } = this.state;
             bonus[className] = { ...bonus[className], nameBonus: value }
@@ -142,7 +142,7 @@ class SalaryCreateForm extends Component {
     }
     // Kiểm tra tiền lương thưởng khác nhập vào có hợp lệ hay không
     validateMoreMoneySalary = (value, className, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateMoreMoneySalary(value);
+        let msg = SalaryFormValidator.validateMoreMoneySalary(value, this.props.translate);
         if (willUpdateState) {
             var { bonus } = this.state;
             bonus[className] = { ...bonus[className], number: value }
@@ -221,7 +221,7 @@ class SalaryCreateForm extends Component {
                     <form className="form-group" id="form-create-salary">
                         <div className={`form-group ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
                             <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} />
+                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
                             <ErrorLabel content={errorOnEmployeeNumber} />
                         </div>
                         <div className="form-group">
@@ -234,12 +234,14 @@ class SalaryCreateForm extends Component {
                             />
                         </div>
                         <div className={`form-group ${errorOnMainSalary === undefined ? "" : "has-error"}`}>
-                            <label >{translate('salary_employee.main_salary')}:<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={this.handleMainSalaryChange} style={{ display: "inline", width: "85%" }} autoComplete="off" />
-                            <select className="form-control" name="unit" value={unit} onChange={this.handleChange} style={{ height: 34, display: "inline", width: "15%" }}>
-                                <option value="VND">VND</option>
-                                <option value="USD">USD</option>
-                            </select>
+                            <label >{translate('salary_employee.main_salary')}<span className="text-red">*</span></label>
+                            <div>
+                                <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={this.handleMainSalaryChange} style={{ display: "inline", width: "85%" }} autoComplete="off" placeholder={translate('salary_employee.main_salary')} autoComplete="off" />
+                                <select className="form-control" name="unit" value={unit} onChange={this.handleChange} style={{ display: "inline", width: "15%" }}>
+                                    <option value="VND">VND</option>
+                                    <option value="USD">USD</option>
+                                </select>
+                            </div>
                             <ErrorLabel content={errorOnMainSalary} />
                         </div>
                         <div className={`form-group ${(errorOnNameSalary === undefined && errorOnMoreMoneySalary) === undefined ? "" : "has-error"}`}>

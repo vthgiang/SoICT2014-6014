@@ -57,16 +57,18 @@ async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit,
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
+    const data = {
+        id:id,
+        pageNumber: pageNumber,
+        noResultsPerPage: noResultsPerPage,
+        arrayUnit: arrayUnit,
+        name: name};
     const requestOptions = {
-        method: 'GET',
-        headers: AuthenticateHeader()
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: AuthenticateHeader(),
     };
-    if (name!=""){
-        return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${noResultsPerPage}/${arrayUnit}/${name}`, requestOptions).then(handleResponse);
-    }
-    else{
-        return fetch(`${LOCAL_SERVER_API}/tasktemplates/user/${id}/${pageNumber}/${noResultsPerPage}/${arrayUnit}`, requestOptions).then(handleResponse);
-    }
+    return fetch(`${LOCAL_SERVER_API}/tasktemplates/user`, requestOptions).then(handleResponse);
 }
 
 // add new task template
