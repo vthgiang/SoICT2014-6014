@@ -101,8 +101,8 @@ class SabbaticalEditForm extends Component {
                             <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled />
                         </div>
-                        <div className="qlcv-from">
-                            <div className="left form-group col-sm-6 col-xs-12">
+                        <div className="row">
+                            <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('sabbatical.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_start_date"
@@ -110,7 +110,7 @@ class SabbaticalEditForm extends Component {
                                     onChange={this.handleStartDateChange}
                                 />
                             </div>
-                            <div className="right form-group col-sm-6 col-xs-12">
+                            <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('sabbatical.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_end_date"
