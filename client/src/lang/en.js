@@ -121,6 +121,7 @@ export default {
 
         form: {
             property: 'Property',
+            value: 'Value',
             required: 'Information fields required',
             save: 'Save',
             close: 'Close',
@@ -159,7 +160,9 @@ export default {
             no_data: 'No data',
             start_date: 'Start day',
             end_date: 'End day',
-            hidden_column: 'Hidden columns'
+            hidden_column: 'Hidden columns',
+            choose_hidden_columns: 'Select columns to hide',
+            hide_all_columns: 'Hide all columns',
         },
         modal: {
             update: 'Save',
@@ -322,8 +325,6 @@ export default {
             add_faile: 'Add falied!',
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
-            all: 'All',
-            choose_hidden_columns: 'Choose column want to hide',
             category: 'Category'
         },
 

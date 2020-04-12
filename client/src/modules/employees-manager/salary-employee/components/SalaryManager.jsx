@@ -20,26 +20,11 @@ class SalaryManager extends Component {
             unit: null,
             page: 0,
             limit: 5,
-            hideColumn: []
         }
     }
     componentDidMount() {
         this.props.getListSalary(this.state);
         this.props.getDepartment();
-    }
-
-    componentDidUpdate() {
-        this.hideColumn();
-    }
-
-    // Function ẩn các cột được chọn
-    hideColumn = () => {
-        if (this.state.hideColumn.length !== 0) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#salary-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng tay
@@ -114,10 +99,9 @@ class SalaryManager extends Component {
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number, hideColumn) => {
+    setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
-            hideColumn: hideColumn
         });
         this.props.getListSalary(this.state);
     }
@@ -132,7 +116,7 @@ class SalaryManager extends Component {
     }
     render() {
         const { list } = this.props.department;
-        const { translate } = this.props;
+        const { translate, salary } = this.props;
         var formater = new Intl.NumberFormat();
         var listSalary = "", listPosition = [];
         if (this.state.unit !== null) {
@@ -150,12 +134,12 @@ class SalaryManager extends Component {
                 })
             })
         }
-        if (this.props.salary.isLoading === false) {
-            listSalary = this.props.salary.listSalary;
+        if (salary.isLoading === false) {
+            listSalary = salary.listSalary;
         }
-        var pageTotal = (this.props.salary.totalList % this.state.limit === 0) ?
-            parseInt(this.props.salary.totalList / this.state.limit) :
-            parseInt((this.props.salary.totalList / this.state.limit) + 1);
+        var pageTotal = (salary.totalList % this.state.limit === 0) ?
+            parseInt(salary.totalList / this.state.limit) :
+            parseInt((salary.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box">
@@ -232,7 +216,7 @@ class SalaryManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><th colSpan={7 - this.state.hideColumn.length}><center> {translate('table.no_data')}</center></th></tr> :
+                            {(typeof listSalary !== 'undefined' && listSalary.length !== 0) &&
                                 listSalary.map((x, index) => {
 
                                     let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
@@ -281,6 +265,10 @@ class SalaryManager extends Component {
                             }
                         </tbody>
                     </table>
+                    {salary.isLoading?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div>:
+                        (typeof listSalary === 'undefined' || listSalary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <SalaryCreateForm />

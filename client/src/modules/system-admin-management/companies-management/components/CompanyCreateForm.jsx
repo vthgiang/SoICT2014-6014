@@ -98,6 +98,17 @@ class CompanyCreateForm extends Component {
         this.props.getLinksDefault();
     }
 
+    // static getDerivedStateFromProps(nextProps, prevState){
+    //     if (nextProps.companyId !== prevState.companyId) {
+    //         return {
+    //             ...prevState,
+    //             linksDefault: nextProps.companyId
+    //         } 
+    //     } else {
+    //         return null;
+    //     }
+    // }
+
     render() { 
         const { translate, linksDefault } = this.props;
         console.log("LINK ARR: ", this.state.linkDefaultArr);
@@ -106,7 +117,7 @@ class CompanyCreateForm extends Component {
             <React.Fragment>
                 <ModalButton modalID="modal-create-company" button_name={translate('manage_company.add')} title={translate('manage_company.add_title')}/>
                 <ModalDialog
-                    modalID="modal-create-company" size="100"
+                    modalID="modal-create-company" size="75"
                     formID="form-create-company" isLoading={this.props.company.isLoading}
                     title={translate('manage_company.add_title')}
                     msg_success={translate('manage_company.add_success')}
@@ -141,12 +152,9 @@ class CompanyCreateForm extends Component {
                                     <table className="table table-hover table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th style={{width: '32px'}}>
-                                                    <input type="checkbox" onChange={this.checkAll} defaultChecked={this.checkCheckBoxAll(this.props.linksDefault.list.map(link => link._id))}/>
-                                                </th>
+                                                <th></th>
                                                 <th>{ translate('manage_link.url') }</th>
                                                 <th>{ translate('manage_link.description') }</th>
-                                                <th>{ translate('manage_link.roles') }</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -163,16 +171,6 @@ class CompanyCreateForm extends Component {
                                                         </td>
                                                         <td>{ link.url }</td>
                                                         <td>{ link.description }</td>
-                                                        <td>
-                                                            { 
-                                                            link.roles.map((role, index, arr) => {
-                                                                if(index !== arr.length - 1)
-                                                                    return <span key={role._id}>{role.name}, </span>
-                                                                else
-                                                                    return <span key={role._id}>{role.name}</span>
-                                                                }) 
-                                                            }
-                                                        </td>
                                                     </tr> 
                                                 ): linksDefault.isLoading ?
                                                 <tr><td colSpan={4}>Loading...</td></tr>:

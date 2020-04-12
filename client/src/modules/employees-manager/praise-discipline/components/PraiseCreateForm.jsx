@@ -187,20 +187,20 @@ class PraiseCreateForm extends Component {
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
                             <ErrorLabel content={errorOnEmployeeNumber} />
                         </div>
-                        <div className="row qlcv-from">
-                            <div className={`left col-sm-6 col-xs-12 form-group ${errorOnNumber === undefined ? "" : "has-error"}`}>
+                        <div className="row">
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnNumber === undefined ? "" : "has-error"}`}>
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" placeholder={translate('page.number_decisions')} />
                                 <ErrorLabel content={errorOnNumber} />
                             </div>
-                            <div className={`right col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
                                 <ErrorLabel content={errorOnUnit} />
                             </div>
                         </div>
-                        <div className="row qlcv-from">
-                            <div className="left col-sm-6 col-xs-12 form-group">
+                        <div className="row">
+                            <div className="col-sm-6 col-xs-12 form-group">
                                 <label>{translate('discipline.decision_day')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_praise_start_date"
@@ -208,7 +208,7 @@ class PraiseCreateForm extends Component {
                                     onChange={this.handleStartDateChange}
                                 />
                             </div>
-                            <div className={`right col-sm-6 col-xs-12 form-group ${errorOnType === undefined ? "" : "has-error"}`}>
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnType === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.reward_forms')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="type" value={type} onChange={this.handleTypeChange} autoComplete="off" placeholder={translate('discipline.reward_forms')} />
                                 <ErrorLabel content={errorOnType} />

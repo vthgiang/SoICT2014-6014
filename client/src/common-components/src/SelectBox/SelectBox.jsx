@@ -24,7 +24,12 @@ class SelectBox extends Component {
 
         window.$("#" + id).on("change", () => {
             let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
-            this.state.value = value;
+            this.setState(state => {
+                return {
+                    ...state,
+                    value
+                }
+            });
             if (onChange!==undefined && onChange!==null){
                 onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }

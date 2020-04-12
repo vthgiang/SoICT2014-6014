@@ -38,7 +38,7 @@ class UserEditForm extends Component {
             return this.props.edit(this.props.userId, {
                 name: this.state.userName,
                 active: this.state.userActive,
-                roles: this.refs.selectBoxUserRoles.getValue()
+                roles: this.state.userRoles
             });
         }
     }
@@ -65,6 +65,15 @@ class UserEditForm extends Component {
             });
         }
         return msg === undefined;
+    }
+
+    handleRolesChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                userRoles: value
+            }
+        });
     }
 
     handleUserActiveChange = (e) => {
@@ -146,8 +155,8 @@ class UserEditForm extends Component {
                                         return role.name !== 'Super Admin'
                                     }).map( role => {return {value: role._id, text: role.name}})
                                 }
+                                onChange={this.handleRolesChange}
                                 value={userRoles}
-                                ref="selectBoxUserRoles"
                                 multiple={true}
                             />
                         </div>

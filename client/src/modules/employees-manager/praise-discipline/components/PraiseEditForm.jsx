@@ -139,19 +139,19 @@ class PraiseEditForm extends Component {
                             <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled autoComplete="off" />
                         </div>
-                        <div className="row qlcv-from">
-                            <div className="left col-sm-6 col-xs-12 form-group">
+                        <div className="row">
+                            <div className="col-sm-6 col-xs-12 form-group">
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="number" value={number} disabled autoComplete="off" placeholder={translate('page.number_decisions')} />
                             </div>
-                            <div className={`right col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
                                 <ErrorLabel content={errorOnUnit} />
                             </div>
                         </div>
-                        <div className="row qlcv-from">
-                            <div className="left col-sm-6 col-xs-12 form-group">
+                        <div className="row">
+                            <div className="col-sm-6 col-xs-12 form-group">
                                 <label>{translate('discipline.decision_day')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_praise_start_date"
@@ -159,7 +159,7 @@ class PraiseEditForm extends Component {
                                     onChange={this.handleStartDateChange}
                                 />
                             </div>
-                            <div className={`right col-sm-6 col-xs-12 form-group ${errorOnType === undefined ? "" : "has-error"}`}>
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnType === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.reward_forms')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="type" value={type} onChange={this.handleTypeChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnType} />

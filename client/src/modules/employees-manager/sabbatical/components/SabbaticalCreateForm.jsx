@@ -128,8 +128,8 @@ class SabbaticalCreateForm extends Component {
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
                             <ErrorLabel content={errorOnEmployeeNumber} />
                         </div>
-                        <div className="qlcv-from">
-                            <div className="left form-group col-sm-6 col-xs-12">
+                        <div className="row">
+                            <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('sabbatical.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_start_date"
@@ -137,7 +137,7 @@ class SabbaticalCreateForm extends Component {
                                     onChange={this.handleStartDateChange}
                                 />
                             </div>
-                            <div className="right form-group col-sm-6 col-xs-12">
+                            <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('sabbatical.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_end_date"

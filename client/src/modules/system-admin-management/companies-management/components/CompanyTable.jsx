@@ -48,6 +48,17 @@ class CompanyTable extends Component {
         })
     }
 
+    handleEdit = async (company) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: company
+            }
+        });
+
+        window.$('#modal-edit-company').modal('show');
+    }
+
     componentDidMount(){
         this.props.get();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
@@ -55,10 +66,24 @@ class CompanyTable extends Component {
 
     render() { 
         const { company, translate } = this.props;
+        const { currentRow } = this.state;
         
         return ( 
             <React.Fragment>
                 <CompanyCreateForm/>
+                {
+                    currentRow !== undefined &&
+                    <CompanyEditForm
+                        companyId={ currentRow._id }
+                        companyName={ currentRow.name }
+                        companyShortName={ currentRow.short_name }
+                        companyLog={currentRow.log}
+                        companyDescription={ currentRow.description }
+                        companyLinks={currentRow.links}
+                        companyEmail={currentRow.super_admin !== undefined && currentRow.super_admin.email}
+                        companyActive={currentRow.active}
+                    />
+                }
                 <SearchBar 
                     columns={[
                         { title: translate('manage_company.name'), value: 'name' },
@@ -79,6 +104,7 @@ class CompanyTable extends Component {
                             <th style={{ width: "130px"}}>{translate('manage_company.log')}</th>
                             <th style={{ width: "130px"}}>{translate('manage_company.service')}</th>
                             <th style={{ width: "120px", textAlign: 'center' }}>
+                                {translate('table.action')}
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     hideColumn={false}
@@ -103,14 +129,8 @@ class CompanyTable extends Component {
                                             <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
-                                                <CompanyEditForm
-                                                    companyID={ com._id }
-                                                    companyName={ com.name }
-                                                    companyShortName={ com.short_name }
-                                                    comLog={com.log}
-                                                    companyDescription={ com.description }
-                                                />
-                                                {
+                                            <a onClick={() => this.handleEdit(com)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
+                                                {/* {
                                                     com.active === true ?
                                                     <a 
                                                         href="#abc" 
@@ -146,7 +166,7 @@ class CompanyTable extends Component {
                                                             true
                                                         )}
                                                     ><i className="material-icons">lock</i></a>
-                                                }
+                                                } */}
                                             </td>
                                         </tr>    
                                     )

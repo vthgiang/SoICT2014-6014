@@ -131,6 +131,7 @@ export default {
 
         form: {
             property: 'Thuộc tính',
+            value: 'Giá trị',
             required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',
@@ -169,7 +170,9 @@ export default {
             no_data: 'Không có dữ liệu',
             start_date: 'Từ ngày',
             end_date: 'Đến ngày',
-            hidden_column: 'Ẩn cột'
+            hidden_column: 'Ẩn cột',
+            choose_hidden_columns: 'Chọn cột muốn ẩn',
+            hide_all_columns: 'Ẩn tất cả các cột',
         },
 
         modal: {
@@ -269,7 +272,7 @@ export default {
             add_faile: 'Tạo doanh nghiệp thất bại',
             edit_success: 'Chỉnh sửa thông tin thành công',
             edit_faile: 'Chỉnh sửa thông tin thất bại',
-            log: 'Trạng thái ghi log',
+            log: 'Ghi log',
             on: 'Bật',
             off: 'Tắt',
             service: 'Dịch vụ'
@@ -349,8 +352,6 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            all: 'Tất cả',
-            choose_hidden_columns: 'Chọn cột muốn ẩn',
             category: 'Danh mục'
         },
 

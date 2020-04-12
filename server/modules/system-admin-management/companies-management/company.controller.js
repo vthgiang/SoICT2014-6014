@@ -49,32 +49,30 @@ exports.create = async (req, res) => {
     try {
         //Tạo thông tin công ty mới(tên, tên ngắn, mô tả)
         const company = await CompanyService.create(req.body);
+        console.log("tao cty", company)
 
         //Tạo 5 role abstract cho công ty mới
         const abstractRoles = await CompanyService.create5RoleAbstract(company._id);
+        console.log("tao role abs: ", abstractRoles)
         
-        //Tạo tài khoản super admin cho công ty mới
-        var superAdmin;
-        for (let i = 0; i < abstractRoles.length; i++) {
-            const role = abstractRoles[i];
-            if(role.name === PREDEFINED_ROLES.SUPER_ADMIN.NAME){
-                superAdmin = role;
-                break;
-            }
-        }
-        await CompanyService.createSuperAdminAccount(company._id, company.name, req.body.email, superAdmin._id);
+        //Super admin cho công ty mới
+        const superadmin = await CompanyService.editSuperAdminOfCompany(company._id, req.body.email);
+        console.log("tao superadmin abs: ", superadmin)
 
         //Tạo link cho các trang mà công ty được phép truy cập
         const links = await CompanyService.createLinksForCompany(company._id, req.body.links, abstractRoles);
+        await CompanyService.addLinksForCompanyInCollection(company._id, links.map(link=>link._id));
+
+        const resCompany = await CompanyService.getById(company._id);
         
         LogInfo(req.user.email, 'CREATE_COMPANY');
         res.status(200).json({
             success: true,
             message: 'create_company_success',
-            content: company
+            content: resCompany
         });
     } catch (error) {
-        
+        console.log("err-com: ", error);
         LogError(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
@@ -106,15 +104,17 @@ exports.show = async (req, res) => {
 exports.edit = async (req, res) => {
     try {
         const company = await CompanyService.edit(req.params.id, req.body);
-        
+        await CompanyService.editSuperAdminOfCompany(company._id, req.body.email);
+        const resCompany = await CompanyService.getById(company._id);
         LogInfo(req.user.email, 'EDIT_COMPANY');
         res.status(200).json({
             success: true,
             message: 'edit_company_success',
-            content: company
+            content: resCompany
         });
     } catch (error) {
         
+        console.log("err-com: ", error);
         LogError(req.user.email, 'EDIT_COMPANY');
         res.status(400).json({
             success: false,
@@ -136,6 +136,26 @@ exports.delete = async (req, res) => {
     } catch (error) {
         
         LogError(req.user.email, 'DELETE_COMPANY');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
+exports.getLinksOfCompany = async (req, res) => {
+    try {
+        const links = await CompanyService.getLinksOfCompany(req.params.id);
+        
+        LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
+        res.status(200).json({
+            success: true,
+            message: 'get_links_of_company_success',
+            content: links
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(400).json({
             success: false,
             message: error

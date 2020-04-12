@@ -1,41 +1,25 @@
-Component dùng để thiết lập cài đạt cho table 
+Component tạo giao diện thiết lập cài đặt cho table 
 Để sử dụng Componett này ta thực hiện các bước sau:
 (Xem ví dụ minh hoạ trong Componett SalaryEmpoyee.jsx trong modules/employees-manager/salary-employee/component)
 
-<--- Import component -->
+BƯỚC 1: import component
 ...
 import { ActionColumn } from '../../../../common-components';
 
-<-- thêm nội dung sau vào class --> 
-    ...
-    componentDidUpdate() {
-        this.hideColumn(); // thực hiện việc ẩn các cột khi load lại dữ liệu
 
-    }
-
-    // function thực hiện việc ẩn các cột được chọn
-    hideColumn = () => {
-        if (this.state.hideColumn.length !== 0) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#salary-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
-    }
+BƯỚC 2: cài đặt hàm setLimit, truyền vào làm thuộc tính callback cho component    
     ...
     /* function setting table 
      * number là số dòng hiện thị trong một trang
-     * hideColumn mảng các cột được ẩn ví dụ [1, 2]
      */
-    setLimit = async (number, hideColumn) => {
+    setLimit = async (number) => {
         await this.setState({
-            limit: parseInt(number),
-            hideColumn: hideColumn
+            limit: parseInt(number)
         });
-        this.props.getListSalary(this.state); // function lấy dữ liệu 
+        this.props.getListSalary(this.state.paginateData); // function lấy dữ liệu 
     }
 
-<-- với table ta cần áp dụng component này cần có một id  ví dụ như sau--> 
+BƯỚC 3: sử dụng component
 ...
 <div id="scroll-table">     // thêm vào khi muốn Scroll table
     <table id="salary-table">
@@ -62,12 +46,10 @@ import { ActionColumn } from '../../../../common-components';
         <tbody>
             <tr>
                 /* nội dung của bảng 
-                 * để thông báo bẳng không có dữ liệu dùng:
-                 * <tr><th colSpan={7 - this.state.hideColumn.length}>
-                 * <center> không có dữ liệu</center>
-                 * </th></tr>
-                 */ 7 trong colSpan={7 - this.state.hideColumn.length} là số cột của table
             </tr>
         </tbody>
     </table>
+    {(typeof listSalary === 'undefined' || listSalary.length === 0)&& // Khi bảng không có dữ liệu, hiển thị thông báo với div sau
+        <div className="no-data-panel">{translate('table.no_data')}</div>
+    }
 </div>
