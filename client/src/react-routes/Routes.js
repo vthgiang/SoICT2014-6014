@@ -20,9 +20,9 @@ import ManageFormDocument from '../modules/super-admin-management/documents-mana
 import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
 import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
-import { Discipline} from '../modules/employees-manager/discipline/components';
-import { Sabbatical} from '../modules/employees-manager/sabbatical/components/Sabbatical';
-import { SalaryEmployee} from '../modules/employees-manager/salary-employee/components/SalaryEmployee';
+import { ManagerPraiseDiscipline} from '../modules/employees-manager/praise-discipline/components';
+import ManagerSabbatical from '../modules/employees-manager/sabbatical/components';
+import ManagerSalary from '../modules/employees-manager/salary-employee/components';
 import { Timekeeping} from '../modules/employees-manager/timekeeping/components/Timekeeping';
 import { ListEducation} from '../modules/training-course/list-education/components/ListEducation';
 import { TrainingPlan} from '../modules/training-course/training-plan/components/TrainingPlan';
@@ -329,7 +329,7 @@ class Routes extends Component {
                         path={ '/hr-discipline' }
                         pageName={'discipline' }
                         layout={ Layout }
-                        component={ Discipline }
+                        component={ ManagerPraiseDiscipline }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.sabbatical.isLoading }
@@ -344,7 +344,7 @@ class Routes extends Component {
                         path={ '/hr-sabbatical' }
                         pageName={'sabbatical' }
                         layout={ Layout }
-                        component={ Sabbatical }
+                        component={ ManagerSabbatical }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.holiday.isLoading }
@@ -374,7 +374,7 @@ class Routes extends Component {
                         path={ '/hr-salary-employee' }
                         pageName={'salary_employee' }
                         layout={ Layout }
-                        component={ SalaryEmployee }
+                        component={ ManagerSalary }
                     />
                     <PrivateRoute 
                         isLoading={ false }

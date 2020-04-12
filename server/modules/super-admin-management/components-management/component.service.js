@@ -7,7 +7,7 @@ exports.get = async (id) => {
 
     return await Component
         .find({ company: id })
-        .populate({ path: 'roles', model: Privilege });
+        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
 exports.getPaginate = async (company, limit, page, data={}) => {
@@ -17,7 +17,7 @@ exports.getPaginate = async (company, limit, page, data={}) => {
             page, 
             limit,
             populate: [
-                { path: 'roles', model: Privilege},
+                { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }},
             ]
         });
 }
@@ -26,7 +26,7 @@ exports.getById = async (id) => {
 
     return await Component
         .findById(id)
-        .populate({ path: 'roles', model: Privilege });
+        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
 exports.create = async(data) => {

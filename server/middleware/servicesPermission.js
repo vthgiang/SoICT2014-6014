@@ -63,6 +63,7 @@ exports.data = [
     { path: '/auth/forgot-password', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/auth/reset-password', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/company', method: 'GET', roles: ['System Admin']},
+    { path: '/company/:id/links', method: 'GET', roles: ['System Admin']},
     { path: '/company', method: 'POST', roles: ['System Admin']},
     { path: '/company/paginate', method: 'POST', roles: ['System Admin']},
     { path: '/company/:id', method: 'GET', roles: ['System Admin']},

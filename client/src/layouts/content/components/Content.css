@@ -25,18 +25,16 @@ div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
 
 
 @media (min-width: 768px){
-    div.qlcv div.selectmulti,
+    div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
     div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
-    div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
-    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
-    div.qlcv > .form-inline .input-group, div.qlcv .form-group >.form-control {
+    div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group > .form-control,
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label,
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
         margin: 5px;
     }
-    div.selectmulti {
-        width: 200px;
-    }
+    div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
     div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
-    div.qlcv > .form-inline .input-group, div.qlcv .form-group >.form-control {
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
         width: 200px;
     }
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
@@ -128,4 +126,14 @@ table.table td a.delete {
 
 table.table td a.approve {
     color: deepskyblue;
+}
+
+
+/*
+* CSS cho thông báo với bảng (đang load dữ liệu, không có dữ liệu, ...)
+*/
+div.table-info-panel {
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 10px;
 }

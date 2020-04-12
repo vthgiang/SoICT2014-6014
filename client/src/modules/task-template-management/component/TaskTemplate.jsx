@@ -194,15 +194,13 @@ class TaskTemplate extends Component {
         var currentRole = localStorage.getItem("currentRole");
         return (currentRole === deanCurrentUnit);
     }
+    
     checkHasComponent = (name) => {
         var { auth } = this.props;
         var result = false;
         auth.components.forEach(component => {
-            if (component.name === name) {
-                result = true;
-            }
+            if(component.name === name) result=true;
         });
-
         return result;
     }
     render() {
@@ -252,14 +250,16 @@ class TaskTemplate extends Component {
             }
         }
         return ( 
-            <React.Fragment>
             <div className="box">
+                {/* /.box-header */}
                 <div className="box-body qlcv">
-                    <div className="form-group">
-                        {this.checkHasComponent('create-task-template') &&
+
+                    <div className = "form-group">
+                        {this.checkHasComponent('create-task-template-button') &&
                         <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một mẫu công việc" data-target="#addTaskTemplate" data-backdrop="static" data-keyboard="false">{translate('task_template.add')}</button>}
                         <ModalAddTaskTemplate />
                     </div>
+                    
                     <div className="form-inline">
                         <div className = "form-group">
                             <label className = "form-control-static">{translate('task_template.name')}:</label>
@@ -345,17 +345,15 @@ class TaskTemplate extends Component {
                             <button className="col-sm-4 btn btn-success" style={{ width: "35%", marginLeft: "5%" }} onClick={() => this.handleSearchPage()}>{translate('task_template.search')}</button>
                         </div>
                     </div>
-                
+                </div>
             </div>
-            </div>
-            </React.Fragment>
         );
     }
 }
 
 function mapState(state) {
-    const { tasktemplates, department ,auth} = state;
-    return { tasktemplates, department ,auth};
+    const { tasktemplates, department, auth } = state;
+    return { tasktemplates, department, auth };
 }
 
 const actionCreators = {

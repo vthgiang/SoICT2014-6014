@@ -4,6 +4,74 @@ export default {
         error: {
             email_does_not_exist: 'Email này đã được sử dụng',
             field_invalid: 'Trường nhập vào không hợp lệ',
+
+            /** 
+             * Start 
+             * Chức năng quản lý nhân sự
+             */
+            employee_number_required: 'Mã nhân viên không được để trống',
+            staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
+            staff_code_not_find: 'Mã nhân viên không tồn tại',
+            number_decisions_required: 'Số ra quyết định không được để trống',
+            number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
+            unit_decisions_required: 'Cấp ra quyết định không được để trống',
+            // Quản lý nghỉ phép
+            start_date_sabbatical_required: 'Thời gian bắt đầu không được để trống',
+            end_date_sabbatical_required: 'Thời gian kết thúc không được để trống',
+            reason_sabbatical_required: 'Lý do không được để trống',
+            status_sabbatical_required: 'Trạng thái không được để trống',
+            get_sabbatical_success: 'Lấy thông tin nghỉ phép thành công',
+            get_sabbatical_faile: 'Lấy thông tin nghỉ phép thất bại',
+            create_sabbatical_success: 'Thêm đơn xin nghỉ phép thành công',
+            create_sabbatical_faile: 'Thêm đơn xin nghỉ phép thất bại',
+            delete_sabbatical_success: 'Xoá đơn xin nghỉ phép thành công',
+            delete_sabbatical_faile: 'Xoá đơn xin nghỉ phép thất bại',
+            edit_sabbatical_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
+            edit_sabbatical_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
+            // Quản lý lương nhân viên
+            name_other_salary_required:'Tên lương thưởng khác không được để trống',
+            money_other_salary_required:'Tiền lương thưởng khác không được để trống',
+            month_salary_required: 'Tháng lương không được để trống',
+            money_salary_required: 'Tiền lương chính không được để trống',
+            month_salary_have_exist: 'Tháng lương đã tồn tại',
+            get_salary_success: 'Lấy thông tin lương nhân viên thành công',
+            get_salary_faile: 'Lấy thông tin lương nhân viên thất bại',
+            create_salary_success: 'Thêm bảng lương thành công',
+            create_salary_faile: 'Thêm bảng lương thất bại',
+            delete_salary_success: 'Xoá bẳng lương thành công',
+            delete_salary_faile: 'Xoá bảng lương thất bại',
+            edit_salary_success: 'Chỉnh sửa bảng lương thành công',
+            edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
+            // Quản lý khen thưởng
+            type_praise_required: 'Hình thức khen thưởng không được để trống',
+            reason_praise_required: 'Thành tích (lý do) khen thưởng không được để trống',
+            decisions_date_required: 'Ngày ra quyết định không được để trống',
+            get_praise_success: 'Lấy danh sách khen thưởng thành công',
+            get_praise_faile: 'Lấy danh sách khen thưởng thất bại',
+            create_praise_success: 'Thêm mới khen thưởng thành công',
+            create_praise_faile: 'Thêm mới khen thưởng thất bại',
+            delete_praise_success: 'Xoá khen thưởng thành công',
+            delete_praise_faile: 'Xoá khen thưởng thất bại',
+            edit_praise_success: 'Chỉnh sửa khen thưởng thành công',
+            edit_praise_faile: 'Chỉnh sửa khen thưởng thất bại',
+            // Quản lý kỷ luật
+            type_discipline_required: 'Hình thức kỷ luật không được để trống',
+            reason_discipline_required: 'Lý do kỷ luật không được để trống',
+            start_date_discipline_required: 'Ngày có hiệu lực không được để trống',
+            end_date_discipline_required:'Ngày hết hiệu lực không được để trống',
+            get_discipline_success: 'Lấy danh sách kỷ luật thành công',
+            get_discipline_faile: 'Lấy danh sách kỷ luật thất bại',
+            create_discipline_success: 'Thêm mới kỷ luật thành công',
+            create_discipline_faile: 'Thêm mới kỷ luật thất bại',
+            delete_discipline_success: 'Xoá kỷ luật thành công',
+            delete_discipline_faile: 'Xoá kỷ luật thất bại',
+            edit_discipline_success: 'Chỉnh sửa kỷ luật thành công',
+            edit_discipline_faile: 'Chỉnh sửa kỷ luật thất bại',
+
+            /** 
+             * End
+             * Chức năng quản lý nhân sự
+             */
         },
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
@@ -63,6 +131,7 @@ export default {
 
         form: {
             property: 'Thuộc tính',
+            value: 'Giá trị',
             required: 'Các trường thông tin bắt buộc',
             save: 'Lưu',
             close: 'Đóng',
@@ -101,7 +170,9 @@ export default {
             no_data: 'Không có dữ liệu',
             start_date: 'Từ ngày',
             end_date: 'Đến ngày',
-            hidden_column: 'Ẩn cột'
+            hidden_column: 'Ẩn cột',
+            choose_hidden_columns: 'Chọn cột muốn ẩn',
+            hide_all_columns: 'Ẩn tất cả các cột',
         },
 
         modal: {
@@ -109,7 +180,8 @@ export default {
             close: 'Đóng',
             create: 'Thêm mới',
             note: 'là các trường bắt buộc phải nhập',
-            add_success: 'Thêm mới thành công'
+            add_success: 'Thêm mới thành công',
+            add_faile: 'Thêm mới thất bại',
         },
         page: {
             unit: 'Đơn vị',
@@ -118,7 +190,13 @@ export default {
             status: 'Trạng thái',
             staff_number: 'Mã nhân viên',
             add_search: 'Tìm kiếm',
-            number_decisions: 'Số quyết định'
+            number_decisions: 'Số quyết định',
+            all_unit: 'Chọn tất cả các đơn vị',
+            non_unit: 'Chọn đơn vị',
+            all_position: 'Chọn tất cả các chức vụ',
+            non_position: 'Chọn chức vụ',
+            all_status: 'Chọn tất cả các trạng thái',
+            non_status: 'Chọn trạng thái'
         },
 
         menu: {
@@ -165,7 +243,7 @@ export default {
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
 
             notifications: 'Thông báo',
-            
+
             tasks: 'Quản lý công việc',
             task_management: 'Xem danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
@@ -194,7 +272,7 @@ export default {
             add_faile: 'Tạo doanh nghiệp thất bại',
             edit_success: 'Chỉnh sửa thông tin thành công',
             edit_faile: 'Chỉnh sửa thông tin thất bại',
-            log: 'Trạng thái ghi log',
+            log: 'Ghi log',
             on: 'Bật',
             off: 'Tắt',
             service: 'Dịch vụ'
@@ -274,8 +352,6 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-            all: 'Tất cả',
-            choose_hidden_columns: 'Chọn cột muốn ẩn',
             category: 'Danh mục'
         },
 
@@ -298,8 +374,8 @@ export default {
             list_salary: 'Danh sách bảng lương nhân viên',
             add_salary: 'Thêm bảng lương',
             add_salary_title: 'Thêm bảng lương nhân viên',
-            infor_salary: 'Thông tin bảng lương',
-            delete_dalary: 'Xoá bảng lương',
+            edit_salary: 'Chỉnh sửa bảng lương nhân viên',
+            delete_salary: 'Xoá bảng lương',
             add_by_hand: 'Thêm bằng tay',
             add_import: 'Import file excel',
             add_by_hand_title: 'Thêm một bảng lương',
@@ -308,34 +384,36 @@ export default {
             other_salary: 'Các loại lương thưởng khác',
             name_salary: 'Tên lương thưởng',
             money_salary: 'Số tiền',
+            add_more_salary: 'Thêm lương thưởng khác',
             add_new_salary: 'Thêm mới bảng lương',
-            check_null_msnv: 'Bạn chưa nhập mã nhân viên',
-            check_msnv: 'Mã số nhân viên không tồn tại',
-            check_main_salary: 'Bạn chưa nhập tiền lương chính',
-            check_month: 'Bạn chưa nhập tháng lương',
         },
         sabbatical: {
             list_sabbatical: 'Danh sách đơn xin nghỉ',
             add_sabbatical: 'Thêm đơn xin nghỉ',
             add_sabbatical_title: 'Thêm mới đơn xin nghỉ phép',
-            infor_sabbatical: 'Thông tin nghỉ phép',
+            edit_sabbatical: 'Chỉnh sửa thông tin nghỉ phép',
             delete_sabbatical: 'Xoá thông tin nghỉ phép',
             start_date: 'Ngày bắt đầu',
             end_date: 'Ngày kết thúc',
             reason: 'Lý do',
-            check_null_msnv: 'Bạn chưa nhập mã nhân viên',
-            check_msnv: 'Mã số nhân viên không tồn tại',
-            check_start_day: 'Bạn chưa nhập ngày bắt đầu',
-            check_end_day: 'Bạn chưa nhập ngày kết thúc',
-            check_reason: 'Bạn chưa nhập lý do',
-            check_status: 'Bạn chưa nhập trạng thái',
+            check_null_msnv: 'Mã nhân viên không được để trống',
+            check_msnv: 'Mã nhân viên không tồn tại',
+            check_start_day: 'Ngày bắt đầu không được để trống',
+            check_end_day: 'Ngày kết thúc không được để trống',
+            check_reason: 'Lý do không được để trống',
+            pass: 'Đã chấp nhận',
+            faile: 'Không chấp nhận',
+            process: 'Chờ phê duyệt',
+            all: '--Tất cả--',
+            edit_succes: 'Chỉnh sửa thành công',
+            edit_faile: 'Chỉnh sửa thất bại',
         },
         discipline: {
             list_discipline: 'Danh sách kỷ luật',
             list_discipline_title: 'Danh sách nhân viên bị kỷ luật',
             add_discipline: 'Thêm kỷ luật',
             add_discipline_title: 'Thêm mới kỷ luật',
-            infor_discipline: 'Thông tin kỷ luật',
+            edit_discipline: 'Chỉnh sửa thông tin kỷ luật',
             delete_discipline: 'Xoá thông tin kỷ luật',
             start_date: 'Ngày có hiệu lực',
             end_date: 'Ngày hết hiệu lực',
@@ -353,15 +431,12 @@ export default {
             list_praise_title: 'Danh sách nhân viên được khen thưởng',
             add_praise: 'Thêm khen thưởng',
             add_praise_title: 'Thêm mới khen thưởng',
-            infor_praise: 'Thông tin khen thưởng',
+            edit_praise: 'Chỉnh sửa thông tin khen thưởng',
             delete_praise: 'Xoá thông tin khen thưởng',
             decision_day: 'Ngày ra quyết định',
             decision_unit: 'Cấp ra quyết định',
             reward_forms: 'Hình thức khen thưởng',
             reason_praise: 'Thành tích (Lý do)',
-            check_start_date: 'Bạn chưa nhập ngày ra quyết định',
-            check_reason_praise: 'Bạn chưa nhập thành tích (lý do)',
-            check_type_praise: 'Bạn chưa nhập hình thức kỷ luật',
         },
         manage_employee: {
             menu_general_infor: 'Thông tin chung',
@@ -503,7 +578,7 @@ export default {
         },
 
         // Task template
-        task_template:{
+        task_template: {
             search: 'Tìm kiếm',
             add: 'Thêm mới',
             confirm: 'Xác nhận',

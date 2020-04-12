@@ -1,10 +1,6 @@
-import {
-    handleResponse
-} from '../../../../helpers/HandleResponse';
+import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import {
-    AuthenticateHeader
-} from '../../../../config';
+import { AuthenticateHeader } from '../../../../config';
 export const SabbaticalService = {
     getListSabbatical,
     createNewSabbatical,
@@ -15,42 +11,42 @@ export const SabbaticalService = {
 // Lấy danh sách nghỉ phép
 function getListSabbatical(data) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/sabbatical/paginate`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
+        data: data,
+        headers: AuthenticateHeader()
     };
-
-    return fetch(`${ LOCAL_SERVER_API }/sabbatical/paginate`, requestOptions).then(handleResponse);
-
+    return axios(requestOptions);
 }
 
 // tạo mới thông tin nghỉ phép
 function createNewSabbatical(data) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/sabbatical/create`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
+        data: data,
+        headers: AuthenticateHeader()
     };
-
-    return fetch(`${ LOCAL_SERVER_API }/sabbatical/create`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Xoá thông tin nghỉ phép
 function deleteSabbatical(id) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader(),
+        headers: AuthenticateHeader()
     };
-
-    return fetch(`${ LOCAL_SERVER_API }/sabbatical/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Cập nhật thông tin nghỉ phép
 function updateSabbatical(id, data) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
+        data:data,
+        headers: AuthenticateHeader()
     };
-    return fetch(`${ LOCAL_SERVER_API }/sabbatical/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
