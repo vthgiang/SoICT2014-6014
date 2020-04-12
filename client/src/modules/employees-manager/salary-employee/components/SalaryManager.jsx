@@ -81,7 +81,12 @@ class SalaryManager extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = () => {
+    handleSunmitSearch = async () => {
+        if (this.state.month === "") {
+            await this.setState({
+                month: this.formatDate(Date.now())
+            })
+        }
         this.props.getListSalary(this.state);
     }
 
@@ -265,8 +270,8 @@ class SalaryManager extends Component {
                             }
                         </tbody>
                     </table>
-                    {salary.isLoading?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div>:
+                    {salary.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listSalary === 'undefined' || listSalary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />

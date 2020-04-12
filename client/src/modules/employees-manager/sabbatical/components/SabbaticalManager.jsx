@@ -105,7 +105,12 @@ class SabbaticalManager extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSunmitSearch = () => {
+    handleSunmitSearch = async () => {
+        if (this.state.month === "") {
+            await this.setState({
+                month: this.formatDate(Date.now())
+            })
+        }
         this.props.getListSabbatical(this.state);
     }
 
@@ -179,7 +184,7 @@ class SabbaticalManager extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
