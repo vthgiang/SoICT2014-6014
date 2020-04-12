@@ -100,9 +100,37 @@ const TaskSchema = new Schema({
         default: 0,
         required: true
     },
+    // results: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: ResultTask,
+    // }],
     results: [{
-        type: Schema.Types.ObjectId,
-        ref: ResultTask,
+        // Người được đánh giá
+        member:{
+            type: Schema.Types.ObjectId,
+            ref: User,
+            required: true
+        },
+        // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+        roleMember:{
+            type: String,
+            required: true
+        },
+        // Điểm hệ thống đánh giá
+        systempoint: {
+            type: Number,
+            default: 0
+        },
+        // Điểm tự đánh giá
+        mypoint: {
+            type: Number,
+            default: 0
+        },
+        // Điểm do quản lý đánh giá
+        approverpoint: {
+            type: Number,
+            default: 0
+        }
     }],
     file: [{
         type: Schema.Types.ObjectId,

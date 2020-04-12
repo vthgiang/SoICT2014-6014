@@ -14,8 +14,43 @@ export const performTaskAction = {
     getCommentTask,
     addCommentTask,
     editCommentTask,
-    deleteCommentTask
+    deleteCommentTask,
+    createResultTask,
+    editResultTask
 };
+
+// Create result task
+function createResultTask(result) {
+    return dispatch => {
+        dispatch(request(result));
+
+        performTaskService.createResultTask(result)
+            .then(
+                task => dispatch(success(task)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request(result) { return { type: performTaskConstants.CREATE_RESULT_TASK_REQUEST, result } }
+    function success(task) { return { type: performTaskConstants.CREATE_RESULT_TASK_SUCCESS, task } }
+    function failure(error) { return { type: performTaskConstants.CREATE_RESULT_TASK_FAILURE, error } }
+}
+// edit result task
+function editResultTask(result, taskid) {
+    return dispatch => {
+        dispatch(request(result,taskid));
+
+        performTaskService.editResultTask(result,taskid)
+            .then(
+                resultTask => dispatch(success(resultTask)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request(result) { return { type: performTaskConstants.EDIT_RESULT_TASK_REQUEST, result } }
+    function success(resultTask) { return { type: performTaskConstants.EDIT_RESULT_TASK_SUCCESS, resultTask } }
+    function failure(error) { return { type: performTaskConstants.EDIT_RESULT_TASK_FAILURE, error } }
+}
 
 // Get log timer task
 function getLogTimerTask(task) {

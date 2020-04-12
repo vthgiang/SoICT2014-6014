@@ -39,5 +39,5 @@ router.post('/add-result/create', PerformTaskController.createResultInfoTask);
 router.post('/information-task-template/create', PerformTaskController.createResultInformationTask);
 router.put('/information-task-template', PerformTaskController.editResultInformationTask);
 router.post('/result-task/create',auth, PerformTaskController.createResultTask);
-router.put('/result-task', PerformTaskController.editResultTask);
+router.put('/result-task/:id', auth, PerformTaskController.editResultTask);
 module.exports = router;

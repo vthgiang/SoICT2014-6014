@@ -13,6 +13,8 @@ import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
 import { overviewKpiActions } from "../../../kpi-personal/kpi-personal-overview/redux/actions";
 // import { taskManagementActions, performTaskAction, UserActions, kpiPersonalActions } from '../../../redux-actions/CombineActions';
+import  ModalApproveTask  from "./ModalApproveTask";
+import {ModalButton} from '../../../../common-components';
 
 class ModalPerformTask extends Component {
     constructor(props) {
@@ -566,8 +568,10 @@ class ModalPerformTask extends Component {
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
         const { comment, editComment, startTimer, showChildComment, pauseTimer } = this.state;
         const { time } = this.state.timer;
-        const { tasks, performtasks, user, overviewKpiPersonal } = this.props;//sửa tên props----------------------------------------------------------
+        const { tasks, performtasks, user, overviewKpiPersonal } = this.props;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+        // console.log('----task----MPT', task);
+        // console.log('----task.status----MPT', task && task.status);
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.tasktemplate !== null) {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
@@ -599,7 +603,7 @@ class ModalPerformTask extends Component {
                                 <div className="col-sm-3">
                                     <label className="col-sm-2 control-label" style={{ width: '61%', textAlign: 'left', marginTop: "5px", fontWeight: "500", marginLeft: "-25%" }}>Mức ưu tiên:</label>
                                     <div className="col-sm-10" style={{ width: '79%', marginLeft: "-15%" }}>
-                                        <select value={task && task.priority} className="form-control" ref={input => this.priority = input} disabled={this.props.role === "informed" || this.props.role === "creator"}>
+                                        <select defaultValue={task && task.priority} className="form-control" ref={input => this.priority = input} disabled={this.props.role === "informed" || this.props.role === "creator"}>
                                             <option value="Cao">Cao</option>
                                             <option value="Trung bình">Trung bình</option>
                                             <option value="Thấp">Thấp</option>
@@ -609,10 +613,11 @@ class ModalPerformTask extends Component {
                                 <div className="col-sm-4" style={{ marginLeft: "-6%" }}>
                                     <label className="col-sm-4 control-label" style={{ textAlign: 'left', width: "40%", marginTop: "5px", fontWeight: "500" }}>Trạng thái:</label>
                                     <div className="col-sm-10" style={{ width: '70%', marginLeft: "-12%" }}>
-                                        <select value={task && task.status} className="form-control" ref={input => this.priority = input} disabled={this.props.role === "informed" || this.props.role === "creator"}>
+                                        <select defaultValue={task && task.status} className="form-control" ref={input => this.priority = input} disabled={this.props.role === "informed" || this.props.role === "creator"}>
                                             <option value="Đang chờ">Đang chờ</option>
                                             <option value="Đang thực hiện">Đang thực hiện</option>
-                                            <option value="Quá hạn">Quá hạn</option>
+                                            {/* <option value="Quá hạn">Quá hạn</option> */}
+                                            <option value="Chờ phê duyệt">Chờ phê duyệt</option>
                                             <option value="Đã hoàn thành">Đã hoàn thành</option>
                                             <option value="Đã hủy">Đã hủy</option>
                                             <option value="Tạm dừng">Tạm dừng</option>
@@ -620,7 +625,22 @@ class ModalPerformTask extends Component {
                                     </div>
                                 </div>
                                 <div className="col-sm-2">
-                                    {this.props.role === "responsible" && <button type="submit" id="btn-approve" className="col-sm-8 btn btn-success" style={{ width: "119%", marginLeft: "80%", height: "32px" }} onClick={this.handleSubmitContenTask}>Yêu cầu phê duyệt</button>}
+                                    {   // && (task && task.status !== "Đã hoàn thành"))
+                                        (this.props.role !== "creator" && this.props.role !== "informed" )&& 
+                                        // <button type="submit" id="btn-approve" className="col-sm-8 btn btn-success" style={{ width: "119%", marginLeft: "80%", height: "32px" }} onClick={this.handleSubmitContenTask}>Yêu cầu phê duyệt</button>
+                                        // (((task && ( task.status === "Chờ phê duyệt")) && (this.props.role === "consulted" || this.props.role === "accountable")) || 
+                                        //     (this.props.role === "responsible" )) &&
+                                        <React.Fragment>
+                                            <ModalButton modalID = {`modal-approve-task-${this.props.id}`} button_name="Yêu cầu phê duyệt" title="Yêu cầu phê duyệt"/>
+                                            <ModalApproveTask 
+                                                taskID = { this.props.id } 
+                                                // task = { task }
+                                                currentUser = {this.state.currentUser} 
+                                                role = {this.props.role}
+                                                resultTask = {this.state.resultTask}
+                                            />
+                                        </React.Fragment>
+                                    }
                                 </div>
                                 <button type="button" className="col-sm-1 close" style={{ paddingLeft: "6%" }} onClick={() => this.handleCloseModal(task._id)} data-dismiss="modal">
                                     <span aria-hidden="true">×</span>
@@ -662,7 +682,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người tạo*</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" value={task && task.creator} disabled className="form-control select2" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.creator} disabled className="form-control select2" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -684,7 +704,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người thực hiện*</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" value={task && task.responsible.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="responsible" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.responsible.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="responsible" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -706,7 +726,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người phê duyệt*</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" value={task && task.accounatable.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="accounatable" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.accounatable.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="accounatable" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -728,7 +748,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người hỗ trợ</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" value={task && task.consulted.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="consulted" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.consulted.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="consulted" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -750,7 +770,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người quan sát</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" value={task && task.informed.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="informed" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.informed.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="informed" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -787,7 +807,7 @@ class ModalPerformTask extends Component {
                                             return <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>{item.creater.name}</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select className="form-control select2" value={task && task.kpi} disabled={this.props.role !== "accounatable" && this.props.role !== "responsible"} multiple="multiple" ref="kpi" data-placeholder="Select a State" style={{ width: '100%' }} >
+                                                    <select className="form-control select2" defaultValue={task && task.kpi} disabled={this.props.role !== "accounatable" && this.props.role !== "responsible"} multiple="multiple" ref="kpi" data-placeholder="Select a State" style={{ width: '100%' }} >
                                                         {item.listtarget.map(x => {
                                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                                         })}
@@ -1022,7 +1042,7 @@ class ModalPerformTask extends Component {
                                                                         if (child.parent === item._id) return <div className="col-sm-12 margin-bottom-none" key={child._id}>
                                                                             <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
-                                                                                    src="adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
+                                                                                    src="..lib/adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
                                                                                     style={{ height: "30px", width: "30px" }} />
                                                                             </div>
                                                                             <div className="col-sm-10" >
@@ -1046,7 +1066,7 @@ class ModalPerformTask extends Component {
                                                                         <div className="col-sm-12 margin-bottom-none">
                                                                             <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
-                                                                                    src="adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
+                                                                                    src="../lib/adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
                                                                                     style={{ height: "30px", width: "30px" }} />
                                                                             </div>
                                                                             <div className="col-sm-11" >
@@ -1071,7 +1091,7 @@ class ModalPerformTask extends Component {
                                                 if (item.parent === null)
                                                     return <div className="post clearfix" style={{ width: "50%" }} key={item._id}>
                                                         <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
-                                                            <img className="img-circle img-bordered-sm" src="adminLTE/dist/img/user3-128x128.jpg" alt="user avatar" />
+                                                            <img className="img-circle img-bordered-sm" src="../lib/adminLTE/dist/img/user3-128x128.jpg" alt="user avatar" />
                                                             <span className="username">
                                                                 <a href="#abc">{item.creator.name}</a>
                                                             </span>
@@ -1126,7 +1146,7 @@ class ModalPerformTask extends Component {
                                                                                     if (child.parent === item._id) return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
                                                                                         <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
                                                                                             <img className="img-circle img-bordered-sm"
-                                                                                                src="adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
+                                                                                                src="../lib/adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
                                                                                                 style={{ height: "30px", width: "30px" }} />
                                                                                         </div>
                                                                                         <div className="col-sm-11" >
@@ -1149,7 +1169,7 @@ class ModalPerformTask extends Component {
                                                                                     <div className="col-sm-12 margin-bottom-none">
                                                                                         <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                             <img className="img-circle img-bordered-sm"
-                                                                                                src="adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
+                                                                                                src="../lib/adminLTE/dist/img/user3-128x128.jpg" alt="user avatar"
                                                                                                 style={{ height: "30px", width: "30px" }} />
                                                                                         </div>
                                                                                         <div className="col-sm-11" >
@@ -1177,7 +1197,7 @@ class ModalPerformTask extends Component {
                                             <form className="form-horizontal" style={{ paddingTop: "2%" }}>
                                                 <div className="form-group margin-bottom-none">
                                                     <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                                        <img className="img-circle img-bordered-sm" src="adminLTE/dist/img/user3-128x128.jpg" alt="user avatar" />
+                                                        <img className="img-circle img-bordered-sm" src="../lib/adminLTE/dist/img/user3-128x128.jpg" alt="user avatar" />
                                                     </div>
                                                     <div className="col-sm-8" >
                                                         <textarea placeholder="Hãy nhập nội dung hoạt động"

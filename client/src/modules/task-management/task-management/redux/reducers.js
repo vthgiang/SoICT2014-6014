@@ -183,6 +183,24 @@ export function tasks(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading : true
+            };
+        case taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: {
+                    info : action.task.content
+                }
+            };
+        case taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
         case taskManagementConstants.DELETE_TASK_REQUEST:
             return {
                 ...state,

@@ -40,16 +40,6 @@ class SideBar extends Component {
             path11: "/hr-training-plan",
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
-<<<<<<< HEAD
-            path14: "/kpi-units/create",
-            path15: "/kpi-units/overview",
-            path16: "/kpi-personals/create",
-            path17: "/kpi-personals/overview",
-            path18: "/task-management",
-            path19: "/task-management-dashboard",
-
-=======
->>>>>>> 0059453fc6c8364b3df785730d5b1606b95c2ed0
         }
         const { translate } = this.props;
         const { user, links } = this.props.auth;

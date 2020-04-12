@@ -228,8 +228,15 @@ exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,d
 exports.delete = async (id) => {
     //req.params.id
     var template = await WorkTemplate.findByIdAndDelete(id); // xóa mẫu công việc theo id
-        var privileges = await Privilege.deleteMany({
-            resource: id, //id của task template
-            resourceType: "TaskTemplate"
-        });
+    var privileges = await Privilege.deleteMany({
+        resource: id, //id của task template
+        resourceType: "TaskTemplate"
+    });
+}
+
+// edit task status
+// có 6 trạng thái công việc: Đang chờ, Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Bị hủy, Tạm hoãn
+exports.editStatusOfTask = async (taskID, status) => {
+    var task = await Task.findByIdAndUpdate(taskID, { $set: {status: status }}, { new: true } );
+    return task;
 }

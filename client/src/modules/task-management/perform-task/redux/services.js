@@ -18,8 +18,33 @@ export const performTaskService = {
     addCommentTask,
     deleteCommentTask,
     editCommentTask,
-    getCommentTask
+    getCommentTask,
+    createResultTask,
+    editResultTask
 };
+
+// Create result task
+function createResultTask(result) { 
+    const requestOptions = {
+        method: 'POST',
+        headers: AuthenticateHeader(),
+        body: JSON.stringify(result),  // result { result, _idtask}
+    };
+
+    return fetch(`${LOCAL_SERVER_API}/performtask/result-task/create`, requestOptions).then(handleResponse);
+}
+
+// Create result task
+function editResultTask(listResult, taskid) { 
+    const requestOptions = {
+        method: 'PUT',
+        headers: AuthenticateHeader(),
+        body: JSON.stringify(listResult),  // listResult = [...] (= task.results)
+    };
+
+    return fetch(`${LOCAL_SERVER_API}/performtask/result-task/${taskid}`, requestOptions).then(handleResponse);
+}
+
 // get all log timer task
 function getLogTimerTask(task) {
     const requestOptions = {

@@ -12,6 +12,7 @@ export const taskManagementActions = {
     getTaskById,
     addTask,
     editTask,
+    editStatusOfTask,
     _delete
 };
 
@@ -212,4 +213,27 @@ function _delete(id) {
     function request(id) { return { type: taskManagementConstants.DELETE_TASK_REQUEST, id } }
     function success(id) { return { type: taskManagementConstants.DELETE_TASK_SUCCESS, id } }
     function failure(id, error) { return { type: taskManagementConstants.DELETE_TASK_FAILURE, id, error } }
+}
+
+// Edit status of task
+function editStatusOfTask(id, status) {
+    return dispatch => {
+        dispatch(request(id));
+
+        taskManagementService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
+            .then(
+                task => { 
+                    dispatch(success(task));
+                    // dispatch(alertActions.success('Edit target successful'));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    // dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+
+    function request(id) { return { type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id } }
+    function success(task) { return { type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS, task } }
+    function failure(error) { return { type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error } }
 }
