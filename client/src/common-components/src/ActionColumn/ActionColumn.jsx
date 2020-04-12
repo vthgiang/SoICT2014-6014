@@ -97,7 +97,7 @@ class ActionColumn extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('table.hidden_column')}</label>
                             <SelectMulti id={`multiSelectHideColumn-${tableId}`} multiple="multiple"
-                                options={{ nonSelectedText: translate('table.choose_hidden_column'), allSelectedText: translate('table.all') }}
+                                options={{ nonSelectedText: translate('table.choose_hidden_columns'), allSelectedText: translate('table.hide_all_columns') }}
                                 items={columnArr.map((col, i) => { return { value: i + 1, text: col } })}
                                 onChange={this.handleChangeHiddenColumns}>
                             </SelectMulti>
