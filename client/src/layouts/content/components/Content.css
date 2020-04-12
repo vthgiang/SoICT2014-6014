@@ -151,7 +151,7 @@ table.table td a.approve {
 /*
 * CSS cho thông báo bảng không có dữ liệu
 */
-div.no-data-panel {
+div.table-info-panel {
     text-align: center;
     background-color: #f9f9f9;
     padding: 10px;

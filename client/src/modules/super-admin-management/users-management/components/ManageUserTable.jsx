@@ -59,7 +59,7 @@ class ManageUserTable extends Component {
                         userRoles={this.state.currentRow.roles.map(role => role.roleId._id)}
                     />
                 }
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-user">
                     <thead>
                         <tr>
                             <th>{translate('manage_user.name')}</th>
@@ -78,13 +78,14 @@ class ManageUserTable extends Component {
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
                                     hideColumnOption = {true}
+                                    tableId="table-manage-user"
                                 />
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            user.listPaginate.length > 0 ? user.listPaginate.map(u => (
+                            !user.isLoading && user.listPaginate.length > 0 && user.listPaginate.map(u => (
                                 <tr
                                     key={u._id}
                                 >
@@ -131,12 +132,16 @@ class ManageUserTable extends Component {
                                         }
                                     </td>
                                 </tr>
-                            )) : user.isLoading ?
-                            <tr><td colSpan={4}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                            ))
                         }
                     </tbody>
                 </table>
+                
+                {user.isLoading?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div>:
+                    user.listPaginate.length===0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
+                
                 {/* PaginateBar */}
                 <PaginateBar pageTotal={user.totalPages} currentPage={user.page} func={this.setPage}/>  
             </React.Fragment>

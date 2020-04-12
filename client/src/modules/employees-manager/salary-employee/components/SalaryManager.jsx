@@ -116,7 +116,7 @@ class SalaryManager extends Component {
     }
     render() {
         const { list } = this.props.department;
-        const { translate } = this.props;
+        const { translate, salary } = this.props;
         var formatter = new Intl.NumberFormat();
         var listSalary = "", listPosition = [];
         if (this.state.unit !== null) {
@@ -134,12 +134,12 @@ class SalaryManager extends Component {
                 })
             })
         }
-        if (this.props.salary.isLoading === false) {
-            listSalary = this.props.salary.listSalary;
+        if (salary.isLoading === false) {
+            listSalary = salary.listSalary;
         }
-        var pageTotal = (this.props.salary.totalList % this.state.limit === 0) ?
-            parseInt(this.props.salary.totalList / this.state.limit) :
-            parseInt((this.props.salary.totalList / this.state.limit) + 1);
+        var pageTotal = (salary.totalList % this.state.limit === 0) ?
+            parseInt(salary.totalList / this.state.limit) :
+            parseInt((salary.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box">
@@ -265,8 +265,9 @@ class SalaryManager extends Component {
                             }
                         </tbody>
                     </table>
-                    {(typeof listSalary === 'undefined' || listSalary.length === 0)&&
-                        <div className="no-data-panel">{translate('table.no_data')}</div>
+                    {salary.isLoading?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div>:
+                        (typeof listSalary === 'undefined' || listSalary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
