@@ -7,8 +7,7 @@ const TaskTemplateController = require("../../modules/task-template-management/t
 router.get('/', auth, TaskTemplateController.get);
 router.get('/:id', auth, TaskTemplateController.getById);
 router.get('/role/:id', auth, TaskTemplateController.getByRole);
-router.get('/user/:id/:pageNumber/:noResultsPerPage/:unit', auth, TaskTemplateController.getByUser);
-router.get('/user/:id/:pageNumber/:noResultsPerPage/:unit/:name', auth, TaskTemplateController.getByUser);
+router.post('/user', auth, TaskTemplateController.getByUser);
 router.post('/create', auth, TaskTemplateController.create);
 router.delete('/:id', auth, TaskTemplateController.delete);
 router.post('/test', auth, TaskTemplateController.test);

@@ -471,8 +471,8 @@ const sampleCompanyData = async () => {
             company: xyz._id
         },
         { // Tạo button Thêm mới
-            name: 'create-add-button',
-            description: 'Tạo button thêm mới',
+            name: 'create-task-template',
+            description: 'Tạo mới mẫu công việc',
             company: xyz._id
         }
     ]);
@@ -480,9 +480,9 @@ const sampleCompanyData = async () => {
     await notificationLink.components.push(components[0]._id);
     await notificationLink.save();
 
-    const addButtonLink = await Link.findById(links[27]._id);
-    await addButtonLink.components.push(components[1]._id);
-    await addButtonLink.save();
+    const taskTemplateLink = await Link.findById(links[27]._id);
+    await taskTemplateLink.components.push(components[1]._id);
+    await taskTemplateLink.save();
 
     //gán quyền tạo thông báo cho admin, superadmin
     var data = [roles[0]._id, admin._id].map( role => {
@@ -493,8 +493,8 @@ const sampleCompanyData = async () => {
         };
     });
 
-    //gán quyền tạo button cho admin, superadmin
-    var data2 = [roles[0]._id, admin._id].map( role => {
+    //gán quyền tạo taskTemplate cho dean
+    var data2 = [roles[3]._id].map( role => {
         return {
             resourceId: components[1]._id,
             resourceType: 'Component',
@@ -544,11 +544,11 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[0]._id
         },
-        {
-            resourceId: links[27]._id, //Mẫu công việc
-            resourceType: 'Link',
-            roleId: roles[0]._id
-        },
+        // {
+        //     resourceId: links[27]._id, //Mẫu công việc
+        //     resourceType: 'Link',
+        //     roleId: roles[0]._id
+        // },
         //end
         
         //Gán quyền vào các trang cho admin

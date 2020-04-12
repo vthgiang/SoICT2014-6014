@@ -195,12 +195,13 @@ class TaskTemplate extends Component {
         return (currentRole === deanCurrentUnit);
     }
     checkHasComponent = (name) => {
-        var {auth} = this.props;
+        var { auth } = this.props;
         var result = false;
-        console.log("state : "+this.state.auth);
-        // auth.components.forEach(component => {
-        //     if(component.name === name) result=true;
-        // });
+        auth.components.forEach(component => {
+            if (component.name === name) {
+                result = true;
+            }
+        });
 
         return result;
     }
@@ -251,7 +252,14 @@ class TaskTemplate extends Component {
             }
         }
         return ( 
-            <div>
+            <React.Fragment>
+            <div className="box">
+                <div className="box-body qlcv">
+                    <div className="form-group">
+                        {this.checkHasComponent('create-task-template') &&
+                        <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một mẫu công việc" data-target="#addTaskTemplate" data-backdrop="static" data-keyboard="false">{translate('task_template.add')}</button>}
+                        <ModalAddTaskTemplate />
+                    </div>
                     <div className="form-inline">
                         <div className = "form-group">
                             <label className = "form-control-static">{translate('task_template.name')}:</label>
@@ -339,14 +347,15 @@ class TaskTemplate extends Component {
                     </div>
                 
             </div>
-              
+            </div>
+            </React.Fragment>
         );
     }
 }
 
 function mapState(state) {
-    const { tasktemplates, department } = state;
-    return { tasktemplates, department };
+    const { tasktemplates, department ,auth} = state;
+    return { tasktemplates, department ,auth};
 }
 
 const actionCreators = {
