@@ -240,31 +240,31 @@ const sampleCompanyData = async () => {
         roleId: admin._id
     },
     // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
-    {//Giám đốc Nguyễn Văn A
+    {//Giám đốc Nguyễn Văn An
         userId: users[2]._id,
         roleId: giamDoc._id
     },
-    {//Phó giám đốc Trần Văn B
+    {//Phó giám đốc Trần Văn Bình
         userId: users[3]._id,
         roleId: phoGiamDoc._id
     },
-    {//Thành viên ban giám đốc Vũ Thị C
+    {//Thành viên ban giám đốc Vũ Thị Cúc
         userId: users[4]._id,
         roleId: thanhVienBGĐ._id
     },
-    {//Trưởng phòng hành chính Nguyễn Văn D
+    {//Trưởng phòng hành chính Nguyễn Văn Danh
         userId: users[5]._id,
         roleId: truongPhongHC._id
     },
-    {//Nguyễn Văn D cũng là thành viên ban giám đốc
+    {//Nguyễn Văn Danh cũng là thành viên ban giám đốc
         userId: users[5]._id,
         roleId: thanhVienBGĐ._id
     },
-    {//Phó phòng hành chính Trần Thị E
+    {//Phó phòng hành chính Trần Thị Én
         userId: users[6]._id,
         roleId: phoPhongHC._id
     },
-    {//Nhân viên phòng hành chính Phạm Đình F
+    {//Nhân viên phòng hành chính Phạm Đình Phúc
         userId: users[7]._id,
         roleId: nvPhongHC._id
     }
@@ -462,10 +462,10 @@ const sampleCompanyData = async () => {
         }
     ]);
     // Gán id của các link vào cho collection company
-    const updateXYZ = await Company.findById(xyz._id);
-    updateXYZ.links = links.map(link => link._id);
-    updateXYZ.super_admin = users[0]._id;
-    await updateXYZ.save();
+    const updateVnist = await Company.findById(vnist._id);
+    updateVnist.links = links.map(link => link._id);
+    updateVnist.super_admin = users[0]._id;
+    await updateVnist.save();
     console.log("Xong! Đã tạo links: ", links);
 
     //Thêm component -------------------------------------------------------
