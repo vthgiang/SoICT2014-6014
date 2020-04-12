@@ -469,11 +469,20 @@ const sampleCompanyData = async () => {
             name: 'create-notification',
             description: 'Tạo thông báo mới',
             company: xyz._id
+        },
+        { // Tạo button Thêm mới
+            name: 'create-task-template-button',
+            description: 'Button thêm mới mẫu công việc',
+            company: xyz._id
         }
     ]);
     const notificationLink = await Link.findById(links[25]._id);
     await notificationLink.components.push(components[0]._id);
     await notificationLink.save();
+
+    const taskTemplateManagementLink = await Link.findById(links[27]._id);
+    await taskTemplateManagementLink.components.push(components[1]._id);
+    await taskTemplateManagementLink.save();
 
     //gán quyền tạo thông báo cho admin, superadmin
     var data = [roles[0]._id, admin._id].map( role => {
@@ -483,8 +492,20 @@ const sampleCompanyData = async () => {
             roleId: role
         };
     });
+
+    //gán quyền component tạo task template cho Dean
+    var data2 = [roles[1]._id].map( role => {
+        return {
+            resourceId: components[1]._id,
+            resourceType: 'Component',
+            roleId: role
+        };
+    });
+
     var privileges_component = await Privilege.insertMany(data);
     console.log("privilege component: ", privileges_component);
+    privileges_component = await Privilege.insertMany(data2);
+
     //END
 
     const privileges = await Privilege.insertMany([
@@ -1069,14 +1090,14 @@ const sampleCompanyData = async () => {
         company:xyz._id,
         startDate: "04-02-2020",
         endDate: "08-02-2020",
-        status: "Đã chấp nhận",
+        status: "pass",
         reason: "Về quê",
     }, {
         employee: employee._id,
         company:xyz._id,
         startDate: "05-02-2020",
         endDate: "10-02-2020",
-        status: "Chờ phê duyệt",
+        status: "process",
         reason: "Nghỉ tết"
     }])
     console.log(`Xong! Thông tin nghỉ phép đã được tạo`);

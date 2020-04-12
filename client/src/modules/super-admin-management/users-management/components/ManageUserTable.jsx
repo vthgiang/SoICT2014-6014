@@ -22,6 +22,17 @@ class ManageUserTable extends Component {
         this.setLimit = this.setLimit.bind(this);
     }
 
+    handleEdit = async (user) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: user
+            }
+        });
+
+        window.$('#modal-edit-user').modal('show');
+    }
+
     render() { 
         const { user, translate } = this.props;
         
@@ -37,7 +48,17 @@ class ManageUserTable extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
+                {
+                    this.state.currentRow !== undefined &&
 
+                    <UserEditForm
+                        userId={this.state.currentRow._id}
+                        userEmail={this.state.currentRow.email}
+                        userName={this.state.currentRow.name}
+                        userActive={this.state.currentRow.active}
+                        userRoles={this.state.currentRow.roles.map(role => role.roleId._id)}
+                    />
+                }
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
@@ -46,8 +67,8 @@ class ManageUserTable extends Component {
                             <th>{translate('manage_user.roles')}</th>
                             <th>{translate('manage_user.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
+                                {translate('table.action')}
                                 <ActionColumn
-                                    columnName={translate('table.action')} 
                                     columnArr={[
                                         translate('manage_user.name'),
                                         translate('manage_user.email'),
@@ -99,14 +120,7 @@ class ManageUserTable extends Component {
                                         ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.enable')} </p>
                                         : <p><i className="fa fa-circle text-danger" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{textAlign: 'center'}}>
-                                        <UserEditForm
-                                            userId={u._id}
-                                            userEmail={u.email}
-                                            userName={u.name}
-                                            userActive={u.active}
-                                            userRoles={u.roles}
-                                            editUser={this.editUser}
-                                        />
+                                        <a onClick={() => this.handleEdit(u)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
                                         {
                                             !this.checkSuperRole(u.roles) && 
                                             <DeleteNotification 
@@ -154,7 +168,6 @@ class ManageUserTable extends Component {
             page: 1
         };
         data[this.state.option] = this.state.value;
-        console.log(data);
         await this.props.getPaginate(data);
     }
 

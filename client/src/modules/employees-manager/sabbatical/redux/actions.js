@@ -1,9 +1,6 @@
-import {
-    SabbaticalConstants
-} from "./constants";
-import {
-    SabbaticalService
-} from "./services";
+import { SabbaticalConstants } from "./constants";
+import { SabbaticalService } from "./services";
+import { AlertActions } from "../../../alert/redux/actions";
 export const SabbaticalActions = {
     getListSabbatical,
     createNewSabbatical,
@@ -11,135 +8,106 @@ export const SabbaticalActions = {
     updateSabbatical,
 };
 
-// lấy danh sách nghỉ phép
+// Lấy danh sách nghỉ phép
 function getListSabbatical(data) {
     return dispatch => {
-        dispatch(request());
-
+        dispatch({
+            type: SabbaticalConstants.GET_SABBATICAL_REQUEST
+        });
         SabbaticalService.getListSabbatical(data)
-            .then(
-                listSabbatical => dispatch(success(listSabbatical)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: SabbaticalConstants.GET_SABBATICAL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SabbaticalConstants.GET_SABBATICAL_FAILURE,
+                    error: err.response.data
+                });
+                AlertActions.handleAlert(dispatch, err);
+            })
     }
-
-    function request() {
-        return {
-            type: SabbaticalConstants.GET_SABBATICAL_REQUEST,
-        };
-    };
-
-    function success(listSabbatical) {
-        return {
-            type: SabbaticalConstants.GET_SABBATICAL_SUCCESS,
-            listSabbatical
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: SabbaticalConstants.GET_SABBATICAL_FAILURE,
-            error
-        };
-    };
 }
 
-// tạo mới thông tin nghỉ phép
-function createNewSabbatical(newSabbatical) {
+// Tạo mới thông tin nghỉ phép
+function createNewSabbatical(data) {
     return dispatch => {
-        dispatch(request(newSabbatical));
-
-        SabbaticalService.createNewSabbatical(newSabbatical)
-            .then(
-                newSabbatical => dispatch(success(newSabbatical)),
-                error => dispatch(failure(error.toString()))
-            );
+        dispatch({
+            type: SabbaticalConstants.CREATE_SABBATICAL_REQUEST
+        });
+        return new Promise((resolve, reject) => {
+            SabbaticalService.createNewSabbatical(data)
+                .then(res => {
+                    dispatch({
+                        type: SabbaticalConstants.CREATE_SABBATICAL_SUCCESS,
+                        payload: res.data.content
+                    })
+                    resolve(res.data.content);
+                })
+                .catch(err => {
+                    dispatch({
+                        type: SabbaticalConstants.CREATE_SABBATICAL_FAILURE,
+                        error: err.response.data
+                    });
+                    AlertActions.handleAlert(dispatch, err);
+                    reject(err);
+                })
+        })
     }
-
-    function request(newSabbatical) {
-        return {
-            type: SabbaticalConstants.CREATE_SABBATICAL_REQUEST,
-            newSabbatical
-        };
-    };
-
-    function success(newSabbatical) {
-        return {
-            type: SabbaticalConstants.CREATE_SABBATICAL_SUCCESS,
-            newSabbatical
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: SabbaticalConstants.CREATE_SABBATICAL_FAILURE,
-            error
-        };
-    };
 }
 
 // Xoá thông tin nghỉ phép của nhân viên
 function deleteSabbatical(id) {
     return dispatch => {
-        dispatch(request());
-
-        SabbaticalService.deleteSabbatical(id)
-            .then(
-                sabbaticalDelete => dispatch(success(sabbaticalDelete)),
-                error => dispatch(failure(error.toString()))
-            );
-    }
-
-    function request() {
-        return {
+        dispatch({
             type: SabbaticalConstants.DELETE_SABBATICAL_REQUEST,
-        };
-    };
-
-    function success(sabbaticalDelete) {
-        return {
-            type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
-            sabbaticalDelete
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: SabbaticalConstants.DELETE_SABBATICAL_FAILURE,
-            error
-        };
-    };
+        });
+        return new Promise((resolve, reject) => {
+            SabbaticalService.deleteSabbatical(id)
+                .then(res => {
+                    dispatch({
+                        type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
+                        payload: res.data.content
+                    })
+                    resolve(res.data.content);
+                })
+                .catch(err => {
+                    dispatch({
+                        type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
+                        error: err.response.data
+                    });
+                    AlertActions.handleAlert(dispatch, err);
+                    reject(err);
+                })
+        })
+    }
 }
 
 // cập nhật thông tin nghỉ phép của nhân viên
 function updateSabbatical(id, infoSabbatical) {
     return dispatch => {
-        dispatch(request());
-
-        SabbaticalService.updateSabbatical(id, infoSabbatical)
-            .then(
-                infoSabbatical => dispatch(success(infoSabbatical)),
-                error => dispatch(failure(error.toString()))
-            );
+        dispatch({
+            type: SabbaticalConstants.UPDATE_SABBATICAL_REQUEST
+        });
+        return new Promise((resolve, reject) => {
+            SabbaticalService.updateSabbatical(id, infoSabbatical)
+                .then(res => {
+                    dispatch({
+                        type: SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS,
+                        payload: res.data.content
+                    })
+                    resolve(res.data.content);
+                })
+                .catch(err => {
+                    dispatch({
+                        type: SabbaticalConstants.UPDATE_SABBATICAL_FAILURE,
+                        error: err.response.data
+                    });
+                    AlertActions.handleAlert(dispatch, err);
+                    reject(err);
+                })
+        })
     }
-
-    function request() {
-        return {
-            type: SabbaticalConstants.UPDATE_SABBATICAL_REQUEST,
-        };
-    };
-
-    function success(infoSabbatical) {
-        return {
-            type: SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS,
-            infoSabbatical
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: SabbaticalConstants.UPDATE_SABBATICAL_FAILURE,
-            error
-        };
-    };
 }

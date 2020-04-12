@@ -1,79 +1,63 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { SalaryActions } from '../redux/actions';
-import { ModalAddSalary } from './ModalAddSalary';
-import { ModalImportFileSalary } from './ModalImportFileSalary';
-import { ModalEditSalary } from './ModalEditSalary';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
-import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification, DatePicker } from '../../../../common-components';
 
-class SalaryEmployee extends Component {
+import { SalaryCreateForm } from './SalaryCreateForm';
+import { SalaryImportFrom } from './SalaryImportFrom';
+import { SalaryEditForm } from './SalaryEditForm';
+import { ActionColumn, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
+
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
+import { SalaryActions } from '../redux/actions';
+
+class SalaryManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "All",
+            position: null,
             month: "",
             employeeNumber: "",
-            department: "All",
+            unit: null,
             page: 0,
             limit: 5,
+            hideColumn: []
         }
-        this.handleChange = this.handleChange.bind(this);
     }
     componentDidMount() {
         this.props.getListSalary(this.state);
         this.props.getDepartment();
-        let script1 = document.createElement('script');
-        script1.src = 'lib/main/js/GridSelect.js';
-        script1.async = true;
-        script1.defer = true;
-        document.body.appendChild(script1);
     }
-    displayTreeSelect = (data, i) => {
-        i = i + 1;
-        if (data !== undefined) {
-            if (typeof (data.children) === 'undefined') {
-                return (
-                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
-                )
-            } else {
-                return (
-                    <React.Fragment key={data.id}>
-                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
-                        {
-                            data.children.map(tag => this.displayTreeSelect(tag, i))
-                        }
-                    </React.Fragment>
-                )
+
+    componentDidUpdate() {
+        this.hideColumn();
+    }
+
+    // Function ẩn các cột được chọn
+    hideColumn = () => {
+        if (this.state.hideColumn.length !== 0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#salary-table td:nth-child(` + hideColumn[j] + `)`).hide();
             }
-
         }
-        else return null
     }
 
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
-
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
-        this.props.getListSalary(this.state);
-        window.$(`#setting-table`).collapse("hide");
+    // Function bắt sự kiện thêm lương nhân viên bằng tay
+    createSalary = () => {
+        window.$('#modal-create-salary').modal('show');
     }
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
+
+    // Function bắt sự kiện chỉnh sửa thông tin nhân viên
+    handleEdit = async (value) => {
         await this.setState({
-            page: parseInt(page),
-        });
-        this.props.getListSalary(this.state);
+            ...this.state,
+            currentRow: value
+        })
+        window.$('#modal-edit-salary').modal('show');
     }
-    handleChange(event) {
+
+    // Function lưu giá trị mã nhân viên vào state khi thay đổi
+    handleMSNVChange = (event) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
@@ -81,39 +65,90 @@ class SalaryEmployee extends Component {
 
     }
 
-    handleSunmitSearch = async () => {
-        console.log(this.refs.month.value);
-        await this.setState({
-            month: this.refs.month.value
+    // Function lưu giá trị unit vào state khi thay đổi
+    handleUnitChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            unit: value
         })
+    }
+
+    // Function lưu giá trị chức vụ vào state khi thay đổi
+    handlePositionChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            position: value
+        })
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    handleMonthChange = (value) => {
+        this.setState({
+            ...this.state,
+            month: value
+        });
+    }
+
+    // Function bắt sự kiện tìm kiếm 
+    handleSunmitSearch = () => {
         this.props.getListSalary(this.state);
     }
+
+    // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
-
         if (month.length < 2)
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-
         return [month, year].join('-');
     }
+
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    setLimit = async (number, hideColumn) => {
+        await this.setState({
+            limit: parseInt(number),
+            hideColumn: hideColumn
+        });
+        this.props.getListSalary(this.state);
+    }
+
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
+        this.props.getListSalary(this.state);
+    }
     render() {
-        const { tree, list } = this.props.department;
+        const { list } = this.props.department;
         const { translate } = this.props;
         var formatter = new Intl.NumberFormat();
-        var listSalary = "", listDepartment = list, listPosition;
-        for (let n in listDepartment) {
-            if (listDepartment[n]._id === this.state.department) {
-                listPosition = [
-                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
-                    { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
-                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
-                ]
-            }
+        var listSalary = "", listPosition = [];
+        if (this.state.unit !== null) {
+            let unit = this.state.unit;
+            unit.forEach(u => {
+                list.forEach(x => {
+                    if (x._id === u) {
+                        let position = [
+                            { _id: x.dean._id, name: x.dean.name },
+                            { _id: x.vice_dean._id, name: x.vice_dean.name },
+                            { _id: x.employee._id, name: x.employee.name }
+                        ]
+                        listPosition = listPosition.concat(position)
+                    }
+                })
+            })
         }
         if (this.props.salary.isLoading === false) {
             listSalary = this.props.salary.listSalary;
@@ -132,52 +167,44 @@ class SalaryEmployee extends Component {
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('salary_employee.add_salary_title')} >{translate('salary_employee.add_salary')}</button>
                             <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
-                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
-                                <li><a href="#abc" style={{ color: "#fff" }} title={translate('salary_employee.add_by_hand_title')} data-toggle="modal" data-target="#modal-addNewSalary">{translate('salary_employee.add_by_hand')}</a></li>
+                                <li><a style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
+                                <li><a style={{ color: "#fff" }} title={translate('salary_employee.add_by_hand_title')} onClick={this.createSalary} data-toggle="modal" data-target="#modal-addNewSalary">{translate('salary_employee.add_by_hand')}</a></li>
                             </ul>
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}:</label>
-                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
-                                <option value="All" level={1}>--Tất cả---</option>
-                                {
-                                    tree !== null &&
-                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                }
-                            </select>
+                            <label className="form-control-static">{translate('page.unit')}</label>
+                            <SelectMulti id={`multiSelectUnit`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}:</label>
-                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                {
-                                    listPosition !== undefined &&
-                                    listPosition.map((position, index) => (
-                                        <option key={index} value={position._id}>{position.name}</option>
-                                    ))
-                                }
-                            </select>
+                            <label className="form-control-static">{translate('page.position')}</label>
+                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
+                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                            </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.staff_number')}:</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                            <label className="form-control-static">{translate('page.staff_number')}</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
-                                nameLabel={translate('page.month')}
-                                classDatePicker="datepicker month-year"
-                                defaultValue={this.formatDate(Date.now())}
-                                ref="month"
+                                id="month"
+                                dateFormat="month-year"
+                                value={this.formatDate(Date.now())}
+                                onChange={this.handleMonthChange}
                             />
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-
-                    <table className="table table-bordered table-striped table-hover">
+                    <table id="salary-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('table.employee_number')}</th>
@@ -186,9 +213,9 @@ class SalaryEmployee extends Component {
                                 <th>{translate('table.total_salary')}</th>
                                 <th>{translate('table.unit')}</th>
                                 <th>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <ActionColumn
-                                        columnName={translate('table.action')}
+                                        tableId="salary-table"
                                         columnArr={[
                                             translate('table.employee_number'),
                                             translate('table.employee_name'),
@@ -205,7 +232,7 @@ class SalaryEmployee extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><td colSpan={7}><center> {translate('table.no_data')}</center></td></tr> :
+                            {(typeof listSalary === 'undefined' || listSalary.length === 0) ? <tr><th colSpan={7 - this.state.hideColumn.length}><center> {translate('table.no_data')}</center></th></tr> :
                                 listSalary.map((x, index) => {
 
                                     let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
@@ -239,13 +266,9 @@ class SalaryEmployee extends Component {
                                                 </React.Fragment>
                                             )) : null}</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <ModalEditSalary data={x} />
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('salary_employee.edit_salary')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification
-                                                    content={{
-                                                        title: "Xoá bảng lương",
-                                                        btnNo: translate('confirm.no'),
-                                                        btnYes: translate('confirm.yes'),
-                                                    }}
+                                                    content={translate('salary_employee.delete_salary')}
                                                     data={{
                                                         id: x._id,
                                                         info: x.employee.employeeNumber + "- tháng: " + x.month
@@ -260,12 +283,20 @@ class SalaryEmployee extends Component {
                     </table>
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                <ToastContainer />
-                <ModalAddSalary />
-                <ModalImportFileSalary />
+                <SalaryCreateForm />
+                <SalaryImportFrom />
+                {
+                    this.state.currentRow !== undefined &&
+                    <SalaryEditForm
+                        _id={this.state.currentRow._id}
+                        unit={this.state.currentRow.mainSalary.slice(-3, this.state.currentRow.mainSalary.length)}
+                        employeeNumber={this.state.currentRow.employee.employeeNumber}
+                        month={this.state.currentRow.month}
+                        mainSalary={this.state.currentRow.mainSalary.slice(0, this.state.currentRow.mainSalary.length - 3)}
+                        bonus={this.state.currentRow.bonus}
+                    />
+                }
             </div>
-
-
         );
     }
 }
@@ -281,5 +312,5 @@ const actionCreators = {
     deleteSalary: SalaryActions.deleteSalary,
 };
 
-const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryEmployee));
-export { connectedListSalary as SalaryEmployee };
+const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryManager));
+export { connectedListSalary as SalaryManager };

@@ -90,7 +90,6 @@ class ModalEditTrainingPlan extends Component {
             listEducation = this.props.education.listAll;
         }
         var data = this.props.data;
-        console.log(this.state);
         return (
             <div style={{ display: "inline" }}>
                 <a href={`#modal-editTrainingPlan-${data._id}`} className="edit" title="Chỉnh sửa khoá đào tạo" data-toggle="modal"><i className="material-icons"></i></a>

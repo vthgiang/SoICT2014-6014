@@ -5,21 +5,30 @@ const generator = require("generate-password");
 const Terms = require("../../../seed/terms");
 
 exports.get = async () => {
-    
-    return await Company.find();
+    const companies = await Company.find()
+        .populate([
+            { path: "links", model: Link },
+            { path: "super_admin", model: User, select: '_id name email' }
+        ]);
+
+    return companies;
 }
 
 exports.getById = async (id) => {
     
-    return await Company.findOne({_id: id});
+    return await Company.findOne({_id: id}).populate([
+        { path: "links", model: Link },
+        { path: "super_admin", model: User, select: '_id name email' }
+    ]);
 }
 
 exports.getPaginate = async (limit, page, data={}) => {
-    return await Company
-        .paginate( data , { 
-            page, 
-            limit
-        });
+    const companies = await Company.paginate( data , {page, limit, populate: [
+        { path: 'links', model: Link },
+        { path: "super_admin", model: User, select: '_id name email' }
+    ]});
+
+    return companies;
 }
 
 exports.create = async(data) => {
@@ -33,7 +42,8 @@ exports.create = async(data) => {
 }
 
 exports.edit = async(id, data) => {
-    var company = await Company.findOne({_id: id});
+    console.log("sua cong ty", id);
+    var company = await Company.findById(id);
     if(company === null) throw ('company_not_found');
     company.name = data.name;
     company.description = data.description;
@@ -41,6 +51,7 @@ exports.edit = async(id, data) => {
     company.log = data.log;
     if(data.active !== null) company.active = data.active;
     await company.save();
+    console.log("sua xong cong ty", company);
 
     return company;
 }
@@ -164,6 +175,46 @@ exports.createLinksForCompany = async(companyId, linkArr, roleArr) => {
         }
     }
     await Privilege.insertMany(dataPrivilege); // thêm vào cơ sở dữ liệu
+    const activeLinks = await LinkDefault.find({_id: { $in: linkArr }}); // lấy thông tin về các link được kích hoạt cho công ty này
+    const data = await activeLinks.map(link => link.url); // mảng chứa url của các trang được kích hoạt
+    await Link.updateMany({ url: { $in: data }},{ active: true });
 
     return await Link.find({company: companyId}).populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
 } 
+
+// Cập nhật các links của công ty vào trong collection company
+exports.addLinksForCompanyInCollection = async(companyId, linkArr) => {
+    const company = await Company.findById(companyId);
+    company.links = linkArr;
+    await company.save();
+
+    return company;
+}
+
+// Lấy tất cả các links của 1 công ty/doanh nghiệp
+exports.getLinksForCompany = async(companyId) => {
+    const check = await Company.findById(companyId);
+    if(check === null) throw ('company_not_found');
+    const links = await Link.find({company: companyId})
+        .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role} });
+
+    return links;
+}
+
+exports.editSuperAdminOfCompany = async(companyId, superAdminEmail) => {
+    const com = await Company.findById(companyId);
+    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME}); // lay ttin role super admin cua cty do
+    const user = await User.findOne({ company: com._id, email: superAdminEmail }); //tim thong tin ve tai khoan
+    if(user === null){
+        const newUser = await this.createSuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
+        com.super_admin = newUser._id;
+        await com.save();
+
+        return newUser;
+    }else{
+        com.super_admin = user._id; // Cap nhat lai super admin
+        await com.save();
+
+        return user;
+    }
+}

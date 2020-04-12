@@ -9,5 +9,6 @@ router.post("/", auth, CompanyController.create);
 router.get("/:id", auth, CompanyController.show);
 router.patch("/:id", auth, CompanyController.edit);
 router.delete("/:id", auth, CompanyController.delete);
+router.get("/:id/links", auth, CompanyController.getLinksOfCompany);
 
 module.exports = router;

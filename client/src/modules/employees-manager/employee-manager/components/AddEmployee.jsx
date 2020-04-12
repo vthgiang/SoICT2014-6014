@@ -7,7 +7,7 @@ import { SabbaticalActions } from '../../sabbatical/redux/actions';
 import { DisciplineActions } from '../../discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "./AddEmployee.css";
+import "./add-employee.css";
 import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, ModalAddContract, ModalAddExperience } from './CombineContent';
 import { ModalAddBHXH, ModalAddDiscipline, ModalAddPraise, ModalAddSalary, ModalAddSabbatical, ModalAddFile } from './CombineContent';
 import { ModalEditFile, ModalEditSabbatical, ModalEditSalary, ModalEditPraise, ModalEditDiscipline, ModalEditBHXH } from './CombineContent';
@@ -569,20 +569,19 @@ class AddEmployee extends Component {
         const { translate } = this.props;
         var formatter = new Intl.NumberFormat();
         return (
-            <div className="box" >
-                <div className="box-body qlcv">
+                <div className=" qlcv">
                         <div className="nav-tabs-custom" >
                             <ul className="nav nav-tabs">
-                                <li className="active"><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#thongtinchung">{translate('manage_employee.menu_general_infor')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href="#thongtinlienhe">{translate('manage_employee.menu_contact_infor')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_education_experience_title')} data-toggle="tab" href="#kinhnghiem">{translate('manage_employee.menu_education_experience')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_diploma_certificate_title')} data-toggle="tab" href="#bangcap">{translate('manage_employee.menu_diploma_certificate')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_account_tax_title')} data-toggle="tab" href="#taikhoan">{translate('manage_employee.menu_account_tax')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_insurrance_infor_title')} data-toggle="tab" href="#baohiem">{translate('manage_employee.menu_insurrance_infor')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_contract_training_title')} data-toggle="tab" href="#hopdong">{translate('manage_employee.menu_contract_training')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_reward_discipline_title')} data-toggle="tab" href="#khenthuong">{translate('manage_employee.menu_reward_discipline')}</a></li>
-                                <li><a style={{ paddingLeft: 5, paddingRight: 8 }} title={translate('manage_employee.menu_salary_sabbatical_title')} data-toggle="tab" href="#historySalary">{translate('manage_employee.menu_salary_sabbatical')}</a></li>
-                                <li><a style={{ paddingLeft: 5, }} title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#tailieu">{translate('manage_employee.menu_attachments')}</a></li>
+                                <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#thongtinchung">{translate('manage_employee.menu_general_infor')}</a></li>
+                                <li><a title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href="#thongtinlienhe">{translate('manage_employee.menu_contact_infor')}</a></li>
+                                <li><a title={translate('manage_employee.menu_education_experience_title')} data-toggle="tab" href="#kinhnghiem">{translate('manage_employee.menu_education_experience')}</a></li>
+                                <li><a title={translate('manage_employee.menu_diploma_certificate_title')} data-toggle="tab" href="#bangcap">{translate('manage_employee.menu_diploma_certificate')}</a></li>
+                                <li><a title={translate('manage_employee.menu_account_tax_title')} data-toggle="tab" href="#taikhoan">{translate('manage_employee.menu_account_tax')}</a></li>
+                                <li><a title={translate('manage_employee.menu_insurrance_infor_title')} data-toggle="tab" href="#baohiem">{translate('manage_employee.menu_insurrance_infor')}</a></li>
+                                <li><a title={translate('manage_employee.menu_contract_training_title')} data-toggle="tab" href="#hopdong">{translate('manage_employee.menu_contract_training')}</a></li>
+                                <li><a title={translate('manage_employee.menu_reward_discipline_title')} data-toggle="tab" href="#khenthuong">{translate('manage_employee.menu_reward_discipline')}</a></li>
+                                <li><a title={translate('manage_employee.menu_salary_sabbatical_title')} data-toggle="tab" href="#historySalary">{translate('manage_employee.menu_salary_sabbatical')}</a></li>
+                                <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#tailieu">{translate('manage_employee.menu_attachments')}</a></li>
                             </ul>
                             < div className="tab-content">
                                 <div id="thongtinchung" className="tab-pane active">
@@ -1352,7 +1351,6 @@ class AddEmployee extends Component {
                         </div>
                         <ToastContainer />
                 </div>
-            </div>
         );
     };
 }

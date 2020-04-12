@@ -27,6 +27,16 @@ class PaginateBar extends Component {
         await this.props.func(this.state.page);
     }
 
+    handleEnterSetting = (event) => {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            this.setPaginate();
+        }
+    }
+
     render() {
         const { pageTotal, currentPage, translate, func } = this.props;
         var items = [];
@@ -63,17 +73,16 @@ class PaginateBar extends Component {
             <React.Fragment>
                 {
                     pageTotal !== 0 &&
-                    <div className="row pagination-new">
+                    <div className="pull-right">
                         <ul className="pagination" style={{ marginTop: '20px' }}>
                             {currentPage !== 1 && <li><a href="#abc" onClick={() => func(currentPage - 1)}>{"<"}</a></li>}
                             {items}
                             {currentPage !== pageTotal && <li><a href="#abc" onClick={() => func(currentPage + 1)}>{">"}</a></li>}
                         </ul>
-                        <div id="search-page" className="col-sm-12 collapse" style={{ width: "26%" }}>
-                            <input className="col-sm-6 form-control" type="number" min="1" max={pageTotal} style={{ width: "60%" }} name='page' onChange={this.inputChange} />
+                        <div id="search-page" className="form-group collapse">
+                            <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting}/>
                             <button
-                                className="col-sm-4 btn btn-success"
-                                style={{ width: "35%", marginLeft: "5%" }}
+                                className="pull-right btn btn-success"
                                 onClick={this.setPaginate}
                             >{translate('form.search')}</button>
                         </div>

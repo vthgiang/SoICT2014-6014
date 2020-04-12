@@ -18,6 +18,7 @@ class TrainingPlan extends Component {
             typeCourse: "All",
             page: 0,
             limit: 5,
+            hideColumn:[]
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -29,6 +30,18 @@ class TrainingPlan extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+    }
+    componentDidUpdate(){
+        this.hideColumn();
+    }
+
+    hideColumn = () => {
+        if (this.state.hideColumn.length!==0) {
+            var hideColumn = this.state.hideColumn;
+            for (var j = 0, len = hideColumn.length; j < len; j++) {
+                window.$(`#course-table td:nth-child(` + hideColumn[j] + `)`).hide();
+            }
+        }
     }
 
     handleChange(event) {
@@ -42,10 +55,11 @@ class TrainingPlan extends Component {
         this.props.getListCourse(this.state);
     }
 
-    setLimit = async (number) => {
-        await this.setState({ limit: parseInt(number) });
+    setLimit = async (number,hideColumn) => {
+        await this.setState({ 
+            limit: parseInt(number),
+            hideColumn: hideColumn });
         this.props.getListCourse(this.state);
-        window.$(`#setting-table`).collapse("hide");
     }
 
     setPage = async (pageNumber) => {
@@ -59,7 +73,6 @@ class TrainingPlan extends Component {
     render() {
         var { listCourse } = this.props.course;
         const { translate } = this.props;
-        console.log(listCourse)
         var pageTotal = (this.props.course.totalList % this.state.limit === 0) ?
             parseInt(this.props.course.totalList / this.state.limit) :
             parseInt((this.props.course.totalList / this.state.limit) + 1);
@@ -69,7 +82,7 @@ class TrainingPlan extends Component {
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">Danh sách các khoá đào tạo:</h4>
+                            <h4 className="box-title">Danh sách các khoá đào tạo: &#96;</h4>
                         </div>
                         <button type="button" className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addTrainingPlan" >Thêm khoá đào tạo</button>
                     </div>
@@ -90,7 +103,7 @@ class TrainingPlan extends Component {
                             <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()} title="Tìm kiếm" >Tìm kiếm</button>
                         </div>
                     </div>
-                    <table className="table table-striped table-bordered table-hover">
+                    <table id="course-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>Mã khoá đào tạo</th>
@@ -99,10 +112,11 @@ class TrainingPlan extends Component {
                                 <th>Kết thúc</th>
                                 <th>Địa điểm đào tạo</th>
                                 <th>Đơn vị đào tạo</th>
-                                <th style={{ width: '120px'}}>
+                                <th style={{ width: '120px'}}>Hành động
                                     <ActionColumn
-                                        columnName="Hành động"
+                                        tableId="course-table"
                                         columnArr={[
+                                            "Mã khoá đào tạo",
                                             "Tên khoá đào tạo",
                                             "Bắt đầu",
                                             "Kết thúc",
@@ -118,7 +132,7 @@ class TrainingPlan extends Component {
                         </thead>
                         <tbody>
                             {
-                                (listCourse.length === 0 || listCourse === []) ? <tr><td colSpan={7}><center> Không có dữ liệu</center></td></tr> :
+                                (listCourse.length === 0 || listCourse === []) ? <tr><th colSpan={7-this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
                                     listCourse.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.numberCourse}</td>
