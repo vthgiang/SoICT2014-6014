@@ -34,7 +34,7 @@ class CompanyEditForm extends Component {
     }
 
     render() { 
-        const { translate } = this.props;
+        const { translate, linksDefault } = this.props;
         const {
             // Phần edit nội dung của công ty
             companyId,
@@ -115,7 +115,7 @@ class CompanyEditForm extends Component {
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border" style={{minHeight: '300px'}}>
-                                    <legend className="scheduler-border">Các trang được truy cập</legend>
+                                    <legend className="scheduler-border">Các trang được truy cập {`(${companyLinks.length}/${linksDefault.list.length})`}</legend>
                                     {/* Tạo và thêm các link mới cho từng công ty */}
                                     <a className="btn btn-success pull-right" onClick={this.showCreateLinkForm}>Thêm</a>
                                     {/* Bảng quản lý các link của từng công ty */}

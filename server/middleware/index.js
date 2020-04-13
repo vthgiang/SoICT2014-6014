@@ -57,7 +57,6 @@ exports.auth = async (req, res, next) => {
              * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
              */
             var userToken = await User.findOne({ _id: req.user._id,  token: token });
-            console.log("user tìm thấy là : ", userToken);
             if(userToken === null) throw ('acc_log_out');
 
             /**
@@ -98,15 +97,19 @@ exports.auth = async (req, res, next) => {
                     company: req.user.company._id 
                 }) :
                 await Link.findOne({
-                    url
+                    url,
+                    company: undefined
                 });
             if(link === null) throw ('url_invalid');
-            const roleArr = [currentRole].concat(role.parents);
+            console.log("link hien tại: ", link)
+            const roleArr = [role._id].concat(role.parents);
+            await console.log("CAC ROLE: ", roleArr);
             const privilege = await Privilege.findOne({
                 resourceId: link._id,
                 resourceType: 'Link',
                 roleId: { $in: roleArr }
             });
+            await console.log("PRIVIELGE: ", privilege)
             if(privilege === null) throw ('page_access_denied');
 
             /**

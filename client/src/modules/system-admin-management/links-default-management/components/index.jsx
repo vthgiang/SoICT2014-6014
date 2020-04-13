@@ -13,10 +13,7 @@ class ManageLink extends Component {
             limit: 5,
             page: 1,
             option: 'url', //mặc định tìm kiếm theo tên
-            value: null,
-            url: null,
-            description: null,
-            role: null
+            value: { $regex: '', $options: 'i' }
         }
     }
 

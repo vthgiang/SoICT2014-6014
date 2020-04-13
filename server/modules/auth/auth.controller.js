@@ -16,8 +16,7 @@ exports.login = async (req, res) => {
         await LogError(req.body.email, 'LOGIN');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'login_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -37,8 +36,7 @@ exports.logout = async (req, res) => {
         await LogError(req.user.email, 'LOG_OUT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'logout_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -58,8 +56,7 @@ exports.logoutAllAccount = async (req, res) => {
         await LogError(req.user.email, 'LOG_OUT_ALL_ACCOUNT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'logout_all_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -79,8 +76,7 @@ exports.forgotPassword = async (req, res) => {
         await LogError(req.body.email, 'FORGOT_PASSWORD');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'request_forgot_password_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -100,8 +96,7 @@ exports.resetPassword = async (req, res) => {
         await LogError(req.body.email, 'RESET_PASSWORD');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'reset_password_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -121,8 +116,7 @@ exports.changeInformation = async (req, res) => {
         await LogError(req.user.email,'CHANGE USER INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'change_user_information_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -142,8 +136,7 @@ exports.changePassword = async (req, res) => {
         await LogError(req.user.email,'CHANGE USER PASSWORD', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'change_user_password_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -163,8 +156,7 @@ exports.getLinksOfRole = async (req, res) => {
         await LogError(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_links_of_role_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -184,8 +176,7 @@ exports.show = async (req, res) => {
         await LogError(req.user.email, 'SHOW_PROFILE');
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_profile_faile',
-            content: error
+            message: error
         });
     }
 };

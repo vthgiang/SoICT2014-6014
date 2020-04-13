@@ -23,6 +23,7 @@ exports.getById = async (id) => {
 }
 
 exports.getPaginate = async (limit, page, data={}) => {
+    console.log("data paginate: ", data);
     const companies = await Company.paginate( data , {page, limit, populate: [
         { path: 'links', model: Link },
         { path: "super_admin", model: User, select: '_id name email' }
