@@ -4,7 +4,8 @@ export const CompanyFormValidator = {
     validateName,
     validateShortName,
     validateEmailSuperAdmin,
-    validateDescription
+    validateDescription,
+    validateUrl
 }
 
 function validateName(value) {
@@ -43,6 +44,8 @@ function validateDescription(value) {
         msg = "Tên không ít hơn 3 ký tự";
     } else if(value.length > 255){
         msg = "Tên không nhiều hơn 255 ký tự";
+    } else if (!VALIDATOR.isValidName(value)){
+        msg = "Tên không chứa ký tự đặc biệt";
     }
     return msg;
 }
@@ -53,5 +56,15 @@ function validateEmailSuperAdmin(value){
         msg = "Email không được để trống";
     } else if(!VALIDATOR.isValidEmail(value))
         msg = "Email không hợp lệ";
+    return msg;
+}
+
+function validateUrl(url) {
+    let msg = undefined;
+    if (url.trim() === ""){
+        msg = "Url không được để trống";
+    } else if(!VALIDATOR.isValidUrl(url)){
+        msg = "Url không hợp lệ. Url phải bắt đầu bằng kí tự /";
+    }
     return msg;
 }

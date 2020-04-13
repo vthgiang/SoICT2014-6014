@@ -162,3 +162,44 @@ exports.getLinksOfCompany = async (req, res) => {
         });
     }
 };
+
+exports.addNewLinkForCompany = async (req, res) => {
+    try {
+        const link = await CompanyService.addNewLinkForCompany(req.params.id, req.body.url, req.body.description);
+        
+        LogInfo(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
+        res.status(200).json({
+            success: true,
+            message: 'add_new_link_for_company_success',
+            content: link
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
+
+exports.deleteLinkForCompany = async (req, res) => {
+    try {
+        const link = await CompanyService.deleteLinkForCompany(req.params.id, req.params.linkId);
+        
+        LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
+        res.status(200).json({
+            success: true,
+            message: 'delete_link_for_company_success',
+            content: link
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'DELETE_LINK_FOR_COMPANY');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
