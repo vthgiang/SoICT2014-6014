@@ -271,7 +271,7 @@ const seedDatabase = async () => {
             description: 'Mẫu công việc',
             category: Terms.CATEGORY_LINKS[3].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        }
+        },
 
         // DOCUMENT
         {
