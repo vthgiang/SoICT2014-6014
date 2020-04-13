@@ -11,10 +11,53 @@ class CompanyEditForm extends Component {
         this.state = {}
     }
 
+    showCreateLinkForm = () => {
+        window.$("#add-new-link-default").slideDown();
+    }
+
+    closeCreateLinkForm = () => {
+        window.$("#add-new-link-default").slideUp();
+    }
+
+    saveAndCloseLinkForm = async() => {
+        const {companyId, linkUrl, linkDescription} = this.state;
+        
+        await window.$("#add-new-link-default").slideUp();
+        return this.props.addNewLink(companyId, {
+            url: linkUrl,
+            description: linkDescription
+        });
+    }
+
+    deleteLink = (companyId, linkId) => {
+        return this.props.deleteLink(companyId, linkId);
+    }
+
     render() { 
         const { translate } = this.props;
-        const {companyName, companyShortName, companyLinks, companyDescription, companyLog, companyActive, companyEmail, nameError, shortNameError, descriptionError, emailError} = this.state;
-        
+        const {
+            // Phần edit nội dung của công ty
+            companyId,
+            companyName, 
+            companyShortName, 
+            companyLinks, 
+            companyDescription, 
+            companyLog, 
+            companyActive, 
+            companyEmail, 
+            nameError, 
+            shortNameError, 
+            descriptionError, 
+            emailError,
+
+            // Phần thêm link cho công ty
+            linkUrl,
+            linkDescription,
+            linkUrlError,
+            linkDescriptionError
+        } = this.state;
+        console.log("validate link:", linkDescriptionError, linkUrlError)
+
         return ( 
             <React.Fragment>
                 <ModalDialog
@@ -73,19 +116,43 @@ class CompanyEditForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border" style={{minHeight: '300px'}}>
                                     <legend className="scheduler-border">Các trang được truy cập</legend>
-                                    <table className="table table-hover table-striped table-bordered">
+                                    {/* Tạo và thêm các link mới cho từng công ty */}
+                                    <a className="btn btn-success pull-right" onClick={this.showCreateLinkForm}>Thêm</a>
+                                    {/* Bảng quản lý các link của từng công ty */}
+                                    <table className="table table-hover table-striped table-bordered" style={{marginTop: '50px'}}>
                                         <thead>
                                             <tr>
                                                 <th>{ translate('manage_link.url') }</th>
                                                 <th>{ translate('manage_link.description') }</th>
+                                                <th style={{width: '100px'}}>{ translate('table.action') }</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <tr id="add-new-link-default" style={{display: "none"}}>
+                                                <td className={linkUrlError===undefined?"":"has-error"}>
+                                                    <input className="form-control" onChange={this.handleLinkUrl}/>
+                                                    <ErrorLabel content={linkUrlError}/>
+                                                </td>
+                                                <td className={linkDescriptionError===undefined?"":"has-error"}>
+                                                    <input className="form-control" onChange={this.handleLinkDescription}/>
+                                                    <ErrorLabel content={linkDescriptionError}/>
+                                                </td>
+                                                <td>
+                                                    {
+                                                        this.isFormCreateLinkValidated() ?
+                                                        <a className="save" onClick={this.saveAndCloseLinkForm}><i className="material-icons">save</i></a>:
+                                                        <a className="cancel" onClick={this.closeCreateLinkForm}><i className="material-icons">cancel</i></a>
+                                                    }
+                                                </td>
+                                            </tr> 
                                             {
                                                 companyLinks.length > 0 && companyLinks.map( link => 
                                                     <tr key={link._id}>
                                                         <td>{ link.url }</td>
                                                         <td>{ link.description }</td>
+                                                        <td>
+                                                            <a className="delete" onClick={() => this.deleteLink(companyId, link._id)}><i className="material-icons">delete</i></a>
+                                                        </td>
                                                     </tr> 
                                                 )
                                             }
@@ -214,6 +281,53 @@ class CompanyEditForm extends Component {
         return msg === undefined;
     }
 
+    // Xu ly thay doi va validate cho url link moi cho cong ty
+    handleLinkUrl= (e) => {
+        const value = e.target.value;
+        this.validateLinkUrl(value, true);
+    }
+
+    validateLinkUrl = (value, willUpdateState=true) => {
+        let msg = CompanyFormValidator.validateUrl(value);
+        if (willUpdateState){
+            this.setState(state => {
+                return {
+                    ...state,
+                    linkUrlError: msg,
+                    linkUrl: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Xu ly thay doi va validate cho description link của công ty
+    handleLinkDescription= (e) => {
+        const value = e.target.value;
+        this.validateLinkDescription(value, true);
+    }
+
+    validateLinkDescription = (value, willUpdateState=true) => {
+        let msg = CompanyFormValidator.validateDescription(value);
+        if (willUpdateState){
+            this.setState(state => {
+                return {
+                    ...state,
+                    linkDescriptionError: msg,
+                    linkDescription: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Kiem tra thong tin da validated het chua?
+    isFormCreateLinkValidated = () => {
+        const {linkUrl, linkDescription, linkUrlError, linkDescriptionError} = this.state;
+        if(linkDescriptionError === undefined && linkUrlError === undefined && linkUrl !== undefined && linkDescription !== undefined) return true;
+        else return false; 
+    }
+
     // Kiem tra thong tin da validated het chua?
     isFormValidated = () => {
         const {companyName, companyShortName, companyDescription, companyEmail} = this.state;
@@ -251,7 +365,9 @@ class CompanyEditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps =  {
-    edit: CompanyActions.edit
+    edit: CompanyActions.edit,
+    addNewLink: CompanyActions.addNewLink,
+    deleteLink: CompanyActions.deleteLink
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyEditForm) );

@@ -70,6 +70,7 @@ class TableComponent extends Component {
                             <th>{ translate('manage_component.link') }</th>
                             <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
+                                { translate('table.action') }
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     hideColumn={false}

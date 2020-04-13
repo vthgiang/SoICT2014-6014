@@ -69,6 +69,8 @@ exports.data = [
     { path: '/company/paginate', method: 'POST', roles: ['System Admin']},
     { path: '/company/:id', method: 'GET', roles: ['System Admin']},
     { path: '/company/:id', method: 'PATCH', roles: ['System Admin']},
+    { path: '/company/:id/add-new-link', method: 'POST', roles: ['System Admin']},
+    { path: '/company/:id/delete-link/:linkId', method: 'DELETE', roles: ['System Admin']},
     { path: '/company/:id', method: 'DELETE', roles: ['System Admin']},
     { path: '/links-default-management', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/links-default-management', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},

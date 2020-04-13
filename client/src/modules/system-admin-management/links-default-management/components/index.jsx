@@ -69,6 +69,7 @@ class ManageLink extends Component {
                                     <th>{ translate('manage_link.description') }</th>
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
+                                        { translate('table.action') }
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
                                             columnArr={[

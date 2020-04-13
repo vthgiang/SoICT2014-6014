@@ -6,7 +6,9 @@ export const CompanyActions = {
     get,
     getPaginate,
     create,
-    edit
+    edit,
+    addNewLink,
+    deleteLink
 };
 
 function get(){
@@ -82,6 +84,57 @@ function edit(id, data){
             })
             .catch(err => {
                 dispatch({ type: CompanyConstants.EDIT_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function addNewLink(id, data){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.addNewLink(id, data)
+            .then(res => {
+                console.log("add new link: ",res);
+                dispatch({
+                    type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS,
+                    payload: {
+                        companyId: id,
+                        link: res.data.content
+                    }
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function deleteLink(companyId, linkId){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.deleteLink(companyId, linkId)
+            .then(res => {
+                console.log("delete link: ",res);
+                dispatch({
+                    type: CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
                 reject(err);
