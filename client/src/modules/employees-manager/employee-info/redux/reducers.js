@@ -1,45 +1,52 @@
-import {
-    Constants
-} from './constants';
+import { Constants } from './constants';
+const initState ={
+    isLoading: false,
+    employee: "",
+    employeeContact: "",
+    salary: "",
+    sabbatical: "",
+    praise: "",
+    discipline: "",
+    infoEmployeeUpdate: "",
+    error: ""
+}
 
-export function employeesInfo(state = {}, action) {
+export function employeesInfo(state = initState, action) {
     switch (action.type) {
         case Constants.GET_INFOR_PERSONAL_REQUEST:
+        case Constants.UPDATE_INFOR_PERSONAL_REQUEST:
             return {
                 ...state,
-                isloading: true
+                isLoading: true
             };
         case Constants.GET_INFOR_PERSONAL_SUCCESS:
             return {
                 ...state,
-                isloading: false,
-                employee: action.employee.content.employee,
-                    employeeContact: action.employee.content.employeeContact,
-                    salary: action.employee.content.salary,
-                    sabbatical: action.employee.content.sabbatical,
-                    praise: action.employee.content.praise,
-                    discipline: action.employee.content.discipline
-            };
-        case Constants.GET_INFOR_PERSONAL_FAILURE:
-            return {
-                error: action.error,
                 isLoading: false,
-            };
-        case Constants.UPDATE_INFOR_PERSONAL_REQUEST:
-            return {
-                ...state,
-                isloading: true
+                employee: action.payload.employee,
+                employeeContact: action.payload.employeeContact,
+                salary: action.payload.salary,
+                sabbatical: action.payload.sabbatical,
+                praise: action.payload.praise,
+                discipline: action.payload.discipline
             };
         case Constants.UPDATE_INFOR_PERSONAL_SUCCESS:
             return {
                 ...state,
-                isloading: false,
-                infoEmployeeUpdate: action.informationEmployee.content
+                isLoading: false,
+                infoEmployeeUpdate: action.payload
+            };
+        case Constants.GET_INFOR_PERSONAL_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error.message
             };
         case Constants.UPDATE_INFOR_PERSONAL_FAILURE:
             return {
-                error: action.error,
+                ...state,
                 isLoading: false,
+                error: action.error.message
             };
         default:
             return state

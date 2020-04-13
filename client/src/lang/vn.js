@@ -29,8 +29,8 @@ export default {
             edit_sabbatical_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
             edit_sabbatical_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
             // Quản lý lương nhân viên
-            name_other_salary_required:'Tên lương thưởng khác không được để trống',
-            money_other_salary_required:'Tiền lương thưởng khác không được để trống',
+            name_other_salary_required: 'Tên lương thưởng khác không được để trống',
+            money_other_salary_required: 'Tiền lương thưởng khác không được để trống',
             month_salary_required: 'Tháng lương không được để trống',
             money_salary_required: 'Tiền lương chính không được để trống',
             month_salary_have_exist: 'Tháng lương đã tồn tại',
@@ -58,7 +58,7 @@ export default {
             type_discipline_required: 'Hình thức kỷ luật không được để trống',
             reason_discipline_required: 'Lý do kỷ luật không được để trống',
             start_date_discipline_required: 'Ngày có hiệu lực không được để trống',
-            end_date_discipline_required:'Ngày hết hiệu lực không được để trống',
+            end_date_discipline_required: 'Ngày hết hiệu lực không được để trống',
             get_discipline_success: 'Lấy danh sách kỷ luật thành công',
             get_discipline_faile: 'Lấy danh sách kỷ luật thất bại',
             create_discipline_success: 'Thêm mới kỷ luật thành công',
@@ -67,6 +67,14 @@ export default {
             delete_discipline_faile: 'Xoá kỷ luật thất bại',
             edit_discipline_success: 'Chỉnh sửa kỷ luật thành công',
             edit_discipline_faile: 'Chỉnh sửa kỷ luật thất bại',
+            // Quản lý thông tin cá nhân
+            get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
+            get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
+            edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
+            edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
+            guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
+            no_change_data: 'Không có thông tin nào được thay đổi',
+
 
             /** 
              * End
@@ -439,6 +447,12 @@ export default {
             reason_praise: 'Thành tích (Lý do)',
         },
         manage_employee: {
+            note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
+            contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
+            update_infor_personal: 'Cập nhật thông tin nhân viên',
+            no_data_personal: 'Chưa có thông tin cá nhân',
+
+            menu_basic_infor: 'Thông tin cơ bản',
             menu_general_infor: 'Thông tin chung',
             menu_contact_infor: 'Thông tin liên hệ',
             menu_education_experience: 'Học vấn - Kinh nghiệm',
@@ -576,6 +590,7 @@ export default {
             check_end_Date: 'Bạn chưa nhập ngày kết thúc',
             check_description: 'Bạn chưa nhập mô tả lịch nghỉ'
         },
+
 
         // Task template
         task_template: {

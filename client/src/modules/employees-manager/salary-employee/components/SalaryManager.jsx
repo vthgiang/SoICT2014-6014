@@ -15,7 +15,7 @@ class SalaryManager extends Component {
         super(props);
         this.state = {
             position: null,
-            month: "",
+            month: null,
             employeeNumber: "",
             unit: null,
             page: 0,
@@ -82,8 +82,9 @@ class SalaryManager extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        if (this.state.month === "") {
+        if (this.state.month === null) {
             await this.setState({
+                ...this.state,
                 month: this.formatDate(Date.now())
             })
         }
@@ -120,6 +121,7 @@ class SalaryManager extends Component {
         this.props.getListSalary(this.state);
     }
     render() {
+        console.log(this.state);
         const { list } = this.props.department;
         const { translate, salary } = this.props;
         var formater = new Intl.NumberFormat();

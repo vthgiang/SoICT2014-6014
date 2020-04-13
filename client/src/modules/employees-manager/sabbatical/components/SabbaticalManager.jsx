@@ -16,7 +16,7 @@ class SabbaticalManager extends Component {
             unit: null,
             position: null,
             employeeNumber: "",
-            month: "",
+            month: null,
             status: null,
             page: 0,
             limit: 5,
@@ -106,8 +106,9 @@ class SabbaticalManager extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        if (this.state.month === "") {
+        if (this.state.month === null) {
             await this.setState({
+                ...this.state,
                 month: this.formatDate(Date.now())
             })
         }

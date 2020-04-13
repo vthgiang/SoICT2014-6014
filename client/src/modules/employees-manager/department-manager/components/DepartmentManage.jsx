@@ -22,11 +22,6 @@ class DepartmentManage extends Component {
             showEdit: id
         })
         window.$(`#modal-viewUnit-${id}`).modal('show');
-        // var element = document.getElementsByTagName("BODY")[0];
-        // element.classList.add("modal-open");
-        // var modal = document.getElementById(`modal-viewUnit-${id}`);
-        // modal.classList.add("in");
-        // modal.style = "display: block";
     }
     render() {
         var data = [];
