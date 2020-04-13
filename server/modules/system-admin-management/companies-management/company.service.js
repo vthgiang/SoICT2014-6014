@@ -23,6 +23,7 @@ exports.getById = async (id) => {
 }
 
 exports.getPaginate = async (limit, page, data={}) => {
+    console.log("data paginate: ", data);
     const companies = await Company.paginate( data , {page, limit, populate: [
         { path: 'links', model: Link },
         { path: "super_admin", model: User, select: '_id name email' }
@@ -217,4 +218,35 @@ exports.editSuperAdminOfCompany = async(companyId, superAdminEmail) => {
 
         return user;
     }
+}
+
+exports.addNewLinkForCompany = async(companyId, linkUrl, linkDescription) => {
+    const newLink = await Link.create({
+        url: linkUrl,
+        description: linkDescription,
+        company: companyId
+    });
+    const com = await Company.findById(companyId); // lấy dữ liệu về công ty này
+    com.links.push(newLink._id);
+    await com.save();
+
+    return newLink;
+}
+
+exports.deleteLinkForCompany = async(companyId, linkId) => {
+    // Xóa tắt cả phân quyền liên quan đến link này (role)
+    await Privilege.deleteMany({
+        resourceId: linkId,
+        resourceType: 'Link'
+    });
+    // Xóa link này
+    await Link.deleteOne({_id: linkId});
+    const com = await Company.findById(companyId); // lấy dữ liệu về công ty này
+    com.links.splice(com.links.indexOf(linkId), 1); // Xóa dữ liệu về link khỏi công ty này
+    await com.save();
+
+    return {
+        company: companyId,
+        link: linkId
+    };
 }

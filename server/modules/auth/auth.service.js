@@ -34,7 +34,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
     if(user.roles[0].roleId.name !== 'System Admin'){ 
         //Không phải phiên đăng nhập của system admin 
         if(!user.active) throw { message: 'acc_blocked'};
-        if(!user.company.active) throw ({message: 'company_service_off'});
+        if(!user.company.active) throw ({message: 'service_off'});
     
         const token = await jwt.sign(
             {
@@ -107,7 +107,7 @@ exports.logoutAllAccount = async (id) => {
 //Quên mật khẩu tài khoản người dùng --------------------------------------//
 exports.forgotPassword = async (email) => {
     var user = await User.findOne({ email });
-    if(user === null) return false;
+    if(user === null) throw("email_not_found");
     var code = await generator.generate({ length: 6, numbers: true });
     user.reset_password_token = code;
     user.save();

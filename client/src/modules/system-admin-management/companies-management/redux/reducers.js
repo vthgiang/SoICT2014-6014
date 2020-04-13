@@ -31,11 +31,15 @@ const initState = {
 export function company(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
+    var indexLink = -1;
+    var indexLinkPaginate = -1;
     switch (action.type) {
         case CompanyConstants.GET_COMPANIES_REQUEST:
         case CompanyConstants.GET_COMPANIES_PAGINATE_REQUEST:
         case CompanyConstants.CREATE_COMPANY_REQUEST:
+        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_REQUEST:
         case CompanyConstants.EDIT_COMPANY_REQUEST:
+        case CompanyConstants.DELETE_LINK_FOR_COMPANY_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -79,7 +83,6 @@ export function company(state = initState, action) {
             };
 
         case CompanyConstants.EDIT_COMPANY_SUCCESS:
-            console.log("RES COM:", action.payload);
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
@@ -92,11 +95,40 @@ export function company(state = initState, action) {
                 ...state,
                 isLoading: false
             };
+        
+        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS:
+            index = findIndex(state.list, action.payload.companyId);
+            indexPaginate = findIndex(state.listPaginate, action.payload.companyId);
+            state.list[index].links.unshift(action.payload.link);
+            state.listPaginate[indexPaginate].links.unshift(action.payload.link);
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS:
+            // Tìm index của công ty vừa xóa link
+            index = findIndex(state.list, action.payload.company); 
+            indexPaginate = findIndex(state.listPaginate, action.payload.company);
+
+            // Tìm index của link bị xóa trong công ty
+            indexLink = findIndex(state.list[index].links, action.payload.link); 
+            indexLinkPaginate = findIndex(state.listPaginate[indexPaginate].links, action.payload.link);
+
+            //Xóa link đó khỏi list các link của công ty
+            state.list[index].links.splice(indexLink, 1);
+            state.listPaginate[indexPaginate].links.splice(indexLinkPaginate, 1);
+            return {
+                ...state,
+                isLoading: false
+            };
 
         case CompanyConstants.GET_COMPANIES_FAILE:
+        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE:
         case CompanyConstants.GET_COMPANIES_PAGINATE_FAILE:
         case CompanyConstants.EDIT_COMPANY_FAILE:
         case CompanyConstants.CREATE_COMPANY_FAILE:
+        case CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE:
             return {
                 ...state,
                 isLoading: false

@@ -79,7 +79,7 @@ Logger.findOne({
     })
     .then(result => {
         result.status ? isLog = true : isLog = false;
-        console.log("Logger status: ", isLog);
+        // console.log("Logger status: ", isLog);
     })
     .catch(err => console.log("message: ", err));
 

@@ -10,7 +10,7 @@ class TreeTable extends Component {
     }
 
     componentDidUpdate() {
-        if (this.props.data !== null && this.props.nameClass === "show-children") {
+        if (this.props.data !== null && this.props.behaviour === "show-children") {
             window.$("#script-tree-table-show-children").remove();
             const script = document.createElement('script');
             script.type = 'text/javascript';
@@ -18,7 +18,7 @@ class TreeTable extends Component {
             script.innerHTML = treeTableShowChildren
             document.body.appendChild(script);
         }
-        if (this.props.data !== null && this.props.nameClass === "hide-children") {
+        if (this.props.data !== null && this.props.behaviour === "hide-children") {
             window.$("#script-tree-table-show-children").remove();
             const script = document.createElement('script');
             script.type = 'text/javascript';
@@ -78,27 +78,27 @@ class TreeTable extends Component {
         var { titleAction } = this.props;
         switch (data) {
             case "edit":
-                return <a href="#abc" onClick={() => this.props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction[0].edit}>
+                return <a href="#abc" onClick={() => this.props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
                     <i className="material-icons"></i>
                 </a>
             case "view":
-                return <a href="#abc" onClick={() => this.props.funcView(id)} data-toggle="modal" title={titleAction[0].view}>
+                return <a href="#abc" onClick={() => this.props.funcView(id)} data-toggle="modal" title={titleAction.view}>
                     <i className="material-icons">view_list</i>
                 </a>
             case "delete":
-                return <a href="#abc" onClick={() => this.props.funcDelete(id)} className="delete" title={titleAction[0].delete}>
+                return <a href="#abc" onClick={() => this.props.funcDelete(id)} className="delete" title={titleAction.delete}>
                     <i className="material-icons"></i>
                 </a>
             case "add":
-                return <a href="#abc" onClick={() => this.props.funcAdđ(id)} className="add_circle" data-toggle="modal" title={titleAction[0].add}>
+                return <a href="#abc" onClick={() => this.props.funcAdd(id)} className="add_circle" data-toggle="modal" title={titleAction.add}>
                     <i className="material-icons">add_circle</i>
                 </a>
-            case "save":
-                return <a href="#abc" onClick={() => this.props.funcSave(id)} className="all_inbox" title={titleAction[0].save}>
+            case "store":
+                return <a href="#abc" onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.store}>
                     <i className="material-icons">all_inbox</i>
                 </a>
             case "startTimer":
-                return <a href="#abc" onClick={() => this.props.funcStartTimer(id)} className="timer" title={titleAction[0].startTimer}>
+                return <a href="#abc" onClick={() => this.props.funcStartTimer(id)} className="timer" title={titleAction.startTimer}>
                     <i className="material-icons">timer</i>
                 </a>
             default:

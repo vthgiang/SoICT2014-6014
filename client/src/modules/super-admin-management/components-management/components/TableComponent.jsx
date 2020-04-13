@@ -14,7 +14,7 @@ class TableComponent extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
     }
 
@@ -107,8 +107,8 @@ class TableComponent extends Component {
                                     </td>
                                 </tr>
                             ): component.isLoading ?
-                            <tr><td colSpan={"3"}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={"3"}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={"4"}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={"4"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
