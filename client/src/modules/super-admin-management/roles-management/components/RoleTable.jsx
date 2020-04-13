@@ -51,6 +51,7 @@ class RoleTable extends Component {
                             <th>{ translate('manage_role.extends') }</th>
                             <th>{ translate('manage_role.users') }</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
+                                { translate('table.action') }
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     columnArr={[

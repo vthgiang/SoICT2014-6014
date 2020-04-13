@@ -5,7 +5,7 @@ const UserRole = require('../models/user_role.model');
 const Privilege = require('../models/privilege.model');
 const Link = require('../models/link.model');
 const Company = require('../models/company.model');
-var ObjectId = require('mongoose').Types.ObjectId;
+const ObjectId = require('mongoose').Types.ObjectId;
 const {data, checkServicePermission} = require('./servicesPermission');
 
 
@@ -56,7 +56,7 @@ exports.auth = async (req, res, next) => {
              * Nếu như người tạo ra JWT này đã đăng xuất thì JWT này sẽ được xóa đi khỏi CSDL của người dùng.
              * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
              */
-            var userToken = await User.findOne({ _id: req.user._id,  token: token });
+            const userToken = await User.findOne({ _id: req.user._id,  token: token });
             if(userToken === null) throw ('acc_log_out');
 
             /**
@@ -89,8 +89,8 @@ exports.auth = async (req, res, next) => {
              * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
              */
 
-            //var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
-            var url = req.header('current-page');
+            //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+            const url = req.header('current-page');
             const link = role.name !== 'System Admin' ?
                 await Link.findOne({
                     url,
@@ -101,15 +101,13 @@ exports.auth = async (req, res, next) => {
                     company: undefined
                 });
             if(link === null) throw ('url_invalid');
-            console.log("link hien tại: ", link)
+            
             const roleArr = [role._id].concat(role.parents);
-            await console.log("CAC ROLE: ", roleArr);
             const privilege = await Privilege.findOne({
                 resourceId: link._id,
                 resourceType: 'Link',
                 roleId: { $in: roleArr }
             });
-            await console.log("PRIVIELGE: ", privilege)
             if(privilege === null) throw ('page_access_denied');
 
             /**
