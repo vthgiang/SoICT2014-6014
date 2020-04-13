@@ -47,10 +47,10 @@ exports.getById = async (company, roleId) => {
 }
 
 exports.create = async(data, companyID) => {
-    var roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
-    var check = await Role.findOne({name: data.name, company: companyID});
+    const roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
+    const check = await Role.findOne({name: data.name, company: companyID});
     if(check !== null) throw('role_name_exist');
-    var role = await Role.create({
+    const role = await Role.create({
         name: data.name,
         company: companyID,
         parents: data.parents,
@@ -61,7 +61,7 @@ exports.create = async(data, companyID) => {
 }
 
 exports.createAbstract = async(data, companyID) => {
-    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
+    const roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
     const check = await Role.findOne({name: data.name, company: companyID}); 
     if(check !== null) throw ('role_name_exist');
     const role = await Role.create({
@@ -75,28 +75,28 @@ exports.createAbstract = async(data, companyID) => {
 }
 
 exports.crt_rolesOfDepartment = async(data, companyID) => {
-    var checkDean = await Role.findOne({name: data.dean, company: companyID }); if(checkDean !== null) throw ({message: 'role_dean_exist'});
-    var checkViceDean = await Role.findOne({name: data.dean, company: companyID}); if(checkViceDean !== null) throw ({message: 'role_vice_dean_exist'});
-    var checkEmployee = await Role.findOne({name: data.dean, company: companyID }); if(checkEmployee !== null) throw ({message: 'role_employee_exist'});
+    const checkDean = await Role.findOne({name: data.dean, company: companyID }); if(checkDean !== null) throw ({message: 'role_dean_exist'});
+    const checkViceDean = await Role.findOne({name: data.dean, company: companyID}); if(checkViceDean !== null) throw ({message: 'role_vice_dean_exist'});
+    const checkEmployee = await Role.findOne({name: data.dean, company: companyID }); if(checkEmployee !== null) throw ({message: 'role_employee_exist'});
 
-    var roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
-    var deanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.DEAN.NAME }); //lấy role dean abstract
-    var viceDeanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME }); //lấy role vice dean abstract
-    var employeeAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME }); //lấy role employee abstract
+    const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
+    const deanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.DEAN.NAME }); //lấy role dean abstract
+    const viceDeanAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME }); //lấy role vice dean abstract
+    const employeeAb = await Role.findOne({ name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME }); //lấy role employee abstract
 
-    var employee = await Role.create({
+    const employee = await Role.create({
         name: data.employee,
         company: companyID,
         type: roleChucDanh._id,
         parents: [employeeAb._id]
     });
-    var vice_dean = await Role.create({
+    const vice_dean = await Role.create({
         name: data.vice_dean,
         company: companyID,
         type: roleChucDanh._id,
         parents: [employee._id, viceDeanAb._id]
     });
-    var dean = await Role.create({
+    const dean = await Role.create({
         name: data.dean,
         company: companyID,
         type: roleChucDanh._id,
@@ -109,7 +109,7 @@ exports.crt_rolesOfDepartment = async(data, companyID) => {
 }
 
 exports.edit = async(id, data={}) => {
-    var role = await Role.findById(id)
+    const role = await Role.findById(id)
         .populate([
             { path: 'users', model: UserRole },
             { path: 'company', model: Company },
@@ -125,8 +125,8 @@ exports.edit = async(id, data={}) => {
 }
 
 exports.delete = async(id) => {
-    var deleteRole = await Role.deleteOne({ _id: id });
-    var deleteRelationship = await UserRole.deleteMany({
+    const deleteRole = await Role.deleteOne({ _id: id });
+    const deleteRelationship = await UserRole.deleteMany({
         roleId: id
     });
     return {
@@ -135,7 +135,7 @@ exports.delete = async(id) => {
 }
 
 exports.relationshipUserRole = async (userId, roleId) => { 
-    var relationship = await UserRole.create({
+    const relationship = await UserRole.create({
         userId,
         roleId
     });
@@ -148,15 +148,15 @@ exports.editRelationshiopUserRole = async( roleId, userArr ) => {
     await UserRole.deleteMany({
         roleId: roleId
     });
-    var ur1 = await UserRole.find();
-    var user_role = userArr.map( user => {
+    const ur1 = await UserRole.find();
+    const user_role = userArr.map( user => {
         return {
             roleId: roleId,
             userId: user
         };
     })
-    var relationshipUpdated = await UserRole.insertMany(user_role);
-    var ur2 = await UserRole.find();
+    const relationshipUpdated = await UserRole.insertMany(user_role);
+    const ur2 = await UserRole.find();
     return {
         ur1,
         ur2,
@@ -164,7 +164,7 @@ exports.editRelationshiopUserRole = async( roleId, userArr ) => {
     };
 }
 exports.getRoleSameDepartment = async (id) => {
-    var roles = await Department.findOne({ 
+    const roles = await Department.findOne({ 
         $or:[
             {'dean':id}, 
             {'vice_dean':id}, 
