@@ -5,7 +5,7 @@ const UserRole = require('../models/user_role.model');
 const Privilege = require('../models/privilege.model');
 const Link = require('../models/link.model');
 const Company = require('../models/company.model');
-var ObjectId = require('mongoose').Types.ObjectId;
+const ObjectId = require('mongoose').Types.ObjectId;
 const {data, checkServicePermission} = require('./servicesPermission');
 
 
@@ -56,8 +56,7 @@ exports.auth = async (req, res, next) => {
              * Nếu như người tạo ra JWT này đã đăng xuất thì JWT này sẽ được xóa đi khỏi CSDL của người dùng.
              * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
              */
-            var userToken = await User.findOne({ _id: req.user._id,  token: token });
-            console.log("user tìm thấy là : ", userToken);
+            const userToken = await User.findOne({ _id: req.user._id,  token: token });
             if(userToken === null) throw ('acc_log_out');
 
             /**
@@ -90,18 +89,20 @@ exports.auth = async (req, res, next) => {
              * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
              */
 
-            //var url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
-            var url = req.header('current-page');
+            //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
+            const url = req.header('current-page');
             const link = role.name !== 'System Admin' ?
                 await Link.findOne({
                     url,
                     company: req.user.company._id 
                 }) :
                 await Link.findOne({
-                    url
+                    url,
+                    company: undefined
                 });
             if(link === null) throw ('url_invalid');
-            const roleArr = [currentRole].concat(role.parents);
+            
+            const roleArr = [role._id].concat(role.parents);
             const privilege = await Privilege.findOne({
                 resourceId: link._id,
                 resourceType: 'Link',

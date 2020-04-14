@@ -6,6 +6,7 @@ import CompanyEditForm from './CompanyEditForm';
 import CompanyCreateForm from './CompanyCreateForm';
 import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
+import { LinkDefaultActions } from '../../links-default-management/redux/actions';
 
 class CompanyTable extends Component {
     constructor(props) {
@@ -14,14 +15,8 @@ class CompanyTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
-
-        this.inputChange = this.inputChange.bind(this);
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
     }
 
     
@@ -62,6 +57,7 @@ class CompanyTable extends Component {
     componentDidMount(){
         this.props.get();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+        this.props.getLinksDefault();
     }
 
     render() { 
@@ -233,7 +229,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     get: CompanyActions.get,
     edit: CompanyActions.edit,
-    getPaginate: CompanyActions.getPaginate
+    getPaginate: CompanyActions.getPaginate,
+    getLinksDefault: LinkDefaultActions.get
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CompanyTable));

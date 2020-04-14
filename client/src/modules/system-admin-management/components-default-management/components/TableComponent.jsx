@@ -14,7 +14,7 @@ class TableComponent extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
     }
 
@@ -70,6 +70,7 @@ class TableComponent extends Component {
                             <th>{ translate('manage_component.link') }</th>
                             <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
+                                { translate('table.action') }
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     hideColumn={false}

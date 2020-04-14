@@ -103,12 +103,22 @@ const seedDatabase = async () => {
     // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
     // index: 0-super admin, 1-admin, 2-dean, 3-vice dean, 4-employee
     const linkDefaults = await LinkDefault.insertMany([
+
+        // Common
         {
             url: '/',
             description: 'Trang chủ',
             category: Terms.CATEGORY_LINKS[0].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ]
         },{
+            url: '/notifications',
+            description: 'Thông báo',
+            category: Terms.CATEGORY_LINKS[0].name,
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ] // tất cả 
+        },
+
+        // RBAC
+        {
             url: '/users-management',
             description: 'Quản lý người dùng',
             category: Terms.CATEGORY_LINKS[1].name,
@@ -134,17 +144,10 @@ const seedDatabase = async () => {
             description: 'Quản lý thành phần UI',
             category: Terms.CATEGORY_LINKS[1].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
-        },{
-            url: '/documents-management',
-            description: 'Quản lý tài liệu biểu mẫu',
-            category: Terms.CATEGORY_LINKS[6].name,
-            roles: [ roleAbstracts[2]._id, roleAbstracts[3]._id ] //trưởng và phó 
-        },{
-            url: '/notifications',
-            description: 'Thông báo',
-            category: Terms.CATEGORY_LINKS[0].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id, roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id ] // tất cả 
-        },{
+        },
+
+        // KPI
+        {
             url: '/kpi-units/create',
             description: 'Khởi tạo Kpi đơn vị',
             category: Terms.CATEGORY_LINKS[2].name,
@@ -165,16 +168,14 @@ const seedDatabase = async () => {
             category: Terms.CATEGORY_LINKS[2].name,
             roles:[roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
         },{
-            url:'/task-management',
-            description:'Xem danh sáng công việc',
-            category: Terms.CATEGORY_LINKS[3].name,
-            roles: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{ // 15
-            url: '/task-management-dashboard',
-            description: 'Dashboard công việc',
-            category: Terms.CATEGORY_LINKS[3].name,
-            roles: [ roleAbstracts[4]._id, roleAbstracts[3]._id, roleAbstracts[2]._id]
-        },{
+            url: '/kpi-member/overview',
+            description: 'Quản lí kpi nhân viên',
+            category: Terms.CATEGORY_LINKS[2].name,
+            roles:[roleAbstracts[2]._id]
+        },
+
+        // EMPLOYEE
+        {
             url: '/hr-manage-holiday',
             description: 'Kế hoạch làm việc',
             category: Terms.CATEGORY_LINKS[4].name,
@@ -225,16 +226,19 @@ const seedDatabase = async () => {
             category: Terms.CATEGORY_LINKS[4].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
         },{
-            url: '/hr-trainning-course',
-            description: 'Quản lý đào tạo',
-            category: Terms.CATEGORY_LINKS[5].name,
-            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        },{
             url: '/hr-account',
             description: 'Thông tin tài khoản',
             category: Terms.CATEGORY_LINKS[4].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
         },{
+            url: '/hr-manage-management',
+            description: 'Quản lý nhân sự các đơn vị',
+            category: Terms.CATEGORY_LINKS[4].name,
+            roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },
+
+        // EDUCATION
+        {
             url: '/hr-trainning-plan',
             description: 'Kế hoạch đào tạo',
             category: Terms.CATEGORY_LINKS[5].name,
@@ -245,16 +249,40 @@ const seedDatabase = async () => {
             category: Terms.CATEGORY_LINKS[5].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
         },{
-            url: '/hr-manage-management',
-            description: 'Quản lý nhân sự các đơn vị',
-            category: Terms.CATEGORY_LINKS[4].name,
+            url: '/hr-trainning-course',
+            description: 'Quản lý đào tạo',
+            category: Terms.CATEGORY_LINKS[5].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },
+
+        // TASK
+        {
+            url:'/task-management',
+            description:'Xem danh sáng công việc',
+            category: Terms.CATEGORY_LINKS[3].name,
+            roles: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
+        },{
+            url: '/task-management-dashboard',
+            description: 'Dashboard công việc',
+            category: Terms.CATEGORY_LINKS[3].name,
+            roles: [ roleAbstracts[4]._id, roleAbstracts[3]._id, roleAbstracts[2]._id]
         },{
             url: '/task-template',
             description: 'Mẫu công việc',
             category: Terms.CATEGORY_LINKS[3].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
-        }
+        },
+
+        // DOCUMENT
+        {
+            url: '/documents-management',
+            description: 'Quản lý tài liệu biểu mẫu',
+            category: Terms.CATEGORY_LINKS[6].name,
+            roles: [ roleAbstracts[2]._id, roleAbstracts[3]._id ] //trưởng và phó 
+        },
+
+        // PROCESS
+        
     ]);
     console.log("link defaults: ", linkDefaults);
 

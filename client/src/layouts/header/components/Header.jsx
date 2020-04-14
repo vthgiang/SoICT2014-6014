@@ -7,6 +7,7 @@ import { ModalDialog } from '../../../common-components';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './Header.css';
 
 class Header extends Component {
     constructor(props) {
@@ -52,6 +53,19 @@ class Header extends Component {
         
     }
 
+    // function upload avatar 
+    handleUpload = (event) => {
+        var file = event.target.files[0];
+        var fileLoad = new FileReader();
+        fileLoad.readAsDataURL(file);
+        fileLoad.onload = () => {
+            this.setState({
+                img: fileLoad.result,
+                avatar: file
+            })
+        };
+    }
+
     render() { 
         const { translate, auth } = this.props;
         return ( 
@@ -79,13 +93,27 @@ class Header extends Component {
                     func={this.changeInformation}
                 >
                     <form id="form-profile">
-                        <div className="form-group">
-                            <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" ref="name" defaultValue={ auth.user.name } />
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('auth.profile.email') }<span className="text-red">*</span></label>
-                            <input type="email" className="form-control" ref="email" defaultValue={ auth.user.email } disabled/>
+                        
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className="form-group text-center">
+                                    <img className="user-profile-avatar" src={this.state.img}/>
+                                    <div className="upload btn btn-default">
+                                        Cập nhật
+                                        <input className="upload" type="file" name="file" onChange={this.handleUpload} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                                <div className="form-group">
+                                    <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" ref="name" defaultValue={ auth.user.name } />
+                                </div>
+                                <div className="form-group">
+                                    <label>{ translate('auth.profile.email') }<span className="text-red">*</span></label>
+                                    <input type="email" className="form-control" ref="email" defaultValue={ auth.user.email } disabled/>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </ModalDialog>

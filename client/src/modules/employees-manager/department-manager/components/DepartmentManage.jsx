@@ -46,12 +46,12 @@ class DepartmentManage extends Component {
                         <h4 className="box-title">Danh sách các đơn vị:</h4>
                     </div>
                     <TreeTable
-                        nameClass="show-children"
+                        behaviour="show-children"
                         column={column}
                         data={data}
-                        titleAction={[{
+                        titleAction={{
                             edit: "Chỉnh sửa nhân viên các đơn vị",
-                        }]}
+                        }}
                         funcEdit={this.handleShowEdit}
                     />
                 </div>

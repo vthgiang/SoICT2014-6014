@@ -1,12 +1,12 @@
-Component dùng để hiện thị datePicker của bootstrap-datePicker
+Component dùng để nhập dữ liệu Date
 Để sử dụng Componett này ta thực hiện các bước sau:
 ( Xem ví dụ minh hoạ trong Component SalaryEmpoyee.jsx trong modules/employees-manager/salary-employee/component)
 
-<--- Import component -->
+BƯỚC 1: Import component
 ...
 import { DatePicker } from '../../../../common-components';
 
-<-- thêm nội dung sau vào class --> 
+BƯỚC 2: Khởi tạo state trong constructor và viết hàm xử lý khi giá trị DatePicker thay đổi
     ...
     // function khởi tạo state
     constructor(props) {
@@ -24,7 +24,7 @@ import { DatePicker } from '../../../../common-components';
         });
     }
 
-<-- thêm nội dung sau vào nơi cần dùng datePicker --> 
+BƯỚC 3: Sử dụng component, truyền vào các thuộc tính
     <DatePicker
         id="month"      
         dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 

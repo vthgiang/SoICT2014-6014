@@ -13,10 +13,7 @@ class ManageLink extends Component {
             limit: 5,
             page: 1,
             option: 'url', //mặc định tìm kiếm theo tên
-            value: null,
-            url: null,
-            description: null,
-            role: null
+            value: { $regex: '', $options: 'i' }
         }
     }
 
@@ -69,6 +66,7 @@ class ManageLink extends Component {
                                     <th>{ translate('manage_link.description') }</th>
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
+                                        { translate('table.action') }
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
                                             columnArr={[
