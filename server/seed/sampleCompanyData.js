@@ -539,9 +539,8 @@ const sampleCompanyData = async () => {
             company: vnist._id
         },
     ]);
-    // Gán id của các link vào cho collection company
+    
     const updateVnist = await Company.findById(vnist._id);
-    updateVnist.links = links.map(link => link._id);
     updateVnist.super_admin = users[0]._id;
     await updateVnist.save();
     console.log("Xong! Đã tạo links: ", links);
@@ -621,8 +620,7 @@ const sampleCompanyData = async () => {
             resourceId: links[6]._id,
             resourceType: 'Link',
             roleId: roles[0]._id
-        },
-        {
+        },{
             resourceId: links[25]._id, //notifications
             resourceType: 'Link',
             roleId: roles[0]._id

@@ -23,7 +23,6 @@ exports.getById = async (id) => {
 }
 
 exports.getPaginate = async (limit, page, data={}) => {
-    console.log("data paginate: ", data);
     const companies = await Company.paginate( data , {page, limit, populate: [
         { path: 'links', model: Link },
         { path: "super_admin", model: User, select: '_id name email' }
@@ -43,7 +42,6 @@ exports.create = async(data) => {
 }
 
 exports.edit = async(id, data) => {
-    console.log("sua cong ty", id);
     var company = await Company.findById(id);
     if(company === null) throw ('company_not_found');
     company.name = data.name;
@@ -52,7 +50,6 @@ exports.edit = async(id, data) => {
     company.log = data.log;
     if(data.active !== null) company.active = data.active;
     await company.save();
-    console.log("sua xong cong ty", company);
 
     return company;
 }
@@ -249,4 +246,30 @@ exports.deleteLinkForCompany = async(companyId, linkId) => {
         company: companyId,
         link: linkId
     };
+}
+
+exports.getLinksListOfCompany = async(companyId) => {
+    return await Link.find({ company: companyId });
+}
+
+exports.getLinksPaginateOfCompany = async (companyId, page, limit, data={}) => {
+    const newData = await Object.assign({ company: companyId }, data );
+    return await Link
+        .paginate( newData , { 
+            page, 
+            limit
+        });
+}
+
+exports.getComponentsListOfCompany = async (companyId) => {
+    return await Component.find({ company: companyId });
+}
+
+exports.getComponentsPaginateOfCompany = async (companyId, page, limit, data={}) => {
+    const newData = await Object.assign({ company: companyId }, data );
+    return await Component
+        .paginate( newData , { 
+            page, 
+            limit
+        });
 }

@@ -55,7 +55,7 @@ class LinkInfoForm extends Component {
         })
     }
 
-    save(){
+    save = () => {
         const { linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError } = this.state;
         const link = { 
             url: linkUrl, 

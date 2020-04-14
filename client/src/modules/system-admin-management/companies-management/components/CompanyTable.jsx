@@ -50,8 +50,11 @@ class CompanyTable extends Component {
                 currentRow: company
             }
         });
-
-        window.$('#modal-edit-company').modal('show');
+        await window.$('#modal-edit-company').modal('show');
+        await this.props.linksList(company._id);
+        await this.props.linksPaginate(company._id, 1, 10);
+        await this.props.componentsList(company._id);
+        await this.props.componentsPaginate(company._id, 1, 10);
     }
 
     componentDidMount(){
@@ -125,44 +128,7 @@ class CompanyTable extends Component {
                                             <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
-                                            <a onClick={() => this.handleEdit(com)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
-                                                {/* {
-                                                    com.active === true ?
-                                                    <a 
-                                                        href="#abc" 
-                                                        title={translate('manage_company.turning_on')}
-                                                        onClick={() => this.toggle(
-                                                            com._id, 
-                                                            {
-                                                                name: com.name,
-                                                                description: com.description,
-                                                                short_name: com.short_name,
-                                                                log: com.log
-                                                            },
-                                                            translate('manage_company.off_service'), 
-                                                            com.name, translate('confirm.no'), 
-                                                            translate('confirm.yes'), 
-                                                            false
-                                                        )}
-                                                    ><i className="material-icons">lock_open</i></a> :
-                                                    <a 
-                                                        href="#abc"
-                                                        title={translate('manage_company.turning_on')}
-                                                        onClick={() => this.toggle(
-                                                            com._id, 
-                                                            {
-                                                                name: com.name,
-                                                                description: com.description,
-                                                                short_name: com.short_name,
-                                                                log: com.log
-                                                            },
-                                                            translate('manage_company.on_service'), 
-                                                            com.name, translate('confirm.no'), 
-                                                            translate('confirm.yes'), 
-                                                            true
-                                                        )}
-                                                    ><i className="material-icons">lock</i></a>
-                                                } */}
+                                                <a onClick={() => this.handleEdit(com)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>    
                                     )
@@ -230,7 +196,11 @@ const mapDispatchToProps = {
     get: CompanyActions.get,
     edit: CompanyActions.edit,
     getPaginate: CompanyActions.getPaginate,
-    getLinksDefault: LinkDefaultActions.get
+    getLinksDefault: LinkDefaultActions.get,
+    linksList: CompanyActions.linksList,
+    linksPaginate: CompanyActions.linksPaginate,
+    componentsList: CompanyActions.componentsList,
+    componentsPaginate: CompanyActions.componentsPaginate
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CompanyTable));

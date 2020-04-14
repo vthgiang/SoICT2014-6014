@@ -23,10 +23,6 @@ const CompanySchema = new Schema({
         required: true,
         default: true
     },
-    links: [{
-        type: Schema.Types.ObjectId,
-        ref: 'links'
-    }],
     super_admin: {
         type: Schema.Types.ObjectId,
         ref: 'users'
