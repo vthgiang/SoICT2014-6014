@@ -61,14 +61,6 @@ class ModalAddTargetKPIUnit extends Component {
             parent = this.state.parent
         }
         
-        console.log("xxxxxxxxxxxxxx", {
-            name: this.state.name,
-            parent: parent,
-            weight: this.state.weight,
-            criteria: this.state.criteria,
-            kpiunit: this.props.kpiunit, 
-        });
-        
         if (this.isFormValidated()){
             return await this.props.addTargetKPIUnit({
                 name: this.state.name,

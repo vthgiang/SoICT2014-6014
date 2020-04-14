@@ -56,7 +56,7 @@ class KPIPersonalCreate extends Component {
     }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
     notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
     notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
 
@@ -150,7 +150,6 @@ class KPIPersonalCreate extends Component {
             }
         })
         var { kpipersonal } = this.state;
-        console.log(kpipersonal);
         if (kpipersonal.unit && kpipersonal.time ) {//&& kpipersonal.creater
             this.props.editKPIPersonal(id, kpipersonal);
             this.notifysuccess(translate('kpi_personal.kpi_personal_create.general_information.edit_success'));
@@ -514,7 +513,7 @@ class KPIPersonalCreate extends Component {
                                                                                 <tr key={index + 1}>
                                                                                     <td title={index + 1}>{index + 1}</td>
                                                                                     <td title={item.name}>{item.name}</td>
-                                                                                    <td title={item.parent.name}>{item.parent.name}</td>    
+                                                                                    <td title={item.parent ? item.parent.name : null}>{item.parent ? item.parent.name : null}</td>    
                                                                                     <td title={item.criteria}>{item.criteria}</td>
                                                                                     <td title={item.weight}>{item.weight}</td>
                                                                                     <td title={this.checkStatusTarget(item.status)}>{this.checkStatusTarget(item.status)}</td>
