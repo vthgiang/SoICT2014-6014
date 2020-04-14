@@ -55,7 +55,7 @@ class KPIUnitCreate extends Component {
     }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
     notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
     notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
 

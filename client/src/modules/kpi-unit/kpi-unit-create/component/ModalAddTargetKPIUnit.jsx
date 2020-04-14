@@ -19,7 +19,7 @@ class ModalAddTargetKPIUnit extends Component {
         super(props);
         this.state = {
             name: "",
-            parent: "",
+            parent: null,
             weight: "",
             criteria: "",
             kpiunit: "",
@@ -41,14 +41,14 @@ class ModalAddTargetKPIUnit extends Component {
     notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
 
     onAddItem = async () => {
-        let parentKPI;
+        let parentKPI = null;
         let items;
         let parent = null;
         const { createKpiUnit } = this.props;
         if (createKpiUnit.parent) parentKPI = createKpiUnit.parent;
         if(this.state.parent === null){
-            if(parentKPI === undefined){
-                items = [];
+            if(parentKPI === null){
+                parent = null;
             }
             else{    
                 items = parentKPI.listtarget.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
@@ -61,6 +61,13 @@ class ModalAddTargetKPIUnit extends Component {
             parent = this.state.parent
         }
         
+        console.log("xxxxxxxxxxxxxx", {
+            name: this.state.name,
+            parent: parent,
+            weight: this.state.weight,
+            criteria: this.state.criteria,
+            kpiunit: this.props.kpiunit, 
+        });
         
         if (this.isFormValidated()){
             return await this.props.addTargetKPIUnit({
