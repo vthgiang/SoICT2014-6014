@@ -1,6 +1,5 @@
 const AuthService = require('./auth.service');
-const { LogInfo, LogError } = require('../../logs');var os = require("os");
-var hostname = os.hostname();
+const { LogInfo, LogError } = require('../../logs');
 
 exports.login = async (req, res) => {
     try {
