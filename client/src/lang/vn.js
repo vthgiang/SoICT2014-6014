@@ -247,6 +247,27 @@ export default {
             tasks: 'Quản lý công việc',
             task_management: 'Xem danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
+
+            //*******START */
+            // Quản lý tài sản
+            // QUẢN LÝ
+            manage_asset: 'Quản lý tài sản',
+            manage_type_asset: 'Quản lý loại tài sản',
+            manage_info_asset: 'Quản lý thông tin tài sản',
+            manage_history_asset: 'Quản lý lịch sử hoạt động',
+            manage_repair_asset: 'Quản lý sửa chữa, thay thế',
+            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_allocate_asset: 'Quản lý cấp phát, điều chuyển',
+            manage_depreciation_asset: 'Quản lý khấu hao tài sản',
+            manage_room_asset: 'Quản lý phòng & trang thiết bị',
+            manage_buy_request_asset: 'Quản lý đề nghị mua sắm',
+            manage_allocate_request_asset:'Quản lý đề nghị cấp phát',
+
+            // NHÂN VIÊN
+            buy_request_asset: 'Đăng ký mua sắm thiết bị',
+            allocate_request_asset: 'Đăng ký cấp phát thiết bị',
+            manage_given_asset: 'Quản lý thiết bị bàn giao',
+            //******END */
         },
 
         manage_system: {
@@ -642,6 +663,15 @@ export default {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Phiên bản '
-        }
+        },
+
+        manage_asset: {
+            menu_general_infor: 'Thông tin chung',
+            menu_repair_upgrade: 'Sửa chữa - Thay thế - Nâng cấp',
+            menu_allocate_revoke: 'Cấp phát - Điều chuyển - Thu hồi',
+            menu_maintain: 'Bảo hành - Bào trì',
+            menu_depreciation_infor: 'Thông tin khấu hao',
+            menu_attachments: 'Tài liệu đính kèm',
+        },
     }
 }

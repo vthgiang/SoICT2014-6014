@@ -36,6 +36,11 @@ import { tasks } from "./../modules/task-management/task-management/redux/reduce
 import { rolesDefault } from "./../modules/system-admin-management/roles-default-management/redux/reducers";
 import { componentsDefault } from "../modules/system-admin-management/components-default-management/redux/reducers";
 
+//asset
+import { buyRequest } from "../modules/assets-manager/buy-request/redux/reducers";
+import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
+import { asset } from "../modules/assets-manager/asset-manager/redux/reducers";
+
 const appReducer = combineReducers(Object.assign({
     alert,
 
@@ -79,7 +84,13 @@ const appReducer = combineReducers(Object.assign({
     tasks,
     performtasks,
     // kpi members
-    kpimembers
+    kpimembers,
+
+    // asset
+    buyRequest,
+    assetType,
+    asset
+
 }, { Intl }));
 
 const rootReducer = (state, action) => {

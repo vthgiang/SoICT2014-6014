@@ -43,6 +43,11 @@ import { TaskManagement } from "../modules/task-management/task-management/compo
 import { TaskDashboard } from "../modules/task-management/task-management/component/TaskDashboard";
 import ResetPassword from '../modules/auth/components/ResetPassword';
 
+//asset
+import ManagerBuyRequest from "../modules/assets-manager/buy-request/components";
+import ManagerAssetType from "../modules/assets-manager/asset-type/components";
+import ManagerAsset from "../modules/assets-manager/asset-manager/components";
+
 class Routes extends Component {
 
     render() {
@@ -591,6 +596,58 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ TaskDashboard }
                     />
+
+                    {/** Quản lý tài sản */}
+                    {/** Nhân viên */}
+                    <PrivateRoute 
+                        isLoading={ this.props.buyRequest.isLoading }
+                        key={ 'buy-request-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/buy-request-asset', name: 'buy_request_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/buy-request-asset' }
+                        path={ '/buy-request-asset' }
+                        pageName={ 'buy_request_asset' }
+                        layout={ Layout }
+                        component={ ManagerBuyRequest }
+                    />
+
+                    {/** Quản lý */}
+                    <PrivateRoute 
+                        isLoading={ this.props.assetType.isLoading }
+                        key={ 'manage-type-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-type-asset', name: 'manage_type_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-type-asset' }
+                        path={ '/manage-type-asset' }
+                        pageName={ 'manage_type_asset' }
+                        layout={ Layout }
+                        component={ ManagerAssetType }
+                    /> 
+
+                    <PrivateRoute 
+                        isLoading={ this.props.asset.isLoading }
+                        key={ 'manage-info-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-info-asset', name: 'manage_info_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-info-asset' }
+                        path={ '/manage-info-asset' }
+                        pageName={ 'manage_info_asset' }
+                        layout={ Layout }
+                        component={ ManagerAsset }
+                    />
+
                     {/* NOT FOUND */}
                     <Route component={ NotFound }></Route>
                 </Switch>

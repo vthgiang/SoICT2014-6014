@@ -40,7 +40,23 @@ class SideBar extends Component {
             path11: "/hr-training-plan",
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
-        }
+        };
+        const url1 = {
+            path1: "/manage-type-asset", //Quản lý loại tài sản
+            path2: "/manage-info-asset", //Quản lý thông tin tài sản
+            path3: "/manage-history-asset", //Quản lý lịch sử hoạt động
+            path4: "/manage-repair-asset", //Quản lý sửa chữa, thay thế
+            path5: "/manage-maintain-asset", //Quản lý bảo trì, bảo dưỡng
+            path6: "/manage-allocate-asset", //Quản lý cấp phát, điều chuyển
+            path7: "/manage-depreciation-asset", //Quản lý khấu hao tài sản
+            path8: "/manage-room-asset", //Quản lý phòng & trang thiết bị
+            path9: "/manage-buy-request-asset", //Quản lý đề nghị mua sắm
+            path10: "/manage-allocate-request-asset", //Quản lý đề nghị cấp phát
+            
+            path11: "/buy-request-asset", //Đăng ký mua sắm thiết bị
+            path12: "/allocate-request-asset", //Đăng ký cấp phát thiết bị
+            path13: "/manage-given-asset", //Quản lý thiết bị bàn giao
+        };
         const { translate } = this.props;
         const { user, links } = this.props.auth;
         return (
@@ -182,6 +198,131 @@ class SideBar extends Component {
                                     path='/task-template'
                                     icon='fa fa-flash'
                                 />
+                            }
+
+                            {/* Quan ly tai san */}
+                            {
+                                (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true || this.checkURL(url1.path3, links) === true ||
+                                    this.checkURL(url1.path4, links) === true || this.checkURL(url1.path5, links) === true || this.checkURL(url1.path6, links) === true ||
+                                    this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true || this.checkURL(url1.path9, links) === true || 
+                                    this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true || this.checkURL(url1.path12, links) === true ||
+                                    this.checkURL(url1.path13, links) === true )   &&
+                                <li className="treeview" >
+                                    <a href="">
+                                        <i className="fa fa-address-book" /> <span>{translate(`menu.manage_asset`)}</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        {this.checkURL(url1.path1, links) === true &&
+                                            <li className={window.location.pathname === url1.path1 ? "active" : ""}>
+                                                <Link to={url1.path1}>
+                                                    <i className="fa fa-dashboard" />
+                                                    {translate(`menu.manage_type_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path2, links) === true &&
+                                            <li className={window.location.pathname === url1.path2 ? "active" : ""}>
+                                                <Link to={url1.path2}>
+                                                    <i className="fa fa-sitemap" />
+                                                    {translate(`menu.manage_info_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path3, links) === true &&
+                                            <li className={window.location.pathname === url1.path3 ? "active" : ""}>
+                                                <Link to={url1.path3}>
+                                                    <i className="fa fa-user-plus" />
+                                                    {translate(`menu.manage_history_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path4, links) === true &&
+                                            <li className={window.location.pathname === url1.path4 ? "active" : ""}>
+                                                <Link to={url1.path4}>
+                                                    <i className="fa fa-address-card" />
+                                                    {translate(`menu.manage_repair_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path5, links) === true &&
+                                            <li className={window.location.pathname === url1.path5 ? "active" : ""}>
+                                                <Link to={url1.path5}>
+                                                    <i className="fa fa-line-chart" />
+                                                    {translate(`menu.manage_maintain_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path6, links) === true &&
+                                            <li className={window.location.pathname === url1.path6 ? "active" : ""}>
+                                                <Link to={url1.path6}>
+                                                    <i className="fa fa-calculator" />
+                                                    {translate(`menu.manage_allocate_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path7, links) === true &&
+                                            <li className={window.location.pathname === url1.path7 ? "active" : ""}>
+                                                <Link to={url1.path7}>
+                                                    <i className="fa fa-balance-scale" />
+                                                    {translate(`menu.manage_depreciation_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path8, links) === true &&
+                                            <li className={window.location.pathname === url1.path8 ? "active" : ""}>
+                                                <Link to={url1.path8}>
+                                                    <i className="fa fa-calendar-times-o" />
+                                                    {translate(`menu.manage_room_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path9, links) === true &&
+                                            <li className={window.location.pathname === url1.path9 ? "active" : ""}>
+                                                <Link to={url1.path9}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.manage_buy_request_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path10, links) === true &&
+                                            <li className={window.location.pathname === url1.path10 ? "active" : ""}>
+                                                <Link to={url1.path10}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.manage_allocate_request_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {this.checkURL(url1.path11, links) === true &&
+                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
+                                                <Link to={url1.path11}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.buy_request_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path12, links) === true &&
+                                            <li className={window.location.pathname === url1.path12 ? "active" : ""}>
+                                                <Link to={url1.path12}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.allocate_request_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url1.path13, links) === true &&
+                                            <li className={window.location.pathname === url1.path13 ? "active" : ""}>
+                                                <Link to={url1.path13}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.manage_given_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        
+                                    </ul>
+                                </li>
                             }
 
                             {/* Quan ly nhan su */}
