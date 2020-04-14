@@ -31,7 +31,6 @@ exports.auth = async (req, res, next) => {
          */
         const verified = await jwt.verify(token, process.env.TOKEN_SECRET);
         req.user = verified; 
-        console.log("ID: ", req.user._id)
         req.token = token;
 
         if(process.env.DEVELOPMENT !== 'true'){

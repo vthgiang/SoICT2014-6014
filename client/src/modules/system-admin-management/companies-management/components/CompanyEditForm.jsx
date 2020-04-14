@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
-import { ErrorLabel, ModalDialog, } from '../../../../common-components';
+import { ErrorLabel, ModalDialog, PaginateBar} from '../../../../common-components';
 import { CompanyFormValidator } from './CompanyFormValidator';
+import CompanyManageLinks from './CompanyManageLinks';
 
 class CompanyEditForm extends Component {
     constructor(props) {
@@ -11,30 +12,8 @@ class CompanyEditForm extends Component {
         this.state = {}
     }
 
-    showCreateLinkForm = () => {
-        window.$("#add-new-link-default").slideDown();
-    }
-
-    closeCreateLinkForm = () => {
-        window.$("#add-new-link-default").slideUp();
-    }
-
-    saveAndCloseLinkForm = async() => {
-        const {companyId, linkUrl, linkDescription} = this.state;
-        
-        await window.$("#add-new-link-default").slideUp();
-        return this.props.addNewLink(companyId, {
-            url: linkUrl,
-            description: linkDescription
-        });
-    }
-
-    deleteLink = (companyId, linkId) => {
-        return this.props.deleteLink(companyId, linkId);
-    }
-
     render() { 
-        const { translate, linksDefault } = this.props;
+        const { translate, linksDefault, company } = this.props;
         const {
             // Phần edit nội dung của công ty
             companyId,
@@ -114,51 +93,24 @@ class CompanyEditForm extends Component {
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border" style={{minHeight: '300px'}}>
-                                    <legend className="scheduler-border">Các trang được truy cập {`(${companyLinks.length}/${linksDefault.list.length})`}</legend>
-                                    {/* Tạo và thêm các link mới cho từng công ty */}
-                                    <a className="btn btn-success pull-right" onClick={this.showCreateLinkForm}>Thêm</a>
-                                    {/* Bảng quản lý các link của từng công ty */}
-                                    <table className="table table-hover table-striped table-bordered" style={{marginTop: '50px'}}>
-                                        <thead>
-                                            <tr>
-                                                <th>{ translate('manage_link.url') }</th>
-                                                <th>{ translate('manage_link.description') }</th>
-                                                <th style={{width: '100px'}}>{ translate('table.action') }</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr id="add-new-link-default" style={{display: "none"}}>
-                                                <td className={linkUrlError===undefined?"":"has-error"}>
-                                                    <input className="form-control" onChange={this.handleLinkUrl}/>
-                                                    <ErrorLabel content={linkUrlError}/>
-                                                </td>
-                                                <td className={linkDescriptionError===undefined?"":"has-error"}>
-                                                    <input className="form-control" onChange={this.handleLinkDescription}/>
-                                                    <ErrorLabel content={linkDescriptionError}/>
-                                                </td>
-                                                <td>
-                                                    {
-                                                        this.isFormCreateLinkValidated() ?
-                                                        <a className="save" onClick={this.saveAndCloseLinkForm}><i className="material-icons">save</i></a>:
-                                                        <a className="cancel" onClick={this.closeCreateLinkForm}><i className="material-icons">cancel</i></a>
-                                                    }
-                                                </td>
-                                            </tr> 
-                                            {
-                                                companyLinks.length > 0 && companyLinks.map( link => 
-                                                    <tr key={link._id}>
-                                                        <td>{ link.url }</td>
-                                                        <td>{ link.description }</td>
-                                                        <td>
-                                                            <a className="delete" onClick={() => this.deleteLink(companyId, link._id)}><i className="material-icons">delete</i></a>
-                                                        </td>
-                                                    </tr> 
-                                                )
-                                            }
-                                        </tbody>
-                                    </table>
-                                </fieldset>
+                               <div role="tabpanel">
+                                {/* Nav tabs */}
+                                <ul className="nav nav-tabs" role="tablist">
+                                    <li role="presentation" className="active">
+                                    <a href="#home" aria-controls="home" role="tab" data-toggle="tab"><b>Links</b>{`(${company.item.links.list.length}/${linksDefault.list.length})`}</a>
+                                    </li>
+                                    <li role="presentation">
+                                    <a href="#tab" aria-controls="tab" role="tab" data-toggle="tab"><b>Component</b>{`(${company.item.components.list.length}/ ... )`}</a>
+                                    </li>
+                                </ul>
+                                {/* Tab panes */}
+                                <div className="tab-content">
+                                    <div role="tabpanel" className="tab-pane active" id="home">
+                                        <CompanyManageLinks companyId={companyId}/>
+                                    </div>
+                                    <div role="tabpanel" className="tab-pane" id="tab">Components</div>
+                                </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -281,53 +233,6 @@ class CompanyEditForm extends Component {
         return msg === undefined;
     }
 
-    // Xu ly thay doi va validate cho url link moi cho cong ty
-    handleLinkUrl= (e) => {
-        const value = e.target.value;
-        this.validateLinkUrl(value, true);
-    }
-
-    validateLinkUrl = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateUrl(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkUrlError: msg,
-                    linkUrl: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    // Xu ly thay doi va validate cho description link của công ty
-    handleLinkDescription= (e) => {
-        const value = e.target.value;
-        this.validateLinkDescription(value, true);
-    }
-
-    validateLinkDescription = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateDescription(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkDescriptionError: msg,
-                    linkDescription: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    // Kiem tra thong tin da validated het chua?
-    isFormCreateLinkValidated = () => {
-        const {linkUrl, linkDescription, linkUrlError, linkDescriptionError} = this.state;
-        if(linkDescriptionError === undefined && linkUrlError === undefined && linkUrl !== undefined && linkDescription !== undefined) return true;
-        else return false; 
-    }
-
     // Kiem tra thong tin da validated het chua?
     isFormValidated = () => {
         const {companyName, companyShortName, companyDescription, companyEmail} = this.state;
@@ -365,9 +270,7 @@ class CompanyEditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps =  {
-    edit: CompanyActions.edit,
-    addNewLink: CompanyActions.addNewLink,
-    deleteLink: CompanyActions.deleteLink
+    edit: CompanyActions.edit
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyEditForm) );
