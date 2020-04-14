@@ -257,16 +257,16 @@ export default {
             manage_history_asset: 'Quản lý lịch sử hoạt động',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
             manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
-            manage_allocate_asset: 'Quản lý cấp phát, điều chuyển',
+            manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
             manage_depreciation_asset: 'Quản lý khấu hao tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
-            manage_buy_request_asset: 'Quản lý đề nghị mua sắm',
-            manage_allocate_request_asset:'Quản lý đề nghị cấp phát',
+            manage_recommend_procure: 'Quản lý đề nghị mua sắm',
+            manage_recommend_distribute_asset:'Quản lý đề nghị cấp phát',
 
             // NHÂN VIÊN
-            buy_request_asset: 'Đăng ký mua sắm thiết bị',
-            allocate_request_asset: 'Đăng ký cấp phát thiết bị',
-            manage_given_asset: 'Quản lý thiết bị bàn giao',
+            recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
+            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
+            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
             //******END */
         },
 

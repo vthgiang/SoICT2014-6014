@@ -18,6 +18,14 @@ const Course = require('../models/course.model')
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+
+//tài sản
+const Asset = require('../models/asset.model'); //tài sản
+const AssetType = require('../models/assetType.model'); //loại tài sản
+const RecommendProcure = require('../models/recommendProcure.model'); //đề nghị mua sắm thiết bị
+const RepairUpgrade = require('../models/repairUpgrade.model'); //Sửa chữa - thay thế - nâng cấp
+const DistributeTransfer = require('../models/distributeTransfer.model'); // cấp phát - điều chuyển - thu hồi
+
 require('dotenv').config({
     path: '../.env'
 });
@@ -459,7 +467,77 @@ const sampleCompanyData = async () => {
             url: '/task-management-dashboard',
             description: 'Dashboard công việc',
             company: vnist._id
-        }
+        },
+
+        // thêm link quản lý tài sản
+        // QUẢN LÝ
+        { //31. quản lý loại tài sản
+            url: '/manage-type-asset',
+            description: 'Quản lý loại tài sản',
+            company: vnist._id
+        },
+        { //32. quản lý thông tin tài sản
+            url: '/manage-info-asset',
+            description: 'Quản lý thông tin tài sản',
+            company: vnist._id
+        },
+        { //33
+            url: '/manage-history-asset',
+            description: 'Quản lý lịch sử hoạt động sử dụng tài sản',
+            company: vnist._id
+        },
+        { //34
+            url: '/manage-repair-asset',
+            description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
+            company: vnist._id
+        },
+        { //35
+            url: '/manage-maintain-asset',
+            description: 'Quản lý bảo trì tài sản',
+            company: vnist._id
+        },
+        { //36
+            url: '/manage-distribute-asset',
+            description: 'Quản lý cấp phát, điều chuyển, thu hồi tài sản',
+            company: vnist._id
+        },
+        { //37
+            url: '/manage-depreciation-asset',
+            description: 'Quản lý khấu hao tài sản',
+            company: vnist._id
+        },
+        { //38
+            url: '/manage-room-asset',
+            description: 'Quản lý phòng và trang thiết bị tài sản',
+            company: vnist._id
+        },
+        { //39
+            url: '/manage-recommend-procure',
+            description: 'Quản lý đề nghị mua sắm tài sản',
+            company: vnist._id
+        },
+        { //40
+            url: '/manage-recommend-distribute-asset',
+            description: 'Quản lý đề nghị cấp phát tài sản',
+            company: vnist._id
+        },
+
+        // NHÂN VIÊN
+        { //41
+            url: '/recommend-equipment-procurement',
+            description: 'Đăng ký mua sắm tài sản',
+            company: vnist._id
+        },
+        { //42
+            url: '/recommmend-distribute-asset',
+            description: 'Đăng ký cấp phát tài sản',
+            company: vnist._id
+        },
+        { //43
+            url: '/manage-assigned-asset',
+            description: 'Quản lý tài sản được bàn giao',
+            company: vnist._id
+        },
     ]);
     // Gán id của các link vào cho collection company
     const updateVnist = await Company.findById(vnist._id);
@@ -775,7 +853,76 @@ const sampleCompanyData = async () => {
             resourceId: links[30]._id, // Dashboard công việc
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
-        }
+        },
+
+        // gán quyền quản lý tài sản cho Dean
+        {
+            resourceId: links[31]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[32]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[33]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[34]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[35]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[36]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[37]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[38]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[39]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[40]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+
+        // gán quyền quản lý tài sản cho nhân viên
+        {
+            resourceId: links[41]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[42]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[43]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
 
     ]);
     console.log("Gán quyền cho các role: ", privileges);
@@ -1251,6 +1398,204 @@ const sampleCompanyData = async () => {
         time : "6",
     }])
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
+
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU lOẠI TÀI SẢN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu loại tài sản");
+    var listAssetType = await AssetType.insertMany([
+        {
+            company: vnist._id,
+            typeNumber: "LTS0001",
+            typeName: "Tài sản cố định hữu hình",
+            timeDepreciation: 5,
+            parent: null
+        },{
+            company: vnist._id,
+            typeNumber: "LTS0002",
+            typeName: "Laptop",
+            timeDepreciation: 5,
+            parent: null
+        },{
+            company: vnist._id,
+            typeNumber: "LTS0003",
+            typeName: "Phương tiện di chuyển",
+            timeDepreciation: 10,
+            parent: null
+        }])
+        console.log(`Xong! Thông tin loại tài sản đã được tạo`);
+
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU PHIẾU ĐỀ NGHỊ MUA SẮM THIẾT BỊ
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu phiếu đề nghị mua sắm thiết bị");
+    var listRecommendProcure = await RecommendProcure.insertMany([
+        {
+            company: vnist._id,
+            recommendNumber: "MP0001",
+            dateCreate: "20-02-2020",
+            proponent: users[7]._id,
+            equipment: "đề nghị mua laptop abcd",
+            supplier: "HanoiComputer",
+            total: "2",
+            unit: "cái",
+            estimatePrice: "60000000",
+            note: "qwerty",
+            approver: users[2]._id,
+            status: "chờ phê duyệt"
+        },{
+            company: vnist._id,
+            recommendNumber: "MP0002",
+            dateCreate: "20-02-2020",
+            proponent: users[7]._id, //người đề nghị
+            equipment: "đề nghị mua TV abcd", //nội dung đề nghị
+            supplier: "HanoiComputer", //nhà cung cấp
+            total: "1", //số lượng
+            unit: "cái", //đơn vị tính
+            estimatePrice: "30000000", // giá trị dự tính
+            note: "qwerty",
+            approver: users[2]._id, // người phê duyệt
+            status: "không chấp nhận"
+        }])
+        console.log(`Xong! Thông tin phiếu đề nghị mua sắm thiết bị đã được tạo`);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU TÀI SẢN
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu tài sản");    
+    var listAsset = await Asset.insertMany([{
+        avatar: "lib/adminLTE/dist/img/avatar5.png",
+        assetName: "Laptop Dell 5559",
+        assetNumber: "LT0001",
+        company:vnist._id,
+        AssetType: listAssetType[1]._id,
+        datePurchase: "20-02/2020",
+        manager: users[2]._id,
+        location: "P104",
+        initialPrice: 50000000,
+        status: "sẵn sàng sử dụng",
+        description: "Laptop ver 2016",
+        detailInfo: [{
+            nameField: "",
+            value: "",
+            unit: "",
+        }],
+        depreciationInfo: [{
+
+        }],
+        numberFile: "T3 - 123698",
+        file: [],
+    }, {
+        avatar: "lib/adminLTE/dist/img/avatar5.png",
+        assetName: "Ô tô Camry",
+        assetNumber: "LT0002",
+        company:vnist._id,
+        AssetType: listAssetType[2]._id,
+        datePurchase: "20-02/2020",
+        manager: users[2]._id,
+        location: "Nhà xe 1",
+        initialPrice: 500000000,
+        status: "sẵn sàng sử dụng",
+        description: "Xe ô tô camry",
+        detailInfo: [{
+            nameField: "",
+            value: "",
+            unit: "",
+        }],
+        depreciationInfo: [{
+
+        }],
+        numberFile: "T4 - 123698",
+        file: [],
+    }])
+    console.log("Khởi tạo dữ liệu tài sản!");
+    var asset = await Asset.create({
+        avatar: "lib/adminLTE/dist/img/avatar5.png",
+        assetName: "Laptop Dell 5559",
+        assetNumber: "LT0001",
+        company:vnist._id,
+        AssetType: listAssetType[1]._id,
+        datePurchase: "20-02/2020",
+        manager: users[7]._id,
+        location: "P104",
+        initialPrice: 50000000,
+        status: "sẵn sàng sử dụng",
+        description: "Laptop ver 2016",
+        detailInfo: [{
+            nameField: "",
+            value: "",
+            unit: "",
+        }],
+        depreciationInfo: [{
+
+        }],
+        numberFile: "T3 - 123698",
+        file: [],
+    });
+    console.log(`Xong! Thông tin tài sản đã được tạo`);
+    //END
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU SỬA CHỮA, THAY THẾ, NÂNG CẤP
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu sửa chữa, thay thế, nâng cấp!");
+    var repairupgrade = await RepairUpgrade.insertMany([{
+        asset: asset._id,
+        company:vnist._id,
+        repairNumber: "SC0001",
+        type: "Sửa chữa",
+        dateCreate: "20-02-2020",
+        reason: "Sửa chữa hỏng hóc thiết bị",
+        status: "Đã chấp nhận",
+        repairDate: "20-02-2020",
+        completeDate: "22-02-2020",
+        cost: "10000000",
+        status: "đã thực hiện"
+    }, {
+        asset: asset._id,
+        company:vnist._id,
+        repairNumber: "SC0002",
+        type: "Nâng cấp",
+        dateCreate: "20-02-2020",
+        reason: "Nâng cấp thiết bị",
+        status: "Đã chấp nhận",
+        repairDate: "20-02-2020",
+        completeDate: "22-02-2020",
+        cost: "10000000",
+        status: "đã thực hiện"
+    }])
+    console.log(`Xong! Thông tin sửa chữa - thay thế - nâng cấp đã được tạo`);
+
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU CẤP PHÁT - ĐIỀU CHUYỂN - THAY THẾ
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu cấp phát - điều chuyển - thay thế!");
+    var distributetransfer = await DistributeTransfer.insertMany([{
+        asset: asset._id,
+        company:vnist._id,
+        distributeNumber: "CP0001",
+        type: "Cấp phát",
+        dateCreate: "20-02-2020",
+        place: "Phòng 104",
+        firstPerson : users[2]._id,
+        secondPerson : users[7]._id,
+        firstLocation : asset.assetLocation,
+        secondLocation : "P105",
+        reason: "Cấp phát abcd",
+    }])
+    console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);
 }
 
 //Khởi chạy hàm tạo dữ liệu mẫu ------------------------------//

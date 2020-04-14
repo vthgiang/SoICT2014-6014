@@ -42,7 +42,6 @@ class SideBar extends Component {
             path11: "/hr-training-plan",
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
-<<<<<<< HEAD
         };
         const url1 = {
             path1: "/manage-type-asset", //Quản lý loại tài sản
@@ -50,21 +49,17 @@ class SideBar extends Component {
             path3: "/manage-history-asset", //Quản lý lịch sử hoạt động
             path4: "/manage-repair-asset", //Quản lý sửa chữa, thay thế
             path5: "/manage-maintain-asset", //Quản lý bảo trì, bảo dưỡng
-            path6: "/manage-allocate-asset", //Quản lý cấp phát, điều chuyển
+            path6: "/manage-distribute-asset", //Quản lý cấp phát, điều chuyển
             path7: "/manage-depreciation-asset", //Quản lý khấu hao tài sản
             path8: "/manage-room-asset", //Quản lý phòng & trang thiết bị
-            path9: "/manage-buy-request-asset", //Quản lý đề nghị mua sắm
-            path10: "/manage-allocate-request-asset", //Quản lý đề nghị cấp phát
+            path9: "/manage-recommend-procure", //Quản lý đề nghị mua sắm
+            path10: "/manage-recommend-distribute-asset", //Quản lý đề nghị cấp phát
             
-            path11: "/buy-request-asset", //Đăng ký mua sắm thiết bị
-            path12: "/allocate-request-asset", //Đăng ký cấp phát thiết bị
-            path13: "/manage-given-asset", //Quản lý thiết bị bàn giao
+            path11: "/recommend-equipment-procurement", //Đăng ký mua sắm thiết bị
+            path12: "/recommmend-distribute-asset", //Đăng ký cấp phát thiết bị
+            path13: "/manage-assigned-asset", //Quản lý thiết bị bàn giao
         };
-        const { translate } = this.props;
-=======
-        }
         const { translate, auth } = this.props;
->>>>>>> 9a62e5e207d427cbb74049f70ce082fbe9226dff
         const { user, links } = this.props.auth;
         return (
             <React.Fragment>
@@ -266,7 +261,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url1.path6 ? "active" : ""}>
                                                 <Link to={url1.path6}>
                                                     <i className="fa fa-calculator" />
-                                                    {translate(`menu.manage_allocate_asset`)}
+                                                    {translate(`menu.manage_distribute_asset`)}
                                                 </Link>
                                             </li>
                                         }
@@ -290,7 +285,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url1.path9 ? "active" : ""}>
                                                 <Link to={url1.path9}>
                                                     <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_buy_request_asset`)}
+                                                    {translate(`menu.manage_recommend_procure`)}
                                                 </Link>
                                             </li>
                                         }
@@ -298,7 +293,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url1.path10 ? "active" : ""}>
                                                 <Link to={url1.path10}>
                                                     <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_allocate_request_asset`)}
+                                                    {translate(`menu.manage_recommend_distribute_asset`)}
                                                 </Link>
                                             </li>
                                         }
@@ -307,7 +302,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url1.path11 ? "active" : ""}>
                                                 <Link to={url1.path11}>
                                                     <i className="fa fa-calendar" />
-                                                    {translate(`menu.buy_request_asset`)}
+                                                    {translate(`menu.recommend_equipment_procurement`)}
                                                 </Link>
                                             </li>
                                         }
@@ -315,7 +310,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url1.path12 ? "active" : ""}>
                                                 <Link to={url1.path12}>
                                                     <i className="fa fa-calendar" />
-                                                    {translate(`menu.allocate_request_asset`)}
+                                                    {translate(`menu.recommend_distribute_asset`)}
                                                 </Link>
                                             </li>
                                         }
@@ -323,7 +318,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url1.path13 ? "active" : ""}>
                                                 <Link to={url1.path13}>
                                                     <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_given_asset`)}
+                                                    {translate(`menu.manage_assigned_asset`)}
                                                 </Link>
                                             </li>
                                         }

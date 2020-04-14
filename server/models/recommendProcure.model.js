@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Bảng đề nghị mua sắm thiết bị
-const RecommendProcurementSchema = new Schema({
+const RecommendProcureSchema = new Schema({
     company: { //công ty
         type: Schema.Types.ObjectId,
         ref: 'companies'
@@ -55,4 +55,4 @@ const RecommendProcurementSchema = new Schema({
     
 });
 
-module.exports = RecommendProcurement = mongoose.model("recommend_produrement", RecommendProcurementSchema);
+module.exports = RecommendProcure = mongoose.model("recommend_procure", RecommendProcureSchema);

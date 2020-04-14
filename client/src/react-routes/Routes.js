@@ -44,7 +44,7 @@ import { TaskDashboard } from "../modules/task-management/task-management/compon
 import ResetPassword from '../modules/auth/components/ResetPassword';
 
 //asset
-import ManagerBuyRequest from "../modules/assets-manager/buy-request/components";
+import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure/components";
 import ManagerAssetType from "../modules/assets-manager/asset-type/components";
 import ManagerAsset from "../modules/assets-manager/asset-manager/components";
 
@@ -600,19 +600,19 @@ class Routes extends Component {
                     {/** Quản lý tài sản */}
                     {/** Nhân viên */}
                     <PrivateRoute 
-                        isLoading={ this.props.buyRequest.isLoading }
-                        key={ 'buy-request-asset' }
+                        isLoading={ this.props.recommendProcure.isLoading }
+                        key={ 'recommend-equipment-procurement' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/buy-request-asset', name: 'buy_request_asset', icon:'' }
+                            { link: '/recommend-equipment-procurement', name: 'recommend_equipment_procurement', icon:'' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/buy-request-asset' }
-                        path={ '/buy-request-asset' }
-                        pageName={ 'buy_request_asset' }
+                        link={ '/recommend-equipment-procurement' }
+                        path={ '/recommend-equipment-procurement' }
+                        pageName={ 'recommend_equipment_procurement' }
                         layout={ Layout }
-                        component={ ManagerBuyRequest }
+                        component={ ManagerRecommendProcure }
                     />
 
                     {/** Quản lý */}

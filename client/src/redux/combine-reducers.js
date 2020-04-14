@@ -37,7 +37,7 @@ import { rolesDefault } from "./../modules/system-admin-management/roles-default
 import { componentsDefault } from "../modules/system-admin-management/components-default-management/redux/reducers";
 
 //asset
-import { buyRequest } from "../modules/assets-manager/buy-request/redux/reducers";
+import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
 import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
 import { asset } from "../modules/assets-manager/asset-manager/redux/reducers";
 
@@ -87,7 +87,7 @@ const appReducer = combineReducers(Object.assign({
     kpimembers,
 
     // asset
-    buyRequest,
+    recommendProcure,
     assetType,
     asset
 

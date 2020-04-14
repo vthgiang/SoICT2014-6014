@@ -11,13 +11,13 @@ const AssetTypeSchema = new Schema({
         type: String,
         required: true
     },
-    nameType: { //Tên loại
+    typeName: { //Tên loại
         type: String,
         required: true
     },
     timeDepreciation: { //thời gian trính khấu hao
         type: Number,
-        // required: true
+        required: true
     },
     parent: { // loại tài sản cha
         type: Schema.Types.ObjectId,

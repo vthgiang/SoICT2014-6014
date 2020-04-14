@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RecommendProcureManager } from './RecommendProcureManager';
+import { AssetManager } from './AssetManager';
 
-class ManagerRecommendProcure extends Component {
+class ManagerAsset extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -11,10 +11,10 @@ class ManagerRecommendProcure extends Component {
     render() {
         return (
             <React.Fragment>
-                <RecommendProcureManager />
+                <AssetManager />
             </React.Fragment>
         );
     }
 }
 
-export default connect(null, null)(withTranslate(ManagerRecommendProcure)); 
+export default connect(null, null)(withTranslate(ManagerAsset)); 
