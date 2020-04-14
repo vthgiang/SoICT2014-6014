@@ -41,6 +41,9 @@ const UserSchema = new Schema({
     }],
     reset_password_token: {
         type: String
+    },
+    avatar: {
+        type: String
     }
 },{
     timestamps: true,

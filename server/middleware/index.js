@@ -7,7 +7,7 @@ const Link = require('../models/link.model');
 const Company = require('../models/company.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 const {data, checkServicePermission} = require('./servicesPermission');
-
+const multer = require('multer');
 
 /**
  * ****************************************
@@ -31,6 +31,7 @@ exports.auth = async (req, res, next) => {
          */
         const verified = await jwt.verify(token, process.env.TOKEN_SECRET);
         req.user = verified; 
+        console.log("ID: ", req.user._id)
         req.token = token;
 
         if(process.env.DEVELOPMENT !== 'true'){
@@ -129,3 +130,13 @@ exports.auth = async (req, res, next) => {
         });
     }   
 }
+
+exports.uploadAvatar = multer({ storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, './upload/avatars')
+        },
+        filename: function (req, file, cb) {
+            cb(null, `${Date.now()}_${req.user._id}_${file.originalname}`)
+        }
+    }) 
+});

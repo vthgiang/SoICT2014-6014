@@ -3,6 +3,8 @@ import Item from './Item';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
+import './SideBar.css';
+import { LOCAL_SERVER_API } from '../../../env';
 
 class SideBar extends Component {
 
@@ -41,15 +43,15 @@ class SideBar extends Component {
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
         }
-        const { translate } = this.props;
+        const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
         return (
             <React.Fragment>
                 <aside className="main-sidebar">
                     <section className="sidebar">
                         <div className="user-panel">
-                            <div className="pull-left image">
-                                <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="img-circle" alt="User avatar" />
+                            <div className="pull-left image sidebar-user-avatar">
+                                <img src={LOCAL_SERVER_API+auth.user.avatar} className="img-circle" style={{width: '45px', height: '45px'}} alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>

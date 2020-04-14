@@ -8,16 +8,17 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Header.css';
+import { LOCAL_SERVER_API } from '../../../env';
 
 class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.changeInformation = this.changeInformation.bind(this);
-        this.changePassword = this.changePassword.bind(this);
+        // this.changeInformation = this.changeInformation.bind(this);
+        // this.changePassword = this.changePassword.bind(this);
     }
 
-    changeInformation = () => {
+    changeInformation = async() => {
         const regex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
         const name = this.refs.name.value;
 
@@ -25,10 +26,14 @@ class Header extends Component {
             toast.warning('Tên không được chứa các kí tự đặc biệt', {containerId: 'toast-notification'});
         else if(name.length < 6)
             toast.warning('Tên phải ít nhất 6 kí tự', {containerId: 'toast-notification'});
-        else
-            return this.props.changeInformation({
-                name: this.refs.name.value
-            });
+        else{
+            await console.log("avatar nè nè: ", this.state.avatar);
+            let formdata = new FormData();
+            await formdata.append('avatar', this.state.avatar);
+            await formdata.append('name', name);
+            return this.props.changeInformation(formdata);
+        }
+            
     }
 
     changePassword = () => {
@@ -53,7 +58,6 @@ class Header extends Component {
         
     }
 
-    // function upload avatar 
     handleUpload = (event) => {
         var file = event.target.files[0];
         var fileLoad = new FileReader();
@@ -68,6 +72,7 @@ class Header extends Component {
 
     render() { 
         const { translate, auth } = this.props;
+
         return ( 
             <React.Fragment>
                 <header className="main-header">
@@ -97,10 +102,13 @@ class Header extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <div className="form-group text-center">
-                                    <img className="user-profile-avatar" src={this.state.img}/>
+                                    <img className="user-profile-avatar" src={
+                                        this.state.img !== undefined ? 
+                                        this.state.img : 
+                                        (LOCAL_SERVER_API+auth.user.avatar)}/>
                                     <div className="upload btn btn-default">
                                         Cập nhật
-                                        <input className="upload" type="file" name="file" onChange={this.handleUpload} />
+                                        <input className="upload" type="file" name="avatar" onChange={this.handleUpload} />
                                     </div>
                                 </div>
                             </div>

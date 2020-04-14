@@ -1,5 +1,6 @@
 const AuthService = require('./auth.service');
-const { LogInfo, LogError } = require('../../logs');
+const { LogInfo, LogError } = require('../../logs');var os = require("os");
+var hostname = os.hostname();
 
 exports.login = async (req, res) => {
     try {
@@ -103,7 +104,8 @@ exports.resetPassword = async (req, res) => {
 
 exports.changeInformation = async (req, res) => {
     try {
-        var profile = await AuthService.changeInformation(req.params.id, req.body.name);
+        const avatar = `/${req.file.path}`;
+        const profile = await AuthService.changeInformation(req.params.id, req.body.name, avatar);
 
         await LogInfo(req.user.email, 'CHANGE USER INFORMATION', req.user.company);
         res.status(200).json({
