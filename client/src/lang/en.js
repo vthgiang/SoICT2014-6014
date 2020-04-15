@@ -554,6 +554,7 @@ export default {
         },
 
         kpi_unit_create: {
+            unit: 'Unit',
             target_name: 'Target name',
             criteria: 'Evaluation criteria',
             weight: 'Weight',

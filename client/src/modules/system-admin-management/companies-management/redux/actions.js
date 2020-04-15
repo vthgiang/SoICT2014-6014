@@ -106,10 +106,7 @@ function addNewLink(id, data){
                 console.log("add new link: ",res);
                 dispatch({
                     type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS,
-                    payload: {
-                        companyId: id,
-                        link: res.data.content
-                    }
+                    payload: res.data.content
                 });
                 resolve(res);
             })
@@ -140,7 +137,7 @@ function deleteLink(companyId, linkId){
             .catch(err => {
                 dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
+                console.log("Error: ", err.response.data);
                 reject(err);
             })
         });

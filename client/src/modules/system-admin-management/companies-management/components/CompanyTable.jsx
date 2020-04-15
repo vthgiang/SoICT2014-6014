@@ -7,6 +7,7 @@ import CompanyCreateForm from './CompanyCreateForm';
 import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { LinkDefaultActions } from '../../links-default-management/redux/actions';
+import { ComponentDefaultActions } from '../../components-default-management/redux/actions';
 
 class CompanyTable extends Component {
     constructor(props) {
@@ -52,15 +53,16 @@ class CompanyTable extends Component {
         });
         await window.$('#modal-edit-company').modal('show');
         await this.props.linksList(company._id);
-        await this.props.linksPaginate(company._id, 1, 10);
+        await this.props.linksPaginate(company._id, 1, 5);
         await this.props.componentsList(company._id);
-        await this.props.componentsPaginate(company._id, 1, 10);
+        await this.props.componentsPaginate(company._id, 1, 5);
     }
 
     componentDidMount(){
         this.props.get();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
         this.props.getLinksDefault();
+        this.props.getComponentsDefault();
     }
 
     render() { 
@@ -94,7 +96,7 @@ class CompanyTable extends Component {
                     search={this.searchWithOption}
                 />
                 
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered" id="company-table">
                     <thead>
                         <tr>
                             <th>{translate('manage_company.name')}</th>
@@ -105,6 +107,7 @@ class CompanyTable extends Component {
                             <th style={{ width: "120px", textAlign: 'center' }}>
                                 {translate('table.action')}
                                 <ActionColumn 
+                                    tableId="company-table"
                                     columnName={translate('table.action')} 
                                     hideColumn={false}
                                     setLimit={this.setLimit}
@@ -197,6 +200,7 @@ const mapDispatchToProps = {
     edit: CompanyActions.edit,
     getPaginate: CompanyActions.getPaginate,
     getLinksDefault: LinkDefaultActions.get,
+    getComponentsDefault: ComponentDefaultActions.get,
     linksList: CompanyActions.linksList,
     linksPaginate: CompanyActions.linksPaginate,
     componentsList: CompanyActions.componentsList,

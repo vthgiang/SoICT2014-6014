@@ -115,6 +115,7 @@ exports.editStatusKPIPersonal = async (id,statusId) => {
     
     var kpipersonal = await KPIPersonal.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
         kpipersonal = await kpipersonal.populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+        
         return kpipersonal;
 }
 

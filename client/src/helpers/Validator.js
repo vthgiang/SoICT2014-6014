@@ -3,6 +3,7 @@ const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 const passwordRegex = /^[^~`!#$%^&*()+=/*';\\<>?:",]*$/;
 const employeeNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
 const urlRegex = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
+const stringNotSpaceRegex = /^[^~`!@#$%^&*()+=/ *';\\<>?:",]*$/;
 
 const recommendNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
 
@@ -10,14 +11,18 @@ const recommendNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
  * Validate dữ liệu nhập vào từ người dùng trươc khi gửi đến cho server xử lý
  */
 export const VALIDATOR = {
-    isValidName: isValidName,
-    isValidEmail: isValidEmail,
-    isValidPassword: isValidPassword,
+    isValidName,
+    isValidEmail,
+    isValidPassword,
     isValidEmployeeNumber: isValidEmployeeNumber,
     isValidUrl,
+<<<<<<< HEAD
 
     //asset
     isValidRecommendNumber: isValidRecommendNumber
+=======
+    isStringNotSpace
+>>>>>>> 15fd340c647d87e2e062ad8abaa7b2f3e377026a
 }
 
 // Kiểm tra tên có hợp lệ
@@ -48,4 +53,8 @@ function isValidRecommendNumber(recommendNumber) {
 // Kiem tra url co hop le
 function isValidUrl(url) {
     return (url[0] === '/' && urlRegex.test(url)) ? true : false;
+}
+
+function isStringNotSpace(string){
+    return stringNotSpaceRegex.test(string) ? true : false;
 }

@@ -18,8 +18,8 @@ router.get("/:id/components-list", auth, CompanyController.getComponentsListOfCo
 router.post("/:id/components-paginate/:page/:limit", auth, CompanyController.getComponentsPaginateOfCompany);
 router.post("/:id/add-new-link", auth, CompanyController.addNewLinkForCompany);
 router.delete("/:id/delete-link/:linkId", auth, CompanyController.deleteLinkForCompany);
-// router.post("/:id/add-new-component", auth, CompanyController.addNewComponentForCompany);
-// router.delete("/:id/delete-component/:linkId", auth, CompanyController.deleteComponentForCompany);
+router.post("/:id/add-new-component", auth, CompanyController.addNewComponentForCompany);
+router.delete("/:id/delete-component/:linkId", auth, CompanyController.deleteComponentForCompany);
 
 // Khác ----------
 router.get("/:id/links", auth, CompanyController.getLinksOfCompany);

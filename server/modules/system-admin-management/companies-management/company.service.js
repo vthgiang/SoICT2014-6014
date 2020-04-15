@@ -1,4 +1,4 @@
-const { Company, Link, LinkDefault, Privilege, Role, RoleDefault, RoleType, User } = require('../../../models/_export').data;
+const { Company, Link, LinkDefault, Component, ComponentDefault, Privilege, Role, RoleDefault, RoleType, User } = require('../../../models/_export').data;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -180,13 +180,38 @@ exports.createLinksForCompany = async(companyId, linkArr, roleArr) => {
     return await Link.find({company: companyId}).populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
 } 
 
-// Cập nhật các links của công ty vào trong collection company
-exports.addLinksForCompanyInCollection = async(companyId, linkArr) => {
-    const company = await Company.findById(companyId);
-    company.links = linkArr;
-    await company.save();
+// Tạo các component tương ứng với các trang của công ty
+exports.createComponentsForCompany = async(companyId, linkArr) => {
+    const linkDefaults = await LinkDefault // lấy các link mặc định tương ứng với các link mà công ty có
+        .find({ _id: { $in: linkArr }})
+        .populate({ path: 'components', model: ComponentDefault, populate:{ path: 'roles', model: RoleDefault}});
+    
+    for (let i = 0; i < linkDefaults.length; i++) {
+        const linkDefault = linkDefaults[i]; // Duyệt với linkDefault thứ i
+        const link = await Link.findOne({ url: linkDefault.url, company: companyId }); // lấy giá trị của link tương ứng với link default này
 
-    return company;
+        // Tạo các component tương ứng với link này
+        for (let j = 0; j < linkDefault.components.length; j++) {
+            const componentDefault = linkDefault.components[j]; // Component default làm mẫu để tạo component cho công ty
+            const component = await Component.create({ // Tạo component này cho công ty
+                name: componentDefault.name,
+                description: componentDefault.description,
+                link: link._id,
+                company: companyId
+            });
+            for (let k = 0; k < componentDefault.roles.length; k++) { //duyệt các role tương ứng với componentDefault để add các role tương ứng với component của công ty
+                const roleDefault = componentDefault.roles[k]; // Role default mẫu ứng với role của công ty
+                const role = await Role.findOne({name: roleDefault.name, company: companyId}); // Lấy role của công ty tương ứng với role defaut này
+                await Privilege.create({ // gán phân quyền tương ứng component với role
+                    resourceId: component._id,
+                    resourceType: 'Component',
+                    roleId: role._id
+                })
+            }
+        }
+    }
+
+    return await Component.find({company: companyId});
 }
 
 // Lấy tất cả các links của 1 công ty/doanh nghiệp
@@ -223,9 +248,6 @@ exports.addNewLinkForCompany = async(companyId, linkUrl, linkDescription) => {
         description: linkDescription,
         company: companyId
     });
-    const com = await Company.findById(companyId); // lấy dữ liệu về công ty này
-    com.links.push(newLink._id);
-    await com.save();
 
     return newLink;
 }
@@ -238,14 +260,31 @@ exports.deleteLinkForCompany = async(companyId, linkId) => {
     });
     // Xóa link này
     await Link.deleteOne({_id: linkId});
-    const com = await Company.findById(companyId); // lấy dữ liệu về công ty này
-    com.links.splice(com.links.indexOf(linkId), 1); // Xóa dữ liệu về link khỏi công ty này
-    await com.save();
 
-    return {
-        company: companyId,
-        link: linkId
-    };
+    return linkId;
+}
+
+exports.addNewComponentForCompany = async(companyId, componentName, componentDescription, linkId) => {
+    const newLink = await Link.create({
+        name: componentName,
+        description: componentDescription,
+        link: linkId,
+        company: companyId
+    });
+
+    return newLink;
+}
+
+exports.deleteComponentForCompany = async(companyId, linkId) => {
+    // Xóa tắt cả phân quyền liên quan đến link này (role)
+    await Privilege.deleteMany({
+        resourceId: linkId,
+        resourceType: 'Link'
+    });
+    // Xóa link này
+    await Link.deleteOne({_id: linkId});
+
+    return linkId;
 }
 
 exports.getLinksListOfCompany = async(companyId) => {
@@ -262,7 +301,10 @@ exports.getLinksPaginateOfCompany = async (companyId, page, limit, data={}) => {
 }
 
 exports.getComponentsListOfCompany = async (companyId) => {
-    return await Component.find({ company: companyId });
+    return await Component.find({ company: companyId })
+        .populate([
+            { path: 'link', model: Link}
+        ]);
 }
 
 exports.getComponentsPaginateOfCompany = async (companyId, page, limit, data={}) => {
@@ -270,6 +312,9 @@ exports.getComponentsPaginateOfCompany = async (companyId, page, limit, data={})
     return await Component
         .paginate( newData , { 
             page, 
-            limit
+            limit,
+            populate: [
+                {path: 'link', model: Link}
+            ]
         });
 }
