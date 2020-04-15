@@ -8,22 +8,41 @@ class SabbaticalEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.save = this.save.bind(this);
     }
     // Bắt sự kiện thay đổi ngày bắt đầu
     handleStartDateChange = (value) => {
-        this.setState({
-            ...this.state,
-            startDate: value
-        })
+        this.validateStartDate(value, true);
+    }
+    validateStartDate = (value, willUpdateState = true) => {
+        let msg = SabbaticalFormValidator.validateStartDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnStartDate: msg,
+                    startDate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     // Bắt sự kiện thay đổi ngày kết thúc
     handleEndDateChange = (value) => {
-        this.setState({
-            ...this.state,
-            endDate: value
-        })
+        this.validateEndDate(value, true);
+    }
+    validateEndDate = (value, willUpdateState = true) => {
+        let msg = SabbaticalFormValidator.validateEndDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEndDate: msg,
+                    endDate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     // Bắt sự kiện thay đổi lý do xin nghỉ phép
@@ -56,7 +75,8 @@ class SabbaticalEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateReason(this.state.reason, false);
+        let result = this.validateEndDate(this.state.endDate, false) &&
+            this.validateReason(this.state.reason, false) && this.validateStartDate(this.state.startDate, false);
         return result;
     }
 
@@ -76,6 +96,8 @@ class SabbaticalEditForm extends Component {
                 reason: nextProps.reason,
                 status: nextProps.status,
                 errorOnReason: undefined,
+                errorOnStartDate: undefined,
+                errorOnEndDate: undefined,
             }
         } else {
             return null;
@@ -84,7 +106,8 @@ class SabbaticalEditForm extends Component {
 
     render() {
         const { translate, sabbatical } = this.props;
-        const { employeeNumber, startDate, endDate, reason, status, errorOnReason } = this.state;
+        const { employeeNumber, startDate, endDate, reason, status,
+            errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
                 <ModalDialog
@@ -102,21 +125,23 @@ class SabbaticalEditForm extends Component {
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled />
                         </div>
                         <div className="row">
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('sabbatical.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_start_date"
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className="form-group col-sm-6 col-xs-12">
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('sabbatical.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_end_date"
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
+                                <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
                         <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
@@ -129,7 +154,7 @@ class SabbaticalEditForm extends Component {
                             <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
                                 <option value="pass">{translate('sabbatical.pass')}</option>
                                 <option value="process">{translate('sabbatical.process')}</option>
-                                <option value="faile">{translate('sabbatical.fail')}</option>
+                                <option value="faile">{translate('sabbatical.faile')}</option>
                             </select>
                         </div>
                     </form>

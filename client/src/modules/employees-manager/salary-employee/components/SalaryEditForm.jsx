@@ -9,20 +9,7 @@ class SalaryEditForm extends Component {
         super(props);
         this.state = {}
     }
-
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        return [month, year].join('-');
-    }
-
+    
     // Function bắt sự kiện thay đổi tiền lương chính
     handleMainSalaryChange = (e) => {
         let value = e.target.value;

@@ -618,7 +618,6 @@ class AddEmployee extends Component {
                                                         </div>
                                                         <input type="text" className="form-control datepicker" name="brithday" ref="brithday" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" autoComplete="off" />
                                                     </div>
-                                                    {/* <input type="Date" className="form-control" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="emailCompany">{translate('manage_employee.email')}:<span className="text-red">&#42;</span></label>
@@ -638,7 +637,7 @@ class AddEmployee extends Component {
                                                     <label>{translate('manage_employee.female')}</label>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="birthplace">Nơi sinh:</label>
+                                                    <label htmlFor="birthplace">{translate('manage_employee.place_birth')}</label>
                                                     <input type="text" className="form-control" name="birthplace" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
