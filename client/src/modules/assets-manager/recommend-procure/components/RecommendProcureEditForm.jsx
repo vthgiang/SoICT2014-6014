@@ -125,7 +125,7 @@ class RecommendProcureEditForm extends Component {
                 approver: nextProps.approver,
                 position1: nextProps.position1,
                 status: nextProps.status,
-                content: nextProps.content,
+                note: nextProps.note,
                 errorOnEquipment: undefined,
                 errorOnTotal: undefined,
                 errorOnUnit: undefined,
@@ -137,7 +137,7 @@ class RecommendProcureEditForm extends Component {
 
     render() {
         const { translate, recommendProcure } = this.props;
-        const { recommendNumber, createDate, proponent, department, position, equipment, supplier, total, unit, estimatePrice, approver, position1, status, content,
+        const { recommendNumber, createDate, proponent, department, position, equipment, supplier, total, unit, estimatePrice, approver, position1, status, note,
                 errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
         return (
             <React.Fragment>
@@ -216,8 +216,8 @@ class RecommendProcureEditForm extends Component {
                                     <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled />
                                 </div>
                                 <div className="form-group">
-                                    <label>Mô tả</label>
-                                    <input type="text" className="form-control" name="content" value={content} disabled/>
+                                    <label>Ghi chú</label>
+                                    <input type="text" className="form-control" name="note" value={note} disabled/>
                                 </div>
                             </div>
                         </div>

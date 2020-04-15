@@ -21,7 +21,7 @@ class RecommendProcureCreateForm extends Component {
             approver: "",
             position1: "",
             status: "",
-            content: "",
+            note: "",
         };
     }
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -241,8 +241,8 @@ class RecommendProcureCreateForm extends Component {
                                     <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled />
                                 </div>
                                 <div className="form-group">
-                                    <label>Nội dung</label>
-                                    <input type="text" className="form-control" name="content" disabled/>
+                                    <label>Ghi chú</label>
+                                    <input type="text" className="form-control" name="note" disabled/>
                                 </div>
                             </div>
                         </div>
