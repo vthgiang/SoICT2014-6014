@@ -30,12 +30,6 @@ class ModalEditTargetKPIUnit extends Component {
             errorOnName: undefined,
             errorOnCriteria: undefined,
             errorOnWeight: undefined,
-            // newTarget: {
-            //     name: '',
-            //     parent: '',
-            //     weight: '',
-            //     criteria: ''
-            // },
             editing: false
         };
 
@@ -214,7 +208,7 @@ class ModalEditTargetKPIUnit extends Component {
                             <div className="form-group">
                                 <label>{translate('kpi_unit_create.on_target')}</label>
                                 {items.length !== 0 &&
-                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                    <SelectBox 
                                         id={`parent-target-add${_id}`}
                                         className="form-control select2"
                                         style={{width: "100%"}}

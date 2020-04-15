@@ -595,6 +595,7 @@ export default {
         },
 
         kpi_unit_create: {
+            unit: 'Đơn vị',
             target_name: 'Tên mục tiêu',
             criteria: 'Tiêu chí đánh giá',
             weight: 'Trọng số',
