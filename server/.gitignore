@@ -3,5 +3,8 @@
 .env
 
 /logs/history
+/upload/avatars/*
+/upload/docs/*
+/upload/excels/*
 
 package-lock.json

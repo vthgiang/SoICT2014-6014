@@ -82,6 +82,7 @@ class PaginateBar extends Component {
                         <div id="search-page" className="form-group collapse">
                             <input className="form-control" type="number" min="1" max={pageTotal} name='page' onChange={this.inputChange} onKeyUp={this.handleEnterSetting}/>
                             <button
+                                type="button"
                                 className="pull-right btn btn-success"
                                 onClick={this.setPaginate}
                             >{translate('form.search')}</button>

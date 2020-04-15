@@ -370,10 +370,8 @@ exports.create = async (data, company) => {
 
 // Cập nhật thông tin cá nhân
 exports.updateInforPersonal = async (email, data) => {
-    var infoEmployee = await Employee.findOne({
-        emailCompany: email
-    });
-    // thông tin cần cập nhật của thông tin liên hệ 
+    var employeeInfo = await Employee.findOne({emailCompany: email}, { _id: 1});
+    // Thông tin cần cập nhật của thông tin liên hệ 
     var employeeContactUpdate = {
         phoneNumber: data.phoneNumber,
         phoneNumber2: data.phoneNumber2,
@@ -398,7 +396,7 @@ exports.updateInforPersonal = async (email, data) => {
         nowCommune: data.nowCommune,
         updateDate: data.updateDate
     }
-    // thông tin cần cập nhật của thông tin cơ bản của nhân viên
+    // Thông tin cần cập nhật trong thông tin cơ bản của nhân viên
     var employeeUpdate = {
         gender: data.gender,
         national: data.national,
@@ -408,28 +406,12 @@ exports.updateInforPersonal = async (email, data) => {
         updateDate: data.updateDate
     }
     // cập nhật thông tin liên hệ vào database
-    await EmployeeContact.findOneAndUpdate({
-        employee: infoEmployee._id
-    }, {
-        $set: employeeContactUpdate
-    });
-    //cập nhật thông tin cơ bản vào database
-    await Employee.findOneAndUpdate({
-        _id: infoEmployee._id
-    }, {
-        $set: employeeUpdate
-    });
-    var infoPersonal = await Employee.find({
-        _id: employeeinfo._id
-    });
-    var infoEmployeeContact = await EmployeeContact.find({
-        employee: employeeinfo._id
-    });
-    var content = {
-        employee: infoPersonal,
-        employeeContact: infoEmployeeContact,
-    }
-    return content;
+    await EmployeeContact.findOneAndUpdate({employee: employeeInfo._id}, {$set: employeeContactUpdate});
+    // cập nhật thông tin cơ bản vào database
+    await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
+    var infoPersonal = await Employee.find({_id: employeeInfo._id});
+    var infoEmployeeContact = await EmployeeContact.find({employee: employeeInfo._id});
+    return { employee: infoPersonal, employeeContact: infoEmployeeContact};
 }
 
 // Cập nhât thông tin nhân viên theo id

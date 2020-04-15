@@ -51,10 +51,21 @@ class SalaryCreateForm extends Component {
 
     // Function bắt sự kiện thay đổi tháng lương để lưu vào state
     handleMonthChange = (value) => {
-        this.setState({
-            ...this.state,
-            month: value
-        })
+        this.validateMonthSalary(value, true);
+    }
+    // Function kiem tra tiền lương chính nhập vào có hợp lệ không
+    validateMonthSalary = (value, willUpdateState = true) => {
+        let msg = SalaryFormValidator.validateMonthSalary(value, this.props.translate);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnMonthSalary: msg,
+                    month: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     // Function bắt sự kiện thay đổi tiền lương chính
@@ -181,7 +192,7 @@ class SalaryCreateForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateEmployeeNumber(this.state.employeeNumber, false) &&
-            this.validateMainSalary(this.state.mainSalary, false);
+            this.validateMainSalary(this.state.mainSalary, false) && this.validateMonthSalary(this.state.month, false);
 
         if (result === true) {
             if (this.state.bonus !== []) {
@@ -206,7 +217,7 @@ class SalaryCreateForm extends Component {
     render() {
         const { translate, salary } = this.props;
         const { employeeNumber, unit, mainSalary, bonus, month, errorOnEmployeeNumber,
-            errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary } = this.state;
+            errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary, errorOnMonthSalary } = this.state;
         return (
             <React.Fragment>
                 <ModalDialog
@@ -224,7 +235,7 @@ class SalaryCreateForm extends Component {
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
                             <ErrorLabel content={errorOnEmployeeNumber} />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${errorOnMonthSalary === undefined ? "" : "has-error"}`}>
                             <label>{translate('page.month')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id="create_month"
@@ -232,6 +243,7 @@ class SalaryCreateForm extends Component {
                                 value={month}
                                 onChange={this.handleMonthChange}
                             />
+                            <ErrorLabel content={errorOnMonthSalary} />
                         </div>
                         <div className={`form-group ${errorOnMainSalary === undefined ? "" : "has-error"}`}>
                             <label >{translate('salary_employee.main_salary')}<span className="text-red">*</span></label>

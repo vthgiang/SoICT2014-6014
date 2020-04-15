@@ -14,7 +14,7 @@ class RoleTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
     }
 
@@ -51,6 +51,7 @@ class RoleTable extends Component {
                             <th>{ translate('manage_role.extends') }</th>
                             <th>{ translate('manage_role.users') }</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
+                                { translate('table.action') }
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     columnArr={[

@@ -16,8 +16,8 @@ export default {
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
             // Quản lý nghỉ phép
-            start_date_sabbatical_required: 'Thời gian bắt đầu không được để trống',
-            end_date_sabbatical_required: 'Thời gian kết thúc không được để trống',
+            start_date_sabbatical_required: 'Ngày bắt đầu không được để trống',
+            end_date_sabbatical_required: 'Ngày kết thúc không được để trống',
             reason_sabbatical_required: 'Lý do không được để trống',
             status_sabbatical_required: 'Trạng thái không được để trống',
             get_sabbatical_success: 'Lấy thông tin nghỉ phép thành công',
@@ -29,8 +29,8 @@ export default {
             edit_sabbatical_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
             edit_sabbatical_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
             // Quản lý lương nhân viên
-            name_other_salary_required:'Tên lương thưởng khác không được để trống',
-            money_other_salary_required:'Tiền lương thưởng khác không được để trống',
+            name_other_salary_required: 'Tên lương thưởng khác không được để trống',
+            money_other_salary_required: 'Tiền lương thưởng khác không được để trống',
             month_salary_required: 'Tháng lương không được để trống',
             money_salary_required: 'Tiền lương chính không được để trống',
             month_salary_have_exist: 'Tháng lương đã tồn tại',
@@ -58,7 +58,7 @@ export default {
             type_discipline_required: 'Hình thức kỷ luật không được để trống',
             reason_discipline_required: 'Lý do kỷ luật không được để trống',
             start_date_discipline_required: 'Ngày có hiệu lực không được để trống',
-            end_date_discipline_required:'Ngày hết hiệu lực không được để trống',
+            end_date_discipline_required: 'Ngày hết hiệu lực không được để trống',
             get_discipline_success: 'Lấy danh sách kỷ luật thành công',
             get_discipline_faile: 'Lấy danh sách kỷ luật thất bại',
             create_discipline_success: 'Thêm mới kỷ luật thành công',
@@ -67,6 +67,14 @@ export default {
             delete_discipline_faile: 'Xoá kỷ luật thất bại',
             edit_discipline_success: 'Chỉnh sửa kỷ luật thành công',
             edit_discipline_faile: 'Chỉnh sửa kỷ luật thất bại',
+            // Quản lý thông tin cá nhân
+            get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
+            get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
+            edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
+            edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
+            guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
+            no_change_data: 'Không có thông tin nào được thay đổi',
+
 
             /** 
              * End
@@ -439,6 +447,12 @@ export default {
             reason_praise: 'Thành tích (Lý do)',
         },
         manage_employee: {
+            note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
+            contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
+            update_infor_personal: 'Cập nhật thông tin nhân viên',
+            no_data_personal: 'Chưa có thông tin cá nhân',
+
+            menu_basic_infor: 'Thông tin cơ bản',
             menu_general_infor: 'Thông tin chung',
             menu_contact_infor: 'Thông tin liên hệ',
             menu_education_experience: 'Học vấn - Kinh nghiệm',
@@ -509,6 +523,7 @@ export default {
             unit: 'Đơn vị công tác',
             from_month_year: 'Từ tháng/năm',
             to_month_year: 'Đến tháng/năm',
+            edit_experience:'Chỉnh sửa kinh nghiệm làm việc',
 
             diploma: 'Bằng cấp',
             certificate: 'Chứng chỉ',
@@ -519,6 +534,9 @@ export default {
             ranking_learning: 'Xếp loại',
             attached_files: 'File đính kèm',
             end_date_certificate: 'Ngày hết hạn',
+            edit_certificate:'Chỉnh sửa chứng chỉ',
+            edit_diploma:'Chỉnh sửa bằng cấp',
+           
 
             bank_account: 'Tài khoản ngân hàng',
             personal_income_tax: 'Thuế thu nhập cá nhân',
@@ -530,6 +548,13 @@ export default {
             day_active: 'Ngày hoạt động',
             managed_by: 'Quản lý bởi',
 
+            bhyt: 'Bảo hiểm y tế',
+            number_BHYT: 'Mã số BHYT',
+            bhxh: 'Bảo hiểm xã hội',
+            number_BHXH:'Mã số BHXH',
+            bhxh_process:'Quá trình đóng bảo hiểm xã hội',
+            edit_bhxh: 'Chỉnh sửa bảo hiểm xã hội',
+
             labor_contract: 'Hợp đồng lao động',
             training_process: 'Quá trình đào tạo',
             name_contract: 'Tên hợp đồng',
@@ -540,6 +565,7 @@ export default {
             end_date: 'Ngày kết thúc',
             type_education: 'Loại đào tạo',
             cost: 'Chi phí',
+            edit_contract:'Chỉnh sửa hợp đồng lao động',
 
             list_attachments: 'Danh sách tài liệu đính kèm',
             attachments_code: 'Nơi lưu trữ bản cứng',
@@ -547,6 +573,7 @@ export default {
             number: 'Số lượng',
             add_default: 'Mặc định',
             add_default_title: 'Thêm các tài liệu mặc định',
+            edit_file:'Chỉnh sửa tài liệu đính kèm',
 
             Reward: 'Khen thưởng',
             discipline: 'Kỷ luật',
@@ -577,6 +604,7 @@ export default {
             check_description: 'Bạn chưa nhập mô tả lịch nghỉ'
         },
 
+
         // Task template
         task_template: {
             search: 'Tìm kiếm',
@@ -595,6 +623,7 @@ export default {
         },
 
         kpi_unit_create: {
+            unit: 'Đơn vị',
             target_name: 'Tên mục tiêu',
             criteria: 'Tiêu chí đánh giá',
             weight: 'Trọng số',
@@ -636,6 +665,138 @@ export default {
             edit_target_success: 'Sửa mục tiêu thành công',
             init_success: 'Khởi tạo KPI tháng mới thành công',
 
+        },
+
+        kpi_personal: {
+            kpi_personal_create: {
+                general_information: {
+                    general_information: 'KPI cá nhân tháng',
+                    save: 'Lưu chỉnh sửa',
+                    edit: 'Chỉnh sửa',
+                    delete: 'Xóa KPI này',
+                    cancel: 'Hủy',
+                    edit_success: 'Chỉnh sửa thành công',
+                    edit_failure: 'Chỉnh sửa không thành công',
+                    delete_success: 'Xóa KPI thành công'
+                },
+
+                unit: 'Đơn vị',
+                time: 'Thời gian',
+                approver: 'Người phê duyệt',
+
+                kpi_status: {
+                    status: 'Trạng thái KPI',
+                    setting_up: 'Đang thiết lập',
+                    awaiting_approval: 'Chờ phê duyệt',
+                    activated: 'Đã kích hoạt',
+                    finished: 'Đã kết thúc'
+                },
+
+                weight: {
+                    weight_total: 'Tổng trọng số',
+                    not_satisfied: 'Chưa thỏa mãn',
+                    satisfied: 'Thỏa mãn'
+                },
+
+                target_list: 'Danh sách mục tiêu',
+                add_target: 'Thêm mục tiêu',
+                initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
+                no_: 'Stt',
+                target_name: 'Tên mục tiêu',
+                parents_target: 'Mục tiêu cha',
+                evaluation_criteria: 'Tiêu chí đánh giá',
+                max_score: 'Điểm tối đa',
+                status: 'Trạng thái',
+                action: 'Hành động',
+                not_initialize: 'Chưa khởi tạo KPI tháng ',
+
+                action_title: {
+                    edit: 'Chỉnh sửa',
+                    content: 'Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)',
+                    delete: 'Xóa'
+                },
+
+                submit: {
+                    feedback: 'Phản hồi',
+                    send_feedback: 'Gửi phản hồi',
+                    cancel_feedback: 'Hủy',
+                    request_approval: 'Yêu cầu phê duyệt',
+                    cancel_request_approval: 'Hủy yêu cầu phê duyệt'
+                },
+                
+                handle_edit_kpi: {
+                    approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
+                    activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                },
+
+                delete_kpi: {
+                    kpi: 'Bạn chắc chắn muốn xóa KPI này?',
+                    kpi_target: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
+                    approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
+                    activated: 'KPI đã được kích hoạt, bạn không thể xóa!',
+                    delete_success: 'Xóa mục tiêu KPI thành công'
+                },
+
+                edit_target: {
+                    approving: 'KPI đang được phê duyệt, Bạn không thể chỉnh sửa!',
+                    activated: 'KPI đã được kích hoạt, Bạn không thể chỉnh sửa!'
+                },
+
+                check_status_target: {
+                    not_approved: 'Chưa phê duyệt',
+                    edit_request: 'Yêu cầu chỉnh sửa',
+                    activated: 'Đã kích hoạt',
+                    finished: 'Đã kết thúc'
+                },
+
+                request_approval_kpi: {
+                    approve: 'Bạn chắc chắn muốn quản lý phê quyệt KPI này?',
+                    not_enough_weight: 'Tổng trọng số phải bằng 100'
+                },
+
+                cancel_approve: {
+                    cancel: 'Bạn chắc chắn muốn hủy yêu cầu phê duyệt KPI này?',
+                    activated: 'KPI đã được kích hoạt bạn không thể hủy bỏ yêu cầu phê duyệt, nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                },
+
+                not_initialize: 'Chưa khởi tạo'
+            },
+
+            add_target_kpi: {
+                add_target_personal: 'Thêm mục tiêu KPI cá nhân',
+                add_target: 'Thêm mục tiêu',
+                parents_target: 'Mục tiêu cha',
+                evaluation_criteria_description: 'Mô tả tiêu chí đánh giá',
+                placeholder_description: 'Đánh giá mức độ hoàn thành dựa trên tiêu chí nào?',
+                weight: 'Trọng số',
+                placeholder_weight: 'Trọng số của mục tiêu',
+                cancel: 'Hủy bỏ',
+                add_success: 'Thêm mục tiêu KPI thành công'
+            },
+
+            start: {
+                initialize_kpi: 'Khởi tạo KPI cá nhân',
+                unit: 'Đơn vị',
+                month: 'Tháng',
+                approver: 'Người phê duyệt',
+                default_target: 'Mục tiêu mặc định',
+                initialize: 'Khởi tạo',
+                cancel: 'Hủy bỏ',
+                success: 'Khởi tạo KPI thành công'
+            },
+
+            edit_target_kpi: {
+                edit_personal: 'Chỉnh sửa mục tiêu KPI cá nhân',
+                target_name: 'Tên mục tiêu',
+                parents_target: 'Mục tiêu cha',
+                evaluation_criteria_description: 'Mô tả tiêu chí đánh giá',
+                placeholder_description: 'Đánh giá mức độ hoàn thành dựa trên tiêu chí nào?',
+                weight: 'Trọng số',
+                placeholder_weight: 'Trọng số của mục tiêu',
+                save: 'Lưu thay đổi',
+                cancel: 'Hủy bỏ',
+                edit_success: 'Chỉnh sửa mục tiêu KPI thành công'
+            }
         },
 
         footer: {

@@ -13,12 +13,13 @@ exports.PREDEFINED_ROLES = {
     EMPLOYEE: {NAME: "Employee", DESCRIPTION: "Nhân viên đơn vị trong một doanh nghiệp/công ty"},
 }
 
-exports.CATEGORY_LINKS = {
-    COMMON: {NAME: "common", DESCRIPTION: "Các trang web dùng chung cho mọi người dùng"},
-    RBAC_MANAGEMENT: {NAME: "rbac-management", DESCRIPTION: "Quản lý phân quyền, người dùng, cơ cấu tổ chức, phân trang, component"},
-    KPI_MANAGEMENT: {NAME: "kpi-management", DESCRIPTION: "Quản lý KPI"},
-    TASK_MANAGEMENT: {NAME: "task-management", DESCRIPTION: "Quản lý công việc"},
-    EMPLOYEE_MANAGEMENT: {NAME: "employee-management", DESCRIPTION: "Quản lý nhân sự"},
-    DOCUMENT_MANAGEMENT: {NAME: "document-management", DESCRIPTION: "Quản lý tài liệu biểu mẫu"},
-    PROCESS_MANAGEMENT: {NAME: "process-management", DESCRIPTION: "Quản lý quy trình"},
-}
+exports.CATEGORY_LINKS = [
+    { name: 'common', description: 'Các trang web dùng chung'},
+    { name: 'rbac-management', description: 'Quản lý phân quyền rbac'},
+    { name: 'kpi-management', description: 'Quản lý kpi'},
+    { name: 'task-management', description: 'Quản lý công việc'},
+    { name: 'employee-management', description: 'Quản lý nhân sự'},
+    { name: 'education-management', description: 'Quản lý đào tạo'},
+    { name: 'document-management', description: 'Quản lý tài liệu, biểu mẫu'},
+    { name: 'process-management', description: 'Quản lý quy trình'}
+];

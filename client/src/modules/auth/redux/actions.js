@@ -177,17 +177,21 @@ function refresh(){
 function forgotPassword(email){
     return dispatch => {
         dispatch({type: AuthConstants.FORGOT_PASSWORD_REQUEST});
-        AuthService.forgotPassword(email)
+        return new Promise((resolve, reject) => {
+            AuthService.forgotPassword(email)
             .then(res => {
                 dispatch({
                     type: AuthConstants.FORGOT_PASSWORD_SUCCESS,
                     payload: res.data.content
-                })
+                });
+                resolve(res);
             })
             .catch(err => {
                 dispatch({type: AuthConstants.FORGOT_PASSWORD_FAILE});
+                reject(err);
                 console.log("Error: ", err);
             })
+        });
     }
 }
 

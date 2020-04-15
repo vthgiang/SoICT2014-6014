@@ -22,11 +22,6 @@ class DepartmentManage extends Component {
             showEdit: id
         })
         window.$(`#modal-viewUnit-${id}`).modal('show');
-        // var element = document.getElementsByTagName("BODY")[0];
-        // element.classList.add("modal-open");
-        // var modal = document.getElementById(`modal-viewUnit-${id}`);
-        // modal.classList.add("in");
-        // modal.style = "display: block";
     }
     render() {
         var data = [];
@@ -46,12 +41,12 @@ class DepartmentManage extends Component {
                         <h4 className="box-title">Danh sách các đơn vị:</h4>
                     </div>
                     <TreeTable
-                        nameClass="show-children"
+                        behaviour="show-children"
                         column={column}
                         data={data}
-                        titleAction={[{
+                        titleAction={{
                             edit: "Chỉnh sửa nhân viên các đơn vị",
-                        }]}
+                        }}
                         funcEdit={this.handleShowEdit}
                     />
                 </div>

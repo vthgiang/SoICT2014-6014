@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
-import { ErrorLabel, ModalDialog, } from '../../../../common-components';
+import { ErrorLabel, ModalDialog, PaginateBar} from '../../../../common-components';
 import { CompanyFormValidator } from './CompanyFormValidator';
+import CompanyManageLinks from './CompanyManageLinks';
+import CompanyManageComponent from './CompanyManageComponent';
 
 class CompanyEditForm extends Component {
     constructor(props) {
@@ -12,9 +14,22 @@ class CompanyEditForm extends Component {
     }
 
     render() { 
-        const { translate } = this.props;
-        const {companyName, companyShortName, companyLinks, companyDescription, companyLog, companyActive, companyEmail, nameError, shortNameError, descriptionError, emailError} = this.state;
-        console.log("edit company: ", this.state)
+        const { translate, linksDefault, componentsDefault, company } = this.props;
+        const {
+            // Phần edit nội dung của công ty
+            companyId,
+            companyName, 
+            companyShortName, 
+            companyDescription, 
+            companyLog, 
+            companyActive, 
+            companyEmail, 
+            nameError, 
+            shortNameError, 
+            descriptionError, 
+            emailError,
+        } = this.state;
+
         return ( 
             <React.Fragment>
                 <ModalDialog
@@ -66,32 +81,31 @@ class CompanyEditForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
                                     <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
-                                    <textarea style={{ height: '177px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
+                                    <textarea style={{ height: '182px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
                                     <ErrorLabel content={descriptionError}/>
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border" style={{minHeight: '300px'}}>
-                                    <legend className="scheduler-border">Các trang được truy cập</legend>
-                                    <table className="table table-hover table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>{ translate('manage_link.url') }</th>
-                                                <th>{ translate('manage_link.description') }</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                companyLinks.length > 0 && companyLinks.map( link => 
-                                                    <tr key={link._id}>
-                                                        <td>{ link.url }</td>
-                                                        <td>{ link.description }</td>
-                                                    </tr> 
-                                                )
-                                            }
-                                        </tbody>
-                                    </table>
-                                </fieldset>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '20px'}}>
+                               <div role="tabpanel">
+                                {/* Nav tabs */}
+                                <ul className="nav nav-tabs" role="tablist">
+                                    <li role="presentation" className="active">
+                                    <a href="#company_manage_link" aria-controls="home" role="tab" data-toggle="tab"><b>Links</b>{`(${company.item.links.list.length}/${linksDefault.list.length})`}</a>
+                                    </li>
+                                    <li role="presentation">
+                                    <a href="#company_manage_component" aria-controls="tab" role="tab" data-toggle="tab"><b>Component</b>{`(${company.item.components.list.length}/${componentsDefault.list.length})`}</a>
+                                    </li>
+                                </ul>
+                                {/* Tab panes */}
+                                <div className="tab-content">
+                                    <div role="tabpanel" className="tab-pane active" id="company_manage_link">
+                                        <CompanyManageLinks companyId={companyId}/>
+                                    </div>
+                                    <div role="tabpanel" className="tab-pane" id="company_manage_component">
+                                        <CompanyManageComponent companyId={companyId}/>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                         </div>
                     </form>

@@ -40,105 +40,105 @@ const sampleCompanyData = async () => {
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU VỀ CÔNG TY XYZ
+        TẠO DỮ LIỆU VỀ CÔNG TY VNIST
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu công ty!");
-    var xyz = await Company.create({
-        name: 'Công ty TNHH XYZ',
-        short_name: 'xyz',
-        description: 'Công ty TNHH XYZ'
+    var vnist = await Company.create({
+        name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
+        short_name: 'VNIST',
+        description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
     });
-    console.log(`Xong! Công ty [${xyz.name}] đã được tạo.`);
+    console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
     //END
 
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
-        TẠO CÁC TÀI KHOẢN NGƯỜI DÙNG CHO CÔNG TY XYZ
+        TẠO CÁC TÀI KHOẢN NGƯỜI DÙNG CHO CÔNG TY VNIST
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-    console.log(`Khởi tạo các tài khoản cho công ty [${xyz.name}]`);
+    console.log(`Khởi tạo các tài khoản cho công ty [${vnist.name}]`);
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync('123456', salt);
 
     const users = await User.insertMany([{
-            name: 'Super Admin công ty xyz',
-            email: 'super.admin.xyz@gmail.com',
+            name: 'Super Admin VNIST',
+            email: 'super.admin.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
-            name: 'Admin công ty xyz',
-            email: 'admin.xyz@gmail.com',
+            name: 'Admin VNIST',
+            email: 'admin.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         },{
-            name: 'Nguyễn Văn A',
-            email: 'nva.xyz@gmail.com',
+            name: 'Nguyễn Văn An',
+            email: 'nva.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
-            name: 'Trần Văn B',
-            email: 'tvb.xyz@gmail.com',
+            name: 'Trần Văn Bình',
+            email: 'tvb.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
-            name: 'Vũ Thị C',
-            email: 'vtc.xyz@gmail.com',
+            name: 'Vũ Thị Cúc',
+            email: 'vtc.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
-            name: 'Nguyễn Văn D',
-            email: 'nvd.xyz@gmail.com',
+            name: 'Nguyễn Văn Danh',
+            email: 'nvd.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
-            name: 'Trần Thị E',
-            email: 'tte.xyz@gmail.com',
+            name: 'Trần Thị Én',
+            email: 'tte.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
-            name: 'Phạm Đình F',
-            email: 'pdf.xyz@gmail.com',
+            name: 'Phạm Đình Phúc',
+            email: 'pdp.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
             name: 'Trần Minh Đức',
-            email: 'tmd.xyz@gmail.com',
+            email: 'tmd.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
             name: 'Nguyễn Việt Anh',
-            email: 'nguyenvietanh.xyz@gmail.com',
+            email: 'nguyenvietanh.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
             name: 'Nguyễn Viết Thái',
-            email: 'nguyenvietthai.xyz@gmail.com',
+            email: 'nguyenvietthai.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
             name: 'Trần Mỹ Hạnh',
-            email: 'tranmyhanh.xyz@gmail.com',
+            email: 'tranmyhanh.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
             name: 'Nguyễn Minh Thành',
-            email: 'nguyenminhthanh.xyz@gmail.com',
+            email: 'nguyenminhthanh.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
             name: 'Nguyễn Gia Huy',
-            email: 'nguyengiahuy.xyz@gmail.com',
+            email: 'nguyengiahuy.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }, {
             name: 'Trần Minh Anh',
-            email: 'tranminhanh.xyz@gmail.com',
+            email: 'tranminhanh.vnist@gmail.com',
             password: hash,
-            company: xyz._id
+            company: vnist._id
         }
     ]);
     console.log("Xong! Đã thêm tài khoản:", users);
@@ -161,62 +161,62 @@ const sampleCompanyData = async () => {
 
     const admin = await Role.create({
         name: Terms.PREDEFINED_ROLES.ADMIN.NAME,
-        company: xyz._id,
+        company: vnist._id,
         type: roleAbstract._id
     });
     const roles = await Role.insertMany([{
         name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
-        company: xyz._id,
+        company: vnist._id,
         type: roleAbstract._id,
         parents: [admin._id]
     },  {
         name: Terms.PREDEFINED_ROLES.DEAN.NAME,
-        company: xyz._id,
+        company: vnist._id,
         type: roleAbstract._id
     }, {
         name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME,
-        company: xyz._id,
+        company: vnist._id,
         type: roleAbstract._id
     }, {
         name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME,
-        company: xyz._id,
+        company: vnist._id,
         type: roleAbstract._id
     }]);
 
     const thanhVienBGĐ = await Role.create({
         parents: [roles[3]._id],
         name: "Thành viên ban giám đốc",
-        company: xyz._id,
+        company: vnist._id,
         type: roleChucDanh._id
     });
     const phoGiamDoc = await Role.create({
         parents: [roles[2]._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
-        company: xyz._id,
+        company: vnist._id,
         type: roleChucDanh._id
     });
     const giamDoc = await Role.create({
         parents: [roles[1]._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
-        company: xyz._id,
+        company: vnist._id,
         type: roleChucDanh._id
     });
     const nvPhongHC = await Role.create({
         parents: [roles[3]._id],
         name: "Nhân viên phòng hành chính",
-        company: xyz._id,
+        company: vnist._id,
         type: roleChucDanh._id
     });
     const phoPhongHC = await Role.create({
         parents: [roles[2]._id, nvPhongHC._id],
         name: "Phó phòng hành chính",
-        company: xyz._id,
+        company: vnist._id,
         type: roleChucDanh._id
     });
     const truongPhongHC = await Role.create({
         parents: [roles[1]._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng hành chính",
-        company: xyz._id,
+        company: vnist._id,
         type: roleChucDanh._id
     });
 
@@ -232,39 +232,39 @@ const sampleCompanyData = async () => {
 
     console.log('Gán quyền cho nhân viên trong công ty');
 
-    await UserRole.insertMany([{ //gán tài khoản super.admin.xyz có role là Super Admin của công ty xyz
+    await UserRole.insertMany([{ //gán tài khoản super.admin.vnist có role là Super Admin của công ty VNIST
         userId: users[0]._id,
         roleId: roles[0]._id
     }, {
-        userId: users[1]._id, //gán tài khoản admin.xyz có role là admin
+        userId: users[1]._id, //gán tài khoản admin.vnist có role là admin
         roleId: admin._id
     },
     // Tiếp tục gán chức danh vai trò của phòng ban cho nhân viên:
-    {//Giám đốc Nguyễn Văn A
+    {//Giám đốc Nguyễn Văn An
         userId: users[2]._id,
         roleId: giamDoc._id
     },
-    {//Phó giám đốc Trần Văn B
+    {//Phó giám đốc Trần Văn Bình
         userId: users[3]._id,
         roleId: phoGiamDoc._id
     },
-    {//Thành viên ban giám đốc Vũ Thị C
+    {//Thành viên ban giám đốc Vũ Thị Cúc
         userId: users[4]._id,
         roleId: thanhVienBGĐ._id
     },
-    {//Trưởng phòng hành chính Nguyễn Văn D
+    {//Trưởng phòng hành chính Nguyễn Văn Danh
         userId: users[5]._id,
         roleId: truongPhongHC._id
     },
-    {//Nguyễn Văn D cũng là thành viên ban giám đốc
+    {//Nguyễn Văn Danh cũng là thành viên ban giám đốc
         userId: users[5]._id,
         roleId: thanhVienBGĐ._id
     },
-    {//Phó phòng hành chính Trần Thị E
+    {//Phó phòng hành chính Trần Thị Én
         userId: users[6]._id,
         roleId: phoPhongHC._id
     },
-    {//Nhân viên phòng hành chính Phạm Đình F
+    {//Nhân viên phòng hành chính Phạm Đình Phúc
         userId: users[7]._id,
         roleId: nvPhongHC._id
     }
@@ -280,8 +280,8 @@ const sampleCompanyData = async () => {
     console.log('Tạo Phòng ban cho công ty...');
     const Directorate = await Department.create({// Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
-        description: "Ban giám đốc của Công ty TNHH XYZ",
-        company:  xyz._id,
+        description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        company:  vnist._id,
         dean: giamDoc._id,
         vice_dean: phoGiamDoc._id,
         employee: thanhVienBGĐ._id,
@@ -290,8 +290,8 @@ const sampleCompanyData = async () => {
     const departments = await Department.insertMany([
         {
             name: "Phòng hành chính",
-            description: "Phòng hành chính của Công ty TNHH XYZ",
-            company:  xyz._id,
+            description: "Phòng hành chính Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+            company:  vnist._id,
             dean: truongPhongHC._id,
             vice_dean: phoPhongHC._id,
             employee: nvPhongHC._id,
@@ -312,155 +312,159 @@ const sampleCompanyData = async () => {
     const links = await Link.insertMany([
         { // 0
             url: '/',
-            description: `Trang chủ công ty ${xyz.name}`,
-            company: xyz._id
+            description: `Trang chủ công ty ${vnist.name}`,
+            company: vnist._id
         }, { // 1
             url: '/departments-management',
             description: 'Quản lý cơ cấu tổ chức',
-            company: xyz._id
+            company: vnist._id
         }, { // 2
             url: '/users-management',
             description: 'Quản lý người dùng',
-            company: xyz._id
+            company: vnist._id
         }, { // 3
             url: '/roles-management',
             description: 'Quản lý phân quyền',
-            company: xyz._id
+            company: vnist._id
         }, { // 4
             url: '/links-management',
             description: 'Quản lý trang web của công ty',
-            company: xyz._id
+            company: vnist._id
         }, { // 5
             url: '/components-management',
             description: 'Quản lý các thành phần UI trên trang web của công ty',
-            company: xyz._id
+            company: vnist._id
         }, { // 6
             url: '/documents-management',
             description: 'Quản lý tài liệu biểu mẫu',
-            company: xyz._id
+            company: vnist._id
         }, { // 7
             url: '/hr-manage-holiday',
             description: 'Kế hoạch làm việc',
-            company: xyz._id
+            company: vnist._id
         },
         { // 8
             url: '/hr-add-employee',
             description: 'Thêm mới nhân viên',
-            company: xyz._id
+            company: vnist._id
         },
         { // 9
             url: '/hr-list-employee',
             description: 'Danh sách nhân viên',
-            company: xyz._id
+            company: vnist._id
         },
         { // 10
             url: '/hr-update-employee',
             description: 'Cập nhật thông tin cá nhân của nhân viên',
-            company: xyz._id
+            company: vnist._id
         },
         { // 11
             url: '/hr-detail-employee',
             description: 'Thông tin cá nhân của nhân viên',
-            company: xyz._id
+            company: vnist._id
         },
         { // 12
             url: '/hr-salary-employee',
             description: 'Quản lý lương nhân viên',
-            company: xyz._id
+            company: vnist._id
         },
         { // 13
             url: '/hr-sabbatical',
             description: 'Quản lý nghỉ phép của nhân viên',
-            company: xyz._id
+            company: vnist._id
         },
         { // 14
             url: '/hr-discipline',
             description: 'Quản lý khen thưởng, kỷ luật',
-            company: xyz._id
+            company: vnist._id
         },
         { // 15
             url: '/hr-dashboard-employee',
             description: 'Dashboard nhân sự',
-            company: xyz._id
+            company: vnist._id
         },
         { // 16
             url: '/hr-time-keeping',
             description: 'Quản lý chấm công',
-            company: xyz._id
+            company: vnist._id
         },
         { // 17
             url: '/hr-trainning-course',
             description: 'Quản lý đào tạo',
-            company: xyz._id
+            company: vnist._id
         },
         { // 18
             url: '/hr-account',
             description: 'Thông tin tài khoản ',
-            company: xyz._id
+            company: vnist._id
         },
         { // 19
             url: '/hr-training-plan',
             description: 'Kế hoạch đào tạo',
-            company: xyz._id
+            company: vnist._id
         },
         { // 20
             url: '/hr-list-education',
             description: 'Chương trình đào tạo bắt buộc',
-            company: xyz._id
+            company: vnist._id
         },
 
         //thêm link của quản lý KPI
         { // 21
             url: '/kpi-units/create',
             description: 'Khởi tạo KPI đơn vị',
-            company: xyz._id
+            company: vnist._id
         },
         { // 22
             url: '/kpi-units/overview',
             description: 'Tổng quan KPI đơn vị',
-            company: xyz._id
+            company: vnist._id
         },
         { // 23
             url: '/kpi-personals/create',
             description: 'Khởi tạo KPI cá nhân',
-            company: xyz._id
+            company: vnist._id
         },
         { // 24
             url: '/kpi-personals/overview',
             description: 'Tổng quan KPI cá nhân',
-            company: xyz._id
+            company: vnist._id
         },
         { // 25
             url: '/notifications',
             description: 'Thông báo',
-            company: xyz._id
+            company: vnist._id
         },
         { // 26
             url: '/hr-manage-department',
             description: 'Quản lý nhân sự các đơn vị',
-            company: xyz._id
+            company: vnist._id
         },
         { // 27
             url: '/task-template',
             description: 'Mẫu công việc',
-            company: xyz._id
+            company: vnist._id
         },
         { // 28
             url: '/kpi-member/overview',
             description: 'Quản lí kpi nhân viên',
-            company: xyz._id
+            company: vnist._id
         },
         { // 29
             url: '/task-management',
             description: 'Xem danh sách công việc',
-            company: xyz._id
+            company: vnist._id
         },
         { // 30
             url: '/task-management-dashboard',
             description: 'Dashboard công việc',
-            company: xyz._id
+            company: vnist._id
         }
     ]);
+    
+    const updateVnist = await Company.findById(vnist._id);
+    updateVnist.super_admin = users[0]._id;
+    await updateVnist.save();
     console.log("Xong! Đã tạo links: ", links);
 
     //Thêm component -------------------------------------------------------
@@ -468,12 +472,12 @@ const sampleCompanyData = async () => {
         {
             name: 'create-notification',
             description: 'Tạo thông báo mới',
-            company: xyz._id
+            company: vnist._id
         },
         { // Tạo button Thêm mới
             name: 'create-task-template-button',
             description: 'Button thêm mới mẫu công việc',
-            company: xyz._id
+            company: vnist._id
         }
     ]);
     const notificationLink = await Link.findById(links[25]._id);
@@ -538,8 +542,7 @@ const sampleCompanyData = async () => {
             resourceId: links[6]._id,
             resourceType: 'Link',
             roleId: roles[0]._id
-        },
-        {
+        },{
             resourceId: links[25]._id, //notifications
             resourceType: 'Link',
             roleId: roles[0]._id
@@ -785,7 +788,7 @@ const sampleCompanyData = async () => {
         fullName: "Vũ Thị C",
         employeeNumber: "MS2015122",
         status:"active",
-        company:xyz._id,
+        company:vnist._id,
         MSCC: "123456",
         gender: "male",
         brithday: "17-04-1998",
@@ -793,7 +796,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "vtc.xyz@gmail.com",
+        emailCompany: "vtc.vnist@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -856,7 +859,7 @@ const sampleCompanyData = async () => {
         fullName: "Trần Văn B",
         employeeNumber: "MS2015124",
         status:"active",
-        company:xyz._id,
+        company:vnist._id,
         MSCC: "123456",
         gender: "male",
         brithday: "17-04-1998",
@@ -864,7 +867,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "tvb.xyz@gmail.com",
+        emailCompany: "tvb.vnist@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -977,7 +980,7 @@ const sampleCompanyData = async () => {
         fullName: "Nguyễn Văn A",
         employeeNumber: "MS2015123",
         status:"active",
-        company:xyz._id,
+        company:vnist._id,
         MSCC: "123456",
         gender: "male",
         brithday: "17-04-1998",
@@ -985,7 +988,7 @@ const sampleCompanyData = async () => {
         CMND: 163414569,
         dateCMND: "20-10-2015",
         addressCMND: "Nam Định",
-        emailCompany: "nva.xyz@gmail.com",
+        emailCompany: "nva.vnist@gmail.com",
         numberTax: "12658974",
         userTax: "Nguyễn Văn Hưng",
         startTax: "12-08-2019",
@@ -1087,14 +1090,14 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu nghỉ phép!");
     var sabbatical = await Sabbatical.insertMany([{
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         startDate: "04-02-2020",
         endDate: "08-02-2020",
         status: "pass",
         reason: "Về quê",
     }, {
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         startDate: "05-02-2020",
         endDate: "10-02-2020",
         status: "process",
@@ -1110,7 +1113,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu lương nhân viên!");
     var salary = await Salary.insertMany([{
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         month: "02-2020",
         mainSalary: "10000000VND",
         bonus: [{
@@ -1119,7 +1122,7 @@ const sampleCompanyData = async () => {
         }],
     }, {
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         month: "01-2020",
         mainSalary: "10000000VND",
         bonus: [{
@@ -1137,7 +1140,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu khen thưởng!");
     var praise = await Praise.insertMany([{
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         number: "123",
         unit: "Phòng kinh doanh",
         startDate: "02-02-2020",
@@ -1145,7 +1148,7 @@ const sampleCompanyData = async () => {
         reason: "Vượt doanh số",
     }, {
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         number: "1234",
         unit: "Phòng kinh doanh",
         startDate: "02-02-2020",
@@ -1162,7 +1165,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu kỷ luật!");
     var discipline = await Discipline.insertMany([{
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         number: "1456",
         unit: "Phòng nhân sự",
         startDate: "02-02-2020",
@@ -1171,7 +1174,7 @@ const sampleCompanyData = async () => {
         reason: "Không làm đủ công",
     }, {
         employee: employee._id,
-        company:xyz._id,
+        company:vnist._id,
         number: "1457",
         unit: "Phòng kinh doanh",
         startDate: "02-02-2020",
@@ -1189,7 +1192,7 @@ const sampleCompanyData = async () => {
 
     console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
     var educationProgram = await EducationProgram.insertMany([{
-        company:xyz._id,
+        company:vnist._id,
         unitEducation: [
             departments[0]._id
         ],
@@ -1199,7 +1202,7 @@ const sampleCompanyData = async () => {
         nameEducation: "An toan lao dong",
         numberEducation: "M123",
     }, {
-        company:xyz._id,
+        company:vnist._id,
         unitEducation: [
             departments[0]._id
         ],
@@ -1219,7 +1222,7 @@ const sampleCompanyData = async () => {
 
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
     var course= await Course.insertMany([{
-        company:xyz._id,
+        company:vnist._id,
         nameCourse : "An toàn lao động 1",
         numberCourse : "LD1233",
         unitCourse : "Vnists",
@@ -1232,7 +1235,7 @@ const sampleCompanyData = async () => {
         educationProgram : educationProgram[0]._id,
         time : "6",
     }, {
-        company:xyz._id,
+        company:vnist._id,
         nameCourse : "An toàn lao động 2",
         numberCourse : "LD123",
         unitCourse : "Vnists",

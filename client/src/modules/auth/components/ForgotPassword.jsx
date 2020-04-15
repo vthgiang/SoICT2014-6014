@@ -24,6 +24,18 @@ class ForgotPassword extends Component {
         });
     }
 
+    forgotPassword = (email) => {
+        this.props.forgotPassword(email)
+            .catch(err => {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        forgotPasswordRequestError: err.response.data.message
+                    }
+                })
+            })
+    }
+
     resetPassword = () => {
         const {email, password, confirm, otp} = this.state;
         if(password !== confirm) 
@@ -46,6 +58,12 @@ class ForgotPassword extends Component {
                         !auth.forgotPassword ?
                         <React.Fragment>
                             <div className="modal-body">
+                                {
+                                    this.state.forgotPasswordRequestError !== undefined &&
+                                    <div className="alert alert-danger alert-dismissible">
+                                        <p><strong>{ this.state.forgotPasswordRequestError }</strong></p>
+                                    </div>
+                                }
                                 <div className="form-group">
                                     <label>{ translate('form.email') }</label>
                                     <input type="text" className="form-control" name="email" onChange={ this.handleChange }/><br/>
@@ -53,7 +71,7 @@ class ForgotPassword extends Component {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">{ translate('form.close') }</button>
-                                <button type="button" className="btn btn-primary" onClick={() => this.props.forgotPassword(this.state.email)}>{ translate('form.next') }</button>
+                                <button type="button" className="btn btn-primary" onClick={() => this.forgotPassword(this.state.email)}>{ translate('form.next') }</button>
                             </div>
                         </React.Fragment> : 
                         <React.Fragment>

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
     handleResponse
 } from '../../../../helpers/HandleResponse';
@@ -80,12 +81,19 @@ function updateInformationEmployee(id, data) {
 // upload ảnh đại diện của nhân viên
 function uploadAvatar(employeeNumber, fileUpload) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/employee/avatar/${employeeNumber}`,
         method: 'PATCH',
-        headers: AuthenticateHeaderPATCH(),
-        body: fileUpload,
-
+        data: fileUpload,
+        headers: AuthenticateHeaderPATCH()
     };
-    return fetch(`${ LOCAL_SERVER_API }/employee/avatar/${employeeNumber}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
+    // const requestOptions = {
+    //     method: 'PATCH',
+    //     headers: AuthenticateHeaderPATCH(),
+    //     body: fileUpload,
+
+    // };
+    // return fetch(`${ LOCAL_SERVER_API }/employee/avatar/${employeeNumber}`, requestOptions).then(handleResponse);
 
 }
 

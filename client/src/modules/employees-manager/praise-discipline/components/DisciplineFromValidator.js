@@ -8,6 +8,9 @@ export const DisciplineFromValidator = {
     validateNumber,
     validateUnit,
     validateType,
+    validateStartDate,
+    validateEndDate
+
 }
 // Kiểm tra mã nhân viên nhập vào
 function validateEmployeeNumber(value, translate) {
@@ -48,6 +51,22 @@ function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('error.reason_discipline_required');
+    }
+    return msg;
+}
+// Kiểm tra ngày có hiệu lực
+function validateStartDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = translate('error.start_date_discipline_required');
+    }
+    return msg;
+}
+// Kiểm tra ngày hết hiệu lực
+function validateEndDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = translate('error.end_date_discipline_required');
     }
     return msg;
 }
