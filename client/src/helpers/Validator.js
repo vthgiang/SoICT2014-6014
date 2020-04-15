@@ -16,13 +16,7 @@ export const VALIDATOR = {
     isValidPassword,
     isValidEmployeeNumber: isValidEmployeeNumber,
     isValidUrl,
-<<<<<<< HEAD
-
-    //asset
-    isValidRecommendNumber: isValidRecommendNumber
-=======
     isStringNotSpace
->>>>>>> 15fd340c647d87e2e062ad8abaa7b2f3e377026a
 }
 
 // Kiểm tra tên có hợp lệ
@@ -43,11 +37,6 @@ function isValidPassword(password) {
 // Kiểm tra mã số nhân viên có hợp lệ
 function isValidEmployeeNumber(employeeNumber) {
     return employeeNumberRegex.test(employeeNumber) ? true : false;
-}
-
-// Kiểm tra mã số phiếu có hợp lệ
-function isValidRecommendNumber(recommendNumber) {
-    return recommendNumberRegex.test(recommendNumber) ? true : false;
 }
 
 // Kiem tra url co hop le
