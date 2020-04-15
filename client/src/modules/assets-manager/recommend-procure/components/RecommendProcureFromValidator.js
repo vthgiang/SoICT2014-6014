@@ -3,25 +3,44 @@ import {
 } from '../../../../helpers/Validator';
 
 export const RecommendProcureFromValidator = {
-    validateEmployeeNumber,
-    validateReason,
+    validateRecommendNumber,
+    validateEquipment,
+    validateTotal,
+    validateUnit,
 
 }
 
-// Kiểm tra mã nhân viên nhập vào
-function validateEmployeeNumber(value, translate) {
+// Kiểm tra "Mã phiếu" nhập vào
+function validateRecommendNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.employee_number_required');
+        msg = "Mã phiếu không được để trống";
     } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
-        msg = translate('error.staff_code_not_special');
+        msg = "Mã phiếu không được chứa kí tự đặc biệt";
     }
     return msg;
 }
-function validateReason(value, translate) {
+// Kiểm tra "Thiết bị đề nghị mua" nhập vào
+function validateEquipment(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.reason_sabbatical_required');
+        msg = "Thiết bị đề nghị mua không được để trống";
+    }
+    return msg;
+}
+// Kiểm tra "Số lượng" nhập vào
+function validateTotal(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Số lượng không được để trống";
+    }
+    return msg;
+}
+// Kiểm tra "Đơn vị tính" nhập vào
+function validateUnit(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Đơn vị tính không được để trống";
     }
     return msg;
 }

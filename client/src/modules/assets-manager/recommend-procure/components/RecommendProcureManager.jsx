@@ -10,22 +10,18 @@ class RecommendProcureManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: null,
-            position: null,
-            employeeNumber: "",
+            recommendNumber: "",
             month: "",
             status: null,
             page: 0,
             limit: 5,
         }
-        //this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
         // this.props.getListRecommendProcure(this.state);
-        // this.props.getDepartment();
     }
-    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
         await this.setState(state => {
             return {
@@ -52,7 +48,7 @@ class RecommendProcureManager extends Component {
     }
 
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
-    handleMSNVChange = (event) => {
+    handleRecommendNumberChange = (event) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
@@ -66,28 +62,6 @@ class RecommendProcureManager extends Component {
             ...this.state,
             month: value
         });
-    }
-
-    // Function lưu giá trị unit vào state khi thay đổi
-    handleUnitChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            unit: value
-        })
-    }
-
-    // Function lưu giá trị chức vụ vào state khi thay đổi
-    handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            position: value
-        })
     }
 
     // Function lưu giá trị status vào state khi thay đổi
@@ -130,24 +104,9 @@ class RecommendProcureManager extends Component {
     }
 
     render() {
-        // const { list } = this.props.department;
         const { translate, recommendProcure } = this.props;
-        var listRecommendProcure = "", listPosition = [];
-        // if (this.state.unit !== null) {
-        //     let unit = this.state.unit;
-        //     unit.forEach(u => {
-        //         list.forEach(x => {
-        //             if (x._id === u) {
-        //                 let position = [
-        //                     { _id: x.dean._id, name: x.dean.name },
-        //                     { _id: x.vice_dean._id, name: x.vice_dean.name },
-        //                     { _id: x.employee._id, name: x.employee.name }
-        //                 ]
-        //                 listPosition = listPosition.concat(position)
-        //             }
-        //         })
-        //     })
-        // }
+        var listRecommendProcure = "";
+
         if (this.props.recommendProcure.isLoading === false) {
             listRecommendProcure = this.props.recommendProcure.listRecommendProcure;
         }
@@ -165,7 +124,7 @@ class RecommendProcureManager extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã phiếu:</label>
-                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleMSNVChange} placeholder="Mã phiếu" autoComplete="off" />
+                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder="Mã phiếu" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
@@ -265,8 +224,8 @@ class RecommendProcureManager extends Component {
                         _id={this.state.currentRow._id}
                         recommendNumber={this.state.currentRow.recommendNumber}
                         createDate={this.state.currentRow.createDate}
-                        // startDate={this.state.currentRow.startDate}
-                        // reason={this.state.currentRow.reason}
+
+
                         status={this.state.currentRow.status}
                     />
                 }
@@ -276,12 +235,11 @@ class RecommendProcureManager extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure, department } = state;
-    return { recommendProcure, department };
+    const { recommendProcure } = state;
+    return { recommendProcure };
 };
 
 const actionCreators = {
-    // getDepartment: DepartmentActions.get,
     // getListRecommendProcure: RecommendProcureActions.getListRecommendProcure,
     // deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
 };

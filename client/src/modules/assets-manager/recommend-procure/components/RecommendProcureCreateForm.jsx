@@ -8,11 +8,20 @@ class RecommendProcureCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: "",
+            recommendNumber: "",
             createDate: this.formatDate(Date.now()),
-            // endDate: this.formatDate(Date.now()),
-            // status: "pass",
-            reason: "",
+            proponent: "",
+            department: "",
+            position: "",
+            equipment: "",
+            supplier: "",
+            total: "",
+            unit: "",
+            estimatePrice: "",
+            approver: "",
+            position1: "",
+            status: "",
+            content: "",
         };
     }
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -30,86 +39,128 @@ class RecommendProcureCreateForm extends Component {
         return [day, month, year].join('-');
     }
 
-    // Bắt sự kiện thay đổi mã nhân viên
+    // Bắt sự kiện thay đổi mã phiếu
     handleMSNVChange = (e) => {
         let value = e.target.value;
-        this.validateEmployeeNumber(value, true);
+        this.validateRecommendNumber(value, true);
     }
-    validateEmployeeNumber = (value, willUpdateState = true) => {
-        let msg = RecommendProcureFromValidator.validateEmployeeNumber(value, this.props.translate)
+    validateRecommendNumber = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateRecommendNumber(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
+                    errorOnRecommendNumber: msg,
+                    recommendNumber: value,
                 }
             });
         }
         return msg === undefined;
     }
-    // Bắt sự kiện thay đổi ngày bắt đầu
+    // Bắt sự kiện thay đổi "Ngày lập"
     handleCreateDateChange = (value) => {
         this.setState({
             ...this.state,
-            startDate: value
+            createDate: value
         })
     }
 
-    // // Bắt sự kiện thay đổi ngày kết thúc
-    // handleEndDateChange = (value) => {
-    //     this.setState({
-    //         ...this.state,
-    //         endDate: value
-    //     })
-    // }
-
-    // Bắt sự kiện thay đổi lý do xin nghỉ phép
-    handleReasonChange = (e) => {
+    // Bắt sự kiện thay đổi "Thiết bị đề nghị mua"
+    handleEquipmentChange = (e) => {
         let value = e.target.value;
-        this.validateReason(value, true);
+        this.validateEquipment(value, true);
     }
-    validateReason = (value, willUpdateState = true) => {
-        let msg = RecommendProcureFromValidator.validateReason(value, this.props.translate)
+    validateEquipment = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateEquipment(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnReason: msg,
-                    reason: value,
+                    errorOnEquipment: msg,
+                    equipment: value,
                 }
             });
         }
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi trạng thái đơn xin nghỉ phép
-    handleStatusChange = (e) => {
+    // Bắt sự kiện thay đổi "Nhà cung cấp"
+    handleSupplierChange = (e) => {
         let value = e.target.value;
         this.setState({
             ...this.state,
-            status: value
+            supplier: value
+        })
+    }
+
+    // Bắt sự kiện thay đổi "Số lượng"
+    handleTotalChange = (e) => {
+        let value = e.target.value;
+        this.validateTotal(value, true);
+    }
+    validateTotal = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateTotal(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnTotal: msg,
+                    total: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi "Đơn vị tính"
+    handleUnitChange = (e) => {
+        let value = e.target.value;
+        this.validateUnit(value, true);
+    }
+    validateUnit = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateUnit(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnUnit: msg,
+                    unit: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi "Giá trị dự tính"
+    handleEstimatePriceChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            estimatePrice: value
         })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateEmployeeNumber(this.state.employeeNumber, false) &&
-            this.validateReason(this.state.reason, false);
+            this.validateRecommendNumber(this.state.recommendNumber, false) &&
+            this.validateEquipment(this.state.equipment, false) &&
+            this.validateTotal(this.state.total, false) &&
+            this.validateUnit(this.state.unit, false);
         return result;
     }
 
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.createNewRecommendProcure(this.state);
+            // return this.props.createNewRecommendProcure(this.state);
         }
     }
 
     render() {
         const { translate, recommendProcure } = this.props;
-        const { employeeNumber, createDate, endDate, reason, status, errorOnEmployeeNumber, errorOnReason } = this.state;
+        const { recommendNumber, createDate, equipment, supplier, total, unit, estimatePrice,
+                errorOnRecommendNumber, errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
         return (
             <React.Fragment>
                 <ModalButton modalID="modal-create-recommendprocure" button_name="Thêm mới phiếu" title="Thêm mới phiếu đề nghị" />
@@ -125,10 +176,10 @@ class RecommendProcureCreateForm extends Component {
                     <form className="form-group" id="form-create-recommendprocure">
                         <div className="col-md-12">
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
+                                <div className={`form-group ${errorOnRecommendNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder="Mã phiếu" />
-                                    <ErrorLabel content={errorOnEmployeeNumber} />
+                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder="Mã phiếu" />
+                                    <ErrorLabel content={errorOnRecommendNumber} />
                                 </div>
                                 <div className="form-group">
                                     <label>Ngày lập<span className="text-red">*</span></label>
@@ -141,51 +192,57 @@ class RecommendProcureCreateForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Người đề nghị<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="reqNumber" />
+                                    <input type="text" className="form-control" name="proponent" />
                                 </div>
                                 <div className="form-group">
                                     <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="reqNumber" />
+                                    <input type="text" className="form-control" name="department" />
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="reqNumber" />
+                                    <input type="text" className="form-control" name="position" />
                                 </div>
-                                <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
+                                <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleReasonChange}></textarea>
-                                    <ErrorLabel content={errorOnReason} />
+                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua"></textarea>
+                                    <ErrorLabel content={errorOnEquipment} />
                                 </div>
                                 <div className="form-group">
-                                    <label>Nhà cung cấp<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="reqNumber" />
+                                    <label>Nhà cung cấp</label>
+                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} autoComplete="off" placeholder="Nhà cung cấp" />
                                 </div>
                             </div>
                             <div className="col-sm-6">
-                                <div className="form-group">
+                                <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
                                     <label>Số lượng<span className="text-red">*</span></label>
-                                    <input type="number" className="form-control" name="reqNumber" />
+                                    <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} autoComplete="off" placeholder="Số lượng" />
+                                    <ErrorLabel content={errorOnTotal} />
                                 </div>
-                                <div className="form-group">
+                                <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                     <label>Đơn vị tính<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="reqNumber" />
+                                    <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
+                                    <ErrorLabel content={errorOnUnit} />
                                 </div>
                                 <div className="form-group">
                                     <label>Giá trị dự tính:</label>
-                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="costsCourse" onChange={this.handleChange} autoComplete="off" />
+                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính" />
                                     <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label>
                                 </div>
                                 <div className="form-group">
                                     <label>Người phê duyệt</label>
-                                    <input type="text" className="form-control" name="reqNumber" />
+                                    <input type="text" className="form-control" name="approver" disabled />
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="reqNumber" />
+                                    <input type="text" className="form-control" name="position1" disabled/>
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="employeeNumber" defaultValue="Chờ phê duyệt" disabled />
+                                    <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled />
+                                </div>
+                                <div className="form-group">
+                                    <label>Nội dung</label>
+                                    <input type="text" className="form-control" name="content" disabled/>
                                 </div>
                             </div>
                         </div>

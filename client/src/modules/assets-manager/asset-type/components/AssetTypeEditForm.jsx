@@ -8,86 +8,68 @@ class AssetTypeEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.save = this.save.bind(this);
     }
 
     /**
-     * Bắt sự kiện thay đổi cấp ra quyết định
+     * Bắt sự kiện thay đổi tên loại tài sản
      */
-    handleUnitChange = (e) => {
+    handleTypeNameChange = (e) => {
         let value = e.target.value;
-        this.validateUnit(value, true);
+        this.validateTypeName(value, true);
     }
-    validateUnit = (value, willUpdateState = true) => {
-        let msg = AssetTypeFromValidator.validateUnit(value, this.props.translate)
+    validateTypeName = (value, willUpdateState = true) => {
+        let msg = AssetTypeFromValidator.validateTypeName(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
-                    unit: value,
+                    errorOnTypeName: msg,
+                    typeName: value,
                 }
             });
         }
         return msg === undefined;
     }
+
     /**
-     * Bắt sự kiện thay đổi ngày ra quyết định
+     * Bắt sự kiện thay đổi thời gian trích khấu hao
      */
-    handleStartDateChange = (value) => {
+    handleTimeDepreciationChange = (e) => {
+        let value = e.target.value;
         this.setState({
             ...this.state,
-            startDate: value
+            timeDepreciation: value
         })
     }
 
     /**
-     * Bắt sự kiện thay đổi hình thức khen thưởng
+     * Bắt sự kiện thay đổi loại tài sản cha
      */
-    handleTypeChange = (e) => {
+    handleParentChange = (e) => {
         let value = e.target.value;
-        this.validateType(value, true);
-    }
-    validateType = (value, willUpdateState = true) => {
-        let msg = AssetTypeFromValidator.validateType(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnType: msg,
-                    type: value,
-                }
-            });
-        }
-        return msg === undefined;
+        this.setState({
+            ...this.state,
+            parent: value
+        })
     }
 
     /**
-     *  Bắt sự kiện thay đổi thành tich(lý do) khen thưởng
+     * Bắt sự kiện thay đổi mô tả
      */
-    handleReasonChange = (e) => {
+    handleDescriptionChange = (e) => {
         let value = e.target.value;
-        this.validateReason(value, true);
-    }
-    validateReason = (value, willUpdateState = true) => {
-        let msg = AssetTypeFromValidator.validateReason(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnReason: msg,
-                    reason: value,
-                }
-            });
-        }
-        return msg === undefined;
+        this.setState({
+            ...this.state,
+            description: value
+        })
     }
 
     /**
      * Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
      */
     isFormValidated = () => {
-        let result = this.validateUnit(this.state.unit, false) && this.validateType(this.state.reason, false) &&
-            this.validateReason(this.state.reason, false);
+        let result = this.validateTypeName(this.state.typeName, false);
         return result;
     }
     /**
@@ -95,7 +77,7 @@ class AssetTypeEditForm extends Component {
      */
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.updateAssetType(this.state._id, this.state);
+            // return this.props.updateAssetType(this.state._id, this.state);
         }
     }
 
@@ -104,15 +86,12 @@ class AssetTypeEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                employeeNumber: nextProps.employeeNumber,
-                number: nextProps.number,
-                unit: nextProps.unit,
-                startDate: nextProps.startDate,
-                type: nextProps.type,
-                reason: nextProps.reason,
-                errorOnUnit: undefined,
-                errorOnType: undefined,
-                errorOnReason: undefined
+                typeNumber: nextProps.typeNumber,
+                typeName: nextProps.typeName,
+                timeDepreciation: nextProps.timeDepreciation,
+                parent: nextProps.parent,
+                description: nextProps.description,
+                errorOnTypeName: undefined,
             }
         } else {
             return null;
@@ -120,8 +99,8 @@ class AssetTypeEditForm extends Component {
     }
     render() {
         const { translate, assetType } = this.props;
-        const { employeeNumber, startDate, reason, number, unit, type,
-            errorOnUnit, errorOnType, errorOnReason } = this.state;
+        const { typeNumber, typeName, timeDepreciation, parent, description,
+                 errorOnTypeName } = this.state;
         return (
             <React.Fragment>
                 <ModalDialog
@@ -136,24 +115,25 @@ class AssetTypeEditForm extends Component {
                     <form className="form-group" id="form-edit-assettype">
                         <div className="form-group">
                             <label>Mã loại tài sản<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled autoComplete="off" />
+                            <input type="text" className="form-control" name="typeNumber" value={typeNumber} disabled />
                         </div>
-                        <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                            <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
-                            <ErrorLabel content={errorOnUnit} />
+                        <div className={`col-sm-6 col-xs-12 form-group ${errorOnTypeName === undefined ? "" : "has-error"}`}>
+                            <label>Tên loại tài sản<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} />
+                            <ErrorLabel content={errorOnTypeName} />
                         </div>
                         <div className="form-group">
                             <label>Thời gian khấu hao</label>
-                            <input type="number" className="form-control" name="employeeNumber" defaultValue="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Thời gian khấu hao" />
+                            <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="timeDepreciation" value={ timeDepreciation } onChange={this.handleTimeDepreciationChange} />
+                            <label style={{ height: 34, display: "inline", width: "5%"}}> &nbsp; Năm</label>
                         </div>
                         <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <input type="text" className="form-control" name="employeeNumber" defaultValue="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Loại tài sản cha" />
+                            <input type="text" className="form-control" name="parent" value={parent} onChange={this.handleParentChange} />
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>
-                            <input type="text" className="form-control" name="employeeNumber" defaultValue="" onChange={this.handleMSNVChange} autoComplete="off" placeholder="Mô tả" />
+                            <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} ></textarea>
                         </div>
                     </form>
                 </ModalDialog>

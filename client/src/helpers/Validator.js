@@ -4,6 +4,8 @@ const passwordRegex = /^[^~`!#$%^&*()+=/*';\\<>?:",]*$/;
 const employeeNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
 const urlRegex = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
 
+const recommendNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
+
 /**
  * Validate dữ liệu nhập vào từ người dùng trươc khi gửi đến cho server xử lý
  */
@@ -12,7 +14,10 @@ export const VALIDATOR = {
     isValidEmail: isValidEmail,
     isValidPassword: isValidPassword,
     isValidEmployeeNumber: isValidEmployeeNumber,
-    isValidUrl
+    isValidUrl,
+
+    //asset
+    isValidRecommendNumber: isValidRecommendNumber
 }
 
 // Kiểm tra tên có hợp lệ
@@ -33,6 +38,11 @@ function isValidPassword(password) {
 // Kiểm tra mã số nhân viên có hợp lệ
 function isValidEmployeeNumber(employeeNumber) {
     return employeeNumberRegex.test(employeeNumber) ? true : false;
+}
+
+// Kiểm tra mã số phiếu có hợp lệ
+function isValidRecommendNumber(recommendNumber) {
+    return recommendNumberRegex.test(recommendNumber) ? true : false;
 }
 
 // Kiem tra url co hop le
