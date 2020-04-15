@@ -5,9 +5,10 @@ import { withTranslate } from 'react-redux-multilingual';
 class SearchBar extends Component {
     constructor(props) {
         super(props);
-        this.opt = React.createRef();
-        this.value = React.createRef();
-        this.state = { }
+        this.state = {
+            option: '',
+            value: ''
+        }
     }
 
     handleEnterLimitSetting = (event) => {
@@ -20,9 +21,36 @@ class SearchBar extends Component {
         }
     }
 
+    handleChangeOption = async (e) => {
+        const {value} = e.target;
+        await this.setState(state => {
+            return {
+                ...state,
+                option: value
+            }
+        })
+        await this.props.setOption("option", this.state.option);
+    }
+
+    handleChangeInput = async(e) => {
+        const {value} = e.target;
+        await this.setState(state => {
+            return {
+                ...state,
+                value: { $regex: value, $options: 'i' }
+            }
+        })
+        await this.props.setOption("value", this.state.value); //set giá trị của nội dung muốn tìm kiếm
+    }
+
+    search = () => {
+        this.props.search();
+    } 
+
     render() { 
-        const { columns, translate, option, setOption, search } = this.props;
+        const { columns, translate, option } = this.props;
         
+        console.log("SEARCH: ", this.state);
         return ( 
             <React.Fragment>
                 <div className="qlcv">
@@ -31,9 +59,8 @@ class SearchBar extends Component {
                             <label>{translate('form.property')}</label>
                             <select
                                 className="form-control"
-                                defaultValue={ option } 
-                                ref={this.opt} 
-                                onChange={() => setOption("option", this.opt.current.value)}
+                                value={ option } 
+                                onChange={this.handleChangeOption}
                             >
                             {
                                 columns !== undefined && columns.map( column => <option key={column.value} value={column.value}>{column.title}</option>)
@@ -44,8 +71,8 @@ class SearchBar extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label>{translate('form.value')}</label>
-                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} placeholder={translate('searchByValue')} ref={this.value} onChange={() => setOption("value", { $regex: this.value.current.value, $options: 'i' })}/>
-                            <button type="button" className="btn btn-success" onClick={search} title={translate('form.search')}>{translate('form.search')}</button>
+                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} placeholder={translate('searchByValue')} onChange={this.handleChangeInput}/>
+                            <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,16 @@
+// NODE_MODULES
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
+const multer = require('multer');
+multer({dest: 'upload/avatars'});
+multer({dest: 'upload/docs'});
+multer({dest: 'upload/excels'});
+require('dotenv').config();
+
+// MODULES
 const log = require('./modules/system-admin-management/logs-management/log.route');
 const user = require('./modules/super-admin-management/users-management/user.route');
 const auth = require('./modules/auth/auth.route');
@@ -23,28 +31,19 @@ const notifications = require('./modules/notifications/notification.route');
 const holiday = require('./modules/employees-manager/holiday/holiday.route');
 const sample = require('./modules/_sample-module/_sample.route');
 const document = require('./modules/documents-management/document.route');
-
 const createKpiUnit = require("./modules/kpi-unit/kpi-unit-create/create.route");
 const overviewKpiUnit = require("./modules/kpi-unit/kpi-unit-overview/overview.route");
-
 const createKpiPersonal = require("./modules/kpi-personal/kpi-personal-create/create.route")
 const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overview/overview.route")
-
 const tasktemplates =require ("./modules/task-template-management/task-template-management.route")
-
 const tasks = require("./modules/task-management/task-management/task-management.route");
 const performtask = require("./modules/task-management/perform-task/perform-task.route");
-
 const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
 const componentsDefault = require('./modules/system-admin-management/components-default-management/component-default.route');
 const rolesDefault = require('./modules/system-admin-management/roles-default-management/role-default.route');
-
 const kpimember = require('./modules/kpi-member/kpiMember.route');
 
-// process.env.TZ = 'Asia/Ho_Chi_Minh';
-
-require('dotenv').config();
-
+// APP
 const app = express();
 
 // Bodyparser middleware
@@ -56,6 +55,7 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use('/upload', express.static('upload'));
 
 // DB Config
 const db = process.env.DATABASE;
@@ -79,7 +79,7 @@ Logger.findOne({
     })
     .then(result => {
         result.status ? isLog = true : isLog = false;
-        console.log("Logger status: ", isLog);
+        // console.log("Logger status: ", isLog);
     })
     .catch(err => console.log("message: ", err));
 
@@ -123,4 +123,4 @@ app.use("/performtask", performtask);
 // console.log("ENV: ", process.env);
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`Server up and running on port ${port} !`));
+app.listen(port, () => console.log(`Server up and running on: ${port} !`));

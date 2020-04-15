@@ -21,6 +21,26 @@ exports.get = async (req, res) => {
     }
 };
 
+exports.getCategories = async (req, res) => {
+    try {
+        const categories = await LinkDefaultService.getCategories();
+        
+        LogInfo(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
+        res.status(200).json({
+            success: true,
+            message: 'get_links_default_categories_success',
+            content: categories
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
 exports.getPaginate = async (req, res) => {
     try {
         var { limit, page } = req.body;
@@ -46,9 +66,9 @@ exports.getPaginate = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        var { url, description, roles } = req.body;
-        var link = await LinkDefaultService.create(url, description, roles);
-        var data = await LinkDefaultService.show(link._id);
+        const { url, description, roles, category } = req.body;
+        const link = await LinkDefaultService.create(url, description, roles, category);
+        const data = await LinkDefaultService.show(link._id);
 
         LogInfo(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(200).json({
@@ -88,9 +108,9 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
-        var { url, description, roles } = req.body;
-        var link = await LinkDefaultService.edit(req.params.id, url, description, roles);
-        var data = await LinkDefaultService.show(link._id);
+        const { url, description, roles, category } = req.body;
+        const link = await LinkDefaultService.edit(req.params.id, url, description, roles, category);
+        const data = await LinkDefaultService.show(link._id);
         
         LogInfo(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(200).json({
@@ -110,7 +130,7 @@ exports.edit = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        var link = await LinkDefaultService.delete(req.params.id);
+        const link = await LinkDefaultService.delete(req.params.id);
         
         LogInfo(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(200).json({

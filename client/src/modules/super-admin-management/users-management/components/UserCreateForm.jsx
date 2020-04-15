@@ -106,12 +106,12 @@ class UserCreateForm extends Component {
                     <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
                         <div className={`form-group ${errorOnUserName===undefined?"":"has-error"}`}>
                             <label>{ translate('table.name') }<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" value={userName} onChange = {this.handleUserNameChange}/>
+                            <input type="text" className="form-control" onChange = {this.handleUserNameChange}/>
                             <ErrorLabel content={errorOnUserName}/>
                         </div>
                         <div className={`form-group ${errorOnUserEmail===undefined?"":"has-error"}`}>
                             <label>{ translate('table.email') }<span className="text-red">*</span></label>
-                            <input type="email" className="form-control" value={userEmail} onChange = {this.handleUserEmailChange}/>
+                            <input type="email" className="form-control" onChange = {this.handleUserEmailChange}/>
                             <ErrorLabel content={errorOnUserEmail}/>
                         </div>
                         <div className="form-group">

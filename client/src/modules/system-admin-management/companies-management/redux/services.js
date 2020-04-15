@@ -6,7 +6,15 @@ export const CompanyServices = {
     get,
     getPaginate,
     create,
-    edit
+    edit,
+    addNewLink,
+    deleteLink,    
+    addNewComponent,
+    deleteComponent,
+    linksList,
+    linksPaginate,
+    componentsList,
+    componentsPaginate
 };
 
 function get() {
@@ -46,6 +54,90 @@ function edit(id, data) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/company/${id}`,
         method: 'PATCH',
+        data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function addNewLink(id, data) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${id}/add-new-link`,
+        method: 'POST',
+        data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function deleteLink(companyId, linkId) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${companyId}/delete-link/${linkId}`,
+        method: 'DELETE',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function addNewComponent(id, data) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${id}/add-new-component`,
+        method: 'POST',
+        data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function deleteComponent(companyId, componentId) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${companyId}/delete-component/${componentId}`,
+        method: 'DELETE',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function linksList(companyId) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${companyId}/links-list`,
+        method: 'GET',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function linksPaginate(companyId, page, limit, data={}) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${companyId}/links-paginate/${page}/${limit}`,
+        method: 'POST',
+        data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function componentsList(companyId) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${companyId}/components-list`,
+        method: 'GET',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function componentsPaginate(companyId, page, limit, data) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${companyId}/components-paginate/${page}/${limit}`,
+        method: 'POST',
         data,
         headers: AuthenticateHeader()
     };

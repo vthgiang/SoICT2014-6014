@@ -623,6 +623,7 @@ export default {
         },
 
         kpi_unit_create: {
+            unit: 'Đơn vị',
             target_name: 'Tên mục tiêu',
             criteria: 'Tiêu chí đánh giá',
             weight: 'Trọng số',
@@ -664,6 +665,138 @@ export default {
             edit_target_success: 'Sửa mục tiêu thành công',
             init_success: 'Khởi tạo KPI tháng mới thành công',
 
+        },
+
+        kpi_personal: {
+            kpi_personal_create: {
+                general_information: {
+                    general_information: 'KPI cá nhân tháng',
+                    save: 'Lưu chỉnh sửa',
+                    edit: 'Chỉnh sửa',
+                    delete: 'Xóa KPI này',
+                    cancel: 'Hủy',
+                    edit_success: 'Chỉnh sửa thành công',
+                    edit_failure: 'Chỉnh sửa không thành công',
+                    delete_success: 'Xóa KPI thành công'
+                },
+
+                unit: 'Đơn vị',
+                time: 'Thời gian',
+                approver: 'Người phê duyệt',
+
+                kpi_status: {
+                    status: 'Trạng thái KPI',
+                    setting_up: 'Đang thiết lập',
+                    awaiting_approval: 'Chờ phê duyệt',
+                    activated: 'Đã kích hoạt',
+                    finished: 'Đã kết thúc'
+                },
+
+                weight: {
+                    weight_total: 'Tổng trọng số',
+                    not_satisfied: 'Chưa thỏa mãn',
+                    satisfied: 'Thỏa mãn'
+                },
+
+                target_list: 'Danh sách mục tiêu',
+                add_target: 'Thêm mục tiêu',
+                initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
+                no_: 'Stt',
+                target_name: 'Tên mục tiêu',
+                parents_target: 'Mục tiêu cha',
+                evaluation_criteria: 'Tiêu chí đánh giá',
+                max_score: 'Điểm tối đa',
+                status: 'Trạng thái',
+                action: 'Hành động',
+                not_initialize: 'Chưa khởi tạo KPI tháng ',
+
+                action_title: {
+                    edit: 'Chỉnh sửa',
+                    content: 'Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)',
+                    delete: 'Xóa'
+                },
+
+                submit: {
+                    feedback: 'Phản hồi',
+                    send_feedback: 'Gửi phản hồi',
+                    cancel_feedback: 'Hủy',
+                    request_approval: 'Yêu cầu phê duyệt',
+                    cancel_request_approval: 'Hủy yêu cầu phê duyệt'
+                },
+                
+                handle_edit_kpi: {
+                    approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
+                    activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                },
+
+                delete_kpi: {
+                    kpi: 'Bạn chắc chắn muốn xóa KPI này?',
+                    kpi_target: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
+                    approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
+                    activated: 'KPI đã được kích hoạt, bạn không thể xóa!',
+                    delete_success: 'Xóa mục tiêu KPI thành công'
+                },
+
+                edit_target: {
+                    approving: 'KPI đang được phê duyệt, Bạn không thể chỉnh sửa!',
+                    activated: 'KPI đã được kích hoạt, Bạn không thể chỉnh sửa!'
+                },
+
+                check_status_target: {
+                    not_approved: 'Chưa phê duyệt',
+                    edit_request: 'Yêu cầu chỉnh sửa',
+                    activated: 'Đã kích hoạt',
+                    finished: 'Đã kết thúc'
+                },
+
+                request_approval_kpi: {
+                    approve: 'Bạn chắc chắn muốn quản lý phê quyệt KPI này?',
+                    not_enough_weight: 'Tổng trọng số phải bằng 100'
+                },
+
+                cancel_approve: {
+                    cancel: 'Bạn chắc chắn muốn hủy yêu cầu phê duyệt KPI này?',
+                    activated: 'KPI đã được kích hoạt bạn không thể hủy bỏ yêu cầu phê duyệt, nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                },
+
+                not_initialize: 'Chưa khởi tạo'
+            },
+
+            add_target_kpi: {
+                add_target_personal: 'Thêm mục tiêu KPI cá nhân',
+                add_target: 'Thêm mục tiêu',
+                parents_target: 'Mục tiêu cha',
+                evaluation_criteria_description: 'Mô tả tiêu chí đánh giá',
+                placeholder_description: 'Đánh giá mức độ hoàn thành dựa trên tiêu chí nào?',
+                weight: 'Trọng số',
+                placeholder_weight: 'Trọng số của mục tiêu',
+                cancel: 'Hủy bỏ',
+                add_success: 'Thêm mục tiêu KPI thành công'
+            },
+
+            start: {
+                initialize_kpi: 'Khởi tạo KPI cá nhân',
+                unit: 'Đơn vị',
+                month: 'Tháng',
+                approver: 'Người phê duyệt',
+                default_target: 'Mục tiêu mặc định',
+                initialize: 'Khởi tạo',
+                cancel: 'Hủy bỏ',
+                success: 'Khởi tạo KPI thành công'
+            },
+
+            edit_target_kpi: {
+                edit_personal: 'Chỉnh sửa mục tiêu KPI cá nhân',
+                target_name: 'Tên mục tiêu',
+                parents_target: 'Mục tiêu cha',
+                evaluation_criteria_description: 'Mô tả tiêu chí đánh giá',
+                placeholder_description: 'Đánh giá mức độ hoàn thành dựa trên tiêu chí nào?',
+                weight: 'Trọng số',
+                placeholder_weight: 'Trọng số của mục tiêu',
+                save: 'Lưu thay đổi',
+                cancel: 'Hủy bỏ',
+                edit_success: 'Chỉnh sửa mục tiêu KPI thành công'
+            }
         },
 
         footer: {

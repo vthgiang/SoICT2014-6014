@@ -6,7 +6,15 @@ export const CompanyActions = {
     get,
     getPaginate,
     create,
-    edit
+    edit,
+    addNewLink,
+    addNewComponent,
+    deleteLink,
+    deleteComponent,
+    linksList,
+    linksPaginate,
+    componentsList,
+    componentsPaginate
 };
 
 function get(){
@@ -82,6 +90,192 @@ function edit(id, data){
             })
             .catch(err => {
                 dispatch({ type: CompanyConstants.EDIT_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function addNewLink(id, data){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.addNewLink(id, data)
+            .then(res => {
+                console.log("add new link: ",res);
+                dispatch({
+                    type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function deleteLink(companyId, linkId){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.deleteLink(companyId, linkId)
+            .then(res => {
+                console.log("delete link: ",res);
+                dispatch({
+                    type: CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err.response.data);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function addNewComponent(id, data){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.addNewComponent(id, data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function deleteComponent(companyId, componentId){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.deleteComponent(companyId, componentId)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err.response.data);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function linksList(companyId){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.linksList(companyId)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function linksPaginate(companyId, page, limit, data={}){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.linksPaginate(companyId, page, limit, data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function componentsList(companyId){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.componentsList(companyId)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function componentsPaginate(companyId, page, limit, data={}){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.componentsPaginate(companyId, page, limit, data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
                 reject(err);

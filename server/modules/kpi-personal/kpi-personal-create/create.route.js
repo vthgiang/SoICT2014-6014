@@ -13,7 +13,7 @@ router.post('/create',auth, KPIPersonalController.create);
 router.put('/:id',auth, KPIPersonalController.edit);
 
 // edit status of personal by id
-router.put('/status/:id',auth, KPIPersonalController.editStatusKPIPersonal);
+router.put('/status/:id/:status',auth, KPIPersonalController.editStatusKPIPersonal);
 
 // delete kpi personal
 router.delete('/:id',auth, KPIPersonalController.delete);

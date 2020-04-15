@@ -55,7 +55,7 @@ class KPIUnitCreate extends Component {
     }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
     notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
     notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
 
@@ -265,7 +265,7 @@ class KPIUnitCreate extends Component {
                                             <i className="fa fa-lock" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.cancel_approve')}
                                         </a>
                                     }
-                                    <a className="btn btn-app" data-toggle="modal" data-target="#addNewTargetKPIUnit" data-backdrop="static" data-keyboard="false">
+                                    <a className="btn btn-app" data-toggle="modal" data-target="#modal-add-target" data-backdrop="static" data-keyboard="false">
                                         <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.add_target')}
                                     </a>
                                     <ModalAddTargetKPIUnit kpiunit={currentKPI._id} unit={currentKPI.unit._id} />

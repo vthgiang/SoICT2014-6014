@@ -6,6 +6,7 @@ import { createUnitKpiActions } from '../redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 class ModalStartKPIUnit extends Component {
     constructor(props) {
@@ -24,10 +25,12 @@ class ModalStartKPIUnit extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+
+        this.props.getKPIParent(localStorage.getItem('currentRole'));
     }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
     notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
     notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
 
@@ -61,16 +64,48 @@ class ModalStartKPIUnit extends Component {
             }
         })
         var { kpiunit } = this.state;
-        if (kpiunit.unit && kpiunit.time) {
-            this.props.addKPIUnit(kpiunit);
-
-            this.notifysuccess(translate('kpi_unit_create.init_success'));
-
-            window.$("#startKPIUnit").modal("hide");
+        var parentKpi = this.props.createKpiUnit.parent;
+        let flag = false;
+        if(parentKpi === null){
+            flag = true;
         }
         else{
-            this.notifyerror(translate('kpi_unit_create.error'));
+            if(parentKpi.status === 1) {
+                flag = true;
+            }
         }
+
+        if (!flag) {
+            Swal.fire({
+                title: "Bạn phải chờ đơn vị cha kích hoạt KPI tháng mới",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi_unit_create.confirm'),
+            })
+        } else {
+            Swal.fire({
+                title: "Bạn có chắc chắn muốn khởi tạo KPI tháng mới",
+                type: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: translate('kpi_unit_create.confirm'),
+            }).then((res) => {
+                if (res.value) {
+                    if (kpiunit.unit && kpiunit.time) {
+                        this.props.addKPIUnit(kpiunit);
+        
+                        this.notifysuccess(translate('kpi_unit_create.init_success'));
+        
+                        window.$("#startKPIUnit").modal("hide");
+                    }
+                    else{
+                        this.notifyerror(translate('kpi_unit_create.error'));
+                    }
+                }
+            });
+        }
+        
     }
     
     render() {
@@ -128,7 +163,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addKPIUnit: createUnitKpiActions.addKPIUnit
+    addKPIUnit: createUnitKpiActions.addKPIUnit,
+    getKPIParent: createUnitKpiActions.getKPIParent
 };
 const connectedModalStartKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalStartKPIUnit));
 export { connectedModalStartKPIUnit as ModalStartKPIUnit };
