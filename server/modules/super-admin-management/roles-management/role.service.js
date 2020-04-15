@@ -46,10 +46,21 @@ exports.getById = async (company, roleId) => {
         ]);
 }
 
+// Tìm kiếm role theo cấu trúc dữ liệu cụ thể nào đó
+exports.getByData = async (data) => {
+
+    return await Role
+        .findOne(data)
+        .populate([
+            { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
+            { path: 'parents', model: Role },
+            { path: 'company', model: Company },
+            { path: 'type', model: RoleType }
+        ]);
+}
+
 exports.create = async(data, companyID) => {
     const roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
-    const check = await Role.findOne({name: data.name, company: companyID});
-    if(check !== null) throw('role_name_exist');
     const role = await Role.create({
         name: data.name,
         company: companyID,
