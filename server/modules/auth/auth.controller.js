@@ -103,8 +103,9 @@ exports.resetPassword = async (req, res) => {
 
 exports.changeInformation = async (req, res) => {
     try {
+        console.log("data change: ", req.body);
         const avatar = `/${req.file.path}`;
-        const profile = await AuthService.changeInformation(req.params.id, req.body.name, avatar);
+        const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
 
         await LogInfo(req.user.email, 'CHANGE USER INFORMATION', req.user.company);
         res.status(200).json({

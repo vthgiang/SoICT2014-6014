@@ -165,11 +165,12 @@ exports.resetPassword = async (otp, email, password) => {
     return true;
 }
 
-exports.changeInformation = async (id, name, avatar=null) => {
+exports.changeInformation = async (id, name, email, avatar=null) => {
     var user = await User.findById(id).populate([
         { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
         { path: 'company' }
     ]);
+    user.email = email;
     user.name = name;
     user.avatar = avatar;
     await user.save();
