@@ -108,7 +108,6 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    changeInformation: AuthActions.changeInformation,
     changePassword: AuthActions.changePassword,
     refresh: AuthActions.refresh,
 }

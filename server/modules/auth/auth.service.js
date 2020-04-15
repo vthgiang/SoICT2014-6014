@@ -8,7 +8,7 @@ const { Privilege, Role, User, UserRole } = require('../../models/_export').data
 exports.login = async (fingerprint, data) => { // data bao gom email va password
 
     const {error} = loginValidation(data);
-    if(error) throw {message: error.details[0].message};
+    if(error) throw (error.details[0].message);
 
     const user = await User
         .findOne({email : data.email})
@@ -17,7 +17,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             { path: 'company' }
         ]);
 
-    if(!user) throw {message: "email_invalid"};
+    if(!user) throw "email_invalid";
     const validPass = await bcrypt.compare(data.password, user.password);
     if(!validPass) {
         if(user.active) user.status = user.status + 1;
@@ -25,16 +25,16 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             user.active = false;
             user.status = 0;
             user.save();
-            throw { message: 'wrong5_block'};
+            throw 'wrong5_block';
         }
         user.save();
-        throw {message: 'password_invalid'};
+        throw 'password_invalid';
     }
-    if(user.roles.length < 1) throw ({message: 'acc_have_not_role'})
+    if(user.roles.length < 1) throw 'acc_have_not_role'
     if(user.roles[0].roleId.name !== 'System Admin'){ 
         //Không phải phiên đăng nhập của system admin 
         if(!user.active) throw { message: 'acc_blocked'};
-        if(!user.company.active) throw ({message: 'service_off'});
+        if(!user.company.active) throw 'service_off'
     
         const token = await jwt.sign(
             {
