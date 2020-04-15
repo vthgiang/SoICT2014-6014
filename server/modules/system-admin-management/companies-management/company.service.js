@@ -243,6 +243,11 @@ exports.editSuperAdminOfCompany = async(companyId, superAdminEmail) => {
 }
 
 exports.addNewLinkForCompany = async(companyId, linkUrl, linkDescription) => {
+    const check = await Link.findOne({
+        company: companyId,
+        url: linkUrl
+    });
+    if(check !== null) throw('url_exist');
     const newLink = await Link.create({
         url: linkUrl,
         description: linkDescription,
@@ -265,26 +270,40 @@ exports.deleteLinkForCompany = async(companyId, linkId) => {
 }
 
 exports.addNewComponentForCompany = async(companyId, componentName, componentDescription, linkId) => {
-    const newLink = await Link.create({
+    const check = await Component.findOne({
+        company: companyId,
+        name: componentName
+    });
+    if(check !== null) throw('component_exist');
+    const newComponent = await Component.create({
         name: componentName,
         description: componentDescription,
         link: linkId,
         company: companyId
     });
 
-    return newLink;
+    return newComponent;
 }
 
-exports.deleteComponentForCompany = async(companyId, linkId) => {
-    // Xóa tắt cả phân quyền liên quan đến link này (role)
+exports.deleteComponentForCompany = async(companyId, componentId) => {
+    // Xóa tắt cả phân quyền liên quan đến component này (role)
     await Privilege.deleteMany({
-        resourceId: linkId,
-        resourceType: 'Link'
+        resourceId: componentId,
+        resourceType: 'Component'
     });
-    // Xóa link này
-    await Link.deleteOne({_id: linkId});
+    const link = await Link.findOne({
+        company: companyId, 
+        components: componentId
+    });
+    if(link !== null){
+        link.components.splice(link.components.indexOf(componentId), 1);
+        await link.save();
+    }
 
-    return linkId;
+    // Xóa component này
+    await Component.deleteOne({_id: componentId});
+
+    return componentId;
 }
 
 exports.getLinksListOfCompany = async(companyId) => {
@@ -302,6 +321,13 @@ exports.getLinksPaginateOfCompany = async (companyId, page, limit, data={}) => {
 
 exports.getComponentsListOfCompany = async (companyId) => {
     return await Component.find({ company: companyId })
+        .populate([
+            { path: 'link', model: Link}
+        ]);
+}
+
+exports.getComponentById = async (componentId) => {
+    return await Component.findById(componentId)
         .populate([
             { path: 'link', model: Link}
         ]);

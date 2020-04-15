@@ -11,9 +11,9 @@ class Alert extends Component {
         this.state = {};
     }
 
-    handleButton = () => {
-        this.props.reset();
+    handleButton = async() => {
         document.getElementById('alert').style.display = 'none';
+        await this.props.reset();
     }
 
     render() { 

@@ -46,6 +46,8 @@ exports.data = [
     { path: '/company/:id', method: 'PATCH', roles: ['System Admin']},
     { path: '/company/:id/add-new-link', method: 'POST', roles: ['System Admin']},
     { path: '/company/:id/delete-link/:linkId', method: 'DELETE', roles: ['System Admin']},
+    { path: '/company/:id/add-new-component', method: 'POST', roles: ['System Admin']},
+    { path: '/company/:id/delete-component/:componentId', method: 'DELETE', roles: ['System Admin']},
     { path: '/company/:id', method: 'DELETE', roles: ['System Admin']},
     { path: '/company/:id/links-list', method: 'GET', roles: ['System Admin']},
     { path: '/company/:id/links-paginate/:page/:limit', method: 'POST', roles: ['System Admin']},

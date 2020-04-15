@@ -90,6 +90,8 @@ export function company(state = initState, action) {
 
         case CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_REQUEST:
         case CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_REQUEST:
+        case CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_REQUEST:
+        case CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_REQUEST:
             return {
                 ...state,
                 item: {
@@ -119,6 +121,8 @@ export function company(state = initState, action) {
 
         case CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILE:
         case CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE:
+        case CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILE:
+        case CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILE:
             return {
                 ...state,
                 item: {
@@ -272,6 +276,26 @@ export function company(state = initState, action) {
                 }
             }
 
+        case CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_SUCCESS:
+            return {
+                ...state,
+                item: {
+                    ...state.item,
+                    components: {
+                        ...state.item.components,
+                        list: [
+                            action.payload,
+                            ...state.item.components.list
+                        ],
+                        listPaginate: [
+                            action.payload,
+                            ...state.item.components.listPaginate
+                        ],
+                        isLoading: false
+                    }
+                }
+            }
+
         case CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS:
             // Tìm index của link đó
             index = findIndex(state.item.links.list, action.payload); 
@@ -281,6 +305,17 @@ export function company(state = initState, action) {
             state.item.links.list.splice(index, 1);
             state.item.links.listPaginate.splice(indexPaginate, 1);
             state.item.links.isLoading = false;
+            return {...state};
+
+        case CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_SUCCESS:
+            // Tìm index của component đó
+            index = findIndex(state.item.components.list, action.payload); 
+            indexPaginate = findIndex(state.item.components.listPaginate, action.payload);
+
+            //Xóa component đó khỏi list các component của công ty
+            state.item.components.list.splice(index, 1);
+            state.item.components.listPaginate.splice(indexPaginate, 1);
+            state.item.components.isLoading = false;
             return {...state};
 
         case CompanyConstants.GET_COMPANIES_FAILE:

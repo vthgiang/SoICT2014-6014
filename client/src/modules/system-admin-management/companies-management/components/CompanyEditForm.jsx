@@ -85,7 +85,7 @@ class CompanyEditForm extends Component {
                                     <ErrorLabel content={descriptionError}/>
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '20px'}}>
                                <div role="tabpanel">
                                 {/* Nav tabs */}
                                 <ul className="nav nav-tabs" role="tablist">

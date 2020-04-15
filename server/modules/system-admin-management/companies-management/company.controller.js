@@ -188,7 +188,6 @@ exports.addNewLinkForCompany = async (req, res) => {
 
 exports.deleteLinkForCompany = async (req, res) => {
     try {
-        console.log("deletelink com: ", req.params.id, req.params.linkId)
         const link = await CompanyService.deleteLinkForCompany(req.params.id, req.params.linkId);
         
         LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
@@ -209,13 +208,14 @@ exports.deleteLinkForCompany = async (req, res) => {
 
 exports.addNewComponentForCompany = async (req, res) => {
     try {
-        const component = await CompanyService.addNewComponentForCompany(req.params.id, req.body.url, req.body.description, req.body.link);
-        
+        const component = await CompanyService.addNewComponentForCompany(req.params.id, req.body.name, req.body.description, req.body.link);
+        const resComponent = await CompanyService.getComponentById(component._id);  
+
         LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
         res.status(200).json({
             success: true,
             message: 'add_new_component_for_company_success',
-            content: component
+            content: resComponent
         });
     } catch (error) {
         
