@@ -9,6 +9,7 @@ class CompanyManageComponent extends Component {
         super(props);
         this.state = { 
             componentName: 'noname',
+            componentLink: 'nolink',
             limit: 5,
             page: 1,
             option: 'name',
@@ -22,7 +23,7 @@ class CompanyManageComponent extends Component {
 
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-success pull-right" onClick={this.showCreateLinkForm}>Thêm</a>
+                <a className="btn btn-success pull-right" onClick={this.showCreateComponentForm}>Thêm</a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_component.name'), value: 'name' },
@@ -71,17 +72,16 @@ class CompanyManageComponent extends Component {
                                 <select
                                     className="form-control"
                                     style={{width: '100%'}}
-                                    onChange={this.handleName}
-                                    value={this.state.componentName}
+                                    onChange={this.handleLink}
+                                    value={this.state.componentLink}
                                 >
-                                    <option key="noname" value="noname" disabled> --- Chọn component ---</option>
+                                    <option key="nolink" value="nolink" disabled> --- Chọn trang ---</option>
                                     {
-                                        componentsDefault.list.map(componentDefault => 
+                                        company.item.links.list.map(link => 
                                         <option 
-                                            key={componentDefault._id} 
-                                            value={componentDefault.name}
-                                            disabled={this.companyHasComponent(componentDefault.name, company.item.components.list)}
-                                        >{componentDefault.name}</option>)
+                                            key={link._id} 
+                                            value={link._id}
+                                        >{link.url}</option>)
                                     }
                                 </select>
                             </td>
@@ -92,8 +92,8 @@ class CompanyManageComponent extends Component {
                             <td>
                                 {
                                     this.isFormCreateLinkValidated() ?
-                                    <a className="save" onClick={this.saveAndCloseLinkForm}><i className="material-icons">save</i></a>:
-                                    <a className="cancel" onClick={this.closeCreateLinkForm}><i className="material-icons">cancel</i></a>
+                                    <a className="save" onClick={this.saveAndCloseComponentForm}><i className="material-icons">save</i></a>:
+                                    <a className="delete" onClick={this.closeCreateComponentForm}><i className="material-icons">delete</i></a>
                                 }
                             </td>
                         </tr> 
@@ -105,7 +105,7 @@ class CompanyManageComponent extends Component {
                                     <td>{ component.link !== undefined ? component.link.url : null}</td>
                                     <td>{ component.description }</td>
                                     <td>
-                                        <a className="delete" onClick={() => this.deleteLink(companyId, component._id)}><i className="material-icons">delete</i></a>
+                                        <a className="delete" onClick={() => this.deleteComponent(companyId, component._id)}><i className="material-icons">delete</i></a>
                                     </td>
                                 </tr> 
                             ) : (
@@ -154,32 +154,37 @@ class CompanyManageComponent extends Component {
     }
 
     
-    showCreateLinkForm = () => {
+    showCreateComponentForm = () => {
         window.$("#add-new-component-default").slideDown();
     }
 
-    closeCreateLinkForm = () => {
+    closeCreateComponentForm = () => {
         window.$("#add-new-component-default").slideUp();
     }
 
-    saveAndCloseLinkForm = async() => {
-        const {companyId, componentName, componentDescription} = this.state;
+    saveAndCloseComponentForm = async() => {
+        const {companyId, componentName, componentLink, componentDescription} = this.state;
         
         await window.$("#add-new-component-default").slideUp();
-        return this.props.addNewLink(companyId, {
+        return this.props.addNewComponent(companyId, {
             name: componentName,
+            link: componentLink,
             description: componentDescription
         });
     }
 
-    deleteLink = (companyId, componentId) => {
-        return this.props.deleteLink(companyId, componentId);
+    deleteComponent = (companyId, componentId) => {
+        return this.props.deleteComponent(companyId, componentId);
     }
     
-    // Xu ly thay doi va validate cho url link moi cho cong ty
     handleName= (e) => {
         const value = e.target.value;
         this.setState({componentName: value});
+    }
+
+    handleLink= (e) => {
+        const value = e.target.value;
+        this.setState({componentLink: value});
     }
 
     // Xu ly thay doi va validate cho description link của công ty
@@ -239,8 +244,8 @@ class CompanyManageComponent extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps =  {
-    // addNewComponent: CompanyActions.addNewComponent,
-    // deleteComponent: CompanyActions.deleteComponent,
+    addNewComponent: CompanyActions.addNewComponent,
+    deleteComponent: CompanyActions.deleteComponent,
     componentsList: CompanyActions.componentsList,
     componentsPaginate: CompanyActions.componentsPaginate
 }

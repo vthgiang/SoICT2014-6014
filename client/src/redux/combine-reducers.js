@@ -95,8 +95,8 @@ const appReducer = combineReducers(Object.assign({
 
 const rootReducer = (state, action) => {
     if (action.type === 'RESET') {
-        clearStorage();
         state = undefined;
+        clearStorage();
     }
 
     return appReducer(state, action);

@@ -74,7 +74,7 @@ class CompanyManageLinks extends Component {
                                 {
                                     this.isFormCreateLinkValidated() ?
                                     <a className="save" onClick={this.saveAndCloseLinkForm}><i className="material-icons">save</i></a>:
-                                    <a className="cancel" onClick={this.closeCreateLinkForm}><i className="material-icons">cancel</i></a>
+                                    <a className="delete" onClick={this.closeCreateLinkForm}><i className="material-icons">delete</i></a>
                                 }
                             </td>
                         </tr> 

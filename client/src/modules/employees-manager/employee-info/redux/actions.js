@@ -1,84 +1,57 @@
-import {
-    Constants
-} from "./constants";
-//import { alerActions } from "./AlertActions";
-import {
-    EmployeeService
-} from "./services";
+import { Constants } from "./constants";
+import { EmployeeService } from "./services";
+import { AlertActions } from "../../../alert/redux/actions";
 export const EmployeeInfoActions = {
     getInformationPersonal,
     updateInformationPersonal,
 };
 
-// lấy thông tin nhân viên theo mã nhân viên
+// Lấy thông tin nhân viên theo mã nhân viên
 function getInformationPersonal() {
     return dispatch => {
-        dispatch(request());
-
+        dispatch({
+            type: Constants.GET_INFOR_PERSONAL_REQUEST
+        });
         EmployeeService.getInformationPersonal()
-            .then(
-                employee => dispatch(success(employee)),
-                error => dispatch(failure(error.toString()))
-
-            );
+            .then(res => {
+                dispatch({
+                    type: Constants.GET_INFOR_PERSONAL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: Constants.GET_INFOR_PERSONAL_FAILURE,
+                    error: err.response.data
+                });
+                AlertActions.handleAlert(dispatch, err);
+            })
     }
-
-    function request() {
-        return {
-            type: Constants.GET_INFOR_PERSONAL_REQUEST,
-        };
-    };
-
-    function success(employee) {
-        return {
-            type: Constants.GET_INFOR_PERSONAL_SUCCESS,
-            employee
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: Constants.GET_INFOR_PERSONAL_FAILURE,
-            error
-        };
-    };
 }
 
-// update thông tin cá nhân
-function updateInformationPersonal(informationEmployee) {
+// Cập nhật thông tin cá nhân
+function updateInformationPersonal(data) {
     return dispatch => {
-        dispatch(request(informationEmployee));
-
-        EmployeeService.updateInformationPersonal(informationEmployee)
-            .then(
-                informationEmployee => {
-                    dispatch(success(informationEmployee));
-                },
-                error => {
-                    dispatch(failure(error).toString());
-                }
-            );
+        dispatch({
+            type: Constants.UPDATE_INFOR_PERSONAL_REQUEST
+        });
+        return new Promise((resolve, reject) => {
+            EmployeeService.updateInformationPersonal(data)
+                .then(res => {
+                    dispatch({
+                        type: Constants.UPDATE_INFOR_PERSONAL_SUCCESS,
+                        payload: res.data.content
+                    })
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    dispatch({
+                        type: Constants.UPDATE_INFOR_PERSONAL_FAILURE,
+                        error: err.response.data
+                    });
+                    AlertActions.handleAlert(dispatch, err);
+                    reject(err);
+                })
+        })
     };
-
-    function request(informationEmployee) {
-        return {
-            type: Constants.UPDATE_INFOR_PERSONAL_REQUEST,
-            informationEmployee
-        }
-    };
-
-    function success(informationEmployee) {
-        return {
-            type: Constants.UPDATE_INFOR_PERSONAL_SUCCESS,
-            informationEmployee
-        }
-    };
-
-    function failure(error) {
-        return {
-            type: Constants.UPDATE_INFOR_PERSONAL_FAILURE,
-            error
-        }
-    };
-
 }

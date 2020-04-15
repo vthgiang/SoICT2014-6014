@@ -99,10 +99,20 @@ class PraiseCreateForm extends Component {
      * Bắt sự kiện thay đổi ngày ra quyết định
      */
     handleStartDateChange = (value) => {
-        this.setState({
-            ...this.state,
-            startDate: value
-        })
+        this.validateStartDate(value, true);
+    }
+    validateStartDate = (value, willUpdateState = true) => {
+        let msg = PraiseFromValidator.validateStartDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnStartDate: msg,
+                    startDate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     /**
@@ -152,7 +162,7 @@ class PraiseCreateForm extends Component {
      */
     isFormValidated = () => {
         let result =
-            this.validateEmployeeNumber(this.state.employeeNumber, false) &&
+            this.validateEmployeeNumber(this.state.employeeNumber, false) && this.validateStartDate(this.state.startDate, false) &&
             this.validateNumber(this.state.number, false) && this.validateUnit(this.state.unit, false) &&
             this.validateType(this.state.reason, false) && this.validateReason(this.state.reason, false);
         return result;
@@ -167,7 +177,7 @@ class PraiseCreateForm extends Component {
     }
     render() {
         const { translate, discipline } = this.props;
-        const { employeeNumber, startDate, reason, number, unit, type,
+        const { employeeNumber, startDate, reason, number, unit, type, errorOnStartDate,
             errorOnEmployeeNumber, errorOnNumber, errorOnUnit, errorOnType, errorOnReason } = this.state;
         return (
             <React.Fragment>
@@ -200,13 +210,14 @@ class PraiseCreateForm extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-sm-6 col-xs-12 form-group">
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_day')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_praise_start_date"
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnType === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.reward_forms')}<span className="text-red">*</span></label>

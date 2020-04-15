@@ -35,10 +35,22 @@ class ModalDialog extends Component {
             }).catch(err => {
                 document.getElementById(this.props.formID).reset();
                 if(err.response.data.message){
-                    if(translate(`error.${err.response.data.message}`) !== undefined)
-                        toast.warning(translate(`error.${err.response.data.message}`), {containerId: 'toast-notification'});
-                    else
-                        toast.warning(err.response.data.message, {containerId: 'toast-notification'});
+                    // Nếu thông báo lỗi trả về là một mảng các thông báo lỗi
+                    if(Array.isArray(err.response.data.message)){
+                        err.response.data.message.forEach(message => {
+                            if(translate(`error.${message}`) !== undefined)
+                                toast.error(translate(`error.${message}`), {containerId: 'toast-notification'});
+                            else
+                                toast.error(message, {containerId: 'toast-notification'});
+                        });
+                    }
+                    // Ngược lại nếu thông báo lỗi trả về chỉ là 1 lỗi
+                    else {
+                        if(translate(`error.${err.response.data.message}`) !== undefined)
+                            toast.error(translate(`error.${err.response.data.message}`), {containerId: 'toast-notification'});
+                        else
+                            toast.error(err.response.data.message, {containerId: 'toast-notification'});
+                    }
                 }else
                     toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });

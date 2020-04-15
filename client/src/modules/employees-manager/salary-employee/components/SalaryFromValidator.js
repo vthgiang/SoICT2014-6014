@@ -4,6 +4,7 @@ import {
 
 export const SalaryFormValidator = {
     validateEmployeeNumber,
+    validateMonthSalary,
     validateMainSalary,
     validateNameSalary,
     validateMoreMoneySalary
@@ -16,6 +17,14 @@ function validateEmployeeNumber(value, translate) {
         msg = translate('error.employee_number_required');
     } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
         msg = translate('error.staff_code_not_special');
+    }
+    return msg;
+}
+// Function kiểm tra tháng lương 
+function validateMonthSalary(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = translate('error.month_salary_required');
     }
     return msg;
 }
