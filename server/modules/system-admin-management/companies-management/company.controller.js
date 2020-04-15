@@ -188,6 +188,7 @@ exports.addNewLinkForCompany = async (req, res) => {
 
 exports.deleteLinkForCompany = async (req, res) => {
     try {
+        console.log("deletelink com: ", req.params.id, req.params.linkId)
         const link = await CompanyService.deleteLinkForCompany(req.params.id, req.params.linkId);
         
         LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
@@ -199,6 +200,47 @@ exports.deleteLinkForCompany = async (req, res) => {
     } catch (error) {
         
         LogError(req.user.email, 'DELETE_LINK_FOR_COMPANY');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
+exports.addNewComponentForCompany = async (req, res) => {
+    try {
+        const component = await CompanyService.addNewComponentForCompany(req.params.id, req.body.url, req.body.description, req.body.link);
+        
+        LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
+        res.status(200).json({
+            success: true,
+            message: 'add_new_component_for_company_success',
+            content: component
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
+exports.deleteComponentForCompany = async (req, res) => {
+    try {
+        console.log("deletecomponent com: ", req.params.id, req.params.componentId)
+        const component = await CompanyService.deleteComponentForCompany(req.params.id, req.params.componentId);
+        
+        LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
+        res.status(200).json({
+            success: true,
+            message: 'delete_component_for_company_success',
+            content: component
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(400).json({
             success: false,
             message: error

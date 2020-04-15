@@ -231,7 +231,7 @@ const seedDatabase = async () => {
             category: Terms.CATEGORY_LINKS[4].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
         },{
-            url: '/hr-manage-management',
+            url: '/hr-manage-department',
             description: 'Quản lý nhân sự các đơn vị',
             category: Terms.CATEGORY_LINKS[4].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
@@ -239,7 +239,7 @@ const seedDatabase = async () => {
 
         // EDUCATION
         {
-            url: '/hr-trainning-plan',
+            url: '/hr-training-plan',
             description: 'Kế hoạch đào tạo',
             category: Terms.CATEGORY_LINKS[5].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id,  roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]

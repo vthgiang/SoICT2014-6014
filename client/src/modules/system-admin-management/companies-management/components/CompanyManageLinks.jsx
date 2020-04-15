@@ -8,6 +8,7 @@ class CompanyManageLinks extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            linkUrl: "noturl",
             limit: 5,
             page: 1,
             option: 'url',
@@ -16,9 +17,9 @@ class CompanyManageLinks extends Component {
     }
 
     render() { 
-        const {translate, company} = this.props;
-        const {companyId, linkUrlError, linkDescriptionError} = this.state;
-
+        const {translate, company, linksDefault} = this.props;
+        const {companyId, linkDescriptionError} = this.state;
+        console.log("state: ", this.state)
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
                 <a className="btn btn-success pull-right" onClick={this.showCreateLinkForm}>Thêm</a>
@@ -47,9 +48,23 @@ class CompanyManageLinks extends Component {
                     </thead>
                     <tbody>
                         <tr id="add-new-link-default" style={{display: "none"}}>
-                            <td className={linkUrlError===undefined?"":"has-error"}>
-                                <input className="form-control" onChange={this.handleLinkUrl}/>
-                                <ErrorLabel content={linkUrlError}/>
+                            <td>
+                                <select
+                                    className="form-control"
+                                    style={{width: '100%'}}
+                                    onChange={this.handleLinkUrl}
+                                    value={this.state.linkUrl}
+                                >
+                                    <option key="noturl" value="noturl" disabled> --- Chọn url ---</option>
+                                    {
+                                        linksDefault.list.map(linkDefault => 
+                                        <option 
+                                            key={linkDefault._id} 
+                                            value={linkDefault.url}
+                                            disabled={this.companyHasLink(linkDefault.url, company.item.links.list)}
+                                        >{linkDefault.url}</option>)
+                                    }
+                                </select>
                             </td>
                             <td className={linkDescriptionError===undefined?"":"has-error"}>
                                 <input className="form-control" onChange={this.handleLinkDescription}/>
@@ -87,6 +102,19 @@ class CompanyManageLinks extends Component {
          );
     }
     
+    companyHasLink = (linkUrl, companyLinks) => {
+        let result = false;
+        for (let i = 0; i < companyLinks.length; i++) {
+            const link = companyLinks[i];
+            if(linkUrl === link.url){
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.companyId !== prevState.companyId) {
             return {
@@ -100,8 +128,12 @@ class CompanyManageLinks extends Component {
 
     // Kiem tra thong tin da validated het chua?
     isFormCreateLinkValidated = () => {
-        const {linkUrl, linkDescription, linkUrlError, linkDescriptionError} = this.state;
-        if(linkDescriptionError === undefined && linkUrlError === undefined && linkUrl !== undefined && linkDescription !== undefined) return true;
+        const {linkUrl, linkDescription, linkDescriptionError} = this.state;
+        if(linkDescriptionError === undefined && linkUrl !== undefined && linkDescription !== undefined){
+            console.log("linkurl: ", linkUrl)
+            if(linkUrl !== 'noturl') return true;
+            else return false;
+        }
         else return false; 
     }
 
@@ -131,21 +163,9 @@ class CompanyManageLinks extends Component {
     // Xu ly thay doi va validate cho url link moi cho cong ty
     handleLinkUrl= (e) => {
         const value = e.target.value;
-        this.validateLinkUrl(value, true);
-    }
-
-    validateLinkUrl = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateUrl(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkUrlError: msg,
-                    linkUrl: value,
-                }
-            });
-        }
-        return msg === undefined;
+        this.setState({
+            linkUrl: value
+        });
     }
 
     // Xu ly thay doi va validate cho description link của công ty

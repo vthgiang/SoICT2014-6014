@@ -248,9 +248,6 @@ exports.addNewLinkForCompany = async(companyId, linkUrl, linkDescription) => {
         description: linkDescription,
         company: companyId
     });
-    const com = await Company.findById(companyId); // lấy dữ liệu về công ty này
-    com.links.push(newLink._id);
-    await com.save();
 
     return newLink;
 }
@@ -263,14 +260,31 @@ exports.deleteLinkForCompany = async(companyId, linkId) => {
     });
     // Xóa link này
     await Link.deleteOne({_id: linkId});
-    const com = await Company.findById(companyId); // lấy dữ liệu về công ty này
-    com.links.splice(com.links.indexOf(linkId), 1); // Xóa dữ liệu về link khỏi công ty này
-    await com.save();
 
-    return {
-        company: companyId,
-        link: linkId
-    };
+    return linkId;
+}
+
+exports.addNewComponentForCompany = async(companyId, componentName, componentDescription, linkId) => {
+    const newLink = await Link.create({
+        name: componentName,
+        description: componentDescription,
+        link: linkId,
+        company: companyId
+    });
+
+    return newLink;
+}
+
+exports.deleteComponentForCompany = async(companyId, linkId) => {
+    // Xóa tắt cả phân quyền liên quan đến link này (role)
+    await Privilege.deleteMany({
+        resourceId: linkId,
+        resourceType: 'Link'
+    });
+    // Xóa link này
+    await Link.deleteOne({_id: linkId});
+
+    return linkId;
 }
 
 exports.getLinksListOfCompany = async(companyId) => {
@@ -287,7 +301,10 @@ exports.getLinksPaginateOfCompany = async (companyId, page, limit, data={}) => {
 }
 
 exports.getComponentsListOfCompany = async (companyId) => {
-    return await Component.find({ company: companyId });
+    return await Component.find({ company: companyId })
+        .populate([
+            { path: 'link', model: Link}
+        ]);
 }
 
 exports.getComponentsPaginateOfCompany = async (companyId, page, limit, data={}) => {
@@ -295,6 +312,9 @@ exports.getComponentsPaginateOfCompany = async (companyId, page, limit, data={})
     return await Component
         .paginate( newData , { 
             page, 
-            limit
+            limit,
+            populate: [
+                {path: 'link', model: Link}
+            ]
         });
 }

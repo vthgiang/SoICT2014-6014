@@ -8,6 +8,7 @@ class CompanyManageComponent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
+            componentName: 'noname',
             limit: 5,
             page: 1,
             option: 'name',
@@ -16,8 +17,8 @@ class CompanyManageComponent extends Component {
     }
 
     render() { 
-        const {translate, company} = this.props;
-        const {companyId, componentNameError, componentDescriptionError} = this.state;
+        const {translate, company, componentsDefault} = this.props;
+        const {companyId, componentDescriptionError} = this.state;
 
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
@@ -35,6 +36,7 @@ class CompanyManageComponent extends Component {
                     <thead>
                         <tr>
                             <th>{ translate('manage_component.name') }</th>
+                            <th>{ translate('manage_component.link') }</th>
                             <th>{ translate('manage_component.description') }</th>
                             <th style={{width: '120px'}}>
                                 {translate('table.action')}
@@ -47,9 +49,41 @@ class CompanyManageComponent extends Component {
                     </thead>
                     <tbody>
                         <tr id="add-new-component-default" style={{display: "none"}}>
-                            <td className={componentNameError===undefined?"":"has-error"}>
-                                <input className="form-control" onChange={this.handleName}/>
-                                <ErrorLabel content={componentNameError}/>
+                            <td>
+                                <select
+                                    className="form-control"
+                                    style={{width: '100%'}}
+                                    onChange={this.handleName}
+                                    value={this.state.componentName}
+                                >
+                                    <option key="noname" value="noname" disabled> --- Chọn component ---</option>
+                                    {
+                                        componentsDefault.list.map(componentDefault => 
+                                        <option 
+                                            key={componentDefault._id} 
+                                            value={componentDefault.name}
+                                            disabled={this.companyHasComponent(componentDefault.name, company.item.components.list)}
+                                        >{componentDefault.name}</option>)
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <select
+                                    className="form-control"
+                                    style={{width: '100%'}}
+                                    onChange={this.handleName}
+                                    value={this.state.componentName}
+                                >
+                                    <option key="noname" value="noname" disabled> --- Chọn component ---</option>
+                                    {
+                                        componentsDefault.list.map(componentDefault => 
+                                        <option 
+                                            key={componentDefault._id} 
+                                            value={componentDefault.name}
+                                            disabled={this.companyHasComponent(componentDefault.name, company.item.components.list)}
+                                        >{componentDefault.name}</option>)
+                                    }
+                                </select>
                             </td>
                             <td className={componentDescriptionError===undefined?"":"has-error"}>
                                 <input className="form-control" onChange={this.handleComponentDescription}/>
@@ -68,6 +102,7 @@ class CompanyManageComponent extends Component {
                             company.item.components.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
+                                    <td>{ component.link !== undefined ? component.link.url : null}</td>
                                     <td>{ component.description }</td>
                                     <td>
                                         <a className="delete" onClick={() => this.deleteLink(companyId, component._id)}><i className="material-icons">delete</i></a>
@@ -87,6 +122,19 @@ class CompanyManageComponent extends Component {
          );
     }
     
+    companyHasComponent = (componentName, companyComponents) => {
+        let result = false;
+        for (let i = 0; i < companyComponents.length; i++) {
+            const component = companyComponents[i];
+            if(componentName === component.name){
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.companyId !== prevState.companyId) {
             return {
@@ -100,8 +148,8 @@ class CompanyManageComponent extends Component {
 
     // Kiem tra thong tin da validated het chua?
     isFormCreateLinkValidated = () => {
-        const {componentName, componentDescription, componentNameError, componentDescriptionError} = this.state;
-        if(componentDescriptionError === undefined && componentNameError === undefined && componentName !== undefined && componentDescription !== undefined) return true;
+        const {componentName, componentDescription, componentDescriptionError} = this.state;
+        if(componentDescriptionError === undefined && componentName !== "noname" && componentDescription !== undefined) return true;
         else return false; 
     }
 
@@ -131,21 +179,7 @@ class CompanyManageComponent extends Component {
     // Xu ly thay doi va validate cho url link moi cho cong ty
     handleName= (e) => {
         const value = e.target.value;
-        this.validateComponentName(value, true);
-    }
-
-    validateComponentName = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateName(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentNameError: msg,
-                    componentName: value,
-                }
-            });
-        }
-        return msg === undefined;
+        this.setState({componentName: value});
     }
 
     // Xu ly thay doi va validate cho description link của công ty

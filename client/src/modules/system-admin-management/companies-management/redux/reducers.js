@@ -66,9 +66,7 @@ export function company(state = initState, action) {
         case CompanyConstants.GET_COMPANIES_REQUEST:
         case CompanyConstants.GET_COMPANIES_PAGINATE_REQUEST:
         case CompanyConstants.CREATE_COMPANY_REQUEST:
-        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_REQUEST:
         case CompanyConstants.EDIT_COMPANY_REQUEST:
-        case CompanyConstants.DELETE_LINK_FOR_COMPANY_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -77,6 +75,8 @@ export function company(state = initState, action) {
         // component,link request of company (4)
         case CompanyConstants.GET_LINKS_LIST_OF_COMPANY_REQUEST:
         case CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_REQUEST:
+        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_REQUEST:
+        case CompanyConstants.DELETE_LINK_FOR_COMPANY_REQUEST:
             return {
                 ...state,
                 item: {
@@ -104,6 +104,8 @@ export function company(state = initState, action) {
         // component, link faile company (4)
         case CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILE:
         case CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILE:
+        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE:
+        case CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE:
             return {
                 ...state,
                 item: {
@@ -251,38 +253,40 @@ export function company(state = initState, action) {
             };
         
         case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS:
-            index = findIndex(state.list, action.payload.companyId);
-            indexPaginate = findIndex(state.listPaginate, action.payload.companyId);
-            state.list[index].links.unshift(action.payload.link);
-            state.listPaginate[indexPaginate].links.unshift(action.payload.link);
             return {
                 ...state,
-                isLoading: false
-            };
+                item: {
+                    ...state.item,
+                    links: {
+                        ...state.item.links,
+                        list: [
+                            action.payload,
+                            ...state.item.links.list
+                        ],
+                        listPaginate: [
+                            action.payload,
+                            ...state.item.links.listPaginate
+                        ],
+                        isLoading: false
+                    }
+                }
+            }
 
         case CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS:
-            // Tìm index của công ty vừa xóa link
-            index = findIndex(state.list, action.payload.company); 
-            indexPaginate = findIndex(state.listPaginate, action.payload.company);
-
-            // Tìm index của link bị xóa trong công ty
-            indexLink = findIndex(state.list[index].links, action.payload.link); 
-            indexLinkPaginate = findIndex(state.listPaginate[indexPaginate].links, action.payload.link);
+            // Tìm index của link đó
+            index = findIndex(state.item.links.list, action.payload); 
+            indexPaginate = findIndex(state.item.links.listPaginate, action.payload);
 
             //Xóa link đó khỏi list các link của công ty
-            state.list[index].links.splice(indexLink, 1);
-            state.listPaginate[indexPaginate].links.splice(indexLinkPaginate, 1);
-            return {
-                ...state,
-                isLoading: false
-            };
+            state.item.links.list.splice(index, 1);
+            state.item.links.listPaginate.splice(indexPaginate, 1);
+            state.item.links.isLoading = false;
+            return {...state};
 
         case CompanyConstants.GET_COMPANIES_FAILE:
-        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE:
         case CompanyConstants.GET_COMPANIES_PAGINATE_FAILE:
         case CompanyConstants.EDIT_COMPANY_FAILE:
         case CompanyConstants.CREATE_COMPANY_FAILE:
-        case CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE:
             return {
                 ...state,
                 isLoading: false
