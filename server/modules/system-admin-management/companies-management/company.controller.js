@@ -59,9 +59,12 @@ exports.create = async (req, res) => {
         const superadmin = await CompanyService.editSuperAdminOfCompany(company._id, req.body.email);
         console.log("tao superadmin abs: ", superadmin)
 
-        //Tạo link cho các trang mà công ty được phép truy cập
+        //Tạo link và các component tương ứng cho các trang mà công ty được phép truy cập
         const links = await CompanyService.createLinksForCompany(company._id, req.body.links, abstractRoles);
-        await CompanyService.addLinksForCompanyInCollection(company._id, links.map(link=>link._id));
+        console.log("tạo các links: ", links);
+
+        const components = await CompanyService.createComponentsForCompany(company._id, req.body.links);
+        console.log("tạo các components: ", components);
 
         const resCompany = await CompanyService.getById(company._id);
         

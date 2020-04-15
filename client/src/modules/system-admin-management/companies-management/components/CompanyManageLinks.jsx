@@ -8,7 +8,7 @@ class CompanyManageLinks extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            limit: 10,
+            limit: 5,
             page: 1,
             option: 'url',
             value: { $regex: '', $options: 'i' }
@@ -31,7 +31,7 @@ class CompanyManageLinks extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered" id="company-manage-link-table">
                     <thead>
                         <tr>
                             <th>{ translate('manage_link.url') }</th>
@@ -39,6 +39,7 @@ class CompanyManageLinks extends Component {
                             <th style={{width: '120px'}}>
                                 {translate('table.action')}
                                 <ActionColumn 
+                                    tableId="company-manage-link-table"
                                     setLimit={this.setLimit}
                                 />
                             </th>
