@@ -81,7 +81,7 @@ class CompanyEditForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
                                     <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
-                                    <textarea style={{ height: '177px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
+                                    <textarea style={{ height: '182px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
                                     <ErrorLabel content={descriptionError}/>
                                 </div>
                             </div>
