@@ -68,6 +68,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             .populate({ 
                 path: 'resourceId', 
                 model: TaskTemplate, 
+                match: {name : { "$regex": name, "$options": "i" }},
                 populate: { path: 'creator unit' } 
             });
         } else {
