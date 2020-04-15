@@ -24,14 +24,16 @@ class UpdateEmployee extends Component {
     // Bắt sự kiện thay đổi avatar
     handleUpload(event) {
         var file = event.target.files[0];
-        var fileLoad = new FileReader();
-        fileLoad.readAsDataURL(file);
-        fileLoad.onload = () => {
-            this.setState({
-                img: fileLoad.result,
-                avatar: file
-            })
-        };
+        if (file !== undefined) {
+            var fileLoad = new FileReader();
+            fileLoad.readAsDataURL(file);
+            fileLoad.onload = () => {
+                this.setState({
+                    img: fileLoad.result,
+                    avatar: file
+                })
+            };
+        }
     }
 
     // Bắt sự kiện thay đổi các trường thông tin nhân viên
@@ -160,16 +162,16 @@ class UpdateEmployee extends Component {
                                         <div className="box-body" key={indexs}>
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_basic_infor')}</h4></legend>
-                                                <div className="col-lg-3 col-md-4 col-sm-5 " style={{ textAlign: 'center' }}>
-                                                    <div className="form-group">
+                                                <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
+                                                    <div>
                                                         <img className="attachment-img avarta" src={(this.state.img !== "") ? this.state.img : x.avatar} alt="Attachment" />
-                                                        <div className="upload btn btn-default ">
-                                                            {translate('manage_employee.upload')}
-                                                            <input className="upload" type="file" name="file" onChange={this.handleUpload} />
-                                                        </div>
+                                                    </div>
+                                                    <div className="upload btn btn-default ">
+                                                        {translate('manage_employee.upload')}
+                                                        <input className="upload" type="file" name="file" onChange={this.handleUpload} />
                                                     </div>
                                                 </div>
-                                                <div className=" col-lg-9 col-md-8 col-ms-7 ">
+                                                <div className=" pull-right col-lg-8 col-md-8 col-ms-12 col-xs-12 ">
                                                     <div className="row">
                                                         <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                                             <label htmlFor="MSNV">{translate('manage_employee.staff_number')}</label>

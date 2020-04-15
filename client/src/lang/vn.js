@@ -16,8 +16,8 @@ export default {
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
             // Quản lý nghỉ phép
-            start_date_sabbatical_required: 'Thời gian bắt đầu không được để trống',
-            end_date_sabbatical_required: 'Thời gian kết thúc không được để trống',
+            start_date_sabbatical_required: 'Ngày bắt đầu không được để trống',
+            end_date_sabbatical_required: 'Ngày kết thúc không được để trống',
             reason_sabbatical_required: 'Lý do không được để trống',
             status_sabbatical_required: 'Trạng thái không được để trống',
             get_sabbatical_success: 'Lấy thông tin nghỉ phép thành công',
@@ -523,6 +523,7 @@ export default {
             unit: 'Đơn vị công tác',
             from_month_year: 'Từ tháng/năm',
             to_month_year: 'Đến tháng/năm',
+            edit_experience:'Chỉnh sửa kinh nghiệm làm việc',
 
             diploma: 'Bằng cấp',
             certificate: 'Chứng chỉ',
@@ -533,6 +534,9 @@ export default {
             ranking_learning: 'Xếp loại',
             attached_files: 'File đính kèm',
             end_date_certificate: 'Ngày hết hạn',
+            edit_certificate:'Chỉnh sửa chứng chỉ',
+            edit_diploma:'Chỉnh sửa bằng cấp',
+           
 
             bank_account: 'Tài khoản ngân hàng',
             personal_income_tax: 'Thuế thu nhập cá nhân',
@@ -544,6 +548,13 @@ export default {
             day_active: 'Ngày hoạt động',
             managed_by: 'Quản lý bởi',
 
+            bhyt: 'Bảo hiểm y tế',
+            number_BHYT: 'Mã số BHYT',
+            bhxh: 'Bảo hiểm xã hội',
+            number_BHXH:'Mã số BHXH',
+            bhxh_process:'Quá trình đóng bảo hiểm xã hội',
+            edit_bhxh: 'Chỉnh sửa bảo hiểm xã hội',
+
             labor_contract: 'Hợp đồng lao động',
             training_process: 'Quá trình đào tạo',
             name_contract: 'Tên hợp đồng',
@@ -554,6 +565,7 @@ export default {
             end_date: 'Ngày kết thúc',
             type_education: 'Loại đào tạo',
             cost: 'Chi phí',
+            edit_contract:'Chỉnh sửa hợp đồng lao động',
 
             list_attachments: 'Danh sách tài liệu đính kèm',
             attachments_code: 'Nơi lưu trữ bản cứng',
@@ -561,6 +573,7 @@ export default {
             number: 'Số lượng',
             add_default: 'Mặc định',
             add_default_title: 'Thêm các tài liệu mặc định',
+            edit_file:'Chỉnh sửa tài liệu đính kèm',
 
             Reward: 'Khen thưởng',
             discipline: 'Kỷ luật',

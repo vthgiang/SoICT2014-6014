@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { SalaryCreateForm } from './SalaryCreateForm';
-import { SalaryImportFrom } from './SalaryImportFrom';
-import { SalaryEditForm } from './SalaryEditForm';
+import { SalaryCreateForm ,SalaryEditForm ,SalaryImportFrom } from './CombineContent';
 import { ActionColumn, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
-
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { SalaryActions } from '../redux/actions';
 

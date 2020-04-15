@@ -18,6 +18,7 @@ import ManageDepartment from '../modules/super-admin-management/departments-mana
 import ManageComponent from '../modules/super-admin-management/components-management/components';
 import ManageFormDocument from '../modules/super-admin-management/documents-management/components';
 import { DetailEmployee, UpdateEmployee} from '../modules/employees-manager/employee-info/components/CombineContent';
+import {EmployeeCreatePage} from '../modules/employees-manager/employee-create/components/EmployeeCreatePage';
 import { ListEmployee, AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
 import { ManagerPraiseDiscipline} from '../modules/employees-manager/praise-discipline/components';
@@ -237,7 +238,7 @@ class Routes extends Component {
                         path={ '/hr-add-employee' }
                         pageName={'add_employee' }
                         layout={ Layout }
-                        component={ AddEmployee }
+                        component={ EmployeeCreatePage }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.employeesInfo.isLoading }

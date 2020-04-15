@@ -1,13 +1,31 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ErrorLabel, DatePicker } from '../../../../common-components';
-import { SabbaticalFormValidator } from './SabbaticalFromValidator';
-import { SabbaticalActions } from '../redux/actions';
-class SabbaticalEditForm extends Component {
+import { ModalDialog, ErrorLabel, DatePicker, ModalButton } from '../../../../common-components';
+import { SabbaticalFormValidator } from '../../sabbatical/components/CombineContent';
+class ModalAddSabbatical extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            startDate: this.formatDate(Date.now()),
+            endDate: this.formatDate(Date.now()),
+            status: "pass",
+            reason: "",
+        };
+    }
+    // Function format ngày hiện tại thành dạnh dd-mm-yyyy
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
     }
     // Bắt sự kiện thay đổi ngày bắt đầu
     handleStartDateChange = (value) => {
@@ -75,60 +93,38 @@ class SabbaticalEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateEndDate(this.state.endDate, false) &&
+        let result =
+            this.validateEndDate(this.state.endDate, false) &&
             this.validateReason(this.state.reason, false) && this.validateStartDate(this.state.startDate, false);
         return result;
     }
 
+    // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.updateSabbatical(this.state._id, this.state);
+            return this.props.handleChange(this.state);
         }
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                employeeNumber: nextProps.employeeNumber,
-                endDate: nextProps.endDate,
-                startDate: nextProps.startDate,
-                reason: nextProps.reason,
-                status: nextProps.status,
-                errorOnReason: undefined,
-                errorOnStartDate: undefined,
-                errorOnEndDate: undefined,
-            }
-        } else {
-            return null;
-        }
-    }
-
     render() {
-        const { translate, sabbatical } = this.props;
-        const { employeeNumber, startDate, endDate, reason, status,
+        const { translate, id } = this.props;
+        const { startDate, endDate, reason, status,
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
+                <ModalButton modalID={`modal-create-sabbatical-${id}`} button_name={translate('modal.create')} title={translate('sabbatical.add_sabbatical_title')} />
                 <ModalDialog
-                    size='50' modalID="modal-edit-sabbtical" isLoading={sabbatical.isLoading}
-                    formID="form-edit-sabbtical"
-                    title={translate('sabbatical.edit_sabbatical')}
-                    msg_success={translate('manage_user.edit_success')}
-                    msg_faile={translate('sabbatical.edit_faile')}
+                    size='50' modalID={`modal-create-sabbatical-${id}`} isLoading={false}
+                    formID={`form-create-sabbatical-${id}`}
+                    title={translate('sabbatical.add_sabbatical_title')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-edit-sabbtical">
-                        <div className="form-group">
-                            <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled />
-                        </div>
+                    <form className="form-group" id={`form-create-sabbatical-${id}`}>
                         <div className="row">
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('sabbatical.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_start_date"
+                                    id={`create_start_date${id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -137,7 +133,7 @@ class SabbaticalEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('sabbatical.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_end_date"
+                                    id={`create_end_date${id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
@@ -146,7 +142,7 @@ class SabbaticalEditForm extends Component {
                         </div>
                         <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
                             <label>{translate('sabbatical.reason')}<span className="text-red">*</span></label>
-                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange}></textarea>
+                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off"></textarea>
                             <ErrorLabel content={errorOnReason} />
                         </div>
                         <div className="form-group">
@@ -163,15 +159,5 @@ class SabbaticalEditForm extends Component {
         );
     }
 };
-
-function mapState(state) {
-    const { sabbatical } = state;
-    return { sabbatical };
-};
-
-const actionCreators = {
-    updateSabbatical: SabbaticalActions.updateSabbatical,
-};
-
-const editSabbatical = connect(mapState, actionCreators)(withTranslate(SabbaticalEditForm));
-export { editSabbatical as SabbaticalEditForm };
+const addSabbatical = connect(null, null)(withTranslate(ModalAddSabbatical));
+export { addSabbatical as ModalAddSabbatical };

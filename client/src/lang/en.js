@@ -496,6 +496,7 @@ export default {
             unit: 'Unit',
             from_month_year: 'From month/year',
             to_month_year: 'To month/year',
+            edit_experience:'Edit work experience',
 
             diploma: 'Diploma',
             certificate: 'Certificate',
@@ -506,6 +507,8 @@ export default {
             ranking_learning: 'Ranking of learning',
             attached_files: 'Attached files',
             end_date_certificate: 'Expiration date',
+            edit_certificate:'Edit certificate',
+            edit_diploma:'Edit diploma',
 
             bank_account: 'Bank account',
             personal_income_tax: 'Personal income tax',
@@ -517,6 +520,13 @@ export default {
             day_active: 'Day active',
             managed_by: 'Managed by',
 
+            bhyt: 'Health Insurance',
+            number_BHYT: 'Health insurance code',
+            bhxh: 'Social insurance',
+            number_BHXH:'Social insurance code',
+            bhxh_process:'Process of social insurance payment',
+            edit_bhxh: 'Edit social insurance',
+
             labor_contract: 'Labor contract',
             training_process: 'Training process',
             name_contract: 'Contract name',
@@ -527,6 +537,7 @@ export default {
             end_date: 'End day',
             type_education: 'Type of education',
             cost: 'Cost',
+            edit_contract:'Edit Labor contract',
 
             list_attachments: 'List of attached documents',
             attachments_code: 'Attachments code',
@@ -534,11 +545,12 @@ export default {
             number: 'Number',
             add_default: 'Add default',
             add_default_title: 'Add the default document',
+            edit_file:'Edit attached documents',
 
             Reward: 'Reward',
             discipline: 'Discipline',
             historySalary: 'History of salary',
-            sabbatical: 'sabbatical information'
+            sabbatical: 'Sabbatical information'
         },
         holiday: {
             start_date: 'Start day',

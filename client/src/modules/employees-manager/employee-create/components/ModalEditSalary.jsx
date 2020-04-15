@@ -2,72 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalDialog, ErrorLabel, DatePicker } from '../../../../common-components';
-import { SalaryFormValidator } from './SalaryFromValidator';
-import { SalaryActions } from '../redux/actions';
-class SalaryCreateForm extends Component {
+import { SalaryFormValidator } from '../../salary-employee/components/CombineContent';
+class ModalEditSalary extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            unit: "VND",
-            employeeNumber: "",
-            month: this.formatDate(Date.now()),
-            mainSalary: "",
-            bonus: [],
-        };
+        this.state = {};
     }
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        return [month, year].join('-');
-    }
-
-
-    // Function bắt sự kiện thay đổi mã nhân viên
-    handleMSNVChange = (e) => {
-        let value = e.target.value;
-        this.validateEmployeeNumber(value, true);
-    }
-    // function kiểm tra mã nhân viên nhập vào có hợp lệ hay không
-    validateEmployeeNumber = (value, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateEmployeeNumber(value, this.props.translate);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
-    // Function bắt sự kiện thay đổi tháng lương để lưu vào state
-    handleMonthChange = (value) => {
-        this.validateMonthSalary(value, true);
-    }
-    // Function kiem tra tiền lương chính nhập vào có hợp lệ không
-    validateMonthSalary = (value, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateMonthSalary(value, this.props.translate);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnMonthSalary: msg,
-                    month: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
     // Function bắt sự kiện thay đổi tiền lương chính
     handleMainSalaryChange = (e) => {
         let value = e.target.value;
@@ -190,9 +130,7 @@ class SalaryCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateEmployeeNumber(this.state.employeeNumber, false) &&
-            this.validateMainSalary(this.state.mainSalary, false) && this.validateMonthSalary(this.state.month, false);
+        let result = this.validateMainSalary(this.state.mainSalary, false);
 
         if (result === true) {
             if (this.state.bonus !== []) {
@@ -206,44 +144,56 @@ class SalaryCreateForm extends Component {
         }
         return result;
     }
-
     // Function bắt sự kiện lưu bảng lương
-    save = () => {
+    save = async () => {
+        await this.setState({
+            mainSalary: this.state.mainSalary + this.state.unit
+        })
         if (this.isFormValidated()) {
-            return this.props.createNewSalary(this.state);
+            return this.props.handleChange(this.state);
         }
     }
-
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+                index: nextProps.index,
+                unit: nextProps.unit,
+                month: nextProps.month,
+                mainSalary: nextProps.mainSalary,
+                bonus: nextProps.bonus,
+                errorOnMainSalary: undefined,
+                errorOnNameSalary: undefined,
+                errorOnMoreMoneySalary: undefined,
+            }
+        } else {
+            return null;
+        }
+    }
     render() {
-        const { translate, salary } = this.props;
-        const { employeeNumber, unit, mainSalary, bonus, month, errorOnEmployeeNumber,
-            errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary, errorOnMonthSalary } = this.state;
+        const { translate, id } = this.props;
+        const { unit, mainSalary, bonus, month,
+            errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary } = this.state;
         return (
             <React.Fragment>
                 <ModalDialog
-                    size='50' modalID="modal-create-salary" isLoading={salary.isLoading}
-                    formID="form-create-salary"
-                    title={translate('salary_employee.add_salary_title')}
-                    msg_success={translate('error.create_salary_success')}
-                    msg_faile={translate('error.create_salary_faile')}
+                    size='50' modalID={`modal-edit-salary-${id}`} isLoading={false}
+                    formID={`form-edit-salary-${id}`}
+                    title={translate('salary_employee.edit_salary')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-create-salary">
-                        <div className={`form-group ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
-                            <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
-                            <ErrorLabel content={errorOnEmployeeNumber} />
-                        </div>
-                        <div className={`form-group ${errorOnMonthSalary === undefined ? "" : "has-error"}`}>
+                    <form className="form-group" id={`form-edit-salary-${id}`}>
+                        <div className="form-group">
                             <label>{translate('page.month')}<span className="text-red">*</span></label>
                             <DatePicker
-                                id="create_month"
+                                id={`edit_month${id}`}
                                 dateFormat="month-year"
                                 value={month}
+                                disabled={true}
                                 onChange={this.handleMonthChange}
                             />
-                            <ErrorLabel content={errorOnMonthSalary} />
                         </div>
                         <div className={`form-group ${errorOnMainSalary === undefined ? "" : "has-error"}`}>
                             <label >{translate('salary_employee.main_salary')}<span className="text-red">*</span></label>
@@ -288,14 +238,6 @@ class SalaryCreateForm extends Component {
         );
     }
 };
-function mapState(state) {
-    const { salary } = state;
-    return { salary };
-};
 
-const actionCreators = {
-    createNewSalary: SalaryActions.createNewSalary,
-};
-
-const createForm = connect(mapState, actionCreators)(withTranslate(SalaryCreateForm));
-export { createForm as SalaryCreateForm };
+const editSalary = connect(null, null)(withTranslate(ModalEditSalary));
+export { editSalary as ModalEditSalary };

@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { ModalDialog, ModalButton, ErrorLabel, DatePicker } from '../../../../common-components';
-import { DisciplineFromValidator } from './DisciplineFromValidator';
-
-import { DisciplineActions } from '../redux/actions';
-class DisciplineCreateForm extends Component {
+import { PraiseFromValidator } from '../../praise-discipline/components/CombineContent';
+class ModalAddPraise extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeNumber: "",
             number: "",
             unit: "",
             startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now()),
             type: "",
             reason: "",
         };
@@ -35,28 +30,6 @@ class DisciplineCreateForm extends Component {
 
         return [day, month, year].join('-');
     }
-
-    /**
-    * Bắt sự kiện thay đổi mã nhân viên
-    */
-    handleMSNVChange = (e) => {
-        let value = e.target.value;
-        this.validateEmployeeNumber(value, true);
-    }
-    validateEmployeeNumber = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateEmployeeNumber(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
     /**
      * Bắt sự kiện thay đổi số quyết định
      */
@@ -65,7 +38,7 @@ class DisciplineCreateForm extends Component {
         this.validateNumber(value, true);
     }
     validateNumber = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateNumber(value, this.props.translate)
+        let msg = PraiseFromValidator.validateNumber(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -86,7 +59,7 @@ class DisciplineCreateForm extends Component {
         this.validateUnit(value, true);
     }
     validateUnit = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateUnit(value, this.props.translate)
+        let msg = PraiseFromValidator.validateUnit(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -99,38 +72,19 @@ class DisciplineCreateForm extends Component {
         return msg === undefined;
     }
     /**
-     * Bắt sự kiện thay đổi ngày có hiệu lực
+     * Bắt sự kiện thay đổi ngày ra quyết định
      */
     handleStartDateChange = (value) => {
-        this.validateStartDate(value, true)
+        this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateStartDate(value, this.props.translate)
+        let msg = PraiseFromValidator.validateStartDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     errorOnStartDate: msg,
                     startDate: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-    /**
-     * Bắt sự kiện thay đổi ngày hết hiệu lực
-     */
-    handleEndDateChange = (value) => {
-        this.validateEndDate(value, true);
-    }
-    validateEndDate = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateEndDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
                 }
             });
         }
@@ -145,7 +99,7 @@ class DisciplineCreateForm extends Component {
         this.validateType(value, true);
     }
     validateType = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateType(value, this.props.translate)
+        let msg = PraiseFromValidator.validateType(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -166,7 +120,7 @@ class DisciplineCreateForm extends Component {
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateReason(value, this.props.translate)
+        let msg = PraiseFromValidator.validateReason(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -184,8 +138,7 @@ class DisciplineCreateForm extends Component {
      */
     isFormValidated = () => {
         let result =
-            this.validateEmployeeNumber(this.state.employeeNumber, false) &&
-            this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
+            this.validateStartDate(this.state.startDate, false) &&
             this.validateNumber(this.state.number, false) && this.validateUnit(this.state.unit, false) &&
             this.validateType(this.state.reason, false) && this.validateReason(this.state.reason, false);
         return result;
@@ -195,31 +148,24 @@ class DisciplineCreateForm extends Component {
      */
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.createNewDiscipline(this.state);
+            return this.props.handleChange(this.state);
         }
     }
     render() {
-        const { translate, discipline } = this.props;
-        const { employeeNumber, startDate, endDate, reason, number, unit, type, errorOnEndDate, errorOnStartDate,
-            errorOnEmployeeNumber, errorOnNumber, errorOnUnit, errorOnType, errorOnReason } = this.state;
+        const { translate, id } = this.props;
+        const { startDate, reason, number, unit, type, errorOnStartDate,
+            errorOnNumber, errorOnUnit, errorOnType, errorOnReason } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID="modal-create-discipline" button_name={translate('discipline.add_discipline')} title={translate('discipline.add_discipline_title')} />
+                <ModalButton modalID={`modal-create-praise-${id}`} button_name={translate('modal.create')} title={translate('discipline.add_praise_title')} />
                 <ModalDialog
-                    size='50' modalID="modal-create-discipline" isLoading={discipline.isLoading}
-                    formID="form-create-discipline"
-                    title={translate('discipline.add_discipline_title')}
-                    msg_success={translate('error.create_discipline_success')}
-                    msg_faile={translate('error.create_discipline_faile')}
+                    size='50' modalID={`modal-create-praise-${id}`} isLoading={false}
+                    formID={`form-create-praise-${id}`}
+                    title={translate('discipline.add_praise_title')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-create-discipline">
-                        <div className={`form-group ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
-                            <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder={translate('table.employee_number')} />
-                            <ErrorLabel content={errorOnEmployeeNumber} />
-                        </div>
+                    <form className="form-group" id={`form-create-praise-${id}`}>
                         <div className="row">
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnNumber === undefined ? "" : "has-error"}`}>
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
@@ -234,31 +180,22 @@ class DisciplineCreateForm extends Component {
                         </div>
                         <div className="row">
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('discipline.start_date')}<span className="text-red">*</span></label>
+                                <label>{translate('discipline.decision_day')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="create_discipline_start_date"
+                                    id={`add_praise_start_date${id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('discipline.end_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id="create_discipline_end_date"
-                                    value={endDate}
-                                    onChange={this.handleEndDateChange}
-                                />
-                                <ErrorLabel content={errorOnEndDate} />
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnType === undefined ? "" : "has-error"}`}>
+                                <label>{translate('discipline.reward_forms')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="type" value={type} onChange={this.handleTypeChange} autoComplete="off" placeholder={translate('discipline.reward_forms')} />
+                                <ErrorLabel content={errorOnType} />
                             </div>
                         </div>
-                        <div className={`form-group ${errorOnType === undefined ? "" : "has-error"}`}>
-                            <label>{translate('discipline.discipline_forms')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="type" value={type} onChange={this.handleTypeChange} autoComplete="off" placeholder={translate('discipline.discipline_forms')} />
-                            <ErrorLabel content={errorOnType} />
-                        </div>
                         <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
-                            <label>{translate('discipline.reason_discipline')}<span className="text-red">*</span></label>
+                            <label>{translate('discipline.reason_praise')}<span className="text-red">*</span></label>
                             <textarea className="form-control" rows="3" name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off" ></textarea>
                             <ErrorLabel content={errorOnReason} />
                         </div>
@@ -268,15 +205,5 @@ class DisciplineCreateForm extends Component {
         );
     }
 };
-
-function mapState(state) {
-    const { discipline } = state;
-    return { discipline };
-};
-
-const actionCreators = {
-    createNewDiscipline: DisciplineActions.createNewDiscipline,
-};
-
-const createForm = connect(mapState, actionCreators)(withTranslate(DisciplineCreateForm));
-export { createForm as DisciplineCreateForm };
+const addPraise = connect(null, null)(withTranslate(ModalAddPraise));
+export { addPraise as ModalAddPraise };

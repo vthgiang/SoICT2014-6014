@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { SabbaticalCreateForm } from './SabbaticalCreateForm';
-import { SabbaticalEditForm } from './SabbaticalEditForm';
+import { SabbaticalCreateForm, SabbaticalEditForm } from './CombineContent';
 import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
 
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
@@ -21,7 +19,6 @@ class SabbaticalManager extends Component {
             page: 0,
             limit: 5,
         }
-        //this.handleChange = this.handleChange.bind(this);
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
@@ -55,12 +52,11 @@ class SabbaticalManager extends Component {
     }
 
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
-    handleMSNVChange = (event) => {
-        const { name, value } = event.target;
+    handleMSNVChange = (e) => {
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
