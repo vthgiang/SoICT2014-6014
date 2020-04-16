@@ -29,7 +29,7 @@ class ModalStartKPIPersonal extends Component {
     // }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
 
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
@@ -74,7 +74,6 @@ class ModalStartKPIPersonal extends Component {
             this.props.createKPIPersonal(kpipersonal);
             window.$("#startKPIPersonal").modal("hide");
             this.notifysuccess(translate('kpi_personal.start.success'));
-
         }
     }
     

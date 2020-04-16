@@ -24,7 +24,7 @@ class ModalEditTargetKPIPersonal extends Component {
     }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
 
     // function: chỉnh sửa một mục tiêu của KPI cá nhân
     saveEditTarget = async (event) => {

@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
-import { DepartmentActions } from "../../../super-admin-management/departments-management/redux/actions";
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { createKpiActions } from '../redux/actions';
+import { createUnitKpiActions } from 'i:/qlcv/client/src/modules/kpi-unit/kpi-unit-create/redux/actions';
 
 import { ModalAddTargetKPIPersonal } from './ModalAddTargetKPIPersonal';
 import { ModalStartKPIPersonal } from './ModalStartKPIPersonal';
@@ -23,6 +24,7 @@ class KPIPersonalCreate extends Component {
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id');
         this.props.getCurrentKPIPersonal()//localStorage.getItem('id');
+        this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.handleResizeColumn();
     }
 
@@ -101,6 +103,24 @@ class KPIPersonalCreate extends Component {
                 confirmButtonText: 'Xác nhận'
             })
         }
+    }
+
+    handleNotInitializeKPIUnit = async () => {
+            Swal.fire({
+                title: 'Chưa khởi tạo KPI đơn vị',
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+    }
+
+    handleNotActivatedKPIUnit = async () => {
+        Swal.fire({
+            title: 'Chưa kích hoạt KPI đơn vị',
+            type: 'warning',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Xác nhận'
+        })
     }
     
     deleteKPI = async (id, status) => {
@@ -352,7 +372,7 @@ class KPIPersonalCreate extends Component {
     render() {
         var unitList, currentUnit, currentKPI, userdepartments;
         const { commenting, editing } = this.state;
-        const { department, createKpiPersonal, user, translate } = this.props;
+        const { department, createKpiPersonal, user, translate, createKpiUnit } = this.props;
         if (department.unitofuser) {
             unitList = department.unitofuser;
             currentUnit = unitList.filter(item => (
@@ -383,12 +403,7 @@ class KPIPersonalCreate extends Component {
                                         <div className="row">
                                             {(typeof currentKPI !== 'undefined' && currentKPI !== null) ?
                                                 <div className="col-xs-12 col-sm-12">
-                                                    <div className="">
-                                                        <h3 style={{ display: "inline", fontWeight: "600" }}>{translate('kpi_personal.kpi_personal_create.general_information.general_information')} {this.formatDate(currentKPI.time)} ({currentKPI.unit.name})</h3>
-                                                        <span style={{ float: "right" }} title={translate('kpi_personal.kpi_personal_create.kpi_status.status')}>{this.checkStatusKPI(currentKPI.status)}</span>
-                                                    </div>
-                                                    
-                                                    <div className="col-xs-12" style={{ marginLeft: "-10px", marginTop: "20px", marginBottom: "10px" }}>
+                                                    <div style={{ marginLeft: "-10px", marginBottom: "10px" }}>
                                                         {editing ?
                                                             <React.Fragment>
                                                                 <a className="btn btn-app" onClick={() => this.saveEdit(currentKPI._id, currentUnit && currentUnit[0]._id)} title="Lưu thông tin chỉnh sửa">
@@ -421,6 +436,11 @@ class KPIPersonalCreate extends Component {
                                                             </a>
                                                         }
                                                     </div>
+
+                                                   <div className="" style={{ marginBottom: "10px" }}>
+                                                        <h4 style={{ display: "inline", fontWeight: "600" }}>{translate('kpi_personal.kpi_personal_create.general_information.general_information')} {this.formatDate(currentKPI.time)} ({currentKPI.unit.name})</h4>
+                                                        <span style={{ float: "right" }} title={translate('kpi_personal.kpi_personal_create.kpi_status.status')}>{this.checkStatusKPI(currentKPI.status)}</span>
+                                                    </div>
                                                    
                                                     {editing ? userdepartments &&
                                                         <div className="col-xs-12 col-sm-6">
@@ -438,7 +458,7 @@ class KPIPersonalCreate extends Component {
                                                                 </div>   
                                                             </div>
                                                         </div>            
-                                                        : <div className="col-xs-12 form-group">
+                                                        : <div className="form-group">
                                                             <span style={{ fontWeight: "600" }}>{translate('kpi_personal.kpi_personal_create.approver')}: </span>
                                                             <span>{currentKPI.approver.name}</span>
                                                         </div>
@@ -476,7 +496,7 @@ class KPIPersonalCreate extends Component {
                                                     }
 
                                                     {editing === false &&
-                                                        <div className="col-xs-12 form group">
+                                                        <div className="form group">
                                                             <span style={{ fontWeight: "600" }}>{translate('kpi_personal.kpi_personal_create.weight.weight_total')}: </span>
                                                             <span>{currentKPI.listtarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
                                                             {currentKPI.listtarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
@@ -486,7 +506,7 @@ class KPIPersonalCreate extends Component {
                                                         </div>
                                                     }
 
-                                                    <div className="col-xs-12">
+                                                    <div>
                                                         {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
                                                             <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi_personal.kpi_personal_create.target_list')} ({currentKPI.listtarget.reduce(sum => sum + 1, 0)})</h4>
                                                         }
@@ -558,10 +578,26 @@ class KPIPersonalCreate extends Component {
                                                 </div>
                                                 : <div className="col-xs-12">
                                                     <div style={{marginLeft: "-10px"}}>
-                                                        <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false">
-                                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_personal.kpi_personal_create.initialize_kpi_newmonth')}
-                                                        </a>
-                                                        <ModalStartKPIPersonal unit={currentUnit && currentUnit[0]} />
+                                                        
+                                                        {(typeof createKpiUnit.currentKPI !== 'undefined' && createKpiUnit.currentKPI !== null) ?
+                                                            <div>{ createKpiUnit.currentKPI.status !==1 ?
+                                                                <div>  
+                                                                    <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotActivatedKPIUnit()}}>
+                                                                        <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_personal.kpi_personal_create.initialize_kpi_newmonth')}
+                                                                    </a>
+                                                                </div>
+                                                                : <div>
+                                                                    <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false">
+                                                                        <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_personal.kpi_personal_create.initialize_kpi_newmonth')}
+                                                                    </a>
+                                                                    <ModalStartKPIPersonal unit={currentUnit && currentUnit[0]} />
+                                                                </div>
+                                                                }
+                                                            </div>
+                                                            : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotInitializeKPIUnit()}}>
+                                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_personal.kpi_personal_create.initialize_kpi_newmonth')}
+                                                            </a>
+                                                        }
                                                     </div>
                                                     <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('kpi_personal.kpi_personal_create.general_information.general_information')} {this.formatDate(Date.now())}</h3>
                                                     <p>{translate('kpi_personal.kpi_personal_create.not_initialize')}</p>
@@ -582,8 +618,8 @@ class KPIPersonalCreate extends Component {
 }
 
 function mapState(state) {
-    const { department, createKpiPersonal, user } = state;
-    return { department, createKpiPersonal, user };
+    const { department, createKpiPersonal, user, createKpiUnit } = state;
+    return { department, createKpiPersonal, user, createKpiUnit };
 }
 
 const actionCreators = {
@@ -593,7 +629,9 @@ const actionCreators = {
     deleteTargetKPIPersonal: createKpiActions.deleteTarget,
     editKPIPersonal: createKpiActions.editKPIPersonal,
     deleteKPIPersonal: createKpiActions.deleteKPIPersonal,
-    editStatusKPIPersonal: createKpiActions.editStatusKPIPersonal
+    editStatusKPIPersonal: createKpiActions.editStatusKPIPersonal,
+
+    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
 };
 
 const connectedKPIPersonalCreate = connect( mapState, actionCreators )( withTranslate(KPIPersonalCreate) );
