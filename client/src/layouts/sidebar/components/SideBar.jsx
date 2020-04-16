@@ -216,6 +216,7 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
+                                        {/**Quản lý loại tài sản */}
                                         {this.checkURL(url1.path1, links) === true &&
                                             <li className={window.location.pathname === url1.path1 ? "active" : ""}>
                                                 <Link to={url1.path1}>
@@ -224,6 +225,8 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+
+                                        {/**Quản lý thông tin tài sản */}
                                         {this.checkURL(url1.path2, links) === true &&
                                             <li className={window.location.pathname === url1.path2 ? "active" : ""}>
                                                 <Link to={url1.path2}>
@@ -240,6 +243,8 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+
+                                        {/** quản lý sửa chữa- thay thế - nâng cấp */}
                                         {this.checkURL(url1.path4, links) === true &&
                                             <li className={window.location.pathname === url1.path4 ? "active" : ""}>
                                                 <Link to={url1.path4}>
@@ -248,6 +253,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {/** quản lý bảo trì tài sản */}
                                         {this.checkURL(url1.path5, links) === true &&
                                             <li className={window.location.pathname === url1.path5 ? "active" : ""}>
                                                 <Link to={url1.path5}>
@@ -256,6 +262,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {/** quản lý cấp phát - điều chuyển - thu hồi tài sản */}
                                         {this.checkURL(url1.path6, links) === true &&
                                             <li className={window.location.pathname === url1.path6 ? "active" : ""}>
                                                 <Link to={url1.path6}>
@@ -264,6 +271,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {/** quản lý khấu hao tài sản */}
                                         {this.checkURL(url1.path7, links) === true &&
                                             <li className={window.location.pathname === url1.path7 ? "active" : ""}>
                                                 <Link to={url1.path7}>
@@ -280,6 +288,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {/** quản lý đề nghị mua sắm thiết bị */}
                                         {this.checkURL(url1.path9, links) === true &&
                                             <li className={window.location.pathname === url1.path9 ? "active" : ""}>
                                                 <Link to={url1.path9}>
@@ -288,6 +297,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {/** quản lý đề nghị cấp phát thiết bị */}
                                         {this.checkURL(url1.path10, links) === true &&
                                             <li className={window.location.pathname === url1.path10 ? "active" : ""}>
                                                 <Link to={url1.path10}>
@@ -296,7 +306,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
-
+                                        {/** đề nghị mua sắm thiết bị */}
                                         {this.checkURL(url1.path11, links) === true &&
                                             <li className={window.location.pathname === url1.path11 ? "active" : ""}>
                                                 <Link to={url1.path11}>
@@ -305,6 +315,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {/** đề nghị cấp phát thiết bị */}
                                         {this.checkURL(url1.path12, links) === true &&
                                             <li className={window.location.pathname === url1.path12 ? "active" : ""}>
                                                 <Link to={url1.path12}>
@@ -313,6 +324,7 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
+                                        {/** quản lý tài sản được bàn giao */}
                                         {this.checkURL(url1.path13, links) === true &&
                                             <li className={window.location.pathname === url1.path13 ? "active" : ""}>
                                                 <Link to={url1.path13}>

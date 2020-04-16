@@ -190,7 +190,7 @@ class RecommendProcureManager extends Component {
                                 listRecommendProcure.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{x.createDate}</td>
+                                        <td>{x.dateCreate}</td>
                                         <td>{x.nguoidenghi}</td>
                                         <td>{x.equipment}</td>
                                         <td>{x.nguoipheduyet}</td>
@@ -202,7 +202,7 @@ class RecommendProcureManager extends Component {
                                                 content="Xóa thông tin phiếu"
                                                 data={{
                                                     id: x._id,
-                                                    info: x.recommendNumber + " - " + x.createDate.replace(/-/gi, "/")
+                                                    info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
                                                 }}
                                                 func={this.props.deleteRecommendProcure}
                                             />
@@ -223,7 +223,7 @@ class RecommendProcureManager extends Component {
                     <RecommendProcureEditForm
                         _id={this.state.currentRow._id}
                         recommendNumber={this.state.currentRow.recommendNumber}
-                        createDate={this.state.currentRow.createDate}
+                        dateCreate={this.state.currentRow.dateCreate}
 
 
                         status={this.state.currentRow.status}

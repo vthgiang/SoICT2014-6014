@@ -11,10 +11,10 @@ class RecommendProcureEditForm extends Component {
         this.save = this.save.bind(this);
     }
     // Bắt sự kiện thay đổi "Ngày lập"
-    handleCreateDateChange = (value) => {
+    handleDateCreateChange = (value) => {
         this.setState({
             ...this.state,
-            createDate: value
+            dateCreate: value
         })
     }
 
@@ -113,7 +113,7 @@ class RecommendProcureEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 recommendNumber: nextProps.recommendNumber,
-                createDate: nextProps.createDate,
+                dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
                 department: nextProps.department,
                 position: nextProps.position,
@@ -137,7 +137,7 @@ class RecommendProcureEditForm extends Component {
 
     render() {
         const { translate, recommendProcure } = this.props;
-        const { recommendNumber, createDate, proponent, department, position, equipment, supplier, total, unit, estimatePrice, approver, position1, status, note,
+        const { recommendNumber, dateCreate, proponent, department, position, equipment, supplier, total, unit, estimatePrice, approver, position1, status, note,
                 errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
         return (
             <React.Fragment>
@@ -161,8 +161,8 @@ class RecommendProcureEditForm extends Component {
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="edit_start_date"
-                                        value={createDate}
-                                        onChange={this.handleCreateDateChange}
+                                        value={dateCreate}
+                                        onChange={this.handleDateCreateChange}
                                     />
                                 </div>
                                 <div className="form-group">

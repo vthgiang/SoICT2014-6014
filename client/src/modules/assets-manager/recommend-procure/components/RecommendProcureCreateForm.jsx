@@ -9,7 +9,7 @@ class RecommendProcureCreateForm extends Component {
         super(props);
         this.state = {
             recommendNumber: "",
-            createDate: this.formatDate(Date.now()),
+            dateCreate: this.formatDate(Date.now()),
             proponent: "",
             department: "",
             position: "",
@@ -58,10 +58,10 @@ class RecommendProcureCreateForm extends Component {
         return msg === undefined;
     }
     // Bắt sự kiện thay đổi "Ngày lập"
-    handleCreateDateChange = (value) => {
+    handleDateCreateChange = (value) => {
         this.setState({
             ...this.state,
-            createDate: value
+            dateCreate: value
         })
     }
 
@@ -159,7 +159,7 @@ class RecommendProcureCreateForm extends Component {
 
     render() {
         const { translate, recommendProcure } = this.props;
-        const { recommendNumber, createDate, equipment, supplier, total, unit, estimatePrice,
+        const { recommendNumber, dateCreate, equipment, supplier, total, unit, estimatePrice,
                 errorOnRecommendNumber, errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
         return (
             <React.Fragment>
@@ -185,8 +185,8 @@ class RecommendProcureCreateForm extends Component {
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="create_start_date"
-                                        value={createDate}
-                                        onChange={this.handleCreateDateChange}
+                                        value={dateCreate}
+                                        onChange={this.handleDateCreateChange}
                                         placeholder="dd-mm-yyyy"
                                     />
                                 </div>

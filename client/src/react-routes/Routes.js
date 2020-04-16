@@ -47,6 +47,8 @@ import ResetPassword from '../modules/auth/components/ResetPassword';
 //asset
 import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure/components";
 import ManagerAssetType from "../modules/assets-manager/asset-type/components";
+import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
+import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerAsset from "../modules/assets-manager/asset-manager/components";
 
 class Routes extends Component {
@@ -647,6 +649,38 @@ class Routes extends Component {
                         pageName={ 'manage_info_asset' }
                         layout={ Layout }
                         component={ ManagerAsset }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.repairUpgrade.isLoading }
+                        key={ 'manage-repair-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-repair-asset', name: 'manage_repair_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-repair-asset' }
+                        path={ '/manage-repair-asset' }
+                        pageName={ 'manage_repair_asset' } //manage_distribute_asset
+                        layout={ Layout }
+                        component={ ManagerRepairUpgrade }
+                    /> 
+
+                    <PrivateRoute 
+                        isLoading={ this.props.repairUpgrade.isLoading }
+                        key={ 'manage-distribute-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-distribute-asset', name: 'manage_distribute_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-distribute-asset' }
+                        path={ '/manage-distribute-asset' }
+                        pageName={ 'manage_distribute_asset' }
+                        layout={ Layout }
+                        component={ ManagerDistributeTransfer }
                     />
 
                     {/* NOT FOUND */}

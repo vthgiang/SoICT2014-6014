@@ -40,6 +40,8 @@ import { componentsDefault } from "../modules/system-admin-management/components
 import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
 import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
 import { asset } from "../modules/assets-manager/asset-manager/redux/reducers";
+import { repairUpgrade } from "../modules/assets-manager/repair-upgrade/redux/reducers";
+import { distributeTransfer } from "../modules/assets-manager/distribute-transfer/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
     alert,
@@ -89,7 +91,9 @@ const appReducer = combineReducers(Object.assign({
     // asset
     recommendProcure,
     assetType,
-    asset
+    asset,
+    repairUpgrade,
+    distributeTransfer,
 
 }, { Intl }));
 

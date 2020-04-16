@@ -97,11 +97,11 @@ class AssetTypeManager extends Component {
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">Mã loại tài sản:</label>
+                            <label className="form-control-static">Mã loại tài sản</label>
                             <input type="text" className="form-control" name="typeNumber" onChange={this.handleTypeNumberChange} placeholder="Mã loại tài sản" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Tên loại tài sản:</label>
+                            <label className="form-control-static">Tên loại tài sản</label>
                             <input type="text" className="form-control" name="typeName" onChange={this.handleTypeNameChange} placeholder="Mã loại tài sản" autoComplete="off" />
                         </div>
                         
