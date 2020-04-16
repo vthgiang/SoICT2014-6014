@@ -9,7 +9,7 @@ import './tasktemplate.css';
 
 class ModalAddTaskTemplate extends Component {
     componentDidMount() {
-        // get department of current user
+        // get department of current user 
         this.props.getDepartment();
         // lấy tất cả nhân viên của công ty
         this.props.getAllUserOfCompany();
@@ -18,6 +18,8 @@ class ModalAddTaskTemplate extends Component {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+        // Lấy tất cả các role là dean 
+        this.props.getRoleDeanOfUser(localStorage.getItem("currentRole"));
         // Load js for form
         // this.handleLoadJS();
         // Load library for sort action table
@@ -481,7 +483,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     render() {
-        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments;
+        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments,role;
         const { newTemplate, submitted, action, information, addAction, addInfo } = this.state;
         const { department, user } = this.props;
         if (newTemplate.listAction) listAction = newTemplate.listAction;
@@ -492,6 +494,9 @@ class ModalAddTaskTemplate extends Component {
                 item.dean === this.state.currentRole
                 || item.vice_dean === this.state.currentRole
                 || item.employee === this.state.currentRole);
+        }
+        if (department.roleofuser){
+            role = department.roleofuser;
         }
         if (user.roledepartments) listRole = user.roledepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
@@ -516,9 +521,9 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTemplate.unit==="" ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {currentUnit &&
-                                                    <select defaultValue={currentUnit && currentUnit[0].dean} className="form-control select2" ref="unit" data-placeholder="Chọn đơn vị quản lý mẫu" style={{ width: '100%' }}>
-                                                        {currentUnit.map(x => {
+                                                {role &&
+                                                    <select defaultValue={role && role[0].dean} className="form-control select2" ref="unit" data-placeholder="Chọn đơn vị quản lý mẫu" style={{ width: '100%' }}>
+                                                        {role.map(x => {
                                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                                         })}
                                                     </select>}
@@ -813,7 +818,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getRoleDeanOfUser: DepartmentActions.getRoleDeanOfUser
 };
 const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(ModalAddTaskTemplate);
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };
