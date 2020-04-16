@@ -142,7 +142,7 @@ function destroy(id, link){
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.DELETE_LINK_DEFAULT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
+                console.log("Error: ", err.response.data);
             })
     }
 }

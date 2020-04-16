@@ -36,19 +36,39 @@ class DisciplineEditForm extends Component {
      * Bắt sự kiện thay đổi ngày có hiệu lực
      */
     handleStartDateChange = (value) => {
-        this.setState({
-            ...this.state,
-            startDate: value
-        })
+        this.validateStartDate(value, true)
+    }
+    validateStartDate = (value, willUpdateState = true) => {
+        let msg = DisciplineFromValidator.validateStartDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnStartDate: msg,
+                    startDate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
     /**
      * Bắt sự kiện thay đổi ngày hết hiệu lực
      */
     handleEndDateChange = (value) => {
-        this.setState({
-            ...this.state,
-            endDate: value
-        })
+        this.validateEndDate(value, true);
+    }
+    validateEndDate = (value, willUpdateState = true) => {
+        let msg = DisciplineFromValidator.validateEndDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEndDate: msg,
+                    endDate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     /**
@@ -99,6 +119,7 @@ class DisciplineEditForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateUnit(this.state.unit, false) && this.validateType(this.state.reason, false) &&
+            this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
             this.validateReason(this.state.reason, false);
         return result;
     }
@@ -125,7 +146,10 @@ class DisciplineEditForm extends Component {
                 reason: nextProps.reason,
                 errorOnUnit: undefined,
                 errorOnType: undefined,
-                errorOnReason: undefined
+                errorOnReason: undefined,
+                errorOnStartDate: undefined,
+                errorOnEndDate: undefined,
+
             }
         } else {
             return null;
@@ -135,7 +159,7 @@ class DisciplineEditForm extends Component {
     render() {
         const { translate, discipline } = this.props;
         const { employeeNumber, startDate, endDate, reason, number, unit, type,
-            errorOnUnit, errorOnType, errorOnReason } = this.state;
+            errorOnEndDate, errorOnStartDate, errorOnUnit, errorOnType, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <ModalDialog
@@ -164,21 +188,23 @@ class DisciplineEditForm extends Component {
                             </div>
                         </div>
                         <div className="row qlcv-from">
-                            <div className="left col-sm-6 col-xs-12 form-group">
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_discipline_start_date"
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className="right col-sm-6 col-xs-12 form-group">
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="edit_discipline_end_date"
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
+                                <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
                         <div className={`form-group ${errorOnType === undefined ? "" : "has-error"}`}>

@@ -30,8 +30,8 @@ function validateShortName(value) {
         msg = "Tên không ít hơn 3 ký tự";
     } else if(value.length > 255){
         msg = "Tên không nhiều hơn 255 ký tự";
-    } else if (!VALIDATOR.isValidName(value)){
-        msg = "Tên không chứa ký tự đặc biệt";
+    } else if (!VALIDATOR.isStringNotSpace(value)){
+        msg = "Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau";
     }
     return msg;
 }

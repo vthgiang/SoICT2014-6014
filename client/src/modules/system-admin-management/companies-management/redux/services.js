@@ -8,7 +8,9 @@ export const CompanyServices = {
     create,
     edit,
     addNewLink,
-    deleteLink,
+    deleteLink,    
+    addNewComponent,
+    deleteComponent,
     linksList,
     linksPaginate,
     componentsList,
@@ -73,6 +75,27 @@ function addNewLink(id, data) {
 function deleteLink(companyId, linkId) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/company/${companyId}/delete-link/${linkId}`,
+        method: 'DELETE',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function addNewComponent(id, data) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${id}/add-new-component`,
+        method: 'POST',
+        data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function deleteComponent(companyId, componentId) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/company/${companyId}/delete-component/${componentId}`,
         method: 'DELETE',
         headers: AuthenticateHeader()
     };

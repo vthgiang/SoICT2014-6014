@@ -27,7 +27,9 @@ class datePicker extends Component {
             });
         window.$("#" + id).on("change", () => {
             let value = this.refs.datePicker.value;
-            this.state.value = value;
+            this.setState({
+                value: value
+            })
             onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
         });
     }
@@ -67,7 +69,7 @@ class datePicker extends Component {
                     <div className="input-group-addon">
                         <i className="fa fa-calendar" />
                     </div>
-                    <input type="text" className="form-control" value={this.state.value} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" className="form-control" defaultValue={this.state.value} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );

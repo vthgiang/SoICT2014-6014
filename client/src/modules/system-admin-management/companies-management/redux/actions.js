@@ -8,7 +8,9 @@ export const CompanyActions = {
     create,
     edit,
     addNewLink,
+    addNewComponent,
     deleteLink,
+    deleteComponent,
     linksList,
     linksPaginate,
     componentsList,
@@ -106,10 +108,7 @@ function addNewLink(id, data){
                 console.log("add new link: ",res);
                 dispatch({
                     type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS,
-                    payload: {
-                        companyId: id,
-                        link: res.data.content
-                    }
+                    payload: res.data.content
                 });
                 resolve(res);
             })
@@ -140,7 +139,53 @@ function deleteLink(companyId, linkId){
             .catch(err => {
                 dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err.response.data);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function addNewComponent(id, data){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.addNewComponent(id, data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
                 console.log("Error: ", err);
+                reject(err);
+            })
+        });
+        
+    }
+}
+
+function deleteComponent(companyId, componentId){
+    return dispatch => {
+        dispatch({ type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_REQUEST});
+        return new Promise((resolve, reject) => {
+            CompanyServices.deleteComponent(companyId, componentId)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILE});
+                AlertActions.handleAlert(dispatch, err);
+                console.log("Error: ", err.response.data);
                 reject(err);
             })
         });

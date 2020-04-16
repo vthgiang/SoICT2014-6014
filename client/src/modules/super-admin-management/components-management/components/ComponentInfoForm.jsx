@@ -71,7 +71,13 @@ class ComponentInfoForm extends Component {
         return msg === undefined;
     }
 
-    save(){
+    handleComponentRoles = (value) => {
+        this.setState({
+            componentRoles: value
+        });
+    }
+
+    save = () => {
         const component = {
             name: this.state.componentName,
             description: this.state.componentDescription,

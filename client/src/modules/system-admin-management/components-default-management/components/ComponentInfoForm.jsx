@@ -20,6 +20,7 @@ class ComponentInfoForm extends Component {
                 componentName: nextProps.componentName,
                 componentDescription: nextProps.componentDescription,
                 componentRoles: nextProps.componentRoles,
+                componentLink: nextProps.componentLink,
                 componentNameError: undefined,
                 componentDescriptionError: undefined
             } 
@@ -28,6 +29,70 @@ class ComponentInfoForm extends Component {
         }
     }
 
+    render() { 
+        const { translate, linksDefault, rolesDefault } = this.props;
+        const { componentId, componentName, componentDescription, componentLink, componentRoles, componentNameError, componentDescriptionError } = this.state;
+
+        return ( 
+            <React.Fragment>
+                <ModalDialog
+                    size='50' func={this.save}
+                    modalID="modal-edit-component-default"
+                    formID="form-edit-component-default"
+                    title={translate('manage_component.edit')}
+                    msg_success={translate('manage_component.edit_success')}
+                    msg_faile={translate('manage_component.edit_faile')}
+                    disableSubmit={!this.isFormValidated()}
+                >
+                    <form id="form-edit-component-default">
+                        <div className={`form-group ${componentNameError===undefined?"":"has-error"}`}>
+                            <label>{ translate('manage_component.name') }<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" value={componentName} onChange={this.handleName} />
+                            <ErrorLabel content={componentNameError}/>
+                        </div>
+                        <div className={`form-group ${componentDescriptionError===undefined?"":"has-error"}`}>
+                            <label>{ translate('manage_component.description') }</label>
+                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
+                            <ErrorLabel content={componentDescriptionError}/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_component.link') }</label>
+                            {
+                                linksDefault.list.length > 0 &&
+                                <SelectBox
+                                    id={`select-component-default-link-${componentId}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {
+                                        linksDefault.list.map( link => {return {value: link._id, text: link.url}})
+                                    }
+                                    onChange={this.handleLink}
+                                    value={componentLink}
+                                    multiple={false}
+                                />
+                            }
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_component.roles') }</label>
+                            <SelectBox
+                                id={`select-component-default-roles-${componentId}`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {
+                                    rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
+                                }
+                                onChange={this.handleRoles}
+                                value={componentRoles}
+                                multiple={true}
+                            />
+                        </div>
+                    </form>
+                </ModalDialog>
+            </React.Fragment>
+         );
+    }
+
+    
     // Xy ly va validate name
     handleName = (e) => {
         const {value} = e.target;
@@ -91,75 +156,14 @@ class ComponentInfoForm extends Component {
         return result;
     }
 
-    save(){
+    save = () => {
         const component = { 
             name: this.state.componentName, 
             description: this.state.componentDescription, 
+            link: this.state.componentLink,
             roles: this.state.componentRoles 
         };
         if(this.isFormValidated()) return this.props.editComponent(this.state.componentId, component);
-    }
-
-    render() { 
-        const { translate, linksDefault, rolesDefault } = this.props;
-        const { componentId, componentName, componentDescription, componentLink, componentRoles, componentNameError, componentDescriptionError } = this.state;
-
-        return ( 
-            <React.Fragment>
-                <ModalDialog
-                    size='50' func={this.save}
-                    modalID="modal-edit-component-default"
-                    formID="form-edit-component-default"
-                    title={translate('manage_component.edit')}
-                    msg_success={translate('manage_component.edit_success')}
-                    msg_faile={translate('manage_component.edit_faile')}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form id="form-edit-component-default">
-                        <div className={`form-group ${componentNameError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_component.name') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" value={componentName} onChange={this.handleName} />
-                            <ErrorLabel content={componentNameError}/>
-                        </div>
-                        <div className={`form-group ${componentDescriptionError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_component.description') }</label>
-                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
-                            <ErrorLabel content={componentDescriptionError}/>
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('manage_component.link') }</label>
-                            {
-                                linksDefault.list.length > 0 &&
-                                <select
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    onChange={this.handleLink}
-                                    value={componentLink}
-                                >
-                                    {
-                                        linksDefault.list.map( link => <option key={link._id} value={link._id}>{link.url}</option>)
-                                    }
-                                </select>
-                            }
-                        </div>
-                        <div className="form-group">
-                            <label>{ translate('manage_component.roles') }</label>
-                            <SelectBox
-                                id={`select-component-default-roles-${componentId}`}
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
-                                }
-                                onChange={this.handleRoles}
-                                value={componentRoles}
-                                multiple={true}
-                            />
-                        </div>
-                    </form>
-                </ModalDialog>
-            </React.Fragment>
-         );
     }
 }
  

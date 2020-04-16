@@ -59,9 +59,12 @@ exports.create = async (req, res) => {
         const superadmin = await CompanyService.editSuperAdminOfCompany(company._id, req.body.email);
         console.log("tao superadmin abs: ", superadmin)
 
-        //Tạo link cho các trang mà công ty được phép truy cập
+        //Tạo link và các component tương ứng cho các trang mà công ty được phép truy cập
         const links = await CompanyService.createLinksForCompany(company._id, req.body.links, abstractRoles);
-        await CompanyService.addLinksForCompanyInCollection(company._id, links.map(link=>link._id));
+        console.log("tạo các links: ", links);
+
+        const components = await CompanyService.createComponentsForCompany(company._id, req.body.links);
+        console.log("tạo các components: ", components);
 
         const resCompany = await CompanyService.getById(company._id);
         
@@ -196,6 +199,48 @@ exports.deleteLinkForCompany = async (req, res) => {
     } catch (error) {
         
         LogError(req.user.email, 'DELETE_LINK_FOR_COMPANY');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
+exports.addNewComponentForCompany = async (req, res) => {
+    try {
+        const component = await CompanyService.addNewComponentForCompany(req.params.id, req.body.name, req.body.description, req.body.link);
+        const resComponent = await CompanyService.getComponentById(component._id);  
+
+        LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
+        res.status(200).json({
+            success: true,
+            message: 'add_new_component_for_company_success',
+            content: resComponent
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+};
+
+exports.deleteComponentForCompany = async (req, res) => {
+    try {
+        console.log("deletecomponent com: ", req.params.id, req.params.componentId)
+        const component = await CompanyService.deleteComponentForCompany(req.params.id, req.params.componentId);
+        
+        LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
+        res.status(200).json({
+            success: true,
+            message: 'delete_component_for_company_success',
+            content: component
+        });
+    } catch (error) {
+        
+        LogError(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(400).json({
             success: false,
             message: error

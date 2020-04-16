@@ -46,6 +46,11 @@ exports.getPaginate = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
+        const checkRole = await RoleService.getByData({
+            company: req.user.company._id,
+            name: req.body.name
+        });
+        if(checkRole !== null) throw ['role_name_exist', 'error_code_2'];
         var role = await RoleService.create(req.body, req.user.company._id);
         await RoleService.editRelationshiopUserRole(role._id, req.body.users);
         var data = await RoleService.getById(req.user.company._id, role._id);

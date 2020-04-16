@@ -17,7 +17,8 @@ export const DepartmentServices = {
     edit,
     destroy,
     getAll,
-    getDepartmentOfUser
+    getDepartmentOfUser,
+    getRoleDeanOfUser
 };
 
 function get() {
@@ -80,5 +81,14 @@ async function getDepartmentOfUser() {
     };
 
     return fetch(`${ LOCAL_SERVER_API }/department/department-of-user/${id}`, requestOptions).then(handleResponse);
+}
+function getRoleDeanOfUser(currentRole) {
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/department/role-dean-of-user/${currentRole}`,
+        method: 'GET',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
 }
 

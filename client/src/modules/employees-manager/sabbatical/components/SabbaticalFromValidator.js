@@ -5,6 +5,8 @@ import {
 export const SabbaticalFormValidator = {
     validateEmployeeNumber,
     validateReason,
+    validateStartDate,
+    validateEndDate
 
 }
 
@@ -22,6 +24,20 @@ function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('error.reason_sabbatical_required');
+    }
+    return msg;
+}
+function validateStartDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = translate('error.start_date_sabbatical_required');
+    }
+    return msg;
+}
+function validateEndDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = translate('error.end_date_sabbatical_required');
     }
     return msg;
 }

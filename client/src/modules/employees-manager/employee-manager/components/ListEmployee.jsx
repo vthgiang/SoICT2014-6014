@@ -86,7 +86,6 @@ class ListEmployee extends Component {
         });
         this.props.getAllEmployee(this.state);
     }
-
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * (this.state.limit);
         await this.setState({
@@ -95,20 +94,16 @@ class ListEmployee extends Component {
         });
         this.props.getAllEmployee(this.state);
     }
-
     handleChange(event) {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
     }
-
     handleSunmitSearch(event) {
         event.preventDefault();
         this.props.getAllEmployee(this.state);
     }
-
-
     render() {
         const { tree, list } = this.props.department;
         var lists, listDepartment = list, listPosition;
@@ -246,11 +241,7 @@ class ListEmployee extends Component {
                                             <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary} initState={this.state}
                                                 sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
                                             <DeleteNotification
-                                                content={{
-                                                    title: "Xoá thông tin nhân viên",
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content="Xoá thông tin nhân viên"
                                                 data={{
                                                     id: x.employee.map(y => y._id),
                                                     info: x.employee.map(y => y.fullName) + " - " + x.employee.map(y => y.employeeNumber)

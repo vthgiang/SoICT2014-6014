@@ -63,7 +63,7 @@ export function employeesManager(state = initState, action) {
         case EmployeeConstants.UPLOAD_AVATAR_SUCCESS:
             return {
                 ...state,
-                avatarfile: action.file.content,
+                avatarfile: action.payload,
                 isLoading: false
             };
         case EmployeeConstants.UPLOAD_AVATAR_FAILURE:

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { PraiseCreateForm } from './PraiseCreateForm';
-import { PraiseEditForm } from './PraiseEditForm';
+import { PraiseCreateForm, PraiseEditForm } from './CombineContent';
 import { ActionColumn, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';
@@ -210,17 +208,17 @@ class PraiseManager extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                     {
-                    this.state.currentRow !== undefined &&
-                    <PraiseEditForm
-                        _id={this.state.currentRow._id}
-                        employeeNumber={this.state.currentRow.employee.employeeNumber}
-                        number={this.state.currentRow.number}
-                        unit={this.state.currentRow.unit}
-                        startDate={this.state.currentRow.startDate}
-                        type={this.state.currentRow.type}
-                        reason={this.state.currentRow.reason}
-                    />
-                }
+                        this.state.currentRow !== undefined &&
+                        <PraiseEditForm
+                            _id={this.state.currentRow._id}
+                            employeeNumber={this.state.currentRow.employee.employeeNumber}
+                            number={this.state.currentRow.number}
+                            unit={this.state.currentRow.unit}
+                            startDate={this.state.currentRow.startDate}
+                            type={this.state.currentRow.type}
+                            reason={this.state.currentRow.reason}
+                        />
+                    }
                 </div>
             </div>
         )
