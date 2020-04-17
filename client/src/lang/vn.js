@@ -483,6 +483,7 @@ export default {
             date_birth: 'Ngày sinh',
             place_birth: 'Nơi sinh',
             email: 'Email',
+            email_company: 'Email công ty',
             relationship: 'Tình trạng hôn nhân',
             single: 'Độc thân',
             married: 'Đã kết hôn',

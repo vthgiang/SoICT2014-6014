@@ -457,6 +457,7 @@ export default {
             date_birth: 'Date of birth',
             place_birth: 'Place of birth',
             email: 'Email',
+            email_company: 'Email company',
             relationship: 'Relationship',
             single: 'Single',
             married: 'Married',
