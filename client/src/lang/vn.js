@@ -523,7 +523,8 @@ export default {
             unit: 'Đơn vị công tác',
             from_month_year: 'Từ tháng/năm',
             to_month_year: 'Đến tháng/năm',
-            edit_experience:'Chỉnh sửa kinh nghiệm làm việc',
+            edit_experience: 'Chỉnh sửa kinh nghiệm làm việc',
+            add_experience: 'Thêm mới kinh nghiệm làm việc',
 
             diploma: 'Bằng cấp',
             certificate: 'Chứng chỉ',
@@ -534,9 +535,16 @@ export default {
             ranking_learning: 'Xếp loại',
             attached_files: 'File đính kèm',
             end_date_certificate: 'Ngày hết hạn',
-            edit_certificate:'Chỉnh sửa chứng chỉ',
-            edit_diploma:'Chỉnh sửa bằng cấp',
-           
+            edit_certificate: 'Chỉnh sửa chứng chỉ',
+            edit_diploma: 'Chỉnh sửa bằng cấp',
+            add_certificate: 'Thêm mới chứng chỉ',
+            add_diploma: 'Thêm mới bằng cấp',
+            excellent: 'Xuất sắc',
+            very_good: 'Giỏi',
+            good: 'Khá',
+            average_good: 'Trung bình khá',
+            ordinary: 'Trung bình',
+
 
             bank_account: 'Tài khoản ngân hàng',
             personal_income_tax: 'Thuế thu nhập cá nhân',
@@ -551,9 +559,10 @@ export default {
             bhyt: 'Bảo hiểm y tế',
             number_BHYT: 'Mã số BHYT',
             bhxh: 'Bảo hiểm xã hội',
-            number_BHXH:'Mã số BHXH',
-            bhxh_process:'Quá trình đóng bảo hiểm xã hội',
+            number_BHXH: 'Mã số BHXH',
+            bhxh_process: 'Quá trình đóng bảo hiểm xã hội',
             edit_bhxh: 'Chỉnh sửa bảo hiểm xã hội',
+            add_bhxh: 'Thêm mới bảo hiểm xã hội',
 
             labor_contract: 'Hợp đồng lao động',
             training_process: 'Quá trình đào tạo',
@@ -565,7 +574,8 @@ export default {
             end_date: 'Ngày kết thúc',
             type_education: 'Loại đào tạo',
             cost: 'Chi phí',
-            edit_contract:'Chỉnh sửa hợp đồng lao động',
+            edit_contract: 'Chỉnh sửa hợp đồng lao động',
+            add_contract: 'Thêm mới hợp đồng lao động',
 
             list_attachments: 'Danh sách tài liệu đính kèm',
             attachments_code: 'Nơi lưu trữ bản cứng',
@@ -573,7 +583,33 @@ export default {
             number: 'Số lượng',
             add_default: 'Mặc định',
             add_default_title: 'Thêm các tài liệu mặc định',
-            edit_file:'Chỉnh sửa tài liệu đính kèm',
+            edit_file: 'Chỉnh sửa tài liệu đính kèm',
+            add_file: 'Thêm tài liệu đính kèm',
+            no_submitted: 'Chưa nộp',
+            submitted: 'Đã nộp',
+            returned: 'Đã trả lại',
+            no_files:'Chưa có file',
+            disc_diploma: 'Bằng tốt nghiệp trình độ học vấn cao nhất',
+            curriculum_vitae: 'Sơ yếu lý lịch',
+            disc_curriculum_vitae: 'Sơ yếu lý lịch có công chứng',
+            img: 'Ảnh',
+            disc_img: 'Ảnh 4x6 ',
+            copy_id_card: 'Bản sao CMND/Hộ chiếu',
+            disc_copy_id_card: 'Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng',
+            health_certificate: 'Giấy khám sức khoẻ',
+            disc_health_certificate: 'Giấy khám sức khoẻ có dấu đỏ',
+            birth_certificate: 'Giấy khai sinh',
+            disc_birth_certificate: 'Giấy khái sinh có công chứng',
+            job_application: 'Đơn xin việc',
+            disc_job_application: 'Đơn xin việc viết tay',
+            commitment:'Cam kết',
+            disc_commitment:'Giấy cam kết làm việc',
+            temporary_residence_card:'Tạm trú tạm vắng',
+            disc_temporary_residence_card:'Giấy xác nhận tạm trú tạm vắng',
+
+
+
+
 
             Reward: 'Khen thưởng',
             discipline: 'Kỷ luật',
@@ -723,7 +759,7 @@ export default {
                     request_approval: 'Yêu cầu phê duyệt',
                     cancel_request_approval: 'Hủy yêu cầu phê duyệt'
                 },
-                
+
                 handle_edit_kpi: {
                     approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
                     activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'

@@ -26,7 +26,7 @@ exports.get = async (data, company) => {
     //Bắt sựu kiện tháng tìm kiếm khác ""
     if (data.month !== "" && data.month !==null) {
         keySearch = {...keySearch,startDate: {$regex: data.month,$options: "i"},
-            endDate: {$regex: data.month,$options: "i"}}
+            endDate: {$regex: data.month, $options: "i"}}
     };
     var totalList = await Sabbatical.count(keySearch);
     var listSabbatical = await Sabbatical.find(keySearch).populate({ path: 'employee', model: Employee })

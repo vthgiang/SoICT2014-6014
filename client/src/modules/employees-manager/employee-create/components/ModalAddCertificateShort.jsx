@@ -141,28 +141,28 @@ class ModalAddCertificateShort extends Component {
             errorOnNameCertificateShort, errorOnUnit, errorOnEndDate, errorOnStartDate } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID={`modal-create-certificateShort-${id}`} button_name={translate('modal.create')} title="Thêm mới bằng cấp" />
+                <ModalButton modalID={`modal-create-certificateShort-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_certificate')} />
                 <ModalDialog
                     size='50' modalID={`modal-create-certificateShort-${id}`} isLoading={false}
                     formID={`form-create-certificateShort-${id}`}
-                    title="Thêm mới bằng cấp"
+                    title={translate('manage_employee.add_certificate')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-certificateShort-${id}`}>
                         <div className={`form-group ${errorOnNameCertificateShort === undefined ? "" : "has-error"}`}>
-                            <label>Tên chứng chỉ<span className="text-red">*</span></label>
+                            <label>{translate('manage_employee.name_certificate')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="nameCertificate" value={nameCertificateShort} onChange={this.handleNameCertificateChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameCertificateShort} />
                         </div>
                         <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                            <label>Nơi cấp<span className="text-red">*</span></label>
+                            <label>{translate('manage_employee.issued_by')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="addressCertificate" value={unit} onChange={this.handleUnitCertificateChange} autoComplete="off" />
                             <ErrorLabel content={errorOnUnit} />
                         </div>
                         <div className="row">
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>Ngày cấp<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
                                     value={startDate}
@@ -171,7 +171,7 @@ class ModalAddCertificateShort extends Component {
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>Ngày hết hạn<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.end_date_certificate')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
                                     value={endDate}
@@ -181,7 +181,7 @@ class ModalAddCertificateShort extends Component {
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="file">Chọn file đính kèm</label>
+                            <label htmlFor="file">{translate('manage_employee.attached_files')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>

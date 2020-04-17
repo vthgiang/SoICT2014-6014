@@ -95,7 +95,7 @@ class TabContractContent extends Component {
                                             <td>{x.typeContract}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
+                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_contract')} ><i className="material-icons">edit</i></a>

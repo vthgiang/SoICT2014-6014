@@ -131,8 +131,8 @@ class TabCertificateContent extends Component {
                                             <td>{x.nameCertificate}</td>
                                             <td>{x.addressCertificate}</td>
                                             <td>{x.yearCertificate}</td>
-                                            <td>{x.typeCertificate}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
+                                            <td>{translate(`manage_employee.${x.typeCertificate}`)}</td>
+                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}
                                             </td>
                                             <td>
@@ -169,7 +169,7 @@ class TabCertificateContent extends Component {
                                             <td>{x.unit}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
+                                            <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td>
                                                 <a onClick={() => this.handleEditShort(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_certificate')}><i className="material-icons">edit</i></a>

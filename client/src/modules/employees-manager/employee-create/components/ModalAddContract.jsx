@@ -143,28 +143,28 @@ class ModalAddContract extends Component {
             errorOnNameContract, errorOnTypeContract, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID={`modal-create-contract-${id}`} button_name={translate('modal.create')} title="Thêm mới hợp đồng lao động" />
+                <ModalButton modalID={`modal-create-contract-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_contract')} />
                 <ModalDialog
                     size='50' modalID={`modal-create-contract-${id}`} isLoading={false}
                     formID={`form-create-contract-${id}`}
-                    title="Thêm mới bằng cấp"
+                    title={translate('manage_employee.add_contract')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-contract-${id}`}>
                         <div className={`form-group ${errorOnNameContract === undefined ? "" : "has-error"}`}>
-                            <label>Tên hợp đồng<span className="text-red">*</span></label>
+                            <label>{translate('manage_employee.name_contract')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="nameContract" value={nameContract} onChange={this.handleNameContract} autoComplete="off" />
                             <ErrorLabel content={errorOnNameContract} />
                         </div>
                         <div className={`form-group ${errorOnTypeContract === undefined ? "" : "has-error"}`}>
-                            <label>Loại hợp đồng<span className="text-red">*</span></label>
+                            <label>{translate('manage_employee.type_contract')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="typeContract" value={typeContract} onChange={this.handleTypeContract} autoComplete="off" />
                             <ErrorLabel content={errorOnTypeContract} />
                         </div>
                         <div className="row">
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>Ngày có hiệu lực<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
                                     value={startDate}
@@ -173,7 +173,7 @@ class ModalAddContract extends Component {
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>Ngày hết hạn<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.end_date_certificate')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
                                     value={endDate}
@@ -183,7 +183,7 @@ class ModalAddContract extends Component {
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="file">Chọn file đính kèm</label>
+                            <label htmlFor="file">{translate('manage_employee.attached_files')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
 
