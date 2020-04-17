@@ -11,6 +11,7 @@ var findIndex = (array, id) => {
 }
 
 const initState = {
+    categories: [],
     list: [],
     listPaginate: [],
     totalDocs: 0,
@@ -33,6 +34,7 @@ export function linksDefault (state = initState, action) {
     switch (action.type) {
 
         case LinkDefaultConstants.GET_LINKS_DEFAULT_REQUEST:
+        case LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_REQUEST:
         case LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_REQUEST:
         case LinkDefaultConstants.SHOW_LINK_DEFAULT_REQUEST:
         case LinkDefaultConstants.CREATE_LINK_DEFAULT_REQUEST:
@@ -49,6 +51,7 @@ export function linksDefault (state = initState, action) {
             case LinkDefaultConstants.CREATE_LINK_DEFAULT_FAILE:
             case LinkDefaultConstants.EDIT_LINK_DEFAULT_FAILE:
             case LinkDefaultConstants.DELETE_LINK_DEFAULT_FAILE:
+            case LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE:
                 return {
                     ...state,
                     isLoading: false
@@ -58,6 +61,13 @@ export function linksDefault (state = initState, action) {
             return {
                 ...state,
                 list: action.payload,
+                isLoading: false
+            };
+
+        case LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_SUCCESS:
+            return {
+                ...state,
+                categories: action.payload,
                 isLoading: false
             };
 

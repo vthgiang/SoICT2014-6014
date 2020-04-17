@@ -4,6 +4,7 @@ import { AuthenticateHeader } from '../../../../config';
 
 export const LinkDefaultServices = {
     get,
+    getCategories,
     getPaginate,
     show,
     create,
@@ -14,6 +15,16 @@ export const LinkDefaultServices = {
 function get() {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/links-default-management`,
+        method: 'GET',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+
+function getCategories() {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
         method: 'GET',
         headers: AuthenticateHeader()
     };

@@ -19,8 +19,8 @@ exports.get = async (data, company) => {
         var employee = employeeInfo.map(x => x._id);
         keySearch = { ...keySearch, employee: { $in: employee }}
     }
-    //Bắt sựu kiện MSNV tìm kiếm khác ""
-    if (data.month !== "") {
+    //Bắt sựu kiện tháng tìm kiếm khác null
+    if (data.month !== null && data.month !== "") {
         keySearch = {...keySearch, month: data.month}
     };
     // Lấy danh sách bảng lương

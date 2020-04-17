@@ -43,7 +43,7 @@ exports.create = async(data) => {
 exports.edit = async(id, data) => {
     var component = await Component
         .findById(id)
-        .populate({ path: 'roles', model: Privilege });
+        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 
     component.name = data.name;
     component.description = data.description;

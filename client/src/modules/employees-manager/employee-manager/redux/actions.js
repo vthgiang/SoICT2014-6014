@@ -1,7 +1,9 @@
 import {
     EmployeeConstants
 } from "./constants";
-//import { alerActions } from "./AlertActions";
+import {
+    AlertActions
+} from "../../../alert/redux/actions";
 import {
     EmployeeService
 } from "./services";
@@ -64,6 +66,7 @@ function checkMSNV(employeeNumber) {
                 error => dispatch(failure(error.toString()))
             );
     };
+
     function request() {
         return {
             type: EmployeeConstants.CHECK_EMPLOYEENUMBER_REQUEST
@@ -95,6 +98,7 @@ function checkEmail(email) {
                 error => dispatch(failure(error.toString()))
             );
     };
+
     function request() {
         return {
             type: EmployeeConstants.CHECK_EMAILCOMPANY_REQUEST,
@@ -155,11 +159,11 @@ function addNewEmployee(employee) {
 }
 
 // update thông tin nhân viên theo id
-function updateInformationEmployee(id,informationEmployee) {
+function updateInformationEmployee(id, informationEmployee) {
     return dispatch => {
         dispatch(request());
 
-        EmployeeService.updateInformationEmployee(id,informationEmployee)
+        EmployeeService.updateInformationEmployee(id, informationEmployee)
             .then(
                 informationEmployee => {
                     dispatch(success(informationEmployee));
@@ -192,43 +196,38 @@ function updateInformationEmployee(id,informationEmployee) {
 
 }
 
-// upload ảnh đại diện
-function uploadAvatar(employeeNumber,fileUpload) {
+// Cập nhật ảnh đại diện
+function uploadAvatar(employeeNumber, fileUpload) {
     return dispatch => {
-        dispatch(request());
-        EmployeeService.uploadAvatar(employeeNumber,fileUpload)
-            .then(
-                file => dispatch(success(file)),
-                error => dispatch(failure(error.toString()))
-            );
+        dispatch({
+            type: EmployeeConstants.UPLOAD_AVATAR_REQUEST
+        });
+        return new Promise((resolve, reject) => {
+            EmployeeService.uploadAvatar(employeeNumber, fileUpload)
+                .then(res => {
+                    dispatch({
+                        type: EmployeeConstants.UPLOAD_AVATAR_SUCCESS,
+                        payload: res.data.content
+                    })
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    dispatch({
+                        type: EmployeeConstants.UPLOAD_AVATAR_FAILURE,
+                        error: err.response.data
+                    });
+                    AlertActions.handleAlert(dispatch, err);
+                    reject(err);
+                })
+        })
     }
-
-    function request() {
-        return {
-            type: EmployeeConstants.UPLOAD_AVATAR_REQUEST,
-        };
-    };
-
-    function success(file) {
-        return {
-            type: EmployeeConstants.UPLOAD_AVATAR_SUCCESS,
-            file
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EmployeeConstants.UPLOAD_AVATAR_FAILURE,
-            error
-        };
-    };
 }
 
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-function updateContract(employeeNumber,fileUpload) {
+function updateContract(employeeNumber, fileUpload) {
     return dispatch => {
         dispatch(request());
-        EmployeeService.updateContract(employeeNumber,fileUpload)
+        EmployeeService.updateContract(employeeNumber, fileUpload)
             .then(
                 file => dispatch(success(file)),
                 error => dispatch(failure(error.toString()))
@@ -240,12 +239,14 @@ function updateContract(employeeNumber,fileUpload) {
             type: EmployeeConstants.UPDATE_CONTRACT_REQUEST,
         };
     };
+
     function success(file) {
         return {
             type: EmployeeConstants.UPDATE_CONTRACT_SUCCESS,
             file
         };
     };
+
     function failure(error) {
         return {
             type: EmployeeConstants.UPDATE_CONTRACT_FAILURE,
@@ -255,10 +256,10 @@ function updateContract(employeeNumber,fileUpload) {
 }
 
 // Cập nhật(thêm) thông tin bằng cấp theo MSNV
-function updateCertificate(employeeNumber,fileUpload) {
+function updateCertificate(employeeNumber, fileUpload) {
     return dispatch => {
         dispatch(request());
-        EmployeeService.updateCertificate(employeeNumber,fileUpload)
+        EmployeeService.updateCertificate(employeeNumber, fileUpload)
             .then(
                 file => dispatch(success(file)),
                 error => dispatch(failure(error.toString()))
@@ -270,12 +271,14 @@ function updateCertificate(employeeNumber,fileUpload) {
             type: EmployeeConstants.UPDATE_CERTIFICATE_REQUEST,
         };
     };
+
     function success(file) {
         return {
             type: EmployeeConstants.UPDATE_CERTIFICATE_SUCCESS,
             file
         };
     };
+
     function failure(error) {
         return {
             type: EmployeeConstants.UPDATE_CERTIFICATE_FAILURE,
@@ -285,10 +288,10 @@ function updateCertificate(employeeNumber,fileUpload) {
 }
 
 // Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-function updateCertificateShort(employeeNumber,fileUpload) {
+function updateCertificateShort(employeeNumber, fileUpload) {
     return dispatch => {
         dispatch(request());
-        EmployeeService.updateCertificateShort(employeeNumber,fileUpload)
+        EmployeeService.updateCertificateShort(employeeNumber, fileUpload)
             .then(
                 file => dispatch(success(file)),
                 error => dispatch(failure(error.toString()))
@@ -300,12 +303,14 @@ function updateCertificateShort(employeeNumber,fileUpload) {
             type: EmployeeConstants.UPDATE_CERTIFICATESHORT_REQUEST,
         };
     };
+
     function success(file) {
         return {
             type: EmployeeConstants.UPDATE_CERTIFICATESHORT_SUCCESS,
             file
         };
     };
+
     function failure(error) {
         return {
             type: EmployeeConstants.UPDATE_CERTIFICATESHORT_FAILURE,
@@ -315,10 +320,10 @@ function updateCertificateShort(employeeNumber,fileUpload) {
 }
 
 // Cập nhật(thêm) thông tin tài liệu đính kèm theo MSNV
-function updateFile(employeeNumber,fileUpload) {
+function updateFile(employeeNumber, fileUpload) {
     return dispatch => {
         dispatch(request());
-        EmployeeService.updateFile(employeeNumber,fileUpload)
+        EmployeeService.updateFile(employeeNumber, fileUpload)
             .then(
                 file => dispatch(success(file)),
                 error => dispatch(failure(error.toString()))
@@ -330,12 +335,14 @@ function updateFile(employeeNumber,fileUpload) {
             type: EmployeeConstants.UPDATE_FILE_REQUEST,
         };
     };
+
     function success(file) {
         return {
             type: EmployeeConstants.UPDATE_FILE_SUCCESS,
             file
         };
     };
+
     function failure(error) {
         return {
             type: EmployeeConstants.UPDATE_FILE_FAILURE,
@@ -387,6 +394,7 @@ function checkArrayMSNV(arrayMSNV) {
                 error => dispatch(failure(error.toString()))
             );
     };
+
     function request() {
         return {
             type: EmployeeConstants.CHECK_ARRAY_EMPLOYEENUMBER_REQUEST

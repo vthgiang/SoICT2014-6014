@@ -6,6 +6,8 @@ import CompanyEditForm from './CompanyEditForm';
 import CompanyCreateForm from './CompanyCreateForm';
 import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
+import { LinkDefaultActions } from '../../links-default-management/redux/actions';
+import { ComponentDefaultActions } from '../../components-default-management/redux/actions';
 
 class CompanyTable extends Component {
     constructor(props) {
@@ -14,14 +16,8 @@ class CompanyTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
-
-        this.inputChange = this.inputChange.bind(this);
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
     }
 
     
@@ -55,13 +51,18 @@ class CompanyTable extends Component {
                 currentRow: company
             }
         });
-
-        window.$('#modal-edit-company').modal('show');
+        await window.$('#modal-edit-company').modal('show');
+        await this.props.linksList(company._id);
+        await this.props.linksPaginate(company._id, 1, 5);
+        await this.props.componentsList(company._id);
+        await this.props.componentsPaginate(company._id, 1, 5);
     }
 
     componentDidMount(){
         this.props.get();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+        this.props.getLinksDefault();
+        this.props.getComponentsDefault();
     }
 
     render() { 
@@ -80,7 +81,7 @@ class CompanyTable extends Component {
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.super_admin !== undefined && currentRow.super_admin.email}
+                        companyEmail={currentRow.super_admin !== undefined ? currentRow.super_admin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }
@@ -95,7 +96,7 @@ class CompanyTable extends Component {
                     search={this.searchWithOption}
                 />
                 
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered" id="company-table">
                     <thead>
                         <tr>
                             <th>{translate('manage_company.name')}</th>
@@ -106,6 +107,7 @@ class CompanyTable extends Component {
                             <th style={{ width: "120px", textAlign: 'center' }}>
                                 {translate('table.action')}
                                 <ActionColumn 
+                                    tableId="company-table"
                                     columnName={translate('table.action')} 
                                     hideColumn={false}
                                     setLimit={this.setLimit}
@@ -129,44 +131,7 @@ class CompanyTable extends Component {
                                             <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
-                                            <a onClick={() => this.handleEdit(com)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
-                                                {/* {
-                                                    com.active === true ?
-                                                    <a 
-                                                        href="#abc" 
-                                                        title={translate('manage_company.turning_on')}
-                                                        onClick={() => this.toggle(
-                                                            com._id, 
-                                                            {
-                                                                name: com.name,
-                                                                description: com.description,
-                                                                short_name: com.short_name,
-                                                                log: com.log
-                                                            },
-                                                            translate('manage_company.off_service'), 
-                                                            com.name, translate('confirm.no'), 
-                                                            translate('confirm.yes'), 
-                                                            false
-                                                        )}
-                                                    ><i className="material-icons">lock_open</i></a> :
-                                                    <a 
-                                                        href="#abc"
-                                                        title={translate('manage_company.turning_on')}
-                                                        onClick={() => this.toggle(
-                                                            com._id, 
-                                                            {
-                                                                name: com.name,
-                                                                description: com.description,
-                                                                short_name: com.short_name,
-                                                                log: com.log
-                                                            },
-                                                            translate('manage_company.on_service'), 
-                                                            com.name, translate('confirm.no'), 
-                                                            translate('confirm.yes'), 
-                                                            true
-                                                        )}
-                                                    ><i className="material-icons">lock</i></a>
-                                                } */}
+                                                <a onClick={() => this.handleEdit(com)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>    
                                     )
@@ -233,7 +198,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     get: CompanyActions.get,
     edit: CompanyActions.edit,
-    getPaginate: CompanyActions.getPaginate
+    getPaginate: CompanyActions.getPaginate,
+    getLinksDefault: LinkDefaultActions.get,
+    getComponentsDefault: ComponentDefaultActions.get,
+    linksList: CompanyActions.linksList,
+    linksPaginate: CompanyActions.linksPaginate,
+    componentsList: CompanyActions.componentsList,
+    componentsPaginate: CompanyActions.componentsPaginate
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CompanyTable));

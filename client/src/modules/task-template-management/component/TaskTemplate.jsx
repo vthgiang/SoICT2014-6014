@@ -6,10 +6,7 @@ import { DepartmentActions } from '../../super-admin-management/departments-mana
 import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './ModalViewTaskTemplate';
 import { ModalEditTaskTemplate } from './ModalEditTaskTemplate';
-
-import { SelectMulti } from '../../../common-components';
-import { ActionColumn } from '../../../common-components';
-
+import { PaginateBar, SelectMulti, ActionColumn } from '../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
@@ -84,33 +81,6 @@ class TaskTemplate extends Component {
         var oldCurrentPage = this.state.currentPage;
         await this.updateCurrentPage(index);
         if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test, this.name.value);
-    }
-    nextPage = async (pageTotal) => {
-        var test = window.$("#multiSelectUnit").val();
-        var oldCurrentPage = this.state.currentPage;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentPage: state.currentPage === pageTotal ? pageTotal : state.currentPage + 1
-            }
-        })
-        var newCurrentPage = this.state.currentPage;
-        
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
-    }
-
-    // Quay lai trang truoc
-    backPage = async () => {
-        var test = window.$("#multiSelectUnit").val();
-        var oldCurrentPage = this.state.currentPage;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentPage: state.currentPage === 1 ? 1 : state.currentPage - 1
-            }
-        })
-        var newCurrentPage = this.state.currentPage;  
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
     }
 
     handleUpdateData = () => {
@@ -203,6 +173,18 @@ class TaskTemplate extends Component {
         });
         return result;
     }
+    setPage = async (pageTotal) => {
+        var test = window.$("#multiSelectUnit").val();
+        var oldCurrentPage = this.state.currentPage;
+        await this.setState(state => {
+            return {
+                ...state,
+                currentPage : pageTotal
+            }
+        })
+        var newCurrentPage = this.state.currentPage;
+        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
+    }
     render() {
         const { translate } = this.props;
         var list, pageTotal, units = [], currentUnit;
@@ -220,35 +202,7 @@ class TaskTemplate extends Component {
         if (tasktemplates.items) {
             list = tasktemplates.items;
         }
-        var items = [];
         
-        if (typeof pageTotal !== "undefined" && pageTotal > 5) {
-            if (currentPage <= 3) {
-                for (let i = 0; i < 5; i++) {
-                    items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-                }
-                items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                items.push(<li key={pageTotal} className={currentPage === pageTotal ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(pageTotal)}>{pageTotal}</a></li>);
-            } else if (currentPage >= pageTotal - 3) {
-                items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(1)}>1</a></li>);
-                items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                for (let i = pageTotal - 5; i < pageTotal; i++) {
-                    items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-                }
-            } else {
-                items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(1)}>1</a></li>);
-                items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                for (let i = currentPage - 3; i < currentPage + 2; i++) {
-                    items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-                }
-                items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                items.push(<li key={pageTotal} className={currentPage === pageTotal ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(pageTotal)}>{pageTotal}</a></li>);
-            }
-        } else if (typeof pageTotal !== "undefined") {
-            for (let i = 0; i < pageTotal; i++) {
-                items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-            }
-        }
         return ( 
             <div className="box">
                 {/* /.box-header */}
@@ -262,14 +216,14 @@ class TaskTemplate extends Component {
                     
                     <div className="form-inline">
                         <div className = "form-group">
-                            <label className = "form-control-static">{translate('task_template.name')}:</label>
+                            <label className = "form-control-static">{translate('task_template.name')}</label>
                             <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" ref={input => this.name = input}/>
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className = "form-control-static">{translate('task_template.unit')}:</label>
+                            <label className = "form-control-static">{translate('task_template.unit')}</label>
                             {units &&
                                 <SelectMulti id="multiSelectUnit"
                                     defaultValue = {units.map(item => {return item._id})}
@@ -333,18 +287,7 @@ class TaskTemplate extends Component {
                             }
                         </tbody>
                     </table>
-
-                    <div className="row pagination-new">
-                        <ul className="pagination" style={{ margin: "auto" }}>
-                            <li><a onClick={() => this.backPage()}>«</a></li>
-                            {items}
-                            <li><a onClick={() => this.nextPage(pageTotal)}>»</a></li>
-                        </ul>
-                        <div id="search-page" className="col-sm-12 collapse" style={{ width: "26%" }}>
-                            <input className="col-sm-6 form-control" type="number" min="1" max={pageTotal} style={{ width: "60%" }} ref={input => this.newCurrentPage = input} />
-                            <button className="col-sm-4 btn btn-success" style={{ width: "35%", marginLeft: "5%" }} onClick={() => this.handleSearchPage()}>{translate('task_template.search')}</button>
-                        </div>
-                    </div>
+                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage}/>
                 </div>
             </div>
         );

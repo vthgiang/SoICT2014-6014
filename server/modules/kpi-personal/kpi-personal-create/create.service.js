@@ -12,25 +12,26 @@ exports.getByUser = async (id) => {
             .populate({ path: "listtarget", populate: { path: 'parent' } });
      return kpipersonals;
 }
+
 // Khởi tạo KPI cá nhân
 exports.create = async (createrId,approverId,unitId,timeId) => {
-    var message = "Khởi tạo thành công KPI cá nhân";
-        var time = timeId.split("-");
-        var date = new Date(time[1], time[0], 0);
-       // Tạo thông tin chung cho KPI cá nhân
-        var kpipersonal = await KPIPersonal.create({
-            unit: unitId,
-            creater: createrId,
-            approver: approverId,
-            time: date,
-            listtarget: []
-        });
         // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
         var kpiUnit = await KPIUnit.findOne({ unit: unitId, status: 1 }).populate("listtarget");//status = 1 là kpi đã đc phê duyệt
-        //lỗi ở dòng tr3n k tim dc thang kpiunit do bon minh chua co db nen chua phe duyet ben kia dc. h muon chay dc thi sua thah 0
+        
         var defaultKPIUnit;
         if (kpiUnit.listtarget) defaultKPIUnit = kpiUnit.listtarget.filter(item => item.default !== 0);
         if (defaultKPIUnit !== []) {
+            var time = timeId.split("-");
+            var date = new Date(time[1], time[0], 0);
+            
+        // Tạo thông tin chung cho KPI cá nhân
+            var kpipersonal = await KPIPersonal.create({
+                unit: unitId,
+                creater: createrId,
+                approver: approverId,
+                time: date,
+                listtarget: []
+            });
             var defaultKPIUnit = await Promise.all(defaultKPIUnit.map(async (item) => {
                 var defaultT = await DetailKPIPersonal.create({
                     name: item.name,
@@ -44,31 +45,14 @@ exports.create = async (createrId,approverId,unitId,timeId) => {
             kpipersonal = await KPIPersonal.findByIdAndUpdate(
                 kpipersonal, { listtarget: defaultKPIUnit }, { new: true }
             );
-        } else {
-            var targetA = await DetailKPIPersonal.create({
-                name: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-                parent: null,
-                weight: 5,
-                criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-                default: 1
-            })
-            kpipersonal = await KPIPersonal.findByIdAndUpdate(
-                kpipersonal, { $push: { listtarget: targetA._id } }, { new: true }
-            );
-            var targetC = await DetailKPIPersonal.create({
-                name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-                parent: null,
-                weight: 5,
-                criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-                default: 2
-            })
-            kpipersonal = await KPIPersonal.findByIdAndUpdate(
-                kpipersonal, { $push: { listtarget: targetC._id } }, { new: true }
-            );
-        }
-        kpipersonal = await kpipersonal.populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
         
-        return kpipersonal;
+            kpipersonal = await kpipersonal.populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+            var message = "Khởi tạo thành công KPI cá nhân";
+            return kpipersonal;
+        } else {
+            return null;
+            
+        }
 }
 
 // Thêm mục tiêu cho KPI cá nhân
@@ -115,6 +99,7 @@ exports.editStatusKPIPersonal = async (id,statusId) => {
     
     var kpipersonal = await KPIPersonal.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
         kpipersonal = await kpipersonal.populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+        
         return kpipersonal;
 }
 

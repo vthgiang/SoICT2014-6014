@@ -29,8 +29,8 @@ export default {
             edit_sabbatical_success: 'Edit sabbatical success',
             edit_sabbatical_faile: 'Edit sabbatical faile',
             // Quản lý lương nhân viên
-            name_other_salary_required:'Name other salary required',
-            money_other_salary_required:'Money other salary required',
+            name_other_salary_required: 'Name other salary required',
+            money_other_salary_required: 'Money other salary required',
             month_salary_required: 'Month salary required',
             money_salary_required: 'Money_salary required',
             month_salary_have_exist: 'Month salary have exist',
@@ -67,6 +67,13 @@ export default {
             delete_discipline_faile: 'Delete discipline faile',
             edit_discipline_success: 'Edit discipline success',
             edit_discipline_faile: 'Edit discipline faile',
+            // Quản lý thông tin cá nhân
+            get_infor_personal_success: 'Get information personal success',
+            get_infor_personal_false: 'Get information personal false',
+            edit_infor_personal_success: 'Update information personal success',
+            edit_infor_personal_false: 'Update infor personal false',
+            guaranteed_infor_to_update: 'You have not guaranteed information to update',
+            no_change_data: 'No information changed'
 
             /** 
              * End
@@ -414,6 +421,12 @@ export default {
             reason_praise: 'Reason',
         },
         manage_employee: {
+            note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
+            contact_other: '(Other information please contact the relevant parties to be processed)',
+            update_infor_personal: 'Update staff information',
+            no_data_personal: 'No personal information yet',
+
+            menu_basic_infor: 'Basic information',
             menu_general_infor: 'General information',
             menu_contact_infor: 'Contact information',
             menu_education_experience: 'Education - Experience',
@@ -483,6 +496,7 @@ export default {
             unit: 'Unit',
             from_month_year: 'From month/year',
             to_month_year: 'To month/year',
+            edit_experience:'Edit work experience',
 
             diploma: 'Diploma',
             certificate: 'Certificate',
@@ -493,6 +507,8 @@ export default {
             ranking_learning: 'Ranking of learning',
             attached_files: 'Attached files',
             end_date_certificate: 'Expiration date',
+            edit_certificate:'Edit certificate',
+            edit_diploma:'Edit diploma',
 
             bank_account: 'Bank account',
             personal_income_tax: 'Personal income tax',
@@ -504,6 +520,13 @@ export default {
             day_active: 'Day active',
             managed_by: 'Managed by',
 
+            bhyt: 'Health Insurance',
+            number_BHYT: 'Health insurance code',
+            bhxh: 'Social insurance',
+            number_BHXH:'Social insurance code',
+            bhxh_process:'Process of social insurance payment',
+            edit_bhxh: 'Edit social insurance',
+
             labor_contract: 'Labor contract',
             training_process: 'Training process',
             name_contract: 'Contract name',
@@ -514,6 +537,7 @@ export default {
             end_date: 'End day',
             type_education: 'Type of education',
             cost: 'Cost',
+            edit_contract:'Edit Labor contract',
 
             list_attachments: 'List of attached documents',
             attachments_code: 'Attachments code',
@@ -521,11 +545,12 @@ export default {
             number: 'Number',
             add_default: 'Add default',
             add_default_title: 'Add the default document',
+            edit_file:'Edit attached documents',
 
             Reward: 'Reward',
             discipline: 'Discipline',
             historySalary: 'History of salary',
-            sabbatical: 'sabbatical information'
+            sabbatical: 'Sabbatical information'
         },
         holiday: {
             start_date: 'Start day',
@@ -554,6 +579,7 @@ export default {
         },
 
         kpi_unit_create: {
+            unit: 'Unit',
             target_name: 'Target name',
             criteria: 'Evaluation criteria',
             weight: 'Weight',
@@ -595,6 +621,138 @@ export default {
             edit_target_success: 'Edit target successfully',
             init_success: 'New KPI initialization successful',
 
+        },
+
+        kpi_personal: {
+            kpi_personal_create: {
+                general_information: {
+                    general_information: 'Personal KPI in',
+                    save: 'Save the edit',
+                    edit: 'Edit',
+                    delete: 'Delete this KPI',
+                    cancel: 'Cancel',
+                    edit_success: 'Editing successful',
+                    edit_failure: 'Editing falied',
+                    delete_success: 'Delete KPI successful'
+                },
+
+                unit: 'Unit',
+                time: 'Time',
+                approver: 'Approver',
+
+                kpi_status: {
+                    status: 'KPI status',
+                    setting_up: 'Setting-up',
+                    awaiting_approval: 'Awaiting approval',
+                    activated: 'Activated',
+                    finished: 'Finished'
+                },
+
+                weight: {
+                    weight_total: 'Weight total',
+                    not_satisfied: 'Not satisfied',
+                    satisfied: 'Satisfied'
+                },
+
+                target_list: 'Target list',
+                add_target: 'Add target',
+                initialize_kpi_newmonth: 'Initialize KPI new month',
+                no_: 'No.',
+                target_name: 'Target name',
+                parents_target: 'Parents target',
+                evaluation_criteria: 'Evalution criteria',
+                max_score: 'Max score',
+                status: 'Status',
+                action: 'Action',
+                not_initialize: 'No KPI have been initialized in ',
+
+                action_title: {
+                    edit: 'Edit',
+                    content: 'This is the default target (if necessary, weights can be corrected)',
+                    delete: 'Delete'
+                },
+
+                submit: {
+                    feedback: 'Feedback',
+                    send_feedback: 'Send feedback',
+                    cancel_feedback: 'Cancel',
+                    request_approval: 'Request for approval',
+                    cancel_request_approval: 'Cancel request for approval'
+                },
+
+                handle_edit_kpi: {
+                    approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
+                    activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
+                },
+
+                delete_kpi: {
+                    kpi: 'Are you sure you want to delete this KPI?',
+                    kpi_target: 'Are you sure you want to delete this KPI target?',
+                    approving: 'KPI is being approved, you can not delete!',
+                    activated: 'KPI has been activated, you can not delete!',
+                    delete_success: 'Delete KPI target successful'
+                },
+
+                edit_target: {
+                    approving: 'KPI is being approved, you can not edit!',
+                    activated: 'KPI is being activated, you can not edit!'
+                },
+
+                check_status_target: {
+                    not_approved: 'Not approved',
+                    edit_request: 'Edit request',
+                    activated: 'Activated',
+                    finished: 'Finished'
+                },
+
+                request_approval_kpi: {
+                    approve: 'Are you sure you want to be approved this KPI?',
+                    not_enough_weight: 'The total weight must be 100'
+                },
+
+                cancel_approve: {
+                    cancel: 'Are you sure you want to cancel this KPI?',
+                    activated: 'KPI has been activated, you can not cancel the request for approval. If you want to modify, please contact your manager!'
+                },
+
+                not_initialize: 'Not yet initialized'
+            },
+
+            add_target_kpi: {
+                add_target_personal: 'Add personal KPI target',
+                add_target: 'Add target',
+                parents_target: 'Parents target',
+                evaluation_criteria_description: 'Evaluation criteria description',
+                placeholder_description: 'Evaluation the level of completion based on what criteria?',
+                weight: 'Weight',
+                placeholder_weight: 'Weight of target',
+                cancel: 'Cancel',
+                add_success: 'Add KPI target successful'
+            },
+
+            start: {
+                initialize_kpi: 'Initialize personal KPI',
+                unit: 'Unit',
+                month: 'Month',
+                approver: 'Approver',
+                default_target: 'Default target',
+                initialize: 'Initialize',
+                cancel: 'Cancel',
+                success: 'Initialize KPI successful'
+            },
+
+            edit_target_kpi: {
+                edit_personal: 'Edit personal KPI targets',
+                target_name: 'Target name',
+                parents_target: 'Parents target',
+                evaluation_criteria_description: 'Evaluation criteria description',
+                placeholder_description: 'Evaluation the level of completion based on what criteria?',
+                weight: 'Weight',
+                placeholder_weight: 'Weigt of target',
+                save: 'Save',
+                cancel: 'Cancel',
+                edit_success: 'Edit KPI target successful'
+            }
         },
 
         notification: {

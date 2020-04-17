@@ -13,18 +13,17 @@ class LinkInfoForm extends Component {
     }
 
     render() { 
-        const { translate, rolesDefault } = this.props;
-        const {linkId, linkUrl, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
-        console.log("link: ", this.state)
-
+        const { translate, rolesDefault, linksDefault } = this.props;
+        const {linkId, linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
+        console.log("state link: ", this.state)
         return ( 
             <ModalDialog
                 size='50' func={this.save} isLoading={this.props.linksDefault.isLoading}
                 modalID="modal-edit-link-default"
                 formID="form-edit-link-default"
-                title={translate('manage_user.edit')}
-                msg_success={translate('manage_user.edit_success')}
-                msg_faile={translate('manage_user.edit_faile')}
+                title={translate('manage_link.edit')}
+                msg_success={translate('manage_link.edit_success')}
+                msg_faile={translate('manage_link.edit_faile')}
                 disableSubmit={!this.isFormValidated()}
             >
                 <form id="form-edit-link-default">
@@ -37,6 +36,20 @@ class LinkInfoForm extends Component {
                         <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
                         <input type="text" className="form-control" value={linkDescription} onChange={this.handleDescription}/>
                         <ErrorLabel content={linkDescriptionError}/>
+                    </div>
+                    <div className="form-group">
+                        <label>{ translate('manage_link.category') }<span className="text-red"> * </span></label>
+                        <SelectBox
+                            id={`select-link-default-category-${linkId}`}
+                            className="form-control select2"
+                            style={{width: "100%"}}
+                            items = {
+                                linksDefault.categories.map( category => {return {value: category.name, text: category.name+"-"+category.description}})
+                            }
+                            onChange={this.handleCategory}
+                            value={linkCategory}
+                            multiple={false}
+                        />
                     </div>
                     <div className="form-group">
                         <label>{ translate('manage_link.roles') }</label>
@@ -64,6 +77,7 @@ class LinkInfoForm extends Component {
                 ...prevState,
                 linkId: nextProps.linkId,
                 linkUrl: nextProps.linkUrl,
+                linkCategory: nextProps.linkCategory,
                 linkDescription: nextProps.linkDescription,
                 linkRoles: nextProps.linkRoles,
                 linkUrlError: undefined,
@@ -113,6 +127,15 @@ class LinkInfoForm extends Component {
         return msg === undefined;
     }
 
+    handleCategory = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                linkCategory: value
+            }
+        })
+    }
+
     handleRoles = (value) => {
         this.setState(state => {
             return {
@@ -130,12 +153,13 @@ class LinkInfoForm extends Component {
     }
 
     save = () => {
-        const {linkId, linkUrl, linkDescription, linkRoles} = this.state;
+        const {linkId, linkUrl, linkDescription, linkRoles, linkCategory} = this.state;
         if(this.isFormValidated())
             return this.props.editLink(linkId, {
                 url: linkUrl,
                 description: linkDescription,
-                roles: linkRoles
+                roles: linkRoles,
+                category: linkCategory
             });
     }
 

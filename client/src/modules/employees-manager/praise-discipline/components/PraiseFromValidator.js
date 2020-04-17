@@ -8,6 +8,7 @@ export const PraiseFromValidator = {
     validateNumber,
     validateUnit,
     validateType,
+    validateStartDate
 }
 // Kiểm tra mã nhân viên nhập vào
 function validateEmployeeNumber(value, translate) {
@@ -49,6 +50,14 @@ function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('error.reason_praise_required');
+    }
+    return msg;
+}
+// Kiểm tra ngày ra quyết định
+function validateStartDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = translate('error.decisions_date_required');
     }
     return msg;
 }
