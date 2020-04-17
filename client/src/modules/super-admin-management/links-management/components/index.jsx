@@ -15,66 +15,31 @@ class ManageLink extends Component {
             limit: 5,
             page: 1,
             option: 'url', //mặc định tìm kiếm theo tên
-            value: null,
-            url: null,
-            description: null,
-            role: null
+            value: { $regex: '', $options: 'i' }
         }
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
-    }
-    
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-
-    searchWithOption = async() => {
-        const data = {
-            limit: this.state.limit,
-            page: 1
-        };
-        data[this.state.option] = this.state.value;
-        await this.props.getPaginate(data);
-    }
-
-    setPage = (pageNumber) => {
-        this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
-    }
-
-    setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { limit: number, page: this.state.page };
-        if(this.state.value !== null){
-            data[this.state.option] = this.state.value;
-        }
-        this.props.getPaginate(data);
-    }
-     
-    componentDidMount(){
-        this.props.getLinks();
-        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
 
     render() { 
         const { translate, link } = this.props;
+        const { currentRow } = this.state;
 
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
                     <React.Fragment>
+                        {
+                            currentRow !== undefined &&
+                            <LinkInfoForm 
+                                linkId={ currentRow._id }
+                                linkUrl={ currentRow.url }
+                                linkDescription={ currentRow.description }
+                                linkRoles={ currentRow.roles.map(role => role.roleId._id) }
+                            />
+                        }
                         <SearchBar 
                             columns={[
-                                { title: translate('table.url'), value:'url' },
-                                { title: translate('table.description'), value:'description' },
+                                { title: translate('manage_link.url'), value:'url' },
+                                { title: translate('manage_link.description'), value:'description' },
                             ]}
                             option={this.state.option}
                             setOption={this.setOption}
@@ -88,9 +53,14 @@ class ManageLink extends Component {
                                     <th>{ translate('manage_link.description') }</th>
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
+                                        {translate('table.action')}
                                         <ActionColumn 
-                                            columnName={translate('table.action')} 
-                                            hideColumn={false}
+                                            columnArr={[
+                                                translate('manage_link.url'),
+                                                translate('manage_link.description'),
+                                                translate('manage_link.roles')
+                                            ]}
+                                            limit={this.state.limit}
                                             setLimit={this.setLimit}
                                         /> 
                                     </th>
@@ -131,12 +101,7 @@ class ManageLink extends Component {
                                             }
                                             </td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <LinkInfoForm 
-                                                    linkId={ link._id }
-                                                    linkName={ link.url }
-                                                    linkDescription={ link.description }
-                                                    linkRoles={ link.roles.map(role => role.roleId._id) }
-                                                />
+                                                <a className="edit" onClick={() => this.handleEdit(link)}><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr> 
                                     ): link.isLoading ?
@@ -151,7 +116,56 @@ class ManageLink extends Component {
                 </div>
             </div>
         );
+    }
+    
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
 
+    searchWithOption = async() => {
+        const data = {
+            limit: this.state.limit,
+            page: 1
+        };
+        data[this.state.option] = this.state.value;
+        await this.props.getPaginate(data);
+    }
+
+    setPage = (pageNumber) => {
+        this.setState({ page: pageNumber });
+        const data = { limit: this.state.limit, page: pageNumber };
+        if(this.state.value !== null){
+            data[this.state.option] = this.state.value;
+        }
+        this.props.getPaginate(data);
+    }
+
+    setLimit = (number) => {
+        this.setState({ limit: number });
+        const data = { limit: number, page: this.state.page };
+        if(this.state.value !== null){
+            data[this.state.option] = this.state.value;
+        }
+        this.props.getPaginate(data);
+    }
+     
+    componentDidMount(){
+        this.props.getLinks();
+        this.props.getPaginate({page: this.state.page, limit: this.state.limit});
+    }
+
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = async (link) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: link
+            }
+        });
+
+        window.$('#modal-edit-link').modal('show');
     }
 }
  

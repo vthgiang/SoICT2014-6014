@@ -134,8 +134,8 @@ class LineAndBarChart extends Component {
     render() {
         const { nameChart, calculationUnit, nameLableBar, nameLableLine } = this.props;
         return (
-            <div className="col-md-6">
-                <div className="box box-primary">
+            <div className="col-md-6 col-xs-6">
+                <div className="box">
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title" style={{ display: 'inline', marginLeft: 10 }}><b>{nameChart}</b></h3>

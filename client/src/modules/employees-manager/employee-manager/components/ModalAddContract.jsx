@@ -105,15 +105,15 @@ class ModalAddContract extends Component {
                                                         </label>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="nameContract">Tên hợp đồng:<span className="required">&#42;</span></label>
+                                            <label htmlFor="nameContract">Tên hợp đồng:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" name="nameContract" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="typeContract">Loại hợp đồng:<span className="required">&#42;</span></label>
+                                            <label htmlFor="typeContract">Loại hợp đồng:<span className="text-red">&#42;</span></label>
                                             <input type="text" className="form-control" name="typeContract" onChange={this.handleChange} autoComplete="off" />
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                            <label htmlFor="startDate">Ngày có hiệu lực:<span className="required">&#42;</span></label>
+                                            <label htmlFor="startDate">Ngày có hiệu lực:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -122,7 +122,7 @@ class ModalAddContract extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                            <label htmlFor="endDate">Ngày hết hạn:<span className="required">&#42;</span></label>
+                                            <label htmlFor="endDate">Ngày hết hạn:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />

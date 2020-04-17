@@ -14,7 +14,7 @@ class ModalImportHoliday extends Component {
                         <div className="modal-body" >
                             <div className="col-md-12">
                                 <div className="form-group">
-                                    <label htmlFor="employeeNumber">Chọn file Import:<span className="required">&#42;</span></label>
+                                    <label htmlFor="employeeNumber">Chọn file Import:<span className="text-red">&#42;</span></label>
                                     <input type="file" className="form-control" />
                                 </div>
                             </div>

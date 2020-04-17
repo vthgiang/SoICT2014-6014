@@ -225,7 +225,7 @@ class KPIMember extends Component {
                                         <div className="box-body">
                                             <div className="table-responsive">
                                                 <div className="col-xs-12">
-                                                    <div className='col-xs-4 item-container'>
+                                                    <div className='col-xs-4'>
                                                         <label>Nhân viên:</label>
                                                         {userdepartments && <select defaultValue="all" className="form-control select2" style={{ width: '55%' }} ref={input => this.user = input}>
                                                             <option value="all">Tất cả nhân viên</option>
@@ -237,7 +237,7 @@ class KPIMember extends Component {
                                                                     </optgroup>
                                                         </select>}
                                                     </div>
-                                                    <div className='col-xs-4 item-container'>
+                                                    <div className='col-xs-4'>
                                                         <label>Trạng thái:</label>
                                                         <select defaultValue={4} className="form-control select2" style={{ width: '55%' }} ref={input => this.status = input}>
                                                             <option value={0}>Đang thiết lập</option>

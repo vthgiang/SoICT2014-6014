@@ -119,7 +119,7 @@ class ModalAddSalary extends Component {
                                                         </label>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="month">Tháng:<span className="required">&#42;</span></label>
+                                            <label htmlFor="month">Tháng:<span className="text-red">&#42;</span></label>
                                             <div className={'input-group date has-feedback'}>
                                                 <div className="input-group-addon">
                                                     <i className="fa fa-calendar" />
@@ -128,7 +128,7 @@ class ModalAddSalary extends Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="mainSalary">Tiền lương chính:<span className="required">&#42;</span></label>
+                                            <label htmlFor="mainSalary">Tiền lương chính:<span className="text-red">&#42;</span></label>
                                             <input style={{ display: "inline", width: "85%" }} type="number" className="form-control" name="mainSalary" onChange={this.handleChange} autoComplete="off" />
                                             <select name="unit" className="form-control" onChange={this.handleChange} style={{ height: 34, display: "inline", width: "15%" }}>
                                                 <option value="VND">VND</option>

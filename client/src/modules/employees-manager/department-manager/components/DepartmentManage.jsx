@@ -4,91 +4,55 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer } from 'react-toastify';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { ModalEditDepartmentManage } from './ModalEditDepartmentManage';
+import { TreeTable } from '../../../../common-components';
+
 class DepartmentManage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            showEdit: ""
         }
-        this.loadJS = this.loadJS.bind(this);
     }
     componentDidMount() {
         this.props.getDepartment();
     }
-    componentDidUpdate(){
-        this.loadJS();
-    }
-    loadJS() {
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/GridTableVers2.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-    displayTreeView = (data, i) => {
-        i = i + 1;
-        if (data !== undefined) {
-            if (typeof (data.children) === 'undefined') {
-                return (
-                    <tr key={data.id} data-id={data.id} data-parent={data.parent_id} data-level={i}>
-                        <td data-column="name">{data.name}</td>
-                        <td>{data.description}</td>
-                        <td style={{ textAlign: 'center' }}><ModalEditDepartmentManage data={data} /></td>
-                    </tr>
-                )
-            } else {
-                return (
-                    <React.Fragment key={data.id}>
-                        <tr data-id={data.id} data-parent={data.parent_id} data-level={i}>
-                            <td data-column="name">{data.name}</td>
-                            <td>{data.description}</td>
-                            <td style={{ textAlign: 'center' }}><ModalEditDepartmentManage data={data} /></td>
-                        </tr>
-                        {
-                            data.children.map(tag => this.displayTreeView(tag, i))
-                        }
-                    </React.Fragment>
-                )
-            }
-
-        }
-        else return null
+    handleShowEdit = async (id) => {
+        await this.setState({
+            ...this.state,
+            showEdit: id
+        })
+        window.$(`#modal-viewUnit-${id}`).modal('show');
     }
     render() {
-        const { tree } = this.props.department;
+        var data = [];
         const { translate } = this.props;
+        var { list } = this.props.department;
+        if (list.length !== 0) {
+            data = list;
+            for (let n in data) {
+                data[n] = { ...data[n], action: ["edit"] }
+            }
+        }
+        var column = [{ name: "Tên đơn vị", key: "name" }, { name: "Mô tả đơn vị", key: "description" }];
         return (
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="box box-info">
-                        {/* /.box-header */}
-                        <div className="box-body">
-                            <div className="col-md-12">
-                                <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                    <div className="box-header col-md-6" style={{ paddingLeft: 0 }}>
-                                        <h3 className="box-title">Danh sách các đơn vị:</h3>
-                                    </div>
-                                </div>
-                                <table id="tree-table" className="table table-hover table-bordered">
-                                    <thead>
-                                        <tr id="task">
-                                            <th style={{ width: "40%" }}>Tên đơn vị</th>
-                                            <th style={{ width: "50" }} >Mô tả đơn vị</th>
-                                            <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="taskTable" className="task-table">
-                                        {
-                                            tree !== null &&
-                                            tree.map((tree, index) => this.displayTreeView(tree, 0))
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        {/* /.box-body */}
+            <div className="box">
+                <div className="box-body qlcv">
+                    <div className="form-group">
+                        <h4 className="box-title">Danh sách các đơn vị:</h4>
                     </div>
-                    {/* /.box */}
+                    <TreeTable
+                        behaviour="show-children"
+                        column={column}
+                        data={data}
+                        titleAction={{
+                            edit: "Chỉnh sửa nhân viên các đơn vị",
+                        }}
+                        funcEdit={this.handleShowEdit}
+                    />
                 </div>
+                {
+                    this.state.showEdit !== "" && <ModalEditDepartmentManage id={this.state.showEdit} />
+                }
                 <ToastContainer />
             </div >
         );
@@ -103,6 +67,6 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: DepartmentActions.get,
 }
-const departmentManage = connect(mapState, actionCreators)(DepartmentManage);
+const departmentManage = connect(mapState, actionCreators)(withTranslate(DepartmentManage));
 
 export { departmentManage as DepartmentManage };

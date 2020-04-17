@@ -3,36 +3,71 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../roles-management/redux/actions';
 import { LinkActions } from '../redux/actions';
-import { ModalDialog, ModalButton } from '../../../../common-components';
+import { ModalDialog, ErrorLabel, SelectBox } from '../../../../common-components';
+import { LinkValidator } from './LinkValidator';
 
 class LinkInfoForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            id: this.props.linkId,
-            url: this.props.linkName,
-            description: this.props.linkDescription
-         }
-        this.inputChange = this.inputChange.bind(this);
-        this.save = this.save.bind(this);
+        this.state = {}
+    }
+    // Thiet lap cac gia tri tu props vao state
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.linkId !== prevState.linkId) {
+            return {
+                ...prevState,
+                linkId: nextProps.linkId,
+                linkUrl: nextProps.linkUrl,
+                linkDescription: nextProps.linkDescription,
+                linkRoles: nextProps.linkRoles,
+                linkDescriptionError: undefined,
+            } 
+        } else {
+            return null;
+        }
     }
 
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
+    // Xy ly va validate role name
+    handleLinkDescription = (e) => {
+        const {value} = e.target;
+        this.validateLinkDescription(value, true);
+    }
+    validateLinkDescription = (value, willUpdateState=true) => {
+        let msg = LinkValidator.validateDescription(value);
+        if (willUpdateState){
+            this.setState(state => {
+                return {
+                    ...state,
+                    linkDescriptionError: msg,
+                    linkDescription: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
-    save(){
-        let select = this.refs.roles;
-        let roles = [].filter.call(select.options, o => o.selected).map(o => o.value);
-        const { id, url, description } = this.state;
-        const link = { url, description, roles };
+    handleLinkRoles = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                linkRoles: value
+            }
+        })
+    }
 
-        return this.props.editLink(id, link);
+    save = () => {
+        const { linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError } = this.state;
+        const link = { 
+            url: linkUrl, 
+            description: linkDescription, 
+            roles: linkRoles
+        };
+        if(this.isFormValidated()) return this.props.editLink(linkId, link);
+    }
+
+    isFormValidated = () => {
+        let result = this.validateLinkDescription(this.state.linkDescription, false);
+        return result;
     }
 
     componentDidMount(){
@@ -40,46 +75,41 @@ class LinkInfoForm extends Component {
     }
 
     render() { 
-        var { translate, role, linkId, linkName, linkDescription, linkRoles, link } = this.props;
+        const { translate, role, link } = this.props;
+        const {linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError} = this.state;
         return ( 
             <React.Fragment>
-                <ModalButton modalID={`modal-edit-page-${linkId}`} button_type="edit" title={translate('manage_link.edit')}/>
                 <ModalDialog
                     isLoading={link.isLoading}
-                    size='50' func={this.save} type="edit"
-                    modalID={`modal-edit-page-${linkId}`}
-                    formID={`form-edit-page-${linkId}`}
+                    size='50' func={this.save}
+                    modalID="modal-edit-link"
+                    formID="form-edit-link"
                     title={translate('manage_link.edit')}
                     msg_success={translate('manage_link.edit_success')}
                     msg_faile={translate('manage_link.edit_faile')}
+                    disableSubmit={!this.isFormValidated()}
                 >
-                    <form id={`form-edit-page-${linkId}`}>
+                    <form id="form-edit-link">
                         <div className="form-group">
                             <label>{ translate('manage_link.url') }<span className="text-red"> * </span></label>
-                            <input name="url" type="text" className="form-control" defaultValue={linkName} onChange={this.inputChange} />
+                            <input type="text" className="form-control" value={linkUrl} disabled/>
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${linkDescriptionError===undefined?"":"has-error"}`}>
                             <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
-                            <input name="description" type="text" className="form-control" defaultValue={linkDescription} onChange={this.inputChange} />
+                            <input type="text" className="form-control" value={linkDescription} onChange={this.handleLinkDescription} />
+                            <ErrorLabel content={linkDescriptionError}/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_link.roles') }</label>
-                            <select 
-                                className="form-control select2" 
-                                multiple="multiple" 
-                                style={{ width: '100%' }} 
-                                defaultValue={ linkRoles }
-                                ref="roles"
-                            >
-                                {
-                                    
-                                    role.list.map( role => 
-                                        <option key={role._id} value={role._id}>
-                                            { role.name }
-                                        </option>
-                                    )
-                                }
-                            </select>
+                            <SelectBox
+                                id={`link-roles-${linkId}`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {role.list.map( role => {return {value: role._id, text: role.name}})}
+                                onChange={this.handleLinkRoles}
+                                value={linkRoles}
+                                multiple={true}
+                            />
                         </div>
                     </form>
                 </ModalDialog>

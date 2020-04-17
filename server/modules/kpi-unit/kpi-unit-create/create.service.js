@@ -4,78 +4,61 @@ const DetailKPIUnit = require('../../../models/detailKPIUnit.model');
 const DetailKPIPersonal = require('../../../models/detailKPIPersonal.model');
 
 // lấy KPI đơn vị hiện tại theo role
-exports.getByRole = async (req, res) => {
-    try {
-        var department = await Department.findOne({
-            $or: [
-                { dean: req.params.id },
-                { vice_dean: req.params.id },
-                { employee: req.params.id }
-            ]
-        });
-        var kpiunit = await KPIUnit.findOne({ unit: department._id, status: { $ne: 2 } })
-            .populate("unit creater")
-            .populate({ path: "listtarget", populate: { path: 'parent' } });
-        res.json({
-            message: "Lấy kpi đơn vị hiện tại",
-            content: kpiunit
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+exports.getByRole = async (id) => {
+    //req.params.id
+    var department = await Department.findOne({
+        $or: [
+            { dean: id },
+            { vice_dean: id },
+            { employee: id }
+        ]
+    });
+    var kpiunit = await KPIUnit.findOne({ unit: department._id, status: { $ne: 2 } })
+        .populate("unit creater")
+        .populate({ path: "listtarget", populate: { path: 'parent' } });
+    return kpiunit;    
 }
 
 // Chỉnh sửa thông tin chung của KPI đơn vị
-exports.editById = async (req, res) => {
-    try {
-        var time = req.body.time.split("-");
+exports.editById = async (timeString, id) => {
+    //req.body.time,req.params.id
+    var time = timeString.split("-");
         var date = new Date(time[1], time[0], 0)
-        var kpiunit = await KPIUnit.findByIdAndUpdate(req.params.id, { $set: { time: date } }, { new: true });
+        var kpiunit = await KPIUnit.findByIdAndUpdate(id, { $set: { time: date } }, { new: true });
         kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
-        res.json({
-            message: "Chỉnh sửa thành công KPI của đơn vị",
-            kpiunit: kpiunit
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+        return kpiunit;
 }
 
 // lấy KPI đơn vị cha
-exports.getParentByUnit = async (req, res) => {
-    try {
-        var department = await Department.findOne({
-            $or: [
-                { 'dean': req.params.id },
-                { 'vice_dean': req.params.id },
-                { 'employee': req.params.id }
-            ]
-        });
-        var kpiunit = await KPIUnit.findOne({ unit: department.parent, status: { $ne: 2 } })
-            .populate("unit creater")
-            .populate({ path: "listtarget", populate: { path: 'parent' } });
-        res.json({
-            message: "Lấy kpi đơn vị cha",
-            content: kpiunit
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+exports.getParentByUnit = async (id) => {
+    //req.params.id,
+    var department = await Department.findOne({
+        $or: [
+            { 'dean': id },
+            { 'vice_dean': id },
+            { 'employee': id }
+        ]
+    });
+    var kpiunit = await KPIUnit.findOne({ unit: department.parent, status: { $ne: 2 } })
+        .populate("unit creater")
+        .populate({ path: "listtarget", populate: { path: 'parent' } });
+        return kpiunit;
+    
 }
 // Khởi tạo KPI đơn vị
-exports.create = async (req, res) => {
-    try {
-        var time = req.body.time.split("-");
+exports.create = async (timeId,unitId,createrId) => {
+    //req.body.time,req.body.unit,req.body.creater
+    var time = timeId.split("-");
         var date = new Date(time[1], time[0], 0)
         // Tạo thông tin chung cho KPI đơn vị
         var kpiunit = await KPIUnit.create({
-            unit: req.body.unit,
-            creater: req.body.creater,
+            unit: unitId,
+            creater: createrId,
             time: date,
             listtarget: []
         });
         // Tìm kiếm phòng ban hiện tại và kiểm tra xem nó có phòng ban cha hay không
-        var department = await Department.findById(req.body.unit);
+        var department = await Department.findById(unitId);
         if (department.parent !== null) {
             var kpiunitparent = await KPIUnit.findOne({ unit: department.parent, status: 1 }).populate("listtarget");
             var defaultTarget;
@@ -118,102 +101,67 @@ exports.create = async (req, res) => {
             );
         }
         kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
-        res.json({
-            message: "Khởi tạo thành công KPI đơn vị",
-            kpiunit: kpiunit
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+        return kpiunit;
+        
 }
 
 // Thêm mục tiêu cho KPI đơn vị
-exports.createTarget = async (req, res) => {
-    try {
-        // Thiết lập mục tiêu cho KPI đơn vị
-        var target = await DetailKPIUnit.create({
-            name: req.body.name,
-            parent: req.body.parent,
-            weight: req.body.weight,
-            criteria: req.body.criteria
-        })
-        var kpiunit = await KPIUnit.findByIdAndUpdate(
-            req.body.kpiunit, { $push: { listtarget: target._id } }, { new: true }
-        );
-        kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
-        res.json({
-            message: "Thêm mới thành công một mục tiêu của đơn vị",
-            kpiunit: kpiunit
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+exports.createTarget = async (nameId,parentId,weightId,criteriaId,kpiunitId) => {
+    //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.kpiunit
+    var target = await DetailKPIUnit.create({
+        name: nameId,
+        parent: parentId,
+        weight: weightId,
+        criteria: criteriaId
+    })
+    var kpiunit = await KPIUnit.findByIdAndUpdate(
+        kpiunitId, { $push: { listtarget: target._id } }, { new: true }
+    );
+    kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+    return kpiunit;
+    
 }
 // Chỉnh sửa mục tiêu của KPI đơn vị
-exports.editTargetById = async (req, res) => {
-    try {
-        var objUpdate = {
-            name: req.body.name,
-            parent: req.body.parent,
-            weight: req.body.weight,
-            criteria: req.body.criteria
-        }
-        var target = await DetailKPIUnit.findByIdAndUpdate(req.params.id, { $set: objUpdate }, { new: true });
-        target = await target.populate("parent").execPopulate();
-        res.json({
-            message: "Chỉnh sửa thành công một mục tiêu của đơn vị",
-            target: target
-        });
-    } catch (error) {
-        res.json({ message: error });
+exports.editTargetById = async (nameId,parentId,weightId,criteriaId,id) => {
+    //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id
+    var objUpdate = {
+        name: nameId,
+        parent: parentId,
+        weight: weightId,
+        criteria: criteriaId
     }
+    var target = await DetailKPIUnit.findByIdAndUpdate(id, { $set: objUpdate }, { new: true });
+    target = await target.populate("parent").execPopulate();
+    return target;  
 }
 // Xóa mục tiêu của KPI đơn vị
-exports.deleteTarget = async (req, res) => {
-    try {
-        var target = await DetailKPIUnit.findByIdAndDelete(req.params.id);
-        var kpiunit = await KPIUnit.findByIdAndUpdate(req.params.kpiunit, { $pull: { listtarget: req.params.id } }, { new: true });
+exports.deleteTarget = async (id,kpiunitId) => {
+    //req.params.id,req.params.kpiunit
+    var target = await DetailKPIUnit.findByIdAndDelete(id);
+        var kpiunit = await KPIUnit.findByIdAndUpdate(kpiunitId, { $pull: { listtarget: id } }, { new: true });
         kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
-        res.json({
-            message: "Xóa thành công một mục tiêu của đơn vị",
-            kpiunit: kpiunit,
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+        return kpiunit;
+        
 }
 // Kích hoạt KPI đơn vị
-exports.editStatusKPIUnit = async (req, res) => {
-    try {
-        var kpiunit = await KPIUnit.findByIdAndUpdate(req.params.id, { $set: { status: req.params.status } }, { new: true });
+exports.editStatusKPIUnit = async (id, statusId) => {
+    //req.params.id,req.params.status
+    var kpiunit = await KPIUnit.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
         kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
-        res.json({
-            message: "Xác nhận kích hoạt kpi đơn vị thành công",
-            kpiunit: kpiunit
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+        return kpiunit;     
 }
 
 // Xóa toàn bộ KPI đơn vị
-exports.delete = async (req, res) => {
-    try {
-        var listTarget = [];
-        var kpiunit = await KPIUnit.findById(req.params.id);
+exports.delete = async (id) => {
+    //req.params.id
+    var listTarget = [];
+        var kpiunit = await KPIUnit.findById(id);
         if (kpiunit.listtarget) listTarget = kpiunit.listtarget;
         if (listTarget !== []) {
             listTarget = await Promise.all(listTarget.map(async (item) => {
                 return DetailKPIUnit.findByIdAndDelete(item._id);
             }))
         }
-        kpiunit = await KPIUnit.findByIdAndDelete(req.params.id);
-        res.json({
-            message: "Xóa thành công kpi đơn vị",
-            kpiunit: kpiunit,
-            listtarget: listTarget
-        });
-    } catch (error) {
-        res.json({ message: error });
-    }
+        kpiunit = await KPIUnit.findByIdAndDelete(id);
+        return [kpiunit,listTarget];      
 }

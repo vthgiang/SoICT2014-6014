@@ -14,12 +14,20 @@ class TableComponent extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
+    }
+
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = async (component) => {
+        console.log("click")
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: component
+            }
+        });
+        window.$('#modal-edit-component-default').modal('show');
     }
 
     componentDidMount(){
@@ -30,9 +38,20 @@ class TableComponent extends Component {
 
     render() { 
         const { componentsDefault, translate } = this.props;
+        const { currentRow } = this.state;
         return ( 
             <React.Fragment>
                 <ComponentCreateForm />
+                {
+                    currentRow !== undefined &&
+                    <ComponentInfoForm
+                        componentId={ currentRow._id }
+                        componentName={ currentRow.name }
+                        componentDescription={ currentRow.description }
+                        componentLink={ currentRow.link._id }
+                        componentRoles={ currentRow.roles.map(role => role._id) }
+                    />
+                }
                 <SearchBar 
                     columns={[
                         { title: translate('manage_component.name'), value:'name' },
@@ -51,6 +70,7 @@ class TableComponent extends Component {
                             <th>{ translate('manage_component.link') }</th>
                             <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
+                                { translate('table.action') }
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     hideColumn={false}
@@ -74,19 +94,9 @@ class TableComponent extends Component {
                                             return <span key={role._id}>{role.name}</span> 
                                     }) }</td>
                                     <td style={{ textAlign: 'center'}}>
-                                        <ComponentInfoForm 
-                                            componentId={ component._id }
-                                            componentName={ component.name }
-                                            componentDescription={ component.description }
-                                            componentLink={ component.link._id }
-                                            componentRoles={ component.roles.map(role => role._id) }
-                                        />
+                                        <a onClick={() => this.handleEdit(component)} className="edit" title={translate('manage_component.edit')}><i className="material-icons">edit</i></a>
                                         <DeleteNotification 
-                                            content={{
-                                                title: translate('manage_component.delete'),
-                                                btnNo: translate('confirm.no'),
-                                                btnYes: translate('confirm.yes'),
-                                            }}
+                                            content={translate('manage_component.delete')}
                                             data={{
                                                 id: component._id,
                                                 info: component.name
@@ -96,8 +106,8 @@ class TableComponent extends Component {
                                     </td>
                                 </tr>
                             ): componentsDefault.isLoading ?
-                            <tr><td colSpan={"3"}>{translate('confirm.loading')}</td></tr> : 
-                            <tr><td colSpan={"3"}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr> : 
+                            <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

@@ -1,10 +1,13 @@
 const EmployeeService = require('./employee.service');
+const {LogInfo, LogError} = require('../../../logs');
+
 const multer = require('multer');
 const DIRAVATAR = '../client/public/fileupload/employee-manage/avatar';
 const DIRCONTRACT = '../client/public/fileupload/employee-manage/contract';
 const DIRCERTIFICATE = '../client/public/fileupload/employee-manage/certificate';
 const DIRCERTIFICATESHORT = '../client/public/fileupload/employee-manage/certificateshort';
 const DIRFILE = '../client/public/fileupload/employee-manage/file';
+
 
 /*********************************************
  *  upload file tài liệu đính kèm 
@@ -96,6 +99,33 @@ const uploadAvatar = multer({
 });
 exports.uploadAvatar = uploadAvatar.single("fileUpload");
 
+// Lấy thông tin cá nhân theo emailCompany
+exports.getInforPersonal = async (req, res) => {
+    try {
+        var inforEmployee = await EmployeeService.getInforPersonal(req.params.email);
+        await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
+        res.status(200).json({ success: true, message: ["get_infor_personal_success"], content: inforEmployee });
+    } catch (error) {
+        await LogError(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
+        res.status(400).json({ success: false, message: ["get_infor_personal_false"], content: {error: error} });
+    }
+}
+
+// Cập nhật thông tin cá nhân
+exports.updateInforPersonal = async (req, res) => {
+    try {
+        var data = await EmployeeService.updateInforPersonal(req.params.email, req.body);
+        await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
+        res.status(200).json({ success: true, message: ["edit_infor_personal_success"], content: data });
+    } catch (error) {
+        await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
+        res.status(400).json({ success: false, message: ["edit_infor_personal_false"], content: {error: error} });
+    }
+}
+
+
+
+
 
 // Lấy danh sách nhân viên
 exports.get = async (req, res) => {
@@ -141,20 +171,7 @@ exports.checkEmail = async (req, res) => {
     }
 }
 
-// get imformation employee by id
-exports.getInforPersonal = async (req, res) => {
-    try {
-        var inforEmployee = await EmployeeService.getInforPersonal(req.params.email);
-        res.status(200).json({
-            message: "success",
-            content: inforEmployee
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
+
 
 // Tạo nhân viên mới
 exports.create = async (req, res) => {
@@ -171,20 +188,7 @@ exports.create = async (req, res) => {
     }
 }
 
-// Cập nhật thông tin cá nhân
-exports.updateInforPersonal = async (req, res) => {
-    try {
-        var data = await EmployeeService.updateInforPersonal(req.params.email, req.body);
-        res.status(200).json({
-            message: "success",
-            content: data
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: error
-        });
-    }
-}
+
 
 // Cập nhật thông tin nhân viên
 exports.updateInfoEmployee = async (req, res) => {
@@ -205,14 +209,11 @@ exports.updateInfoEmployee = async (req, res) => {
 exports.updateAvatar = async (req, res) => {
     try {
         var updateAvatar = await EmployeeService.updateAvatar(req.params.employeeNumber, req.file.filename, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: updateAvatar
-        });
+        await LogInfo(req.user.email, 'UPDATE_AVATAR', req.user.company);
+        res.status(200).json({ success: true, message: ["update_avatar_success"], content: updateAvatar });
     } catch (error) {
-        res.status(400).json({
-            message: error
-        });
+        await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
+        res.status(400).json({ success: false, message: ["update_avatar_faile"], content: {error: error} });
     }
 }
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV

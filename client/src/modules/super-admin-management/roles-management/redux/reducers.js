@@ -42,6 +42,17 @@ export function role(state = initState, action) {
                 isLoading: true,
             }
 
+        case RoleConstants.GET_ROLES_FAILE:
+        case RoleConstants.CREATE_ROLE_FAILE:
+        case RoleConstants.SHOW_ROLE_FAILE:
+        case RoleConstants.EDIT_ROLE_FAILE:
+        case RoleConstants.GET_ROLES_PAGINATE_FAILE:
+        case RoleConstants.DELETE_ROLE_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+            }
+
         case RoleConstants.GET_ROLES_SUCCESS:
             return {
                 ...state,
@@ -90,14 +101,10 @@ export function role(state = initState, action) {
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){
-                state.list[index].name = action.payload.name;
-                state.list[index].parents = action.payload.parents;
-                state.list[index].users = action.payload.users;
+                state.list[index] = action.payload;
             }
             if(indexPaginate !== -1){
-                state.listPaginate[indexPaginate].name = action.payload.name;
-                state.listPaginate[indexPaginate].parents = action.payload.parents;
-                state.listPaginate[indexPaginate].users = action.payload.users;
+                state.listPaginate[indexPaginate] = action.payload;
             }
             return {
                 ...state,
@@ -122,9 +129,6 @@ export function role(state = initState, action) {
                 ...state,
                 filter: action.payload
             };
-
-        case 'LOGOUT':
-            return initState;
 
         default:
             return state;

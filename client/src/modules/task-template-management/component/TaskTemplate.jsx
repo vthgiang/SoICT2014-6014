@@ -6,10 +6,7 @@ import { DepartmentActions } from '../../super-admin-management/departments-mana
 import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './ModalViewTaskTemplate';
 import { ModalEditTaskTemplate } from './ModalEditTaskTemplate';
-
-import { SelectMulti } from '../../../common-components/src/SelectMulti/SelectMulti';
-import { ActionColumn } from '../../../common-components/src/ActionColumn';
-
+import { PaginateBar, SelectMulti, ActionColumn } from '../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
@@ -17,8 +14,7 @@ class TaskTemplate extends Component {
     componentDidMount() {
         this.props.getDepartment();
         //edit later
-        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]");
-        this.loadJSMultiSelect();
+        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
     }
     constructor(props) {
         super(props);
@@ -33,16 +29,7 @@ class TaskTemplate extends Component {
         };
         this.handleUpdateData = this.handleUpdateData.bind(this);
     }
-    handleSetting = async () => {
-        // Cập nhật cột muốn ấn
-        var test = window.$("#multiSelectShowColumn").val();
-        window.$("td").show();
-        window.$("th").show();
-        for (var j = 0, len = test.length; j < len; j++) {
-            window.$('td:nth-child(' + test[j] + ')').hide();
-            window.$('th:nth-child(' + test[j] + ')').hide();
-        }
-    }
+
     setLimit = async (limit) => {
         // Cập nhật số dòng trang trên một trang hiển thị
         if (Number(limit) !== this.state.perPage) {
@@ -53,7 +40,7 @@ class TaskTemplate extends Component {
                     currentPage: 1
                 }
             })
-            this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]");
+            this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", this.name.value);
         }
     }
     // handleAction = (id) => {
@@ -62,23 +49,6 @@ class TaskTemplate extends Component {
     //     element.classList.remove("in");
     //     element.setAttribute("aria-expanded", "false");
     // }
-    loadJSMultiSelect = () => {
-        window.$(document).ready(function () {
-            window.$('#multiSelectShowColumn').multiselect({
-                buttonWidth: '160px',
-                //   includeSelectAllOption : true,
-                nonSelectedText: 'Chọn cột muốn ẩn'
-            });
-        });
-    }
-    // getSelectedValues = () => {
-    //     var selectedVal = window.$("#multiSelectUnit").val();
-    //     for (var i = 0; i < selectedVal.length; i++) {
-    //         //abc
-    //     }
-    //     console.log(selectedVal);
-    // }
-    //
 
     myFunction = () => {
         var input, filter, table, tr, td, i, txtValue;
@@ -110,40 +80,12 @@ class TaskTemplate extends Component {
         var test = window.$("#multiSelectUnit").val();
         var oldCurrentPage = this.state.currentPage;
         await this.updateCurrentPage(index);
-        if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test);
-    }
-    nextPage = async (pageTotal) => {
-        var test = window.$("#multiSelectUnit").val();
-        var oldCurrentPage = this.state.currentPage;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentPage: state.currentPage === pageTotal ? pageTotal : state.currentPage + 1
-            }
-        })
-        var newCurrentPage = this.state.currentPage;
-        
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
-    }
-
-    // Quay lai trang truoc
-    backPage = async () => {
-        var test = window.$("#multiSelectUnit").val();
-        var oldCurrentPage = this.state.currentPage;
-        await this.setState(state => {
-            return {
-                ...state,
-                currentPage: state.currentPage === 1 ? 1 : state.currentPage - 1
-            }
-        })
-        var newCurrentPage = this.state.currentPage;  
-        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
+        if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test, this.name.value);
     }
 
     handleUpdateData = () => {
         var test = window.$("#multiSelectUnit").val();
-        var name=this.name.value;
-        this.props.getTaskTemplateByUser( 1, this.state.perPage, test,name);
+        this.props.getTaskTemplateByUser( 1, this.state.perPage, test, this.name.value);
                 this.setState(state => {
                     return {
                         ...state,
@@ -195,7 +137,7 @@ class TaskTemplate extends Component {
                     this.props._delete(id);
 
                     var test = window.$("#multiSelectUnit").val();
-                    this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test);
+                    this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, "");
                 }
             });
         } else { 
@@ -222,9 +164,30 @@ class TaskTemplate extends Component {
         var currentRole = localStorage.getItem("currentRole");
         return (currentRole === deanCurrentUnit);
     }
+    
+    checkHasComponent = (name) => {
+        var { auth } = this.props;
+        var result = false;
+        auth.components.forEach(component => {
+            if(component.name === name) result=true;
+        });
+        return result;
+    }
+    setPage = async (pageTotal) => {
+        var test = window.$("#multiSelectUnit").val();
+        var oldCurrentPage = this.state.currentPage;
+        await this.setState(state => {
+            return {
+                ...state,
+                currentPage : pageTotal
+            }
+        })
+        var newCurrentPage = this.state.currentPage;
+        if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
+    }
     render() {
         const { translate } = this.props;
-        var list, pageTotal, units, currentUnit;
+        var list, pageTotal, units = [], currentUnit;
         const { tasktemplates, department } = this.props;
         const { currentPage } = this.state;
         if (tasktemplates.pageTotal) pageTotal = tasktemplates.pageTotal;
@@ -239,62 +202,52 @@ class TaskTemplate extends Component {
         if (tasktemplates.items) {
             list = tasktemplates.items;
         }
-        var items = [];
         
-        if (typeof pageTotal !== "undefined" && pageTotal > 5) {
-            if (currentPage <= 3) {
-                for (let i = 0; i < 5; i++) {
-                    items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-                }
-                items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                items.push(<li key={pageTotal} className={currentPage === pageTotal ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(pageTotal)}>{pageTotal}</a></li>);
-            } else if (currentPage >= pageTotal - 3) {
-                items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(1)}>1</a></li>);
-                items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                for (let i = pageTotal - 5; i < pageTotal; i++) {
-                    items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-                }
-            } else {
-                items.push(<li key={1} className={currentPage === 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(1)}>1</a></li>);
-                items.push(<li className="disable" key={0}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                for (let i = currentPage - 3; i < currentPage + 2; i++) {
-                    items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-                }
-                items.push(<li className="disable" key={pageTotal + 1}><a href="#search-page" data-toggle="collapse">...</a></li>);
-                items.push(<li key={pageTotal} className={currentPage === pageTotal ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(pageTotal)}>{pageTotal}</a></li>);
-            }
-        } else if (typeof pageTotal !== "undefined") {
-            for (let i = 0; i < pageTotal; i++) {
-                items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-            }
-        }
         return ( 
-            <div className="box" id="qlcv">
+            <div className="box">
                 {/* /.box-header */}
-                <div className="box-body">
+                <div className="box-body qlcv">
 
                     <div className = "form-group">
-                        {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
+                        {this.checkHasComponent('create-task-template-button') &&
                         <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một mẫu công việc" data-target="#addTaskTemplate" data-backdrop="static" data-keyboard="false">{translate('task_template.add')}</button>}
                         <ModalAddTaskTemplate />
                     </div>
                     
                     <div className="form-inline">
                         <div className = "form-group">
-                            <label className = "form-control-static">{translate('task_template.name')}:</label>
+                            <label className = "form-control-static">{translate('task_template.name')}</label>
                             <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" ref={input => this.name = input}/>
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className = "form-control-static">{translate('task_template.unit')}:</label>
-                            {units && <SelectMulti id="multiSelectUnit" selectAllByDefault={true} items={units.map(item => {return {value: item._id, text: item.name}})} 
-                            nonSelectedText = "Chọn đơn vị" allSelectedText= "Tất cả các đơn vị"></SelectMulti>}
+                            <label className = "form-control-static">{translate('task_template.unit')}</label>
+                            {units &&
+                                <SelectMulti id="multiSelectUnit"
+                                    defaultValue = {units.map(item => {return item._id})}
+                                    items = {units.map(item => {return {value: item._id, text: item.name}})} 
+                                    options = {{nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị"}}>
+                                </SelectMulti>
+                            }
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
-
+                    <ActionColumn 
+                        tableId="user-table"
+                        columnArr={[
+                            'Tên mẫu công việc',
+                            'Mô tả',
+                            'Số lần sử dụng',
+                            'Người tạo mẫu',
+                            'Đơn vị'
+                        ]}
+                        limit = {this.state.perPage}
+                        setLimit = {this.setLimit}
+                        hideColumnOption = {true}
+                    />
+                    
                     <table className="table table-bordered table-striped table-hover" id="myTable">
                         <thead>
                             <tr>
@@ -304,22 +257,7 @@ class TaskTemplate extends Component {
                                 <th title="Người tạo mẫu">{translate('task_template.creator')}</th>
                                 <th title="Đơn vị">{translate('task_template.unit')}</th>
 
-                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                    <ActionColumn 
-                                        tableId="user-table"
-                                        columnName={translate('table.action')} 
-                                        columnArr={[
-                                            'Tên mẫu công việc',
-                                            'Mô tả',
-                                            'Số lần sử dụng',
-                                            'Người tạo mẫu',
-                                            'Đơn vị'
-                                        ]}
-                                        limit = {this.state.perPage}
-                                        setLimit = {this.setLimit}
-                                        hideColumnOption = {true}
-                                    />
-                                </th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                             </tr>
                         </thead>
                         <tbody className="task-table">
@@ -349,28 +287,16 @@ class TaskTemplate extends Component {
                             }
                         </tbody>
                     </table>
-
-                    <div className="row pagination-new">
-                        <ul className="pagination" style={{ margin: "auto" }}>
-                            <li><a onClick={() => this.backPage()}>«</a></li>
-                            {items}
-                            <li><a onClick={() => this.nextPage(pageTotal)}>»</a></li>
-                        </ul>
-                        <div id="search-page" className="col-sm-12 collapse" style={{ width: "26%" }}>
-                            <input className="col-sm-6 form-control" type="number" min="1" max={pageTotal} style={{ width: "60%" }} ref={input => this.newCurrentPage = input} />
-                            <button className="col-sm-4 btn btn-success" style={{ width: "35%", marginLeft: "5%" }} onClick={() => this.handleSearchPage()}>{translate('task_template.search')}</button>
-                        </div>
-                    </div>
+                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage}/>
                 </div>
             </div>
-              
         );
     }
 }
 
 function mapState(state) {
-    const { tasktemplates, department } = state;
-    return { tasktemplates, department };
+    const { tasktemplates, department, auth } = state;
+    return { tasktemplates, department, auth };
 }
 
 const actionCreators = {

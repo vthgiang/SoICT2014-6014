@@ -3,15 +3,13 @@ import { connect } from 'react-redux';
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
-import { DisciplineActions } from '../../discipline/redux/actions';
+import { DisciplineActions } from '../../praise-discipline/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ModalImportFileBHXH, ModalAddCertificate, ModalAddCertificateShort, ModalAddContract, ModalAddExperience } from './CombineContent';
 import { ModalAddBHXH, ModalAddDiscipline, ModalAddPraise, ModalAddSalary, ModalAddSabbatical, ModalAddFile } from './CombineContent';
 import { ModalEditFile, ModalEditSabbatical, ModalEditSalary, ModalEditPraise, ModalEditDiscipline, ModalEditBHXH } from './CombineContent';
 import { ModalEditExperience, ModalEditContract, ModalEditCertificateShort, ModalEditCertificate } from './CombineContent';
-//import './listemployee.css';
-
 class ModalAddEmployee extends Component {
     constructor(props) {
         super(props);
@@ -670,15 +668,15 @@ class ModalAddEmployee extends Component {
                                                     </label>
                                                         </div>
                                                         <div className="form-group">
-                                                            <label htmlFor="employeeNumber">Mã nhân viên:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="employeeNumber">Mã nhân viên:<span className="text-red">&#42;</span></label>
                                                             <input type="text" className="form-control" name="employeeNumber" autoComplete="off" placeholder="Mã số nhân viên" onChange={this.handleChangeMSNV} />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label htmlFor="fullname">Họ và tên:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="fullname">Họ và tên:<span className="text-red">&#42;</span></label>
                                                             <input type="text" className="form-control" name="fullName" placeholder="Họ và tên" onChange={this.handleChange} autoComplete="off" />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label htmlFor="brithday">Ngày sinh:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="brithday">Ngày sinh:<span className="text-red">&#42;</span></label>
                                                             <div className={'input-group date has-feedback'}>
                                                                 <div className="input-group-addon">
                                                                     <i className="fa fa-calendar" />
@@ -688,17 +686,17 @@ class ModalAddEmployee extends Component {
                                                             {/* <input type="Date" className="form-control" name="brithday" onChange={this.handleChange} autoComplete="off" /> */}
                                                         </div>
                                                         <div className="form-group">
-                                                            <label htmlFor="emailCompany">Email:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="emailCompany">Email:<span className="text-red">&#42;</span></label>
                                                             <input type="email" className="form-control" placeholder="Email công ty" name="emailCompany" onChange={this.handleChangeEmail} autoComplete="off" />
                                                         </div>
                                                     </div>
                                                     <div className=" col-md-4 " style={{ marginTop: 30 }}>
                                                         <div className="form-group">
-                                                            <label htmlFor="MSCC">Mã số chấm công:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="MSCC">Mã số chấm công:<span className="text-red">&#42;</span></label>
                                                             <input type="text" className="form-control" placeholder="Mã số chấm công" name="MSCC" onChange={this.handleChange} autoComplete="off" />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label style={{ display: 'block', paddingBottom: 4 }}>Giới tính:<span className="required">&#42;</span></label>
+                                                            <label style={{ display: 'block', paddingBottom: 4 }}>Giới tính:<span className="text-red">&#42;</span></label>
                                                             <input type="radio" name="gender" value="Nam" className="" defaultChecked style={{ marginLeft: 30, marginRight: 5 }} onChange={this.handleChange} />
                                                             <label>Nam</label>
                                                             <input type="radio" name="gender" value="Nữ" className="" style={{ marginLeft: 90, marginRight: 5 }} onChange={this.handleChange} />
@@ -720,7 +718,7 @@ class ModalAddEmployee extends Component {
                                                 <div className="col-md-12">
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="CMND">Số CMND/Hộ chiếu:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="CMND">Số CMND/Hộ chiếu:<span className="text-red">&#42;</span></label>
                                                             <input type="number" className="form-control" name="CMND" onChange={this.handleChange} autoComplete="off" />
                                                         </div>
                                                         <div className="form-group">
@@ -730,7 +728,7 @@ class ModalAddEmployee extends Component {
                                                     </div>
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="dateCMND">Ngày cấp:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="dateCMND">Ngày cấp:<span className="text-red">&#42;</span></label>
                                                             <div className={'input-group date has-feedback'}>
                                                                 <div className="input-group-addon">
                                                                     <i className="fa fa-calendar" />
@@ -746,7 +744,7 @@ class ModalAddEmployee extends Component {
                                                     </div>
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="addressCMND">Nơi cấp:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="addressCMND">Nơi cấp:<span className="text-red">&#42;</span></label>
                                                             <input type="text" className="form-control" name="addressCMND" onChange={this.handleChange} autoComplete="off" />
                                                         </div>
                                                         <div className="form-group">
@@ -762,7 +760,7 @@ class ModalAddEmployee extends Component {
                                                 <div className="col-md-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                                                     <div className="col-md-4">
                                                         <div className="form-group" style={{ paddingTop: 3 }}>
-                                                            <label htmlFor="phoneNumber">Điện thoại đi động 1:<span className="required">&#42;</span></label>
+                                                            <label htmlFor="phoneNumber">Điện thoại đi động 1:<span className="text-red">&#42;</span></label>
                                                             <input type="number" className="form-control" name="phoneNumber" onChange={this.handleChange} autoComplete="off" />
                                                         </div>
                                                     </div>
@@ -863,7 +861,7 @@ class ModalAddEmployee extends Component {
 
                                                         <div className="form-group">
                                                             <label htmlFor="nowAddress">
-                                                                Địa chỉ:<span className="required">&#42;</span></label>
+                                                                Địa chỉ:<span className="text-red">&#42;</span></label>
                                                             <input type="text" className="form-control " name="nowAddress" onChange={this.handleChange} autoComplete="off" />
                                                         </div>
                                                         <div className="form-group">
@@ -912,15 +910,15 @@ class ModalAddEmployee extends Component {
                                             <fieldset className="scheduler-border">
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">Thuế thu nhập cá nhân:</h4></legend>
                                                 <div className="form-group">
-                                                    <label htmlFor="numberTax">Mã số thuế:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="numberTax">Mã số thuế:<span className="text-red">&#42;</span></label>
                                                     <input type="number" className="form-control" name="numberTax" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="userTax">Người đại diện:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="userTax">Người đại diện:<span className="text-red">&#42;</span></label>
                                                     <input type="text" className="form-control" name="userTax" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="startDate">Ngày hoạt động:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="startDate">Ngày hoạt động:<span className="text-red">&#42;</span></label>
                                                     <div className={'input-group date has-feedback'}>
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
@@ -929,7 +927,7 @@ class ModalAddEmployee extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="unitTax">Quản lý bởi:<span className="required">&#42;</span></label>
+                                                    <label htmlFor="unitTax">Quản lý bởi:<span className="text-red">&#42;</span></label>
                                                     <input type="text" className="form-control" name="unitTax" onChange={this.handleChange} autoComplete="off" />
                                                 </div>
                                             </fieldset>
@@ -1012,7 +1010,7 @@ class ModalAddEmployee extends Component {
                                                 <fieldset className="scheduler-border">
                                                     <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">Trình độ học vấn</h4></legend>
                                                     <div className="form-group">
-                                                        <label>Trình độ văn hoá:<span className="required">&#42;</span></label>
+                                                        <label>Trình độ văn hoá:<span className="text-red">&#42;</span></label>
                                                         <select className="form-control" name="cultural" onChange={this.handleChange}>
                                                             <option value="12/12">12/12</option>
                                                             <option value="11/12">11/12</option>

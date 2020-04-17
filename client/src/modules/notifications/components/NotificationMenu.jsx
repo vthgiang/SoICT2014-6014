@@ -8,16 +8,42 @@ class NotificationMenu extends Component {
         this.state = {  }
     }
     render() { 
-        const { translate, notification } = this.props;
+        const { translate, notifications } = this.props;
         return ( 
             <React.Fragment>
                 <div className="box box-solid">
+                    <div className="box-body no-padding">
+                        <ul className="nav nav-pills nav-stacked">
+                            <li className="active">
+                                <a 
+                                    href="#notification-receivered" 
+                                    data-toggle="tab"
+                                >
+                                    <i className="fa fa-download"/>
+                                    {translate('notification.receivered')}
+                                    <span className="label label-default pull-right">
+                                        {notifications.listReceivered.length}
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    href="#notification-sent" 
+                                    data-toggle="tab"
+                                >
+                                    <i className="fa fa-upload"/>
+                                    {translate('notification.added')}
+                                    <span className="label label-default pull-right">
+                                        {notifications.listSent.length}
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>  
+                </div>
+                <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">Chú thích</h3>
-                        <div className="box-tools">
-                            <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
-                            </button>
-                        </div>
                     </div>
                     <div className="box-body no-padding">
                         <ul className="nav nav-pills nav-stacked">

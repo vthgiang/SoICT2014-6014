@@ -7,7 +7,7 @@ exports.get = async (id) => {
 
     return await Component
         .find({ company: id })
-        .populate({ path: 'roles', model: Privilege });
+        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
 exports.getPaginate = async (company, limit, page, data={}) => {
@@ -17,7 +17,7 @@ exports.getPaginate = async (company, limit, page, data={}) => {
             page, 
             limit,
             populate: [
-                { path: 'roles', model: Privilege},
+                { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }},
             ]
         });
 }
@@ -26,10 +26,13 @@ exports.getById = async (id) => {
 
     return await Component
         .findById(id)
-        .populate({ path: 'roles', model: Privilege });
+        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
 exports.create = async(data) => {
+    const check = await Component.findOne({name: data.name});
+    if(check !== null) throw ('component_name_exist');
+
     return await Component.create({
         name: data.name,
         description: data.description,
@@ -40,7 +43,7 @@ exports.create = async(data) => {
 exports.edit = async(id, data) => {
     var component = await Component
         .findById(id)
-        .populate({ path: 'roles', model: Privilege });
+        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 
     component.name = data.name;
     component.description = data.description;
@@ -65,7 +68,6 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         resourceId: componentId,
         resourceType: 'Component'
     });
-    console.log('creat data')
     var data = roleArr.map( role => {
         return {
             resourceId: componentId,

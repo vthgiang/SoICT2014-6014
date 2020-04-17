@@ -86,15 +86,15 @@ class ModalEditPraise extends Component {
                                                         </label>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="number">Số quyết định:<span className="required">&#42;</span></label>
+                                        <label htmlFor="number">Số quyết định:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" defaultValue={this.state.number} name="number" onChange={this.handleChange} autoComplete="off" placeholder="Số ra quyết định" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="unit">Cấp ra quyết định:<span className="required">&#42;</span></label>
+                                        <label htmlFor="unit">Cấp ra quyết định:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" name="unit" defaultValue={this.state.unit} onChange={this.handleChange} autoComplete="off" placeholder="Cấp ra quyết định" />
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingLeft: 0 }}>
-                                        <label htmlFor="startDate">Ngày ra quyết định:<span className="required">&#42;</span></label>
+                                        <label htmlFor="startDate">Ngày ra quyết định:<span className="text-red">&#42;</span></label>
                                         <div className={'input-group date has-feedback'}>
                                             <div className="input-group-addon">
                                                 <i className="fa fa-calendar" />
@@ -103,11 +103,11 @@ class ModalEditPraise extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group col-md-6" style={{ paddingRight: 0 }}>
-                                        <label htmlFor="type">Hình thức khen thưởng:<span className="required">&#42;</span></label>
+                                        <label htmlFor="type">Hình thức khen thưởng:<span className="text-red">&#42;</span></label>
                                         <input type="text" className="form-control" name="type" defaultValue={this.state.type} onChange={this.handleChange} autoComplete="off" />
                                     </div>
                                     <div className="form-group col-md-12" style={{ paddingRight: 0, paddingLeft: 0 }}>
-                                        <label htmlFor="reason">Thành tích (Lý do):<span className="required">&#42;</span></label>
+                                        <label htmlFor="reason">Thành tích (Lý do):<span className="text-red">&#42;</span></label>
                                         <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" defaultValue={this.state.reason} placeholder="Enter ..." onChange={this.handleChange}></textarea>
                                     </div>
                                 </div>

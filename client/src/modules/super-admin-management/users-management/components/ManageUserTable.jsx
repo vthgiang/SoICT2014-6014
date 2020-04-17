@@ -13,13 +13,19 @@ class ManageUserTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.checkSuperRole = this.checkSuperRole.bind(this);
-        this.setLimit = this.setLimit.bind(this);
+    }
+
+    handleEdit = async (user) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: user
+            }
+        });
+
+        window.$('#modal-edit-user').modal('show');
     }
 
     render() { 
@@ -30,73 +36,107 @@ class ManageUserTable extends Component {
                 <UserCreateForm />
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value: 'name' },
-                        { title: translate('table.email'), value: 'email' }
+                        { title: translate('manage_user.name'), value: 'name' },
+                        { title: translate('manage_user.email'), value: 'email' }
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
+                {
+                    this.state.currentRow !== undefined &&
 
-                <table className="table table-hover table-striped table-bordered">
+                    <UserEditForm
+                        userId={this.state.currentRow._id}
+                        userEmail={this.state.currentRow.email}
+                        userName={this.state.currentRow.name}
+                        userActive={this.state.currentRow.active}
+                        userRoles={this.state.currentRow.roles.map(role => role.roleId._id)}
+                    />
+                }
+                <table className="table table-hover table-striped table-bordered" id="table-manage-user">
                     <thead>
                         <tr>
-                            <th>{translate('table.name')}</th>
-                            <th>{translate('table.email')}</th>
-                            <th>{translate('table.status')}</th>
+                            <th>{translate('manage_user.name')}</th>
+                            <th>{translate('manage_user.email')}</th>
+                            <th>{translate('manage_user.roles')}</th>
+                            <th>{translate('manage_user.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
+                                {translate('table.action')}
                                 <ActionColumn
-                                    columnName={translate('table.action')} 
                                     columnArr={[
-                                        translate('table.name'),
-                                        translate('table.email'),
-                                        translate('table.status')
+                                        translate('manage_user.name'),
+                                        translate('manage_user.email'),
+                                        translate('manage_user.roles'),
+                                        translate('manage_user.status')
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
                                     hideColumnOption = {true}
+                                    tableId="table-manage-user"
                                 />
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            user.listPaginate.length > 0 ? user.listPaginate.map(u => (
+                            !user.isLoading && user.listPaginate.length > 0 && user.listPaginate.map(u => (
                                 <tr
                                     key={u._id}
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    <td>{u.active ? <p><i className="fa fa-circle text-success" /> {translate('manage_user.enable')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_user.disable')} </p>}</td>
+                                    <td>{
+                                        u.roles.map((role, index, arr) => {
+                                            if(arr.length < 4){
+                                                if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                else return `${role.roleId.name}`
+                                            }else{
+                                                if(index < 3 ){
+                                                    return `${role.roleId.name}, `
+                                                }
+                                            }
+                                        })
+                                    }{
+                                        u.roles.length >=4 &&
+                                        <React.Fragment>
+                                            <div className="tooltip2">...
+                                                <span className="tooltip2text">
+                                                    {
+                                                        u.roles.map((role, index, arr) => {
+                                                            if(index !== arr.length - 1) return `${role.roleId.name}, `;
+                                                            else return `${role.roleId.name}`
+                                                        })
+                                                    }
+                                                </span>
+                                            </div>
+                                        </React.Fragment>
+                                    }</td>
+                                    <td>{u.active 
+                                        ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.enable')} </p>
+                                        : <p><i className="fa fa-circle text-danger" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{textAlign: 'center'}}>
-                                        <UserEditForm
-                                            userId={u._id}
-                                            userEmail={u.email}
-                                            userName={u.name}
-                                            userActive={u.active}
-                                            userRoles={u.roles}
-                                            editUser={this.editUser}
-                                        />
+                                        <a onClick={() => this.handleEdit(u)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
                                         {
                                             !this.checkSuperRole(u.roles) && 
                                             <DeleteNotification 
-                                                content={{
-                                                    title: translate('manage_user.delete'),
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content={translate('manage_user.delete')}
                                                 data={{ id: u._id, info: u.email }}
                                                 func={this.props.destroy}
                                             />
                                         }
                                     </td>
                                 </tr>
-                            )) : user.isLoading ?
-                            <tr><td colSpan={4}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                            ))
                         }
                     </tbody>
                 </table>
+                
+                {user.isLoading?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div>:
+                    user.listPaginate.length===0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
+                
                 {/* PaginateBar */}
                 <PaginateBar pageTotal={user.totalPages} currentPage={user.page} func={this.setPage}/>  
             </React.Fragment>
@@ -128,7 +168,6 @@ class ManageUserTable extends Component {
             page: 1
         };
         data[this.state.option] = this.state.value;
-        console.log(data);
         await this.props.getPaginate(data);
     }
 

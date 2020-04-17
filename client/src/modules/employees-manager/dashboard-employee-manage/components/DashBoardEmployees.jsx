@@ -33,7 +33,7 @@ class DashBoardEmployees extends Component {
     }
     render() {
         return (
-            <React.Fragment>
+            <div className="qlcv">
                 <div className="row">
                     <LineAndBarChart
                         dataset={this.state.dataset}
@@ -71,7 +71,7 @@ class DashBoardEmployees extends Component {
                         nameField3={"% Quản trị"}
                     />
                 </div>
-            </React.Fragment>
+            </div>
         );
     }
 };

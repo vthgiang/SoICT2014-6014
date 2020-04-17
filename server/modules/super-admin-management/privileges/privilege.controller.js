@@ -69,7 +69,6 @@ exports.addRoleToLink = async (req, res) => {
 
 exports.getLinksOfRole = async (req, res) => {
     try {
-        console.log("get link of role controller")
         var links = await PrivilegeService.getLinksOfRole(req.params.idRole);
         
         res.status(200).json(links);

@@ -14,25 +14,32 @@ class RoleTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
     }
 
     render() { 
         const { role, translate } = this.props;
-        console.log()
+        const { currentRow, option } = this.state;
+        
         return ( 
             <React.Fragment>
                 <RoleCreateForm />
+                {
+                    currentRow !== undefined &&
+                    <RoleInfoForm
+                        roleId={currentRow._id}
+                        roleName={currentRow.name}
+                        roleType={currentRow.type.name}
+                        roleParents={currentRow.parents.map(parent => parent._id)}
+                        roleUsers={currentRow.users.map(user => user.userId._id)}
+                    />
+                }
                 <SearchBar 
                     columns={[
-                        { title: translate('table.name'), value:'name' }
+                        { title: translate('manage_role.name'), value:'name' }
                     ]}
-                    option={this.state.option}
+                    option={option}
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
@@ -44,11 +51,15 @@ class RoleTable extends Component {
                             <th>{ translate('manage_role.extends') }</th>
                             <th>{ translate('manage_role.users') }</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
+                                { translate('table.action') }
                                 <ActionColumn 
                                     columnName={translate('table.action')} 
                                     columnArr={[
-                                        translate('table.name')
+                                        translate('manage_role.name'),
+                                        translate('manage_role.extends'),
+                                        translate('manage_role.users')
                                     ]}
+                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
                                 />
                             </th>
@@ -113,33 +124,20 @@ class RoleTable extends Component {
                                         </React.Fragment>
                                     } </td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <RoleInfoForm 
-                                            roleType={role.type.name}
-                                            roleId={role._id}
-                                            roleName={role.name}
-                                            roleParents={role.parents.map(parent => parent._id)}
-                                            roleUsers={role.users.map(user=>user.userId !== null ? user.userId._id : null)}
-                                        />
+                                        <a className="edit" onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
                                         {
                                             role.type.name === 'Company-Defined' && 
                                             <DeleteNotification 
-                                                content={{
-                                                    title: translate('manage_role.delete'),
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
-                                                data={{
-                                                    id: role._id,
-                                                    info: role.name
-                                                }}
+                                                content={translate('manage_role.delete')}
+                                                data={{id: role._id, info: role.name}}
                                                 func={this.props.destroy}
                                             />
                                         }
                                     </td>
                                 </tr>       
                             ): role.isLoading ?
-                            <tr><td colSpan={'2'}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={'2'}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={'4'}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={'4'}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
@@ -149,6 +147,19 @@ class RoleTable extends Component {
          );
     }
 
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = async (role) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: role
+            }
+        });
+
+        window.$('#modal-edit-role').modal('show');
+    }
+
+    // Cac ham thiet lap va tim kiem gia tri
     setOption = (title, option) => {
         this.setState({
             [title]: option

@@ -16,8 +16,7 @@ exports.get = async (req, res) => {
         LogError(req.user.email, 'GET_ROLES', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_roles_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -40,14 +39,18 @@ exports.getPaginate = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_ROLES', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'paginate_roles_faile',
-            content: error
+            message: error
         });
     }
 };
 
 exports.create = async (req, res) => {
     try {
+        const checkRole = await RoleService.getByData({
+            company: req.user.company._id,
+            name: req.body.name
+        });
+        if(checkRole !== null) throw ['role_name_exist', 'error_code_2'];
         var role = await RoleService.create(req.body, req.user.company._id);
         await RoleService.editRelationshiopUserRole(role._id, req.body.users);
         var data = await RoleService.getById(req.user.company._id, role._id);
@@ -63,8 +66,7 @@ exports.create = async (req, res) => {
         LogError(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'create_role_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -84,8 +86,7 @@ exports.show = async (req, res) => {
         LogError(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'show_role_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -107,8 +108,7 @@ exports.edit = async (req, res) => {
         LogError(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'edit_role_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -128,8 +128,7 @@ exports.delete = async (req, res) => {
         LogError(req.user.email, 'DELETE_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'delete_role_faile',
-            content: error
+            message: error
         });
     }
 };
@@ -149,8 +148,7 @@ exports.getRoleSameDepartment = async (req, res) => {
         LogError(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error.message !== undefined ? error.message : 'get_roles_faile',
-            content: error
+            message: error
         });
     }
 };

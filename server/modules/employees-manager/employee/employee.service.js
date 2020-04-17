@@ -9,6 +9,55 @@ const UserRole = require('../../../models/user_role.model');
 const User = require('../../../models/user.model');
 const Role = require('../../../models/role.model');
 
+// Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
+exports.getUnitAndPositionEmployee = async (emailCompany)=>{
+    let roles = [], departments = [];
+    let user = await User.findOne({email: emailCompany},{ _id:1 })
+    if (user !== null) {
+        roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
+        let newRoles = roles.map(role => role.roleId._id);
+        departments = await Department.find({
+            $or: [
+                {'dean': { $in: newRoles }}, 
+                {'vice_dean':{ $in: newRoles }}, 
+                {'employee':{ $in: newRoles }}
+            ] 
+        });
+    }
+    if (roles !== []) {
+        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+    }
+    return { roles, departments }
+}
+
+// Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
+exports.getEmailCompanyByUnitAndPosition = async(unit, position)=>{
+    let units = [], roles = [];
+        for(let n in unit){
+            let unitInfo = await Department.findById(unit[n]);  // Lấy thông tin đơn vị
+            units = [...units, unitInfo]
+        }
+        if (position === null) {
+            units.forEach(u => {
+                let role = [u.dean, u.vice_dean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
+                roles = roles.concat(role); 
+            })
+        } else {
+            roles = position
+        }
+
+        // lấy danh sách người dùng theo phòng ban và chức danh
+        let userRoles = await UserRole.find({roleId: {$in: roles}});
+
+        //lấy userID vào 1 arr
+        let userId = userRoles.map(userRole => userRole.userId); 
+
+        // Lấy email của người dùng theo phòng ban và chức danh
+        var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
+        return emailUsers.map(user => user.email)
+}
+
+
 // Lấy dánh sách nhân viên
 exports.get = async (data, company) => {
     var keySearch = {
@@ -70,6 +119,13 @@ exports.get = async (data, company) => {
                 $regex: data.gender,
                 $options: "i"
             }
+        }
+    };
+    // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
+    if (data.status !== "All") {
+        keySearch = {
+            ...keySearch,
+            status: data.status
         }
     };
     // Số lượng danh sách nhân viên
@@ -314,10 +370,8 @@ exports.create = async (data, company) => {
 
 // Cập nhật thông tin cá nhân
 exports.updateInforPersonal = async (email, data) => {
-    var infoEmployee = await Employee.findOne({
-        emailCompany: email
-    });
-    // thông tin cần cập nhật của thông tin liên hệ 
+    var employeeInfo = await Employee.findOne({emailCompany: email}, { _id: 1});
+    // Thông tin cần cập nhật của thông tin liên hệ 
     var employeeContactUpdate = {
         phoneNumber: data.phoneNumber,
         phoneNumber2: data.phoneNumber2,
@@ -342,7 +396,7 @@ exports.updateInforPersonal = async (email, data) => {
         nowCommune: data.nowCommune,
         updateDate: data.updateDate
     }
-    // thông tin cần cập nhật của thông tin cơ bản của nhân viên
+    // Thông tin cần cập nhật trong thông tin cơ bản của nhân viên
     var employeeUpdate = {
         gender: data.gender,
         national: data.national,
@@ -352,28 +406,12 @@ exports.updateInforPersonal = async (email, data) => {
         updateDate: data.updateDate
     }
     // cập nhật thông tin liên hệ vào database
-    await EmployeeContact.findOneAndUpdate({
-        employee: infoEmployee._id
-    }, {
-        $set: employeeContactUpdate
-    });
-    //cập nhật thông tin cơ bản vào database
-    await Employee.findOneAndUpdate({
-        _id: infoEmployee._id
-    }, {
-        $set: employeeUpdate
-    });
-    var infoPersonal = await Employee.find({
-        _id: employeeinfo._id
-    });
-    var infoEmployeeContact = await EmployeeContact.find({
-        employee: employeeinfo._id
-    });
-    var content = {
-        employee: infoPersonal,
-        employeeContact: infoEmployeeContact,
-    }
-    return content;
+    await EmployeeContact.findOneAndUpdate({employee: employeeInfo._id}, {$set: employeeContactUpdate});
+    // cập nhật thông tin cơ bản vào database
+    await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
+    var infoPersonal = await Employee.find({_id: employeeInfo._id});
+    var infoEmployeeContact = await EmployeeContact.find({employee: employeeInfo._id});
+    return { employee: infoPersonal, employeeContact: infoEmployeeContact};
 }
 
 // Cập nhât thông tin nhân viên theo id

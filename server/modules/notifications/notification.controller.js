@@ -113,3 +113,43 @@ exports.getNotificationSent = async (req, res) => {
         res.status(400).json(error)
     }
 };
+
+exports.deleteNotificationReceivered = async (req, res) => {
+    try {
+        var notification = await NotificationServices.deleteNotificationReceivered(req.params.userId, req.params.notificationId);
+
+        await LogInfo(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
+        res.status(200).json({
+            success: true,
+            message: 'delete_notification_receivered_success',
+            content: notification
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
+        res.status(400).json({
+            success: false,
+            message: 'delete_notification_receivered__faile'
+        });
+    }
+};
+
+exports.deleteNotificationSent = async (req, res) => {
+    try {
+        var notification = await NotificationServices.deleteNotificationSent(req.params.id);
+
+        await LogInfo(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
+        res.status(200).json({
+            success: true,
+            message: 'delete_notification_sent_success',
+            content: notification
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
+        res.status(400).json({
+            success: false,
+            message: 'delete_notification_sent_faile'
+        });
+    }
+};

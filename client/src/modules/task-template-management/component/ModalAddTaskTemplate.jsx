@@ -5,9 +5,11 @@ import { UserActions } from '../../super-admin-management/users-management/redux
 import  {taskTemplateActions} from '../redux/actions';
 import Sortable from 'sortablejs';
 
+import './tasktemplate.css';
+
 class ModalAddTaskTemplate extends Component {
     componentDidMount() {
-        // get department of current user
+        // get department of current user 
         this.props.getDepartment();
         // lấy tất cả nhân viên của công ty
         this.props.getAllUserOfCompany();
@@ -16,6 +18,8 @@ class ModalAddTaskTemplate extends Component {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+        // Lấy tất cả các role là dean 
+        this.props.getRoleDeanOfUser(localStorage.getItem("currentRole"));
         // Load js for form
         // this.handleLoadJS();
         // Load library for sort action table
@@ -31,7 +35,7 @@ class ModalAddTaskTemplate extends Component {
             newTemplate: {
                 unit: '',
                 name: '',
-                read: '',
+                read: [],
                 responsible: [],
                 accounatable: [],
                 informed: [],
@@ -50,6 +54,7 @@ class ModalAddTaskTemplate extends Component {
                 name: '',
                 description: '',
                 type: '',
+                extra: '',
                 mandatary: true
             },
             submitted: false,
@@ -198,23 +203,37 @@ class ModalAddTaskTemplate extends Component {
         })
     }
 
+    handleChangeSetOfValues = (event) => {
+        let value = event.target.value
+        this.setState(state => {
+            return {
+                ...state,
+                information: {
+                    ...this.state.information,
+                    extra: value
+                }
+            }
+        })
+    }
+
     // Edit information in information table
-    editInformation = (information, index) => {
+    editInformation = async (information, index) => {
         this.nameInfo.value = information.name;
         this.desInfo.value = information.description;
         this.mandataryInfo.checked = information.mandatary;
+        this.typeInfo.value = information.type;
 
-        var type = information.type;
-        if(type !== 'Văn bản' && type !== 'Số' && type !== 'Ngày tháng' && type !== 'Boolean'){
-            this.selectionInfo.value = type;
-            type = 'Selection';
-        }
-        this.typeInfo.value = type;
+        await this.setState({
+            
+        });
+        
+
         this.setState({
             editInfo: true,
             indexInfo: index,
+            isSelection: information.type === "Tập giá trị",
+            information: information,
         })
-        this.handleLoadJS();
     }
 
     // Save new data after edit information in information table
@@ -222,16 +241,13 @@ class ModalAddTaskTemplate extends Component {
         event.preventDefault();
         const { indexInfo } = this.state;
 
-        var type = this.typeInfo.value;
-        if(type === 'Selection'){
-            type = this.selectionInfo.value;
-        }
         
         const newInformation = {
             name: this.nameInfo.value,
             description: this.desInfo.value,
-            type: type,
-            mandatary: this.mandataryInfo.checked
+            type: this.typeInfo.value,
+            mandatary: this.mandataryInfo.checked,
+            extra: this.typeInfo.value === "Tập giá trị"?this.setOfValues.value:"" // Tập giá trị
         };
         let { listInfo } = this.state.newTemplate;
         var newList;
@@ -275,23 +291,18 @@ class ModalAddTaskTemplate extends Component {
         event.preventDefault();
         const name = this.nameInfo.value;
         const description = this.desInfo.value;
-
-        var type = this.typeInfo.value;
-        if(type === 'Selection'){
-            type = this.selectionInfo.value;
-        }
-
         this.setState({
             information: {
                 name: name,
                 description: description,
-                type: type,
-                mandatary: this.mandataryInfo.checked
+                type: this.typeInfo.value,
+                mandatary: this.mandataryInfo.checked,
+                extra: this.typeInfo.value==="Tập giá trị"?this.setOfValues.value:""
             },
             addInfo: true
         })
         let { newTemplate } = this.state;
-        if (name && description && type) {
+        if (name && description) {
             this.setState(state => {
                 const listInfo = [...(newTemplate.listInfo), state.information];
                 return {
@@ -384,6 +395,8 @@ class ModalAddTaskTemplate extends Component {
             return map;
         })
         // get data in multi select
+        let selectRead = this.refs.read;
+        let read = [].filter.call(selectRead.options, o => o.selected).map(o => o.value);
         let selectResponsible = this.refs.responsible;
         let responsible = [].filter.call(selectResponsible.options, o => o.selected).map(o => o.value);
         let selectAccounatable = this.refs.accounatable;
@@ -401,7 +414,8 @@ class ModalAddTaskTemplate extends Component {
                     listAction: newListActions,
                     listInfo: newListInfos,
                     name: this.name.value,
-                    read: this.refs.read.value,
+                    // read: this.refs.read.value,
+                    read: read,
                     responsible: responsible,
                     accounatable: accounatable,
                     consulted: consulted,
@@ -414,28 +428,55 @@ class ModalAddTaskTemplate extends Component {
         });
     }
 
+    handlecheckEmpty =async() => {
+        await this.updateState();
+        const { newTemplate } = this.state;
+        if (!((newTemplate.name) && (newTemplate.description) && (newTemplate.formula)) )
+        {
+            this.setState(state => {
+                            
+                return {
+                    checkEmpty: true
+                    
+                }
+            });
+        }
+        console.log(this.state.doNothing);
+    }
+
     // Submit new template in data
     handleSubmit = async (event) => {
         event.preventDefault();
-        await this.updateState();
+        
+        await this.handlecheckEmpty();
         const { newTemplate } = this.state;
+        //|| newTemplate.description || newTemplate.formula || newTemplate.listAction || newTemplate.listInfo
+        
         if (newTemplate.name && newTemplate.description && newTemplate.formula && newTemplate.listAction && newTemplate.listInfo) {
             this.props.addNewTemplate(newTemplate);
             this.setState(state => {
                 return {
-                    submitted: false
+                    submitted: false,
+                    checkEmpty: false
                 }
             });
+            
             window.$("#addTaskTemplate").modal("hide");
         }
+        this.setState(state => {
+            return {
+                checkEmpty: false
+            }
+        });
         
     }
 
     //function: show selection input
-    showSelection = () => { 
-        if(this.typeInfo.value === 'Selection'){
+    handleChangeDataType = () => { 
+        if(this.typeInfo.value === 'Tập giá trị'){
             this.setState(state => {
                 return {
+                    ...state,
                     isSelection: true
                 }
             });
@@ -443,6 +484,7 @@ class ModalAddTaskTemplate extends Component {
         else{
             this.setState(state => {
                 return {
+                    ...state,
                     isSelection: false
                 }
             });
@@ -450,7 +492,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     render() {
-        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments;
+        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments,role;
         const { newTemplate, submitted, action, information, addAction, addInfo } = this.state;
         const { department, user } = this.props;
         if (newTemplate.listAction) listAction = newTemplate.listAction;
@@ -461,6 +503,9 @@ class ModalAddTaskTemplate extends Component {
                 item.dean === this.state.currentRole
                 || item.vice_dean === this.state.currentRole
                 || item.employee === this.state.currentRole);
+        }
+        if (department.roleofuser){
+            role = department.roleofuser;
         }
         if (user.roledepartments) listRole = user.roledepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
@@ -485,9 +530,9 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTemplate.unit==="" ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                {units &&
-                                                    <select defaultValue={currentUnit[0]._id} className="form-control select2" ref="unit" data-placeholder="Chọn đơn vị quản lý mẫu" style={{ width: '100%' }}>
-                                                        {units.map(x => {
+                                                {role &&
+                                                    <select defaultValue={role && role[0].dean} className="form-control select2" ref="unit" data-placeholder="Chọn đơn vị quản lý mẫu" style={{ width: '100%' }}>
+                                                        {role.map(x => {
                                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                                         })}
                                                     </select>}
@@ -509,8 +554,8 @@ class ModalAddTaskTemplate extends Component {
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
                                                 {listRole &&
-                                                    <select defaultValue={listRole.dean._id} className="form-control select2" ref="read" data-placeholder="Chọn vai trò được phép xem mẫu" style={{ width: '100%' }}>
-                                                        <option value={listRole.dean._id}>{listRole.dean.name}</option>
+                                                    <select  className="form-control select2" multiple="multiple" ref="read" data-placeholder="Chọn vai trò được phép xem mẫu" style={{ width: '100%' }}>
+                                                        <option value={listRole.dean._id} selected>{listRole.dean.name}</option>
                                                         <option value={listRole.vice_dean._id}>{listRole.vice_dean.name}</option>
                                                         <option value={listRole.employee._id}>{listRole.employee.name}</option>
                                                     </select>}
@@ -653,7 +698,7 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && !newTemplate.formula ? ' has-error' : '')}>
                                             <label className="col-sm-4 control-label" htmlFor="inputName3" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
-                                                <input type="text" className="form-control" id="inputName3" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" defaultValue={newTemplate.name} ref={input => this.formula = input} />
+                                                <input type="text" className="form-control" id="inputName3" placeholder="100*(1-(p1/p2)-(p3/p4)-(d0/d)-(ad/a))" defaultValue={newTemplate.formula} ref={input => this.formula = input} />
                                             </div>
                                             {submitted && !newTemplate.formula &&
                                                 <div className=" col-sm-4 help-block">Hãy điền công thức tính điểm KPI công việc</div>
@@ -687,22 +732,22 @@ class ModalAddTaskTemplate extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label className="col-sm-4 control-label">Kiểu dữ liệu:</label>
-                                                    <div onClick={() => this.showSelection()} className="col-sm-10" style={{ width: '100%' }}>
-                                                        <select className="form-control" id="seltype" defaultValue='Văn bản' name="type" ref={select => this.typeInfo = select} >
+                                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                                        <select onChange={() => this.handleChangeDataType()} className="form-control" id="seltype" defaultValue='Văn bản' name="type" ref={input => this.typeInfo = input} >
                                                             <option value="Văn bản">Văn bản</option>
                                                             <option value="Số">Số</option>
                                                             <option value="Ngày tháng">Ngày tháng</option>
                                                             <option value="Boolean">Boolean</option>
-                                                            <option value="Selection">Selection</option>
+                                                            <option value="Tập giá trị">Tập giá trị</option>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 {   this.state.isSelection ?
                                                     <div className={'form-group has-feedback' + (addInfo && !information.type ? ' has-error' : '')}>
-                                                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{`Nhập các giá trị cho ${this.nameInfo.value}:`}</label>
+                                                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{`Nhập tập giá trị:`}</label>
                                                         <div className="col-sm-10" style={{ width: '100%' }}>
-                                                            <input type="text" className="form-control" placeholder={`Các giá trị cho ${this.nameInfo.value}`} ref={input => this.selectionInfo = input} />
+                                                            <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
                                                         </div>
                                                         {addInfo && !information.type &&
                                                             <div className=" col-sm-4 help-block">{`Hãy điền các giá trị cho ${this.nameInfo.value}`}</div>
@@ -741,7 +786,7 @@ class ModalAddTaskTemplate extends Component {
                                                                         <td>{index + 1}</td>
                                                                         <td>{item.name}</td>
                                                                         <td>{item.description}</td>
-                                                                        <td>{item.type !== "Văn bản" && item.type !== "Số" && item.type !== "Ngày tháng" && item.type !== "Boolean" ? `Tập giá trị (${item.type})` : item.type }</td>
+                                                                        <td>{item.type}</td>
                                                                         <td>{item.mandatary ? "Có" : "Không"}</td>
                                                                         <td>
                                                                             <a href="#abc" className="edit" title="Edit" onClick={() => this.editInformation(item, index)}><i className="material-icons"></i></a>
@@ -759,7 +804,7 @@ class ModalAddTaskTemplate extends Component {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-success" data-dismiss={this.state.submitted ? "modal" : ""} onClick={this.handleSubmit}>Lưu</button>
+                            <button className="btn btn-success" data-dismiss={this.state.doNothing&&this.state.checkEmpty ? "modal" : ""} onClick={this.handleSubmit}>Lưu</button>
                             <button type="cancel" className="btn btn-primary" data-dismiss="modal" onClick={this.handleCancel}>Xóa trắng</button>
                         </div>
                         {/* Modal Footer */}
@@ -782,7 +827,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getRoleDeanOfUser: DepartmentActions.getRoleDeanOfUser
 };
 const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(ModalAddTaskTemplate);
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };

@@ -13,27 +13,23 @@ exports.get = async (id) => {
 }
 
 exports.getTree = async (id) => {
-    var data = await Department.find({ company: id });
+    const data = await Department.find({ company: id }).populate([
+        { path: 'dean', model: Role },
+        { path: 'vice_dean', model: Role },
+        { path: 'employee', model: Role }
+    ]);;
     
-    var newData = data.map( department => {
-        var departmentID = department._id.toString();
-        var departmentName = department.name;
-        var departmentDescription = department.description;
-        var departmentDean = department.dean.toString();
-        var departmentViceDean = department.vice_dean.toString();
-        var employee = department.employee.toString();
-        var departmentParent = department.parent !== null ? department.parent.toString() : null;
-        return {
-            id: departmentID,
-            name: departmentName,
-            description: departmentDescription,
-            dean:departmentDean,
-            vice_dean:departmentViceDean,
-            employee:employee,
-            parent_id: departmentParent
+    const newData = data.map( department => {return {
+            id: department._id.toString(),
+            name: department.name,
+            description: department.description,
+            dean:department.dean.name,
+            vice_dean:department.vice_dean.name,
+            employee:department.employee.name,
+            parent_id: department.parent !== null ? department.parent.toString() : null
         }
     });
-    var tree = await arrayToTree(newData);
+    const tree = await arrayToTree(newData);
 
     return tree;
 }
@@ -45,7 +41,7 @@ exports.getById = async (req, res) => {
 
 exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
     const check = await Department.findOne({name: data.name, company: companyID});
-    if(check !== null) throw({message: 'department_name_exist'});
+    if(check !== null) throw('department_name_exist');
     const department = await Department.create({
         name: data.name,
         description: data.description,
@@ -60,34 +56,54 @@ exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
 }
 
 exports.edit = async(id, data) => {
-    var department = await Department.findById(id);
-    if(department === null) throw({message: 'department_not_found'});
+    console.log("data department: ", data);
+    const department = await Department.findById(id);
+    if(department === null) throw('department_not_found');
     department.name = data.name;
     department.description = data.description;
-    department.parent = data.parent;
-    department.save();
+    department.parent = ObjectId.isValid(data.parent) ? data.parent : null
+    await department.save();
 
     return department;
 }
 
 exports.delete = async(departmentId) => {
-    var department = await Department.findById(departmentId); //tìm phòng ban hiện tại
-    if(department.parent !== undefined || department.parent !== null){
-        await Department.updateMany({ 
-            parent: department._id
-        },{
-            $set :{ parent: department.parent }
-        }); 
+    const department = await Department.findById(departmentId); //tìm phòng ban hiện tại
+    // Tìm các role chức danh của phòng ban hiện tại
+    const roles = await Role.find({
+        _id: { $in: [department.dean, department.vice_dean, department.employee]}
+    });
+    // Kiểm tra xem đã user nào trong phòng ban này hay chưa?
+    const userroles = await UserRole.find({
+        roleId: { $in: roles.map(role=>role._id)}
+    });
+    
+    if(userroles.length === 0){
+        // Thực hiện xóa phòng ban nếu như không có ràng buộc nào với các user không? - phòng ban trống
 
-        return await Department.deleteOne({ _id: departmentId });
+        // Xóa tất cả các role chức danh của đơn vị phòng ban này
+        await Role.deleteMany({
+            _id: { $in: roles.map(role=>role._id)}
+        });
+        // Đổi đơn vị phòng cha cho phòng ban con của đơn vị được xóa
+        if(department.parent !== undefined || department.parent !== null){
+            await Department.updateMany({ 
+                parent: department._id
+            },{
+                $set :{ parent: department.parent }
+            }); 
+
+            // Xóa đơn vị phòng ban này
+            return await Department.deleteOne({ _id: departmentId });
+        }
+    }else{
+        throw ('department_has_user');
     }
-
-    return {};
 }
 exports.getDepartmentOfUser = async (userId) => {
-    var roles = await UserRole.find({ userId });
-    var newRoles = roles.map( role => role.roleId);
-    var departments = await Department.find({
+    const roles = await UserRole.find({ userId });
+    const newRoles = roles.map( role => role.roleId);
+    const departments = await Department.find({
         $or: [
             {'dean': { $in: newRoles }}, 
             {'vice_dean':{ $in: newRoles }}, 
@@ -124,4 +140,13 @@ exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
     ]);
 
     return department;
+}
+
+exports.getRoleDeanOfUser = async (roleId) => {
+    const user = await UserRole.find({ roleId });
+    const newUser = user.map( user => user.userId);
+    const roles = await UserRole.find({ 'userId': newUser });
+    const newRoles = roles.map( role => role.roleId);
+    const departments = await Department.find({'dean': { $in: newRoles } });
+    return departments;
 }

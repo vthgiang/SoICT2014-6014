@@ -1,6 +1,4 @@
-import {
-    handleResponse
-} from '../../../../helpers/HandleResponse';
+import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
 export const SalaryService = {
@@ -16,74 +14,74 @@ export const SalaryService = {
 // Lấy danh sách bảng lương
 function getListSalary(data) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/salary/paginate`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
+        data: data,
+        headers: AuthenticateHeader()
     };
-
-    return fetch(`${ LOCAL_SERVER_API }/salary/paginate`, requestOptions).then(handleResponse);
-
+    return axios(requestOptions);
 }
 
 // tạo mới một bảng lương
 function createNewSalary(data) {
-    const requestOptions ={
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/salary/create`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
+        data: data,
+        headers: AuthenticateHeader()
     };
-
-    return fetch(`${ LOCAL_SERVER_API }/salary/create`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
-// Xoá bảng lương  theo mã nhân viên và tháng lương
+// Xoá bảng lương  theo id
 function deleteSalary(id) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/salary/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader(),
+        headers: AuthenticateHeader()
     };
-
-    return fetch(`${ LOCAL_SERVER_API }/salary/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
-// Cập nhật thông tin bảng lương theo mã nhân viên và tháng lương
+// Cập nhật thông tin bảng lương theo id
 function updateSalary(id,data) {
-    const requestOptions ={
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/salary/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
+        data:data,
+        headers: AuthenticateHeader()
     };
-    return fetch(`${ LOCAL_SERVER_API }/salary/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
 function checkSalary(employeeNumber,month) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/salary/checkSalary/${employeeNumber}/${month}`,
         method: 'GET',
-        headers: AuthenticateHeader(),
-    }
-
-    return fetch(`${ LOCAL_SERVER_API }/salary/checkSalary/${employeeNumber}/${month}`, requestOptions).then(handleResponse);
+        headers: AuthenticateHeader()
+    };
+    return axios(requestOptions);
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
-function checkArraySalary(arraySalary) {
+function checkArraySalary(data) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/salary/checkArraySalary`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(arraySalary)
-    }
-
-    return fetch(`${ LOCAL_SERVER_API }/salary/checkArraySalary`, requestOptions).then(handleResponse);
+        data: data,
+        headers: AuthenticateHeader()
+    };
+    return axios(requestOptions);
 }
 
 // Import lương nhân viên
 function importSalary(data) {
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/salary/import`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    }
-
-    return fetch(`${ LOCAL_SERVER_API }/salary/import`, requestOptions).then(handleResponse);
+        data: data,
+        headers: AuthenticateHeader()
+    };
+    return axios(requestOptions);
 }

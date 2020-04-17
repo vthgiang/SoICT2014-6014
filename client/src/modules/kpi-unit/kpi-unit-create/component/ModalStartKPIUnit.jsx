@@ -3,6 +3,11 @@ import { connect } from 'react-redux';
 // import { kpiUnitActions as createUnitKpiActions } from '../../../redux-actions/CombineActions';
 import { createUnitKpiActions } from '../redux/actions';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
+
 class ModalStartKPIUnit extends Component {
     constructor(props) {
         super(props);
@@ -20,7 +25,15 @@ class ModalStartKPIUnit extends Component {
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
+
+        this.props.getKPIParent(localStorage.getItem('currentRole'));
     }
+
+    // function: notification the result of an action
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
+    notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
+    notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
+
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -36,6 +49,9 @@ class ModalStartKPIUnit extends Component {
     }
     handleSubmit = async (event, unit) => {
         event.preventDefault();
+        
+        const { translate } = this.props;
+
         console.log('clicked');
         await this.setState(state => {
             return {
@@ -48,29 +64,72 @@ class ModalStartKPIUnit extends Component {
             }
         })
         var { kpiunit } = this.state;
-        if (kpiunit.unit && kpiunit.time) {
-            this.props.addKPIUnit(kpiunit);
+        var parentKpi = this.props.createKpiUnit.parent;
+        let flag = false;
+        if(parentKpi === null){
+            flag = true;
         }
-        window.$("#startKPIUnit").modal("hide");
+        else{
+            if(parentKpi.status === 1) {
+                flag = true;
+            }
+        }
+
+        if (!flag) {
+            Swal.fire({
+                title: "Bạn phải chờ đơn vị cha kích hoạt KPI tháng mới",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi_unit_create.confirm'),
+            })
+        } else {
+            Swal.fire({
+                title: "Bạn có chắc chắn muốn khởi tạo KPI tháng mới",
+                type: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: translate('kpi_unit_create.confirm'),
+            }).then((res) => {
+                if (res.value) {
+                    if (kpiunit.unit && kpiunit.time) {
+                        this.props.addKPIUnit(kpiunit);
+        
+                        this.notifysuccess(translate('kpi_unit_create.init_success'));
+        
+                        window.$("#startKPIUnit").modal("hide");
+                    }
+                    else{
+                        this.notifyerror(translate('kpi_unit_create.error'));
+                    }
+                }
+            });
+        }
+        
     }
+    
     render() {
         console.log(this.state);
         const { unit } = this.props;
+
+        // hàm để chuyển sang song ngữ
+        const { translate } = this.props;
+
         return (
             <div className="modal fade" id="startKPIUnit">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 className="modal-title">Khởi tạo KPI đơn vị</h3>
+                            <h3 className="modal-title">{translate('kpi_unit_create.init_title')}</h3>
                         </div>
                         <div className="modal-body">
                             <div className="form-group">
-                                <label className="col-sm-2">Đơn vị:</label>
-                                <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
+                                <label className="col-sm-3">{translate('kpi_unit_create.unit')}:</label>
+                                <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
                             </div>
                             <div className="form-group" >
-                                <label className="col-sm-2">Tháng:</label>
+                                <label className="col-sm-2">{translate('kpi_unit_create.month')}:</label>
                                 <div className='input-group col-sm-10 date has-feedback'>
                                     <div className="input-group-addon">
                                         <i className="fa fa-calendar" />
@@ -79,7 +138,7 @@ class ModalStartKPIUnit extends Component {
                                 </div>
                             </div>
                             <div className="form-group" >
-                                <label className="col-sm-12">Mục tiêu mặc định:</label>
+                                <label className="col-sm-12">{translate('kpi_unit_create.default_target')}:</label>
                                 <ul>
                                     <li>Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)</li>
                                     <li>Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)</li>
@@ -87,8 +146,8 @@ class ModalStartKPIUnit extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, unit && unit._id)}>Khởi tạo</button>
-                            <button type="cancel" className="btn btn-primary" data-dismiss="modal">Hủy bỏ</button>
+                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, unit && unit._id)}>{translate('kpi_unit_create.init')}</button>
+                            <button type="cancel" className="btn btn-primary" data-dismiss="modal">{translate('kpi_unit_create.cancel')}</button>
                         </div>
                     </div>
                 </div>
@@ -104,7 +163,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addKPIUnit: createUnitKpiActions.addKPIUnit
+    addKPIUnit: createUnitKpiActions.addKPIUnit,
+    getKPIParent: createUnitKpiActions.getKPIParent
 };
-const connectedModalStartKPIUnit = connect(mapState, actionCreators)(ModalStartKPIUnit);
+const connectedModalStartKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalStartKPIUnit));
 export { connectedModalStartKPIUnit as ModalStartKPIUnit };

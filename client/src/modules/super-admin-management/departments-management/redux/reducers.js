@@ -107,7 +107,20 @@ export function department(state = initState, action) {
             return { 
                 error: action.error
             };
-
+        
+        case DepartmentConstants.GETROLE_DEAN_OFUSER_REQUEST:
+            return {
+                loading: true
+            };
+        case DepartmentConstants.GETROLE_DEAN_OFUSER_SUCCESS:
+            return {
+                ...state,
+                roleofuser: action.payload.data
+            };
+        case DepartmentConstants.GETROLE_DEAN_OFUSER_FAILURE:
+            return { 
+                error: action.error
+            };
 
         case 'LOGOUT':
             return initState;

@@ -2,64 +2,66 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RoleActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ModalButton } from '../../../../common-components';
-import { toast } from 'react-toastify';
-
+import { ModalDialog, ModalButton, SelectBox, ErrorLabel } from '../../../../common-components';
+import { RoleValidator } from './RoleValidator';
 
 class RoleCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
-        this.save = this.save.bind(this);
+        this.state = {
+            roleName: '',
+            roleParents: [],
+            roleUsers: []
+        }
     }
 
     render() { 
         const{ translate, role, user } = this.props;
+        const {roleNameError} = this.state;
         return ( 
             <React.Fragment>
                 <ModalButton modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')}/>
                 <ModalDialog
-                    modalID="modal-create-role"
-                    formID="form-create-role"
+                    modalID="modal-create-role" isLoading={role.isLoading}
+                    formID="form-create-role" 
                     title={translate('manage_role.add_title')}
                     msg_success={translate('manage_role.add_success')}
                     msg_faile={translate('manage_role.add_faile')}
                     func={this.save}
                 >
                     <form id="form-create-role">
-                        <div className="form-group">
-                            <label>{ translate('manage_role.name') }<span className="text-red"> * </span></label>
-                            <input className="form-control" type="text" ref="name"/>
+                        <div className={`form-group ${roleNameError===undefined?"":"has-error"}`}>
+                            <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
+                            <input className="form-control" onChange={ this.handleRoleName }/>
+                            <ErrorLabel content={roleNameError}/>
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_role.extends') }</label>
-                            <select 
-                                className="form-control select2" 
-                                multiple="multiple" 
-                                style={{ width: '100%' }} 
-                                ref="parents"
-                            >
-                                {
-                                    role.list !== undefined
-                                    ? role.list.map( role => 
-                                        role.name !== 'Super Admin' ? <option key={role._id} value={role._id}>{role.name}</option> : null
-                                    )
-                                    :null
+                            <SelectBox
+                                id="select-role-parents-create"
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {
+                                    role.list
+                                    .filter( role => (role.name !== 'Super Admin'))
+                                    .map( role => {return {value: role._id, text: role.name}})
                                 }
-                            </select>
+                                onChange={this.handleParents}
+                                multiple={true}
+                            />
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_role.users') }</label>
-                            <select 
-                                className="form-control select2" 
-                                multiple="multiple" 
-                                style={{ width: '100%' }} 
-                                ref="users"
-                            >
-                                {   
-                                    user.list.map( user => <option key={user._id} value={user._id}>{ `${user.email} - ${user.name}` }</option>)
+                            <SelectBox
+                                id="select-role-users-create"
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {
+                                    user.list.map( user => {return {value: user._id, text: `${user.name} - ${user.email}`}})
                                 }
-                            </select>
+                                onChange={this.handleUsers}
+                                multiple={true}
+                            />
                         </div>
                     </form>
                 </ModalDialog>
@@ -76,13 +78,67 @@ class RoleCreateForm extends Component {
         document.body.appendChild(script);
     }
 
-    save(){
-        
-        return this.props.create({
-            name: this.refs.name.value,
-            parents: [].filter.call(this.refs.parents.options, o => o.selected).map(o => o.value),
-            users: [].filter.call(this.refs.users.options, o => o.selected).map(o => o.value)
+    // Xy ly va validate role name
+    handleRoleName = (e) => {
+        const {value} = e.target;
+        this.validateRoleName(value, true);
+    }
+    validateRoleName = (value, willUpdateState=true) => {
+        let msg = RoleValidator.validateName(value);
+        if (willUpdateState){
+            this.setState(state => {
+                return {
+                    ...state,
+                    roleNameError: msg,
+                    roleName: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleParents = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                roleParents: value
+            }
         });
+    }
+
+    handleUsers = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                roleUsers: value
+            }
+        });
+    }
+
+    handleRoleUser = (e) => {
+        const {value} = e.target;
+        this.setState(state => {
+            return {
+                ...state,
+                roleUsers: [value]
+            }
+        });
+    }
+
+    isFormValidated = () => {
+        let result = this.validateRoleName(this.state.roleName, false);
+        return result;
+    }
+
+    save = () => {
+        const data = {
+            name: this.state.roleName,
+            parents: this.state.roleParents,
+            users: this.state.roleUsers
+        }
+
+        if(this.isFormValidated())
+            return this.props.create(data);
     }
 }
  

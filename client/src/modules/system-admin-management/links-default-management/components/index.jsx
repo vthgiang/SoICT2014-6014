@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { LinkDefaultActions } from '../redux/actions';
 import LinkInfoForm from './LinkInfoForm';
 import CreateLinkForm from './CreateLinkForm';
-import { SearchBar, ActionColumn, PaginateBar, DeleteNotification } from '../../../../common-components';
+import { SearchBar, ActionColumn, PaginateBar, DeleteNotification, ModalEditButton } from '../../../../common-components';
 
 class ManageLink extends Component {
     constructor(props) {
@@ -13,29 +13,44 @@ class ManageLink extends Component {
             limit: 5,
             page: 1,
             option: 'url', //mặc định tìm kiếm theo tên
-            value: null,
-            url: null,
-            description: null,
-            role: null
+            value: { $regex: '', $options: 'i' }
         }
-        this.inputChange = this.inputChange.bind(this);
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.setLimit = this.setLimit.bind(this);
+    }
+
+    // Cac ham xu ly du lieu voi modal
+    handleEdit = async (link) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: link
+            }
+        });
+        window.$('#modal-edit-link-default').modal('show');
     }
 
     render() { 
         const { translate, linksDefault } = this.props;
-
+        const {currentRow} = this.state;
+        
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
                     <React.Fragment>
                         <CreateLinkForm/>
+                        {
+                            currentRow !== undefined &&
+                            <LinkInfoForm
+                                linkId={currentRow._id}
+                                linkUrl={currentRow.url}
+                                linkCategory={currentRow.category}
+                                linkDescription={currentRow.description}
+                                linkRoles={currentRow.roles.map(role => role._id)}
+                            />
+                        }
                         <SearchBar 
                             columns={[
                                 { title: translate('manage_link.url'), value:'url' },
+                                { title: translate('manage_link.category'), value:'category' },
                                 { title: translate('manage_link.description'), value:'description' },
                             ]}
                             option={this.state.option}
@@ -47,13 +62,19 @@ class ManageLink extends Component {
                             <thead>
                                 <tr>
                                     <th>{ translate('manage_link.url') }</th>
+                                    <th>{ translate('manage_link.category') }</th>
                                     <th>{ translate('manage_link.description') }</th>
-                                    {/* <th>{ translate('manage_link.components') }</th> */}
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
+                                        { translate('table.action') }
                                         <ActionColumn 
                                             columnName={translate('table.action')} 
-                                            hideColumn={false}
+                                            columnArr={[
+                                                translate('manage_link.url'),
+                                                translate('manage_link.category'),
+                                                translate('manage_link.description'),
+                                                translate('manage_link.roles')
+                                            ]}
                                             setLimit={this.setLimit}
                                         /> 
                                     </th>
@@ -64,13 +85,8 @@ class ManageLink extends Component {
                                     linksDefault.listPaginate.length > 0 ? linksDefault.listPaginate.map( link => 
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
+                                            <td>{ link.category }</td>
                                             <td>{ link.description }</td>
-                                            {/* <td>{ link.components.map((component, i, arr) => {
-                                                if(i !== arr.length - 1)
-                                                    return <span key={component._id}>{component.name}, </span>
-                                                else
-                                                    return <span key={component._id}>{component.name}</span>
-                                            }) }</td> */}
                                             <td>{ link.roles.map((role, index, arr) => {
                                                 if(index !== arr.length - 1)
                                                     return <span key={role._id}>{role.name}, </span>
@@ -78,18 +94,9 @@ class ManageLink extends Component {
                                                     return <span key={role._id}>{role.name}</span>
                                             }) }</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <LinkInfoForm 
-                                                    linkDefaultId={ link._id }
-                                                    linkDefaultName={ link.url }
-                                                    linkDefaultDescription={ link.description }
-                                                    linkDefaultRoles={link.roles.map(role => role._id)}
-                                                />
+                                                <a onClick={() => this.handleEdit(link)} className="edit" title={translate('manage_link.edit')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification 
-                                                    content={{
-                                                        title: translate('manage_link.delete'),
-                                                        btnNo: translate('confirm.no'),
-                                                        btnYes: translate('confirm.yes'),
-                                                    }}
+                                                    content={translate('manage_link.delete')}
                                                     data={{
                                                         id: link._id,
                                                         info: link.url
@@ -99,8 +106,8 @@ class ManageLink extends Component {
                                             </td>
                                         </tr> 
                                     ): linksDefault.isLoading ?
-                                    <tr><td colSpan={3}>{translate('confirm.loading')}</td></tr>:
-                                    <tr><td colSpan={3}>{translate('confirm.no_data')}</td></tr>
+                                    <tr><td colSpan={5}>{translate('confirm.loading')}</td></tr>:
+                                    <tr><td colSpan={5}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>
@@ -137,15 +144,6 @@ class ManageLink extends Component {
         this.props.getPaginate(data);
     }
     
-    inputChange = (e) => {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-    
     setLimit = (number) => {
         this.setState({ limit: number });
         const data = { limit: number, page: this.state.page };
@@ -157,6 +155,7 @@ class ManageLink extends Component {
      
     componentDidMount(){
         this.props.getLinks();
+        this.props.getCategories();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
     }
 }
@@ -164,6 +163,7 @@ class ManageLink extends Component {
 const mapState = state => state;
 const getState =  {
     getLinks: LinkDefaultActions.get,
+    getCategories: LinkDefaultActions.getCategories,
     getPaginate: LinkDefaultActions.getPaginate,
     destroy: LinkDefaultActions.destroy
 }

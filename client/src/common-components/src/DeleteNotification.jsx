@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 class DeleteNotification extends Component {
     constructor(props) {
@@ -14,16 +18,21 @@ class DeleteNotification extends Component {
         func //hàm thực hiện tương ứng
     ) => {
         Swal.fire({
-            html: `<h4 style="color: red"><div>${content.title}</div> <div>"${data.info}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${content}</div> <div>"${data.info}" ?</div></h4>`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            cancelButtonText: content.btnNo,
-            confirmButtonText: content.btnYes,
+            cancelButtonText: this.props.translate('confirm.no'),
+            confirmButtonText: this.props.translate('confirm.yes'),
         }).then((result) => {
             if (result.value) {
-                func(data.id) //thực hiện xóa đối tượng với id truyền vào
+                const handleFunction = func(data.id);
+                if(handleFunction !== undefined){
+                    handleFunction
+                        .then(res => toast.success(res.message, {containerId: 'toast-notification'}))
+                        .catch(err => toast.error(err.response.data.message, {containerId: 'toast-notification'}))
+                }
             }
         })
     }
@@ -34,7 +43,7 @@ class DeleteNotification extends Component {
             <a 
                 href="#abc"
                 className="delete text-red" 
-                title={ content.title }
+                title={ content }
                 onClick={() => this.notification(
                     content,
                     data,
@@ -47,4 +56,7 @@ class DeleteNotification extends Component {
     }
 }
  
-export {DeleteNotification};
+const mapState = state => state;
+const DeleteNotificationExport = connect(mapState, null)(withTranslate(DeleteNotification));
+
+export { DeleteNotificationExport as DeleteNotification }

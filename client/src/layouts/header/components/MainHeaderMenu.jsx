@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../css/MainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
-import { AuthActions } from '../../../modules/auth/redux/actions';
 import Notifications from './Notifications';
 import Profile from './Profile';
 import Roles from './Roles';
@@ -14,10 +13,6 @@ class MainHeaderMenu extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-    }
-
-    componentDidMount() {
-        this.props.refresh();
     }
     
     checkURL = (urlName, linkArr) => {
@@ -57,7 +52,6 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    refresh: AuthActions.refresh,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(MainHeaderMenu));

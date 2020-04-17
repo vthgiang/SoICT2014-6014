@@ -9,8 +9,7 @@ const CompanySchema = new Schema({
     },
     short_name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     description: {
         type: String
@@ -23,6 +22,10 @@ const CompanySchema = new Schema({
         type: Boolean,
         required: true,
         default: true
+    },
+    super_admin: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
     }
 },{
     timestamps: true

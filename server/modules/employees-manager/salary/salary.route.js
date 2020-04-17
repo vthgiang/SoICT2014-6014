@@ -7,13 +7,13 @@ const SalaryController = require("./salary.controller");
 // Lấy danh sách các bảng lương
 router.post('/paginate',auth, SalaryController.get);
 
-// thêm mới bảng lương nhân viên
+// Thêm mới bảng lương nhân viên
 router.post('/create',auth, SalaryController.create);
 
 // Xoá bẳng lương nhan viên theo mã nhân viên
 router.delete('/:id',auth, SalaryController.delete);
 
-// update thông tin bảng lương
+// Chỉnh sửa thông tin bảng lương
 router.put('/:id',auth, SalaryController.update);
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
