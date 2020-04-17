@@ -67,7 +67,7 @@ class ModalDialog extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {resetOnClose = false, disableSubmit = false} = this.props;
+        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true} = this.props;
 
         return ( 
             <React.Fragment>
@@ -87,7 +87,9 @@ class ModalDialog extends Component {
                                         <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
                                     </div>
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        {
+                                            hasSaveButton && <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        }
                                         <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>
                                 </div>

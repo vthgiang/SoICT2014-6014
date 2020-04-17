@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { CompanyActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import CompanyEditForm from './CompanyEditForm';
+import CompanyServicesForm from './CompanyServicesForm';
 import CompanyCreateForm from './CompanyCreateForm';
 import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
@@ -58,6 +59,20 @@ class CompanyTable extends Component {
         await this.props.componentsPaginate(company._id, 1, 5);
     }
 
+    handleService = async (company) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: company
+            }
+        });
+        await window.$('#modal-edit-services-company').modal('show');
+        await this.props.linksList(company._id);
+        await this.props.linksPaginate(company._id, 1, 5);
+        await this.props.componentsList(company._id);
+        await this.props.componentsPaginate(company._id, 1, 5);
+    }
+
     componentDidMount(){
         this.props.get();
         this.props.getPaginate({page: this.state.page, limit: this.state.limit});
@@ -75,6 +90,19 @@ class CompanyTable extends Component {
                 {
                     currentRow !== undefined &&
                     <CompanyEditForm
+                        companyId={ currentRow._id }
+                        companyName={ currentRow.name }
+                        companyShortName={ currentRow.short_name }
+                        companyLog={currentRow.log}
+                        companyDescription={ currentRow.description }
+                        companyLinks={currentRow.links}
+                        companyEmail={currentRow.super_admin !== undefined ? currentRow.super_admin.email : 'Chưa xác định'}
+                        companyActive={currentRow.active}
+                    />
+                }
+                                {
+                    currentRow !== undefined &&
+                    <CompanyServicesForm
                         companyId={ currentRow._id }
                         companyName={ currentRow.name }
                         companyShortName={ currentRow.short_name }
@@ -131,7 +159,8 @@ class CompanyTable extends Component {
                                             <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
-                                                <a onClick={() => this.handleEdit(com)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(com)} className="text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleService(com)} className="text-green" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">dvr</i></a>
                                             </td>
                                         </tr>    
                                     )
