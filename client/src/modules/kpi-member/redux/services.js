@@ -14,6 +14,8 @@ export const kpiMemberServices = {
     approveKPIMember,
     editTargetKPIMember,
     editStatusTarget,
+    getTaskById,
+    setPointKPI,
 };
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
@@ -27,7 +29,7 @@ function getAllKPIMemberOfUnit(infosearch) {
 }
 // Lấy tất cả kpi cá nhân
 async function getAllKPIMemberByMember() {
-    console.log("gọi API lấÂPta");
+    console.log("gọi API lấy tất cả kpi cá nhân");
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var member = verified._id;
@@ -88,6 +90,23 @@ function editStatusTarget(id, status) {
  
     return fetch(`${LOCAL_SERVER_API}/kpimembers/status-target/${id}/${status}`, requestOptions).then(handleResponse);
 }
-// thêm bên service thôi anh nhỉ
-//uk tất carc option em đều phải thêm vào
 
+function getTaskById(id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: AuthenticateHeader()
+    };
+ 
+    return fetch(`${LOCAL_SERVER_API}/kpimembers/task/${id}`, requestOptions).then(handleResponse);
+}
+
+// chỉnh sửa approvepoint
+
+function setPointKPI(id_kpi, id_target, newPoint){
+    const requestOptions ={
+        method: 'PUT',
+        headers: AuthenticateHeader(),
+        body: JSON.stringify(newPoint)
+    };
+    return fetch(`${LOCAL_SERVER_API}/kpimembers/appovepoint/${id_kpi}/${id_target}`, requestOptions).then(handleResponse);
+}

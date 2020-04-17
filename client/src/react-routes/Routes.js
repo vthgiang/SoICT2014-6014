@@ -36,6 +36,7 @@ import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
 import {KPIMember} from "../modules/kpi-member/component/KPIMember";
+import {DashBoardKPIMember} from "../modules/kpi-member/component/DashBoardKPIMember";
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
@@ -559,9 +560,23 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ KPIMember }
                     />
-
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'kpi-member-dashboard' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link:'/kpi-member-dashboard', name: 'kpi-member-dashboard', icon:'fa fa-number' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={'/kpi-member-dashboard'}
+                        path={ '/kpi-member-dashboard' }
+                        pageName= "DashBoard"
+                        layout={ Layout }
+                        component={ DashBoardKPIMember }
+                    />
                      {/* Task Management */}
-                     <PrivateRoute 
+                    <PrivateRoute 
                         isLoading={ false }
                         key={ 'task-management' }
                         arrPage={[

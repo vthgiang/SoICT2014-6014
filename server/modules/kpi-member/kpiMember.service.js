@@ -1,5 +1,7 @@
 const KPIPersonal = require('../../models/kpi-personal.model');
 const Department = require('../../models/department.model');
+const Task= require('../../models/task.model'); 
+const DetailKPIPersonal= require('../../models/detailKPIPersonal.model')
 
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
 exports.getKPIAllMember = async (data) => {
@@ -161,4 +163,47 @@ exports.getById = async (id) => {
         message: "Lấy kpi cá nhân theo id thành công",
         content: kpipersonal
     }
+}
+
+exports.getTaskById= async (id) =>{
+    var task = await Task.find({kpi: id}) 
+    .populate({ path: "unit responsible accounatable consulted informed results parent tasktemplate comments" });
+    console.log(task);
+        return {
+            message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
+            content: task
+        }
+}
+
+exports.getSystemPoint= async(id)=>{
+    console.log("---------------");
+    var task = await Task.find({ kpi: id })
+        .populate({ path: "unit responsible accounatable consulted informed results parent tasktemplate comments" });
+    var kpi= await DetailKPIPersonal.findById(id);
+    console.log(kpi);
+    var sum = 0,i=0;
+    for (i=0; i<task.length;i++){
+        sum +=task[i].point;
+        console.log(task[i].point);
+    }
+    console.log(kpi.weight);
+    var systempoint= sum/task.length*kpi.weight/100;
+    console.log(systempoint);
+    console.log("========");
+    var kpipersonal= await DetailKPIPersonal.findByIdAndUpdate(id, { $set: { systempoint: systempoint} }, { new: true });
+    return {
+        message: "DetailKPI tính điểm sys thành công",
+        kpipersonal: kpipersonal
+    }
+}
+
+exports.setPointKPI = async(id_kpi, id_target, data) =>{
+    var kpi = await DetailKPIPersonal.findByIdAndUpdate(id_target, {$set: {approverpoint: data.point}}, {new: true} );
+    var kpipersonal = await KPIPersonal.findById(id_kpi)
+    .populate("unit creater approver")
+    .populate({ path: "listtarget", populate: { path: 'parent' } });
+    return {
+            message : "Cập nhật thành công điểm quản lí đánh giá",
+            content : kpipersonal
+        }
 }

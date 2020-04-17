@@ -376,6 +376,13 @@ class SideBar extends Component {
                                         }
 
                                         {
+                                            (this.checkURL('/kpi-member-dashboard', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-member-dashboard" ? "active" : ""}>
+                                                <Link to="/kpi-member-dashboard">{translate(`menu.kpi_member_dashboard`)}</Link>
+                                            </li>
+                                        }
+
+                                        {
                                             (this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
                                             <li className="treeview">
                                                 <a href="">{translate(`menu.kpi_personal`)}

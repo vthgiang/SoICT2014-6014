@@ -454,9 +454,14 @@ const sampleCompanyData = async () => {
             description: 'Xem danh sách công việc',
             company: xyz._id
         },
-        { // 30
+        { // 30 
             url: '/task-management-dashboard',
             description: 'Dashboard công việc',
+            company: xyz._id
+        },
+        { // 31 /kpi-member-dashboard
+            url: '/kpi-member-dashboard',
+            description: 'Dashboard KPI nhân viên',
             company: xyz._id
         }
     ]);
@@ -717,7 +722,11 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[1]._id  // Dean
         },
-        
+        {
+            resourceId: links[31]._id, // Quản lý KPI nhân viên
+            resourceType: 'Link',
+            roleId: roles[1]._id  // Dean
+        },
         // Gán quyền quản lý công việc
         {
             resourceId: links[29]._id, // Quản lý công việc
