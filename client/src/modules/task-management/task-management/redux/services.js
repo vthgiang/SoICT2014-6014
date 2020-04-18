@@ -57,7 +57,6 @@ async function getResponsibleTaskByUser(unit, number, perpage, status, priority,
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
-    console.log('-------------------Responsible Info-----------------------', unit, user, perpage, status, priority, specical, name);
 
     const requestOptions = {//user = localStorage.getItem('id')
         method: 'GET',

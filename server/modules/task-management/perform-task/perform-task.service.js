@@ -239,63 +239,6 @@ exports.editResultInformationTask = async (req, res) => {
     }
 }
 
-// // Thêm thông tin kết quả của đánh giá từng nhân viên
-// exports.createResultTask = async (req, res) => {
-//     try {
-//         var listResultTask = req.body.listResultTask;
-//         if (listResultTask !== []) {
-//             // Lưu thông tin kết quả 
-//             var listResultTask = await Promise.all(listResultTask.map(async (item) => {
-//                 var result = await ResultTask.create({
-//                     member: item.user,
-//                     systempoint: item.systempoint,
-//                     mypoint: item.mypoint,
-//                     approverpoint: item.approverpoint
-//                 })
-//                 return result._id;
-//             }))
-//             // Cập nhật thông tin công việc
-//             task = await Task.findByIdAndUpdate(
-//                 req.body.task, { results: listResultTask }, { new: true }
-//                 // là _id của task muốn đánh giá.
-//             );
-//         }
-        
-//         res.json({
-//             message: "Lưu thành công kết quả đánh giá",
-//             task: task
-//         });
-//     } catch (error) {
-//         res.json({ message: error });
-//     }
-// }
-
-// // Sửa thông tin kết quả của nhân viên trong công việc
-// exports.editResultTask = async (req, res) => {
-//     try {
-//         var listResultTask = req.body.listResultTask;
-//         if (listResultTask !== []) {
-//             // Lưu thông tin kết quả 
-//             var listResultTask = await Promise.all(listResultTask.map(async (item) => {
-//                 var result = await ResultTask.findByIdAndUpdate(item._id,{
-//                     member: item.user,
-//                     systempoint: item.systempoint,
-//                     mypoint: item.mypoint,
-//                     approverpoint: item.approverpoint
-//                 })
-//                 return result;
-//             }))
-//         }
-//         res.json({
-//             message: "Chỉnh sửa thành công kết quả đánh giá",
-//             listResultTask: listResultTask
-//         });
-//     } catch (error) {
-//         res.json({ message: error });
-//     }
-// }
-
-
 // Thêm thông tin kết quả của đánh giá từng nhân viên
 exports.createResultTask = async (result, taskID) => {
     var item = result;

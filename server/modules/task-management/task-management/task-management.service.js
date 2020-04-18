@@ -17,7 +17,9 @@ exports.get = (req, res) => {
 exports.getById = async (id) => {
     //req.params.id
     var task = await Task.findById(id)
-            .populate({ path: "unit responsible accounatable consulted informed parent tasktemplate comments" });
+            .populate({ path: "unit responsible accounatable consulted informed parent tasktemplate comments " });// results.member
+            // .populate({path: "results", populate : {path: "member"}});
+            // .populate('results.member')
         if (task.tasktemplate !== null) {
             var actionTemplates = await ActionTask.find({ tasktemplate: task.tasktemplate._id });
             var informationTemplate = await InformationTaskTemplate.find({ tasktemplate: task.tasktemplate._id });

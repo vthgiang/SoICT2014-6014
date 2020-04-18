@@ -13,8 +13,8 @@ import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
 import { overviewKpiActions } from "../../../kpi-personal/kpi-personal-overview/redux/actions";
 // import { taskManagementActions, performTaskAction, UserActions, kpiPersonalActions } from '../../../redux-actions/CombineActions';
-import  ModalApproveTask  from "./ModalApproveTask";
-import {ModalButton} from '../../../../common-components';
+import ModalApproveTask from "./ModalApproveTask";
+import { ModalButton } from '../../../../common-components';
 
 class ModalPerformTask extends Component {
     constructor(props) {
@@ -53,7 +53,8 @@ class ModalPerformTask extends Component {
                 user: idUser,//fix---------------localStorage.getItem("id")-------------------
                 time: 0,
             },
-            resultTask: 0
+            resultTask: 0,
+            showModal: ""
         };
         this.contentComment = [];
         this.newContentComment = [];
@@ -100,6 +101,7 @@ class ModalPerformTask extends Component {
         }
     }
     componentDidMount() {
+        console.log('------mountPerform-----');
         let script2 = document.createElement('script');
         script2.src = '../lib/main/js/uploadfile/custom.js';//fix-------------------------------------------------------------
         script2.async = true;
@@ -512,8 +514,8 @@ class ModalPerformTask extends Component {
         var endTime = new Date(endD[2], endD[1] - 1, endD[0]).getTime();
         var time = endTime - startTime;
         var wordedDay = Date.now() - startTime;
-        if(wordedDay < time){
-            result = Math.ceil((eval(formula) * 100)/(wordedDay/time));
+        if (wordedDay < time) {
+            result = Math.ceil((eval(formula) * 100) / (wordedDay / time));
         } else {
             result = Math.ceil(eval(formula) * 100);
         }
@@ -532,10 +534,10 @@ class ModalPerformTask extends Component {
     handleChangeMyPoint = (id) => {
         var systempoint = parseInt(this.resultTask.value);
         var mypoint = parseInt(this.mypoint[id].value);
-        if(mypoint<0){
-            this.approvepoint[id].value= Math.ceil(systempoint/2);
+        if (mypoint < 0) {
+            this.approvepoint[id].value = Math.ceil(systempoint / 2);
         } else {
-            this.approvepoint[id].value = Math.ceil((systempoint+mypoint)/2);
+            this.approvepoint[id].value = Math.ceil((systempoint + mypoint) / 2);
         }
     }
     // Chuyển thời gian về định dạng mong muốn
@@ -563,8 +565,20 @@ class ModalPerformTask extends Component {
             .replace(/s/gm, ('0' + (d.getSeconds() + 0)).substr(-2))
             .replace(/v/gm, ('0000' + (d.getMilliseconds() % 1000)).substr(-3));
     }
+
+    handleSubmitContenTask = async (id) =>{
+        await this.setState(state => {
+            return {
+                ...state,
+                showModal: id
+            }
+        });
+        window.$(`#modal-approve-task-${id}`).modal('show');
+    }
+
     render() {
         var task, commentTasks, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
+        var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
         const { comment, editComment, startTimer, showChildComment, pauseTimer } = this.state;
         const { time } = this.state.timer;
@@ -572,6 +586,7 @@ class ModalPerformTask extends Component {
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         // console.log('----task----MPT', task);
         // console.log('----task.status----MPT', task && task.status);
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.tasktemplate !== null) {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
@@ -625,20 +640,55 @@ class ModalPerformTask extends Component {
                                     </div>
                                 </div>
                                 <div className="col-sm-2">
-                                    {   // && (task && task.status !== "Đã hoàn thành"))
-                                        (this.props.role !== "creator" && this.props.role !== "informed" )&& 
-                                        // <button type="submit" id="btn-approve" className="col-sm-8 btn btn-success" style={{ width: "119%", marginLeft: "80%", height: "32px" }} onClick={this.handleSubmitContenTask}>Yêu cầu phê duyệt</button>
-                                        // (((task && ( task.status === "Chờ phê duyệt")) && (this.props.role === "consulted" || this.props.role === "accountable")) || 
-                                        //     (this.props.role === "responsible" )) &&
+                                    {/* {
+                                        this.state.showModal === this.props.id &&
+                                        <ModalApproveTask
+                                            taskID={this.props.id}
+                                            // task = { task }
+                                            currentUser={this.state.currentUser}
+                                            role={this.props.role}
+                                            resultTask={this.state.resultTask}
+                                        />
+                                    } */}
+                                    {
+                                        (this.props.role === "responsible") &&
                                         <React.Fragment>
-                                            <ModalButton modalID = {`modal-approve-task-${this.props.id}`} button_name="Yêu cầu phê duyệt" title="Yêu cầu phê duyệt"/>
-                                            <ModalApproveTask 
-                                                taskID = { this.props.id } 
-                                                // task = { task }
-                                                currentUser = {this.state.currentUser} 
-                                                role = {this.props.role}
-                                                resultTask = {this.state.resultTask}
-                                            />
+                                            {/* <ModalButton modalID={`modal-approve-task-${this.props.id}`} button_name="Yêu cầu phê duyệt" title="Yêu cầu phê duyệt" /> */}
+                                            <button type="submit" id="btn-approve" className="col-sm-8 btn btn-success" style={{ width: "119%", marginLeft: "80%", height: "32px" }} onClick={ () => this.handleSubmitContenTask(this.props.id) }>Yêu cầu kết thúc</button>
+                                            {
+                                                this.state.showModal === this.props.id &&
+                                                <ModalApproveTask
+                                                    taskID={this.props.id}
+                                                    // task = { task }
+                                                    currentUser={this.state.currentUser}
+                                                    role={this.props.role}
+                                                    resultTask={this.state.resultTask}
+                                                />
+                                            }
+                                            
+                                        </React.Fragment>
+                                    }
+
+
+                                    {   // && (statusTask && statusTask !== "Đã hoàn thành"))
+                                        // (this.props.role !== "creator" && this.props.role !== "informed" ) &&
+                                        // <button type="submit" id="btn-approve" className="col-sm-8 btn btn-success" style={{ width: "119%", marginLeft: "80%", height: "32px" }} onClick={this.handleSubmitContenTask}>Yêu cầu phê duyệt</button>
+                                        // (((statusTask && ( statusTask === "Chờ phê duyệt")) && (this.props.role === "consulted" || this.props.role === "accountable")) || 
+                                        //     (this.props.role === "responsible"  && (statusTask && statusTask !== "Đã hoàn thành"))) &&
+                                        (this.props.role === "consulted" || this.props.role === "accountable") &&
+                                        <React.Fragment>
+                                            {/* <ModalButton modalID={`modal-approve-task-${this.props.id}`} button_name="Ket thuc cong viec" title="Ket thuc cong viec" /> */}
+                                            <button type="submit" id="btn-approve" className="col-sm-8 btn btn-success" style={{ width: "119%", marginLeft: "80%", height: "32px" }} onClick={ ()=>this.handleSubmitContenTask(this.props.id) }>Kết thúc công việc</button>
+                                            {
+                                                this.state.showModal === this.props.id &&
+                                                <ModalApproveTask
+                                                    taskID={this.props.id}
+                                                    // task = { task }
+                                                    currentUser={this.state.currentUser}
+                                                    role={this.props.role}
+                                                    resultTask={this.state.resultTask}
+                                                />
+                                            }
                                         </React.Fragment>
                                     }
                                 </div>
@@ -689,14 +739,14 @@ class ModalPerformTask extends Component {
                                                                     <option key={item.userId._id} value={item.userId._id}>{item.userId.name}</option>
                                                                 </optgroup>)
 
-                                                                // <optgroup label={item.id_role.name} key={item.id_role._id}>
-                                                                // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
-                                                                //     {item.id_user.map(x => {
-                                                                // {/* ---------------------------------------userId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            // <optgroup label={item.id_role.name} key={item.id_role._id}>
+                                                            // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            //     {item.id_user.map(x => {
+                                                            // {/* ---------------------------------------userId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //         return <option key={x._id} value={x._id}>{x.name}</option>
-                                                                //     })}
-                                                                // </optgroup>)
+                                                            //         return <option key={x._id} value={x._id}>{x.name}</option>
+                                                            //     })}
+                                                            // </optgroup>)
                                                         }
                                                     </select>
                                                 </div>
@@ -710,15 +760,15 @@ class ModalPerformTask extends Component {
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
                                                                     <option key={item.userId._id} value={item.userId._id}>{item.userId.name}</option>
                                                                 </optgroup>)
-                                                                // <optgroup label={item.id_role.name} key={item.id_role._id}>
-                                                                // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            // <optgroup label={item.id_role.name} key={item.id_role._id}>
+                                                            // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //     {item.id_user.map(x => {
-                                                                // {/* ---------------------------------------userId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            //     {item.id_user.map(x => {
+                                                            // {/* ---------------------------------------userId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //         return <option key={x._id} value={x._id}>{x.name}</option>
-                                                                //     })}
-                                                                // </optgroup>)
+                                                            //         return <option key={x._id} value={x._id}>{x.name}</option>
+                                                            //     })}
+                                                            // </optgroup>)
                                                         }
                                                     </select>
                                                 </div>
@@ -732,15 +782,15 @@ class ModalPerformTask extends Component {
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
                                                                     <option key={item.userId._id} value={item.userId._id}>{item.userId.name}</option>
                                                                 </optgroup>)
-                                                                // <optgroup label={item.id_role.name} key={item.id_role._id}>
-                                                                // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            // <optgroup label={item.id_role.name} key={item.id_role._id}>
+                                                            // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //     {item.id_user.map(x => {
-                                                                // {/* ---------------------------------------userId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            //     {item.id_user.map(x => {
+                                                            // {/* ---------------------------------------userId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //         return <option key={x._id} value={x._id}>{x.name}</option>
-                                                                //     })}
-                                                                // </optgroup>)
+                                                            //         return <option key={x._id} value={x._id}>{x.name}</option>
+                                                            //     })}
+                                                            // </optgroup>)
                                                         }
                                                     </select>
                                                 </div>
@@ -754,15 +804,15 @@ class ModalPerformTask extends Component {
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
                                                                     <option key={item.userId._id} value={item.userId._id}>{item.userId.name}</option>
                                                                 </optgroup>)
-                                                                // <optgroup label={item.id_role.name} key={item.id_role._id}>
-                                                                // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            // <optgroup label={item.id_role.name} key={item.id_role._id}>
+                                                            // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //     {item.id_user.map(x => {
-                                                                // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            //     {item.id_user.map(x => {
+                                                            // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //         return <option key={x._id} value={x._id}>{x.name}</option>
-                                                                //     })}
-                                                                // </optgroup>)
+                                                            //         return <option key={x._id} value={x._id}>{x.name}</option>
+                                                            //     })}
+                                                            // </optgroup>)
                                                         }
                                                     </select>
                                                 </div>
@@ -776,15 +826,15 @@ class ModalPerformTask extends Component {
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
                                                                     <option key={item.userId._id} value={item.userId._id}>{item.userId.name}</option>
                                                                 </optgroup>)
-                                                                // <optgroup label={item.id_role.name} key={item.id_role._id}>
-                                                                // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            // <optgroup label={item.id_role.name} key={item.id_role._id}>
+                                                            // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //     {item.id_user.map(x => {
-                                                                // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
+                                                            //     {item.id_user.map(x => {
+                                                            // {/* ---------------------------------------roleId---------------------------------------------------------**********-------------------*****************------------------------------------- */}
 
-                                                                //         return <option key={x._id} value={x._id}>{x.name}</option>
-                                                                //     })}
-                                                                // </optgroup>)
+                                                            //         return <option key={x._id} value={x._id}>{x.name}</option>
+                                                            //     })}
+                                                            // </optgroup>)
                                                         }
                                                     </select>
                                                 </div>
@@ -932,7 +982,7 @@ class ModalPerformTask extends Component {
                                                     <div className='form-group has-feedback'>
                                                         <label className="col-sm-2 control-label" style={{ width: '40%', textAlign: 'left', fontWeight: "500" }}>Điểm tự đánh giá:</label>
                                                         <div className="col-sm-8" style={{ width: '60%' }}>
-                                                            <input type="number" className="form-control" placeholder="80" onChange={()=>this.handleChangeMyPoint(item._id)} disabled={item._id!==this.state.currentUser} ref={input => this.mypoint[item._id] = input} />
+                                                            <input type="number" className="form-control" placeholder="80" onChange={() => this.handleChangeMyPoint(item._id)} disabled={item._id !== this.state.currentUser} ref={input => this.mypoint[item._id] = input} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -954,7 +1004,7 @@ class ModalPerformTask extends Component {
                                                     <div className='form-group has-feedback'>
                                                         <label className="col-sm-2 control-label" style={{ width: '40%', textAlign: 'left', fontWeight: "500" }}>Điểm tự đánh giá:</label>
                                                         <div className="col-sm-8" style={{ width: '60%' }}>
-                                                            <input type="number" className="form-control" placeholder="80" disabled={this.props.role !== "accountable"||item._id!==this.state.currentUser} ref={input => this.name = input} />
+                                                            <input type="number" className="form-control" placeholder="80" disabled={this.props.role !== "accountable" || item._id !== this.state.currentUser} ref={input => this.name = input} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -976,7 +1026,7 @@ class ModalPerformTask extends Component {
                                                     <div className='form-group has-feedback'>
                                                         <label className="col-sm-2 control-label" style={{ width: '40%', textAlign: 'left', fontWeight: "500" }}>Điểm tự đánh giá:</label>
                                                         <div className="col-sm-8" style={{ width: '60%' }}>
-                                                            <input type="number" className="form-control" placeholder="80" disabled={this.props.currentUser!==item._id} ref={input => this.name = input} />
+                                                            <input type="number" className="form-control" placeholder="80" disabled={this.props.currentUser !== item._id} ref={input => this.name = input} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1226,7 +1276,7 @@ class ModalPerformTask extends Component {
                                                 logTimer &&
                                                 logTimer.map(item =>
                                                     <li className="list-log-timer" key={item._id}>
-                                                        <p style={{fontSize: "15px"}}>{item.user.name} Bắt đầu: {this.format(item.start, 'H:i:s d-m-Y')} Kết thúc: {this.format(item.stopTimer, 'H:i:s d-m-Y')} Thời gian làm việc: {this.convertTime(item.time)}</p>
+                                                        <p style={{ fontSize: "15px" }}>{item.user.name} Bắt đầu: {this.format(item.start, 'H:i:s d-m-Y')} Kết thúc: {this.format(item.stopTimer, 'H:i:s d-m-Y')} Thời gian làm việc: {this.convertTime(item.time)}</p>
                                                     </li>)
                                             }
                                         </ul>

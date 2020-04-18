@@ -41,8 +41,9 @@ const TaskSchema = new Schema({
         required: true
     },
     status: {// có 6 trạng thái công việc: Đang chờ, Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Bị hủy, Tạm hoãn
+        // TODO {code{}, description{} }
         type: String,
-        default: "Đang chờ",
+        default: "Đang chờ",//
         required: true
     },
     tasktemplate: {
