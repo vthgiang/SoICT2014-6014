@@ -12,11 +12,15 @@ class Layout extends Component {
         this.state = {  }
     }
     render() { 
-        const { translate } = this.props;
+        const { translate, auth } = this.props;
         
         return ( 
             <React.Fragment>
-                <Header />
+                <Header
+                    userId={auth.user._id}
+                    userName={auth.user.name}
+                    userEmail={auth.user.email}
+                />
                 <Sidebar />
                 <Content arrPage={this.props.arrPage} isLoading={this.props.isLoading} pageName={ translate(`menu.${this.props.pageName}`) }>{ this.props.children }</Content>
                 <Footer />

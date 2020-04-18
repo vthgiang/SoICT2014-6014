@@ -17,7 +17,8 @@ export const DepartmentServices = {
     edit,
     destroy,
     getAll,
-    getDepartmentOfUser
+    getDepartmentOfUser,
+    getDepartmentsThatUserIsDean,
 };
 
 function get() {
@@ -73,12 +74,24 @@ async function getDepartmentOfUser() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    console.log(id);
     const requestOptions = {
         method: 'GET',
         headers: AuthenticateHeader()
     };
 
     return fetch(`${ LOCAL_SERVER_API }/department/department-of-user/${id}`, requestOptions).then(handleResponse);
+}
+async function getDepartmentsThatUserIsDean(currentRole) {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+
+    const requestOptions = {
+        url: `${LOCAL_SERVER_API}/department/departments-that-user-is-dean/${id}`,
+        method: 'GET',
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
 }
 

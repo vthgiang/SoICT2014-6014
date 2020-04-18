@@ -55,7 +55,7 @@ exports.approveAllTarget = async (req, res) => {
         LogInfo(req.user.email, `Approve all target`, req.user.company);
         res.status(200).json(kpimembers);
     } catch (error) {
-        LogError(req.user.emai, `Approve all target`, req.user.company);
+        LogError(req.user.email, `Approve all target`, req.user.company);
         res.status(400).json(error);
     }
 }
@@ -64,10 +64,10 @@ exports.approveAllTarget = async (req, res) => {
 exports.editTarget = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.editTarget(req.params.id, req.body);
-        LogInfo(req.user.emai, `Edit target member`, req.user.company);
+        LogInfo(req.user.email, `Edit target member`, req.user.company);
         res.status(200).json(kpimembers);
     } catch (error) {
-        LogError(req.user.emai, `Edit target member`, req.user.company);
+        LogError(req.user.email, `Edit target member`, req.user.company);
         res.status(400).json(error);
     }
 }
@@ -75,11 +75,44 @@ exports.editTarget = async (req, res) => {
 // Phê duyệt từng mục tiêu của KPI req.params.id  status: req.params.status
 exports.editStatusTarget = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.editStatusTarget(req.params);
-        LogInfo(req.user.emai, `Edit status target`, req.user.company);
+        const kpimembers = await KPIMemberService.editStatusTarget(req.params.id);
+        LogInfo(req.user.email, `Edit status target`, req.user.company);
         res.status(200).json(kpimembers);
     } catch (error) {
-        LogError(req.user.emai, `Edit status target`, req.user.company);
+        LogError(req.user.email, `Edit status target`, req.user.company);
+        res.status(400).json(error);
+    }
+}
+
+exports.getTaskById= async(req, res) => {
+    try {
+        const kpimembers = await KPIMemberService.getTaskById(req.params.id);
+       // LogInfo(req.user.email, `Edit status target`, req.user.company);
+        res.status(200).json(kpimembers);
+    } catch (error) {
+      //  LogError(req.user.email, `Edit status target`, req.user.company);
+        res.status(400).json(error);
+    } 
+}
+exports.getSystemPoint= async(req, res) => {
+    try {
+        const kpimembers = await KPIMemberService.getSystemPoint(req.params.id);
+       // LogInfo(req.user.email, `Edit status target`, req.user.company);
+        res.status(200).json(kpimembers);
+    } catch (error) {
+      //  LogError(req.user.email, `Edit status target`, req.user.company);
+        res.status(400).json(error);
+    }
+}
+
+// cập nhật điểm quản lí đánh giá
+exports.setPointKPI = async (req, res) =>{
+    try {
+        const kpimembers = await KPIMemberService.setPointKPI(req.params.id_kpi, req.params.id_target, req.body);
+      //LogInfo(req.user.email, `Set point for kpi`, req.user.company);
+        res.status(200).json(kpimembers);
+    } catch (error) {
+      //  LogInfo(req.user.email, `Set point for kpi`, req.user.company);
         res.status(400).json(error);
     }
 }

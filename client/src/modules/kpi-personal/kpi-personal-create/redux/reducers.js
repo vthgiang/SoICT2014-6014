@@ -27,10 +27,11 @@ export function createKpiPersonal(state = {}, action) {
         isLoading: false
       };
     case createKpiConstants.EDIT_KPIPERSONAL_SUCCESS:
+    
       return {
         ...state,
         editing: false,
-        currentKPI: action.kpipersonal.content,
+        currentKPI: action.kpipersonal.kpipersonal,
         // items: [
         //   ...state.items,
         //   action.target.kpipersonal

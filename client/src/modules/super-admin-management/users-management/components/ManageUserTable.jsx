@@ -13,13 +13,8 @@ class ManageUserTable extends Component {
             limit: 5,
             page: 1,
             option: 'name', //mặc định tìm kiếm theo tên
-            value: null
+            value: { $regex: '', $options: 'i' }
         }
-        this.setPage = this.setPage.bind(this);
-        this.setOption = this.setOption.bind(this);
-        this.searchWithOption = this.searchWithOption.bind(this);
-        this.checkSuperRole = this.checkSuperRole.bind(this);
-        this.setLimit = this.setLimit.bind(this);
     }
 
     handleEdit = async (user) => {

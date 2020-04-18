@@ -58,7 +58,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             allRole = allRole.concat(item.parents); //thêm các role children vào mảng
         })
         var tasktemplates;
-        if(unit === "[]"){
+        if ((unit === "[]")||(JSON.stringify(unit)==JSON.stringify([]))){
             tasktemplates = await Privilege.find({
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
@@ -68,6 +68,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             .populate({ 
                 path: 'resourceId', 
                 model: TaskTemplate, 
+                match: {name : { "$regex": name, "$options": "i" }},
                 populate: { path: 'creator unit' } 
             });
         } else {
@@ -80,16 +81,15 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             .populate({ 
                 path: 'resourceId', 
                 model: TaskTemplate, 
-                match: { name: { "$regex": name, "$options": "i" }},
+                match: { $and : [{name: { "$regex": name, "$options": "i" }},{unit : { $in: unit}}]} ,
                 populate: { path: 'creator unit' } 
-            });
+            }); 
         }
         var totalCount = await Privilege.count({
             roleId: { $in: allRole },
             resourceType: 'TaskTemplate'
         });
         var totalPages = Math.ceil(totalCount / noResultsPerPage);
-
         return ({"message" : tasktemplates,"pages": totalPages});
 }
 
@@ -132,7 +132,8 @@ exports.create = async (body) => {
                 name: item.name,
                 description: item.description,
                 mandatary: item.mandatary,
-                type: item.type
+                type: item.type,
+                extra: item.extra
             })
         });
         var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });

@@ -21,6 +21,7 @@ class KPIUnitCreate extends Component {
         
         this.props.getDepartment();
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
+        this.props.getKPIParent(localStorage.getItem('currentRole'));
     }
     componentDidUpdate() {
         let script = document.createElement('script');
@@ -55,7 +56,7 @@ class KPIUnitCreate extends Component {
     }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
     notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
     notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
 
@@ -215,8 +216,50 @@ class KPIUnitCreate extends Component {
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
+        
         return (currentRole === deanCurrentUnit);
     }
+
+    checkStartKpiUnit = (currentUnit) => {
+        let parentUnit = currentUnit[0].parent; 
+        let parentKpi = this.props.createKpiUnit.parent;
+
+        if(parentUnit == null){
+            return true;
+        }
+        else{
+            if(parentKpi == null){
+                return false;
+            }
+            else if(parentKpi.status !== 1){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+    }
+
+    startKpiUnitError = () => {
+        let parentKpi = this.props.createKpiUnit.parent;
+        if(parentKpi == null){
+            Swal.fire({
+                title: 'Bạn chưa khởi tạo KPI đơn vị cha',
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        }
+        else{
+            Swal.fire({
+                title: 'Bạn chưa kích hoạt KPI đơn vị cha',
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Xác nhận'
+            })
+        }
+    }
+    
     render() {
         var unitList, currentUnit, currentKPI;
         const { department, createKpiUnit } = this.props;
@@ -265,7 +308,7 @@ class KPIUnitCreate extends Component {
                                             <i className="fa fa-lock" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.cancel_approve')}
                                         </a>
                                     }
-                                    <a className="btn btn-app" data-toggle="modal" data-target="#addNewTargetKPIUnit" data-backdrop="static" data-keyboard="false">
+                                    <a className="btn btn-app" data-toggle="modal" data-target="#modal-add-target" data-backdrop="static" data-keyboard="false">
                                         <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.add_target')}
                                     </a>
                                     <ModalAddTargetKPIUnit kpiunit={currentKPI._id} unit={currentKPI.unit._id} />
@@ -348,12 +391,22 @@ class KPIUnitCreate extends Component {
                         <div>
                             <div style={{marginLeft: "-10px"}}>
                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
-                                    <React.Fragment>
-                                        <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
-                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.start_kpi')}
-                                        </a>
-                                        <ModalStartKPIUnit unit={currentUnit && currentUnit[0]} />
-                                    </React.Fragment>
+                                    <div>
+                                        {this.checkStartKpiUnit(currentUnit) ?
+                                            <React.Fragment>
+                                                <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.start_kpi')}
+                                                </a>
+                                                <ModalStartKPIUnit unit={currentUnit && currentUnit[0]} />
+                                            </React.Fragment>
+                                            :
+                                            <React.Fragment>
+                                                <a className="btn btn-app" data-toggle="modal" data-backdrop="static" data-keyboard="false" onClick={() => this.startKpiUnitError()}>
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.start_kpi')}
+                                                </a>
+                                            </React.Fragment>
+                                        }
+                                    </div>
                                 }
                             </div>
                             <h4 style={{ display: "inline-block", fontWeight: "600" }}>KPI {currentUnit && currentUnit[0].name}</h4>
@@ -377,7 +430,8 @@ const actionCreators = {
     editKPIUnit: createUnitKpiActions.editKPIUnit,
     deleteKPIUnit: createUnitKpiActions.deleteKPIUnit,
     deleteTargetKPIUnit: createUnitKpiActions.deleteTargetKPIUnit,
-    editStatusKPIUnit: createUnitKpiActions.editStatusKPIUnit
+    editStatusKPIUnit: createUnitKpiActions.editStatusKPIUnit,
+    getKPIParent: createUnitKpiActions.getKPIParent
 };
 const connectedKPIUnitCreate = connect(mapState, actionCreators)(withTranslate(KPIUnitCreate));
 export { connectedKPIUnitCreate as KPIUnitCreate };

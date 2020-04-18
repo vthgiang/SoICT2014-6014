@@ -3,6 +3,7 @@ import Item from './Item';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
+import { LOCAL_SERVER_API } from '../../../env';
 
 class SideBar extends Component {
 
@@ -41,7 +42,7 @@ class SideBar extends Component {
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
         }
-        const { translate } = this.props;
+        const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
         return (
             <React.Fragment>
@@ -49,7 +50,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="img-circle" alt="User avatar" />
+                                <img src={LOCAL_SERVER_API+auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
@@ -362,6 +363,13 @@ class SideBar extends Component {
                                             </li>
                                         }
 
+                                        {
+                                            (this.checkURL('/kpi-member-dashboard', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-member-dashboard" ? "active" : ""}>
+                                                <Link to="/kpi-member-dashboard">{translate(`menu.kpi_member_dashboard`)}</Link>
+                                            </li>
+                                        }
+                                        
                                         {
                                             (this.checkURL('/kpi-personals/overview', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-personals/overview" ? "active" : ""}>

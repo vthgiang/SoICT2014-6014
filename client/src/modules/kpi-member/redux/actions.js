@@ -8,6 +8,8 @@ export const kpiMemberActions = {
     approveKPIMember,
     editTargetKPIMember,
     editStatusTarget,
+    getTaskById,
+    setPointKPI
 };
  
 // Lấy tất cả KPI cá nhân
@@ -145,4 +147,40 @@ function editStatusTarget(id, status) {
     function request(id) { return { type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST, id } }
     function success(newKPI) { return { type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_SUCCESS, newKPI } }
     function failure(error) { return { type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_FAILURE, error } }
+}
+
+function getTaskById(id) {
+    return dispatch => {
+        dispatch(request(id));
+ 
+        kpiMemberServices.getTaskById(id)
+            .then(
+                tasks => dispatch(success(tasks)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+ 
+    function request(id) { return { type: kpiMemberConstants.GET_TASK_BYID_REQUEST, id } }
+    function success(tasks) { return { type: kpiMemberConstants.GET_TASK_BYID_SUCCESS, tasks } }
+    function failure(error) { return { type: kpiMemberConstants.GET_TASK_BYID_FAILURE, error } }
+}
+
+function setPointKPI(id_kpi, id_target, newPoint) {
+    return dispatch => {
+        dispatch(request(id_target));
+ 
+        kpiMemberServices.setPointKPI(id_kpi,id_target, newPoint)
+            .then(
+                newPoint => { 
+                    dispatch(success(newPoint));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                }
+            );
+    };
+ 
+    function request(id) { return { type: kpiMemberConstants.SET_POINTKPI_REQUEST, id } }
+    function success(newPoint) { return { type: kpiMemberConstants.SET_POINTKPI_SUCCESS, newPoint } }
+    function failure(error) { return { type: kpiMemberConstants.SET_POINTKPI_FAILURE, error } }
 }

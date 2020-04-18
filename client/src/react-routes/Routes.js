@@ -17,8 +17,9 @@ import ManageLink from '../modules/super-admin-management/links-management/compo
 import ManageDepartment from '../modules/super-admin-management/departments-management/components';
 import ManageComponent from '../modules/super-admin-management/components-management/components';
 import ManageFormDocument from '../modules/super-admin-management/documents-management/components';
-import { DetailEmployee, UpdateEmployee,} from '../modules/employees-manager/employee-info/components/CombineContent';
-import { ListEmployee,AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
+import { DetailEmployee, UpdateEmployee} from '../modules/employees-manager/employee-info/components/CombineContent';
+import {EmployeeCreatePage} from '../modules/employees-manager/employee-create/components/EmployeeCreatePage';
+import { ListEmployee, AddEmployee} from '../modules/employees-manager/employee-manager/components/CombineContent';
 import { DashBoardEmployees} from '../modules/employees-manager/dashboard-employee-manage/components/DashBoardEmployees';
 import { ManagerPraiseDiscipline} from '../modules/employees-manager/praise-discipline/components';
 import ManagerSabbatical from '../modules/employees-manager/sabbatical/components';
@@ -36,6 +37,7 @@ import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
 import {KPIMember} from "../modules/kpi-member/component/KPIMember";
+import {DashBoardKPIMember} from "../modules/kpi-member/component/DashBoardKPIMember";
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
@@ -237,7 +239,7 @@ class Routes extends Component {
                         path={ '/hr-add-employee' }
                         pageName={'add_employee' }
                         layout={ Layout }
-                        component={ AddEmployee }
+                        component={ EmployeeCreatePage }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.employeesInfo.isLoading }
@@ -559,7 +561,21 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ KPIMember }
                     />
-
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'kpi-member-dashboard' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link:'/kpi-member-dashboard', name: 'kpi-member-dashboard', icon:'fa fa-number' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={'/kpi-member-dashboard'}
+                        path={ '/kpi-member-dashboard' }
+                        pageName= "DashBoard"
+                        layout={ Layout }
+                        component={ DashBoardKPIMember }
+                    />
                      {/* Task Management */}
                      <PrivateRoute 
                         isLoading={ this.props.tasks.isLoading }

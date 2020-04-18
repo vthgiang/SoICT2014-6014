@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
-
+import CanvasJSReact from '../../../Chart/canvasjs.react';
+ 
 class ModalMemberEvaluate extends Component {
-    componentDidMount() {
-        // get kpi member member
-        this.props.getKPIMemberById(this.props.id);
-    }
-
     constructor(props) {
         super(props);
         this.state = {
             unit: '5dcadf02f0343012f09c1193',
-            content: ""
+            content: "",
+            name:"",
+            unit:"",
+            description:"description",
+            point:0,
+            status:0
         };
     }
+    componentDidMount() {
+        // get kpi member member
+        this.props.getKPIMemberById(this.props.id);
+        //get task list
+        // var id ="5e84b34398c1184fa4ebdc41";
+        // this.props.getTaskById(id);
+    }
+ 
+ 
     componentDidUpdate() {
         this.handleResizeColumn();
     }
@@ -23,7 +33,7 @@ class ModalMemberEvaluate extends Component {
             var pressed = false;
             var start = undefined;
             var startX, startWidth;
-
+ 
             window.$("table thead tr th").mousedown(function (e) {
                 start = window.$(this);
                 pressed = true;
@@ -31,13 +41,13 @@ class ModalMemberEvaluate extends Component {
                 startWidth = window.$(this).width();
                 window.$(start).addClass("resizing");
             });
-
+ 
             window.$(document).mousemove(function (e) {
                 if (pressed) {
                     window.$(start).width(startWidth + (e.pageX - startX));
                 }
             });
-
+ 
             window.$(document).mouseup(function () {
                 if (pressed) {
                     window.$(start).removeClass("resizing");
@@ -47,14 +57,28 @@ class ModalMemberEvaluate extends Component {
         });
     }
     handleChangeContent = async (id) => {
+        // this.props.getTaskById(id);
         await this.setState(state => {
+            this.props.getTaskById(id);
             return {
                 ...state,
                 content: id
             }
-        })
-        console.log(this.state);
+        });
+        // console.log(this.state);
+ 
     }
+ 
+    handleSetPointKPI = async(id_kpi, id_target, input) =>{
+        //event.preventDefault();
+        var point = {point: input};
+        this.props.setPointKPI( id_kpi, id_target, point)
+        // await this.setState({
+        //     editing: true,
+        //     this.props.setPointKPI( id_kpi, id_target, point)
+        // })
+    }
+ 
     handleCloseModal = async (id) => {
         var element = document.getElementsByTagName("BODY")[0];
         element.classList.remove("modal-open");
@@ -64,10 +88,15 @@ class ModalMemberEvaluate extends Component {
     }
     render() {
         var list;
+        var myTask=[];
         const { kpimembers } = this.props;
+        if(typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
+        console.log("=========================");
+        console.log(kpimembers.tasks);
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.listtarget;
         }
+ 
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -119,12 +148,12 @@ class ModalMemberEvaluate extends Component {
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Quản lý đánh giá:</label>
-                                                    <input type="number" min="0" max={item.weight} className="col-sm-4" defaultValue="0" name="value" />
+                                                    <input type="number" min="0" max={item.weight} className="col-sm-4"ref={input => this.approvepoint = input} defaultValue="0" name="value" />
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Tự đánh giá:</label>
                                                     <label className="col-sm-4" style={{ fontWeight: "400" }}>{item.mypoint === null ? 0 : item.mypoint}/{item.weight}</label>
-                                                    <button className="col-sm-2 col-sm-offset-4 btn btn-success">Lưu</button>
+                                                    <button className="col-sm-2 col-sm-offset-4 btn btn-success" onClick={()=> this.handleSetPointKPI(this.props.id ,item._id, this.approvepoint.value)}>Lưu</button>
                                                 </div>
                                             </div>
                                             <div className="body-content-right">
@@ -143,78 +172,21 @@ class ModalMemberEvaluate extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>1</td>
-                                                            <td>Kiểm thử lô hàng số 17</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>2</td>
-                                                            <td>Kiểm thử lô hàng số 13</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>95</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3</td>
-                                                            <td>Kiểm thử lô hàng số 15</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>90</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>4</td>
-                                                            <td>Kiểm thử lô hàng số 19</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>5</td>
-                                                            <td>Kiểm thử lô hàng số 11</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>85</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6</td>
-                                                            <td>Kiểm thử lô hàng số 10</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>7</td>
-                                                            <td>Kiểm thử lô hàng số 1</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>80</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>8</td>
-                                                            <td>Kiểm thử lô hàng số 8</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đã hủy</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>9</td>
-                                                            <td>Kiểm thử lô hàng số 7</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
+                                                        {
+ 
+                                                        (typeof kpimembers.tasks !== "undefined" &&  kpimembers.tasks )?
+                                                            (kpimembers.tasks.map((itemTask,index) =>
+ 
+                                                                <tr key ={index}>
+                                                                    <td>{index+1}</td>
+                                                                    <td>{itemTask.name}</td>                                                                   
+                                                                    <td>{itemTask.unit.name}</td>
+                                                                    <td>{itemTask.description}</td>
+                                                                    <td>{itemTask.status}</td>
+                                                                    <td>{itemTask.point === 0 ? 0 : itemTask.point}</td>
+                                                            </tr>)) : <tr><td colSpan={5}>Không có dữ liệu thỏa mãn điều kiện</td></tr>
+                                                        }
+ 
                                                     </tbody>
                                                 </table>
                                                 <div className="footer-content-right">
@@ -233,14 +205,16 @@ class ModalMemberEvaluate extends Component {
         );
     }
 }
-
+ 
 function mapState(state) {
     const { kpimembers } = state;
     return { kpimembers };
 }
-
+ 
 const actionCreators = {
     getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    getTaskById: kpiMemberActions.getTaskById,
+    setPointKPI : kpiMemberActions.setPointKPI
 };
 const connectedModalMemberEvaluate = connect(mapState, actionCreators)(ModalMemberEvaluate);
 export { connectedModalMemberEvaluate as ModalMemberEvaluate };

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
+import { LOCAL_SERVER_API } from '../../../env';
 
 class Profile extends Component {
     constructor(props) {
@@ -13,12 +14,12 @@ class Profile extends Component {
         return ( 
             <li className="dropdown user user-menu">
                 <a href='#abc' className="dropdown-toggle btn" data-toggle="dropdown" style={{width: '55px', height: '50px'}}>
-                    <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="user-image" alt="User Avatar" />
+                    <img src={LOCAL_SERVER_API+auth.user.avatar} className="user-image" alt="User Avatar" />
                 </a>
                 <ul className="dropdown-menu">
                     {/* User image */}
                     <li className="user-header">
-                        <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" className="img-circle" alt="User Avatar" />
+                        <img src={LOCAL_SERVER_API+auth.user.avatar} className="img-circle" alt="User Avatar" />
                         <p>
                             {auth.user.name}
                             <small>{auth.user.email}</small>

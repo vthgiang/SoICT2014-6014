@@ -35,10 +35,22 @@ class ModalDialog extends Component {
             }).catch(err => {
                 document.getElementById(this.props.formID).reset();
                 if(err.response.data.message){
-                    if(translate(`error.${err.response.data.message}`) !== undefined)
-                        toast.warning(translate(`error.${err.response.data.message}`), {containerId: 'toast-notification'});
-                    else
-                        toast.warning(err.response.data.message, {containerId: 'toast-notification'});
+                    // Nếu thông báo lỗi trả về là một mảng các thông báo lỗi
+                    if(Array.isArray(err.response.data.message)){
+                        err.response.data.message.forEach(message => {
+                            if(translate(`error.${message}`) !== undefined)
+                                toast.error(translate(`error.${message}`), {containerId: 'toast-notification'});
+                            else
+                                toast.error(message, {containerId: 'toast-notification'});
+                        });
+                    }
+                    // Ngược lại nếu thông báo lỗi trả về chỉ là 1 lỗi
+                    else {
+                        if(translate(`error.${err.response.data.message}`) !== undefined)
+                            toast.error(translate(`error.${err.response.data.message}`), {containerId: 'toast-notification'});
+                        else
+                            toast.error(err.response.data.message, {containerId: 'toast-notification'});
+                    }
                 }else
                     toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });
@@ -55,7 +67,7 @@ class ModalDialog extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {resetOnClose = false, disableSubmit = false} = this.props;
+        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true} = this.props;
 
         return ( 
             <React.Fragment>
@@ -75,7 +87,9 @@ class ModalDialog extends Component {
                                         <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
                                     </div>
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        {
+                                            hasSaveButton && <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                        }
                                         <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>
                                 </div>

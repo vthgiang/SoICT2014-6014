@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { DisciplineCreateForm } from './DisciplineCreateForm';
-import { DisciplineEditForm } from './DisciplineEditForm';
+import { DisciplineCreateForm, DisciplineEditForm } from './CombineContent';
 import { ActionColumn, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';

@@ -24,7 +24,7 @@ exports.get = async (data, company) => {
         keySearch = {...keySearch, status: {$in: data.status}}
     };
     //Bắt sựu kiện tháng tìm kiếm khác ""
-    if (data.month !== "") {
+    if (data.month !== "" && data.month !==null) {
         keySearch = {...keySearch,startDate: {$regex: data.month,$options: "i"},
             endDate: {$regex: data.month,$options: "i"}}
     };

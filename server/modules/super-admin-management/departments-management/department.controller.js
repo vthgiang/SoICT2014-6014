@@ -136,3 +136,23 @@ exports.getDepartmentOfUser = async (req, res) => {
         });
     }
 }
+
+exports.getDepartmentsThatUserIsDean = async (req, res) =>{
+    try {
+        const department = await DepartmentService.getDepartmentsThatUserIsDean(req.params.id);
+        
+        await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'get_department_that_user_is_dean_success',
+            content: department
+        });
+    }
+    catch (error) {
+        await LogError(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: error
+        });
+    }
+}

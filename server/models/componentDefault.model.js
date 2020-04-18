@@ -26,4 +26,4 @@ const ComponentDefaultSchema = new Schema({
 
 ComponentDefaultSchema.plugin(mongoosePaginate);
 
-module.exports = Component = mongoose.model("componentdefaults", ComponentDefaultSchema);
+module.exports = ComponentDefault = mongoose.model("componentdefaults", ComponentDefaultSchema);

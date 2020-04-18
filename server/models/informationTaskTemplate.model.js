@@ -9,7 +9,7 @@ const InformationTaskTemplateSchema = new Schema({
         ref: TaskTemplate,
         required: true
     },
-    code: {
+    code: { // Mã dùng trong công thức
         type: String,
         required: true
     },
@@ -21,7 +21,10 @@ const InformationTaskTemplateSchema = new Schema({
         type: String,
         required: true
     },
-    mandatary: { // Hoạt động này bắt buộc hay không?
+    extra: { // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
+        type: String
+    },
+    mandatary: { // Chỉ quản lý được điền?
         type: Boolean,
         default: true,
         required: true

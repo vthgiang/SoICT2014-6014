@@ -3,16 +3,18 @@ const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+")
 const passwordRegex = /^[^~`!#$%^&*()+=/*';\\<>?:",]*$/;
 const employeeNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
 const urlRegex = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
+const stringNotSpaceRegex = /^[^~`!@#$%^&*()+=/ *';\\<>?:",]*$/;
 
 /**
  * Validate dữ liệu nhập vào từ người dùng trươc khi gửi đến cho server xử lý
  */
 export const VALIDATOR = {
-    isValidName: isValidName,
-    isValidEmail: isValidEmail,
-    isValidPassword: isValidPassword,
+    isValidName,
+    isValidEmail,
+    isValidPassword,
     isValidEmployeeNumber: isValidEmployeeNumber,
-    isValidUrl
+    isValidUrl,
+    isStringNotSpace
 }
 
 // Kiểm tra tên có hợp lệ
@@ -38,4 +40,8 @@ function isValidEmployeeNumber(employeeNumber) {
 // Kiem tra url co hop le
 function isValidUrl(url) {
     return (url[0] === '/' && urlRegex.test(url)) ? true : false;
+}
+
+function isStringNotSpace(string){
+    return stringNotSpaceRegex.test(string) ? true : false;
 }
