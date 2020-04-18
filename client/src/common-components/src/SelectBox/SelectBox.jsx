@@ -93,7 +93,7 @@ class SelectBox extends Component {
                                 return <option key={item.value} value={item.value}>{item.text}</option>
                             } else {
                                 return ( // Dạng group
-                                    <optgroup label={item.text}>
+                                    <optgroup key={item.text} label={item.text}>
                                         {item.value.map(subItem => {
                                             return <option key={subItem.value} value={subItem.value}>{subItem.text}</option>
                                         })}

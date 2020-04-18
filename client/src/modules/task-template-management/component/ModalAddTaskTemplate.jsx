@@ -238,11 +238,19 @@ class ModalAddTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
 
         if (willUpdateState){
-            this.state.newTemplate.unit = value;
-            this.state.newTemplate.errorOnUnit = msg;
             this.setState(state =>{
                 return{
                     ...state,
+                    newTemplate: { // update lại unit, và reset các selection phía sau
+                        ...this.state.newTemplate,
+                        unit: value,
+                        errorOnUnit: msg,
+                        read: [],
+                        responsible: [],
+                        accounatable: [],
+                        consulted: [],
+                        informed: [],
+                    }
                 };
             });
         }
@@ -716,6 +724,10 @@ class ModalAddTaskTemplate extends Component {
                 item.dean === this.state.currentRole
                 || item.vice_dean === this.state.currentRole
                 || item.employee === this.state.currentRole);
+
+            if (newTemplate.unit === ""){
+                newTemplate.unit = currentUnit._id; // Khởi tạo state lưu giá trị Unit Select Box
+            }
         }
         if (department.departmentsThatUserIsDean){
             departmentsThatUserIsDean = department.departmentsThatUserIsDean;
