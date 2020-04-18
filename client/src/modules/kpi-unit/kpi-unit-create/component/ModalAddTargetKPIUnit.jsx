@@ -129,8 +129,6 @@ class ModalAddTargetKPIUnit extends Component {
         let msg = undefined;
         if (value.trim() === ""){
             msg = "Trọng số không được để trống";
-        } else if(isNaN(value)){
-            msg = "Trọng số phải là số";
         } else if(value < 0){
             msg = "Trọng số không được nhỏ hơn 0";
         } else if(value > 100){
@@ -220,7 +218,7 @@ class ModalAddTargetKPIUnit extends Component {
 
                         <div className={`form-group ${errorOnWeight===undefined?"":"has-error"}`}>
                             <label>{translate('kpi_unit_create.weight')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
+                            <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                             <ErrorLabel content={errorOnWeight}/>
                         </div>
                     </form>

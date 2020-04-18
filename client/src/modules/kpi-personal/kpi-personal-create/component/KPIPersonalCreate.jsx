@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { createKpiActions } from '../redux/actions';
-import { createUnitKpiActions } from 'i:/qlcv/client/src/modules/kpi-unit/kpi-unit-create/redux/actions';
+import { createUnitKpiActions } from '../../../kpi-unit/kpi-unit-create/redux/actions';
 
 import { ModalAddTargetKPIPersonal } from './ModalAddTargetKPIPersonal';
 import { ModalStartKPIPersonal } from './ModalStartKPIPersonal';
