@@ -9,7 +9,7 @@ export const DepartmentActions = {
     destroy,
     getAll,
     getDepartmentOfUser,
-    getRoleDeanOfUser
+    getDepartmentsThatUserIsDean,
 }
 
 function get(){
@@ -136,14 +136,14 @@ function getDepartmentOfUser() {
     function failure(error) { return { type: DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE, error } }
 }
 
-function getRoleDeanOfUser(currentRole){
+function getDepartmentsThatUserIsDean(){
     return dispatch => {
-        dispatch({ type: DepartmentConstants.GETROLE_DEAN_OFUSER_REQUEST});
+        dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST});
         return new Promise((resolve, reject) => {
-            DepartmentServices.getRoleDeanOfUser(currentRole)
+            DepartmentServices.getDepartmentsThatUserIsDean()
             .then(res => {
                 dispatch({
-                    type: DepartmentConstants.GETROLE_DEAN_OFUSER_SUCCESS,
+                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS,
                     payload: {
                         data: res.data.content
                     }
@@ -151,13 +151,13 @@ function getRoleDeanOfUser(currentRole){
                 resolve(res);
             })
             .catch(err => {
-                dispatch({ type: DepartmentConstants.GETROLE_DEAN_OFUSER_FAILURE});
+                dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
             })
         });
     }
-    function request(currentRole) { return { type: DepartmentConstants.GETROLE_DEAN_OFUSER_REQUEST, currentRole } }
-    function success(Department) { return { type: DepartmentConstants.GETROLE_DEAN_OFUSER_SUCCESS, Department } }
-    function failure(error) { return { type: DepartmentConstants.GETROLE_DEAN_OFUSER_FAILURE, error } }
+    function request(currentRole) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST, currentRole } }
+    function success(Department) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS, Department } }
+    function failure(error) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE, error } }
 }

@@ -21,7 +21,7 @@ class ModalAddTaskTemplate extends Component {
         // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả các role là dean 
-        this.props.getRoleDeanOfUser(localStorage.getItem("currentRole"));
+        this.props.getDepartmentsThatUserIsDean();
 
         // Load library for sort action table
         this.handleSortable();
@@ -73,7 +73,6 @@ class ModalAddTaskTemplate extends Component {
                 listInfo: []
             },
             editAction: false,
-            addAction: false,
             editInfo: false,
             currentRole: localStorage.getItem('currentRole'),
         };
@@ -319,7 +318,6 @@ class ModalAddTaskTemplate extends Component {
                 },
                 submitted: false,
                 editAction: false,
-                addAction: false,
                 editInfo: false,
             }
 
@@ -693,8 +691,8 @@ class ModalAddTaskTemplate extends Component {
 
 
     render() {
-        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments, role;
-        const { newTemplate, submitted, action, information, addAction, addInfo } = this.state;
+        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
+        const { newTemplate, submitted, action, information } = this.state;
         const { department, user } = this.props;
         if (newTemplate.listAction) listAction = newTemplate.listAction;
         if (newTemplate.listInfo) listInfo = newTemplate.listInfo;
@@ -707,8 +705,8 @@ class ModalAddTaskTemplate extends Component {
                 || item.vice_dean === this.state.currentRole
                 || item.employee === this.state.currentRole);
         }
-        if (department.roleofuser){
-            role = department.roleofuser;
+        if (department.departmentsThatUserIsDean){
+            departmentsThatUserIsDean = department.departmentsThatUserIsDean;
         }
         if (user.roledepartments) listRole = user.roledepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
@@ -734,13 +732,13 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTemplate.unit==="" ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                             <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                {role !== undefined &&
+                                                {departmentsThatUserIsDean !== undefined &&
                                                     <SelectBox
                                                         id={`unit-select-box`}
                                                         className="form-control select2"
                                                         style={{width: "100%"}}
                                                         items={
-                                                            role.map(x => {
+                                                            departmentsThatUserIsDean.map(x => {
                                                                 return {value: x._id, text: x.name};
                                                             })
                                                         }
@@ -879,14 +877,14 @@ class ModalAddTaskTemplate extends Component {
                                         <fieldset className="scheduler-border">
                                             <legend className="scheduler-border">Danh sách các hoạt động của công việc*</legend>
                                             <div className="control-group">
-                                                <div className={'form-group has-feedback' + (addAction && !action.name ? ' has-error' : '')}>
+                                                <div className='form-group'>
                                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên hoạt động*</label>
                                                     <div className={`col-sm-10 form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                                         <input type="text" className="form-control" placeholder="Tên hoạt động" value={action.name} onChange={this.handleChangeActionName} />
                                                         <ErrorLabel content={this.state.action.errorOnName}/>
                                                     </div>
                                                 </div>
-                                                <div className={'form-group has-feedback' + (addAction && !action.description ? ' has-error' : '')}>
+                                                <div className='form-group'>
                                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả hoạt động*</label>
                                                     <div className={`col-sm-10 form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                                         <textarea type="text" className="form-control"name="description" placeholder="Mô tả hoạt động" value={action.description} onChange={this.handleChangeActionDesc} />
@@ -1082,7 +1080,7 @@ const actionCreators = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    getRoleDeanOfUser: DepartmentActions.getRoleDeanOfUser
+    getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
 };
 const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(ModalAddTaskTemplate);
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };
