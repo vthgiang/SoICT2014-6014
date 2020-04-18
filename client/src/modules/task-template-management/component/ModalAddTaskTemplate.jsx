@@ -313,36 +313,7 @@ class ModalAddTaskTemplate extends Component {
 
 
 
-    /**
-     * Submit và clear form
-     */
-    // function: reset all data fields
-    handleCancel = (event) => {
-        event.preventDefault(); // Ngăn không submit
-        this.handleClearInformation(event);
-        this.handleClearAction(event);
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: {
-                    name: '',
-                    read: [localStorage.getItem('currentRole')],
-                    responsible: [],
-                    accounatable: [],
-                    informed: [],
-                    description: '',
-                    creator: localStorage.getItem('id'),
-                    formula: '',
-                    listAction: [],
-                    listInfo: []
-                },
-                submitted: false,
-                editAction: false,
-                editInfo: false,
-            }
-
-        })
-    }
+  
 
     // Submit new template in data
     handleSubmit = async (event) => {
@@ -451,7 +422,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     // Edit information in information table
-    editInformation = async (information, index) => {
+    handleEditInformation = async (information, index) => {
         this.setState((state)=> {
             return {
                 ...state,
@@ -463,7 +434,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     // Save new data after edit information in information table
-    saveEditedInformation = (event) => {
+    handleSaveEditedInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
 
         const { indexInfo } = this.state;
@@ -513,7 +484,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     // delete item in information table
-    deleteInfo = (index) => {
+    handleDeleteInformation = (index) => {
         let { listInfo } = this.state.newTemplate;
         var newListInfo;
         if (listInfo) {
@@ -531,7 +502,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     // add new information in information table
-    addInfo = (event) => {
+    handleAddInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
 
         let { newTemplate } = this.state;
@@ -1036,9 +1007,9 @@ class ModalAddTaskTemplate extends Component {
                                                     {this.state.editInfo ?
                                                         <React.Fragment>
                                                             <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>Hủy chỉnh sửa</button>
-                                                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.saveEditedInformation} style={{ marginLeft: "10px" }}>Lưu</button>
+                                                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>Lưu</button>
                                                         </React.Fragment>:
-                                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.addInfo}>Thêm</button>
+                                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>Thêm</button>
                                                     }
                                                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>Xóa trắng</button>
                                                 </div>
@@ -1064,8 +1035,8 @@ class ModalAddTaskTemplate extends Component {
                                                                         <td>{item.type}</td>
                                                                         <td>{item.mandatary ? "Có" : "Không"}</td>
                                                                         <td>
-                                                                            <a href="#abc" className="edit" title="Edit" onClick={() => this.editInformation(item, index)}><i className="material-icons"></i></a>
-                                                                            <a href="#abc" className="delete" title="Delete" onClick={() => this.deleteInfo(index)}><i className="material-icons"></i></a>
+                                                                            <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
+                                                                            <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
                                                                         </td>
                                                                     </tr>
                                                                 )
@@ -1080,7 +1051,6 @@ class ModalAddTaskTemplate extends Component {
                         </div>
                         <div className="modal-footer">
                             <button className="btn btn-success" disabled={!this.isTaskTemplateFormValidated()} onClick={this.handleSubmit}>Lưu</button>
-                            <button type="cancel" className="btn btn-primary" data-dismiss="modal" onClick={this.handleCancel}>Xóa trắng</button>
                         </div>
                         {/* Modal Footer */}
                     </div>
