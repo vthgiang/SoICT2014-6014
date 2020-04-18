@@ -150,7 +150,8 @@ class UpdateEmployee extends Component {
         if (employeesInfo.employeeContact) employeeContact = employeesInfo.employeeContact;
         return (
             <React.Fragment>
-                {typeof employee !== 'undefined' && employee.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
+                {
+                    typeof employee !== 'undefined' && employee.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
                 }
                 {
                     (typeof employee !== 'undefined' && employee.length !== 0) &&

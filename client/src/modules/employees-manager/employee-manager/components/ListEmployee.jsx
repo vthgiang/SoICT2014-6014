@@ -30,11 +30,6 @@ class ListEmployee extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
         let script1 = document.createElement('script');
@@ -44,7 +39,15 @@ class ListEmployee extends Component {
         document.body.appendChild(script1);
 
     }
-
+    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-employee').modal('show');
+    }
     componentDidUpdate() {
         this.hideColumn();
     }
@@ -234,8 +237,7 @@ class ListEmployee extends Component {
                                         )) : null}</td>
                                         <td>{x.employee.map(y => y.status)}</td>
                                         < td >
-                                            <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
-                                                sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin nhân viên"><i className="material-icons">view_list</i></a>
                                             <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary} initState={this.state}
                                                 sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
                                             <DeleteNotification
@@ -256,6 +258,18 @@ class ListEmployee extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <ToastContainer />
+                {
+                    this.state.currentRowView !== undefined &&
+                    <ModalDetailEmployee
+                        _id={this.state.currentRowView.employee[0]._id}
+                        employee={this.state.currentRowView.employee}
+                        employeeContact={this.state.currentRowView.employeeContact}
+                        salary={this.state.currentRowView.salary}
+                        sabbatical={this.state.currentRowView.sabbatical}
+                        praise={this.state.currentRowView.praise}
+                        discipline={this.state.currentRowView.discipline}
+                    />
+                }
             </div>
         );
     };

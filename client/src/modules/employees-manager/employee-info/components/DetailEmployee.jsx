@@ -27,7 +27,10 @@ class DetailEmployee extends Component {
         if (employeesInfo.discipline) discipline = employeesInfo.discipline;
         return (
             <React.Fragment>
-                {(typeof employee === 'undefined' || employee.length === 0) ? <span className="text-red">Chưa có thông tin cá nhân</span> :
+                {
+                    typeof employee !== 'undefined' && employee.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
+                }
+                {(typeof employee !== 'undefined' && employee.length !== 0) &&
                     employee.map((x, index) => (
                         <div className="row" key={index}>
                             {/* left column */}
@@ -103,7 +106,6 @@ class DetailEmployee extends Component {
                             </div>
                         </div>
                     ))}
-
             </React.Fragment>
         );
     };
