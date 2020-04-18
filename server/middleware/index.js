@@ -91,6 +91,7 @@ exports.auth = async (req, res, next) => {
 
             //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
             const url = req.header('current-page');
+            console.log("Role truy cap: ", role);
             const link = role.name !== 'System Admin' ?
                 await Link.findOne({
                     url,
@@ -101,8 +102,9 @@ exports.auth = async (req, res, next) => {
                     company: undefined
                 });
             if(link === null) throw ('url_invalid');
-            
             const roleArr = [role._id].concat(role.parents);
+            console.log("Links: ", link);
+            console.log("Roles: ", roleArr);
             const privilege = await Privilege.findOne({
                 resourceId: link._id,
                 resourceType: 'Link',

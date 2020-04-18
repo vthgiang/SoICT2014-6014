@@ -7,6 +7,8 @@ const TaskTemplate = require('./taskTemplate.model');
 const ResultTask = require('./resultTask.model');
 const TaskFile = require('./taskFile.model');
 const ResultInfo = require('./resultInformationTask.model');
+const ActionTask = require('./actionTask.model');
+// const CommentTask= require('./commentTask.model');
 
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema({
@@ -112,7 +114,49 @@ const TaskSchema = new Schema({
     resultInfo: [{
         type: Schema.Types.ObjectId,
         ref: ResultInfo,
-    }]
+    }],
+    actionTask: [{
+        creator:{
+            type:Schema.Types.ObjectId,
+            ref : User,
+            required:true
+        },
+        name:{
+            type: String,
+            required:true
+        },
+        date:{
+            type: Date
+        },
+        commentAction: [{
+            creator: {
+                type: Schema.Types.ObjectId,
+                ref: User,
+                required: true
+            },
+            parent: {// Có thể là comment cha hoặc là action task
+                type: Schema.Types.ObjectId,
+                 replies: this
+            },
+            content: {
+                type: String,
+            },
+            approved: {
+                type: Number,
+                default: 0,
+                required: true
+            },
+            // file: {
+            //     type: Schema.Types.ObjectId,
+            //     ref: TaskFile,
+            //     required: true
+        // }
+        }]
+    }],
+    // commentTask: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: CommentTask
+    // }]
 }, {
     timestamps: true
 });

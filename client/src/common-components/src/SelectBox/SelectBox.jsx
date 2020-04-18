@@ -19,34 +19,20 @@ class SelectBox extends Component {
     
 
     componentDidMount(){
-        const { id, onChange, multiple=true } = this.props;
-        window.$("#" + id).select2();
+        const { id, onChange, options={} } = this.props;
+        window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
-            if(multiple){
-                let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
-                this.setState(state => {
-                    return {
-                        ...state,
-                        value
-                    }
-                });
-                if (onChange!==undefined && onChange!==null){
-                    onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
+            let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
+            this.setState(state => {
+                return {
+                    ...state,
+                    value
                 }
-            }else{
-                let value = this.refs.select.value;
-                this.setState(state => {
-                    return {
-                        ...state,
-                        value
-                    }
-                });
-                if (onChange!==undefined && onChange!==null){
-                    onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
-                }
+            });
+            if (onChange!==undefined && onChange!==null){
+                onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
-            
         });
     }
 
@@ -55,8 +41,8 @@ class SelectBox extends Component {
     }
 
     componentDidUpdate() {
-        const { id } = this.props;
-        window.$("#" + id).select2();
+        const { id, options={} } = this.props;
+        window.$("#" + id).select2(options);
     }
 
     static isEqual = (items1, items2) => {
@@ -67,7 +53,9 @@ class SelectBox extends Component {
             return false;
         }
         for (let i=0; i<items1.length; ++i){
-            if (items1[i].value !== items2[i].value){
+            if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value){ // Kiểu bình thường
+                return false;
+            } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)){ // Kiểu group
                 return false;
             }
         }
@@ -94,13 +82,24 @@ class SelectBox extends Component {
     }
 
     render() { 
-        const { id, items, className, style, multiple=false} = this.props;
+        const { id, items, className, style, multiple=false, options={} } = this.props;
         return ( 
             <React.Fragment>
                 <div>
                     <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => {}}>
+                        {options.placeholder !== undefined  && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
                         {items.map(item => {
-                            return <option key={item.value} value={item.value}>{item.text}</option>
+                            if (!(item.value instanceof Array)) { // Dạng bình thường
+                                return <option key={item.value} value={item.value}>{item.text}</option>
+                            } else {
+                                return ( // Dạng group
+                                    <optgroup label={item.text}>
+                                        {item.value.map(subItem => {
+                                            return <option key={subItem.value} value={subItem.value}>{subItem.text}</option>
+                                        })}
+                                    </optgroup>
+                                )
+                            }
                         })}
                     </select>
                 </div>

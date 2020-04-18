@@ -7,7 +7,7 @@ import { CompanyFormValidator } from './CompanyFormValidator';
 import CompanyManageLinks from './CompanyManageLinks';
 import CompanyManageComponent from './CompanyManageComponent';
 
-class CompanyEditForm extends Component {
+class CompanyServicesForm extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -33,52 +33,34 @@ class CompanyEditForm extends Component {
         return ( 
             <React.Fragment>
                 <ModalDialog
-                    modalID="modal-edit-company"
-                    formID="form-edit-company" isLoading={this.props.company.isLoading}
-                    title={translate('manage_company.edit')}
+                    modalID="modal-edit-services-company" size="75"
+                    formID="form-edit-services-company" isLoading={this.props.company.isLoading}
+                    title={translate('manage_company.service')}
                     msg_success={translate('manage_company.add_success')}
                     msg_faile={translate('manage_company.add_faile')}
-                    func={this.save}
+                    func={this.save} hasSaveButton={false}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="form-edit-company">
-                        <div className="row">
-                            <div className={`form-group col-sm-9 ${nameError===undefined?"":"has-error"}`}>
-                                <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
-                                <input type="text" className="form-control" onChange={ this.handleChangeName } value={ companyName }/>
-                                <ErrorLabel content={nameError}/>
+                    <div role="tabpanel">
+                        {/* Nav tabs */}
+                        <ul className="nav nav-tabs" role="tablist">
+                            <li role="presentation" className="active">
+                            <a href="#company_manage_link" aria-controls="home" role="tab" data-toggle="tab"><b>Links</b>{`(${company.item.links.list.length}/${linksDefault.list.length})`}</a>
+                            </li>
+                            <li role="presentation">
+                            <a href="#company_manage_component" aria-controls="tab" role="tab" data-toggle="tab"><b>Component</b>{`(${company.item.components.list.length}/${componentsDefault.list.length})`}</a>
+                            </li>
+                        </ul>
+                        {/* Tab panes */}
+                        <div className="tab-content">
+                            <div role="tabpanel" className="tab-pane active" id="company_manage_link">
+                                <CompanyManageLinks companyId={companyId}/>
                             </div>
-                            <div className="form-group col-sm-3">
-                                <label>{ translate('manage_company.service') }<span className="text-red"> * </span></label>
-                                <select className="form-control" onChange={ this.handleActive } value={companyActive}>
-                                    <option key='1' value={true}>{ translate('manage_company.on') }</option>
-                                    <option key='2' value={false}>{ translate('manage_company.off') }</option>
-                                </select>
-                            </div>
-                            <div className={`form-group col-sm-9 ${shortNameError===undefined?"":"has-error"}`}>
-                                <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
-                                <input type="text" className="form-control" onChange={ this.handleChangeShortName } value={ companyShortName }/>
-                                <ErrorLabel content={shortNameError}/>
-                            </div>
-                            <div className="form-group col-sm-3">
-                                <label>{ translate('manage_company.log') }<span className="text-red"> * </span></label>
-                                <select className="form-control" onChange={ this.handleLog } value={companyLog}>
-                                    <option key='1' value={true}>{ translate('manage_company.on') }</option>
-                                    <option key='2' value={false}>{ translate('manage_company.off') }</option>
-                                </select>
+                            <div role="tabpanel" className="tab-pane" id="company_manage_component">
+                                <CompanyManageComponent companyId={companyId}/>
                             </div>
                         </div>
-                        <div className={`form-group ${emailError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_company.super_admin') }<span className="text-red"> * </span></label>
-                            <input type="email" className="form-control" onChange={ this.handleChangeEmail } value={companyEmail}/>
-                            <ErrorLabel content={emailError}/>
-                        </div>
-                        <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
-                            <textarea type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
-                            <ErrorLabel content={descriptionError}/>
-                        </div>
-                    </form>
+                    </div>
                 </ModalDialog>
             </React.Fragment>
          );
@@ -238,4 +220,4 @@ const mapDispatchToProps =  {
     edit: CompanyActions.edit
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyEditForm) );
+export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CompanyServicesForm) );

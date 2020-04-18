@@ -35,6 +35,10 @@ exports.stopTimer = (req, res) => {
 exports.getCommentTask = (req, res) => {
     return PerformTaskService.getCommentTask(req, res);
 }
+//
+exports.getActionTask = (req, res) => {
+    return PerformTaskService.getActionTask(req, res);
+}
 
 // Tạo một bình luận hoặc hoạt động cho công việc
 exports.createCommentTask = (req, res) => {
@@ -74,4 +78,13 @@ exports.editCommentTask = (req, res) => {
 // Xóa bỏ một bình luận hoặc hoạt động
 exports.deleteCommentTask = (req, res) => {
     return PerformTaskService.deleteCommentTask(req, res);
+}
+exports.createActionTask = (req,res) => {
+    return PerformTaskService.createActionTask(req,res);
+}
+exports.editActionTask = (req,res) =>{
+    return PerformTaskService.editActionTask(req,res);
+}
+exports.deleteActionTask = (req,res)=>{
+    return PerformTaskService.deleteActionTask(req,res)
 }

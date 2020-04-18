@@ -96,9 +96,7 @@ export function kpimembers(state = {}, action) {
         error: action.error,
         isLoading: false
       };
- 
- 
-      case  kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
+    case  kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
       return {
         ...state,
         currentKPI: {
@@ -146,7 +144,41 @@ export function kpimembers(state = {}, action) {
         error: action.error,
         isLoading: false
       };
- 
+    case kpiMemberConstants.GET_TASK_BYID_FAILURE:
+      return { 
+        error: action.error
+        };
+    case  kpiMemberConstants.GET_TASK_BYID_REQUEST: // đợi tí xem lại :))
+      return {
+        ...state,
+        loading: true // hình như đang nhầm đoạn này :)) ok b
+        };
+    case  kpiMemberConstants.GET_TASK_BYID_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        tasks: action.tasks.content, 
+      };
+
+    //----------------------------------------------
+    case  kpiMemberConstants.SET_POINTKPI_REQUEST:
+        return {
+          ...state,
+        editing: true
+        };
+      case kpiMemberConstants.SET_POINTKPI_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.newPoint.content,
+        };
+      case kpiMemberConstants.SET_POINTKPI_FAILURE:
+        return { 
+          error: action.error
+        };
+    //----------------------------------------------------------------
+
+
+
     default:
       return state
   }
