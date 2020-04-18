@@ -645,6 +645,7 @@ class ModalPerformTask extends Component {
 
     render() {
         var task, commentTasks, actionTasks, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
+        var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
         const { comment, editComment, startTimer, showChildComment, pauseTimer,editAction,action } = this.state;
         const { time } = this.state.timer;
