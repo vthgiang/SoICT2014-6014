@@ -23,7 +23,7 @@ class ModalAddTargetKPIPersonal extends Component {
     }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast(message, {containerId: 'toast-notification'});
+    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
 
     // function: create new target of personal kpi
     onAddItem = async (event) => {

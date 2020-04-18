@@ -7,6 +7,7 @@ const InformationTaskTemplate = require('../../../models/informationTaskTemplate
 const TaskFile = require('../../../models/taskFile.model');
 const ResultInfoTask = require('../../../models/resultInformationTask.model');
 const ResultTask = require('../../../models/resultTask.model');
+const User = require('../../../models/user.model')
 
 // Bấm giờ công việc
 // Lấy tất cả lịch sử bấm giờ theo công việc
@@ -109,11 +110,24 @@ exports.stopTimer = async (req, res) => {
 exports.getCommentTask = (req, res) => {
     CommentTask.find({ task: req.params.task })
         .sort({ 'createdAt': 'asc' })
-        .populate({ path: 'creator file' })
+        .populate({ path: 'creator' })
         .then(commentTasks => res.status(200).json(commentTasks))
         .catch(err => res.status(400).json(err));
 }
-
+exports.getActionTask =async (req,res)=>{
+    try {
+        //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
+        var actionTasks = await Task.findOne({_id:req.params.task},{actionTask:1,_id:0}).populate('actionTask.creator')
+        var actionTask = actionTasks.actionTask
+        // .sort({'createdAt': 'asc'});
+        res.status(200).json({
+            message: 'Get all action task success',
+            actionTask: actionTask
+        })
+    } catch (error) {
+        res.status(400).json(error)
+    }
+};
 // Thêm bình luận: Update nội dung bình luận và file đính kèm
 exports.createCommentTask = async (req, res) => {
     try {
@@ -129,13 +143,12 @@ exports.createCommentTask = async (req, res) => {
             content: req.body.content,
             //  file: file._id
         }); 
-
         // var task = await Task.findByIdAndUpdate(
         //     req.body.task, {$push: {commenttasks: commenttasks._id}}, {new: true}
         // );
 
-        // commenttasks = await CommentTask.populate('creator').execPopulate();//file
-        console.log("**************************************")
+        // commenttasks = await CommentTask.populate('creator')
+        
         res.status(200).json({
             message: "Thêm bình luận thành công",
             commentTask: commenttasks
@@ -159,6 +172,31 @@ exports.editCommentTask = async (req, res) => {
         res.json({ message: error });
     }
 }
+//Sửa nội dung hoạt động của công việc không theo mẫu
+exports.editActionTask = async (req,res) =>{
+    try {
+        
+        var action = await Task.updateOne(
+            {"actionTask._id" : req.params.id},
+            {$set:{
+                "actionTask.$.name": req.body.content
+            }}
+            )
+        var actionTask = await Task.findOne(
+            {"actionTask._id": req.params.id}, 
+            {_id: 0, actionTask: {$elemMatch: {name:req.body.content}}}).populate("actionTask.creator");
+        res.status(200).json({
+            success: true,
+            message:'Edit thành công',
+            content : actionTask.actionTask[0]
+        })    
+    } catch (error) {
+        res.status(400).json({
+            success:false,
+            message:error
+        })
+    }
+}
 // Xóa bình luận: Xóa nội dung bình luận và file đính kèm
 exports.deleteCommentTask = async (req, res) => {
     try {
@@ -166,6 +204,22 @@ exports.deleteCommentTask = async (req, res) => {
         res.status(200).json("Xóa bình luận thành công");
     } catch (error) {
         res.json({ message: error });
+    }
+}
+exports.deleteActionTask = async (req,res) => {
+    try {
+        var action = await Task.update(
+            { "actionTask._id": req.params.id },
+            { $pull: { actionTask : { _id : req.params.id } } },
+            { safe: true },)
+        res.status(200).json({
+            success: true,
+            message:' Xóa hoạt động thành công'
+        })        
+    } catch (error) {
+        res.status(400).json({
+            message:'Lỗi rồi'
+        })
     }
 }
 // Test insert result info task
@@ -291,5 +345,27 @@ exports.editResultTask = async (req, res) => {
         });
     } catch (error) {
         res.json({ message: error });
+    }
+}
+exports.createActionTask = async (req,res) => {
+    try {
+        var actionInformation = {
+            creator : req.body.creator,
+            name : req.body.name
+        }
+        // var actionTaskabc = await Task.findById(req.body.task)
+        var actionTask = await Task.findByIdAndUpdate(req.body.task,
+                {$push: {actionTask:actionInformation}},{new: true}
+        )
+        .populate(
+           'actionTask.creator'
+        )
+        var test =actionTask.actionTask
+        res.status(200).json({
+            message: "Thêm hoạt động thành công",
+            actionTask: test
+        });
+    } catch (error) {
+        res.status(400).json({ message: "Lỗi thêm hoạt động" });
     }
 }

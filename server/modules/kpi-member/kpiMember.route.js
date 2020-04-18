@@ -9,7 +9,7 @@ router.get('/all-member/:role/:user/:status/:starttime/:endtime', auth, KPIPerso
 router.get('/user/:member', auth, KPIPersonalController.getByMember);
 
 // Lấy kpi cá nhân theo id
-router.get('/:id', auth, KPIPersonalController.getById);
+router.get('/:id',auth,  KPIPersonalController.getById);
 
 // Lấy kpi cá nhân theo tháng
 router.get('/member/:id/:time', auth, KPIPersonalController.getByMonth);
@@ -23,5 +23,11 @@ router.put('/target/:id', auth, KPIPersonalController.editTarget);
 // chỉnh sửa trạng thái từng mục tiêu của kpi cá nhân
 router.put('/status-target/:id/:status', auth, KPIPersonalController.editStatusTarget);
 
+// lấy task cho kpi
+router.get('/task/:id',  KPIPersonalController.getTaskById);
 
+router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
+
+// đánh giá điểm của kpi
+router.put('/appovepoint/:id_kpi/:id_target', KPIPersonalController.setPointKPI);
 module.exports = router;

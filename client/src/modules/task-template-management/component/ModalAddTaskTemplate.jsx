@@ -11,7 +11,7 @@ import './tasktemplate.css';
 
 class ModalAddTaskTemplate extends Component {
     componentDidMount() {
-        // get department of current user
+        // get department of current user 
         this.props.getDepartment();
         // lấy tất cả nhân viên của công ty
         this.props.getAllUserOfCompany();
@@ -20,6 +20,8 @@ class ModalAddTaskTemplate extends Component {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+        // Lấy tất cả các role là dean 
+        this.props.getRoleDeanOfUser(localStorage.getItem("currentRole"));
 
         // Load library for sort action table
         this.handleSortable();
@@ -691,10 +693,8 @@ class ModalAddTaskTemplate extends Component {
 
 
     render() {
-        console.log("render");
-        console.log(this.state.newTemplate.listInfo)
-        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments;
-        const { newTemplate, submitted, action, information, addAction } = this.state;
+        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments, role;
+        const { newTemplate, submitted, action, information, addAction, addInfo } = this.state;
         const { department, user } = this.props;
         if (newTemplate.listAction) listAction = newTemplate.listAction;
         if (newTemplate.listInfo) listInfo = newTemplate.listInfo;
@@ -706,6 +706,9 @@ class ModalAddTaskTemplate extends Component {
                 item.dean === this.state.currentRole
                 || item.vice_dean === this.state.currentRole
                 || item.employee === this.state.currentRole);
+        }
+        if (department.roleofuser){
+            role = department.roleofuser;
         }
         if (user.roledepartments) listRole = user.roledepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
@@ -731,13 +734,13 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTemplate.unit==="" ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                             <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                {currentUnit !== undefined &&
+                                                {role !== undefined &&
                                                     <SelectBox
                                                         id={`unit-select-box`}
                                                         className="form-control select2"
                                                         style={{width: "100%"}}
                                                         items={
-                                                            currentUnit.map(x => {
+                                                            role.map(x => {
                                                                 return {value: x._id, text: x.name};
                                                             })
                                                         }
@@ -1079,7 +1082,8 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getRoleDeanOfUser: DepartmentActions.getRoleDeanOfUser
 };
 const connectedModalAddTaskTemplate = connect(mapState, actionCreators)(ModalAddTaskTemplate);
 export { connectedModalAddTaskTemplate as ModalAddTaskTemplate };

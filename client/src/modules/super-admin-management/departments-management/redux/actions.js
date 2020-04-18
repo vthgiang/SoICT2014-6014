@@ -8,7 +8,8 @@ export const DepartmentActions = {
     edit,
     destroy,
     getAll,
-    getDepartmentOfUser
+    getDepartmentOfUser,
+    getRoleDeanOfUser
 }
 
 function get(){
@@ -133,4 +134,30 @@ function getDepartmentOfUser() {
     function request() { return { type: DepartmentConstants.GETDEPARTMENT_OFUSER_REQUEST} }
     function success(departments) { return { type: DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS, departments } }
     function failure(error) { return { type: DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE, error } }
+}
+
+function getRoleDeanOfUser(currentRole){
+    return dispatch => {
+        dispatch({ type: DepartmentConstants.GETROLE_DEAN_OFUSER_REQUEST});
+        return new Promise((resolve, reject) => {
+            DepartmentServices.getRoleDeanOfUser(currentRole)
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.GETROLE_DEAN_OFUSER_SUCCESS,
+                    payload: {
+                        data: res.data.content
+                    }
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({ type: DepartmentConstants.GETROLE_DEAN_OFUSER_FAILURE});
+                AlertActions.handleAlert(dispatch, err);
+                reject(err);
+            })
+        });
+    }
+    function request(currentRole) { return { type: DepartmentConstants.GETROLE_DEAN_OFUSER_REQUEST, currentRole } }
+    function success(Department) { return { type: DepartmentConstants.GETROLE_DEAN_OFUSER_SUCCESS, Department } }
+    function failure(error) { return { type: DepartmentConstants.GETROLE_DEAN_OFUSER_FAILURE, error } }
 }
