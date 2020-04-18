@@ -746,7 +746,6 @@ class ModalAddTaskTemplate extends Component {
                                                         }
                                                         onChange={this.handleTaskTemplateUnit}
                                                         multiple={false}
-                                                        emptySelection={true}
                                                         options={{placeholder: "Chọn đơn vị"}}
                                                     />
                                                 }
@@ -778,7 +777,7 @@ class ModalAddTaskTemplate extends Component {
                                                         ]}
                                                         onChange={this.handleTaskTemplateRead}
                                                         multiple={true}
-                                                        data-placeholder="Chọn vai trò được phép xem mẫu"
+                                                        options={{placeholder: "Chọn người được phép xem mẫu"}}
                                                     />
                                                 }
                                                 <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
@@ -807,7 +806,7 @@ class ModalAddTaskTemplate extends Component {
                                                         ]}
                                                         onChange={this.handleTaskTemplateResponsible}
                                                         multiple={true}
-                                                        data-placeholder="Chọn người thực hiện"
+                                                        options={{placeholder: "Chọn người thực hiện"}}
                                                     />
                                                 }
                                             </div>
@@ -832,7 +831,7 @@ class ModalAddTaskTemplate extends Component {
                                                         ]}
                                                         onChange={this.handleTaskTemplateAccountable}
                                                         multiple={true}
-                                                        data-placeholder="Chọn người thực hiện"
+                                                        options={{placeholder: "Chọn người phê duyệt"}}
                                                     />
                                                 }
                                             </div>
@@ -852,7 +851,7 @@ class ModalAddTaskTemplate extends Component {
                                                         }
                                                         onChange={this.handleTaskTemplateConsult}
                                                         multiple={true}
-                                                        data-placeholder="Chọn người hỗ trợ"
+                                                        options={{placeholder: "Chọn người hỗ trợ"}}
                                                     />
                                                 }
                                             </div>
@@ -872,7 +871,7 @@ class ModalAddTaskTemplate extends Component {
                                                         }
                                                         onChange={this.handleTaskTemplateInform}
                                                         multiple={true}
-                                                        data-placeholder="Chọn người quan sát"
+                                                        options={{placeholder: "Chọn người quan sát"}}
                                                     />
                                                 }
                                             </div>

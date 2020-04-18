@@ -82,12 +82,12 @@ class SelectBox extends Component {
     }
 
     render() { 
-        const { id, items, className, style, multiple=false, emptySelection=false} = this.props;
+        const { id, items, className, style, multiple=false, options={} } = this.props;
         return ( 
             <React.Fragment>
                 <div>
                     <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => {}}>
-                        {emptySelection && <option></option>}
+                        {options.placeholder !== undefined  && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
                         {items.map(item => {
                             if (!(item.value instanceof Array)) { // Dạng bình thường
                                 return <option key={item.value} value={item.value}>{item.text}</option>
