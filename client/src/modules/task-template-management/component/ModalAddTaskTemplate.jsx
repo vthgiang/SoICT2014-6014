@@ -220,7 +220,19 @@ class ModalAddTaskTemplate extends Component {
         return msg == undefined;
     }
     handleTaskTemplateUnit = (value) => {
-        this.validateTaskTemplateUnit(value[0], true); // Single selection
+        let singleValue = value[0]; // SelectBox một lựa chọn
+        if (this.validateTaskTemplateUnit(singleValue, true)) { 
+            const {department} = this.props;
+                
+            if (department !== undefined && department.departmentsThatUserIsDean !== undefined){
+                // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
+                let dept = department.departmentsThatUserIsDean.find(item => item._id === singleValue);
+                if (dept){
+                    this.props.getAllUserSameDepartment(dept.dean);
+                    this.props.getRoleSameDepartment(dept.dean);
+                }
+            }
+        }
     }
     validateTaskTemplateUnit = (value, willUpdateState=true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
@@ -700,7 +712,7 @@ class ModalAddTaskTemplate extends Component {
 
         if (department.unitofuser) {
             units = department.unitofuser;
-            currentUnit = units.filter(item =>
+            currentUnit = units.find(item =>
                 item.dean === this.state.currentRole
                 || item.vice_dean === this.state.currentRole
                 || item.employee === this.state.currentRole);
@@ -711,7 +723,6 @@ class ModalAddTaskTemplate extends Component {
         if (user.roledepartments) listRole = user.roledepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
-
         return (
             <div className="modal modal-full fade" id="addTaskTemplate" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">
@@ -732,7 +743,7 @@ class ModalAddTaskTemplate extends Component {
                                         <div className={'form-group has-feedback' + (submitted && newTemplate.unit==="" ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                             <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                {departmentsThatUserIsDean !== undefined &&
+                                                {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
                                                     <SelectBox
                                                         id={`unit-select-box`}
                                                         className="form-control select2"
@@ -744,7 +755,7 @@ class ModalAddTaskTemplate extends Component {
                                                         }
                                                         onChange={this.handleTaskTemplateUnit}
                                                         multiple={false}
-                                                        options={{placeholder: "Chọn đơn vị"}}
+                                                        value={currentUnit._id}
                                                     />
                                                 }
                                                 <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>
