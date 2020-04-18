@@ -209,18 +209,15 @@ class TabContactContent extends Component {
                                     <input type="text" className="form-control " name="localAddress" value={localAddress} onChange={this.handleChange} placeholder={translate('manage_employee.address')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="localCommune">
-                                        {translate('manage_employee.wards')}</label>
+                                    <label htmlFor="localCommune">{translate('manage_employee.wards')}</label>
                                     <input type="text" className="form-control " name="localCommune" value={localCommune} onChange={this.handleChange} placeholder={translate('manage_employee.wards')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="localDistrict">
-                                        {translate('manage_employee.district')}</label>
+                                    <label htmlFor="localDistrict">{translate('manage_employee.district')}</label>
                                     <input type="text" className="form-control " name="localDistrict" value={localDistrict} onChange={this.handleChange} placeholder={translate('manage_employee.district')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="localCity">
-                                        {translate('manage_employee.province')}</label>
+                                    <label htmlFor="localCity">{translate('manage_employee.province')}</label>
                                     <input type="text" className="form-control " name="localCity" value={localCity} onChange={this.handleChange} placeholder={translate('manage_employee.province')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
@@ -234,29 +231,24 @@ class TabContactContent extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border"><h4 className="box-title"> {translate('manage_employee.current_residence')}</h4></legend>
                                 <div className={`form-group ${errorOnNowAddress === undefined ? "" : "has-error"}`}>
-                                    <label htmlFor="nowAddress">
-                                        {translate('manage_employee.address')}<span className="text-red">*</span></label>
+                                    <label htmlFor="nowAddress">{translate('manage_employee.address')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control " name="nowAddress" value={nowAddress} onChange={this.handleNowAddressChange} placeholder={translate('manage_employee.address')} autoComplete="off" />
                                     <ErrorLabel content={errorOnNowAddress} />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowCommune">
-                                        {translate('manage_employee.wards')}</label>
+                                    <label htmlFor="nowCommune">{translate('manage_employee.wards')}</label>
                                     <input type="text" className="form-control " name="nowCommune" value={nowCommune} onChange={this.handleChange} placeholder={translate('manage_employee.wards')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowDistrict">
-                                        {translate('manage_employee.district')}</label>
+                                    <label htmlFor="nowDistrict">{translate('manage_employee.district')}</label>
                                     <input type="text" className="form-control " name="nowDistrict" value={nowDistrict} onChange={this.handleChange} placeholder={translate('manage_employee.district')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowCity">
-                                        {translate('manage_employee.province')}</label>
+                                    <label htmlFor="nowCity">{translate('manage_employee.province')}</label>
                                     <input type="text" className="form-control " name="nowCity" value={nowCity} onChange={this.handleChange} placeholder={translate('manage_employee.province')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowNational">
-                                        {translate('manage_employee.nation')}</label>
+                                    <label htmlFor="nowNational">{translate('manage_employee.nation')}</label>
                                     <input type="text" className="form-control " name="nowNational" value={nowNational} onChange={this.handleChange} placeholder={translate('manage_employee.nation')} autoComplete="off" />
                                 </div>
                             </fieldset>

@@ -72,14 +72,14 @@ class TabExperienceContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { cultural, foreignLanguage, educational } = this.props;
+        const { cultural, foreignLanguage, educational, experience } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.academic_level')}</h4></legend>
                         <div className="form-group">
-                            <label>{translate('manage_employee.educational_level')}:<span className="text-red">&#42;</span></label>
+                            <label>{translate('manage_employee.educational_level')}<span className="text-red">&#42;</span></label>
                             <select className="form-control" name="cultural" value={cultural} onChange={this.handleChange}>
                                 <option value="12/12">12/12</option>
                                 <option value="11/12">11/12</option>
@@ -88,11 +88,11 @@ class TabExperienceContent extends Component {
                             </select>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="foreignLanguage ">{translate('manage_employee.language_level')}:</label>
+                            <label htmlFor="foreignLanguage ">{translate('manage_employee.language_level')}</label>
                             <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('manage_employee.language_level')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="educational ">{translate('manage_employee.qualification')}:</label>
+                            <label htmlFor="educational ">{translate('manage_employee.qualification')}</label>
                             <select className="form-control" name="educational" value={educational} onChange={this.handleChange}>
                                 <option value="intermediate_degree">{translate('manage_employee.intermediate_degree')}</option>
                                 <option value="colleges">{translate('manage_employee.colleges')}</option>
@@ -113,19 +113,19 @@ class TabExperienceContent extends Component {
                                     <th>{translate('manage_employee.to_month_year')}</th>
                                     <th>{translate('manage_employee.unit')}</th>
                                     <th>{translate('table.position')}</th>
-                                    <th style={{width:'120px'}}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof this.state.experience !== 'undefined' && this.state.experience.length !== 0) &&
-                                    this.state.experience.map((x, index) => (
+                                {(typeof experience !== 'undefined' && experience.length !== 0) &&
+                                    experience.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
                                             <td>{x.unit}</td>
                                             <td>{x.position}</td>
                                             <td >
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_experience')}edit_experience><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_experience')} edit_experience><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
@@ -133,7 +133,7 @@ class TabExperienceContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof this.state.experience === 'undefined' || this.state.experience.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof experience === 'undefined' || experience.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
 
                     </fieldset>

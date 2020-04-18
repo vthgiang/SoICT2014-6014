@@ -142,7 +142,7 @@ class TabSalaryContent extends Component {
                                             return (
                                                 <tr key={index}>
                                                     <td>{x.month}</td>
-                                                    <td>{mainSalary}</td>
+                                                    <td>{mainSalary} {unit}</td>
                                                     <td>
                                                         {
                                                             (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?

@@ -107,6 +107,7 @@ class TabCertificateContent extends Component {
     }
     render() {
         const { id, translate } = this.props;
+        const { certificate, certificateShort } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -121,12 +122,12 @@ class TabCertificateContent extends Component {
                                     <th>{translate('manage_employee.graduation_year')}</th>
                                     <th>{translate('manage_employee.ranking_learning')}</th>
                                     <th>{translate('manage_employee.attached_files')}</th>
-                                    <th style={{width:'120px'}}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof this.state.certificate !== 'undefined' && this.state.certificate.length !== 0) &&
-                                    this.state.certificate.map((x, index) => (
+                                {(typeof certificate !== 'undefined' && certificate.length !== 0) &&
+                                    certificate.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.nameCertificate}</td>
                                             <td>{x.addressCertificate}</td>
@@ -144,7 +145,7 @@ class TabCertificateContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof this.state.certificate === 'undefined' || this.state.certificate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof certificate === 'undefined' || certificate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -158,12 +159,12 @@ class TabCertificateContent extends Component {
                                     <th>{translate('manage_employee.date_issued')}</th>
                                     <th>{translate('manage_employee.end_date_certificate')}</th>
                                     <th>{translate('manage_employee.attached_files')}</th>
-                                    <th style={{width:'120px'}}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof this.state.certificateShort !== 'undefined' && this.state.certificateShort.length !== 0) &&
-                                    this.state.certificateShort.map((x, index) => (
+                                {(typeof certificateShort !== 'undefined' && certificateShort.length !== 0) &&
+                                    certificateShort.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.nameCertificateShort}</td>
                                             <td>{x.unit}</td>
@@ -180,7 +181,7 @@ class TabCertificateContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof this.state.certificateShort === 'undefined' || this.state.certificateShort.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof certificateShort === 'undefined' || this.state.certificateShort.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>

@@ -819,7 +819,7 @@ const sampleCompanyData = async () => {
         relationship: "single",
         cultural: "12/12",
         foreignLanguage: "500 Toeic",
-        educational: "Đại học",
+        educational: "intermediate_degree",
         experience: [{
             unit: "Vnist",
             startDate: "06-2019",
@@ -830,7 +830,7 @@ const sampleCompanyData = async () => {
             nameCertificate: "Bằng tốt nghiệp",
             addressCertificate: "Đại học Bách Khoá",
             yearCertificate: "2020",
-            typeCertificate: "Khá",
+            typeCertificate: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
@@ -890,7 +890,7 @@ const sampleCompanyData = async () => {
         relationship: "single",
         cultural: "12/12",
         foreignLanguage: "500 Toeic",
-        educational: "Đại học",
+        educational: "intermediate_degree",
         experience: [{
             unit: "Vnist",
             startDate: "06-2019",
@@ -901,7 +901,7 @@ const sampleCompanyData = async () => {
             nameCertificate: "Bằng tốt nghiệp",
             addressCertificate: "Đại học Bách Khoá",
             yearCertificate: "2020",
-            typeCertificate: "Khá",
+            typeCertificate: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
@@ -1011,7 +1011,7 @@ const sampleCompanyData = async () => {
         relationship: "single",
         cultural: "12/12",
         foreignLanguage: "500 Toeic",
-        educational: "Đại học",
+        educational: "intermediate_degree",
         experience: [{
             unit: "Vnist",
             startDate: "06-2019",
@@ -1022,7 +1022,7 @@ const sampleCompanyData = async () => {
             nameCertificate: "Bằng tốt nghiệp",
             addressCertificate: "Đại học Bách Khoá",
             yearCertificate: "2020",
-            typeCertificate: "Khá",
+            typeCertificate: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
@@ -1049,7 +1049,7 @@ const sampleCompanyData = async () => {
             nameFile : "Ảnh",
             discFile : "Ảnh 3x4",
             number : "1",
-            status : "Đã nộp",
+            status : "submitted",
             file : "3.5.1.PNG",
             urlFile : "lib/fileEmployee/1582212624054-3.5.1.png"
         }],

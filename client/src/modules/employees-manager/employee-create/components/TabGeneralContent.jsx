@@ -197,7 +197,7 @@ class TabGeneralContent extends Component {
                 img: nextProps.img,
                 employeeNumber: nextProps.employee.employeeNumber,
                 MSCC: nextProps.employee.MSCC,
-                fullname: nextProps.employee.fullname,
+                fullName: nextProps.employee.fullName,
                 gender: nextProps.employee.gender,
                 brithday: nextProps.employee.brithday,
                 birthplace: nextProps.employee.birthplace,
@@ -300,7 +300,7 @@ class TabGeneralContent extends Component {
                                 <ErrorLabel content={errorOnEmailCompany} />
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                <label>{translate('manage_employee.relationship')}:</label>
+                                <label>{translate('manage_employee.relationship')}</label>
                                 <div>
                                     <div className="radio-inline">
                                         <label>

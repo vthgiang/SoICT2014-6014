@@ -127,11 +127,9 @@ class ListEmployee extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <h4 className="box-title">Danh sách nhân viên:</h4>
-                        </div>
-                        <ModalAddEmployee initState={this.state} />
+                    <ModalAddEmployee initState={this.state} />
+                    <div className="form-group">
+                        <h4 className="box-title">Danh sách nhân viên:</h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
