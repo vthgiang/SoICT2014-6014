@@ -10,6 +10,6 @@ router.patch("/:id", auth, DepartmentController.edit);
 router.delete("/:id", auth, DepartmentController.delete);
 
 router.get('/department-of-user/:id', auth, DepartmentController.getDepartmentOfUser);
-router.get('/role-dean-of-user/:id', auth, DepartmentController.getRoleDeanOfUser);
+router.get('/departments-that-user-is-dean/:id', auth, DepartmentController.getDepartmentsThatUserIsDean);
 
 module.exports = router;
