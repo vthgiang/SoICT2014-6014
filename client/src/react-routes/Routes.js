@@ -557,7 +557,7 @@ class Routes extends Component {
                         exact={ true }
                         link={'/kpi-member/overview'}
                         path={ '/kpi-member/overview' }
-                        pageName= "KPI member"
+                        pageName= "kpi_member"
                         layout={ Layout }
                         component={ KPIMember }
                     />
@@ -572,7 +572,7 @@ class Routes extends Component {
                         exact={ true }
                         link={'/kpi-member-dashboard'}
                         path={ '/kpi-member-dashboard' }
-                        pageName= "DashBoard"
+                        pageName= "kpi_member_dashboard"
                         layout={ Layout }
                         component={ DashBoardKPIMember }
                     />

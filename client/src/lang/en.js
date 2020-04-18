@@ -245,7 +245,7 @@ export default {
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
         },
-
+        
         manage_system: {
             turn_on: 'Turn on',
             turn_off: 'Turn off',
@@ -731,7 +731,16 @@ export default {
                 cancel: 'Cancel',
                 add_success: 'Add KPI target successful'
             },
-
+            kpi_member:{
+                index:'Index',
+                time:'Date',
+                employee_name:'Employee Name',
+                target_number:'Target Number',
+                kpi_status:'KPI Status',
+                result:'Result',
+                approve:'Approve',
+                evaluate:'Evaluate'
+            },
             start: {
                 initialize_kpi: 'Initialize personal KPI',
                 unit: 'Unit',

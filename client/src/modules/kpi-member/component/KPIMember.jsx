@@ -7,6 +7,8 @@ import { kpiMemberActions } from '../redux/actions';
 import { DepartmentActions } from '../../super-admin-management/departments-management/redux/actions' ;
 import Swal from 'sweetalert2';
 import CanvasJSReact from '../../../Chart/canvasjs.react.js';
+import {PaginateBar, ActionColumn } from '../../../../src/common-components';
+// import { withTranslate } from 'react-redux-multilingual';
  
 class KPIMember extends Component {
     constructor(props) {
@@ -38,7 +40,7 @@ class KPIMember extends Component {
         this.props.getAllKPIMemberOfUnit(infosearch);
         this.props.getAllKPIMember();//---------localStorage.getItem("id")--------
         let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';
+        script.src = '../lib/main/js/GridTableVers1.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -208,114 +210,110 @@ class KPIMember extends Component {
             }]
         }
         return (
-            <div className="table-wrapper">
-                    <section className="content">
-                        <div className="row">
-                            <div className="col-md-12">
-                                <div className="col-md-12">
-                                    <div className="box box-info">
-                                        <div className="box-header with-border">
-                                            <h3 className="box-title">Tra cứu, phê duyệt và đánh giá KPI nhân viên</h3>
-                                            <div className="box-tools pull-right">
-                                                <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                        {/* /.box-header */}
-                                        <div className="box-body">
-                                            <div className="table-responsive">
-                                                <div className="col-xs-12">
-                                                    <div className='col-xs-4'>
-                                                        <label>Nhân viên:</label>
-                                                        {userdepartments && <select defaultValue="all" className="form-control select2" style={{ width: '55%' }} ref={input => this.user = input}>
-                                                            <option value="all">Tất cả nhân viên</option>
-                                                            <optgroup label={userdepartments[1].roleId.name}>
-                                                                        <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>{userdepartments[1].userId.name}</option>
-                                                                    </optgroup>
-                                                                    <optgroup label={userdepartments[2].roleId.name}>
-                                                                        <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>{userdepartments[2].userId.name}</option>
-                                                                    </optgroup>
-                                                        </select>}
-                                                    </div>
-                                                    <div className='col-xs-4'>
-                                                        <label>Trạng thái:</label>
-                                                        <select defaultValue={4} className="form-control select2" style={{ width: '55%' }} ref={input => this.status = input}>
-                                                            <option value={0}>Đang thiết lập</option>
-                                                            <option value={1}>Chờ phê duyệt</option>
-                                                            <option value={2}>Đã kích hoạt</option>
-                                                            <option value={3}>Đã kết thúc</option>
-                                                            <option value={4}>Đang hoạt động</option>
-                                                            <option value={5}>Tất cả các trạng thái</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div className="col-xs-12">
-                                                    <div className="col-xs-4">
-                                                        <label className="col-xs-4" style={{ marginLeft: "-15px" }}>Từ tháng:</label>
-                                                        <div className='input-group col-sm-4 date has-feedback' style={{ display: "inline-table", marginLeft: "5px", marginTop: "-8px", width: "55%" }}>
-                                                            <div className="input-group-addon">
-                                                                <i className="fa fa-calendar" />
-                                                            </div>
-                                                            <input type="text" className="form-control pull-right" ref={input => this.starttime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-xs-4">
-                                                        <label className="col-xs-5" style={{ marginLeft: "-15px" }}>Đến tháng:</label>
-                                                        <div className='input-group col-sm-4 date has-feedback' style={{ display: "inline-table", marginLeft: "-20px", marginTop: "-8px", width: "55%" }}>
-                                                            <div className="input-group-addon">
-                                                                <i className="fa fa-calendar" />
-                                                            </div>
-                                                            <input type="text" className="form-control pull-right" ref={input => this.endtime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker6" data-date-format="mm-yyyy" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-xs-4" style={{ marginTop: "-8px", marginLeft: "-5%" }}>
-                                                        <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>Tìm kiếm</button>
-                                                    </div>
-                                                </div>
-                                                <table className="table table-bordered table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style={{ width: "50px" }}>STT</th>
-                                                            <th>Thời gian</th>
-                                                            <th>Tên nhân viên</th>
-                                                            <th>Số lượng mục tiêu</th>
-                                                            <th>Trạng thái KPI</th>
-                                                            <th>Kết quả</th>
-                                                            <th>Phê duyệt</th>
-                                                            <th>Đánh giá</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {(typeof kpimember !== "undefined" && kpimember.length !== 0) ?
-                                                            kpimember.map((item, index) =>
-                                                                <tr key={index + 1}>
-                                                                    <td>{index + 1}</td>
-                                                                    <td>{this.formatDate(item.time)}</td>
-                                                                    <td>{item.creater.name}</td>
-                                                                    <td>{item.listtarget.length}</td>
-                                                                    <td>{this.checkStatusKPI(item.status)}</td>
-                                                                    <td>{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</td>
-                                                                    <td>
-                                                                        <a href="#abc" onClick={() => this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve" title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
-                                                                        {this.state.showApproveModal === item._id ? <ModalMemberApprove id={item._id} /> : null}
-                                                                    </td>
-                                                                    <td>
-                                                                        <a href="#memberEvaluate1" onClick={() => this.showEvaluateModal(item._id)} data-toggle="modal" className="copy" title="Đánh giá kpi nhân viên này"><i className="fa fa-list"></i></a>
-                                                                        {this.state.showEvaluateModal === item._id ? <ModalMemberEvaluate name={item.creater.name} id={item._id} /> : null}
-                                                                    </td>
-                                                                </tr>
-                                                            ) : <tr><td colSpan={7}>Không có dữ liệu thỏa mãn điều kiện</td></tr>}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <React.Fragment>
+                <div className="box">
+                    <div className="box-body qlcv">
+                        <div className="form-inline">
+                        <div className="form-group">
+                            <label>Nhân viên:</label>
+                            {userdepartments && <select defaultValue="all" className="form-control" ref={input=> this.user = input}>
+                            <option value="all">Tất cả nhân viên</option>
+                            <optgroup label={userdepartments[1].roleId.name}>
+                                <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>
+                                {userdepartments[1].userId.name}</option>
+                            </optgroup>
+                            <optgroup label={userdepartments[2].roleId.name}>
+                                <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>
+                                {userdepartments[2].userId.name}</option>
+                            </optgroup>
+                            </select>}
                         </div>
-                    </section>
+                        <div className="form-group">
+                            <label>Trạng thái:</label>
+                            <select defaultValue={4} className="form-control" ref={input=> this.status = input}>
+                            <option value={0}>Đang thiết lập</option>
+                            <option value={1}>Chờ phê duyệt</option>
+                            <option value={2}>Đã kích hoạt</option>
+                            <option value={3}>Đã kết thúc</option>
+                            <option value={4}>Đang hoạt động</option>
+                            <option value={5}>Tất cả các trạng thái</option>
+                            </select>
+                        </div>
+                        </div>
+
+                        <div className="form-inline">
+                        <div className="form-group">
+                            <label>Từ tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.starttime = input}
+                            defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
+
+                        </div>
+                        <div className="form-group">
+                            <label>Đến tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.endtime = input}
+                            defaultValue={this.formatDate(Date.now())} name="time" id="datepicker6" data-date-format="mm-yyyy" />
+                            <div className="form-group">
+                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
+                                kiếm</button>
+                            </div>
+
+                        </div>
+
+                        </div>
+
+                        <ActionColumn class="pull-right" tableId="tree-table" tableContainerId="tree-table-container" tableWidth="1300px"
+                        columnArr={[ 'STT' , 'Thời gian' , 'Tên nhân viên' , 'Số lượng mục tiêu' , 'Trạng thái KPI' , 'Kết quả'
+                        , 'Phê duyệt' , 'Đánh giá' ]} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+
+                        <table id="myTable" className="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                            <th title="STT">STT</th>
+                            <th title="Thời gian">Thời gian</th>
+                            <th title="Tên nhân viên">Tên nhân viên</th>
+                            <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
+                            <th title="Trạng thái KPI">Trạng thái Kpi</th>
+                            <th title="Kết quả">Kết quả</th>
+                            <th title=">Phê duyệt">Phê duyệt</th>
+                            <th title="Đánh giá">Đánh giá</th>
+                            </tr>
+                        </thead>
+                        <tbody className="task-table">
+                            {(typeof kpimember !== "undefined" && kpimember.length !== 0) ?
+                            kpimember.map((item, index) =>
+                            <tr key={index + 1}>
+                            <td title={index+1}>{index + 1}</td>
+                            <td title={this.formatDate(item.time)}>{this.formatDate(item.time)}</td>
+                            <td title="">{item.creater.name}</td>
+                            <td title="">{item.listtarget.length}</td>
+                            <td title="">{this.checkStatusKPI(item.status)}</td>
+                            <td title="">{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</td>
+                            <td>
+                                <a href="#abc" onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
+                                title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
+                                {this.state.showApproveModal === item._id ?
+                                <ModalMemberApprove id={item._id} /> : null}
+                            </td>
+                            <td>
+                                <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
+                                className="copy" title="Đánh giá kpi nhân viên này"><i className="fa fa-list"></i></a>
+                                {this.state.showEvaluateModal === item._id ?
+                                <ModalMemberEvaluate name={item.creater.name} id={item._id} /> : null}
+                            </td>
+                            </tr>
+                            ) : <tr>
+                            <td colSpan={7}>
+                                <center>Không có dữ liệu</center>
+                            </td>
+                            </tr>}
+                        </tbody>
+                        </table>
+                    </div>
                 </div>
-            // </div>
+
+        </React.Fragment>
         );
     }
 }

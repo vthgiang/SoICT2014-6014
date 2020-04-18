@@ -763,7 +763,6 @@ export default {
 
                 not_initialize: 'Chưa khởi tạo'
             },
-
             add_target_kpi: {
                 add_target_personal: 'Thêm mục tiêu KPI cá nhân',
                 add_target: 'Thêm mục tiêu',
@@ -775,7 +774,16 @@ export default {
                 cancel: 'Hủy bỏ',
                 add_success: 'Thêm mục tiêu KPI thành công'
             },
-
+            kpi_member:{
+                index:'STT',
+                time:'Thời gian',
+                employee_name:'Tên nhân viên',
+                target_number:'Số lượng mục tiêu',
+                kpi_status:'Trạng thái KPI',
+                result:'Kết quả',
+                approve:'Phê duyệt',
+                evaluate:'Đánh giá'
+            },
             start: {
                 initialize_kpi: 'Khởi tạo KPI cá nhân',
                 unit: 'Đơn vị',
