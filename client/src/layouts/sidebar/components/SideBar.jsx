@@ -369,30 +369,17 @@ class SideBar extends Component {
                                                 <Link to="/kpi-member-dashboard">{translate(`menu.kpi_member_dashboard`)}</Link>
                                             </li>
                                         }
-
+                                        
                                         {
-                                            (this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
-                                            <li className="treeview">
-                                                <a href="">{translate(`menu.kpi_personal`)}
-                                                    <span className="pull-right-container">
-                                                        <i className="fa fa-angle-left pull-right" />
-                                                    </span>
-                                                </a>
-                                                <ul className="treeview-menu">
-                                                    {
-                                                        (this.checkURL('/kpi-personals/overview', links) === true) &&
-                                                        <li className={window.location.pathname === "/kpi-personals/overview" ? "active" : ""}>
-                                                            <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
-                                                        </li>
-                                                    }
-                                                    {
-                                                        (this.checkURL('/kpi-personals/create', links) === true) &&
-                                                        <li className={window.location.pathname === "/kpi-personals/create" ? "active" : ""}>
-                                                            <Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link>
-                                                        </li>
-                                                    }
-
-                                                </ul>
+                                            (this.checkURL('/kpi-personals/overview', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-personals/overview" ? "active" : ""}>
+                                                <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            (this.checkURL('/kpi-personals/create', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-personals/create" ? "active" : ""}>
+                                                <Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link>
                                             </li>
                                         }
                                     </ul>

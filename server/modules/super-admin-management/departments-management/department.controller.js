@@ -137,19 +137,19 @@ exports.getDepartmentOfUser = async (req, res) => {
     }
 }
 
-exports.getRoleDeanOfUser = async (req, res) =>{
+exports.getDepartmentsThatUserIsDean = async (req, res) =>{
     try {
-        const department = await DepartmentService.getRoleDeanOfUser(req.params.id);
+        const department = await DepartmentService.getDepartmentsThatUserIsDean(req.params.id);
         
-        await LogInfo(req.user.email, 'GET_ROLE_DEAN_OF_USER', req.user.company);
+        await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_role_dean_of_user_success',
+            message: 'get_department_that_user_is_dean_success',
             content: department
         });
     }
     catch (error) {
-        await LogError(req.user.email, 'GET_ROLEDEAN_OF_USER', req.user.company);
+        await LogError(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
         res.status(400).json({
             success: false,
             message: error

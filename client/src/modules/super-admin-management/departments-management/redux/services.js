@@ -18,7 +18,7 @@ export const DepartmentServices = {
     destroy,
     getAll,
     getDepartmentOfUser,
-    getRoleDeanOfUser
+    getDepartmentsThatUserIsDean,
 };
 
 function get() {
@@ -74,7 +74,6 @@ async function getDepartmentOfUser() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    console.log(id);
     const requestOptions = {
         method: 'GET',
         headers: AuthenticateHeader()
@@ -82,9 +81,13 @@ async function getDepartmentOfUser() {
 
     return fetch(`${ LOCAL_SERVER_API }/department/department-of-user/${id}`, requestOptions).then(handleResponse);
 }
-function getRoleDeanOfUser(currentRole) {
+async function getDepartmentsThatUserIsDean(currentRole) {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+
     const requestOptions = {
-        url: `${LOCAL_SERVER_API}/department/role-dean-of-user/${currentRole}`,
+        url: `${LOCAL_SERVER_API}/department/departments-that-user-is-dean/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
