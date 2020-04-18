@@ -221,7 +221,7 @@ class ModalAddTaskTemplate extends Component {
         return msg == undefined;
     }
     handleTaskTemplateUnit = (value) => {
-        this.validateTaskTemplateUnit(value, true);
+        this.validateTaskTemplateUnit(value[0], true); // Single selection
     }
     validateTaskTemplateUnit = (value, willUpdateState=true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);

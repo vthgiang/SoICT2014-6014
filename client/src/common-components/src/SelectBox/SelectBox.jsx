@@ -19,34 +19,20 @@ class SelectBox extends Component {
     
 
     componentDidMount(){
-        const { id, onChange, multiple=true, options={} } = this.props;
+        const { id, onChange, options={} } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
-            if(multiple){
-                let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
-                this.setState(state => {
-                    return {
-                        ...state,
-                        value
-                    }
-                });
-                if (onChange!==undefined && onChange!==null){
-                    onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
+            let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
+            this.setState(state => {
+                return {
+                    ...state,
+                    value
                 }
-            }else{
-                let value = this.refs.select.value;
-                this.setState(state => {
-                    return {
-                        ...state,
-                        value
-                    }
-                });
-                if (onChange!==undefined && onChange!==null){
-                    onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
-                }
+            });
+            if (onChange!==undefined && onChange!==null){
+                onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
-            
         });
     }
 
