@@ -36,8 +36,8 @@ import {KPIUnitEvaluate} from "../modules/kpi-unit/kpi-unit-evaluate/component/K
 import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview/component/KPIPersonalOverview";
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
-import {KPIMember} from "../modules/kpi-member/component/KPIMember";
-import {DashBoardKPIMember} from "../modules/kpi-member/component/DashBoardKPIMember";
+import {KPIMember} from "../modules/kpi-member/kpi-member-manager/component/KPIMember";
+import {DashBoardKPIMember} from "../modules/kpi-member/kpi-member-dashboard/component/DashBoardKPIMember";
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
@@ -551,12 +551,12 @@ class Routes extends Component {
                         key={ 'kpi_member' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link:'/kpi-member/overview', name: 'kpi_member', icon:'fa fa-number' }
+                            { link:'/kpi-member/manager', name: 'kpi_member', icon:'fa fa-number' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={'/kpi-member/overview'}
-                        path={ '/kpi-member/overview' }
+                        link={'/kpi-member/manager'}
+                        path={ '/kpi-member/manager' }
                         pageName= "KPI member"
                         layout={ Layout }
                         component={ KPIMember }
@@ -566,12 +566,12 @@ class Routes extends Component {
                         key={ 'kpi-member-dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link:'/kpi-member-dashboard', name: 'kpi-member-dashboard', icon:'fa fa-number' }
+                            { link:'/kpi-member/dashboard', name: 'kpi-member-dashboard', icon:'fa fa-number' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={'/kpi-member-dashboard'}
-                        path={ '/kpi-member-dashboard' }
+                        link={'/kpi-member/dashboard'}
+                        path={ '/kpi-member/dashboard' }
                         pageName= "DashBoard"
                         layout={ Layout }
                         component={ DashBoardKPIMember }

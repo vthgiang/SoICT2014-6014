@@ -1,5 +1,5 @@
 const KPIMemberService = require('./kpiMember.service');
-const { LogInfo, LogError } = require('../../logs');
+const { LogInfo, LogError } = require('../../../logs');
 // get all target of member kpi
 exports.getKPIAllMember = async (req, res) => {
     try {

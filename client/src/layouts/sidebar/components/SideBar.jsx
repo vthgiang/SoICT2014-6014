@@ -357,16 +357,16 @@ class SideBar extends Component {
                                         }
                                         
                                         {
-                                            (this.checkURL('/kpi-member/overview', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-member/overview" ? "active" : ""}>
-                                                <Link to="/kpi-member/overview">{translate(`menu.kpi_member`)}</Link>
+                                            (this.checkURL('/kpi-member/manager', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-member/manager" ? "active" : ""}>
+                                                <Link to="/kpi-member/manager">{translate(`menu.kpi_member`)}</Link>
                                             </li>
                                         }
 
                                         {
-                                            (this.checkURL('/kpi-member-dashboard', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-member-dashboard" ? "active" : ""}>
-                                                <Link to="/kpi-member-dashboard">{translate(`menu.kpi_member_dashboard`)}</Link>
+                                            (this.checkURL('/kpi-member/dashboard', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-member/dashboard" ? "active" : ""}>
+                                                <Link to="/kpi-member/dashboard">{translate(`menu.kpi_member_dashboard`)}</Link>
                                             </li>
                                         }
                                         
