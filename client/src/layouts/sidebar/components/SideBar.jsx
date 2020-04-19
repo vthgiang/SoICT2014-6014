@@ -334,7 +334,7 @@ class SideBar extends Component {
 
                             {/* kpi-management */}
                             {
-                                (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-units/overview', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
+                                (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
                                 <li className="treeview">
                                     <a href="">
                                         <i className="fa fa-dashboard" /> <span>{translate(`menu.manage_kpi`)}</span>
@@ -343,30 +343,62 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        {
+                                        {/* {
                                             (this.checkURL('/kpi-units/overview', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-units/overview" ? "active" : ""}>
                                                 <Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link>
                                             </li>
-                                        }
+                                        } */}
                                         {
                                             (this.checkURL('/kpi-units/create', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-units/create" ? "active" : ""}>
                                                 <Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link>
                                             </li>
                                         }
+                                        {
+                                            (this.checkURL('/kpi-units/dashboard', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-units/dashboard" ? "active" : ""}>
+                                                <Link to="/kpi-units/dashboard">{translate(`menu.kpi_unit_dashboard`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            (this.checkURL('/kpi-units/manager', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-units/manager" ? "active" : ""}>
+                                                <Link to="/kpi-units/manager">{translate(`menu.kpi_unit_manager`)}</Link>
+                                            </li>
+                                        }
+                                        
                                         
                                         {
-                                            (this.checkURL('/kpi-member/overview', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-member/overview" ? "active" : ""}>
-                                                <Link to="/kpi-member/overview">{translate(`menu.kpi_member`)}</Link>
+                                            (this.checkURL('/kpi-member/manager', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-member/manager" ? "active" : ""}>
+                                                <Link to="/kpi-member/manager">{translate(`menu.kpi_member_manager`)}</Link>
                                             </li>
                                         }
 
                                         {
+                                            (this.checkURL('/kpi-member/dashboard', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-member/dashboard" ? "active" : ""}>
+                                                <Link to="/kpi-member/dashboard">{translate(`menu.kpi_member_dashboard`)}</Link>
+                                            </li>
+                                        }
+                                        
+                                        {/* {
                                             (this.checkURL('/kpi-personals/overview', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-personals/overview" ? "active" : ""}>
                                                 <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
+                                            </li>
+                                        } */}
+                                        {
+                                            (this.checkURL('/kpi-personals/manager', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-personals/manager" ? "active" : ""}>
+                                                <Link to="/kpi-personals/manager">{translate(`menu.kpi_personal_manager`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            (this.checkURL('/kpi-personals/dashboard', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-personals/dashboard" ? "active" : ""}>
+                                                <Link to="/kpi-personals/dashboard">{translate(`menu.kpi_personal_dashboard`)}</Link>
                                             </li>
                                         }
                                         {

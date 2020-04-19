@@ -141,3 +141,10 @@ exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
 
     return department;
 }
+
+exports.getDepartmentsThatUserIsDean = async (userId) => {
+    const roles = await UserRole.find({ 'userId': userId });
+    const newRoles = roles.map( role => role.roleId);
+    const departments = await Department.find({'dean': { $in: newRoles } });
+    return departments;
+}

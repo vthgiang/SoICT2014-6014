@@ -107,7 +107,20 @@ export function department(state = initState, action) {
             return { 
                 error: action.error
             };
-
+        
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST:
+            return {
+                loading: true
+            };
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS:
+            return {
+                ...state,
+                departmentsThatUserIsDean: action.payload.data
+            };
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE:
+            return { 
+                error: action.error
+            };
 
         case 'LOGOUT':
             return initState;

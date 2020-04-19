@@ -1,4 +1,5 @@
 import {handleResponse} from '../../../../helpers/HandleResponse';
+import axios from 'axios';
 import { AuthenticateHeader } from '../../../../config';//authHeader-cũ
 import {
     TOKEN_SECRET, LOCAL_SERVER_API
@@ -18,7 +19,8 @@ export const taskManagementService = {
     getCreatorTaskByUser,
     addNewTask,
     editTask,
-    deleteTaskById
+    deleteTaskById,
+    editStatusOfTask
 };
 // get all task
 function getAll() {
@@ -55,7 +57,6 @@ async function getResponsibleTaskByUser(unit, number, perpage, status, priority,
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
-    console.log('-------------------Responsible Info-----------------------', unit, user, perpage, status, priority, specical, name);
 
     const requestOptions = {//user = localStorage.getItem('id')
         method: 'GET',
@@ -117,7 +118,7 @@ async function getCreatorTaskByUser( unit, number, perpage, status, priority, sp
 function addNewTask(newTask) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: AuthenticateHeader(),
         body: JSON.stringify(newTask)
     };
 
@@ -143,4 +144,15 @@ function deleteTaskById(id) {
     };
 
     return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
+}
+
+function editStatusOfTask(id, status){
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/tasks/${id}`,
+        method: 'PATCH',
+        data: status,
+        headers: AuthenticateHeader()
+    }
+
+    return axios(requestOptions);
 }

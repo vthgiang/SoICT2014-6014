@@ -7,6 +7,8 @@ const TaskTemplate = require('./taskTemplate.model');
 const ResultTask = require('./resultTask.model');
 const TaskFile = require('./taskFile.model');
 const ResultInfo = require('./resultInformationTask.model');
+const ActionTask = require('./actionTask.model');
+// const CommentTask= require('./commentTask.model');
 
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema({
@@ -41,8 +43,9 @@ const TaskSchema = new Schema({
         required: true
     },
     status: {// có 6 trạng thái công việc: Đang chờ, Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Bị hủy, Tạm hoãn
+        // TODO {code{}, description{} }
         type: String,
-        default: "Đang chờ",
+        default: "Đang chờ",//
         required: true
     },
     tasktemplate: {
@@ -100,9 +103,37 @@ const TaskSchema = new Schema({
         default: 0,
         required: true
     },
+    // results: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: ResultTask,
+    // }],
     results: [{
-        type: Schema.Types.ObjectId,
-        ref: ResultTask,
+        // Người được đánh giá
+        member:{
+            type: Schema.Types.ObjectId,
+            ref: User,
+            required: true
+        },
+        // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+        roleMember:{
+            type: String,
+            required: true
+        },
+        // Điểm hệ thống đánh giá
+        systempoint: {
+            type: Number,
+            default: 0
+        },
+        // Điểm tự đánh giá
+        mypoint: {
+            type: Number,
+            default: 0
+        },
+        // Điểm do quản lý đánh giá
+        approverpoint: {
+            type: Number,
+            default: 0
+        }
     }],
     file: [{
         type: Schema.Types.ObjectId,
@@ -112,7 +143,49 @@ const TaskSchema = new Schema({
     resultInfo: [{
         type: Schema.Types.ObjectId,
         ref: ResultInfo,
-    }]
+    }],
+    actionTask: [{
+        creator:{
+            type:Schema.Types.ObjectId,
+            ref : User,
+            required:true
+        },
+        name:{
+            type: String,
+            required:true
+        },
+        date:{
+            type: Date
+        },
+        commentAction: [{
+            creator: {
+                type: Schema.Types.ObjectId,
+                ref: User,
+                required: true
+            },
+            parent: {// Có thể là comment cha hoặc là action task
+                type: Schema.Types.ObjectId,
+                 replies: this
+            },
+            content: {
+                type: String,
+            },
+            approved: {
+                type: Number,
+                default: 0,
+                required: true
+            },
+            // file: {
+            //     type: Schema.Types.ObjectId,
+            //     ref: TaskFile,
+            //     required: true
+        // }
+        }]
+    }],
+    // commentTask: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: CommentTask
+    // }]
 }, {
     timestamps: true
 });

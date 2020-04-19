@@ -11,12 +11,12 @@ export function createKpiPersonal(state = {}, action) {
       return {
         ...state,
         loading: false,
-        currentKPI: action.kpipersonal.content,
+        currentKPI: action.payload,
         isLoading: false
       };
     case createKpiConstants.GETCURRENT_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  createKpiConstants.EDIT_KPIPERSONAL_REQUEST:
@@ -31,7 +31,7 @@ export function createKpiPersonal(state = {}, action) {
       return {
         ...state,
         editing: false,
-        currentKPI: action.kpipersonal.kpipersonal,
+        currentKPI: action.payload,
         // items: [
         //   ...state.items,
         //   action.target.kpipersonal
@@ -40,7 +40,7 @@ export function createKpiPersonal(state = {}, action) {
       };
     case createKpiConstants.EDIT_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  createKpiConstants.EDITSTATUS_KPIPERSONAL_REQUEST:
@@ -53,12 +53,12 @@ export function createKpiPersonal(state = {}, action) {
       return {
         ...state,
         editing: false,
-        currentKPI: action.newKPI.kpipersonal,
+        currentKPI: action.payload,
         isLoading: false
       };
     case createKpiConstants.EDITSTATUS_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  createKpiConstants.DELETE_KPIPERSONAL_REQUEST:
@@ -76,7 +76,7 @@ export function createKpiPersonal(state = {}, action) {
       };
     case createKpiConstants.DELETE_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
       case  createKpiConstants.DELETETARGET_KPIPERSONAL_REQUEST:
@@ -94,12 +94,12 @@ export function createKpiPersonal(state = {}, action) {
     case createKpiConstants.DELETETARGET_KPIPERSONAL_SUCCESS:
       return {
         ...state,
-        currentKPI: action.newKPI.kpipersonal,
+        currentKPI: action.payload,
         isLoading: false
       };
     case createKpiConstants.DELETETARGET_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
 
@@ -111,12 +111,12 @@ export function createKpiPersonal(state = {}, action) {
     case createKpiConstants.ADDTARGET_KPIPERSONAL_SUCCESS:
       return {
         ...state,
-        currentKPI: action.newKPI.kpipersonal,
+        currentKPI: action.payload,
         isLoading: false
       };
     case createKpiConstants.ADDTARGET_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
 
@@ -126,7 +126,7 @@ export function createKpiPersonal(state = {}, action) {
         currentKPI: {
           ...state.currentKPI,
           listtarget: state.currentKPI.listtarget.map(target =>
-            target._id === action.id
+            target._id === action.payload
               ? { ...target, editing: true }
               : target)
         },
@@ -138,14 +138,14 @@ export function createKpiPersonal(state = {}, action) {
           currentKPI: {
             ...state.currentKPI,
             listtarget: state.currentKPI.listtarget.map(target =>
-              target._id === action.newTarget.target._id
-                ? action.newTarget.target : target)
+              target._id === action.payload._id
+                ? action.payload : target)
           },
           isLoading: false
       };
     case createKpiConstants.EDITTARGET_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
 
@@ -158,12 +158,12 @@ export function createKpiPersonal(state = {}, action) {
       return {
         ...state,
         adding: false,
-        currentKPI: action.newKPI.kpipersonal,
+        currentKPI: action.payload,
         isLoading: false
       };
     case createKpiConstants.ADD_KPIPERSONAL_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
 

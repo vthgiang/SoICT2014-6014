@@ -42,6 +42,17 @@ export function role(state = initState, action) {
                 isLoading: true,
             }
 
+        case RoleConstants.GET_ROLES_FAILE:
+        case RoleConstants.CREATE_ROLE_FAILE:
+        case RoleConstants.SHOW_ROLE_FAILE:
+        case RoleConstants.EDIT_ROLE_FAILE:
+        case RoleConstants.GET_ROLES_PAGINATE_FAILE:
+        case RoleConstants.DELETE_ROLE_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+            }
+
         case RoleConstants.GET_ROLES_SUCCESS:
             return {
                 ...state,
