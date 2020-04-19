@@ -10,7 +10,12 @@ const ResultTaskSchema = new Schema({
         ref: User,
         required: true
     },
-    // Điểm hệ thống đánh giámem
+    // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+    roleMember:{
+        type: String,
+        required: true
+    },
+    // Điểm hệ thống đánh giá
     systempoint: {
         type: Number,
         default: 0

@@ -294,58 +294,49 @@ exports.editResultInformationTask = async (req, res) => {
 }
 
 // Thêm thông tin kết quả của đánh giá từng nhân viên
-exports.createResultTask = async (req, res) => {
-    try {
-        var listResultTask = req.body.listResultTask;
-        if (listResultTask !== []) {
-            // Lưu thông tin kết quả 
-            var listResultTask = await Promise.all(listResultTask.map(async (item) => {
-                var result = await ResultInfoTask.create({
-                    member: item.user,
-                    systempoint: item.systempoint,
-                    mypoint: item.mypoint,
-                    approverpoint: item.approverpoint
-                })
-                return result._id;
-            }))
-            // Cập nhật thông tin công việc
-            task = await Task.findByIdAndUpdate(
-                req.body.task, { results: listResultTask }, { new: true }
-            );
+exports.createResultTask = async (result, taskID) => {
+    var item = result;
+    
+    if (item !== null) {
+        // Lưu thông tin kết quả 
+        var resultTask = {
+            member: item.member,
+            roleMember: item.roleMember,
+            systempoint: item.systempoint,
+            mypoint: item.mypoint,
+            approverpoint: item.approverpoint
         }
-        
-        res.json({
-            message: "Lưu thành công kết quả đánh giá",
-            task: task
-        });
-    } catch (error) {
-        res.json({ message: error });
+        console.log("-------------------result-------------------", resultTask);
+        // Cập nhật thông tin công việc
+        var task = await Task.findByIdAndUpdate(
+            taskID, { $push: { results: resultTask } }, { new: true }
+            // là _id của task muốn đánh giá.
+        );
+        console.log('-------------------TASK----------------------', task);
     }
+    return task;
+    
 }
 
+
 // Sửa thông tin kết quả của nhân viên trong công việc
-exports.editResultTask = async (req, res) => {
-    try {
-        var listResultTask = req.body.listResultTask;
-        if (listResultTask !== []) {
-            // Lưu thông tin kết quả 
-            var listResultTask = await Promise.all(listResultTask.map(async (item) => {
-                var result = await ResultTask.findByIdAndUpdate(item._id,{
-                    member: item.user,
-                    systempoint: item.systempoint,
-                    mypoint: item.mypoint,
-                    approverpoint: item.approverpoint
-                })
-                return result;
-            }))
-        }
-        res.json({
-            message: "Chỉnh sửa thành công kết quả đánh giá",
-            listResultTask: listResultTask
-        });
-    } catch (error) {
-        res.json({ message: error });
+exports.editResultTask = async (listResult,taskid) => {
+    if (listResult !== []) {
+        // Lưu thông tin kết quả  var listResultTask = await Promise.all
+        listResult.forEach( async (item) => {
+            console.log('---item---', item);
+            // var newTask = await Task.findOneAndUpdate({results: {$elemMatch: {_id : item._id} }},
+            var newTask = await Task.updateOne({"results._id" : item._id},
+            // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},
+                { $set: {
+                    "results.$.systempoint": item.systempoint,
+                    "results.$.mypoint": item.mypoint,
+                    "results.$.approverpoint": item.approverpoint
+                }}
+            );
+        })
     }
+    return await Task.findOne({_id: taskid});
 }
 exports.createActionTask = async (req,res) => {
     try {

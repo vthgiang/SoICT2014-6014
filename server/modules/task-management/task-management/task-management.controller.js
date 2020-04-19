@@ -109,11 +109,11 @@ exports.create = async (req, res) => {
         var task = await TaskManagementService.create(req.body.parent,req.body.startdate,req.body.enddate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.tasktemplate,req.body.role,req.body.kpi,req.body.responsible,req.body.accounatable,req.body.consulted,req.body.informed); 
         await LogInfo(req.user.email, ` create task `,req.user.company)
         res.status(200).json({
-            message: "Create Task Template Successfully!",
+            message: "Create Task Successfully!",
             data: task
         });
     } catch (error) {
-        await LogInfo(req.user.email, ` create task  `,req.user.company)
+        await LogError(req.user.email, ` create task  `,req.user.company)
         res.status(400).json({
             message: error
         })
@@ -131,5 +131,24 @@ exports.delete =async (req, res) => {
             message: error
         })
     }
+}
 
+// chinh sua trng thai cua cong viec
+exports.editStatusOfTask = async (req, res) => {
+    try {
+        var task = await TaskManagementService.editStatusOfTask(req.params.id, req.body.status);
+        // await LogInfo(req.user.email, ` edit status of task  `,req.user.company);
+        res.status(200).json({
+            success: true,
+            message: 'Chinh sua trang thai thanh cong',
+            content: task
+        })
+    } catch (error) {
+        // await LogError(req.user.email, ` edit status of task `,req.user.company);
+        res.status(400).json({
+            success: false,
+            message: 'Chinh sua trang thai that bai',
+            content: error
+        });
+    }
 }
