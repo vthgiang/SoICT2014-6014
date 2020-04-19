@@ -548,31 +548,31 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ this.props.kpimembers.isLoading }
-                        key={ 'kpi_member' }
+                        key={ 'kpi_member_manager' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link:'/kpi-member/manager', name: 'kpi_member', icon:'fa fa-number' }
+                            { link:'/kpi-member/manager', name: 'kpi_member_manager', icon:'fa fa-number' }
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={'/kpi-member/manager'}
                         path={ '/kpi-member/manager' }
-                        pageName= "KPI member"
+                        pageName= "kpi_member_manager"
                         layout={ Layout }
                         component={ KPIMember }
                     />
                     <PrivateRoute 
                         isLoading={ false }
-                        key={ 'kpi-member-dashboard' }
+                        key={ 'kpi_member_dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link:'/kpi-member/dashboard', name: 'kpi-member-dashboard', icon:'fa fa-number' }
+                            { link:'/kpi-member/dashboard', name: 'kpi_member_dashboard', icon:'fa fa-number' }
                         ]}
                         auth={ auth }
                         exact={ true }
                         link={'/kpi-member/dashboard'}
                         path={ '/kpi-member/dashboard' }
-                        pageName= "DashBoard"
+                        pageName= "kpi_member_dashboard"
                         layout={ Layout }
                         component={ DashBoardKPIMember }
                     />

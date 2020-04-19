@@ -232,8 +232,8 @@ export default {
             kpi_unit_create: 'Create unit KPI',
             kpi_unit_evaluate: 'Evaluate unit KPI',
             kpi_unit_overview: 'Overview unit KPI',
-            kpi_member: "Manage Employees' KPI",
-            kpi_member_dashboard:"DashBoard KPI Member",
+            kpi_member_manager: 'Manage Employees KPI',
+            kpi_member_dashboard:'DashBoard KPI Member',
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',
             kpi_personal_overview: 'Overview personal KPI',
@@ -244,7 +244,7 @@ export default {
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
         },
-
+        
         manage_system: {
             turn_on: 'Turn on',
             turn_off: 'Turn off',
@@ -730,7 +730,16 @@ export default {
                 cancel: 'Cancel',
                 add_success: 'Add KPI target successful'
             },
-
+            kpi_member:{
+                index:'Index',
+                time:'Date',
+                employee_name:'Employee Name',
+                target_number:'Target Number',
+                kpi_status:'KPI Status',
+                result:'Result',
+                approve:'Approve',
+                evaluate:'Evaluate'
+            },
             start: {
                 initialize_kpi: 'Initialize personal KPI',
                 unit: 'Unit',

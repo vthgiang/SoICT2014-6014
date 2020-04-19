@@ -2,6 +2,34 @@ import { performTaskConstants } from "./constants";
 
 export function performtasks(state = {}, action) {
     switch (action.type) {
+        case performTaskConstants.CREATE_RESULT_TASK_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.CREATE_RESULT_TASK_SUCCESS:
+            return {
+                ...state,
+                adding: false,
+                currentTask: action.task.content
+            };
+        case performTaskConstants.CREATE_RESULT_TASK_FAILURE:
+            return {
+                error: action.error
+            };
+        case performTaskConstants.EDIT_RESULT_TASK_REQUEST:
+            return {
+                ...state
+            };
+        case performTaskConstants.EDIT_RESULT_TASK_SUCCESS:
+            return {
+                ...state,
+                resulttask: action.resultTask.content
+            };
+        case performTaskConstants.EDIT_RESULT_TASK_FAILURE:
+            return {
+                error: action.error
+            };
         case performTaskConstants.GET_LOGTIMER_REQUEST:
             return {
                 ...state,

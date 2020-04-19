@@ -359,7 +359,7 @@ class SideBar extends Component {
                                         {
                                             (this.checkURL('/kpi-member/manager', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-member/manager" ? "active" : ""}>
-                                                <Link to="/kpi-member/manager">{translate(`menu.kpi_member`)}</Link>
+                                                <Link to="/kpi-member/manager">{translate(`menu.kpi_member_manager`)}</Link>
                                             </li>
                                         }
 
