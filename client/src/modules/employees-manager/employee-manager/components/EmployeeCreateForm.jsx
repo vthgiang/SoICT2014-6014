@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalDialog, ModalButton } from '../../../../common-components';
 
-
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../salary-employee/redux/actions';
 import { SabbaticalActions } from '../../sabbatical/redux/actions';
@@ -14,11 +13,10 @@ import {
     TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
     TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
 } from '../../employee-create/components/CombineContent';
-class ModalAddEmployee extends Component {
+class EmployeeCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            key: "123",
             img: 'lib/adminLTE/dist/img/avatar5.png',
             avatar: "",
             employeeNew: {
@@ -451,5 +449,5 @@ const actionCreators = {
     updateFile: EmployeeManagerActions.updateFile,
 };
 
-const connectedAddEmployee = connect(mapState, actionCreators)(withTranslate(ModalAddEmployee));
-export { connectedAddEmployee as ModalAddEmployee };
+const createForm = connect(mapState, actionCreators)(withTranslate(EmployeeCreateForm));
+export { createForm as EmployeeCreateForm };

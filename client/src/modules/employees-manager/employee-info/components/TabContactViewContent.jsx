@@ -45,7 +45,7 @@ class TabContactViewContent extends Component {
         const { phoneNumber2, phoneNumber, emailPersonal, emailPersonal2, phoneNumberAddress, friendName,
             relation, friendAddress, friendPhone, friendPhoneAddress, friendEmail, localAddress,
             localCommune, localDistrict, localCity, localNational, nowAddress, nowCommune,
-            nowDistrict, nowCity, nowNational, errorOnPhoneNumber, errorOnNowAddress, errorOnEmailPersonal, errorOnEmailPersonal2 } = this.state;
+            nowDistrict, nowCity, nowNational} = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">

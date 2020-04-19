@@ -15,7 +15,6 @@ class EmployeeCreatePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            key: "123",
             img: 'lib/adminLTE/dist/img/avatar5.png',
             avatar: "",
             employeeNew: {
