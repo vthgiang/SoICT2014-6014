@@ -139,7 +139,7 @@ class RepairUpgradeManager extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    {/* <RepairUpgradeCreateForm /> */}
+                    <RepairUpgradeCreateForm />
                     <div className="form-group">
                         <h4 className="box-title">Lịch sử sửa chữa - thay thế - nâng cấp: </h4>
                     </div>

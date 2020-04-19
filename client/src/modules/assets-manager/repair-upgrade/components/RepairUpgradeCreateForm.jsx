@@ -53,15 +53,26 @@ class RepairUpgradeCreateForm extends Component {
         }
         return msg === undefined;
     }
+
     // Bắt sự kiện thay đổi "Ngày lập"
     handleDateCreateChange = (value) => {
-        this.setState({
-            ...this.state,
-            dateCreate: value
-        })
+        this.validateDateCreate(value, true);
+    }
+    validateDateCreate = (value, willUpdateState = true) => {
+        let msg = RepairUpgradeFromValidator.validateDateCreate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnDateCreate: msg,
+                    dateCreate: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
-        // Bắt sự kiện thay đổi trạng thái đơn xin nghỉ phép
+        // Bắt sự kiện thay đổi loại phiếu
         handleTypeChange = (e) => {
             let value = e.target.value;
             this.setState({
@@ -82,20 +93,11 @@ class RepairUpgradeCreateForm extends Component {
                 return {
                     ...state,
                     errorOnAssetNumber: msg,
-                    equipment: value,
+                    assetNumber: value,
                 }
             });
         }
         return msg === undefined;
-    }
-
-    // Bắt sự kiện thay đổi "Nhà cung cấp"
-    handleSupplierChange = (e) => {
-        let value = e.target.value;
-        this.setState({
-            ...this.state,
-            supplier: value
-        })
     }
 
     // Bắt sự kiện thay đổi "Nội dung"
@@ -117,55 +119,83 @@ class RepairUpgradeCreateForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi "Đơn vị tính"
-    handleUnitChange = (e) => {
-        let value = e.target.value;
-        this.validateUnit(value, true);
+    // Bắt sự kiện thay đổi "Ngày thực hiện"
+    handleRepairDateChange = (value) => {
+        this.validateRepairDate(value, true);
     }
-    validateUnit = (value, willUpdateState = true) => {
-        let msg = RecommendProcureFromValidator.validateUnit(value, this.props.translate)
+    validateRepairDate = (value, willUpdateState = true) => {
+        let msg = RepairUpgradeFromValidator.validateRepairDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
-                    unit: value,
+                    errorOnRepairDate: msg,
+                    repairDate: value,
                 }
             });
         }
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi "Giá trị dự tính"
-    handleEstimatePriceChange = (e) => {
+    // Bắt sự kiện thay đổi "Ngày hoàn thành"
+    handleCompleteDateChange = (value) => {
+        this.setState({
+            ...this.state,
+            completeDate: value
+        })
+    }
+
+    // Bắt sự kiện thay đổi "Chi phí"
+    handleCostChange = (e) => {
+        let value = e.target.value;
+        this.validateCost(value, true);
+    }
+    validateCost = (value, willUpdateState = true) => {
+        let msg = RepairUpgradeFromValidator.validateCost(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnCost: msg,
+                    cost: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi "Trạng thái phiếu"
+    handleStatusChange = (e) => {
         let value = e.target.value;
         this.setState({
             ...this.state,
-            estimatePrice: value
+            status: value
         })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateRecommendNumber(this.state.recommendNumber, false) &&
-            this.validateEquipment(this.state.equipment, false) &&
-            this.validateTotal(this.state.total, false) &&
-            this.validateUnit(this.state.unit, false);
+            this.validateRepairNumber(this.state.repairNumber, false) &&
+            this.validateDateCreate(this.state.dateCreate, false) &&
+            this.validateAssetNumber(this.state.assetNumber, false) &&
+            this.validateReason(this.state.reason, false) &&
+            this.validateRepairDate(this.state.repairDate, false) &&
+            this.validateCost(this.state.cost, false)
         return result;
     }
 
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.createNewRecommendProcure(this.state);
+            // return this.props.createNewRepairUpgrade(this.state);
         }
     }
 
     render() {
         const { translate, repairUpgrade } = this.props;
         const { repairNumber, dateCreate, type, assetNumber, assetName, reason, repairDate, completeDate, cost, status,
-                errorOnRepairNumber, errorOnAssetNumber, errorOnReason, errorOnCost } = this.state;
+                errorOnRepairNumber, errorOnDateCreate, errorOnAssetNumber, errorOnReason, errorOnRepairDate, errorOnCost } = this.state;
         return (
             <React.Fragment>
                 <ModalButton modalID="modal-create-repairupgrade" button_name="Thêm mới phiếu" title="Thêm mới phiếu sửa chữa - thay thế - nâng cấp" />
@@ -184,9 +214,9 @@ class RepairUpgradeCreateForm extends Component {
                                 <div className={`form-group ${errorOnRepairNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="repairNumber" value={repairNumber} onChange={this.handleRepairNumberChange} autoComplete="off" placeholder="Mã phiếu" />
-                                    <ErrorLabel content={errorOnRecommendNumber} />
+                                    <ErrorLabel content={errorOnRepairNumber} />
                                 </div>
-                                <div className="form-group">
+                                <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="create_start_date"
@@ -194,9 +224,10 @@ class RepairUpgradeCreateForm extends Component {
                                         onChange={this.handleDateCreateChange}
                                         placeholder="dd-mm-yyyy"
                                     />
+                                    <ErrorLabel content={errorOnDateCreate} />
                                 </div>
                                 <div className="form-group">
-                                    <label>Phân loại<span className="text-red">*</span></label>
+                                    <label>Phân loại</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
                                         <option value="repair">Sửa chữa</option>
                                         <option value="substitute">Thay thế</option>
@@ -207,7 +238,6 @@ class RepairUpgradeCreateForm extends Component {
                                 <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã tài sản<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Mã tài sản" />
-                                    {/* <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Thiết bị đề nghị mua"></textarea> */}
                                     <ErrorLabel content={errorOnAssetNumber} />
                                 </div>
                                 <div className="form-group">
@@ -218,47 +248,41 @@ class RepairUpgradeCreateForm extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
                                     <label>Nội dung<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Nội dung"></textarea>
+                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off" placeholder="Nội dung"></textarea>
                                     <ErrorLabel content={errorOnReason} />
                                 </div>
-                                <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('sabbatical.start_date')}<span className="text-red">*</span></label>
+                                <div className={`form-group ${errorOnRepairDate === undefined ? "" : "has-error"}`}>
+                                    <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="create_start_date"
-                                        value={startDate}
-                                        onChange={this.handleStartDateChange}
+                                        id="create_repair_date"
+                                        value={repairDate}
+                                        onChange={this.handleRepairDateChange}
+                                        placeholder="dd-mm-yyyy"
                                     />
-                                    <ErrorLabel content={errorOnStartDate} />
+                                    <ErrorLabel content={errorOnRepairDate} />
                                 </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('sabbatical.end_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id="create_end_date"
-                                    value={endDate}
-                                    onChange={this.handleEndDateChange}
-                                />
-                                <ErrorLabel content={errorOnEndDate} />
-                            </div>
                                 <div className="form-group">
-                                    <label>Giá trị dự tính:</label>
-                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính" />
+                                    <label>Ngày hoàn thành</label>
+                                    <DatePicker
+                                        id="create_complete_date"
+                                        value={completeDate}
+                                        onChange={this.handleCompleteDateChange}
+                                        placeholder="dd-mm-yyyy"
+                                    />
+                                </div>
+                                <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"}`}>
+                                    <label>Chi phí<span className="text-red">*</span></label>
+                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="cost" value={ cost } onChange={this.handleCostChange} autoComplete="off" placeholder="Chi phí" />
                                     <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label>
-                                </div>
-                                <div className="form-group">
-                                    <label>Người phê duyệt</label>
-                                    <input type="text" className="form-control" name="approver" disabled />
-                                </div>
-                                <div className="form-group">
-                                    <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position1" disabled/>
+                                    <ErrorLabel content={errorOnCost} />
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled />
-                                </div>
-                                <div className="form-group">
-                                    <label>Ghi chú</label>
-                                    <input type="text" className="form-control" name="note" disabled/>
+                                    <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
+                                        <option value="complete">Đã thực hiện</option>
+                                        <option value="processing">Đang thực hiện</option>
+                                        <option value="plan">Chưa thực hiện</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -270,8 +294,8 @@ class RepairUpgradeCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure } = state;
-    return { recommendProcure };
+    const { repairUpgrade } = state;
+    return { repairUpgrade };
 };
 
 const actionCreators = {

@@ -4,8 +4,10 @@ import {
 
 export const RepairUpgradeFromValidator = {
     validateRepairNumber,
+    validateDateCreate,
     validateAssetNumber,
     validateReason,
+    validateRepairDate,
     validateCost,
 
 }
@@ -21,7 +23,16 @@ function validateRepairNumber(value, translate) {
     return msg;
 }
 
-//2. Kiểm tra "Mã tài sản" nhập vào
+//2. Kiểm tra "Ngày lập" nhập vào
+function validateDateCreate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày lập không được để trống";
+    }
+    return msg;
+}
+
+//3. Kiểm tra "Mã tài sản" nhập vào
 function validateAssetNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -30,7 +41,7 @@ function validateAssetNumber(value, translate) {
     return msg;
 }
 
-//3. Kiểm tra "Nội dung" nhập vào
+//4. Kiểm tra "Nội dung" nhập vào
 function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -38,7 +49,17 @@ function validateReason(value, translate) {
     }
     return msg;
 }
-//4. Kiểm tra "Chi phí" nhập vào
+
+//5. Kiểm tra "Ngày sửa chữa" nhập vào
+function validateRepairDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày sửa chữa không được để trống";
+    }
+    return msg;
+}
+
+//6. Kiểm tra "Chi phí" nhập vào
 function validateCost(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {

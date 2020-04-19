@@ -150,7 +150,7 @@ class RecommendProcureEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-edit-buyrequest">
+                    <form className="form-group" id="form-edit-recommendprocure">
                         <div className="col-md-12">
                             <div className="col-sm-6">
                                 <div className="form-group">

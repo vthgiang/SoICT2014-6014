@@ -127,7 +127,7 @@ class DistributeTransferManager extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    {/* <DistributeTransferCreateForm /> */}
+                    <DistributeTransferCreateForm />
                     <div className="form-group">
                         <h4 className="box-title">Lịch sử cấp phát - điều chuyển - thu hồi: </h4>
                     </div>
