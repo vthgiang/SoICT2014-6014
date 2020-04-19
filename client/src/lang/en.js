@@ -214,7 +214,7 @@ export default {
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
-            manage_unit: 'manage units',
+            manage_unit: 'Manage units',
             manage_holiday: 'Work plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
@@ -347,6 +347,7 @@ export default {
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
         },
+        // Quản lý lương nhân viên
         salary_employee: {
             list_salary: 'List of staff salary',
             add_salary: 'Add salary',
@@ -368,6 +369,7 @@ export default {
             check_main_salary: 'Main salary required',
             check_month: 'Month required',
         },
+        // Quản lý nghỉ phép
         sabbatical: {
             list_sabbatical: 'List of staff sabbatical',
             add_sabbatical: 'Add sabbatical',
@@ -390,6 +392,7 @@ export default {
             edit_succes: 'Edit sabbatical success',
             edit_faile: 'Edit sabbatical faile',
         },
+        // Quản lý khen thưởng, kỷ luật
         discipline: {
             list_discipline: 'List of staff discipline',
             list_discipline_title: 'List of staff discipline',
@@ -420,6 +423,20 @@ export default {
             reward_forms: 'Reward forms',
             reason_praise: 'Reason',
         },
+        // Quản lý nhân sự các đơn vị
+        manage_unit: {
+            list_unit: 'List of units',
+            list_employee_unit: 'List of units staff',
+            edit_unit: 'Edit units staff',
+            edit_sucsess: 'Edit units staff sucsess',
+            edit_faile: 'Edit units staff faile',
+            dean_unit: 'Head of unit',
+            vice_dean_unit: 'Deputy unit',
+            employee_unit: 'Unit staff',
+            email_employee: 'Email',
+            add_employee_unit: 'Add staff to the unit',
+        },
+        // Quản lý thông tin nhân viên
         manage_employee: {
             note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
             contact_other: '(Other information please contact the relevant parties to be processed)',
@@ -497,8 +514,8 @@ export default {
             unit: 'Unit',
             from_month_year: 'From month/year',
             to_month_year: 'To month/year',
-            edit_experience:'Edit work experience',
-            add_experience:'Add work experience',
+            edit_experience: 'Edit work experience',
+            add_experience: 'Add work experience',
 
             diploma: 'Diploma',
             certificate: 'Certificate',
@@ -509,14 +526,14 @@ export default {
             ranking_learning: 'Ranking of learning',
             attached_files: 'Attached files',
             end_date_certificate: 'Expiration date',
-            edit_certificate:'Edit certificate',
-            edit_diploma:'Edit diploma',
-            add_certificate:'Add certificate',
-            add_diploma:'Add diploma',
-            excellent:'Excellent',
+            edit_certificate: 'Edit certificate',
+            edit_diploma: 'Edit diploma',
+            add_certificate: 'Add certificate',
+            add_diploma: 'Add diploma',
+            excellent: 'Excellent',
             very_good: 'Very good',
-            good:'Good',
-            average_good:'Average good',
+            good: 'Good',
+            average_good: 'Average good',
             ordinary: 'Ordinary',
 
             bank_account: 'Bank account',
@@ -532,8 +549,8 @@ export default {
             bhyt: 'Health Insurance',
             number_BHYT: 'Health insurance code',
             bhxh: 'Social insurance',
-            number_BHXH:'Social insurance code',
-            bhxh_process:'Process of social insurance payment',
+            number_BHXH: 'Social insurance code',
+            bhxh_process: 'Process of social insurance payment',
             edit_bhxh: 'Edit social insurance',
             add_bhxh: 'Add social insurance',
 
@@ -547,8 +564,8 @@ export default {
             end_date: 'End day',
             type_education: 'Type of education',
             cost: 'Cost',
-            edit_contract:'Edit labor contract',
-            add_contract:'Add labor contract',
+            edit_contract: 'Edit labor contract',
+            add_contract: 'Add labor contract',
 
             list_attachments: 'List of attached documents',
             attachments_code: 'Attachments code',
@@ -556,12 +573,12 @@ export default {
             number: 'Number',
             add_default: 'Add default',
             add_default_title: 'Add the default document',
-            edit_file:'Edit attached documents',
-            add_file:'Add attached documents',
-            no_submitted:'Not submitted',
-            submitted:'Submitted',
+            edit_file: 'Edit attached documents',
+            add_file: 'Add attached documents',
+            no_submitted: 'Not submitted',
+            submitted: 'Submitted',
             returned: 'Returned',
-            no_files:'No files yet',
+            no_files: 'No files yet',
             disc_diploma: 'Highest degree diploma',
             curriculum_vitae: 'Curriculum vitae',
             disc_curriculum_vitae: 'Notarized resume',
@@ -575,10 +592,10 @@ export default {
             disc_birth_certificate: 'Notarized birth certificate',
             job_application: 'Job application',
             disc_job_application: 'Handwritten application letter',
-            commitment:'Commitment',
-            disc_commitment:'Commitment to work',
-            temporary_residence_card:'Temporary residence card',
-            disc_temporary_residence_card:'Certificate of temporary absence',
+            commitment: 'Commitment',
+            disc_commitment: 'Commitment to work',
+            temporary_residence_card: 'Temporary residence card',
+            disc_temporary_residence_card: 'Certificate of temporary absence',
 
 
 
@@ -587,6 +604,7 @@ export default {
             historySalary: 'History of salary',
             sabbatical: 'Sabbatical information'
         },
+        // Quản lý kê hoạch làm việc
         holiday: {
             start_date: 'Start day',
             end_Date: 'End day',

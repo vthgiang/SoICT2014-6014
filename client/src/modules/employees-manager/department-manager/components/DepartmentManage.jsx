@@ -1,71 +1,73 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer } from 'react-toastify';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { ModalEditDepartmentManage } from './ModalEditDepartmentManage';
+import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
+import { DepartmentManageEditFrom } from './DepartmentManageEditFrom';
 import { TreeTable } from '../../../../common-components';
 
 class DepartmentManage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            showEdit: ""
-        }
+        this.state = {}
     }
     componentDidMount() {
         this.props.getDepartment();
+        this.props.getRole();
     }
     handleShowEdit = async (id) => {
         await this.setState({
             ...this.state,
-            showEdit: id
+            currentRow: id
         })
-        window.$(`#modal-viewUnit-${id}`).modal('show');
+        window.$(`#modal-edit-unit`).modal('show');
     }
     render() {
         var data = [];
-        const { translate } = this.props;
-        var { list } = this.props.department;
-        if (list.length !== 0) {
-            data = list;
+        const { translate, department } = this.props;
+        if (department.list.length !== 0) {
+            data = department.list;
             for (let n in data) {
                 data[n] = { ...data[n], action: ["edit"] }
             }
         }
-        var column = [{ name: "Tên đơn vị", key: "name" }, { name: "Mô tả đơn vị", key: "description" }];
+        var column = [{ name: translate('manage_department.name'), key: "name" }, { name: translate('manage_department.description'), key: "description" }];
         return (
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-group">
-                        <h4 className="box-title">Danh sách các đơn vị:</h4>
+                        <h4 className="box-title">{translate('manage_unit.list_unit')}:</h4>
                     </div>
                     <TreeTable
                         behaviour="show-children"
                         column={column}
                         data={data}
                         titleAction={{
-                            edit: "Chỉnh sửa nhân viên các đơn vị",
+                            edit: translate('manage_unit.edit_unit'),
                         }}
                         funcEdit={this.handleShowEdit}
                     />
                 </div>
                 {
-                    this.state.showEdit !== "" && <ModalEditDepartmentManage id={this.state.showEdit} />
+                    this.state.currentRow !== undefined &&
+                    <DepartmentManageEditFrom
+                        _id={this.state.currentRow}
+                        department={department.list.filter(x => x._id === this.state.currentRow)}
+                        role={this.props.role.list} />
                 }
-                <ToastContainer />
             </div >
         );
     };
 }
 
 function mapState(state) {
-    const { department } = state;
-    return { department };
+    const { role, department } = state;
+    return { role, department };
 }
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
+    getRole: RoleActions.get,
 }
 const departmentManage = connect(mapState, actionCreators)(withTranslate(DepartmentManage));
 

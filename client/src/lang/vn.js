@@ -378,6 +378,7 @@ export default {
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
+        // Quản lý lương nhân viên
         salary_employee: {
             list_salary: 'Danh sách bảng lương nhân viên',
             add_salary: 'Thêm bảng lương',
@@ -395,6 +396,7 @@ export default {
             add_more_salary: 'Thêm lương thưởng khác',
             add_new_salary: 'Thêm mới bảng lương',
         },
+        // Quản lý nghỉ phép
         sabbatical: {
             list_sabbatical: 'Danh sách đơn xin nghỉ',
             add_sabbatical: 'Thêm đơn xin nghỉ',
@@ -416,6 +418,7 @@ export default {
             edit_succes: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
+        // Quản lý khen thưởng, kỷ luật
         discipline: {
             list_discipline: 'Danh sách kỷ luật',
             list_discipline_title: 'Danh sách nhân viên bị kỷ luật',
@@ -446,6 +449,20 @@ export default {
             reward_forms: 'Hình thức khen thưởng',
             reason_praise: 'Thành tích (Lý do)',
         },
+        // Quản lý nhân sự các đơn vị
+        manage_unit: {
+            list_unit: 'Danh sách các đơn vị',
+            list_employee_unit: 'Danh sách nhân viên đơn vị',
+            edit_unit: 'Chỉnh sửa nhân sự đơn vị',
+            edit_sucsess: 'Chỉnh sửa nhân sự đơn vị thành công',
+            edit_faile: 'Chỉnh sửa nhân sự đơn vị thất bại',
+            dean_unit:'Trưởng đơn vị',
+            vice_dean_unit:'Phó đơn vị',
+            employee_unit: 'Nhân viên đơn vị',
+            email_employee: 'Email nhân viên',
+            add_employee_unit:'Thêm nhân viên vào đơn vị',
+        },
+        // Quản lý thông tin nhân viên
         manage_employee: {
             note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
             contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
@@ -589,7 +606,7 @@ export default {
             no_submitted: 'Chưa nộp',
             submitted: 'Đã nộp',
             returned: 'Đã trả lại',
-            no_files:'Chưa có file',
+            no_files: 'Chưa có file',
             disc_diploma: 'Bằng tốt nghiệp trình độ học vấn cao nhất',
             curriculum_vitae: 'Sơ yếu lý lịch',
             disc_curriculum_vitae: 'Sơ yếu lý lịch có công chứng',
@@ -603,14 +620,10 @@ export default {
             disc_birth_certificate: 'Giấy khái sinh có công chứng',
             job_application: 'Đơn xin việc',
             disc_job_application: 'Đơn xin việc viết tay',
-            commitment:'Cam kết',
-            disc_commitment:'Giấy cam kết làm việc',
-            temporary_residence_card:'Tạm trú tạm vắng',
-            disc_temporary_residence_card:'Giấy xác nhận tạm trú tạm vắng',
-
-
-
-
+            commitment: 'Cam kết',
+            disc_commitment: 'Giấy cam kết làm việc',
+            temporary_residence_card: 'Tạm trú tạm vắng',
+            disc_temporary_residence_card: 'Giấy xác nhận tạm trú tạm vắng',
 
             Reward: 'Khen thưởng',
             discipline: 'Kỷ luật',
@@ -632,6 +645,7 @@ export default {
             see_all: 'Xem tất cả',
             delete: 'Xóa thông báo'
         },
+        // Quản lý kê hoạch làm việc
         holiday: {
             start_date: 'Ngày bắt đầu',
             end_Date: 'Ngày kết thúc',
