@@ -1,7 +1,7 @@
-const KPIPersonal = require('../../models/kpi-personal.model');
-const Department = require('../../models/department.model');
-const Task= require('../../models/task.model'); 
-const DetailKPIPersonal= require('../../models/detailKPIPersonal.model')
+const KPIPersonal = require('../../../models/kpi-personal.model');
+const Department = require('../../../models/department.model');
+const Task= require('../../../models/task.model'); 
+const DetailKPIPersonal= require('../../../models/detailKPIPersonal.model')
 
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
 exports.getKPIAllMember = async (data) => {

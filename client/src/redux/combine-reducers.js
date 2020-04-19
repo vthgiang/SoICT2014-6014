@@ -26,10 +26,11 @@ import { createKpiUnit } from "../modules/kpi-unit/kpi-unit-create/redux/reducer
 import { overviewKpiUnit } from "../modules/kpi-unit/kpi-unit-overview/redux/reducers";
 
 import {createKpiPersonal} from "./../modules/kpi-personal/kpi-personal-create/redux/reducers"
-import {overviewKpiPersonal} from "./../modules/kpi-personal/kpi-personal-overview/redux/reducers"
+import {KPIPersonalManager} from "./../modules/kpi-personal/kpi-personal-manager/redux/reducers"
+import {dashboardKPIPersonal} from "./../modules/kpi-personal/kpi-personal-dashboard/redux/reducers"
 
 import {tasktemplates} from '../modules/task-template-management/redux/reducers';
-import {kpimembers} from '../modules/kpi-member/redux/reducers';
+import {kpimembers} from '../modules/kpi-member/kpi-member-manager/redux/reducers';
 
 import { performtasks } from "./../modules/task-management/perform-task/redux/reducers";
 import { tasks } from "./../modules/task-management/task-management/redux/reducers";
@@ -70,7 +71,8 @@ const appReducer = combineReducers(Object.assign({
 
     //kpi-personal
     createKpiPersonal,
-    overviewKpiPersonal,
+    KPIPersonalManager,
+    dashboardKPIPersonal,
 
     //tasktemplates
     tasktemplates,

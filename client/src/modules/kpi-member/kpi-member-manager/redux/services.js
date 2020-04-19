@@ -1,10 +1,10 @@
-import {handleResponse} from '../../../helpers/HandleResponse';
+import {handleResponse} from '../../../../helpers/HandleResponse';
 import {
     TOKEN_SECRET, LOCAL_SERVER_API
-} from '../../../env';
+} from '../../../../env';
 import {
     getStorage,AuthenticateHeader
-} from '../../../config';
+} from '../../../../config';
 import jwt from 'jsonwebtoken';
 export const kpiMemberServices = {
     getAllKPIMemberOfUnit,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
-import { overviewKpiActions } from '../redux/actions';
+import { managerKpiActions } from '../redux/actions';
 
 import {
     TOKEN_SECRET
@@ -134,7 +134,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addkpipersonal: overviewKpiActions.addkpipersonal
+    addkpipersonal: managerKpiActions.addkpipersonal
 };
 const connectedModalCopyKPIPersonal = connect(mapState, actionCreators)(ModalCopyKPIPersonal);
 export { connectedModalCopyKPIPersonal as ModalCopyKPIPersonal };

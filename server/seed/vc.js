@@ -425,9 +425,9 @@ const sampleCompanyData = async () => {
             description: 'Khởi tạo KPI cá nhân',
             company: vnist._id
         },
-       { //24  /kpi-personal-manager
-            url: '/kpi-personals/manager',
-            description: 'Quản lí KPI cá nhân',
+        { // 24
+            url: '/kpi-personals/overview',
+            description: 'Tổng quan KPI cá nhân',
             company: vnist._id
         },
         { // 25
@@ -446,7 +446,7 @@ const sampleCompanyData = async () => {
             company: vnist._id
         },
         { // 28
-            url: '/kpi-member/manager',
+            url: '/kpi-member/overview',
             description: 'Quản lí kpi nhân viên',
             company: vnist._id
         },
@@ -461,7 +461,7 @@ const sampleCompanyData = async () => {
             company: vnist._id
         },
         { // 31 /kpi-member-dashboard
-            url: '/kpi-member/dashboard',
+            url: '/kpi-member-dashboard',
             description: 'Dashboard KPI nhân viên',
             company: vnist._id
         },
@@ -475,12 +475,17 @@ const sampleCompanyData = async () => {
             description: 'Tổng quan KPI đơn vị',
             company: vnist._id
         },
-
-        { // 34  kpi-personal-dashboard
+        { //34  /kpi-personal-manager
+            url: '/kpi-personals/manager',
+            description: 'Quản lí KPI cá nhân',
+            company: vnist._id
+        },
+        { // 35  kpi-personal-dashboard
             url: '/kpi-personals/dashboard',
             description: 'DashBoard Kpi cá nhân',
             company: vnist._id
-        }
+        },
+        
     ]);
     
     const updateVnist = await Company.findById(vnist._id);
@@ -799,11 +804,36 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
-         // Gán quyền dashboard kpi cá nhân
-         {
-            resourceId: links[34]._id, // Tổng quan KPI đơn vị
+        {
+            resourceId: links[30]._id, // Dashboard công việc
             resourceType: 'Link',
-            roleId: roles[3]._id // Employee
+            roleId: roles[1]._id // Dean
+        },
+
+        // Gán quyền quản lí kpi cá nhân
+        {
+            resourceId: links[34]._id, // D
+            resourceType: 'Link',
+            roleId: roles[2]._id //Vice Dean
+        },
+        ,
+        {
+            resourceId: links[34]._id, // D
+            resourceType: 'Link',
+            roleId: roles[2]._id // Vice Dean
+        },
+
+        // Gán quyền quản lí dashboard kpi cá nhân
+        {
+            resourceId: links[35]._id, // D
+            resourceType: 'Link',
+            roleId: roles[2]._id //Vice Dean
+        },
+        ,
+        {
+            resourceId: links[35]._id, // D
+            resourceType: 'Link',
+            roleId: roles[2]._id // Vice Dean
         },
 
     ]);
