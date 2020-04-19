@@ -32,7 +32,9 @@ const holiday = require('./modules/employees-manager/holiday/holiday.route');
 const sample = require('./modules/_sample-module/_sample.route');
 const document = require('./modules/documents-management/document.route');
 const createKpiUnit = require("./modules/kpi-unit/kpi-unit-create/create.route");
-const overviewKpiUnit = require("./modules/kpi-unit/kpi-unit-overview/overview.route");
+// const overviewKpiUnit = require("./modules/kpi-unit/kpi-unit-overview/overview.route");
+const dashboardKpiUnit = require("./modules/kpi-unit/kpi-unit-dashboard/dashboard.route");
+const managerKpiUnit = require("./modules/kpi-unit/kpi-unit-manager/manager.route");
 const createKpiPersonal = require("./modules/kpi-personal/kpi-personal-create/create.route")
 const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overview/overview.route")
 const tasktemplates =require ("./modules/task-template-management/task-template-management.route")
@@ -111,7 +113,10 @@ app.use("/component", component);
 
 // app.use("/kpiunits", kpiunits);
 app.use("/kpiunits", createKpiUnit);
-app.use("/kpiunits", overviewKpiUnit);
+// app.use("/kpiunits", overviewKpiUnit);
+app.use("/kpiunits", dashboardKpiUnit);
+app.use("/kpiunits", managerKpiUnit);
+
 // app.use("/kpipersonals", kpipersonals);
 app.use("/kpipersonals", createKpiPersonal);
 app.use("/kpipersonals", overviewKpiPersonal);

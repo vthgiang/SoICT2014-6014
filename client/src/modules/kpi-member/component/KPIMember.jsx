@@ -304,7 +304,7 @@ class KPIMember extends Component {
                             </td>
                             </tr>
                             ) : <tr>
-                            <td colSpan={7}>
+                            <td colSpan={8}>
                                 <center>Không có dữ liệu</center>
                             </td>
                             </tr>}

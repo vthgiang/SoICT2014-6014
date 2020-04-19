@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { overviewServices } from '../../../kpi-unit/kpi-unit-overview/redux/services';
+import { managerServices } from '../../../kpi-unit/kpi-unit-manager/redux/services';
 
 class ModalDetailKPIPersonal extends Component {
     // componentDidMount() {
@@ -273,12 +273,12 @@ class ModalDetailKPIPersonal extends Component {
 }
 
 function mapState(state) {
-    const { overviewKpiUnit } = state;
-    return { overviewKpiUnit };
+    const { managerKpiUnit } = state;
+    return { managerKpiUnit };
 }
 
 const actionCreators = {
-    getAllTarget: overviewServices.getAllTargetByUnitId,
+    getAllTarget: managerServices.getAllTargetByUnitId,
 };
 const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(ModalDetailKPIPersonal);
 export { connectedModalDetailKPIPersonal as ModalDetailKPIPersonal };

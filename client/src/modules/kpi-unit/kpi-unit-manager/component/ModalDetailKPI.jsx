@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { overviewActions } from '../redux/actions';
-// import { kpiUnitActions } from '../../../../redux-actions/CombineActions';
+import { managerActions } from '../redux/actions';
 
 class ModalDetailKPI extends Component {
     componentDidMount() {
@@ -27,8 +26,8 @@ class ModalDetailKPI extends Component {
     }
     render() {
         var currentKPI;
-        const { overviewKpiUnit, kpiunit } = this.props;
-        if (overviewKpiUnit.currentKPI) currentKPI = overviewKpiUnit.currentKPI;
+        const { managerKpiUnit, kpiunit } = this.props;
+        if (managerKpiUnit.currentKPI) currentKPI = managerKpiUnit.currentKPI;
         return (
             <div className="modal modal-full fade" id={"dataResultTask" + this.props.kpiunit._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -36,8 +35,8 @@ class ModalDetailKPI extends Component {
                         {/* Modal Header */}
                         <div className="modal-header" style={{ textAlign: "center", background: "#605ca8", color: "white" }}>
                             <button type="button" className="close" data-dismiss="modal">
-                                <span aria-hidden="true">×</span>
-                                <span className="sr-only">Close</span>
+                                <span  classname="modal-full" style={{color:"#ffffff"}}>×</span>
+                                {/* <span className="sr-only">Close</span> */}
                             </button>
                             <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi đơn vị tháng 1 năm 2020</h3>
                         </div>
@@ -226,13 +225,13 @@ class ModalDetailKPI extends Component {
 }
 
 function mapState(state) {
-    const { overviewKpiUnit } = state;
-    return { overviewKpiUnit };
+    const { managerKpiUnit } = state;
+    return { managerKpiUnit };
 }
 
 const actionCreators = {
-    getCurrentKPIUnit: overviewActions.getCurrentKPIUnit,
-    getChildTarget: overviewActions.getChildTargetOfCurrentTarget
+    getCurrentKPIUnit: managerActions.getCurrentKPIUnit,
+    getChildTarget: managerActions.getChildTargetOfCurrentTarget
 };
 const connectedModalDetailKPI = connect(mapState, actionCreators)(ModalDetailKPI);
 export { connectedModalDetailKPI as ModalDetailKPI };

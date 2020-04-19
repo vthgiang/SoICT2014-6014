@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { overviewActions } from '../redux/actions';
+import { managerActions } from '../redux/actions';
 // import { kpiUnitActions } from '../../../../redux-actions/CombineActions';
 import Swal from 'sweetalert2';
 import {
@@ -126,12 +126,12 @@ class ModalCopyKPIUnit extends Component {
 }
 
 function mapState(state) {
-    const { overviewKpiUnit } = state;
-    return { overviewKpiUnit };
+    const { managerKpiUnit } = state;
+    return { managerKpiUnit };
 }
 
 const actionCreators = {
-    addKPIUnit: overviewActions.addKPIUnit
+    addKPIUnit: managerActions.addKPIUnit
 };
 const connectedModalCopyKPIUnit = connect(mapState, actionCreators)(ModalCopyKPIUnit);
 export { connectedModalCopyKPIUnit as ModalCopyKPIUnit };

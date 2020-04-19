@@ -416,8 +416,8 @@ const sampleCompanyData = async () => {
             company: vnist._id
         },
         { // 22
-            url: '/kpi-units/overview',
-            description: 'Tổng quan KPI đơn vị',
+            url: '/kpi-units/dashboard',
+            description: 'Dashboard KPI đơn vị',
             company: vnist._id
         },
         { // 23
@@ -464,7 +464,13 @@ const sampleCompanyData = async () => {
             url: '/kpi-member-dashboard',
             description: 'Dashboard KPI nhân viên',
             company: vnist._id
-        }
+        },
+        { // 32
+            url: '/kpi-units/manager',
+            description: 'Quản lý KPI đơn vị',
+            company: vnist._id
+        },
+        
     ]);
     
     const updateVnist = await Company.findById(vnist._id);
@@ -699,20 +705,36 @@ const sampleCompanyData = async () => {
             roleId: roles[1]._id // Dean
         },
         {
-            resourceId: links[22]._id, // Tổng quan KPI đơn vị
+            resourceId: links[22]._id, // Dashboard KPI đơn vị
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
         {
-            resourceId: links[22]._id, // Tổng quan KPI đơn vị
+            resourceId: links[22]._id, // Dashboard KPI đơn vị
             resourceType: 'Link',
             roleId: roles[2]._id // Vice Dean
         },
         {
-            resourceId: links[22]._id, // Tổng quan KPI đơn vị
+            resourceId: links[22]._id, // Dashboard KPI đơn vị
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
+        {
+            resourceId: links[32]._id, // Danh sách KPI đơn vị
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[32]._id, // Danh sách KPI đơn vị
+            resourceType: 'Link',
+            roleId: roles[2]._id // ViceDean
+        },
+        {
+            resourceId: links[32]._id, // Danh sách KPI đơn vị
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        
         {
             resourceId: links[23]._id, // Khởi tạo KPI cá nhân
             resourceType: 'Link',

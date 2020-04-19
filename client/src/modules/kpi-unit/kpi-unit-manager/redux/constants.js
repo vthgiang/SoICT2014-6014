@@ -1,4 +1,4 @@
-export const overviewConstants = {
+export const managerConstants = {
     GETALL_KPIUNIT_REQUEST: 'GETALL_KPIUNIT_REQUEST',
     GETALL_KPIUNIT_SUCCESS: 'GETALL_KPIUNIT_SUCCESS',
     GETALL_KPIUNIT_FAILURE: 'GETALL_KPIUNIT_FAILURE',

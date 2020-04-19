@@ -5,7 +5,7 @@ import {
 import {
     getStorage, AuthenticateHeader
 } from '../../../../config';
-export const overviewServices = {
+export const managerServices = {
     getAllKPIUnit,
     getCurrentKPIUnit,
     getChildTargetOfCurrentTarget,

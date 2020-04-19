@@ -23,7 +23,8 @@ import {notifications} from '../modules/notifications/redux/reducers';
 
 
 import { createKpiUnit } from "../modules/kpi-unit/kpi-unit-create/redux/reducers";
-import { overviewKpiUnit } from "../modules/kpi-unit/kpi-unit-overview/redux/reducers";
+import { dashboardKpiUnit } from "../modules/kpi-unit/kpi-unit-dashboard/redux/reducers";
+import { managerKpiUnit } from "../modules/kpi-unit/kpi-unit-manager/redux/reducers";
 
 import {createKpiPersonal} from "./../modules/kpi-personal/kpi-personal-create/redux/reducers"
 import {overviewKpiPersonal} from "./../modules/kpi-personal/kpi-personal-overview/redux/reducers"
@@ -66,7 +67,8 @@ const appReducer = combineReducers(Object.assign({
 
     // kpi-unit
     createKpiUnit,
-    overviewKpiUnit,
+    dashboardKpiUnit,
+    managerKpiUnit,
 
     //kpi-personal
     createKpiPersonal,

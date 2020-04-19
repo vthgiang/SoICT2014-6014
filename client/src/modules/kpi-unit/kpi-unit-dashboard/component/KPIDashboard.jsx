@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { overviewActions } from '../redux/actions';
-import { ModalDetailKPI } from './ModalDetailKPI';
+import { dashboardActions } from '../redux/actions';
+// import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../Chart/canvasjs.react';
-import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
+// import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
 
-class KPIUnitOverview extends Component {
+class KPIUnitDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showModalCopy: "",
             currentRole: localStorage.getItem("currentRole")
         };
     }
@@ -71,19 +70,19 @@ class KPIUnitOverview extends Component {
 
         return [month, year].join('-');
     }
-    showModalCopy = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showModalCopy: id
-            }
-        })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
-    }
+    // showModalCopy = async (id) => {
+    //     await this.setState(state => {
+    //         return {
+    //             ...state,
+    //             showModalCopy: id
+    //         }
+    //     })
+    //     var element = document.getElementsByTagName("BODY")[0];
+    //     element.classList.add("modal-open");
+    //     var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
+    //     modal.classList.add("in");
+    //     modal.style = "display: block; padding-right: 17px;";
+    // }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
         return (currentRole === deanCurrentUnit);
@@ -91,7 +90,7 @@ class KPIUnitOverview extends Component {
     render() {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
-        const { department, overviewKpiUnit } = this.props;
+        const { department, dashboardKpiUnit } = this.props;
         if (department.unitofuser) {
             unitList = department.unitofuser;
             currentUnit = unitList.filter(item =>
@@ -99,8 +98,8 @@ class KPIUnitOverview extends Component {
                 || item.vice_dean === this.state.currentRole
                 || item.employee === this.state.currentRole);
         }
-        if (overviewKpiUnit.kpis) {
-            listkpi = overviewKpiUnit.kpis;
+        if (dashboardKpiUnit.kpis) {
+            listkpi = dashboardKpiUnit.kpis;
             if(typeof listkpi !== "undefined" && listkpi.length !== 0)//listkpi.content
             {
                 kpiApproved = listkpi.filter(item => item.status === 2);
@@ -285,18 +284,6 @@ class KPIUnitOverview extends Component {
         ]}
         return (
             <div className="table-wrapper box">
-                {/* <div className="content-wrapper"> */}
-                    {/* <section className="content-header">
-                        <h1>
-                            Tổng quan KPI đơn vị
-                        </h1>
-                        <ol className="breadcrumb">
-                            <li><a href="/"><i className="fa fa-dashboard" /> Trang chủ</a></li>
-                            <li><a href="/">Quản lý kpi</a></li>
-                            <li className="active">Kpi đơn vị</li>
-                            <li className="active">Tổng quan kpi đơn vị</li>
-                        </ol>
-                    </section> */}
                     <section className="content">
                         <div className="row">
                             <div className="col-xs-12">
@@ -319,62 +306,22 @@ class KPIUnitOverview extends Component {
                                     <CanvasJSReact options={options3} />
                                 </div>
                             </div>
-                            <div className="col-xs-12">
-                                <div className="box">
-                                    <div className="box-header">
-                                        <h3 className="box-title">Bảng danh sách kpi đơn vị hàng tháng</h3>
-                                    </div>
-                                    <div className="box-body">
-                                        <table id="example1" className="table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th title="Người tạo">Người tạo</th>
-                                                    <th title="Thời gian">Thời gian</th>
-                                                    <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
-                                                    <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                                    <th style={this.checkPermisson(currentUnit && currentUnit[0].dean) ? { width: "120px" } : { width: "91px" }}>Hành động</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    (typeof listkpi !== "undefined" && listkpi.length !== 0) ?
-                                                        listkpi.map((item, index) =>
-                                                            <tr key={index}>
-                                                                <td>{item.creater.name}</td>
-                                                                <td>{this.formatDate(item.time)}</td>
-                                                                <td>{item.listtarget.length}</td>
-                                                                <td>{item.result}</td>
-                                                                <td>
-                                                                    <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Xem chi tiết KPI tháng này" ><i className="material-icons">view_list</i></a>
-                                                                    <ModalDetailKPI kpiunit={item} />
-                                                                    {this.checkPermisson(currentUnit && currentUnit[0].dean) && <a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>}
-                                                                    {this.state.showModalCopy === item._id ? <ModalCopyKPIUnit kpiunit={item} /> : null}
-                                                                    {this.checkPermisson(currentUnit && currentUnit[0].dean) && item.status === 1 ? <a style={{ color: "navy" }} href="#abc" onClick={() => this.props.refreshData(item._id)} title="Cập nhật kết quả mới nhất của KPI này" ><i className="material-icons">refresh</i></a> : null}
-                                                                </td>
-                                                            </tr>) : null
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </section>
-                {/* </div> */}
             </div>
         );
     }
 }
 
 function mapState(state) {
-    const { department, overviewKpiUnit } = state;
-    return { department, overviewKpiUnit };
+    const { department, dashboardKpiUnit } = state;
+    return { department, dashboardKpiUnit };
 }
 
 const actionCreators = {
     getDepartment: DepartmentActions.getDepartmentOfUser,
-    getAllKPIUnit: overviewActions.getAllKPIUnit,
-    refreshData: overviewActions.evaluateKPIUnit
+    getAllKPIUnit: dashboardActions.getAllKPIUnit,
+    refreshData: dashboardActions.evaluateKPIUnit
 };
-const connectedKPIUnitOverview = connect(mapState, actionCreators)(KPIUnitOverview);
-export { connectedKPIUnitOverview as KPIUnitOverview };
+const connectedKPIUnitDashboard = connect(mapState, actionCreators)(KPIUnitDashboard);
+export { connectedKPIUnitDashboard as KPIUnitDashboard };
