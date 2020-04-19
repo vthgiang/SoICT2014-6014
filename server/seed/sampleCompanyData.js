@@ -446,7 +446,7 @@ const sampleCompanyData = async () => {
             company: vnist._id
         },
         { // 28
-            url: '/kpi-member/overview',
+            url: '/kpi-member/manager',
             description: 'Quản lí kpi nhân viên',
             company: vnist._id
         },
@@ -461,7 +461,7 @@ const sampleCompanyData = async () => {
             company: vnist._id
         },
         { // 31 /kpi-member-dashboard
-            url: '/kpi-member-dashboard',
+            url: '/kpi-member/dashboard',
             description: 'Dashboard KPI nhân viên',
             company: vnist._id
         },

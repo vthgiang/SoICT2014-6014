@@ -13,7 +13,8 @@ router.get('/user/task-accounatable/:unit/:user/:number/:perpage/:status/:priori
 router.get('/user/task-consulted/:unit/:user/:number/:perpage/:status/:priority/:specical/:name', auth, TaskManagementController.getTaskConsultedByUser);
 router.get('/user/task-creator/:unit/:user/:number/:perpage/:status/:priority/:specical/:name',auth, TaskManagementController.getTaskCreatorByUser);
 router.get('/user/task-informed/:unit/:user/:number/:perpage/:status/:priority/:specical/:name', auth, TaskManagementController.getTaskInformedByUser);
-router.post('/create', TaskManagementController.create);
+router.post('/create', auth, TaskManagementController.create);
 router.delete('/:id', auth, TaskManagementController.delete);
+router.patch('/:id', auth, TaskManagementController.editStatusOfTask);
 
 module.exports = router;

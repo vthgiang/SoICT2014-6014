@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { ModalMemberApprove } from './ModalMemberApprove';
-import { ModalMemberEvaluate } from './ModalMemberEvaluate';
 import { connect } from 'react-redux';
-import { UserActions } from "../../super-admin-management/users-management/redux/actions";
+import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
 import { kpiMemberActions } from '../redux/actions';
-import { DepartmentActions } from '../../super-admin-management/departments-management/redux/actions' ;
 import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../Chart/canvasjs.react.js';
+import CanvasJSReact from '../../../../Chart/canvasjs.react.js';
  
 class DashBoardKPIMember extends Component {
     constructor(props) {
@@ -220,7 +217,7 @@ class DashBoardKPIMember extends Component {
                             <li className="active">Advanced Elements</li>
                         </ol>
                     </section> */}
-                    <section className="content">
+                   <section className="content">
                         <div className="row">
                             <div className="col-md-3 col-sm-6 form-inline">
                                 <div className="info-box">

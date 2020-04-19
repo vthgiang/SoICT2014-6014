@@ -30,7 +30,7 @@ import {KPIPersonalManager} from "./../modules/kpi-personal/kpi-personal-manager
 import {dashboardKPIPersonal} from "./../modules/kpi-personal/kpi-personal-dashboard/redux/reducers"
 
 import {tasktemplates} from '../modules/task-template-management/redux/reducers';
-import {kpimembers} from '../modules/kpi-member/redux/reducers';
+import {kpimembers} from '../modules/kpi-member/kpi-member-manager/redux/reducers';
 
 import { performtasks } from "./../modules/task-management/perform-task/redux/reducers";
 import { tasks } from "./../modules/task-management/task-management/redux/reducers";

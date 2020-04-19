@@ -41,7 +41,7 @@ const performtask = require("./modules/task-management/perform-task/perform-task
 const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
 const componentsDefault = require('./modules/system-admin-management/components-default-management/component-default.route');
 const rolesDefault = require('./modules/system-admin-management/roles-default-management/role-default.route');
-const kpimember = require('./modules/kpi-member/kpiMember.route');
+const kpimember = require('./modules/kpi-member/kpi-member-manager/kpiMember.route');
 
 // APP
 const app = express();

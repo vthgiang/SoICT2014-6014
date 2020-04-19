@@ -37,8 +37,8 @@ import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/com
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
 import {KPIPersonalManager} from "../modules/kpi-personal/kpi-personal-manager/component/KPIPersonalManager";
 import {DashBoardKPIPersonal} from "../modules/kpi-personal/kpi-personal-dashboard/component/DashBoardKPIPersonal";
-import {KPIMember} from "../modules/kpi-member/component/KPIMember";
-import {DashBoardKPIMember} from "../modules/kpi-member/component/DashBoardKPIMember";
+import {KPIMember} from "../modules/kpi-member/kpi-member-manager/component/KPIMember";
+import {DashBoardKPIMember} from "../modules/kpi-member/kpi-member-dashboard/component/DashBoardKPIMember";
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
@@ -564,31 +564,31 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ this.props.kpimembers.isLoading }
-                        key={ 'kpi_member' }
+                        key={ 'kpi_member_manager' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link:'/kpi-member/overview', name: 'kpi_member', icon:'fa fa-number' }
+                            { link:'/kpi-member/manager', name: 'kpi_member_manager', icon:'fa fa-number' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={'/kpi-member/overview'}
-                        path={ '/kpi-member/overview' }
-                        pageName= "KPI member"
+                        link={'/kpi-member/manager'}
+                        path={ '/kpi-member/manager' }
+                        pageName= "kpi_member_manager"
                         layout={ Layout }
                         component={ KPIMember }
                     />
                     <PrivateRoute 
                         isLoading={ false }
-                        key={ 'kpi-member-dashboard' }
+                        key={ 'kpi_member_dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link:'/kpi-member-dashboard', name: 'kpi-member-dashboard', icon:'fa fa-number' }
+                            { link:'/kpi-member/dashboard', name: 'kpi_member_dashboard', icon:'fa fa-number' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={'/kpi-member-dashboard'}
-                        path={ '/kpi-member-dashboard' }
-                        pageName= "DashBoard"
+                        link={'/kpi-member/dashboard'}
+                        path={ '/kpi-member/dashboard' }
+                        pageName= "kpi_member_dashboard"
                         layout={ Layout }
                         component={ DashBoardKPIMember }
                     />
