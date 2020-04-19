@@ -250,6 +250,8 @@ export default {
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
+            kpi_personal_dashboard: 'Dashboard KPI cá nhân',
+            kpi_personal_manager: 'Quản lí KPI cá nhân',
 
             notifications: 'Thông báo',
 

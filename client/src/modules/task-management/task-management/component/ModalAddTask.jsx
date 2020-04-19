@@ -7,10 +7,10 @@ import {
     getStorage
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
-// import { DepartmentActions, UserActions, overviewKpiActions } from '../../../../redux-actions/CombineActions';
+// import { DepartmentActions, UserActions, managerKpiActions } from '../../../../redux-actions/CombineActions';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { UserActions } from '../../../super-admin-management/users-management/redux/actions';
-import { overviewKpiActions } from '../../../kpi-personal/kpi-personal-overview/redux/actions';
+import { managerKpiActions } from '../../../kpi-personal/kpi-personal-manager/redux/actions';
 import { taskTemplateActions } from '../../../task-template-management/redux/actions';
 // import { taskTemplateActions } from '../../../../redux-actions/CombineActions';//đợi nhóm Khoa--------------------------------------
 import { taskManagementActions } from '../redux/actions';
@@ -191,7 +191,7 @@ class ModalAddTask extends Component {
     render() {
         var units, currentUnit, userdepartments, listTaskTemplate, currentTemplate, listKPIPersonal;
         const { newTask, submitted } = this.state;
-        const { department, tasktemplates, user, overviewKpiPersonal } = this.props; //kpipersonals
+        const { department, tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
         if (tasktemplates.items) {
             listTaskTemplate = tasktemplates.items;
             currentTemplate = listTaskTemplate.filter(item => item.resourceId._id === this.state.currentTemplate);
@@ -205,7 +205,7 @@ class ModalAddTask extends Component {
         }
         if (user.userdepartments) userdepartments = user.userdepartments;
         // if (kpipersonals.kpipersonals) listKPIPersonal = kpipersonals.kpipersonals;
-        if (overviewKpiPersonal.kpipersonals) listKPIPersonal = overviewKpiPersonal.kpipersonals;
+        if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
         return (
             <div className="modal modal-full fade" id={`addNewTask${this.props.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">
@@ -464,8 +464,8 @@ class ModalAddTask extends Component {
 }
 
 function mapState(state) {
-    const { department, tasktemplates, tasks, user, overviewKpiPersonal } = state;//fix--------------kpipersonals-->overviewKpiPersonal-------department(s)----------
-    return { department, tasktemplates, tasks, user, overviewKpiPersonal };
+    const { department, tasktemplates, tasks, user, KPIPersonalManager } = state;//fix--------------kpipersonals-->KPIPersonalManager-------department(s)----------
+    return { department, tasktemplates, tasks, user, KPIPersonalManager };
 }
 
 const actionCreators = {
@@ -474,8 +474,8 @@ const actionCreators = {
     getDepartment: DepartmentActions.getDepartmentOfUser,//có r
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,//có r
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
-    // getAllKPIPersonalByMember: overviewKpiActions.getAllKPIPersonalByMember//overviewKpiPersonal----overviewKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
-    getAllKPIPersonalByUserID: overviewKpiActions.getAllKPIPersonalByUserID//overviewKpiPersonal----overviewKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
+    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(ModalAddTask);

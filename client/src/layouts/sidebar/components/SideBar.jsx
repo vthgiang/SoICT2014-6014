@@ -370,10 +370,22 @@ class SideBar extends Component {
                                             </li>
                                         }
                                         
-                                        {
+                                        {/* {
                                             (this.checkURL('/kpi-personals/overview', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-personals/overview" ? "active" : ""}>
                                                 <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
+                                            </li>
+                                        } */}
+                                        {
+                                            (this.checkURL('/kpi-personals/manager', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-personals/manager" ? "active" : ""}>
+                                                <Link to="/kpi-personals/manager">{translate(`menu.kpi_personal_manager`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            (this.checkURL('/kpi-personals/dashboard', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-personals/dashboard" ? "active" : ""}>
+                                                <Link to="/kpi-personals/dashboard">{translate(`menu.kpi_personal_dashboard`)}</Link>
                                             </li>
                                         }
                                         {

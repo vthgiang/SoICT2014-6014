@@ -5,8 +5,9 @@ import {
     getStorage, AuthenticateHeader
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
 import {handleResponse} from '../../../../helpers/HandleResponse';
-export const overviewKpiServices = {
+export const dashboardKPIPerService = {
     getAllKPIPersonalByMember,
     getAllKPIPersonalOfTask,
     getAllKPIPersonalByUserID
