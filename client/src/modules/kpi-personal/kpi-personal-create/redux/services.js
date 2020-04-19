@@ -7,6 +7,8 @@ import {
     getStorage,AuthenticateHeader
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
+
 export const createKpiService = {
     getCurrentKPIPersonal,
     editKPIPersonal,
@@ -19,17 +21,20 @@ export const createKpiService = {
     createKPIPersonal,
     approveKPIPersonal
 };
+
 // Lấy KPI cá nhân hiện tại
 async function getCurrentKPIPersonal() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
+
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/current/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // chỉnh sửa kpi cá nhân
@@ -38,64 +43,73 @@ async function editKPIPersonal(id, newTarget) {
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var creater = verified._id;
     newTarget = {...newTarget, creater: creater};
+
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
         method: 'PUT',
-        body: JSON.stringify(newTarget),
+        data: newTarget,
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
+
 // chỉnh sửa trạng thái của kpi cá nhân
 function editStatusKPIPersonal(id, status) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`,
         method: 'PUT',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
+
 // Xóa KPI cá nhân
 function deleteKPIPersonal(id) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
         method: 'DELETE',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Xóa mục tiêu kpi cá nhân
 function deleteTarget(id, kpipersonal) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`,
         method: 'DELETE',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // thêm mục tiêu KPI cá nhân 
 function addNewTargetPersonal(newTarget) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/create-target`,
         method: 'POST',
+        data: JSON.stringify(newTarget),
         headers: AuthenticateHeader(),
-        body: JSON.stringify(newTarget)
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/create-target`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 
 // Chỉnh sửa mục tiêu KPI cá nhân
 function editTargetKPIPersonal(id, newTarget) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/target/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTarget)
+        data: JSON.stringify(newTarget),
+        headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/target/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // khởi tạo kpi cá nhân 
@@ -105,21 +119,25 @@ async function createKPIPersonal(newKPI) {
     var id = verified._id;
     console.log(id);
     newKPI = {...newKPI, creater: id};
+
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/create`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newKPI)
+        data: JSON.stringify(newKPI),
+        headers: AuthenticateHeader()
+      
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/create`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Phê duyệt kpi cá nhân
 function approveKPIPersonal(id) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpipersonals/approve/${id}`,
         method: 'PUT',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/approve/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }

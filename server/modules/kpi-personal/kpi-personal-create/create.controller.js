@@ -9,12 +9,16 @@ exports.getByUser = async (req, res) => {
        var kpipersonals= await KPIPersonalService.getByUser(req.params.id);
         await LogInfo(req.user.email, ` get kpi personal by user id `, req.user.company);
         res.status(200).json({
+            success: true,
             message: "Lấy danh sách các mục tiêu hiện tại của kpi cá nhân",
             content: kpipersonals
         });
     } catch (error) {
         await LogError(req.user.email, ` get kpi personal by user id `, req.user.company)
-        res.status(400).json({message: error});
+        res.status(400).json({
+            success: false,
+            message: error
+        });
     }
 }
 
@@ -25,43 +29,55 @@ exports.create =async (req, res) => {
 
         await LogInfo(req.user.email, ` create kpi personal `, req.user.company)
         res.status(200).json({
+            success: true,
             message: "Khởi tạo thành công KPI cá nhân",
-            kpipersonal: kpipersonal
+            content: kpipersonal
         })
     } catch (error) {
         await LogError(req.user.email, ` create kpi personal `, req.user.company)
-        res.status(400).json({message: error});
+        res.status(400).json({
+            success: false,
+            message: error
+        });
     }
   
 }
-// create new target of personal kpi
+
+// Tạo 1 mục tiêu KPI mới
 exports.createTarget = async (req, res) => {
     try {
-       var kpipersonal= await KPIPersonalService.createTarget(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.kpipersonal);
-       await LogInfo(req.user.email, ` create target kpi personal `, req.user.company)
-       res.status(200).json({
-        message: "Thêm mới thành công một mục tiêu của kpi cá nhân",
-        kpipersonal: kpipersonal
-       })
+        var kpipersonal= await KPIPersonalService.createTarget(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.kpipersonal);
+        await LogInfo(req.user.email, ` create target kpi personal `, req.user.company)
+        res.status(200).json({
+            success: true,
+            message: "Thêm mới thành công một mục tiêu của kpi cá nhân",
+            content: kpipersonal
+        })
     } catch (error) {
         await LogError(req.user.email, ` create target kpi personal `, req.user.company)
         res.status(400).json({
+            success: false,
             message: error
         })
     }
 }
+
 // Chỉnh sửa thông tin chung của kpi cá nhân
 exports.edit = async (req, res) => {
     try {
         var kpipersonal= await KPIPersonalService.editById(req.body.time,req.params.id);
         await LogInfo(req.user.email, ` edit kpi personal `, req.user.company)
         res.status(200).json({
+            success: true,
             message: "Chỉnh sửa thành công KPI của cá nhân",
-            kpipersonal: kpipersonal
+            content: kpipersonal
         });
     } catch (error) {
         await LogError(req.user.email, ` edit kpi personal `, req.user.company)
-        res.status(400).json({message:error});
+        res.status(400).json({
+            success: false,
+            message: error
+        });
     }
 }
 
@@ -72,12 +88,14 @@ exports.editStatusKPIPersonal = async (req, res) => {
         var kpipersonal = await KPIPersonalService.editStatusKPIPersonal(req.params.id,req.params.status);
         await LogInfo(req.user.email, ` edit status kpi personal `, req.user.company)
         res.status(200).json({
+            success: true,
             message: "Xác nhận yêu cầu phê duyệt thành công",
-            kpipersonal: kpipersonal
+            content: kpipersonal
         })
     } catch (error) {
         await LogError(req.user.email, ` edit status kpi personal `, req.user.company)
         res.status(400).json({
+            success: false,
             message: error
         })
     }
@@ -91,13 +109,15 @@ exports.delete = async (req, res) => {
         listTarget = arr[1];
         await LogInfo(req.user.email, ` delete kpi personal `, req.user.company)
         res.status(200).json({
+            success: true,
             message: "Xóa thành công một mục tiêu của cá nhân",
-            kpipersonal: kpipersonal,
+            content: kpipersonal,
             listtarget: listTarget
         })
     } catch (error) {
         await LogError(req.user.email, ` delete kpi personal `, req.user.company)
         res.status(400).json({
+            success: false,
             message: error
         })
 
@@ -110,30 +130,36 @@ exports.editTarget = async (req, res) => {
         var target = await KPIPersonalService.editTarget(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id);
         await LogInfo(req.user.email, ` edit target kpi personal `, req.user.company)
         res.status(200).json({
+            success: true,
             message: "Chỉnh sửa thành công một mục tiêu của cá nhân",
-            target: target
+            content: target
         })
     } catch (error) {
         await LogError(req.user.email, ` edit target kpi personal `, req.user.company)
         res.status(400).json({
+            success: false,
             message : error
         })
     }
 
 }
 
-// delete target of personal kpi
+// Xóa 1 mục tiêu KPI cá nhân
 exports.deleteTarget = async (req, res) => {
     try {
         var kpipersonal = await KPIPersonalService.deleteTarget(req.params.id,req.params.kpipersonal);
         await LogInfo(req.user.email, ` delete target kpi personal `, req.user.company)
         res.status(200).json({
+            success: true,
             message: "Xóa thành công một mục tiêu của cá nhân",
-            kpipersonal: kpipersonal,
+            content: kpipersonal,
         })
     } catch (error) {
         await LogError(req.user.email, ` delete target kpi personal `, req.user.company)
-        res.status(400).json({message:error});
+        res.status(400).json({
+            success: false,
+            message:error
+        });
     }
     return KPIPersonalService.deleteTarget(req.params.id,req.params.kpipersonal);
 }
