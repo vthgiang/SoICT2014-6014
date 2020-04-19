@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { ModalMemberApprove } from './ModalMemberApprove';
-import { ModalMemberEvaluate } from './ModalMemberEvaluate';
 import { connect } from 'react-redux';
-import { UserActions } from "../../super-admin-management/users-management/redux/actions";
+import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
 import { kpiMemberActions } from '../redux/actions';
-import { DepartmentActions } from '../../super-admin-management/departments-management/redux/actions' ;
 import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../Chart/canvasjs.react.js';
+import CanvasJSReact from '../../../../Chart/canvasjs.react.js';
  
 class DashBoardKPIMember extends Component {
     constructor(props) {
@@ -220,18 +217,19 @@ class DashBoardKPIMember extends Component {
                             <li className="active">Advanced Elements</li>
                         </ol>
                     </section> */}
-                    <section className="content">
+                   <section className="content">
                         <div className="row">
-                            <div className="col-md-3 col-sm-6 col-xs-12">
+                            <div className="col-md-3 col-sm-6 form-inline">
                                 <div className="info-box">
-                                    <span className="info-box-icon bg-aqua"><i className="ion ion-ios-gear-outline" /></span>
+                                    <span className="info-b
+                                    ox-icon bg-aqua"><i className="ion ion-ios-gear-outline" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">Đã thiết lập</span>
                                         <span className="info-box-number">38/40</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-3 col-sm-6 col-xs-12">
+                            <div className="col-md-3 col-sm-6 form-inline">
                                 <div className="info-box">
                                     <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
                                     <div className="info-box-content">
@@ -241,7 +239,7 @@ class DashBoardKPIMember extends Component {
                                 </div>
                             </div>
                             <div className="clearfix visible-sm-block" />
-                            <div className="col-md-3 col-sm-6 col-xs-12">
+                            <div className="col-md-3 col-sm-6 form-inline">
                                 <div className="info-box">
                                     <span className="info-box-icon bg-green"><i className="fa fa-comments-o" /></span>
                                     <div className="info-box-content">
@@ -250,7 +248,7 @@ class DashBoardKPIMember extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-3 col-sm-6 col-xs-12">
+                            <div className="col-md-3 col-sm-6 form-inline">
                                 <div className="info-box">
                                     <span className="info-box-icon bg-yellow"><i className="ion ion-ios-people-outline" /></span>
                                     <div className="info-box-content">
@@ -402,41 +400,49 @@ class DashBoardKPIMember extends Component {
                                             </div>
                                         </div>
                                         {/* /.box-header */}
-                                        <div className="box-body">
-                                                <div className="col-xs-12">
-                                                    <div className='col-xs-4 item-container'>
-                                                        <label>Nhân viên:</label>
-                                                        {userdepartments && <select defaultValue={userdepartments[1].userId._id} className="form-control select2" style={{ width: '55%' }} ref={input => this.user = input}>
-                                                        <optgroup label={userdepartments[1].roleId.name}>
-                                                                        <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>{userdepartments[1].userId.name}</option>
-                                                                    </optgroup>
-                                                                    <optgroup label={userdepartments[2].roleId.name}>
-                                                                        <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>{userdepartments[2].userId.name}</option>
-                                                                    </optgroup>
-                                                        </select>}
+                                        <div className="box-body qlcv">
+                                        
+                                                <div className="form-inline">
+                                                   
+                                                    <div className="form-group" >
+                                                        <label>Từ tháng:</label>
+                                                        {/* <div className='input-group col-sm-4 date has-feedback'> */}
+                                                            {/* <div className="input-group-addon"> */}
+                                                                {/* <i className="fa fa-calendar" /> */}
+                                                             {/* </div> */}
+                                                            <input type="text" className="form-control" ref={input => this.starttime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
+                                                        {/* </div> */}
                                                     </div>
-                                                    <div className="col-xs-4" style={{marginLeft: "-60px", marginTop: "7px"}}>
-                                                        <label className="col-xs-4" style={{ marginLeft: "-15px" }}>Từ tháng:</label>
-                                                        <div className='input-group col-sm-4 date has-feedback' style={{ display: "inline-table", marginLeft: "5px", marginTop: "-8px", width: "55%" }}>
-                                                            <div className="input-group-addon">
-                                                                <i className="fa fa-calendar" />
-                                                            </div>
-                                                            <input type="text" className="form-control pull-right" ref={input => this.starttime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
-                                                        </div>
+                                                    <div className="form-group" >
+                                                        <label>Đến tháng:</label>
+                                                        {/* <div className='input-group col-sm-4 date has-feedback' > */}
+                                                            {/* <div className="input-group-addon"> */}
+                                                                {/* <i className="fa fa-calendar" /> */}
+                                                            {/* </div> */}
+                                                            <input type="text" className="form-control" ref={input => this.endtime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker6" data-date-format="mm-yyyy" />
+                                                        {/* </div> */}
                                                     </div>
-                                                    <div className="col-xs-4" style={{marginLeft: "-62px", marginTop: "7px"}}>
-                                                        <label className="col-xs-5" style={{ marginLeft: "-15px" }}>Đến tháng:</label>
-                                                        <div className='input-group col-sm-4 date has-feedback' style={{ display: "inline-table", marginLeft: "-20px", marginTop: "-8px", width: "55%" }}>
-                                                            <div className="input-group-addon">
-                                                                <i className="fa fa-calendar" />
-                                                            </div>
-                                                            <input type="text" className="form-control pull-right" ref={input => this.endtime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker6" data-date-format="mm-yyyy" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-xs-2" style={{ marginTop: "-1px", marginLeft: "-5%" }}>
-                                                        <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>Tìm kiếm</button>
-                                                    </div>
+                                                    
                                                 </div>
+                                                <div className="form-inline">
+                                            <div className='form-group'>
+                                                <label>Nhân viên:</label>
+                                                {userdepartments && <select defaultValue={userdepartments[1].userId._id} className="form-control" ref={input => this.user = input}>
+                                                    <optgroup label={userdepartments[1].roleId.name}>
+                                                        <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>{userdepartments[1].userId.name}</option>
+                                                    </optgroup>
+                                                    <optgroup label={userdepartments[2].roleId.name}>
+                                                        <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>{userdepartments[2].userId.name}</option>
+                                                    </optgroup>
+                                                </select>}
+                                            </div>
+                                            <div className="form-group">
+                                                <label></label>
+                                                <button type="button" className="btn btn-success pull-right" onClick={() => this.handleSearchData()}>Tìm kiếm</button>
+                                            </div>
+                                        </div>
+                                       
+                                                
                                                 <div className="col-xs-12">
                                                     <CanvasJSReact options={options1} />
                                                 </div>

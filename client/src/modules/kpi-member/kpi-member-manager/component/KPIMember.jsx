@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { ModalMemberApprove } from './ModalMemberApprove';
 import { ModalMemberEvaluate } from './ModalMemberEvaluate';
 import { connect } from 'react-redux';
-import { UserActions } from "../../super-admin-management/users-management/redux/actions";
+import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
 import { kpiMemberActions } from '../redux/actions';
-import { DepartmentActions } from '../../super-admin-management/departments-management/redux/actions' ;
+import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions' ;
 import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../Chart/canvasjs.react.js';
-import {PaginateBar, ActionColumn } from '../../../../src/common-components';
+import CanvasJSReact from '../../../../Chart/canvasjs.react.js';
+import {PaginateBar, ActionColumn } from '../../../../../src/common-components';
 // import { withTranslate } from 'react-redux-multilingual';
  
 class KPIMember extends Component {
@@ -35,7 +35,7 @@ class KPIMember extends Component {
             endtime: this.formatDate(Date.now())
         }
         // Lấy tất cả nhân viên của phòng ban
- 
+
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getAllKPIMemberOfUnit(infosearch);
         this.props.getAllKPIMember();//---------localStorage.getItem("id")--------
@@ -79,12 +79,12 @@ class KPIMember extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
- 
+
         if (month.length < 2)
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
- 
+
         return [month, year].join('-');
     }
     checkStatusKPI = (status) => {

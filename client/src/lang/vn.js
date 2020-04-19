@@ -247,11 +247,13 @@ export default {
             kpi_unit_overview: 'Tổng quan KPI đơn vị',
             kpi_unit_dashboard: 'Dashboard KPI đơn vị',
             kpi_unit_manager: 'Quản lý KPI đơn vị',
-            kpi_member: 'Quản lý KPI nhân viên',
-            kpi_member_dashboard:"DashBoard KPI nhân viên",
+            kpi_member_manager: 'Quản lý KPI nhân viên',
+            kpi_member_dashboard:'DashBoard KPI nhân viên',
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
+            kpi_personal_dashboard: 'Dashboard KPI cá nhân',
+            kpi_personal_manager: 'Quản lí KPI cá nhân',
 
             notifications: 'Thông báo',
 
@@ -775,7 +777,7 @@ export default {
                 cancel: 'Hủy bỏ',
                 add_success: 'Thêm mục tiêu KPI thành công'
             },
-            kpi_member:{
+            kpi_member_manager:{
                 index:'STT',
                 time:'Thời gian',
                 employee_name:'Tên nhân viên',

@@ -1,4 +1,4 @@
-export const overviewKpiConstants = {
+export const managerKPIConstants = {
     
     GETALL_KPIPERSONAL_REQUEST: 'GETALL_KPIPERSONAL_REQUEST',
     GETALL_KPIPERSONAL_SUCCESS: 'GETALL_KPIPERSONAL_SUCCESS',

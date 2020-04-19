@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
-import { overviewKpiActions } from "../../../kpi-personal/kpi-personal-overview/redux/actions";
+import { managerKpiActions } from "../../../kpi-personal/kpi-personal-manager/redux/actions";
 // import { taskManagementActions, performTaskAction, UserActions, kpiPersonalActions } from '../../../redux-actions/CombineActions';
 import ModalApproveTask from "./ModalApproveTask";
 import { ModalButton } from '../../../../common-components';
@@ -1426,7 +1426,7 @@ const actionCreators = {
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     addAction: performTaskAction.addActionTask,
-    getAllKPIPersonalByMember: overviewKpiActions.getAllKPIPersonalOfResponsible,    //kpi member actions ko thì cho vào overviewKpiActions (của personal) cũng đc
+    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    //kpi member actions ko thì cho vào managerKpiActions (của personal) cũng đc
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);
 export { connectedModalPerformTask as ModalPerformTask };

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { ModalDetailKPIPersonal } from './ModalDetailKPIPersonal';
 import { connect } from 'react-redux';
-import { overviewKpiActions } from '../redux/actions';
+import { dashboardKpiActions } from '../redux/actions';
 import CanvasJSReact from '../../../../Chart/canvasjs.react';
 import { ModalCopyKPIPersonal } from './ModalCopyKPIPersonal';
 
-class KPIPersonalOverview extends Component {
+class DashBoardKPIPersonal extends Component {
     UNSAFE_componentWillMount() {
         this.props.getAllKPIPersonal();//localStorage.getItem("id")
     }
@@ -58,9 +58,9 @@ class KPIPersonalOverview extends Component {
     render() {
         var listkpi;
         var currentKPI, currentTargets, kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
-        const { overviewKpiPersonal } = this.props;
-        if (overviewKpiPersonal.kpipersonals) {
-            listkpi = overviewKpiPersonal.kpipersonals;
+        const { dashboardKPIPersonal } = this.props;
+        if (dashboardKPIPersonal.kpipersonals) {
+            listkpi = dashboardKPIPersonal.kpipersonals;
             if(typeof listkpi !== "undefined" && listkpi.length !== 0){//listkpi.content
                 kpiApproved = listkpi.filter(item => item.status === 3);
                 currentKPI = listkpi.filter(item => item.status !== 3);
@@ -216,45 +216,6 @@ class KPIPersonalOverview extends Component {
                                     <CanvasJSReact options={options3} />
                                 </div>
                             </div>
-                            <div className="col-xs-12">
-                                <div className="box">
-                                    <div className="box-header">
-                                        <h3 className="box-title">Bảng thống kê kpi cá nhân hàng tháng</h3>
-                                    </div>
-                                    <div className="box-body">
-                                        <table id="example4" className="table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Thời gian</th>
-                                                    <th>Số lượng mục tiêu</th>
-                                                    <th>Hệ thống đánh giá</th>
-                                                    <th>Kết quả tự đánh giá</th>
-                                                    <th>Quản lý đánh giá</th>
-                                                    <th style={{ width: "100px" }}>Hành động</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {(typeof listkpi !== "undefined" && listkpi.length !== 0) ?
-                                                    listkpi.map((item, index) =>
-                                                        <tr key={index}>
-                                                            <td>{this.formatDate(item.time)}</td>
-                                                            <td>{item.listtarget.length}</td>
-                                                            <td>{item.systempoint === null ? "Chưa đánh giá" : item.systempoint}</td>
-                                                            <td>{item.mypoint === null ? "Chưa đánh giá" : item.mypoint}</td>
-                                                            <td>{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</td>
-                                                            <td>
-                                                                <a href={`#detailKPIPersonal${item._id}`} data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Xem chi tiết KPI tháng này" ><i className="material-icons">view_list</i></a>
-                                                                <ModalDetailKPIPersonal kpipersonal={item} />
-                                                                {<a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này"><i className="material-icons">content_copy</i></a>}
-                                                                {this.state.showModalCopy === item._id ? <ModalCopyKPIPersonal kpipersonal={item} /> : null}
-                                                            </td>
-                                                        </tr>) : null
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </section>
                 {/* </div> */}
@@ -264,12 +225,12 @@ class KPIPersonalOverview extends Component {
 }
 
 function mapState(state) {
-    const { overviewKpiPersonal } = state;
-    return { overviewKpiPersonal };
+    const { dashboardKPIPersonal } = state;
+    return { dashboardKPIPersonal };
 }
 
 const actionCreators = {
-    getAllKPIPersonal: overviewKpiActions.getAllKPIPersonalByMember
+    getAllKPIPersonal: dashboardKpiActions.getAllKPIPersonalByMember
 };
-const connectedKPIPersonalOverview = connect(mapState, actionCreators)(KPIPersonalOverview);
-export { connectedKPIPersonalOverview as KPIPersonalOverview };
+const connectedDashBoardKPIPersonal = connect(mapState, actionCreators)(DashBoardKPIPersonal);
+export { connectedDashBoardKPIPersonal as DashBoardKPIPersonal };

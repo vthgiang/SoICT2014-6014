@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const KPIPersonalController = require("./kpiMember.controller");
-const { auth } = require('../../middleware');
+const { auth } = require('../../../middleware');
 // Tìm kiếm KPI nhân viên
 router.get('/all-member/:role/:user/:status/:starttime/:endtime', auth, KPIPersonalController.getKPIAllMember);
 
