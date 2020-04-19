@@ -7,6 +7,7 @@ import {
     getStorage
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
 // import { LOCAL_SERVER_API } from '../redux-constants/config';
 export const performTaskService = {
     getLogTimerTask,
@@ -26,27 +27,41 @@ export const performTaskService = {
     editActionTask,
     deleteActionTask
 };
+/**
+ * // example for axios
+ * 
+ * function edit(id, data) {
+    const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/user/${id}`,
+        method: 'PATCH',
+        data: data,
+        headers: AuthenticateHeader()
+    };
+
+    return axios(requestOptions);
+}
+*/
 
 // Create result task
 function createResultTask(result) { 
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/performtask/result-task/create`,
         method: 'POST',
         headers: AuthenticateHeader(),
-        body: JSON.stringify(result),  // result { result, _idtask}
+        data: result // result { result, _idtask}
     };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/result-task/create`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Create result task
 function editResultTask(listResult, taskid) { 
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/performtask/result-task/${taskid}`,
         method: 'PUT',
         headers: AuthenticateHeader(),
-        body: JSON.stringify(listResult),  // listResult = [...] (= task.results)
+        data: listResult // listResult = [...] (= task.results)
     };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/result-task/${taskid}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // get all log timer task

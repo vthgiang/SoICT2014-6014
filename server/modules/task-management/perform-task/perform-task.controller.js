@@ -81,7 +81,8 @@ exports.createResultTask = async (req, res) => {
     } catch (error) {
         res.json({ 
             success: false,
-            message: error 
+            message: "Lưu thất bại kết quả đánh giá",
+            content: error 
         });
     }
     // return PerformTaskService.createResultTask(req, res);
@@ -100,8 +101,10 @@ exports.editResultTask = async (req, res) => {
     } catch (error) {
         // await LogError(req.user.email, ` edit result of task  `,req.user.company);
         res.json({
-            message: error,
-            success: false
+            success: false,
+            message: "Chỉnh sửa thất bại kết quả đánh giá",
+            content: error
+            
         });
     }
 }

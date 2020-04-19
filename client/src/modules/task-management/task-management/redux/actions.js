@@ -1,6 +1,7 @@
 import { taskManagementConstants } from "./constants";
 // import { alertActions } from "./AlertActions";
 import { taskManagementService } from "./services";
+import { AlertActions } from "../../../alert/redux/actions";
 export const taskManagementActions = {
     getAll,
     getAllTaskByRole,
@@ -55,7 +56,7 @@ function getResponsibleTaskByUser(unit, number, perpage, status, priority, speci
     return dispatch => {
         dispatch(request());//user
 
-        taskManagementService.getResponsibleTaskByUser( unit, number, perpage, status, priority, specical, name)
+        taskManagementService.getResponsibleTaskByUser(unit, number, perpage, status, priority, specical, name)
             .then(
                 taskResponsibles => dispatch(success(taskResponsibles)),
                 error => dispatch(failure(error.toString()))
@@ -72,7 +73,7 @@ function getAccounatableTaskByUser(unit, number, perpage, status, priority, spec
     return dispatch => {
         dispatch(request());
 
-        taskManagementService.getAccounatableTaskByUser( unit, number, perpage, status, priority, specical, name)
+        taskManagementService.getAccounatableTaskByUser(unit, number, perpage, status, priority, specical, name)
             .then(
                 taskAccounatables => dispatch(success(taskAccounatables)),
                 error => dispatch(failure(error.toString()))
@@ -85,11 +86,11 @@ function getAccounatableTaskByUser(unit, number, perpage, status, priority, spec
 }
 
 // Get all task by user
-function getConsultedTaskByUser( unit, number, perpage, status, priority, specical, name) {
+function getConsultedTaskByUser(unit, number, perpage, status, priority, specical, name) {
     return dispatch => {
         dispatch(request());
 
-        taskManagementService.getConsultedTaskByUser( unit, number, perpage, status, priority, specical, name)
+        taskManagementService.getConsultedTaskByUser(unit, number, perpage, status, priority, specical, name)
             .then(
                 taskConsulteds => dispatch(success(taskConsulteds)),
                 error => dispatch(failure(error.toString()))
@@ -102,11 +103,11 @@ function getConsultedTaskByUser( unit, number, perpage, status, priority, specic
 }
 
 // Get all task by user
-function getInformedTaskByUser( unit, number, perpage, status, priority, specical, name) {
+function getInformedTaskByUser(unit, number, perpage, status, priority, specical, name) {
     return dispatch => {
         dispatch(request());
 
-        taskManagementService.getInformedTaskByUser( unit, number, perpage, status, priority, specical, name)
+        taskManagementService.getInformedTaskByUser(unit, number, perpage, status, priority, specical, name)
             .then(
                 taskInformeds => dispatch(success(taskInformeds)),
                 error => dispatch(failure(error.toString()))
@@ -119,11 +120,11 @@ function getInformedTaskByUser( unit, number, perpage, status, priority, specica
 }
 
 // Get all task by user
-function getCreatorTaskByUser( unit, number, perpage, status, priority, specical, name) {
+function getCreatorTaskByUser(unit, number, perpage, status, priority, specical, name) {
     return dispatch => {
         dispatch(request());
 
-        taskManagementService.getCreatorTaskByUser( unit, number, perpage, status, priority, specical, name)
+        taskManagementService.getCreatorTaskByUser(unit, number, perpage, status, priority, specical, name)
             .then(
                 taskCreators => dispatch(success(taskCreators)),
                 error => dispatch(failure(error.toString()))
@@ -142,7 +143,7 @@ function getTaskById(id) {
 
         taskManagementService.getById(id)
             .then(
-                task=> dispatch(success(task)),
+                task => dispatch(success(task)),
                 error => dispatch(failure(error.toString()))
             );
     };
@@ -159,7 +160,7 @@ function addTask(task) {
 
         taskManagementService.addNewTask(task)
             .then(
-                task => { 
+                task => {
                     dispatch(success(task));
                     // dispatch(alertActions.success('Add task successful'));
                 },
@@ -182,7 +183,7 @@ function editTask(id, task) {
 
         taskManagementService.editTaskTemplate(id, task)
             .then(
-                task => { 
+                task => {
                     dispatch(success(task));
                     // dispatch(alertActions.success('Edit target successful'));
                 },
@@ -218,22 +219,24 @@ function _delete(id) {
 // Edit status of task
 function editStatusOfTask(id, status) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
 
-        taskManagementService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
-            .then(
-                task => { 
-                    dispatch(success(task));
-                    // dispatch(alertActions.success('Edit target successful'));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    // dispatch(alertActions.error(error.toString()));
-                }
-            );
+        return new Promise((resolve, reject) => {
+            taskManagementService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
+                .then(res => {
+                    dispatch({
+                        type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
+                        task: res.data
+                    });
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    console.log('Error: ', err);
+                    dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, err });
+                    AlertActions.handleAlert(dispatch, err);
+                    reject(err);
+                });
+        })
+
     };
-
-    function request(id) { return { type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id } }
-    function success(task) { return { type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS, task } }
-    function failure(error) { return { type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error } }
 }

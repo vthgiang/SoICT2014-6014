@@ -164,7 +164,10 @@ class ModalApproveTask extends Component {
     validatePoint = (value) => {
         let msg = undefined;
         if (value < 0 || value > 100) {
-            msg = "Giá trị không được vượt quá khoảng 0-100"
+            msg = "Giá trị không được vượt quá khoảng 0-100";
+        }
+        if (isNaN(value)) {
+            msg = "Giá trị không được để trống";
         }
         return msg;
     }
@@ -255,9 +258,9 @@ class ModalApproveTask extends Component {
                     size="50"
                     modalID={`modal-approve-task-${this.props.taskID}`}
                     formID="form-approve-task"
-                    title="Yêu cầu phê duyệt công việc"
-                    msg_success="Yêu cầu phê duyệt thành công"
-                    msg_faile="Yêu cầu phê duyệt không thành công"
+                    title="Yêu cầu kết thúc công việc"
+                    msg_success="Yêu cầu kết thúc công việc thành công"
+                    msg_faile="Yêu cầu kết thúc công việc không thành công"
                     func={this.save}
                 >
                     {/* <div className="form-inline" > */}

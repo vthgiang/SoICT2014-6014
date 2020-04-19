@@ -146,41 +146,13 @@ function deleteTaskById(id) {
     return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
 }
 
-/**
- * exports.editStatusOfTask = async (taskID, status) => {
- *   var task = await Task.findByIdAndUpdate(taskID, { $set: {status: status }}, { new: true } );
- *   // console.log("----------------------editStatusOfTask-------------------------",task);
- *   return task;
- *   }
- * function edit(id, data) {
-    const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/user/${id}`,
-        method: 'PATCH',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
-}
- */
-
-// function editStatusOfTask(id, status){
-//     const requestOptions = {
-//         url: `${ LOCAL_SERVER_API }/tasks/${id}`,
-//         method: 'PATCH',
-//         data: status,
-//         headers: AuthenticateHeader()
-//     }
-
-//     return axios(requestOptions);
-// }
-// edit status of task
 function editStatusOfTask(id, status){
     const requestOptions = {
+        url: `${ LOCAL_SERVER_API }/tasks/${id}`,
         method: 'PATCH',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(status)
-    };
+        data: status,
+        headers: AuthenticateHeader()
+    }
 
-    return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }

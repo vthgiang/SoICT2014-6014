@@ -24,15 +24,15 @@ class TabTaskContent extends Component {
         this.props.getDepartment();//fix ở prj mới rồi--------------localStorage.getItem('id')------------------
         var content = this.props.role;
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser( "[]", "1", "20", "[]", "[]", "[]", null);
+            this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null);
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser( "[]", 1, 20, "[]", "[]", "[]", null);
+            this.props.getAccounatableTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         } else if (content === "consulted") {
-            this.props.getConsultedTaskByUser( "[]", 1, 20, "[]", "[]", "[]", null);
+            this.props.getConsultedTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         } else if (content === "creator") {
-            this.props.getCreatorTaskByUser( "[]", 1, 20, "[]", "[]", "[]", null);
+            this.props.getCreatorTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         } else {
-            this.props.getInformedTaskByUser( "[]", 1, 20, "[]", "[]", "[]", null);
+            this.props.getInformedTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         }
     }
 
@@ -84,9 +84,9 @@ class TabTaskContent extends Component {
         let flat = change(roots).map(x => delete x.children && x);
         return flat;
     }
-    
+
     setLimit = async (limit) => {
-        if (Number(limit) !== this.state.perPage){
+        if (Number(limit) !== this.state.perPage) {
             // Cập nhật số dòng trang trên một trang hiển thị
             await this.setState(state => {
                 return {
@@ -98,7 +98,7 @@ class TabTaskContent extends Component {
             this.handleGetDataPerPage(this.state.perPage);
         }
     }
-    
+
     handleCountTime = async (id) => {
         const { startTimer } = this.state;
         if (startTimer) {
@@ -126,8 +126,8 @@ class TabTaskContent extends Component {
         var status = window.$("#multiSelectStatus").val();
         var oldCurrentPage = this.state.currentPage;
         var perPage = this.state.perPage;
-        if(status.length === 0) status = "[]";
-        if(unit.length === 0) unit = "[]";
+        if (status.length === 0) status = "[]";
+        if (unit.length === 0) unit = "[]";
         await this.setState(state => {
             return {
                 ...state,
@@ -138,15 +138,15 @@ class TabTaskContent extends Component {
         if (oldCurrentPage !== index) {
             var content = this.props.role;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser( unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getResponsibleTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser( unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getAccounatableTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "consulted") {
-                this.props.getConsultedTaskByUser( unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getConsultedTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "creator") {
-                this.props.getCreatorTaskByUser( unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getCreatorTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else {
-                this.props.getInformedTaskByUser( unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getInformedTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             }
         };
     }
@@ -164,15 +164,15 @@ class TabTaskContent extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.props.role;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccounatableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "consulted") {
-                this.props.getConsultedTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "creator") {
-                this.props.getCreatorTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getCreatorTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else {
-                this.props.getInformedTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getInformedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             }
         };
     }
@@ -190,15 +190,15 @@ class TabTaskContent extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.props.role;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccounatableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "consulted") {
-                this.props.getConsultedTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "creator") {
-                this.props.getCreatorTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getCreatorTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else {
-                this.props.getInformedTaskByUser( unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getInformedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             }
         };
     }
@@ -208,18 +208,18 @@ class TabTaskContent extends Component {
         var unit = window.$("#multiSelectUnit1").val();
         var status = window.$("#multiSelectStatus").val();
         var content = this.props.role;
-        if(status.length === 0) status = "[]";
-        if(unit.length === 0) unit = "[]";
+        if (status.length === 0) status = "[]";
+        if (unit.length === 0) unit = "[]";
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser( unit, 1, perPage, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser( unit,1, perPage, status, "[]", "[]", null);
+            this.props.getAccounatableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "consulted") {
-            this.props.getConsultedTaskByUser( unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getConsultedTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "creator") {
-            this.props.getCreatorTaskByUser( unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getCreatorTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else {
-            this.props.getInformedTaskByUser( unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getInformedTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         }
         this.setState(state => {
             return {
@@ -234,15 +234,15 @@ class TabTaskContent extends Component {
         var status = window.$("#multiSelectStatus").val();
         var content = this.props.role;
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser( unit, 1, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser( unit, 1, 20, status, "[]", "[]", null);
+            this.props.getAccounatableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "consulted") {
-            this.props.getConsultedTaskByUser( unit, 1, 20, status, "[]", "[]", null);
+            this.props.getConsultedTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "creator") {
-            this.props.getCreatorTaskByUser( unit, 1, 20, status, "[]", "[]", null);
+            this.props.getCreatorTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else {
-            this.props.getInformedTaskByUser( unit, 1, 20, status, "[]", "[]", null);
+            this.props.getInformedTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         }
         this.setState(state => {
             return {
@@ -315,81 +315,81 @@ class TabTaskContent extends Component {
             <React.Fragment>
                 <div className="qlcv">
 
-                    <div style={{height: "40px"}}>
+                    <div style={{ height: "40px" }}>
                         {this.props.role !== "informed" &&
                             <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một công việc" data-target="#addNewTask" data-backdrop="static" data-keyboard="false">Thêm mới</button>
                         }
-                        <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0)&&this.list_to_tree(currentTasks)} id=""/>
+                        <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id="" />
                     </div>
 
                     <div className="form-inline">
-                        <div className = "form-group">
+                        <div className="form-group">
                             <label>Đơn vị</label>
                             {units &&
                                 <SelectMulti id="multiSelectUnit1"
-                                    defaultValue = {units.map(item => {return item._id})}
-                                    items = {units.map(item => {return {value: item._id, text: item.name}})} 
-                                    options = {{nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị"}}>
+                                    defaultValue={units.map(item => { return item._id })}
+                                    items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    options={{ nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị" }}>
                                 </SelectMulti>
                             }
                         </div>
-                        <div className = "form-group">
+                        <div className="form-group">
                             <label>Trạng thái</label>
                             <SelectMulti id="multiSelectStatus" defaultValue={["Đang chờ", "Đang thực hiện"]}
-                                items = {[
-                                    {value: "Đang chờ", text: "Đang chờ"},
-                                    {value: "Đang thực hiện", text: "Đang thực hiện"},
-                                    {value: "Quá hạn", text: "Quá hạn"},
-                                    {value: "Chờ phê duyệt", text: "Chờ phê duyệt"},
-                                    {value: "Đã hoàn thành", text: "Đã hoàn thành"},
-                                    {value: "Đã hủy", text: "Đã hủy"},
-                                    {value: "Tạm dừng", text: "Tạm dừng"}
+                                items={[
+                                    { value: "Đang chờ", text: "Đang chờ" },
+                                    { value: "Đang thực hiện", text: "Đang thực hiện" },
+                                    { value: "Quá hạn", text: "Quá hạn" },
+                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
+                                    { value: "Đã hoàn thành", text: "Đã hoàn thành" },
+                                    { value: "Đã hủy", text: "Đã hủy" },
+                                    { value: "Tạm dừng", text: "Tạm dừng" }
                                 ]}
-                                options = {{nonSelectedText: "Chọn trạng thái", allSelectedText: "Tất cả các trạng thái"}}>
+                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Tất cả các trạng thái" }}>
                             </SelectMulti>
                         </div>
                     </div>
 
                     <div className="form-inline">
-                        <div className = "form-group">
+                        <div className="form-group">
                             <label>Độ ưu tiên</label>
                             <SelectMulti id="multiSelectPriority" defaultValue={["Cao", "Trung bình", "Thấp"]}
-                                items = {[
-                                    {value: "Cao", text: "Cao"},
-                                    {value: "Trung bình", text: "Trung bình"},
-                                    {value: "Thấp", text: "Thấp"}
+                                items={[
+                                    { value: "Cao", text: "Cao" },
+                                    { value: "Trung bình", text: "Trung bình" },
+                                    { value: "Thấp", text: "Thấp" }
                                 ]}
-                                options = {{nonSelectedText: "Chọn mức độ ưu tiên", allSelectedText: "Tất cả các mức"}}>
+                                options={{ nonSelectedText: "Chọn mức độ ưu tiên", allSelectedText: "Tất cả các mức" }}>
                             </SelectMulti>
                         </div>
-                        <div className = "form-group">
+                        <div className="form-group">
                             <label>Đặc tính</label>
                             <SelectMulti id="multiSelectCharacteristic" defaultValue={["Lưu trong kho", "Tháng hiện tại"]}
-                                items = {[
-                                    {value: "Lưu trong kho", text: "Lưu trong kho"},
-                                    {value: "Tháng hiện tại", text: "Tháng hiện tại"}
+                                items={[
+                                    { value: "Lưu trong kho", text: "Lưu trong kho" },
+                                    { value: "Tháng hiện tại", text: "Tháng hiện tại" }
                                 ]}
-                                options = {{nonSelectedText: "Chọn đặc tính", allSelectedText: "Tất cả các đặc tính"}}>
+                                options={{ nonSelectedText: "Chọn đặc tính", allSelectedText: "Tất cả các đặc tính" }}>
                             </SelectMulti>
                         </div>
                     </div>
 
                     <div className="form-inline">
-                        <div className = "form-group">
+                        <div className="form-group">
                             <label>Tên công việc</label>
                             <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
                         </div>
-                        <div className = "form-group">
+                        <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Tìm kiếm</button>
                         </div>
                     </div>
-                    
-                    
+
+
                     <ActionColumn
-                        tableId = "tree-table"
-                        tableContainerId = "tree-table-container"
-                        tableWidth = "1300px"
+                        tableId="tree-table"
+                        tableContainerId="tree-table-container"
+                        tableWidth="1300px"
                         columnArr={[
                             'Tên công việc',
                             'Đơn vị',
@@ -400,9 +400,9 @@ class TabTaskContent extends Component {
                             'Tiến độ',
                             'Thời gian thực hiện'
                         ]}
-                        limit = {this.state.perPage}
-                        setLimit = {this.setLimit}
-                        hideColumnOption = {true}
+                        limit={this.state.perPage}
+                        setLimit={this.setLimit}
+                        hideColumnOption={true}
                     />
                     <div id="tree-table-container">
                         <table id="tree-table" className="table table-hover table-bordered table-striped">
@@ -420,56 +420,56 @@ class TabTaskContent extends Component {
                                 </tr>
                             </thead>
                             <tbody className="task-table">
-                            {
-                                (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) ?
-                                    this.list_to_tree(currentTasks).map(item =>
-                                        <tr key={item._id} data-id={item._id} data-parent={item.parent === null ? item.parent : item.parent._id} data-level={item.level}>
-                                            <td title={item.name} data-column="name">{item.name}</td>
-                                            <td title={item.unit.name}>{item.unit.name}</td>
-                                            <td title={item.priority}>{item.priority}</td>
-                                            <td title={this.formatDate(item.startdate)}>{this.formatDate(item.startdate)}</td>
-                                            <td title={this.formatDate(item.enddate)}>{this.formatDate(item.enddate)}</td>
-                                            <td title={item.status}>{item.status}</td>
-                                            <td title={item.progress + "%"}>{item.progress + "%"}</td>
-                                            <td title={this.convertTime(item.time)}>{this.convertTime(item.time)}</td>
-                                            <td>
-                                                <a href={`#modelPerformTask${item._id}`} className="edit" data-toggle="modal" onClick={() => this.handleShowModal(item._id)} title={"Bắt đầu" + item.name}><i className="material-icons">edit</i></a>
-                                                {
-                                                    this.state.showModal === item._id &&
-                                                    
-                                                    <ModalPerformTask 
-                                                        responsible={item.responsible} 
-                                                        unit={item.unit._id} 
-                                                        id={item._id} 
-                                                        role={this.props.role} 
-                                                    /> 
-                                                }
-                                                {
-                                                    this.props.role !== "creator" && this.props.role !== "informed"
-                                                    && <a href="#abc" className={startTimer && currentTimer === item._id ? "edit" : "timer"} id="task-timer" title="Bắt đầu bấm giờ" onClick={() => this.handleCountTime(item._id)}><i className="material-icons">timer</i></a>
-                                                }
-                                                <button type="button" data-toggle="collapse" data-target={`#actionTask${item._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
-                                                <div id={`actionTask${item._id}`} className="collapse">
-                                                    <a href={`#addNewTask${item._id}`} onClick={this.handleCheckClick} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
-                                                    <a href="#abc" className="all_inbox" title="Lưu công việc này vào kho"><i className="material-icons">all_inbox</i></a>
+                                {
+                                    (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) ?
+                                        this.list_to_tree(currentTasks).map(item =>
+                                            <tr key={item._id} data-id={item._id} data-parent={item.parent === null ? item.parent : item.parent._id} data-level={item.level}>
+                                                <td title={item.name} data-column="name">{item.name}</td>
+                                                <td title={item.unit.name}>{item.unit.name}</td>
+                                                <td title={item.priority}>{item.priority}</td>
+                                                <td title={this.formatDate(item.startdate)}>{this.formatDate(item.startdate)}</td>
+                                                <td title={this.formatDate(item.enddate)}>{this.formatDate(item.enddate)}</td>
+                                                <td title={item.status}>{item.status}</td>
+                                                <td title={item.progress + "%"}>{item.progress + "%"}</td>
+                                                <td title={this.convertTime(item.time)}>{this.convertTime(item.time)}</td>
+                                                <td>
+                                                    <a href={`#modelPerformTask${item._id}`} className="edit" data-toggle="modal" onClick={() => this.handleShowModal(item._id)} title={"Bắt đầu" + item.name}><i className="material-icons">edit</i></a>
                                                     {
-                                                        this.props.role === "accountable" &&
-                                                        <a href="#abc" className="delete" onClick={() => this.handleAction(item._id)} title="Xóa công việc này"><i className="material-icons"></i></a>
+                                                        this.state.showModal === item._id &&
+
+                                                        <ModalPerformTask
+                                                            responsible={item.responsible}
+                                                            unit={item.unit._id}
+                                                            id={item._id}
+                                                            role={this.props.role}
+                                                        />
                                                     }
-                                                </div>
-                                                <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0)&&this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
-                                            </td>
-                                        </tr>
-                                    ):null
-                            }
+                                                    {
+                                                        this.props.role !== "creator" && this.props.role !== "informed"
+                                                        && <a href="#abc" className={startTimer && currentTimer === item._id ? "edit" : "timer"} id="task-timer" title="Bắt đầu bấm giờ" onClick={() => this.handleCountTime(item._id)}><i className="material-icons">timer</i></a>
+                                                    }
+                                                    <button type="button" data-toggle="collapse" data-target={`#actionTask${item._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
+                                                    <div id={`actionTask${item._id}`} className="collapse">
+                                                        <a href={`#addNewTask${item._id}`} onClick={this.handleCheckClick} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
+                                                        <a href="#abc" className="all_inbox" title="Lưu công việc này vào kho"><i className="material-icons">all_inbox</i></a>
+                                                        {
+                                                            this.props.role === "accountable" &&
+                                                            <a href="#abc" className="delete" onClick={() => this.handleAction(item._id)} title="Xóa công việc này"><i className="material-icons"></i></a>
+                                                        }
+                                                    </div>
+                                                    <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
+                                                </td>
+                                            </tr>
+                                        ) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
+                                }
                             </tbody>
                         </table>
-                        
+
                     </div>
-                    
-                    <PaginateBar 
-                        pageTotal={tasks.pages} 
-                        currentPage={this.state.currentPage?1:this.state.currentPage} 
+
+                    <PaginateBar
+                        pageTotal={tasks.pages}
+                        currentPage={this.state.currentPage ? 1 : this.state.currentPage}
                         func={this.handleGetDataPagination}
                     />
 
@@ -492,7 +492,7 @@ class TabTaskContent extends Component {
                     */}
 
                 </div>
-                
+
             </React.Fragment>
         );
     }
