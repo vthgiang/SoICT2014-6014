@@ -123,19 +123,19 @@ class ModalEditExperience extends Component {
                 <ModalDialog
                     size='50' modalID={`modal-edit-experience-${id}`} isLoading={false}
                     formID={`form-edit-experience-${id}`}
-                    title="Chỉnh sửa kinh nghiệm làm việc"
+                    title={translate('manage_employee.edit_experience')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-edit-experience-${id}`}>
                         <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">Đơn vị công tác<span className="text-red">*</span></label>
+                            <label htmlFor="unit">{translate('manage_employee.unit')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" />
                             <ErrorLabel content={errorOnUnit} />
                         </div>
                         <div className="row">
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>Từ tháng/năm<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.from_month_year')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
                                     dateFormat="month-year"
@@ -145,7 +145,7 @@ class ModalEditExperience extends Component {
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>Đến tháng/năm<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.to_month_year')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
                                     dateFormat="month-year"
@@ -156,7 +156,7 @@ class ModalEditExperience extends Component {
                             </div>
                         </div>
                         <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">Chức vụ<span className="text-red">*</span></label>
+                            <label htmlFor="unit">{translate('table.position')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
                         </div>

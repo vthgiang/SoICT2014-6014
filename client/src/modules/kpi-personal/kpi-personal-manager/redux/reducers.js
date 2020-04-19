@@ -1,0 +1,44 @@
+import { managerKPIConstants } from "./constants";
+
+export function KPIPersonalManager(state = {}, action) {
+  switch (action.type) {
+    case  managerKPIConstants.GETALL_KPIPERSONAL_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        isLoading: true
+      };
+    case managerKPIConstants.GETALL_KPIPERSONAL_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        kpipersonals: action.kpipersonals.content,
+        isLoading: false
+      };
+    case managerKPIConstants.GETALL_KPIPERSONAL_FAILURE:
+      return { 
+        error: action.error,
+        isLoading: false
+      };
+    case  managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        isLoading: true
+      };
+    case managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        kpipersonals: action.kpipersonals.content,
+        isLoading: false
+      };
+    case managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE:
+      return { 
+        error: action.error,
+        isLoading: false
+      };
+    default:
+      return state
+  }
+}

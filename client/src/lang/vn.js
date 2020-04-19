@@ -245,10 +245,15 @@ export default {
             kpi_unit_create: 'Khởi tạo KPI đơn vị',
             kpi_unit_evaluate: 'Dữ liệu KPI đơn vị',
             kpi_unit_overview: 'Tổng quan KPI đơn vị',
-            kpi_member: 'Quản lý KPI nhân viên',
+            kpi_unit_dashboard: 'Dashboard KPI đơn vị',
+            kpi_unit_manager: 'Quản lý KPI đơn vị',
+            kpi_member_manager: 'Quản lý KPI nhân viên',
+            kpi_member_dashboard:'DashBoard KPI nhân viên',
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
             kpi_personal_overview: 'Tổng quan KPI cá nhân',
+            kpi_personal_dashboard: 'Dashboard KPI cá nhân',
+            kpi_personal_manager: 'Quản lí KPI cá nhân',
 
             notifications: 'Thông báo',
 
@@ -399,6 +404,7 @@ export default {
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
+        // Quản lý lương nhân viên
         salary_employee: {
             list_salary: 'Danh sách bảng lương nhân viên',
             add_salary: 'Thêm bảng lương',
@@ -416,6 +422,7 @@ export default {
             add_more_salary: 'Thêm lương thưởng khác',
             add_new_salary: 'Thêm mới bảng lương',
         },
+        // Quản lý nghỉ phép
         sabbatical: {
             list_sabbatical: 'Danh sách đơn xin nghỉ',
             add_sabbatical: 'Thêm đơn xin nghỉ',
@@ -437,6 +444,7 @@ export default {
             edit_succes: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
+        // Quản lý khen thưởng, kỷ luật
         discipline: {
             list_discipline: 'Danh sách kỷ luật',
             list_discipline_title: 'Danh sách nhân viên bị kỷ luật',
@@ -467,6 +475,20 @@ export default {
             reward_forms: 'Hình thức khen thưởng',
             reason_praise: 'Thành tích (Lý do)',
         },
+        // Quản lý nhân sự các đơn vị
+        manage_unit: {
+            list_unit: 'Danh sách các đơn vị',
+            list_employee_unit: 'Danh sách nhân viên đơn vị',
+            edit_unit: 'Chỉnh sửa nhân sự đơn vị',
+            edit_sucsess: 'Chỉnh sửa nhân sự đơn vị thành công',
+            edit_faile: 'Chỉnh sửa nhân sự đơn vị thất bại',
+            dean_unit:'Trưởng đơn vị',
+            vice_dean_unit:'Phó đơn vị',
+            employee_unit: 'Nhân viên đơn vị',
+            email_employee: 'Email nhân viên',
+            add_employee_unit:'Thêm nhân viên vào đơn vị',
+        },
+        // Quản lý thông tin nhân viên
         manage_employee: {
             note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
             contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
@@ -504,6 +526,7 @@ export default {
             date_birth: 'Ngày sinh',
             place_birth: 'Nơi sinh',
             email: 'Email',
+            email_company: 'Email công ty',
             relationship: 'Tình trạng hôn nhân',
             single: 'Độc thân',
             married: 'Đã kết hôn',
@@ -544,7 +567,8 @@ export default {
             unit: 'Đơn vị công tác',
             from_month_year: 'Từ tháng/năm',
             to_month_year: 'Đến tháng/năm',
-            edit_experience:'Chỉnh sửa kinh nghiệm làm việc',
+            edit_experience: 'Chỉnh sửa kinh nghiệm làm việc',
+            add_experience: 'Thêm mới kinh nghiệm làm việc',
 
             diploma: 'Bằng cấp',
             certificate: 'Chứng chỉ',
@@ -555,9 +579,16 @@ export default {
             ranking_learning: 'Xếp loại',
             attached_files: 'File đính kèm',
             end_date_certificate: 'Ngày hết hạn',
-            edit_certificate:'Chỉnh sửa chứng chỉ',
-            edit_diploma:'Chỉnh sửa bằng cấp',
-           
+            edit_certificate: 'Chỉnh sửa chứng chỉ',
+            edit_diploma: 'Chỉnh sửa bằng cấp',
+            add_certificate: 'Thêm mới chứng chỉ',
+            add_diploma: 'Thêm mới bằng cấp',
+            excellent: 'Xuất sắc',
+            very_good: 'Giỏi',
+            good: 'Khá',
+            average_good: 'Trung bình khá',
+            ordinary: 'Trung bình',
+
 
             bank_account: 'Tài khoản ngân hàng',
             personal_income_tax: 'Thuế thu nhập cá nhân',
@@ -572,9 +603,10 @@ export default {
             bhyt: 'Bảo hiểm y tế',
             number_BHYT: 'Mã số BHYT',
             bhxh: 'Bảo hiểm xã hội',
-            number_BHXH:'Mã số BHXH',
-            bhxh_process:'Quá trình đóng bảo hiểm xã hội',
+            number_BHXH: 'Mã số BHXH',
+            bhxh_process: 'Quá trình đóng bảo hiểm xã hội',
             edit_bhxh: 'Chỉnh sửa bảo hiểm xã hội',
+            add_bhxh: 'Thêm mới bảo hiểm xã hội',
 
             labor_contract: 'Hợp đồng lao động',
             training_process: 'Quá trình đào tạo',
@@ -586,7 +618,8 @@ export default {
             end_date: 'Ngày kết thúc',
             type_education: 'Loại đào tạo',
             cost: 'Chi phí',
-            edit_contract:'Chỉnh sửa hợp đồng lao động',
+            edit_contract: 'Chỉnh sửa hợp đồng lao động',
+            add_contract: 'Thêm mới hợp đồng lao động',
 
             list_attachments: 'Danh sách tài liệu đính kèm',
             attachments_code: 'Nơi lưu trữ bản cứng',
@@ -594,7 +627,29 @@ export default {
             number: 'Số lượng',
             add_default: 'Mặc định',
             add_default_title: 'Thêm các tài liệu mặc định',
-            edit_file:'Chỉnh sửa tài liệu đính kèm',
+            edit_file: 'Chỉnh sửa tài liệu đính kèm',
+            add_file: 'Thêm tài liệu đính kèm',
+            no_submitted: 'Chưa nộp',
+            submitted: 'Đã nộp',
+            returned: 'Đã trả lại',
+            no_files: 'Chưa có file',
+            disc_diploma: 'Bằng tốt nghiệp trình độ học vấn cao nhất',
+            curriculum_vitae: 'Sơ yếu lý lịch',
+            disc_curriculum_vitae: 'Sơ yếu lý lịch có công chứng',
+            img: 'Ảnh',
+            disc_img: 'Ảnh 4x6 ',
+            copy_id_card: 'Bản sao CMND/Hộ chiếu',
+            disc_copy_id_card: 'Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng',
+            health_certificate: 'Giấy khám sức khoẻ',
+            disc_health_certificate: 'Giấy khám sức khoẻ có dấu đỏ',
+            birth_certificate: 'Giấy khai sinh',
+            disc_birth_certificate: 'Giấy khái sinh có công chứng',
+            job_application: 'Đơn xin việc',
+            disc_job_application: 'Đơn xin việc viết tay',
+            commitment: 'Cam kết',
+            disc_commitment: 'Giấy cam kết làm việc',
+            temporary_residence_card: 'Tạm trú tạm vắng',
+            disc_temporary_residence_card: 'Giấy xác nhận tạm trú tạm vắng',
 
             Reward: 'Khen thưởng',
             discipline: 'Kỷ luật',
@@ -616,6 +671,7 @@ export default {
             see_all: 'Xem tất cả',
             delete: 'Xóa thông báo'
         },
+        // Quản lý kê hoạch làm việc
         holiday: {
             start_date: 'Ngày bắt đầu',
             end_Date: 'Ngày kết thúc',
@@ -744,7 +800,7 @@ export default {
                     request_approval: 'Yêu cầu phê duyệt',
                     cancel_request_approval: 'Hủy yêu cầu phê duyệt'
                 },
-                
+
                 handle_edit_kpi: {
                     approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
                     activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
@@ -782,7 +838,6 @@ export default {
 
                 not_initialize: 'Chưa khởi tạo'
             },
-
             add_target_kpi: {
                 add_target_personal: 'Thêm mục tiêu KPI cá nhân',
                 add_target: 'Thêm mục tiêu',
@@ -794,7 +849,16 @@ export default {
                 cancel: 'Hủy bỏ',
                 add_success: 'Thêm mục tiêu KPI thành công'
             },
-
+            kpi_member_manager:{
+                index:'STT',
+                time:'Thời gian',
+                employee_name:'Tên nhân viên',
+                target_number:'Số lượng mục tiêu',
+                kpi_status:'Trạng thái KPI',
+                result:'Kết quả',
+                approve:'Phê duyệt',
+                evaluate:'Đánh giá'
+            },
             start: {
                 initialize_kpi: 'Khởi tạo KPI cá nhân',
                 unit: 'Đơn vị',

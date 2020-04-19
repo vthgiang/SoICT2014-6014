@@ -14,7 +14,7 @@ export const VALIDATOR = {
     isValidName,
     isValidEmail,
     isValidPassword,
-    isValidEmployeeNumber: isValidEmployeeNumber,
+    isValidEmployeeNumber,
     isValidUrl,
     isStringNotSpace
 }

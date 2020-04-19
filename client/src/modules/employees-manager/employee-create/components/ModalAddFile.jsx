@@ -10,7 +10,7 @@ class ModalAddFile extends Component {
             nameFile: "",
             discFile: "",
             number: "",
-            status: "Đã nộp",
+            status: "submitted",
             file: "",
             urlFile: " ",
             fileUpload: " "
@@ -117,42 +117,42 @@ class ModalAddFile extends Component {
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title="Thêm mới tài liệ đính kèm" />
+                <ModalButton modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
                 <ModalDialog
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
-                    title="Thêm mới tài liệu đính kèm"
+                    title={translate('manage_employee.add_file')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-file-${id}`}>
                         <div className={`form-group ${errorOnNameFile === undefined ? "" : "has-error"}`}>
-                            <label>Tên tài liệu đính kèm<span className="text-red">*</span></label>
+                            <label>{translate('manage_employee.file_name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="nameFile" value={nameFile} onChange={this.handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
                         <div className={`form-group ${errorOnDiscFile === undefined ? "" : "has-error"}`}>
-                            <label>Mô tả<span className="text-red">*</span></label>
+                            <label>{translate('table.description')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="discFile" value={discFile} onChange={this.handleDiscFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
                         <div className="row">
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnNumberFile === undefined ? "" : "has-error"}`}>
-                                <label>Số lượng<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.number')}<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnNumberFile} />
                             </div>
                             <div className="form-group col-sm-6 col-xs-12">
-                                <label>Trạng thái<span className="text-red">*</span></label>
+                                <label>{translate('table.status')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                    <option value="Chưa nộp">Chưa nộp</option>
-                                    <option value="Đã nộp">Đã nộp</option>
-                                    <option value="Đã trả">Đã trả</option>
+                                <option value="no_submitted">{translate('manage_employee.no_submitted')}</option>
+                                    <option value="submitted">{translate('manage_employee.submitted')}</option>
+                                    <option value="returned">{translate('manage_employee.returned')}</option>
                                 </select>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="file">Chọn file đính kèm</label>
+                            <label htmlFor="file">{translate('manage_employee.attached_files')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>

@@ -214,7 +214,7 @@ export default {
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
-            manage_unit: 'manage units',
+            manage_unit: 'Manage units',
             manage_holiday: 'Work plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
@@ -232,10 +232,15 @@ export default {
             kpi_unit_create: 'Create unit KPI',
             kpi_unit_evaluate: 'Evaluate unit KPI',
             kpi_unit_overview: 'Overview unit KPI',
-            kpi_member: "Manage Employees' KPI",
+            kpi_unit_dashboard: 'Dashboard unit KPI',
+            kpi_unit_manager: 'Manage unit KPI',
+            kpi_member_manager: 'Manage Employees KPI',
+            kpi_member_dashboard:'DashBoard KPI Member',
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',
             kpi_personal_overview: 'Overview personal KPI',
+            kpi_personal_dashboard: 'DashBoard personal KPI',
+            kpi_personal_manager : 'Manager personal KPI',
 
             notifications: 'Notifications',
 
@@ -243,7 +248,7 @@ export default {
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
         },
-
+        
         manage_system: {
             turn_on: 'Turn on',
             turn_off: 'Turn off',
@@ -347,6 +352,7 @@ export default {
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
         },
+        // Quản lý lương nhân viên
         salary_employee: {
             list_salary: 'List of staff salary',
             add_salary: 'Add salary',
@@ -368,6 +374,7 @@ export default {
             check_main_salary: 'Main salary required',
             check_month: 'Month required',
         },
+        // Quản lý nghỉ phép
         sabbatical: {
             list_sabbatical: 'List of staff sabbatical',
             add_sabbatical: 'Add sabbatical',
@@ -390,6 +397,7 @@ export default {
             edit_succes: 'Edit sabbatical success',
             edit_faile: 'Edit sabbatical faile',
         },
+        // Quản lý khen thưởng, kỷ luật
         discipline: {
             list_discipline: 'List of staff discipline',
             list_discipline_title: 'List of staff discipline',
@@ -420,6 +428,20 @@ export default {
             reward_forms: 'Reward forms',
             reason_praise: 'Reason',
         },
+        // Quản lý nhân sự các đơn vị
+        manage_unit: {
+            list_unit: 'List of units',
+            list_employee_unit: 'List of units staff',
+            edit_unit: 'Edit units staff',
+            edit_sucsess: 'Edit units staff sucsess',
+            edit_faile: 'Edit units staff faile',
+            dean_unit: 'Head of unit',
+            vice_dean_unit: 'Deputy unit',
+            employee_unit: 'Unit staff',
+            email_employee: 'Email',
+            add_employee_unit: 'Add staff to the unit',
+        },
+        // Quản lý thông tin nhân viên
         manage_employee: {
             note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
             contact_other: '(Other information please contact the relevant parties to be processed)',
@@ -457,11 +479,12 @@ export default {
             date_birth: 'Date of birth',
             place_birth: 'Place of birth',
             email: 'Email',
+            email_company: 'Email company',
             relationship: 'Relationship',
             single: 'Single',
             married: 'Married',
             upload: 'Upload',
-            id_card: 'ID card',
+            id_card: 'ID card/Passport',
             date_issued: 'Date issued',
             issued_by: 'Issued by',
             ethnic: 'Ethnic group',
@@ -496,7 +519,8 @@ export default {
             unit: 'Unit',
             from_month_year: 'From month/year',
             to_month_year: 'To month/year',
-            edit_experience:'Edit work experience',
+            edit_experience: 'Edit work experience',
+            add_experience: 'Add work experience',
 
             diploma: 'Diploma',
             certificate: 'Certificate',
@@ -507,8 +531,15 @@ export default {
             ranking_learning: 'Ranking of learning',
             attached_files: 'Attached files',
             end_date_certificate: 'Expiration date',
-            edit_certificate:'Edit certificate',
-            edit_diploma:'Edit diploma',
+            edit_certificate: 'Edit certificate',
+            edit_diploma: 'Edit diploma',
+            add_certificate: 'Add certificate',
+            add_diploma: 'Add diploma',
+            excellent: 'Excellent',
+            very_good: 'Very good',
+            good: 'Good',
+            average_good: 'Average good',
+            ordinary: 'Ordinary',
 
             bank_account: 'Bank account',
             personal_income_tax: 'Personal income tax',
@@ -523,9 +554,10 @@ export default {
             bhyt: 'Health Insurance',
             number_BHYT: 'Health insurance code',
             bhxh: 'Social insurance',
-            number_BHXH:'Social insurance code',
-            bhxh_process:'Process of social insurance payment',
+            number_BHXH: 'Social insurance code',
+            bhxh_process: 'Process of social insurance payment',
             edit_bhxh: 'Edit social insurance',
+            add_bhxh: 'Add social insurance',
 
             labor_contract: 'Labor contract',
             training_process: 'Training process',
@@ -537,7 +569,8 @@ export default {
             end_date: 'End day',
             type_education: 'Type of education',
             cost: 'Cost',
-            edit_contract:'Edit Labor contract',
+            edit_contract: 'Edit labor contract',
+            add_contract: 'Add labor contract',
 
             list_attachments: 'List of attached documents',
             attachments_code: 'Attachments code',
@@ -545,13 +578,38 @@ export default {
             number: 'Number',
             add_default: 'Add default',
             add_default_title: 'Add the default document',
-            edit_file:'Edit attached documents',
+            edit_file: 'Edit attached documents',
+            add_file: 'Add attached documents',
+            no_submitted: 'Not submitted',
+            submitted: 'Submitted',
+            returned: 'Returned',
+            no_files: 'No files yet',
+            disc_diploma: 'Highest degree diploma',
+            curriculum_vitae: 'Curriculum vitae',
+            disc_curriculum_vitae: 'Notarized resume',
+            img: 'Image',
+            disc_img: 'Image 4x6 ',
+            copy_id_card: 'Copy of ID card / Passport',
+            disc_copy_id_card: 'Certified copy of identity card or passport',
+            health_certificate: 'Health certificate',
+            disc_health_certificate: 'Notarized health certificate',
+            birth_certificate: 'Birth certificate',
+            disc_birth_certificate: 'Notarized birth certificate',
+            job_application: 'Job application',
+            disc_job_application: 'Handwritten application letter',
+            commitment: 'Commitment',
+            disc_commitment: 'Commitment to work',
+            temporary_residence_card: 'Temporary residence card',
+            disc_temporary_residence_card: 'Certificate of temporary absence',
+
+
 
             Reward: 'Reward',
             discipline: 'Discipline',
             historySalary: 'History of salary',
             sabbatical: 'Sabbatical information'
         },
+        // Quản lý kê hoạch làm việc
         holiday: {
             start_date: 'Start day',
             end_Date: 'End day',
@@ -729,7 +787,16 @@ export default {
                 cancel: 'Cancel',
                 add_success: 'Add KPI target successful'
             },
-
+            kpi_member:{
+                index:'Index',
+                time:'Date',
+                employee_name:'Employee Name',
+                target_number:'Target Number',
+                kpi_status:'KPI Status',
+                result:'Result',
+                approve:'Approve',
+                evaluate:'Evaluate'
+            },
             start: {
                 initialize_kpi: 'Initialize personal KPI',
                 unit: 'Unit',

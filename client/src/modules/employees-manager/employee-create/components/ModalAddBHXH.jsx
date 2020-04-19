@@ -116,23 +116,23 @@ class ModalAddBHXH extends Component {
         const { unit, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID={`modal-create-BHXH-${id}`} button_name={translate('modal.create')} title="Thêm mới bảo hiểm xã hội" />
+                <ModalButton modalID={`modal-create-BHXH-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_bhxh')} />
                 <ModalDialog
                     size='50' modalID={`modal-create-BHXH-${id}`} isLoading={false}
                     formID={`form-create-BHXH-${id}`}
-                    title="Thêm mới bảo hiểm xã hội"
+                    title={translate('manage_employee.add_bhxh')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-BHXH-${id}`}>
                         <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">Đơn vị công tác<span className="text-red">*</span></label>
+                            <label htmlFor="unit">{translate('manage_employee.unit')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" />
                             <ErrorLabel content={errorOnUnit} />
                         </div>
                         <div className="row">
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>Từ tháng/năm<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.from_month_year')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`addBHXH-start-date-${id}`}
                                     dateFormat="month-year"
@@ -142,7 +142,7 @@ class ModalAddBHXH extends Component {
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>Đến tháng/năm<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.to_month_year')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`addBHXH-end-date-${id}`}
                                     dateFormat="month-year"
@@ -153,7 +153,7 @@ class ModalAddBHXH extends Component {
                             </div>
                         </div>
                         <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">Chức vụ<span className="text-red">*</span></label>
+                            <label htmlFor="unit">{translate('table.position')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
                         </div>

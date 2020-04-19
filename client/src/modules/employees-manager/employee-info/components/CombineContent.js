@@ -1,3 +1,12 @@
-
 export * from './DetailEmployee';
 export * from './UpdateEmployee';
+export * from './TabGeneralViewContent';
+export * from './TabContactViewContent';
+export * from './TabExperiencViewContent';
+export * from './TabCertificateViewContent';
+export * from './TabTaxViewContent';
+export * from './TabInsurranceViewContent';
+export * from './TabContractViewContent';
+export * from './TabRearDisciplineViewContent';
+export * from './TabSalaryViewContent';
+export * from './TabAttachmentsViewContent';

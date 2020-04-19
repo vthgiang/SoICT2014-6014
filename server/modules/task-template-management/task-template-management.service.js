@@ -132,7 +132,8 @@ exports.create = async (body) => {
                 name: item.name,
                 description: item.description,
                 mandatary: item.mandatary,
-                type: item.type
+                type: item.type,
+                extra: item.extra
             })
         });
         var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });

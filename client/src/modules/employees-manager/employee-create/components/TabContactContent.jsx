@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { ErrorLabel } from '../../../../common-components';
+import { EmployeeCreateValidator } from './EmployeeCreateValidator';
 
 class TabContactContent extends Component {
     constructor(props) {
@@ -12,6 +14,82 @@ class TabContactContent extends Component {
     handleChange = (e) => {
         const { name, value } = e.target;
         this.props.handleChange(name, value);
+    }
+    // Function bắt sự kiện thay đổi điện thoại đi động 1
+    handlePhoneChange = (e) => {
+        const { value } = e.target;
+        this.validatePhone(value, true);
+    }
+    validatePhone = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validatePhone(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnPhoneNumber: msg,
+                    phoneNumber: value,
+                }
+            });
+            this.props.handleChange("phoneNumber", value);
+        }
+        return msg === undefined;
+    }
+    // Function bắt sự kiện thay đổi emailPersonal 1
+    handleEmail1Change = (e) => {
+        const { value } = e.target;
+        this.validateEmail1(value, true);
+    }
+    validateEmail1 = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateEmail(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEmailPersonal: msg,
+                    emailPersonal: value,
+                }
+            });
+            this.props.handleChange("emailPersonal", value);
+        }
+        return msg === undefined;
+    }
+    // Function bắt sự kiện thay đổi emailPersonal 1
+    handleEmail2Change = (e) => {
+        const { value } = e.target;
+        this.validateEmail2(value, true);
+    }
+    validateEmail2 = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateEmail(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEmailPersonal2: msg,
+                    emailPersonal2: value,
+                }
+            });
+            this.props.handleChange("emailPersonal2", value);
+        }
+        return msg === undefined;
+    }
+    // Function bắt sự kiện thay đổi địa chỉ chỗ ở hiện tại
+    handleNowAddressChange = (e) => {
+        const { value } = e.target;
+        this.validateAddress(value, true);
+    }
+    validateAddress = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateAddress(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnNowAddress: msg,
+                    nowAddress: value,
+                }
+            });
+            this.props.handleChange("nowAddress", value);
+        }
+        return msg === undefined;
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -41,10 +119,10 @@ class TabContactContent extends Component {
                 nowCity: nextProps.employeeContact.nowCity,
                 nowNational: nextProps.employeeContact.nowNational,
 
-                errorOnPosition: undefined,
-                errorOnUnit: undefined,
-                errorOnStartDate: undefined,
-                errorOnEndDate: undefined
+                errorOnPhoneNumber: undefined,
+                errorOnNowAddress: undefined,
+                errorOnEmailPersonal: undefined,
+                errorOnEmailPersonal2: undefined
             }
         } else {
             return null;
@@ -56,14 +134,15 @@ class TabContactContent extends Component {
         const { phoneNumber2, phoneNumber, emailPersonal, emailPersonal2, phoneNumberAddress, friendName,
             relation, friendAddress, friendPhone, friendPhoneAddress, friendEmail, localAddress,
             localCommune, localDistrict, localCity, localNational, nowAddress, nowCommune,
-            nowDistrict, nowCity, nowNational } = this.state;
+            nowDistrict, nowCity, nowNational, errorOnPhoneNumber, errorOnNowAddress, errorOnEmailPersonal, errorOnEmailPersonal2 } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <div className="row">
-                        <div className="form-group col-md-4">
+                        <div className={`form-group col-md-4 ${errorOnPhoneNumber === undefined ? "" : "has-error"}`}>
                             <label htmlFor="phoneNumber">{translate('manage_employee.mobile_phone_1')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="phoneNumber" value={phoneNumber} onChange={this.handleChange} placeholder={translate('manage_employee.mobile_phone_1')} autoComplete="off" />
+                            <input type="number" className="form-control" name="phoneNumber" value={phoneNumber} onChange={this.handlePhoneChange} placeholder={translate('manage_employee.mobile_phone_1')} autoComplete="off" />
+                            <ErrorLabel content={errorOnPhoneNumber} />
                         </div>
                         <div className="form-group col-md-4">
                             <label htmlFor="phoneNumber2">{translate('manage_employee.mobile_phone_2')}</label>
@@ -71,13 +150,15 @@ class TabContactContent extends Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="form-group col-md-4">
+                        <div className={`form-group col-md-4 ${errorOnEmailPersonal === undefined ? "" : "has-error"}`}>
                             <label htmlFor="emailPersonal">{translate('manage_employee.personal_email_1')}</label>
-                            <input type="text" className="form-control" name="emailPersonal" value={emailPersonal} onChange={this.handleChange} placeholder={translate('manage_employee.personal_email_1')} autoComplete="off" />
+                            <input type="text" className="form-control" name="emailPersonal" value={emailPersonal} onChange={this.handleEmail1Change} placeholder={translate('manage_employee.personal_email_1')} autoComplete="off" />
+                            <ErrorLabel content={errorOnEmailPersonal} />
                         </div>
-                        <div className="form-group col-md-4">
+                        <div className={`form-group col-md-4 ${errorOnEmailPersonal2 === undefined ? "" : "has-error"}`}>
                             <label htmlFor="emailPersonal2">{translate('manage_employee.personal_email_2')}</label>
-                            <input type="text" className="form-control" name="emailPersonal2" value={emailPersonal2} onChange={this.handleChange} placeholder={translate('manage_employee.personal_email_2')} autoComplete="off" />
+                            <input type="text" className="form-control" name="emailPersonal2" value={emailPersonal2} onChange={this.handleEmail2Change} placeholder={translate('manage_employee.personal_email_2')} autoComplete="off" />
+                            <ErrorLabel content={errorOnEmailPersonal2} />
                         </div>
                         <div className="form-group col-md-4">
                             <label htmlFor="phoneNumberAddress">{translate('manage_employee.home_phone')}</label>
@@ -128,18 +209,15 @@ class TabContactContent extends Component {
                                     <input type="text" className="form-control " name="localAddress" value={localAddress} onChange={this.handleChange} placeholder={translate('manage_employee.address')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="localCommune">
-                                        {translate('manage_employee.wards')}</label>
+                                    <label htmlFor="localCommune">{translate('manage_employee.wards')}</label>
                                     <input type="text" className="form-control " name="localCommune" value={localCommune} onChange={this.handleChange} placeholder={translate('manage_employee.wards')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="localDistrict">
-                                        {translate('manage_employee.district')}</label>
+                                    <label htmlFor="localDistrict">{translate('manage_employee.district')}</label>
                                     <input type="text" className="form-control " name="localDistrict" value={localDistrict} onChange={this.handleChange} placeholder={translate('manage_employee.district')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="localCity">
-                                        {translate('manage_employee.province')}</label>
+                                    <label htmlFor="localCity">{translate('manage_employee.province')}</label>
                                     <input type="text" className="form-control " name="localCity" value={localCity} onChange={this.handleChange} placeholder={translate('manage_employee.province')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
@@ -152,29 +230,25 @@ class TabContactContent extends Component {
                         <div className="col-md-6">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border"><h4 className="box-title"> {translate('manage_employee.current_residence')}</h4></legend>
-                                <div className="form-group">
-                                    <label htmlFor="nowAddress">
-                                        {translate('manage_employee.address')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control " name="nowAddress" value={nowAddress} onChange={this.handleChange} placeholder={translate('manage_employee.address')} autoComplete="off" />
+                                <div className={`form-group ${errorOnNowAddress === undefined ? "" : "has-error"}`}>
+                                    <label htmlFor="nowAddress">{translate('manage_employee.address')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control " name="nowAddress" value={nowAddress} onChange={this.handleNowAddressChange} placeholder={translate('manage_employee.address')} autoComplete="off" />
+                                    <ErrorLabel content={errorOnNowAddress} />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowCommune">
-                                        {translate('manage_employee.wards')}</label>
+                                    <label htmlFor="nowCommune">{translate('manage_employee.wards')}</label>
                                     <input type="text" className="form-control " name="nowCommune" value={nowCommune} onChange={this.handleChange} placeholder={translate('manage_employee.wards')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowDistrict">
-                                        {translate('manage_employee.district')}</label>
+                                    <label htmlFor="nowDistrict">{translate('manage_employee.district')}</label>
                                     <input type="text" className="form-control " name="nowDistrict" value={nowDistrict} onChange={this.handleChange} placeholder={translate('manage_employee.district')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowCity">
-                                        {translate('manage_employee.province')}</label>
+                                    <label htmlFor="nowCity">{translate('manage_employee.province')}</label>
                                     <input type="text" className="form-control " name="nowCity" value={nowCity} onChange={this.handleChange} placeholder={translate('manage_employee.province')} autoComplete="off" />
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="nowNational">
-                                        {translate('manage_employee.nation')}</label>
+                                    <label htmlFor="nowNational">{translate('manage_employee.nation')}</label>
                                     <input type="text" className="form-control " name="nowNational" value={nowNational} onChange={this.handleChange} placeholder={translate('manage_employee.nation')} autoComplete="off" />
                                 </div>
                             </fieldset>

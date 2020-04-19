@@ -33,7 +33,7 @@ class CompanyEditForm extends Component {
         return ( 
             <React.Fragment>
                 <ModalDialog
-                    modalID="modal-edit-company" size="75"
+                    modalID="modal-edit-company"
                     formID="form-edit-company" isLoading={this.props.company.isLoading}
                     title={translate('manage_company.edit')}
                     msg_success={translate('manage_company.add_success')}
@@ -42,71 +42,41 @@ class CompanyEditForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-edit-company">
-                    <div className="row" style={{padding: '20px'}}>
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <div className="row">
-                                    <div className={`form-group col-sm-9 ${nameError===undefined?"":"has-error"}`}>
-                                        <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
-                                        <input type="text" className="form-control" onChange={ this.handleChangeName } value={ companyName }/>
-                                        <ErrorLabel content={nameError}/>
-                                    </div>
-                                    <div className="form-group col-sm-3">
-                                        <label>{ translate('manage_company.service') }<span className="text-red"> * </span></label>
-                                        <select className="form-control" onChange={ this.handleActive } value={companyActive}>
-                                            <option key='1' value={true}>{ translate('manage_company.on') }</option>
-                                            <option key='2' value={false}>{ translate('manage_company.off') }</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className={`form-group col-sm-9 ${shortNameError===undefined?"":"has-error"}`}>
-                                        <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
-                                        <input type="text" className="form-control" onChange={ this.handleChangeShortName } value={ companyShortName }/>
-                                        <ErrorLabel content={shortNameError}/>
-                                    </div>
-                                    <div className="form-group col-sm-3">
-                                        <label>{ translate('manage_company.log') }<span className="text-red"> * </span></label>
-                                        <select className="form-control" onChange={ this.handleLog } value={companyLog}>
-                                            <option key='1' value={true}>{ translate('manage_company.on') }</option>
-                                            <option key='2' value={false}>{ translate('manage_company.off') }</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className={`form-group ${emailError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('manage_company.super_admin') }<span className="text-red"> * </span></label>
-                                    <input type="email" className="form-control" onChange={ this.handleChangeEmail } value={companyEmail}/>
-                                    <ErrorLabel content={emailError}/>
-                                </div>
+                        <div className="row">
+                            <div className={`form-group col-sm-9 ${nameError===undefined?"":"has-error"}`}>
+                                <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
+                                <input type="text" className="form-control" onChange={ this.handleChangeName } value={ companyName }/>
+                                <ErrorLabel content={nameError}/>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
-                                    <textarea style={{ height: '182px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
-                                    <ErrorLabel content={descriptionError}/>
-                                </div>
+                            <div className="form-group col-sm-3">
+                                <label>{ translate('manage_company.service') }<span className="text-red"> * </span></label>
+                                <select className="form-control" onChange={ this.handleActive } value={companyActive}>
+                                    <option key='1' value={true}>{ translate('manage_company.on') }</option>
+                                    <option key='2' value={false}>{ translate('manage_company.off') }</option>
+                                </select>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '20px'}}>
-                               <div role="tabpanel">
-                                {/* Nav tabs */}
-                                <ul className="nav nav-tabs" role="tablist">
-                                    <li role="presentation" className="active">
-                                    <a href="#company_manage_link" aria-controls="home" role="tab" data-toggle="tab"><b>Links</b>{`(${company.item.links.list.length}/${linksDefault.list.length})`}</a>
-                                    </li>
-                                    <li role="presentation">
-                                    <a href="#company_manage_component" aria-controls="tab" role="tab" data-toggle="tab"><b>Component</b>{`(${company.item.components.list.length}/${componentsDefault.list.length})`}</a>
-                                    </li>
-                                </ul>
-                                {/* Tab panes */}
-                                <div className="tab-content">
-                                    <div role="tabpanel" className="tab-pane active" id="company_manage_link">
-                                        <CompanyManageLinks companyId={companyId}/>
-                                    </div>
-                                    <div role="tabpanel" className="tab-pane" id="company_manage_component">
-                                        <CompanyManageComponent companyId={companyId}/>
-                                    </div>
-                                </div>
-                                </div>
+                            <div className={`form-group col-sm-9 ${shortNameError===undefined?"":"has-error"}`}>
+                                <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
+                                <input type="text" className="form-control" onChange={ this.handleChangeShortName } value={ companyShortName }/>
+                                <ErrorLabel content={shortNameError}/>
                             </div>
+                            <div className="form-group col-sm-3">
+                                <label>{ translate('manage_company.log') }<span className="text-red"> * </span></label>
+                                <select className="form-control" onChange={ this.handleLog } value={companyLog}>
+                                    <option key='1' value={true}>{ translate('manage_company.on') }</option>
+                                    <option key='2' value={false}>{ translate('manage_company.off') }</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className={`form-group ${emailError===undefined?"":"has-error"}`}>
+                            <label>{ translate('manage_company.super_admin') }<span className="text-red"> * </span></label>
+                            <input type="email" className="form-control" onChange={ this.handleChangeEmail } value={companyEmail}/>
+                            <ErrorLabel content={emailError}/>
+                        </div>
+                        <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
+                            <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
+                            <textarea type="text" className="form-control" onChange={ this.handleChangeDescription } value={companyDescription}/>
+                            <ErrorLabel content={descriptionError}/>
                         </div>
                     </form>
                 </ModalDialog>

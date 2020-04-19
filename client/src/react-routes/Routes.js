@@ -31,12 +31,15 @@ import { DepartmentManage} from '../modules/employees-manager/department-manager
 import { ManageHoliday } from '../modules/employees-manager/holiday/components/ManageHoliday';
 
 import {KPIUnitCreate} from "../modules/kpi-unit/kpi-unit-create/component/KPIUnitCreate";
-import {KPIUnitOverview} from "../modules/kpi-unit/kpi-unit-overview/component/KPIUnitOverview";
+import {KPIUnitDashboard} from "../modules/kpi-unit/kpi-unit-dashboard/component/KPIDashboard";
+import {KPIUnitManager} from "../modules/kpi-unit/kpi-unit-manager/component/KPIUnitOverview";
 import {KPIUnitEvaluate} from "../modules/kpi-unit/kpi-unit-evaluate/component/KPIUnitEvaluate";
-import {KPIPersonalOverview} from "../modules/kpi-personal/kpi-personal-overview/component/KPIPersonalOverview";
 import {KPIPersonalCreate} from "../modules/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
 import {KPIPersonalEvaluate} from "../modules/kpi-personal/kpi-personal-data/component/KPIPersonalData";
-import {KPIMember} from "../modules/kpi-member/component/KPIMember";
+import {KPIPersonalManager} from "../modules/kpi-personal/kpi-personal-manager/component/KPIPersonalManager";
+import {DashBoardKPIPersonal} from "../modules/kpi-personal/kpi-personal-dashboard/component/DashBoardKPIPersonal";
+import {KPIMember} from "../modules/kpi-member/kpi-member-manager/component/KPIMember";
+import {DashBoardKPIMember} from "../modules/kpi-member/kpi-member-dashboard/component/DashBoardKPIMember";
 import {TaskTemplate} from '../modules/task-template-management/component/TaskTemplate';
 import { Notifications } from "../modules/combine-modules";
 
@@ -462,19 +465,34 @@ class Routes extends Component {
                         component={ KPIUnitEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.overviewKpiUnit.isLoading }
-                        key={ 'kpi-unit-overview' }
+                        isLoading={ this.props.dashboardKpiUnit.isLoading }
+                        key={ 'kpi-unit-dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/kpi-units/overview', name: 'kpi_unit_overview', icon:'' }
+                            { link: '/kpi-units/dashboard', name: 'kpi_unit_dashboard', icon:'' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/kpi-units/overview' }
-                        path={ '/kpi-units/overview' }
-                        pageName={ 'kpi_unit_overview' }
+                        link={ '/kpi-units/dashboard' }
+                        path={ '/kpi-units/dashboard' }
+                        pageName={ 'kpi_unit_dashboard' }
                         layout={ Layout }
-                        component={ KPIUnitOverview }
+                        component={ KPIUnitDashboard }
+                    />
+                    <PrivateRoute 
+                        isLoading={ this.props.managerKpiUnit.isLoading }
+                        key={ 'kpi-unit-manager' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/kpi-units/manager', name: 'kpi_unit_manager', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/kpi-units/manager' }
+                        path={ '/kpi-units/manager' }
+                        pageName={ 'kpi_unit_manager' }
+                        layout={ Layout }
+                        component={ KPIUnitManager }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.createKpiPersonal.isLoading }
@@ -492,19 +510,34 @@ class Routes extends Component {
                         component={ KPIPersonalCreate }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.overviewKpiPersonal.isLoading }
-                        key={ 'kpi-personal-overview' }
+                        isLoading={ this.props.KPIPersonalManager.isLoading }
+                        key={ 'kpi-personal-manager' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/kpi-personals/overview', name: 'kpi_personal_overview', icon:'' }
+                            { link: '/kpi-personals/manager', name: 'kpi_personal_manager', icon:'' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/kpi-personals/overview' }
-                        path={ '/kpi-personals/overview' }
-                        pageName={ 'kpi_personal_overview' }
+                        link={ '/kpi-personals/manager' }
+                        path={ '/kpi-personals/manager' }
+                        pageName={ 'kpi_personal_manager' }
                         layout={ Layout }
-                        component={ KPIPersonalOverview }
+                        component={ KPIPersonalManager }
+                    />
+                    <PrivateRoute 
+                        isLoading={ this.props.dashboardKPIPersonal.isLoading }
+                        key={ 'kpi-personal-dashboard' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/kpi-personals/dashboard', name: 'kpi_personal_dasdboad', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/kpi-personals/dashboard' }
+                        path={ '/kpi-personals/dashboard' }
+                        pageName={ 'kpi_personal_dashboard' }
+                        layout={ Layout }
+                        component={DashBoardKPIPersonal }
                     />
                     <PrivateRoute 
                         isLoading={ false }
@@ -554,20 +587,34 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ this.props.kpimembers.isLoading }
-                        key={ 'kpi_member' }
+                        key={ 'kpi_member_manager' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link:'/kpi-member/overview', name: 'kpi_member', icon:'fa fa-number' }
+                            { link:'/kpi-member/manager', name: 'kpi_member_manager', icon:'fa fa-number' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={'/kpi-member/overview'}
-                        path={ '/kpi-member/overview' }
-                        pageName= "KPI member"
+                        link={'/kpi-member/manager'}
+                        path={ '/kpi-member/manager' }
+                        pageName= "kpi_member_manager"
                         layout={ Layout }
                         component={ KPIMember }
                     />
-
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'kpi_member_dashboard' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link:'/kpi-member/dashboard', name: 'kpi_member_dashboard', icon:'fa fa-number' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={'/kpi-member/dashboard'}
+                        path={ '/kpi-member/dashboard' }
+                        pageName= "kpi_member_dashboard"
+                        layout={ Layout }
+                        component={ DashBoardKPIMember }
+                    />
                      {/* Task Management */}
                      <PrivateRoute 
                         isLoading={ this.props.tasks.isLoading }

@@ -130,40 +130,40 @@ class ModalEditCertificate extends Component {
                 <ModalDialog
                     size='50' modalID={`modal-edit-certificate-${id}`} isLoading={false}
                     formID={`form-edit-certificate-${id}`}
-                    title="Chỉnh sửa bằng cấp"
+                    title={translate('manage_employee.edit_diploma')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-edit-certificate-${id}`}>
                         <div className={`form-group ${errorOnNameCertificate === undefined ? "" : "has-error"}`}>
-                            <label>Tên bằng cấp<span className="text-red">*</span></label>
+                            <label>{translate('manage_employee.name_diploma')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="nameCertificate" value={nameCertificate} onChange={this.handleNameCertificateChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameCertificate} />
                         </div>
                         <div className={`form-group ${errorOnAddressCertificate === undefined ? "" : "has-error"}`}>
-                            <label>Nơi đào tạo<span className="text-red">*</span></label>
+                            <label>{translate('manage_employee.diploma_issued_by')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="addressCertificate" value={addressCertificate} onChange={this.handleAddressCertificateChange} autoComplete="off" />
                             <ErrorLabel content={errorOnAddressCertificate} />
                         </div>
                         <div className="row">
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnYearCertificate === undefined ? "" : "has-error"}`}>
-                                <label>Năm tốt nghiệp<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.graduation_year')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="yearCertificate" value={yearCertificate} onChange={this.handleYearCertificateChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnYearCertificate} />
                             </div>
                             <div className="form-group col-sm-6 col-xs-12">
-                                <label>Xếp loại<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.ranking_learning')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={typeCertificate} name="typeCertificate" onChange={this.handleTypeCertificateChange}>
-                                    <option value="Xuất sắc">Xuất sắc</option>
-                                    <option value="Giỏi">Giỏi</option>
-                                    <option value="Khá">Khá</option>
-                                    <option value="Trung bình khá">Trung bình khá</option>
-                                    <option value="Trung bình">Trung bình</option>
+                                    <option value="excellent">{translate('manage_employee.excellent')}</option>
+                                    <option value="very_good">{translate('manage_employee.very_good')}</option>
+                                    <option value="good">{translate('manage_employee.good')}</option>
+                                    <option value="average_good">{translate('manage_employee.average_good')}</option>
+                                    <option value="ordinary">{translate('manage_employee.ordinary')}</option>
                                 </select>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="file">Chọn file đính kèm</label>
+                            <label htmlFor="file">{translate('manage_employee.attached_files')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>

@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer } from 'react-toastify';
+
 import { EmployeeManagerActions } from '../redux/actions';
-//import { EmployeeInfoActions } from '../../employee-info/redux/actions';
-import { ModalDetailEmployee } from './ModalDetailEmployee';
-import { ModalAddEmployee } from './ModalAddEmployee';
-import { ModalEditEmployee } from './ModalEditEmployee';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
+import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom } from './CombineContent';
+import { ActionColumn, DeleteNotification, PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification } from '../../../../common-components';
 
 class ListEmployee extends Component {
     constructor(props) {
@@ -30,11 +26,6 @@ class ListEmployee extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/CoCauToChuc.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
         let script1 = document.createElement('script');
@@ -44,7 +35,25 @@ class ListEmployee extends Component {
         document.body.appendChild(script1);
 
     }
-
+    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-employee').modal('show');
+    }
+    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    handleEdit = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: value
+            }
+        });
+        window.$('#modal-edit-employee').modal('show');
+    }
     componentDidUpdate() {
         this.hideColumn();
     }
@@ -127,11 +136,9 @@ class ListEmployee extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <h4 className="box-title">Danh sách nhân viên:</h4>
-                        </div>
-                        <ModalAddEmployee initState={this.state} />
+                    <EmployeeCreateForm />
+                    <div className="form-group">
+                        <h4 className="box-title">Danh sách nhân viên:</h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -236,10 +243,8 @@ class ListEmployee extends Component {
                                         )) : null}</td>
                                         <td>{x.employee.map(y => y.status)}</td>
                                         < td >
-                                            <ModalDetailEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary}
-                                                sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} />
-                                            <ModalEditEmployee employee={x.employee} employeeContact={x.employeeContact} salary={x.salary} initState={this.state}
-                                                sabbatical={x.sabbatical} praise={x.praise} discipline={x.discipline} list={x} />
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin nhân viên"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin nhân viên"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content="Xoá thông tin nhân viên"
                                                 data={{
@@ -258,6 +263,30 @@ class ListEmployee extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <ToastContainer />
+                {
+                    this.state.currentRowView !== undefined &&
+                    <EmployeeDetailForm
+                        _id={this.state.currentRowView.employee[0]._id}
+                        employee={this.state.currentRowView.employee}
+                        employeeContact={this.state.currentRowView.employeeContact}
+                        salary={this.state.currentRowView.salary}
+                        sabbatical={this.state.currentRowView.sabbatical}
+                        praise={this.state.currentRowView.praise}
+                        discipline={this.state.currentRowView.discipline}
+                    />
+                }
+                {
+                    this.state.currentRow !== undefined &&
+                    <EmployeeEditFrom
+                        _id={this.state.currentRow.employee[0]._id}
+                        employee={this.state.currentRow.employee}
+                        employeeContact={this.state.currentRow.employeeContact}
+                        salary={this.state.currentRow.salary}
+                        sabbatical={this.state.currentRow.sabbatical}
+                        praise={this.state.currentRow.praise}
+                        discipline={this.state.currentRow.discipline}
+                    />
+                }
             </div>
         );
     };

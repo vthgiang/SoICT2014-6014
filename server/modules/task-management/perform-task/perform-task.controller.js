@@ -35,6 +35,10 @@ exports.stopTimer = (req, res) => {
 exports.getCommentTask = (req, res) => {
     return PerformTaskService.getCommentTask(req, res);
 }
+//
+exports.getActionTask = (req, res) => {
+    return PerformTaskService.getActionTask(req, res);
+}
 
 // Tạo một bình luận hoặc hoạt động cho công việc
 exports.createCommentTask = (req, res) => {
@@ -56,16 +60,6 @@ exports.editResultInformationTask = (req, res) => {
     return PerformTaskService.editResultInformationTask(req, res);
 }
 
-// Thêm kết quả đánh giá công việc cho từng người tham gia
-exports.createResultTask = (req, res) => {
-    return PerformTaskService.createResultTask(req, res);
-}
-
-// Chỉnh sửa kết quả đánh giá công việc cho từng người tham gia
-exports.editResultTask = (req, res) => {
-    return PerformTaskService.editResultTask(req, res);
-}
-
 // Chỉnh sửa một hoạt động hoặc bình luận
 exports.editCommentTask = (req, res) => {
     return PerformTaskService.editCommentTask(req, res);
@@ -74,4 +68,52 @@ exports.editCommentTask = (req, res) => {
 // Xóa bỏ một bình luận hoặc hoạt động
 exports.deleteCommentTask = (req, res) => {
     return PerformTaskService.deleteCommentTask(req, res);
+}
+// Thêm kết quả đánh giá công việc cho từng người tham gia
+exports.createResultTask = async (req, res) => {
+    try {
+        var task = await PerformTaskService.createResultTask(req.body.result,req.body.task);
+        res.json({
+            success : true,
+            message: "Lưu thành công kết quả đánh giá",
+            content: task
+        });
+    } catch (error) {
+        res.json({ 
+            success: false,
+            message: "Lưu thất bại kết quả đánh giá",
+            content: error 
+        });
+    }
+    // return PerformTaskService.createResultTask(req, res);
+}
+
+// Chỉnh sửa kết quả đánh giá công việc cho từng người tham gia listResult, taskID
+exports.editResultTask = async (req, res) => {
+    try {
+        var listResultTask = await PerformTaskService.editResultTask(req.body, req.params.id);
+        // await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
+        res.json({
+            success: true,
+            message: "Chỉnh sửa thành công kết quả đánh giá",
+            content: listResultTask
+        });
+    } catch (error) {
+        // await LogError(req.user.email, ` edit result of task  `,req.user.company);
+        res.json({
+            success: false,
+            message: "Chỉnh sửa thất bại kết quả đánh giá",
+            content: error
+            
+        });
+    }
+}
+exports.createActionTask = (req,res) => {
+    return PerformTaskService.createActionTask(req,res);
+}
+exports.editActionTask = (req,res) =>{
+    return PerformTaskService.editActionTask(req,res);
+}
+exports.deleteActionTask = (req,res)=>{
+    return PerformTaskService.deleteActionTask(req,res)
 }
