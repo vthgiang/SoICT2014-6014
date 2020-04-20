@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Company, OrganizationalUnit, Role } = require('../').schema;
+const Company = require('../system-admin/company.model');
+const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
+const Role = require('../auth/role.model');
 
 const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     name: {

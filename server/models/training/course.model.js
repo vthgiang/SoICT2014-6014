@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Company, EducationProgram } = require('../').schema;
+const Company = require('../system-admin/company.model');
+const EducationProgram = require('./educationProgram.model');
+
 
 const CourseSchema = new Schema({
     courseId: { // mã đào tạo

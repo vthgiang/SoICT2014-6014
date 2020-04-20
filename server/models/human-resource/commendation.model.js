@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Employee, Company } = require('..').schema;
+const Company = require('../system-admin/company.model');
+const Employee = require('./employee.model');
 
 // tạo bảng datatable khen thưởng
 const CommendationSchema = new Schema({

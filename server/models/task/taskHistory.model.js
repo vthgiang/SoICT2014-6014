@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { User } = require('../').schema;
+const User = require('../auth/user.model');
 
 // Create Schema
-const TaskHistory = new Schema({
+const TaskHistorySchema = new Schema({
     time: {
-        type: Date.now,
+        type: Date,
     },
     user: {
         type: Schema.Types.ObjectId,
@@ -26,4 +26,4 @@ const TaskHistory = new Schema({
     }
 });
 
-module.exports = User = mongoose.model("task_histories", TaskHistory);
+module.exports = TaskHistory = mongoose.model("task_histories", TaskHistorySchema);

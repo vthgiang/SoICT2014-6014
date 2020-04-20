@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const { ProvidingComponent, RootRole } = require('../').schema;
-
+const ProvidingComponent = require('./providingComponent.model');
+const RootRole = require('./rootRole.model');
 
 // Create Schema
 const ProvidingLinkSchema = new Schema({

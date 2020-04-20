@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { User, Task } = require('../').schema;
+const User = require('../auth/user.model');
+const Task = require('./task.model');
 
 // Model quản lý dữ liệu lịch sử bấm giờ thực hiện công việc
 const TimesheetLogSchema = new Schema({

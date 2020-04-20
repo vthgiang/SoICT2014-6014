@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Employee } = require('../').schema;
+const Employee = require('./employee.model');
 
 // Create Schema
 const EmployeeContactSchema = new Schema({  // Hợp nhất với Employee

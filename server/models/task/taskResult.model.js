@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { User } = require('../').schema;
+const User = require('../auth/user.model');
 
 // Model quản lý kết quả thực hiệc công việc
 const TaskResultSchema = new Schema({

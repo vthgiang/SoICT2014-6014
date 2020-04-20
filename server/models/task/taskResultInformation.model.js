@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const User = require('../auth/user.model');
 
-const { User, TaskTemplateInformation } = require('../').schema;
+const User = require('../auth/user.model');
+const TaskTemplateInformation = require('./taskTemplateInformation.model');
 
 
 // Model quản lý kết quả của các thông tin công việc theo mẫu

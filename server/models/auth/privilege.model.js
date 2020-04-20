@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const {Role, Action} = require('../').schema;
+
+const Role = require('./role.model');
+const Action = require('../super-admin/action.model');
 
 // Create Schema
 const PrivilegeSchema = new Schema({

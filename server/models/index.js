@@ -55,6 +55,7 @@ exports.schema = {
     Privilege,
     Role,
     UserRole,
+    User,
 
     Document,
     DocumentCategory,

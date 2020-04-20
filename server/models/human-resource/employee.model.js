@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Company } = require('../').schema;
+const Company = require('../system-admin/company.model');
 
 // Create Schema
 const EmployeeSchema = new Schema({
@@ -33,7 +33,7 @@ const EmployeeSchema = new Schema({
         required: true
     },
     birthdate: {
-        type: Date,
+        type: String,
         required: true
     },
     birthplace: {
@@ -116,16 +116,16 @@ const EmployeeSchema = new Schema({
         type: String,
     },
     degrees: [{ // Bằng cấp
-        nameCertificate: String,
-        addressCertificate: String,
-        yearCertificate: String,
-        typeCertificate: String,
+        name: String,
+        issuedBy: String,
+        year: String,
+        type: String,
         file: String,
         urlFile: String
     }],
     certificates: [{ // Chứng chỉ ngắn hạn
-        nameCertificateShort: String,
-        unit: String,
+        name: String,
+        issuedBy: String,
         startDate: String,
         endDate: String,
         file: String,

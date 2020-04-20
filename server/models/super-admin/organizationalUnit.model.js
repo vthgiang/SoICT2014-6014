@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Company, Role } = require('../').schema;
+const Company= require('../system-admin/company.model');
+const Role= require('../auth/role.model');
 
 // Create Schema
 const OrganizationalUnitSchema = new Schema({

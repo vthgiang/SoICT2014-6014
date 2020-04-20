@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const { User } = require('../').schema;
+const User = require('../auth/user.model');
 
 const CompanySchema = new Schema({
     name: {

@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { OrganizationalUnit, User, OrganizationalUnitKpi } = require('../').schema;
-
+const OrganizationalUnit= require('../super-admin/organizationalUnit.model');
+const User= require('../auth/user.model');
+const OrganizationalUnitKpi= require('./organizationalUnitKpi.model');
 
 // Model cho chức năng quản lý KPI đơn vị
 const OrganizationalUnitKpiSetSchema = new Schema({

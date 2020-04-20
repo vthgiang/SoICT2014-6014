@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const { Company, RoleType, UserRole, Privilege } = require('../').schema;
+
+const Company = require('../system-admin/company.model');
+const RoleType = require('../super-admin/roleType.model');
+const UserRole = require('./userRole.model');
+const Privilege = require('./privilege.model');
 
 // Create Schema
 const RoleSchema = new Schema({

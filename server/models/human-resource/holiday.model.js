@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Company } = require('../').schema;
+const Company = require('../system-admin/company.model');
 
 // toạ bảng datatable nghỉ lễ tết
 const HolidaySchema = new Schema({

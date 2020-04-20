@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
-const { Company, UserRole, NotificationUser } = require('../').schema;
+
+const Company = require('../system-admin/company.model');
+const UserRole = require('./userRole.model');
+const NotificationUser = require('../notification/notificationUser.model');
 
 // Create Schema
 const UserSchema = new Schema({
@@ -20,7 +23,7 @@ const UserSchema = new Schema({
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: 'companies'
     },
     active: {
         type: Boolean,

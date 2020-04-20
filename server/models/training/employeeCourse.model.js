@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Employee, Course } = require('../').schema;
+const Employee = require('../human-resource/employeeContact.model');
+const Course = require('./course.model');
 
 const EmployeeCourseSchema = new Schema({
     course: {
         type: Schema.Types.ObjectId,
-        ref: Course,
+        ref: 'courses',
         required: true
     },
     employee: {
         type: Schema.Types.ObjectId,
-        ref: Employee,
+        ref: 'employees',
         required: true
     },
     result: {

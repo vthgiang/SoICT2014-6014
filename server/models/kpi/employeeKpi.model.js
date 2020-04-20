@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const { OrganizationalUnitKpi } = require('../').schema;
+
+const OrganizationalUnitKpi = require('./organizationalUnitKpi.model');
 
 // Create Schema
 const EmployeeKpiSchema = new Schema({

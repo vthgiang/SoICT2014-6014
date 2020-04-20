@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const { Company, Document } = require('../').schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
+
+const Company = require('../system-admin/company.model');
+const Document = require('./document.model');
 
 // Create Schema
 const DocumentTypeSchema = new Schema({

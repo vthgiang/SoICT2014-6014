@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const { User, NotificationUser } = require('../').schema;
+const User= require('../auth/user.model');
+const NotificationUser= require('./notificationUser.model');
 
 // Create Schema
 const NotificationSchema = new Schema({
