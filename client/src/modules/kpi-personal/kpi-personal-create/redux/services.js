@@ -1,4 +1,4 @@
-import {handleResponse} from '../../../../helpers/HandleResponse';
+import {handleResponse} from '../../../../helpers/handleResponse';
 
 import {
     TOKEN_SECRET, LOCAL_SERVER_API

@@ -1,4 +1,4 @@
-import { VALIDATOR } from '../../../../helpers/Validator';
+import { VALIDATOR } from '../../../../helpers/validator';
 
 export const CompanyFormValidator = {
     validateName,

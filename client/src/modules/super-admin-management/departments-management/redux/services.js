@@ -9,7 +9,7 @@ import {
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 
-import {handleResponse} from '../../../../helpers/HandleResponse';
+import {handleResponse} from '../../../../helpers/handleResponse';
 
 export const DepartmentServices = {
     get,

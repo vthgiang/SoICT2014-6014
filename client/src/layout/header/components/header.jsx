@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MainHeaderMenu from './MainHeaderMenu';
+import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
@@ -7,10 +7,10 @@ import { ModalDialog, ErrorLabel } from '../../../common-components';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './Header.css';
+import './header.css';
 import { LOCAL_SERVER_API } from '../../../env';
-import { Validator } from './Validator';
-import ModalChangeUserInformation from './ModalChangeUserInformation';
+import { Validator } from './validator';
+import ModalChangeUserInformation from './modalChangeUserInformation';
 
 class Header extends Component {
     constructor(props) {

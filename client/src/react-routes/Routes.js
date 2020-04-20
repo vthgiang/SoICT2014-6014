@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route,Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { PrivateRoute, AuthRoute } from './route-export';
-import Layout from '../layouts/Layout';
+import Layout from '../layout/layout';
 import {NotFound} from '../modules/not-found/components';
 import Login from '../modules/auth/components/Login';
 import LogManagement from '../modules/system-admin-management/logs-management/components';

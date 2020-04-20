@@ -1,4 +1,4 @@
-import {handleResponse} from '../../../../helpers/HandleResponse';
+import {handleResponse} from '../../../../helpers/handleResponse';
 import {
     LOCAL_SERVER_API
 } from '../../../../env';

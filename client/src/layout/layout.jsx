@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Header from './header/components/Header';
-import Sidebar from './sidebar/components/SideBar';
-import Footer from './footer/components/Footer';
-import Content from './content/components/Content';
+import Header from './header/components/header';
+import Sidebar from './sidebar/components/sideBar';
+import Footer from './footer/components/footer';
+import Content from './content/components/content';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 

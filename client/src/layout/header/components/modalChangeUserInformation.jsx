@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import MainHeaderMenu from './MainHeaderMenu';
+import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 import { ModalDialog, ErrorLabel } from '../../../common-components';
 import { LOCAL_SERVER_API } from '../../../env';
-import { Validator } from './Validator';
+import { Validator } from './validator';
 import { auth } from '../../../modules/auth/redux/reducers';
 
 class ModalChangeUserInformation extends Component {

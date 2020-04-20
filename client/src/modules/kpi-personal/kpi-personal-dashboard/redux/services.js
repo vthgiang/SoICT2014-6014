@@ -6,7 +6,7 @@ import {
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
-import {handleResponse} from '../../../../helpers/HandleResponse';
+import {handleResponse} from '../../../../helpers/handleResponse';
 export const dashboardKPIPerService = {
     getAllKPIPersonalByMember,
     getAllKPIPersonalOfTask,

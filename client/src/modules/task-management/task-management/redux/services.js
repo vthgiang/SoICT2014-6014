@@ -1,4 +1,4 @@
-import {handleResponse} from '../../../../helpers/HandleResponse';
+import {handleResponse} from '../../../../helpers/handleResponse';
 import axios from 'axios';
 import { AuthenticateHeader } from '../../../../config';//authHeader-cũ
 import {

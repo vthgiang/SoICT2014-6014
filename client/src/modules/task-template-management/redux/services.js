@@ -1,4 +1,4 @@
-import {handleResponse} from '../../../helpers/HandleResponse';
+import {handleResponse} from '../../../helpers/handleResponse';
 // sua duong dan sau khi sang prj moi
 import { AuthenticateHeader } from '../../../config';
 import axios from 'axios';

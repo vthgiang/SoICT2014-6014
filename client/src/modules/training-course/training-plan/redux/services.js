@@ -1,6 +1,6 @@
 import {
     handleResponse
-} from '../../../../helpers/HandleResponse';
+} from '../../../../helpers/handleResponse';
 import { LOCAL_SERVER_API } from '../../../../env';
 import {
     AuthenticateHeader

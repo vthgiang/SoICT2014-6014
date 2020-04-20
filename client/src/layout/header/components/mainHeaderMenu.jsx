@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../css/MainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
-import Notifications from './Notifications';
-import Profile from './Profile';
-import Roles from './Roles';
-import Language from './Language';
+import Notifications from './Notification';
+import Profile from './profile';
+import Roles from './roles';
+import Language from './language';
 //import { getStorage } from '../../../config';
 
 class MainHeaderMenu extends Component {

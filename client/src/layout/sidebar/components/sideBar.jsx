@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Item from './Item';
+import Item from './item';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';

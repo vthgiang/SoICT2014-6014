@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 
-class Notifications extends Component {
+class Notification extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
@@ -45,4 +45,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = { 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Notifications));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Notification));
