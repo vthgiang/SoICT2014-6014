@@ -2,55 +2,67 @@ import React, { Component } from 'react';
 import { Route,Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { PrivateRoute, AuthRoute } from '.';
+import { PrivateRoute } from './privateRoute';
+import { AuthRoute } from './authRoute';
 
 import Layout from '../layout/layout';
 
 import {NotFound} from '../modules/not-found/components';
 
 import Login from '../modules/auth/components/login';
+import ResetPassword from '../modules/auth/components/resetPassword';
 
-import LogManagement from '../modules/system-admin/log/components';
+import ManageFormDocument from '../modules/document/components';
+
 import Home from '../modules/home/components';
-import ManageCompany from '../modules/system-admin/company/components';
+
+import { Notifications } from "../modules/combine-modules";
+
+import System from '../modules/system-admin/log/components';
+import Company from '../modules/system-admin/company/components';
 import LinksDefaultManagement from '../modules/system-admin/providing-link/components';
 import RolesDefaultManagement from '../modules/system-admin/root-role/components';
 import ComponentsDefaultManagement from '../modules/system-admin/providing-component/components';
+
 import ManageUser from '../modules/super-admin/user/components';
 import ManageRole from '../modules/super-admin/role/components';
 import ManageLink from '../modules/super-admin/link/components';
 import ManageDepartment from '../modules/super-admin/organizational-unit/components';
 import ManageComponent from '../modules/super-admin/component/components';
-import ManageFormDocument from '../modules/document/components';
-import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
-import {EmployeeCreatePage} from '../modules/human-resource/employee-create/components/employeeCreatePage';
-import { ListEmployee, AddEmployee} from '../modules/human-resource/profile/employee-management/components/combinedContent';
-import { DashBoardEmployees} from '../modules/human-resource/employee-dashboard/components/employeeDashBoard';
-import { ManagerPraiseDiscipline} from '../modules/human-resource/commendation-discipline/components';
+
+
 import ManagerSabbatical from '../modules/human-resource/annual-leave/components';
-import ManagerSalary from '../modules/human-resource/salary/components';
-import { Timekeeping} from '../modules/human-resource/timesheet/components/timesheet';
-import { ListEducation} from '../modules/training/education-program/components/educationProgramList';
-import { TrainingPlan} from '../modules/training/course/components/course';
+import { ManagerPraiseDiscipline} from '../modules/human-resource/commendation-discipline/components';
+import { DashBoardEmployees} from '../modules/human-resource/employee-dashboard/components/employeeDashBoard';
 import { DepartmentManage} from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
 import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
+import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
+import { ListEmployee, AddEmployee} from '../modules/human-resource/profile/employee-management/components/combinedContent';
+import {EmployeeCreatePage} from '../modules/human-resource/profile/employee-create/components/employeeCreatePage';
+import ManagerSalary from '../modules/human-resource/salary/components';
+import { Timekeeping} from '../modules/human-resource/timesheet/components/timesheet';
+
+import { ListEducation} from '../modules/training/education-program/components/educationProgramList';
+import { TrainingPlan} from '../modules/training/course/components/course';
 
 import {KPIUnitCreate} from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
 import {KPIUnitDashboard} from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import {KPIUnitManager} from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
 import {KPIUnitEvaluate} from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
-import {KPIPersonalCreate} from "../modules/kpi/kpi-personal/kpi-personal-create/component/KPIPersonalCreate";
+
+import {KPIPersonalCreate} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
+import {KPIPersonalManager} from "../modules/kpi/employee/management/component/employeeKpiManagement";
+import {DashBoardKPIPersonal} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
-import {KPIPersonalManager} from "../modules/kpi/kpi-personal/kpi-personal-manager/component/KPIPersonalManager";
-import {DashBoardKPIPersonal} from "../modules/kpi/kpi-personal/kpi-personal-dashboard/component/DashBoardKPIPersonal";
+
 import {KPIMember} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
 import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
-import {TaskTemplate} from '../modules/task-template-man/component/TaskTemplate';
-import { Notifications } from "../modules/combine-modules";
+
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
 import { TaskDashboard } from "../modules/task/task-management/component/taskDashboard";
-import ResetPassword from '../modules/auth/components/resetPassword';
+import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
+
 
 class Routes extends Component {
 
@@ -73,7 +85,7 @@ class Routes extends Component {
                         path={ '/system/settings' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ LogManagement }
+                        component={ System }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.rolesDefault.isLoading }
@@ -144,7 +156,7 @@ class Routes extends Component {
                         path={ '/system/companies-management' }
                         pageName={ 'manage_company' }
                         layout={ Layout }
-                        component={ ManageCompany }
+                        component={ Company }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.user.isLoading }
