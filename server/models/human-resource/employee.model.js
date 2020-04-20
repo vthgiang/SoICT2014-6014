@@ -119,7 +119,7 @@ const EmployeeSchema = new Schema({
         name: String,
         issuedBy: String,
         year: String,
-        type: String,
+        degreeType: String,
         file: String,
         urlFile: String
     }],
