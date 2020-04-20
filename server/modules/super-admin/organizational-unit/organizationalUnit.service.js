@@ -2,7 +2,7 @@ const { Department, UserRole, Role } = require('../../../models').schema;
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
 
-exports.get = async (id) => {
+exports.getAllOrganizationalUnits = async (id) => {
     return await Department
         .find({ company: id })
         .populate([
@@ -12,7 +12,7 @@ exports.get = async (id) => {
         ]);
 }
 
-exports.getTree = async (id) => {
+exports.getAllOrganizationalUnitsAsTree = async (id) => {
     const data = await Department.find({ company: id }).populate([
         { path: 'dean', model: Role },
         { path: 'vice_dean', model: Role },
@@ -39,7 +39,7 @@ exports.getById = async (req, res) => {
     return await Department.findById(req.params.id);
 }
 
-exports.create = async(data, deanId, vice_deanId, employeeId, companyID) => {
+exports.createOrganizationalUnit = async(data, deanId, vice_deanId, employeeId, companyID) => {
     const check = await Department.findOne({name: data.name, company: companyID});
     if(check !== null) throw('department_name_exist');
     const department = await Department.create({

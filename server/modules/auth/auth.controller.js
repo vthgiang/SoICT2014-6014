@@ -61,19 +61,19 @@ exports.logoutAllAccount = async (req, res) => {
     }
 };
 
-exports.forgotPassword = async (req, res) => {
+exports.forgetPassword = async (req, res) => {
     try {
-        var forgotPassword = await AuthService.forgotPassword(req.body.email);
+        var forgetPassword = await AuthService.forgetPassword(req.body.email);
 
-        await LogInfo(req.body.email, 'FORGOT_PASSWORD');
+        await LogInfo(req.body.email, 'FORGET_PASSWORD');
         res.status(200).json({
             success: true,
             message: 'request_forgot_password_success',
-            content: forgotPassword
+            content: forgetPassword
         });
     } catch (error) {
 
-        await LogError(req.body.email, 'FORGOT_PASSWORD');
+        await LogError(req.body.email, 'FORGET_PASSWORD');
         res.status(400).json({
             success: false,
             message: error
@@ -107,7 +107,7 @@ exports.changeInformation = async (req, res) => {
         const avatar = `/${req.file.path}`;
         const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
 
-        await LogInfo(req.user.email, 'CHANGE USER INFORMATION', req.user.company);
+        await LogInfo(req.user.email, 'CHANGE_USER_INFORMATION', req.user.company);
         res.status(200).json({
             success: true,
             message: 'change_user_information_success',
@@ -115,7 +115,7 @@ exports.changeInformation = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email,'CHANGE USER INFORMATION', req.user.company);
+        await LogError(req.user.email,'CHANGE_USER_INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
             message: error
@@ -127,7 +127,7 @@ exports.changePassword = async (req, res) => {
     try {
         var user = await AuthService.changePassword(req.params.id, req.body.password, req.body.new_password);
 
-        await LogInfo(req.user.email, 'CHANGE USER PASSWORD', req.user.company);
+        await LogInfo(req.user.email, 'CHANGE_USER_PASSWORD', req.user.company);
         res.status(200).json({
             success: true,
             message: 'change_user_password',
@@ -135,7 +135,7 @@ exports.changePassword = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email,'CHANGE USER PASSWORD', req.user.company);
+        await LogError(req.user.email,'CHANGE_USER_PASSWORD', req.user.company);
         res.status(400).json({
             success: false,
             message: error
@@ -143,9 +143,9 @@ exports.changePassword = async (req, res) => {
     }
 };
 
-exports.getLinksOfRole = async (req, res) => {
+exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
-        var data = await AuthService.getLinksOfRole(req.params.id);
+        var data = await AuthService.getLinksThatRoleCanAccess(req.params.id);
 
         await LogInfo(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
         res.status(200).json({

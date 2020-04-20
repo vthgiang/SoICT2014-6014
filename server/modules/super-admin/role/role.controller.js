@@ -1,11 +1,11 @@
 const RoleService = require('./role.service');
 const {LogInfo, LogError} = require('../../../logs');
 
-exports.get = async (req, res) => {
+exports.getAllRoles = async (req, res) => {
     try {
-        var roles = await RoleService.get(req.user.company._id); //truyen vao id cua cong ty
+        var roles = await RoleService.getAllRoles(req.user.company._id); //truyen vao id cua cong ty
         
-        LogInfo(req.user.email, 'GET_ROLES', req.user.company);
+        LogInfo(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(200).json({
             success: true,
             message: 'get_roles_success',
@@ -13,7 +13,7 @@ exports.get = async (req, res) => {
         });
     } catch (error) {
         
-        LogError(req.user.email, 'GET_ROLES', req.user.company);
+        LogError(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(400).json({
             success: false,
             message: error
@@ -21,12 +21,12 @@ exports.get = async (req, res) => {
     }
 };
 
-exports.getPaginate = async (req, res) => {
+exports.getPaginatedRoles = async (req, res) => {
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var roles = await RoleService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
+        var roles = await RoleService.getPaginatedRoles(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
 
         LogInfo(req.user.email, 'PAGINATE_ROLES', req.user.company);
         res.status(200).json({
@@ -44,16 +44,16 @@ exports.getPaginate = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createRole = async (req, res) => {
     try {
-        const checkRole = await RoleService.getByData({
+        const checkRole = await RoleService.searchRoles({
             company: req.user.company._id,
             name: req.body.name
         });
         if(checkRole !== null) throw ['role_name_exist', 'error_code_2'];
-        var role = await RoleService.create(req.body, req.user.company._id);
-        await RoleService.editRelationshiopUserRole(role._id, req.body.users);
-        var data = await RoleService.getById(req.user.company._id, role._id);
+        var role = await RoleService.createRole(req.body, req.user.company._id);
+        await RoleService.editRelationshipUserRole(role._id, req.body.users);
+        var data = await RoleService.getRoleById(req.user.company._id, role._id);
         
         LogInfo(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(200).json({
@@ -71,9 +71,9 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getRoleById = async (req, res) => {
     try {
-        var role = await RoleService.getById(req.user.company._id, req.params.id);
+        var role = await RoleService.getRoleById(req.user.company._id, req.params.id);
         
         LogInfo(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(200).json({
@@ -91,11 +91,11 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editRole = async (req, res) => {
     try {
-        await RoleService.editRelationshiopUserRole(req.params.id, req.body.users);
-        var role = await RoleService.edit(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
-        var data = await RoleService.getById(req.user.company._id, role._id);
+        await RoleService.editRelationshipUserRole(req.params.id, req.body.users);
+        var role = await RoleService.editRole(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
+        var data = await RoleService.getRoleById(req.user.company._id, role._id);
         
         LogInfo(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(200).json({
@@ -113,9 +113,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deleteRole = async (req, res) => {
     try {
-        var role = await RoleService.delete(req.params.id);
+        var role = await RoleService.deleteRole(req.params.id);
         
         LogInfo(req.user.email, 'DELETE_ROLE', req.user.company);
         res.status(200).json({
@@ -133,9 +133,9 @@ exports.delete = async (req, res) => {
     }
 };
 
-exports.getRoleSameDepartment = async (req, res) => {
+exports.getAllRolesInSameOrganizationalUnitWithRole = async (req, res) => {
     try {
-        const roles = await RoleService.getRoleSameDepartment(req.params.id);
+        const roles = await RoleService.getAllRolesInSameOrganizationalUnitWithRole(req.params.id);
 
         LogInfo(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
         res.status(200).json({

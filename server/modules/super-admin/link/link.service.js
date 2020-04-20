@@ -1,13 +1,13 @@
 const Link = require('../../../models/super-admin/link.model');
 const Privilege = require('../../../models/auth/privilege.model');
 
-exports.get = async (company) => {
+exports.getAllLinks = async (company) => {
     return await Link
         .find({ company })
         .populate({ path: 'roles', model: Privilege });
 }
 
-exports.getPaginate = async (company, limit, page, data={}) => {
+exports.getPaginatedLinks = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await Link
         .paginate( newData , { 
@@ -19,14 +19,14 @@ exports.getPaginate = async (company, limit, page, data={}) => {
         });
 }
 
-exports.getById = async (id) => {
+exports.getLinkById = async (id) => {
 
     return await Link
         .findById(id)
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
 }
 
-exports.create = async(data, companyId) => {
+exports.createLink = async(data, companyId) => {
     if(data.url === '/system') throw ('cannot_create_this_url');
     const check = await Link.findOne({company: componentId, url: data.url});
     if(check !== null) throw ('url_exist');
@@ -37,7 +37,7 @@ exports.create = async(data, companyId) => {
     });
 }
 
-exports.edit = async(id, data) => {
+exports.editLink = async(id, data) => {
     var link = await Link
         .findById(id)
         .populate({ path: 'roles', model: Privilege });
@@ -50,7 +50,7 @@ exports.edit = async(id, data) => {
     return link;
 }
 
-exports.delete = async(id) => {
+exports.deleteLink = async(id) => {
     var relationshiopDelete = await Privilege.deleteMany({
         resourceId: id,
         resourceType: 'Link'

@@ -1,20 +1,22 @@
-const Component = require('../models/component.model');
-const RoleType = require('../models/role_type.model');
-const Role = require('../models/role.model');
-const Company = require('../models/company.model');
-const Department = require('../models/department.model')
-const Link = require('../models/link.model');
-const Privilege = require('../models/privilege.model');
-const User = require('../models/user.model');
-const UserRole = require('../models/user_role.model');
-const Employee = require('../models/employee.model');
-const EmployeeContact = require('../models/employeeContact.model');
-const Salary = require('../models/salary.model');
-const Sabbatical = require('../models/sabbatical.model');
-const Discipline = require('../models/discipline.model');
-const Praise = require('../models/praise.model');
-const EducationProgram = require('../models/educationProgram.model');
-const Course = require('../models/course.model')
+const {
+    Component,
+    RoleType,
+    Role,
+    Company, 
+    OrganizationalUnit,
+    Link,
+    Privilege,
+    User,
+    UserRole,
+    Employee,
+    EmployeeContact,
+    AnnualLeave,
+    Discipline,
+    Commendation,
+    EducationProgram,
+    Course
+} = require('../models').schema;
+
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -153,32 +155,32 @@ const sampleCompanyData = async () => {
 
     console.log("Lấy role mặc định của công ty...");
     const roleAbstract = await RoleType.findOne({
-        name: Terms.ROLE_TYPES.ABSTRACT
+        name: Terms.ROLE_TYPES.ROOT
     });
     const roleChucDanh = await RoleType.findOne({
         name: Terms.ROLE_TYPES.POSITION
     });
 
     const admin = await Role.create({
-        name: Terms.PREDEFINED_ROLES.ADMIN.NAME,
+        name: Terms.ROOT_ROLES.ADMIN.NAME,
         company: vnist._id,
         type: roleAbstract._id
     });
     const roles = await Role.insertMany([{
-        name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
+        name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
         company: vnist._id,
         type: roleAbstract._id,
         parents: [admin._id]
     },  {
-        name: Terms.PREDEFINED_ROLES.DEAN.NAME,
+        name: Terms.ROOT_ROLES.DEAN.NAME,
         company: vnist._id,
         type: roleAbstract._id
     }, {
-        name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME,
+        name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
         company: vnist._id,
         type: roleAbstract._id
     }, {
-        name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME,
+        name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
         company: vnist._id,
         type: roleAbstract._id
     }]);
@@ -278,7 +280,7 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log('Tạo Phòng ban cho công ty...');
-    const Directorate = await Department.create({// Khởi tạo ban giám đốc công ty
+    const Directorate = await OrganizationalUnit.create({// Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
         description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         company:  vnist._id,
@@ -287,7 +289,7 @@ const sampleCompanyData = async () => {
         employee: thanhVienBGĐ._id,
         parent: null
     });
-    const departments = await Department.insertMany([
+    const departments = await OrganizationalUnit.insertMany([
         {
             name: "Phòng hành chính",
             description: "Phòng hành chính Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
@@ -1136,7 +1138,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
-    var sabbatical = await Sabbatical.insertMany([{
+    var sabbatical = await AnnualLeave.insertMany([{
         employee: employee._id,
         company:vnist._id,
         startDate: "04-02-2020",
@@ -1186,7 +1188,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
-    var praise = await Praise.insertMany([{
+    var praise = await Commendation.insertMany([{
         employee: employee._id,
         company:vnist._id,
         number: "123",

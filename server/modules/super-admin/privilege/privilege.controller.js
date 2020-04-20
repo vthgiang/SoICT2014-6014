@@ -1,6 +1,8 @@
 const PrivilegeService = require('./privilege.service');
 const { LogInfo, LogError } = require('../../../logs');
 
+
+// TODO: Xóa bớt các phương thức không dùng???
 exports.get = async (req, res) => {
     try {
         var roles = await PrivilegeService.get(req, res);
@@ -58,7 +60,7 @@ exports.delete = async (req, res) => {
 
 exports.addRoleToLink = async (req, res) => {
     try {
-        var role = await PrivilegeService.addRoleToLink(req.body.idLink, req.body.idRole);
+        var role = await PrivilegeService.addLinkThatRoleCanAccess(req.body.idLink, req.body.idRole);
         
         res.status(200).json(role);
     } catch (error) {
@@ -67,9 +69,9 @@ exports.addRoleToLink = async (req, res) => {
     }
 };
 
-exports.getLinksOfRole = async (req, res) => {
+exports.getLinksRoleCanAccess = async (req, res) => {
     try {
-        var links = await PrivilegeService.getLinksOfRole(req.params.idRole);
+        var links = await PrivilegeService.getLinksRoleCanAccess(req.params.idRole);
         
         res.status(200).json(links);
     } catch (error) {

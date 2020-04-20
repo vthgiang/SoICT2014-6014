@@ -36,7 +36,7 @@ exports.create = async (req, res) => {
         var notification = await NotificationServices.create(req.body, req.user.company._id);
         var {departments} = req.body;
         departments.forEach(async(department) => {
-            var userArr =  await UserServices.getUsersOfDepartment(department);
+            var userArr =  await UserServices.getAllUsersInOrganizationalUnit(department);
             await NotificationServices.noticeToUsers(userArr, notification._id);
         });
 

@@ -9,6 +9,6 @@ router.get("/:id", auth, PrivilegeController.show);
 router.patch("/:id", auth, PrivilegeController.edit);
 router.delete("/:id", auth, PrivilegeController.delete);
 
-router.get("/get-links-of-role/:idRole", auth, PrivilegeController.getLinksOfRole);
+router.get("/get-links-of-role/:idRole", auth, PrivilegeController.getLinksRoleCanAccess);
 
 module.exports = router;

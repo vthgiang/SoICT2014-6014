@@ -61,7 +61,7 @@ exports.delete = async(id) => {
 
 exports.create5RoleAbstract = async(companyId) => {
     var data = await RoleDefault.find(); //dữ liệu về 5 role abstract có sẵn trong csdl
-    var typeAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT });
+    var typeAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
     var roles = await data.map(role => {
         return {
             name: role.name,
@@ -226,7 +226,7 @@ exports.getLinksForCompany = async(companyId) => {
 
 exports.editSuperAdminOfCompany = async(companyId, superAdminEmail) => {
     const com = await Company.findById(companyId);
-    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME}); // lay ttin role super admin cua cty do
+    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME}); // lay ttin role super admin cua cty do
     const user = await User.findOne({ company: com._id, email: superAdminEmail }); //tim thong tin ve tai khoan
     if(user === null){
         const newUser = await this.createSuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);

@@ -1,11 +1,15 @@
-const DepartmentService = require('./organizationalUnit.service');
+const OrganizationalUnitService = require('./organizationalUnit.service');
 const RoleService = require('../role/role.service');
 const { LogInfo, LogError } = require('../../../logs');
 
-exports.get = async (req, res) => {
+/**
+ * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
+ */
+
+exports.getAllOrganizationalUnits = async (req, res) => {
     try {
-        var list = await DepartmentService.get(req.user.company._id); 
-        var tree = await DepartmentService.getTree(req.user.company._id);
+        var list = await OrganizationalUnitService.getAllOrganizationalUnits(req.user.company._id); 
+        var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
 
         await LogInfo(req.user.email, 'GET_DEPARTMENTS', req.user.company);
         res.status(200).json({
@@ -23,20 +27,20 @@ exports.get = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createOrganizationalUnit = async (req, res) => {
     try {
-        var roles = await RoleService.crt_rolesOfDepartment(req.body, req.user.company._id);
-        var department = await DepartmentService.create( req.body, roles.dean._id, roles.vice_dean._id, roles.employee.id, req.user.company._id );
-        var tree = await DepartmentService.getTree(req.user.company._id);
-        department.dean = roles.dean;
-        department.vice_dean = roles.vice_dean;
-        department.employee = roles.employee;
+        var roles = await RoleService.createRolesForOrganizationalUnit(req.body, req.user.company._id);
+        var organizationalUnit = await OrganizationalUnitService.createOrganizationalUnit( req.body, roles.dean._id, roles.vice_dean._id, roles.employee.id, req.user.company._id );
+        var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
+        organizationalUnit.dean = roles.dean;
+        organizationalUnit.vice_dean = roles.vice_dean;
+        organizationalUnit.employee = roles.employee;
 
         await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
             message: 'create_department_success',
-            content: { department, tree }
+            content: { department: organizationalUnit, tree }
         });
     } catch (error) {
         
@@ -50,7 +54,7 @@ exports.create = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var department = await DepartmentService.getById(req, res);
+        var department = await OrganizationalUnitService.getById(req, res);
         
         await LogInfo(req.user.email, 'SHOW_DEPARTMENT', req.user.company);
         res.status(200).json({
@@ -70,14 +74,14 @@ exports.show = async (req, res) => {
 
 exports.edit = async (req, res) => {
     try {
-        var department = await DepartmentService.edit(req.params.id, req.body);
-        var dean = await RoleService.edit(department.dean, {name: req.body.dean});
-        var vice_dean = await RoleService.edit(department.vice_dean, {name: req.body.vice_dean});
-        var employee = await RoleService.edit(department.employee, {name: req.body.employee});
+        var department = await OrganizationalUnitService.edit(req.params.id, req.body);
+        var dean = await RoleService.editRole(department.dean, {name: req.body.dean});
+        var vice_dean = await RoleService.editRole(department.vice_dean, {name: req.body.vice_dean});
+        var employee = await RoleService.editRole(department.employee, {name: req.body.employee});
         department.dean = dean;
         department.vice_dean = vice_dean;
         department.employee = employee;
-        var tree = await DepartmentService.getTree(req.user.company._id);
+        var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
 
         await LogInfo(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
         res.status(200).json({
@@ -97,8 +101,8 @@ exports.edit = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        var role = await DepartmentService.delete(req.params.id);
-        var tree = await DepartmentService.getTree(req.user.company._id);
+        var role = await OrganizationalUnitService.delete(req.params.id);
+        var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
 
         await LogInfo(req.user.email, 'DELETE_DEPARTMENT', req.user.company);
         res.status(200).json({
@@ -119,7 +123,7 @@ exports.delete = async (req, res) => {
 
 exports.getDepartmentOfUser = async (req, res) => {
     try {
-        const department = await DepartmentService.getDepartmentOfUser(req.params.id);
+        const department = await OrganizationalUnitService.getDepartmentOfUser(req.params.id);
         
         await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
         res.status(200).json({
@@ -139,7 +143,7 @@ exports.getDepartmentOfUser = async (req, res) => {
 
 exports.getDepartmentsThatUserIsDean = async (req, res) =>{
     try {
-        const department = await DepartmentService.getDepartmentsThatUserIsDean(req.params.id);
+        const department = await OrganizationalUnitService.getDepartmentsThatUserIsDean(req.params.id);
         
         await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
         res.status(200).json({

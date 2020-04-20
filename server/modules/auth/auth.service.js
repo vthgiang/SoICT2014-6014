@@ -105,7 +105,7 @@ exports.logoutAllAccount = async (id) => {
 }
 
 //Quên mật khẩu tài khoản người dùng --------------------------------------//
-exports.forgotPassword = async (email) => {
+exports.forgetPassword = async (email) => {
     var user = await User.findOne({ email });
     if(user === null) throw("email_not_found");
     var code = await generator.generate({ length: 6, numbers: true });
@@ -196,7 +196,7 @@ exports.changePassword = async (id, password, new_password) => {
     return user;
 }
 
-exports.getLinksOfRole = async (idRole) => {
+exports.getLinksThatRoleCanAccess = async (idRole) => {
     
     const role = await Role.findById(idRole); //lay duoc role hien tai
     var roles = [role._id];

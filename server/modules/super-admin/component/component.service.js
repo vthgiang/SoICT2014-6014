@@ -3,14 +3,14 @@ const Privilege = require('../../../models/auth/privilege.model');
 const Link = require('../../../models/super-admin/link.model');
 const Role = require('../../../models/auth/role.model');
 
-exports.get = async (id) => {
+exports.getAllComponents = async (id) => {
 
     return await Component
         .find({ company: id })
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
-exports.getPaginate = async (company, limit, page, data={}) => {
+exports.getPaginatedComponents = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await Component
         .paginate( newData , { 
@@ -22,14 +22,14 @@ exports.getPaginate = async (company, limit, page, data={}) => {
         });
 }
 
-exports.getById = async (id) => {
+exports.getComponentById = async (id) => {
 
     return await Component
         .findById(id)
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
-exports.create = async(data) => {
+exports.createComponent = async(data) => {
     const check = await Component.findOne({name: data.name});
     if(check !== null) throw ('component_name_exist');
 
@@ -40,7 +40,7 @@ exports.create = async(data) => {
     });
 }
 
-exports.edit = async(id, data) => {
+exports.editComponent = async(id, data) => {
     var component = await Component
         .findById(id)
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
@@ -53,7 +53,7 @@ exports.edit = async(id, data) => {
     return component;
 }
 
-exports.delete = async(id) => {
+exports.deleteComponent = async(id) => {
     var relationshiopDelete = await Privilege.deleteMany({
         resourceId: id,
         resourceType: 'Component'

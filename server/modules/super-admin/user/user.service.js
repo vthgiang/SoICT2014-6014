@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 
 // Lấy tất cả các user trong 1 công ty
-exports.get = async (company) => {
+exports.getAllUsers = async (company) => {
     const users = await User
         .find({ company })
         .select('-password -status -delete_soft -token')
@@ -17,7 +17,7 @@ exports.get = async (company) => {
 }
 
 //Lay danh sach nguoi dung theo phân trang
-exports.getPaginate = async (company, limit, page, data={}) => {
+exports.getPaginatedUsers = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await User
         .paginate( newData , { 
@@ -32,7 +32,7 @@ exports.getPaginate = async (company, limit, page, data={}) => {
 }
 
 //lay thong tin nguoi dung theo id
-exports.getById = async (id) => { //tim user theo id
+exports.getUserById = async (id) => { //tim user theo id
     var user = await User
         .findById(id)
         .select('-password -status -delete_soft -token')
@@ -46,7 +46,7 @@ exports.getById = async (id) => { //tim user theo id
 }
 
 //tao mot tai khoan cho nguoi dung moi trong cong ty
-exports.create = async (data, company) => {
+exports.createUser = async (data, company) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({ length: 10, numbers: true });
     var hash = bcrypt.hashSync(password, salt);
@@ -86,7 +86,7 @@ exports.create = async (data, company) => {
     return user;
 }
 
-exports.edit = async (id, data) => {
+exports.editUser = async (id, data) => {
     var user = await User
         .findById(id)
         .select('-password -status -delete_soft')
@@ -109,7 +109,7 @@ exports.edit = async (id, data) => {
     return user;
 }
 
-exports.delete = async (id) => {
+exports.deleteUser = async (id) => {
     var deleteUser = await User.deleteOne({ _id: id });
     await UserRole.deleteOne({ userId: id });
     
@@ -152,7 +152,7 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 // }
 
 //lấy user trong một phòng ban
-exports.getUsersOfDepartment = async (departmentId) => {
+exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
     var department = await Department.findById(departmentId);
     var dean = await UserRole.findOne({ roleId: department.dean }).populate('userId roleId');
     var vice_dean = await UserRole.findOne({ roleId: department.vice_dean }).populate('userId roleId');
@@ -166,7 +166,7 @@ exports.getUsersOfDepartment = async (departmentId) => {
 /* lấy tất cả các user cùng phòng ban với user hiện tại
  * do user có thể thuộc về nhiều phòng ban, nên phòng ban được xét sẽ lấy theo id role hiện tại của user
 */
-exports.getUsersSameDepartment = async(id_role) => {
+exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
     var department = await Department.findOne({ 
         $or:[
             {'dean': id_role}, 

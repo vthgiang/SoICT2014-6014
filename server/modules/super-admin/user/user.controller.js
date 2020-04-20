@@ -1,9 +1,9 @@
 const UserService = require('./user.service');
 const { LogInfo, LogError } = require('../../../logs');
 
-exports.get = async (req, res) => {
+exports.getAllUsers = async (req, res) => {
     try {
-        var users = await UserService.get(req.user.company._id);
+        var users = await UserService.getAllUsers(req.user.company._id);
 
         LogInfo(req.user.email, 'GET_USERS', req.user.company);
         res.status(200).json({
@@ -21,12 +21,12 @@ exports.get = async (req, res) => {
     }
 };
 
-exports.getPaginate = async (req, res) => {
+exports.getPaginatedUsers = async (req, res) => {
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var users = await UserService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
+        var users = await UserService.getPaginatedUsers(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
 
         LogInfo(req.user.email, 'PAGINATE_USERS', req.user.company);
         res.status(200).json({
@@ -44,11 +44,11 @@ exports.getPaginate = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createUser = async (req, res) => {
     try {
-        var user = await UserService.create(req.body, req.user.company._id);
+        var user = await UserService.createUser(req.body, req.user.company._id);
         await UserService.addRolesForUser(user._id, req.body.roles);
-        var result = await UserService.getById(user._id);
+        var result = await UserService.getUserById(user._id);
 
         LogInfo(req.user.email, 'CREATE_USER', req.user.company);
         res.status(200).json({
@@ -66,9 +66,9 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getUserById = async (req, res) => {
     try {
-        var user = await UserService.getById(req.params.id);
+        var user = await UserService.getUserById(req.params.id);
 
         LogInfo(req.user.email, 'SHOW_USER', req.user.company);
         res.status(200).json({
@@ -86,11 +86,11 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editUser = async (req, res) => {
     try {
-        var user = await UserService.edit(req.params.id, req.body);
+        var user = await UserService.editUser(req.params.id, req.body);
         await UserService.editRolesForUser(user._id, req.body.roles);
-        var result = await UserService.getById(user._id);
+        var result = await UserService.getUserById(user._id);
         
         LogInfo(req.user.email, 'EDIT_USER', req.user.company);
         res.status(200).json({
@@ -108,9 +108,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deleteUser = async (req, res) => {
     try {
-        var deleteUser = await UserService.delete(req.params.id);
+        var deleteUser = await UserService.deleteUser(req.params.id);
 
         LogInfo(req.user.email, 'DELETE_USER', req.user.company);
         res.status(200).json({
@@ -128,9 +128,9 @@ exports.delete = async (req, res) => {
     }
 };
 
-exports.getUsersSameDepartment = async (req, res) => {
+exports.getAllUsersInSameOrganizationalUnitWithUserRole = async (req, res) => {
     try {
-        const users = await UserService.getUsersSameDepartment(req.params.id);
+        const users = await UserService.getAllUsersInSameOrganizationalUnitWithUserRole(req.params.id);
 
         LogInfo(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
         res.status(200).json({
@@ -148,9 +148,9 @@ exports.getUsersSameDepartment = async (req, res) => {
     }
 }
 
-exports.getUsersOfDepartment = async (req, res) => {
+exports.getAllUsersInOrganizationalUnit = async (req, res) => {
     try {
-        const users = await UserService.getUsersOfDepartment(req.params.id);
+        const users = await UserService.getAllUsersInOrganizationalUnit(req.params.id);
 
         LogInfo(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
         res.status(200).json({

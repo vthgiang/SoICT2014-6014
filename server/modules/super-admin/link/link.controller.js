@@ -1,11 +1,15 @@
 const LinkService = require('./link.service');
 const { LogInfo, LogError } = require('../../../logs');
 
-exports.get = async (req, res) => {
+/**
+ * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
+ */
+
+exports.getAllLinks = async (req, res) => {// TODO: không khác gì phương thức cuối file?????? --> hợp nhất làm một
     try {
-        var links = await LinkService.get(req.user.company._id);
+        var links = await LinkService.getAllLinks(req.user.company._id);
         
-        await LogInfo(req.user.email, 'GET_LINKS', req.user.company);
+        await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({
             success: true,
             message: 'get_links_success',
@@ -13,7 +17,7 @@ exports.get = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'GET_LINKS', req.user.company);
+        await LogError(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(400).json({
             success: false,
             message: error
@@ -21,14 +25,14 @@ exports.get = async (req, res) => {
     }
 };
 
-exports.getPaginate = async (req, res) => {
+exports.getPaginatedLinks = async (req, res) => {
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var links = await LinkService.getPaginate(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
+        var links = await LinkService.getPaginatedLinks(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
 
-        await LogInfo(req.user.email, 'PAGINATE_LINKS', req.user.company);
+        await LogInfo(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
         res.status(200).json({
             success: true,
             message: 'paginate_links_success',
@@ -36,7 +40,7 @@ exports.getPaginate = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'PAGINATE_LINKS', req.user.company);
+        await LogError(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
         res.status(400).json({
             success: false,
             message: error
@@ -44,11 +48,11 @@ exports.getPaginate = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createLink = async (req, res) => {
     try {
-        var createLink = await LinkService.create(req.body, req.user.company._id);
+        var createLink = await LinkService.createLink(req.body, req.user.company._id);
         await LinkService.relationshipLinkRole(createLink._id, req.body.roles);
-        var link = await LinkService.getById(createLink._id);
+        var link = await LinkService.getLinkById(createLink._id);
 
         await LogInfo(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(200).json({
@@ -66,11 +70,11 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getLinkById = async (req, res) => {
     try {
-        var link = await LinkService.getById(req.params.id);
+        var link = await LinkService.getLinkById(req.params.id);
         
-        await LogInfo(req.user.email, 'SHOW_LINK', req.user.company);
+        await LogInfo(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(200).json({
             success: true,
             message: 'show_link_success',
@@ -78,7 +82,7 @@ exports.show = async (req, res) => {
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'SHOW_LINK', req.user.company);
+        await LogError(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
             message: error
@@ -86,11 +90,11 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editLink = async (req, res) => {
     try {
         await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
-        var link = await LinkService.edit(req.params.id, req.body);
-        var data = await LinkService.getById(link._id);
+        var link = await LinkService.editLink(req.params.id, req.body);
+        var data = await LinkService.getLinkById(link._id);
         
         await LogInfo(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(200).json({
@@ -108,9 +112,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deleteLink = async (req, res) => {
     try {
-        var link = await LinkService.delete(req.params.id );
+        var link = await LinkService.deleteLink(req.params.id );
         
         await LogInfo(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(200).json({
