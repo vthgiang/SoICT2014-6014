@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DepartmentActions } from '../../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { managerActions } from '../redux/actions';
 import { ModalDetailKPI } from './kpiDetailModal';
 import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';

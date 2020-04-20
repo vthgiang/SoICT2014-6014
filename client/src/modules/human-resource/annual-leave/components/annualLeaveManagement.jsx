@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SabbaticalCreateForm, SabbaticalEditForm } from './combinedContent';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SabbaticalActions } from '../redux/actions';
 
 class SabbaticalManager extends Component {

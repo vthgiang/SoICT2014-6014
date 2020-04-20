@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
-import { UserFormValidator} from '../../../../super-admin-management/user/components/userFormValidator';
+import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 class ModalAddTargetKPIUnit extends Component {
     componentDidMount() {

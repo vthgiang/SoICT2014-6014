@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { UserActions } from "../../../../super-admin-management/user/redux/actions";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 import CanvasJSReact from '../../../../../chart/canvasjs.react.js';

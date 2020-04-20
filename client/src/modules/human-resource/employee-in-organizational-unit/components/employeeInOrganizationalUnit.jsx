@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
-import { RoleActions } from '../../../super-admin-management/role/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { EmployeeInOrganizationalUnitEditForm } from './employeeInOrganizationalUnitEditForm';
 import { TreeTable } from '../../../../common-components';
 

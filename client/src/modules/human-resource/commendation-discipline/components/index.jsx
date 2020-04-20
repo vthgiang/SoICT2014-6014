@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DisciplineManager } from './disciplineManagement';
 import { PraiseManager } from './commendationManagement';
 
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 class ManagerPraiseDiscipline extends Component {
     constructor(props) {
         super(props);

@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar } from '../../../../../common-components';
-import { DepartmentActions } from '../../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
 class ListEmployee extends Component {
     constructor(props) {

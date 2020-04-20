@@ -2,15 +2,15 @@ import { IntlReducer as Intl } from 'react-redux-multilingual';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
 import { alert } from '../modules/alert/redux/reducers';
-import { log } from '../modules/system-admin-management/log/redux/reducers';
+import { log } from '../modules/system-admin/log/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
-import { company } from '../modules/system-admin-management/company/redux/reducers';
-import { linksDefault } from '../modules/system-admin-management/providing-link/redux/reducers';
-import { user } from '../modules/super-admin-management/user/redux/reducers';
-import { role } from '../modules/super-admin-management/role/redux/reducers';
-import { link } from '../modules/super-admin-management/link/redux/reducers';
-import { component } from '../modules/super-admin-management/component/redux/reducers';
-import { department } from '../modules/super-admin-management/organizational-unit/redux/reducers';
+import { company } from '../modules/system-admin/company/redux/reducers';
+import { linksDefault } from '../modules/system-admin/providing-link/redux/reducers';
+import { user } from '../modules/super-admin/user/redux/reducers';
+import { role } from '../modules/super-admin/role/redux/reducers';
+import { link } from '../modules/super-admin/link/redux/reducers';
+import { component } from '../modules/super-admin/component/redux/reducers';
+import { department } from '../modules/super-admin/organizational-unit/redux/reducers';
 import {employeesInfo} from '../modules/human-resource/profile/employee-info/redux/reducers';
 import {employeesManager} from '../modules/human-resource/profile/employee-management/redux/reducers';
 import {education} from '../modules/training/education-program/redux/reducers';
@@ -35,8 +35,8 @@ import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/re
 
 import { performtasks } from "../modules/task/task-perform/redux/reducers";
 import { tasks } from "../modules/task/task-management/redux/reducers";
-import { rolesDefault } from "../modules/system-admin-management/root-role/redux/reducers";
-import { componentsDefault } from "../modules/system-admin-management/providing-component/redux/reducers";
+import { rolesDefault } from "../modules/system-admin/root-role/redux/reducers";
+import { componentsDefault } from "../modules/system-admin/providing-component/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
     alert,

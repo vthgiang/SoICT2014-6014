@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalPerformTask } from '../../task-perform/component/modalPerformTask';
 import { ModalAddTask } from './taskAddModal';
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 

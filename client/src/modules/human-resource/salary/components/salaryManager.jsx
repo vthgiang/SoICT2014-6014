@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SalaryCreateForm ,SalaryEditForm ,SalaryImportFrom } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../redux/actions';
 
 class SalaryManager extends Component {

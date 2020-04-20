@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 // sửa đường dẫn sau khi vào project mới
 import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';

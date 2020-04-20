@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 
-import { UserActions } from '../../../super-admin-management/user/redux/actions';
-import { RoleActions } from '../../../super-admin-management/role/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
 class EmployeeInOrganizationalUnitEditForm extends Component {
     constructor(props) {
         super(props);

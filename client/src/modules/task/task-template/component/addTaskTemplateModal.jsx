@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
-import { UserActions } from '../../../super-admin-management/user/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import Sortable from 'sortablejs';

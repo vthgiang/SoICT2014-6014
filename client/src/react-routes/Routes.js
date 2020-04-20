@@ -3,20 +3,24 @@ import { Route,Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { PrivateRoute, AuthRoute } from '.';
+
 import Layout from '../layout/layout';
+
 import {NotFound} from '../modules/not-found/components';
+
 import Login from '../modules/auth/components/login';
-import LogManagement from '../modules/system-admin-management/log/components';
+
+import LogManagement from '../modules/system-admin/log/components';
 import Home from '../modules/home/components';
-import ManageCompany from '../modules/system-admin-management/company/components';
-import LinksDefaultManagement from '../modules/system-admin-management/providing-link/components';
-import RolesDefaultManagement from '../modules/system-admin-management/root-role/components';
-import ComponentsDefaultManagement from '../modules/system-admin-management/providing-component/components';
-import ManageUser from '../modules/super-admin-management/user/components';
-import ManageRole from '../modules/super-admin-management/role/components';
-import ManageLink from '../modules/super-admin-management/link/components';
-import ManageDepartment from '../modules/super-admin-management/organizational-unit/components';
-import ManageComponent from '../modules/super-admin-management/component/components';
+import ManageCompany from '../modules/system-admin/company/components';
+import LinksDefaultManagement from '../modules/system-admin/providing-link/components';
+import RolesDefaultManagement from '../modules/system-admin/root-role/components';
+import ComponentsDefaultManagement from '../modules/system-admin/providing-component/components';
+import ManageUser from '../modules/super-admin/user/components';
+import ManageRole from '../modules/super-admin/role/components';
+import ManageLink from '../modules/super-admin/link/components';
+import ManageDepartment from '../modules/super-admin/organizational-unit/components';
+import ManageComponent from '../modules/super-admin/component/components';
 import ManageFormDocument from '../modules/document/components';
 import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
 import {EmployeeCreatePage} from '../modules/human-resource/employee-create/components/employeeCreatePage';

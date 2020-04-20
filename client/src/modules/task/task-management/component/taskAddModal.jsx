@@ -8,8 +8,8 @@ import {
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 // import { DepartmentActions, UserActions, managerKpiActions } from '../../../../redux-actions/CombineActions';
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
-import { UserActions } from '../../../super-admin-management/user/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import { managerKpiActions } from '../../../kpi/kpi-personal/kpi-personal-manager/redux/actions';
 import { taskTemplateActions } from '../../../task-template-man/redux/actions';
 // import { taskTemplateActions } from '../../../../redux-actions/CombineActions';//đợi nhóm Khoa--------------------------------------

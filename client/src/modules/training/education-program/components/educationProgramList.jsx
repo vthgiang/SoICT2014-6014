@@ -6,7 +6,7 @@ import { ModalDetailEducation } from './educationProgramDetailModal';
 import { ModalEditEducation } from './educationProgramEditModal';
 import { ModalAddEducation } from './educationProgramAddModal';
 import { EducationActions } from '../redux/actions';
-import { DepartmentActions } from '../../../super-admin-management/organizational-unit/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { DeleteNotification, PaginateBar, DataTableSetting } from '../../../../common-components';
 
 class ListEducation extends Component {
