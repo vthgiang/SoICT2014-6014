@@ -1,5 +1,5 @@
-export * from './src/modal/modalButton';
-export * from './src/modal/modalDialog';
+export * from './src/modal/buttonModal';
+export * from './src/modal/dialogModal';
 export * from './src/data-table-setting/dataTableSetting';
 export * from './src/delete-notification/DeleteNotification';
 export * from './src/loading/loading';

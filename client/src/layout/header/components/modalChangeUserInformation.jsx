@@ -3,7 +3,7 @@ import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
-import { ModalDialog, ErrorLabel } from '../../../common-components';
+import { DialogModal, ErrorLabel } from '../../../common-components';
 import { LOCAL_SERVER_API } from '../../../env';
 import { Validator } from './validator';
 import { auth } from '../../../modules/auth/redux/reducers';
@@ -18,7 +18,7 @@ class ModalChangeUserInformation extends Component {
         const {userAvatar, userName, userEmail, userNameError, userEmailError} = this.state;
         console.log("state user: ", this.state)
         return ( 
-            <ModalDialog
+            <DialogModal
                 modalID="modal-profile"
                 formID="form-profile"
                 title={translate('auth.profile.title')}
@@ -56,7 +56,7 @@ class ModalChangeUserInformation extends Component {
                         </div>
                     </div>
                 </form>
-            </ModalDialog>
+            </DialogModal>
          );
     }
 

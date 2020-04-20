@@ -3,7 +3,7 @@ import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
-import { ModalDialog, ErrorLabel } from '../../../common-components';
+import { DialogModal, ErrorLabel } from '../../../common-components';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -48,7 +48,7 @@ class Header extends Component {
                 }
 
                 {/* Modal Security */}
-                <ModalDialog
+                <DialogModal
                     modalID="modal-security"
                     formID="form-security" size="30"
                     title={translate('auth.security.title')}
@@ -70,7 +70,7 @@ class Header extends Component {
                             <input type="password" className="form-control" ref="confirm_password"/>
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
                 
             </React.Fragment>
          );

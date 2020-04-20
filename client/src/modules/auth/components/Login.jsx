@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { AuthActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import ForgotPassword from './ForgotPassword';
+import ForgotPassword from './forgotPassword';
 
 class Login extends Component {
     
