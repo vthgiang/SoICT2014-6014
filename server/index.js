@@ -10,43 +10,59 @@ multer({dest: 'upload/docs'});
 multer({dest: 'upload/excels'});
 require('dotenv').config();
 
-// MODULES
-const log = require('./modules/system-admin-management/logs-management/log.route');
-const user = require('./modules/super-admin-management/users-management/user.route');
+
+
+// Application Modules
 const auth = require('./modules/auth/auth.route');
-const company = require('./modules/system-admin-management/companies-management/company.route');
-const role = require('./modules/super-admin-management/roles-management/role.route');
-const link = require('./modules/super-admin-management/links-management/link.route');
-const department = require('./modules/super-admin-management/departments-management/department.route');
-const privilege = require('./modules/super-admin-management/privileges/privilege.route');
-const component = require('./modules/super-admin-management/components-management/component.route');
-const educationProgram = require('./modules/trainning-course/education-program/educationProgram.route');
-const course = require('./modules/trainning-Course/course/course.route');
-const employee = require('./modules/employee-management/employee/employee.route');
-const salary = require('./modules/employee-management/salary/salary.route');
-const discipline = require('./modules/employee-management/discipline/discipline.route');
-const praise = require('./modules/employee-management/commendation/commendation.route');
-const sabbatical = require('./modules/employee-management/annual-leave/annualLeave.route');
-const notifications = require('./modules/notifications/notification.route');
-const holiday = require('./modules/employee-management/holiday/holiday.route');
-const sample = require('./modules/_sample-module/_sample.route');
+
 const document = require('./modules/document-management/document.route');
-const createKpiUnit = require("./modules/kpi-unit/kpi-unit-create/create.route");
-// const overviewKpiUnit = require("./modules/kpi-unit/kpi-unit-overview/overview.route");
-const dashboardKpiUnit = require("./modules/kpi-unit/kpi-unit-dashboard/dashboard.route");
-const managerKpiUnit = require("./modules/kpi-unit/kpi-unit-manager/manager.route");
-const createKpiPersonal = require("./modules/kpi-personal/kpi-personal-create/create.route")
-const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overview/overview.route")
-const tasktemplates =require ("./modules/task-management/task-template-management/taskTemplate.route")
-const tasks = require("./modules/task-management/task-management/task.route");
-const performtask = require("./modules/task-management/task-perform/taskPerform.route");
-const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
-const componentsDefault = require('./modules/system-admin-management/components-default-management/component-default.route');
-const rolesDefault = require('./modules/system-admin-management/roles-default-management/role-default.route');
-const kpimember = require('./modules/kpi-member/kpi-member-manager/kpiMember.route');
+
+const annualLeave = require('./modules/employee/annual-leave/annualLeave.route');
+const commendation = require('./modules/employee/commendation/commendation.route');
+const discipline = require('./modules/employee/discipline/discipline.route');
+const holiday = require('./modules/employee/holiday/holiday.route');
+const profile = require('./modules/employee/profile/profile.route');
+const salary = require('./modules/employee/salary/salary.route');
+
+const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
+const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
+const employeeKpiManagement = require("./modules/kpi/employee/management/management.route");
+const employeeKpiEvaluation = require('./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route');
+const employeeKpiEvaluationDashboard = require('./modules/kpi/evaluation/dashboard/dashboard.route');
+const organizationalUnitKpiCreation = require("./modules/kpi/organizational-unit/creation/creation.route");
+const organizationalUnitKpiDashboard = require("./modules/kpi/organizational-unit/dashboard/dashboard.route");
+const organizationalUnitKpiManagement = require("./modules/kpi/organizational-unit/management/management.route");
+
+const notifications = require('./modules/notifications/notification.route');
+
+const component = require('./modules/super-admin/component/component.route');
+const link = require('./modules/super-admin/link/link.route');
+const organizationalUnit = require('./modules/super-admin/organizational-unit/organizationalUnit.route');
+const privilege = require('./modules/super-admin/privilege/privilege.route');
+const role = require('./modules/super-admin/role/role.route');
+const user = require('./modules/super-admin/user/user.route');
+
+const company = require('./modules/system-admin/company/company.route');
+const log = require('./modules/system-admin/log/log.route');
+const providingComponent = require('./modules/system-admin/providing-component/providingComponent.route');
+const providingLink = require('./modules/system-admin/providing-link/providingLink.route');
+const rootRole = require('./modules/system-admin/root-role/rootRole.route');
+
+const tasktemplate =require ("./modules/task/task-template/taskTemplate.route")
+const taskManagement = require("./modules/task/task-management/task.route");
+const taskPerform = require("./modules/task/task-perform/taskPerform.route");
+
+const educationProgram = require('./modules/trainning/education-program/educationProgram.route');
+const course = require('./modules/trainning/course/course.route');
+
+
+
 
 // APP
 const app = express();
+
+
+
 
 // Bodyparser middleware
 app.use(cors());
@@ -59,11 +75,12 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/upload', express.static('upload'));
 
-// DB Config
-const db = process.env.DATABASE;
 
-// Connect to MongoDB
-mongoose
+
+
+
+const db = process.env.DATABASE;// DB Config
+mongoose // Connect to MongoDB
     .connect(
         db, {
             useNewUrlParser: true,
@@ -73,7 +90,6 @@ mongoose
     )
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
-
 global.isLog = false;
 const Logger = require('./models/system/log.model');
 Logger.findOne({
@@ -81,51 +97,58 @@ Logger.findOne({
     })
     .then(result => {
         result.status ? isLog = true : isLog = false;
-        // console.log("Logger status: ", isLog);
     })
     .catch(err => console.log("message: ", err));
 
 
 
-app.use("/log", log);
-app.use("/user", user);
+
+
 app.use("/auth", auth);
-app.use("/company", company);
-app.use("/links-default-management", linksDefault);
-app.use("/components-default-management", componentsDefault);
-app.use("/roles-default-management", rolesDefault);
-app.use("/role", role);
+
+app.use("/document", document);
+
+app.use("/sabbatical", annualLeave);
+app.use("/praise", commendation);
+app.use("/discipline", discipline);
+app.use("/holiday",holiday);
+app.use("/employee", profile);
+app.use("/salary", salary);
+
+app.use("/kpipersonals", employeeKpiCreation);
+app.use("/kpi/employee/dashboard", employeeKpiDashboard);
+app.use("/kpipersonals", employeeKpiManagement);
+app.use("/kpi/evaluation/dashboard", employeeKpiEvaluationDashboard);
+app.use("/kpimembers", employeeKpiEvaluation);
+app.use("/kpiunits", organizationalUnitKpiCreation);
+app.use("/kpiunits", organizationalUnitKpiDashboard);
+app.use("/kpiunits", organizationalUnitKpiManagement);
+
+app.use("/notifications", notifications);
+
+app.use("/component", component);
 app.use("/link", link);
-app.use("/department", department);
+app.use("/department", organizationalUnit);
 app.use("/privilege", privilege);
+app.use("/role", role);
+app.use("/user", user);
+
+app.use("/company", company);
+app.use("/log", log);
+app.use("/components-default-management", providingComponent);
+app.use("/links-default-management", providingLink);
+app.use("/roles-default-management", rootRole);
+
+app.use("/tasks", taskManagement);
+app.use("/performtask", taskPerform);
+app.use("/tasktemplates", tasktemplate);
+
 app.use("/educationProgram", educationProgram);
 app.use("/course",course);
-app.use("/employee", employee);
-app.use("/salary", salary);
-app.use("/discipline", discipline);
-app.use("/praise", praise);
-app.use("/sabbatical", sabbatical);
-app.use("/notifications", notifications);
-app.use("/holiday",holiday);
 app.use("/sample", sample);
-app.use("/document", document);
-app.use("/component", component);
 
-// app.use("/kpiunits", kpiunits);
-app.use("/kpiunits", createKpiUnit);
-// app.use("/kpiunits", overviewKpiUnit);
-app.use("/kpiunits", dashboardKpiUnit);
-app.use("/kpiunits", managerKpiUnit);
 
-// app.use("/kpipersonals", kpipersonals);
-app.use("/kpipersonals", createKpiPersonal);
-app.use("/kpipersonals", overviewKpiPersonal);
-app.use("/kpimembers", kpimember);
-app.use("/tasktemplates", tasktemplates);
 
-app.use("/tasks", tasks);
-app.use("/performtask", performtask);
-// console.log("ENV: ", process.env);
+// Start server
 const port = process.env.PORT || 5000;
-
 app.listen(port, () => console.log(`Server up and running on: ${port} !`));
