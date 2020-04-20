@@ -163,11 +163,11 @@ exports.getLinksOfRole = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getProfile = async (req, res) => {
     try {
-        var profile = await AuthService.show(req.params.id);
+        var profile = await AuthService.getProfile(req.params.id);
 
-        await LogInfo(req.user.email, 'SHOW_PROFILE', req.user.company);
+        await LogInfo(req.user.email, 'GET_PROFILE', req.user.company);
         res.status(200).json({
             success: true,
             message: 'show_profile_success',
@@ -175,7 +175,7 @@ exports.show = async (req, res) => {
         });
     } catch (error) {
 
-        await LogError(req.user.email, 'SHOW_PROFILE');
+        await LogError(req.user.email, 'GET_PROFILE');
         res.status(400).json({
             success: false,
             message: error

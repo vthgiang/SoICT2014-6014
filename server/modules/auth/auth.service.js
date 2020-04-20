@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const {loginValidation} = require('./auth.validation');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
-const { Privilege, Role, User, UserRole } = require('../../models/_export').data;
+const { Privilege, Role, User, UserRole } = require('../../models').schema;
 
 exports.login = async (fingerprint, data) => { // data bao gom email va password
 
@@ -210,7 +210,7 @@ exports.getLinksOfRole = async (idRole) => {
     return links;
 }
 
-exports.show = async (id) => {
+exports.getProfile = async (id) => {
     var user = await User
         .findById(id)
         .select('-password -status -delete_soft -token')

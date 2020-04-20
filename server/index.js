@@ -20,26 +20,26 @@ const link = require('./modules/super-admin-management/links-management/link.rou
 const department = require('./modules/super-admin-management/departments-management/department.route');
 const privilege = require('./modules/super-admin-management/privileges/privilege.route');
 const component = require('./modules/super-admin-management/components-management/component.route');
-const educationProgram = require('./modules/trainning-Course/education-program/education-program.route');
+const educationProgram = require('./modules/trainning-course/education-program/educationProgram.route');
 const course = require('./modules/trainning-Course/course/course.route');
-const employee = require('./modules/employees-manager/employee/employee.route');
-const salary = require('./modules/employees-manager/salary/salary.route');
-const discipline = require('./modules/employees-manager/discipline/discipline.route');
-const praise = require('./modules/employees-manager/praise/praise.route');
-const sabbatical = require('./modules/employees-manager/sabbatical/sabbatical.route');
+const employee = require('./modules/employee-management/employee/employee.route');
+const salary = require('./modules/employee-management/salary/salary.route');
+const discipline = require('./modules/employee-management/discipline/discipline.route');
+const praise = require('./modules/employee-management/commendation/commendation.route');
+const sabbatical = require('./modules/employee-management/annual-leave/annualLeave.route');
 const notifications = require('./modules/notifications/notification.route');
-const holiday = require('./modules/employees-manager/holiday/holiday.route');
+const holiday = require('./modules/employee-management/holiday/holiday.route');
 const sample = require('./modules/_sample-module/_sample.route');
-const document = require('./modules/documents-management/document.route');
+const document = require('./modules/document-management/document.route');
 const createKpiUnit = require("./modules/kpi-unit/kpi-unit-create/create.route");
 // const overviewKpiUnit = require("./modules/kpi-unit/kpi-unit-overview/overview.route");
 const dashboardKpiUnit = require("./modules/kpi-unit/kpi-unit-dashboard/dashboard.route");
 const managerKpiUnit = require("./modules/kpi-unit/kpi-unit-manager/manager.route");
 const createKpiPersonal = require("./modules/kpi-personal/kpi-personal-create/create.route")
 const overviewKpiPersonal = require("./modules/kpi-personal/kpi-personal-overview/overview.route")
-const tasktemplates =require ("./modules/task-template-management/task-template-management.route")
-const tasks = require("./modules/task-management/task-management/task-management.route");
-const performtask = require("./modules/task-management/perform-task/perform-task.route");
+const tasktemplates =require ("./modules/task-management/task-template-management/taskTemplate.route")
+const tasks = require("./modules/task-management/task-management/task.route");
+const performtask = require("./modules/task-management/task-perform/taskPerform.route");
 const linksDefault = require('./modules/system-admin-management/links-default-management/link-default.route');
 const componentsDefault = require('./modules/system-admin-management/components-default-management/component-default.route');
 const rolesDefault = require('./modules/system-admin-management/roles-default-management/role-default.route');
@@ -75,7 +75,7 @@ mongoose
     .catch(err => console.log(err));
 
 global.isLog = false;
-const Logger = require('./models/log.model');
+const Logger = require('./models/system/log.model');
 Logger.findOne({
         name: 'log'
     })
