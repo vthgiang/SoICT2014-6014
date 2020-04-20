@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SalaryCreateForm ,SalaryEditForm ,SalaryImportFrom } from './CombineContent';
-import { ActionColumn, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { SalaryActions } from '../redux/actions';
 
@@ -201,7 +201,7 @@ class SalaryManager extends Component {
                                 <th>{translate('table.unit')}</th>
                                 <th>{translate('table.position')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="salary-table"
                                         columnArr={[
                                             translate('table.employee_number'),

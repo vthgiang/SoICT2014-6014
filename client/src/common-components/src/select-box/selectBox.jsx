@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { select2 } from './select2.full.min.js';
 import './select2.css';
-import './SelectBox.css';
+import './selectBox.css';
 
 class SelectBox extends Component {
     constructor(props) {

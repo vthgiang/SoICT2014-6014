@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import CompanyEditForm from './CompanyEditForm';
 import CompanyServicesForm from './CompanyServicesForm';
 import CompanyCreateForm from './CompanyCreateForm';
-import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { LinkDefaultActions } from '../../links-default-management/redux/actions';
 import { ComponentDefaultActions } from '../../components-default-management/redux/actions';
@@ -134,7 +134,7 @@ class CompanyTable extends Component {
                             <th style={{ width: "130px"}}>{translate('manage_company.service')}</th>
                             <th style={{ width: "120px", textAlign: 'center' }}>
                                 {translate('table.action')}
-                                <ActionColumn 
+                                <DataTableSetting 
                                     tableId="company-table"
                                     columnName={translate('table.action')} 
                                     hideColumn={false}

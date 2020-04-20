@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti } from '../../';
-import { SlimScroll } from '../../';
-import './ActionColumn.css';
+import { SelectMulti } from '../..';
+import { SlimScroll } from '../..';
+import './dataTableSetting.css';
 
-class ActionColumn extends Component {
+class DataTableSetting extends Component {
     constructor(props) {
         super(props);
         this.record = React.createRef();
@@ -125,6 +125,6 @@ class ActionColumn extends Component {
 }
 
 const mapState = state => state;
-const ActionColumnExport = connect(mapState, null)(withTranslate(ActionColumn));
+const DataTableSettingExport = connect(mapState, null)(withTranslate(DataTableSetting));
 
-export { ActionColumnExport as ActionColumn }
+export { DataTableSettingExport as DataTableSetting }

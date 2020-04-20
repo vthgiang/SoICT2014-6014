@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SabbaticalCreateForm, SabbaticalEditForm } from './CombineContent';
-import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 import { SabbaticalActions } from '../redux/actions';
@@ -225,7 +225,7 @@ class SabbaticalManager extends Component {
                                 <th style={{ width: "14%" }}>{translate('table.position')}</th>
                                 <th style={{ width: "11%" }}>{translate('table.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="sabbatical-table"
                                         columnArr={[
                                             translate('table.employee_number'),

@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { LinkDefaultActions } from '../redux/actions';
 import LinkInfoForm from './LinkInfoForm';
 import CreateLinkForm from './CreateLinkForm';
-import { SearchBar, ActionColumn, PaginateBar, DeleteNotification, ModalEditButton } from '../../../../common-components';
+import { SearchBar, DataTableSetting, PaginateBar, DeleteNotification, ModalEditButton } from '../../../../common-components';
 
 class ManageLink extends Component {
     constructor(props) {
@@ -67,7 +67,7 @@ class ManageLink extends Component {
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         { translate('table.action') }
-                                        <ActionColumn 
+                                        <DataTableSetting 
                                             columnName={translate('table.action')} 
                                             columnArr={[
                                                 translate('manage_link.url'),

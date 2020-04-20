@@ -5,7 +5,7 @@ import { LinkActions } from '../redux/actions';
 import { DeleteNotification } from '../../../../common-components';
 import LinkInfoForm from './LinkInfoForm';
 import { SearchBar } from '../../../../common-components';
-import { ActionColumn } from '../../../../common-components';
+import { DataTableSetting } from '../../../../common-components';
 import { PaginateBar } from '../../../../common-components';
 
 class ManageLink extends Component {
@@ -54,7 +54,7 @@ class ManageLink extends Component {
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         {translate('table.action')}
-                                        <ActionColumn 
+                                        <DataTableSetting 
                                             columnArr={[
                                                 translate('manage_link.url'),
                                                 translate('manage_link.description'),

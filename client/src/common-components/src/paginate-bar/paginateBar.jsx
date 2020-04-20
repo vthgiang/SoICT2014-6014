@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import './PaginateBar.css';
+import './paginateBar.css';
 
 class PaginateBar extends Component {
     constructor(props) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ModalDetailKPIPersonal } from './ModalDetailKPIPersonal';
 import { connect } from 'react-redux';
 import { dashboardKpiActions } from '../redux/actions';
-import CanvasJSReact from '../../../../Chart/canvasjs.react';
+import CanvasJSReact from '../../../../chart/canvasjs.react';
 import { ModalCopyKPIPersonal } from './ModalCopyKPIPersonal';
 
 class DashBoardKPIPersonal extends Component {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import UserEditForm from './UserEditForm';
-import { PaginateBar, ActionColumn, SearchBar, DeleteNotification } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification } from '../../../../common-components';
 import UserCreateForm from './UserCreateForm';
 
 class ManageUserTable extends Component {
@@ -63,7 +63,7 @@ class ManageUserTable extends Component {
                             <th>{translate('manage_user.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('table.action')}
-                                <ActionColumn
+                                <DataTableSetting
                                     columnArr={[
                                         translate('manage_user.name'),
                                         translate('manage_user.email'),

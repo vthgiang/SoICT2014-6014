@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentDefaultActions } from '../redux/actions';
 import ComponentInfoForm from './ComponentInfoForm';
-import { PaginateBar, ActionColumn, DeleteNotification, SearchBar } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, DeleteNotification, SearchBar } from '../../../../common-components';
 import ComponentCreateForm from './ComponentCreateForm';
 import { LinkDefaultActions } from '../../links-default-management/redux/actions';
 
@@ -71,7 +71,7 @@ class TableComponent extends Component {
                             <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
                                 { translate('table.action') }
-                                <ActionColumn 
+                                <DataTableSetting 
                                     columnName={translate('table.action')} 
                                     hideColumn={false}
                                     setLimit={this.setLimit}

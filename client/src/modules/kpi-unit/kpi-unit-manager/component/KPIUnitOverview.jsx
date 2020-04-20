@@ -4,7 +4,7 @@ import { DepartmentActions } from '../../../super-admin-management/departments-m
 import { managerActions } from '../redux/actions';
 import { ModalDetailKPI } from './ModalDetailKPI';
 import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
-import {PaginateBar, ActionColumn } from '../../../../../src/common-components';
+import {PaginateBar, DataTableSetting } from '../../../../../src/common-components';
 
 class KPIUnitManager extends Component {
     constructor(props) {
@@ -129,7 +129,7 @@ class KPIUnitManager extends Component {
             <React.Fragment>
             <div className="box">
                 <div className="box-body qlcv">
-                    <ActionColumn class="pull-right" tableId="tree-table" tableContainerId="tree-table-container"
+                    <DataTableSetting class="pull-right" tableId="tree-table" tableContainerId="tree-table-container"
                         tableWidth="1300px" columnArr={[ 'STT' ,'Người tạo', 'Thời gian' , 'Số lượng mục tiêu'
                         , 'Kết quả đánh giá' ,'Xem chi tiết' , 'Tạo KPI tháng mới' , 'Cập nhật' ]} limit={this.state.perPage}
                         setLimit={this.setLimit} hideColumnOption={true} />

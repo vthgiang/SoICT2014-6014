@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import "./SlimScroll.css";
+import "./slimScroll.css";
 
 class SlimScroll extends Component {
     constructor(props) {

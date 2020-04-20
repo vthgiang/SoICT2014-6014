@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './bootstrap-datepicker.min.css';
 import { scriptDatePicker } from './bootstrap-datepicker.min';
 
-class datePicker extends Component {
+class DatePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -76,4 +76,4 @@ class datePicker extends Component {
     }
 }
 
-export { datePicker as DatePicker };
+export { DatePicker as DatePicker };

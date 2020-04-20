@@ -7,7 +7,7 @@ import { ModalEditEducation } from './ModalEditEducation';
 import { ModalAddEducation } from './ModalAddEducation';
 import { EducationActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
-import { DeleteNotification, PaginateBar, ActionColumn } from '../../../../common-components';
+import { DeleteNotification, PaginateBar, DataTableSetting } from '../../../../common-components';
 
 class ListEducation extends Component {
     constructor(props) {
@@ -156,7 +156,7 @@ class ListEducation extends Component {
                                 <th>Áp dụng cho đơn vị</th>
                                 <th>Áp dụng cho chức vụ</th>
                                 <th style={{ width: '120px' }}>Hành động
-                                <ActionColumn
+                                <DataTableSetting
                                         tableId="education-table"
                                         columnArr={[
                                             "Mã chương trình",

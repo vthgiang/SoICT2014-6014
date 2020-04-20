@@ -1,7 +1,7 @@
 import React, { Component } from 'react';import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
-import { ErrorLabel, PaginateBar, ActionColumn, SearchBar} from '../../../../common-components';
+import { ErrorLabel, PaginateBar, DataTableSetting, SearchBar} from '../../../../common-components';
 import { CompanyFormValidator } from './CompanyFormValidator';
 
 class CompanyManageComponent extends Component {
@@ -41,7 +41,7 @@ class CompanyManageComponent extends Component {
                             <th>{ translate('manage_component.description') }</th>
                             <th style={{width: '120px'}}>
                                 {translate('table.action')}
-                                <ActionColumn 
+                                <DataTableSetting 
                                     tableId="company-manage-component-table"
                                     setLimit={this.setLimit}
                                 />

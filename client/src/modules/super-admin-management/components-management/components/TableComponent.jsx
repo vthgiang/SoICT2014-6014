@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import ComponentInfoForm from './ComponentInfoForm';
-import { PaginateBar, ActionColumn, SearchBar } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar } from '../../../../common-components';
 import { LinkActions } from '../../../super-admin-management/links-management/redux/actions';
 import { RoleActions } from '../../../super-admin-management/roles-management/redux/actions';
 
@@ -57,7 +57,7 @@ class TableComponent extends Component {
                             <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
                                 { translate('table.action') }
-                                <ActionColumn 
+                                <DataTableSetting 
                                     columnArr={[
                                         translate('manage_component.name'),
                                         translate('manage_component.description'),

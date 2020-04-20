@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { PraiseCreateForm, PraiseEditForm } from './CombineContent';
-import { ActionColumn, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';
 class PraiseManager extends Component {
@@ -151,7 +151,7 @@ class PraiseManager extends Component {
                                 <th>{translate('table.unit')}</th>
                                 <th >{translate('table.position')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="praise-table"
                                         columnArr={[
                                             translate('table.employee_number'),

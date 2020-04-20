@@ -7,8 +7,8 @@ import { ModalEditTrainingPlan } from './ModalEditTrainingPlan';
 import { ModalAddTrainingPlan } from './ModalAddTrainingPlan';
 import { CourseActions } from '../redux/actions';
 import { EducationActions } from '../../list-education/redux/actions';
-import { ActionColumn } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components/src/PaginateBar';
+import { DataTableSetting } from '../../../../common-components';
+import { PaginateBar } from '../../../../common-components/src/paginate-bar/paginateBar';
 import { DeleteNotification } from '../../../../common-components';
 class TrainingPlan extends Component {
     constructor(props) {
@@ -113,7 +113,7 @@ class TrainingPlan extends Component {
                                 <th>Địa điểm đào tạo</th>
                                 <th>Đơn vị đào tạo</th>
                                 <th style={{ width: '120px'}}>Hành động
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="course-table"
                                         columnArr={[
                                             "Mã khoá đào tạo",

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './SelectMulti.css';
+import './selectMulti.css';
 import './bootstrap-multiselect.css';
 import { selelectMultiScript } from './bootstrap-multiselect.js'
 

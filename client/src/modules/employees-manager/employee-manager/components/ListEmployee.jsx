@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom } from './CombineContent';
-import { ActionColumn, DeleteNotification, PaginateBar } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
 
 class ListEmployee extends Component {
@@ -205,7 +205,7 @@ class ListEmployee extends Component {
                                 <th>Chức vụ</th>
                                 <th>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="employee-table"
                                         columnArr={[
                                             "Mã nhân viên",

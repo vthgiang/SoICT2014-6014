@@ -6,7 +6,7 @@ import { DepartmentActions } from '../../super-admin-management/departments-mana
 import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './ModalViewTaskTemplate';
 import { ModalEditTaskTemplate } from './ModalEditTaskTemplate';
-import { PaginateBar, SelectMulti, ActionColumn } from '../../../common-components';
+import { PaginateBar, SelectMulti, DataTableSetting } from '../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
@@ -234,7 +234,7 @@ class TaskTemplate extends Component {
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
-                    <ActionColumn 
+                    <DataTableSetting 
                         tableId="user-table"
                         columnArr={[
                             'Tên mẫu công việc',

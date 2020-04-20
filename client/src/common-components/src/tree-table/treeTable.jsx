@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { treeTableShowChildren, treeTableHideChildren } from './tree-table';
-import './TreeTable.css';
+import './treeTable.css';
 
 class TreeTable extends Component {
     constructor(props) {

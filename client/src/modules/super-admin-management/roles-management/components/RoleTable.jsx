@@ -4,7 +4,7 @@ import { RoleActions} from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../users-management/redux/actions';
 import RoleInfoForm from './RoleInfoForm';
-import { SearchBar, DeleteNotification, PaginateBar, ActionColumn } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting } from '../../../../common-components';
 import RoleCreateForm from './RoleCreateForm';
 
 class RoleTable extends Component {
@@ -52,7 +52,7 @@ class RoleTable extends Component {
                             <th>{ translate('manage_role.users') }</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 { translate('table.action') }
-                                <ActionColumn 
+                                <DataTableSetting 
                                     columnName={translate('table.action')} 
                                     columnArr={[
                                         translate('manage_role.name'),

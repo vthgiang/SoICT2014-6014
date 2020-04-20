@@ -7,7 +7,7 @@ import { taskManagementActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, ActionColumn, PaginateBar } from '../../../../common-components';
+import { SelectMulti, DataTableSetting, PaginateBar } from '../../../../common-components';
 
 class TabTaskContent extends Component {
     constructor(props) {
@@ -386,7 +386,7 @@ class TabTaskContent extends Component {
                     </div>
 
 
-                    <ActionColumn
+                    <DataTableSetting
                         tableId="tree-table"
                         tableContainerId="tree-table-container"
                         tableWidth="1300px"

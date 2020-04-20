@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RoleDefaultActions} from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import { SearchBar, DeleteNotification, PaginateBar, ActionColumn } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting } from '../../../../common-components';
 
 class RoleTable extends Component {
     constructor(props) {
