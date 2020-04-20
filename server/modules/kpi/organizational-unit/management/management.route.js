@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const managerController = require("./manager.controller");
-const {auth} = require('../../../middleware/index');
+const managerController = require("./management.controller");
+const {auth} = require('../../../../middleware/index');
 
 // get all kpi unit
 router.get('/unit/:id',auth, managerController.get);

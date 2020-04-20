@@ -1248,8 +1248,8 @@ const sampleCompanyData = async () => {
         positionEducation: [
             nvPhongHC._id
         ],
-        nameEducation: "An toan lao dong",
-        numberEducation: "M123",
+        name: "An toan lao dong",
+        programId: "M123",
     }, {
         company:vnist._id,
         unitEducation: [
@@ -1258,8 +1258,8 @@ const sampleCompanyData = async () => {
         positionEducation: [
             nvPhongHC._id
         ],
-        nameEducation: "kỹ năng giao tiếp",
-        numberEducation: "M1234",
+        name: "kỹ năng giao tiếp",
+        programId: "M1234",
     }])
     console.log(`Xong! Thông tin chương trình đào tạo  đã được tạo`);
 
@@ -1272,28 +1272,28 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
     var course= await Course.insertMany([{
         company:vnist._id,
-        nameCourse : "An toàn lao động 1",
-        numberCourse : "LD1233",
+        name: "An toàn lao động 1",
+        courseId : "LD1233",
         unitCourse : "Vnists",
         address : "P9.01",
         startDate : "03-03-2020",
         endDate : "21-03-2020",
         costsCourse : "1200000",
         teacherCourse : "Nguyễn B",
-        typeCourse : "Đào tạo ngoài",
+        type: "Đào tạo ngoài",
         educationProgram : educationProgram[0]._id,
         time : "6",
     }, {
         company:vnist._id,
-        nameCourse : "An toàn lao động 2",
-        numberCourse : "LD123",
+        name: "An toàn lao động 2",
+        courseId : "LD123",
         unitCourse : "Vnists",
         address : "P9.01",
         startDate : "03-03-2020",
         endDate : "21-03-2020",
         costsCourse : "1200000",
         teacherCourse : "Nguyễn Văn B",
-        typeCourse : "Đào tạo ngoài",
+        type: "Đào tạo ngoài",
         educationProgram : educationProgram[0]._id,
         time : "6",
     }])

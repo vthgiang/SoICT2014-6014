@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { auth } = require('../../../middleware');
-const EmployeeController = require("./employee.controller");
+const EmployeeController = require("./profile.controller");
 
 // Lấy thông tin cá nhân
 router.get('/:email', auth, EmployeeController.getInforPersonal);

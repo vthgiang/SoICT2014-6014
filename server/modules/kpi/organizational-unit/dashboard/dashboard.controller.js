@@ -1,5 +1,5 @@
 const dashboardService = require('./dashboard.service');
-const { LogInfo, LogError } = require('../../../logs');
+const { LogInfo, LogError } = require('../../../../logs');
 // Điều phối đến các hàm dịch vụ cơ sở dữ liệu của module quản lý kpi đơn vị
 // get all target of unit kpi
 exports.get =async (req, res) => {

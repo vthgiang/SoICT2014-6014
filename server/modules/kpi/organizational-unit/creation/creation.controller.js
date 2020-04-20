@@ -1,5 +1,5 @@
 const KPIUnitService = require('./creation.service');
-const { LogInfo, LogError } = require('../../../logs');
+const { LogInfo, LogError } = require('../../../../logs');
 // Lấy KPI đơn vị hiện tại qua vai trò
 exports.getByRole = async (req, res) => {
     try {

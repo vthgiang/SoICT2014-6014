@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const KPIPersonalController = require("./create.controller");
+const KPIPersonalController = require("./creation.controller");
 const {auth} = require('../../../../middleware/index');
 
 // lấy kpi cá nhân hiện tại

@@ -1,7 +1,7 @@
-const Department = require('../../../models/system/organizationalUnit.model');
-const KPIUnit = require('../../../models/kpi/organizationalUnitKpiSet.model');
-const DetailKPIUnit = require('../../../models/kpi/organizationalUnitKpi.model');
-const DetailKPIPersonal = require('../../../models/kpi/employeeKpi.model');
+const Department = require ('../../../../models/super-admin/organizationalUnit.model');
+const KPIUnit = require('../../../../models/kpi/organizationalUnitKpiSet.model');
+const DetailKPIUnit = require('../../../../models/kpi/organizationalUnitKpi.model');
+const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
 
 // lấy KPI đơn vị hiện tại theo role
 exports.getByRole = async (id) => {

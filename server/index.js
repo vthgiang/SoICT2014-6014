@@ -15,7 +15,7 @@ require('dotenv').config();
 // Application Modules
 const auth = require('./modules/auth/auth.route');
 
-const document = require('./modules/document-management/document.route');
+const document = require('./modules/document/document.route');
 
 const annualLeave = require('./modules/human-resource/annual-leave/annualLeave.route');
 const commendation = require('./modules/human-resource/commendation/commendation.route');
@@ -28,12 +28,12 @@ const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.ro
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
 const employeeKpiManagement = require("./modules/kpi/employee/management/management.route");
 const employeeKpiEvaluation = require('./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route');
-const employeeKpiEvaluationDashboard = require('./modules/kpi/evaluation/dashboard/dashboard.route');
+// const employeeKpiEvaluationDashboard = require('./modules/kpi/evaluation/dashboard/dashboard.route');
 const organizationalUnitKpiCreation = require("./modules/kpi/organizational-unit/creation/creation.route");
 const organizationalUnitKpiDashboard = require("./modules/kpi/organizational-unit/dashboard/dashboard.route");
 const organizationalUnitKpiManagement = require("./modules/kpi/organizational-unit/management/management.route");
 
-const notifications = require('./modules/notifications/notification.route');
+const notifications = require('./modules/notification/notification.route');
 
 const component = require('./modules/super-admin/component/component.route');
 const link = require('./modules/super-admin/link/link.route');

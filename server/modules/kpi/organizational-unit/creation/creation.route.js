@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const KPIUnitController = require("./create.controller");
-const {auth} = require('../../../middleware/index');
+const KPIUnitController = require("./creation.controller");
+const {auth} = require('../../../../middleware/index');
 
 // Lấy KPI đơn vị hiện tại qua vai trò
 router.get('/current-unit/role/:id',auth, KPIUnitController.getByRole);
