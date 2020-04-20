@@ -7,13 +7,13 @@ const Document = require('./document/document.model');
 const DocumentCategory = require('./document/documentCategory.model');
 const DocumentType = require('./document/documentType.model');
 
-const AnnualLeave = require('./employee/annualLeave.model');
-const Commendation = require('./employee/commendation.model');
-const Discipline = require('./employee/discipline.model');
-const Employee = require('./employee/employee.model');
-const EmployeeContact = require('./employee/employeeContact.model');
-const Holiday = require('./employee/holiday.model');
-const Salary = require('./employee/salary.model');
+const AnnualLeave = require('./human-resource/annualLeave.model');
+const Commendation = require('./human-resource/commendation.model');
+const Discipline = require('./human-resource/discipline.model');
+const Employee = require('./human-resource/employee.model');
+const EmployeeContact = require('./human-resource/employeeContact.model');
+const Holiday = require('./human-resource/holiday.model');
+const Salary = require('./human-resource/salary.model');
 
 const EmployeeKpi = require('./kpi/employeeKpi.model');
 const EmployeeKpiSet = require('./kpi/employeeKpiSet.model');

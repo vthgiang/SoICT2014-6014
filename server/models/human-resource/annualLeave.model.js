@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { Employee, Company } = require('../').schema;
+const { Employee, Company } = require('..').schema;
 
 // tạo bảng datatable nghỉ phép
 const AnnualLeaveSchema = new Schema({

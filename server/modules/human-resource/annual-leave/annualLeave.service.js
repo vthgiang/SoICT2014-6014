@@ -1,5 +1,5 @@
-const Sabbatical = require('../../../models/employee/annualLeave.model');
-const Employee = require('../../../models/employee/employee.model');
+const Sabbatical = require('../../../models/human-resource/annualLeave.model');
+const Employee = require('../../../models/human-resource/employee.model');
 const EmployeeService = require('../profile/profile.service');
 
 // Lấy danh sách thông tin nghỉ phép

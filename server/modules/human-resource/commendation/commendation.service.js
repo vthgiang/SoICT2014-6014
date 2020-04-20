@@ -1,5 +1,5 @@
-const Praise = require('../../../models/employee/commendation.model');
-const Employee = require('../../../models/employee/employee.model');
+const Praise = require('../../../models/human-resource/commendation.model');
+const Employee = require('../../../models/human-resource/employee.model');
 const EmployeeService = require('../profile/profile.service');
 
 // Lấy danh sách khen thưởng của nhân viên

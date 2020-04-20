@@ -1,5 +1,5 @@
-const Discipline = require('../../../models/employee/discipline.model');
-const Employee = require('../../../models/employee/employee.model');
+const Discipline = require('../../../models/human-resource/discipline.model');
+const Employee = require('../../../models/human-resource/employee.model');
 const EmployeeService = require('../profile/profile.service');
 
 // Lấy danh sách kỷ luật của nhân viên

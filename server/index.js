@@ -17,12 +17,12 @@ const auth = require('./modules/auth/auth.route');
 
 const document = require('./modules/document-management/document.route');
 
-const annualLeave = require('./modules/employee/annual-leave/annualLeave.route');
-const commendation = require('./modules/employee/commendation/commendation.route');
-const discipline = require('./modules/employee/discipline/discipline.route');
-const holiday = require('./modules/employee/holiday/holiday.route');
-const profile = require('./modules/employee/profile/profile.route');
-const salary = require('./modules/employee/salary/salary.route');
+const annualLeave = require('./modules/human-resource/annual-leave/annualLeave.route');
+const commendation = require('./modules/human-resource/commendation/commendation.route');
+const discipline = require('./modules/human-resource/discipline/discipline.route');
+const holiday = require('./modules/human-resource/holiday/holiday.route');
+const profile = require('./modules/human-resource/profile/profile.route');
+const salary = require('./modules/human-resource/salary/salary.route');
 
 const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");

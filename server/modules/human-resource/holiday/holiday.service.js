@@ -1,4 +1,4 @@
-const Holiday = require('../../../models/employee/holiday.model');
+const Holiday = require('../../../models/human-resource/holiday.model');
 
 //lấy danh sách ngà nghỉ lễ tết
 exports.get = async (company) => {
