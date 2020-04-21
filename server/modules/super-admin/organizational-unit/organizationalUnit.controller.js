@@ -10,7 +10,7 @@ exports.getAllOrganizationalUnits = async (req, res) => {
     try {
         var list = await OrganizationalUnitService.getAllOrganizationalUnits(req.user.company._id); 
         var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
-
+        
         await LogInfo(req.user.email, 'GET_DEPARTMENTS', req.user.company);
         res.status(200).json({
             success: true,
@@ -30,10 +30,10 @@ exports.getAllOrganizationalUnits = async (req, res) => {
 exports.createOrganizationalUnit = async (req, res) => {
     try {
         var roles = await RoleService.createRolesForOrganizationalUnit(req.body, req.user.company._id);
-        var organizationalUnit = await OrganizationalUnitService.createOrganizationalUnit( req.body, roles.dean._id, roles.vice_dean._id, roles.employee.id, req.user.company._id );
+        var organizationalUnit = await OrganizationalUnitService.createOrganizationalUnit( req.body, roles.dean._id, roles.viceDean._id, roles.employee.id, req.user.company._id );
         var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
         organizationalUnit.dean = roles.dean;
-        organizationalUnit.vice_dean = roles.vice_dean;
+        organizationalUnit.viceDean = roles.viceDean;
         organizationalUnit.employee = roles.employee;
 
         await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
@@ -76,10 +76,10 @@ exports.edit = async (req, res) => {
     try {
         var department = await OrganizationalUnitService.edit(req.params.id, req.body);
         var dean = await RoleService.editRole(department.dean, {name: req.body.dean});
-        var vice_dean = await RoleService.editRole(department.vice_dean, {name: req.body.vice_dean});
+        var viceDean = await RoleService.editRole(department.viceDean, {name: req.body.viceDean});
         var employee = await RoleService.editRole(department.employee, {name: req.body.employee});
         department.dean = dean;
-        department.vice_dean = vice_dean;
+        department.viceDean = viceDean;
         department.employee = employee;
         var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
 

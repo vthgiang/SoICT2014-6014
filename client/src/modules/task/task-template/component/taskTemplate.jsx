@@ -195,7 +195,7 @@ class TaskTemplate extends Component {
             units = department.unitofuser;
             currentUnit = units.filter(item =>
                 item.dean === localStorage.getItem("currentRole")
-                || item.vice_dean === localStorage.getItem("currentRole")
+                || item.viceDean === localStorage.getItem("currentRole")
                 || item.employee === localStorage.getItem("currentRole"));
         }
         

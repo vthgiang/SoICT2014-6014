@@ -125,7 +125,7 @@ class DepartmentCreateWithParent extends Component {
                 name: this.state.departmentName, 
                 description: this.state.departmentDescription, 
                 dean: this.state.departmentDean, 
-                vice_dean: this.state.departmentViceDean, 
+                viceDean: this.state.departmentViceDean, 
                 employee: this.state.departmentEmployee, 
                 parent: this.state.departmentParent
             });

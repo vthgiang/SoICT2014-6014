@@ -19,7 +19,7 @@ exports.getUnitAndPositionEmployee = async (emailCompany)=>{
         departments = await Department.find({
             $or: [
                 {'dean': { $in: newRoles }}, 
-                {'vice_dean':{ $in: newRoles }}, 
+                {'viceDean':{ $in: newRoles }}, 
                 {'employee':{ $in: newRoles }}
             ] 
         });
@@ -39,7 +39,7 @@ exports.getEmailCompanyByUnitAndPosition = async(unit, position)=>{
         }
         if (position === null) {
             units.forEach(u => {
-                let role = [u.dean, u.vice_dean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
+                let role = [u.dean, u.viceDean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
                 roles = roles.concat(role); 
             })
         } else {
@@ -66,7 +66,7 @@ exports.get = async (data, company) => {
     if (data.department !== "All") {
         var department = await Department.findById(data.department); //lấy thông tin đơn vị
         if (data.position === "All") {
-            var roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của đơn vào 1 arr
+            var roles = [department.dean, department.viceDean, department.employee]; //lấy 3 role của đơn vào 1 arr
         } else {
             var roles = [data.position]
         }
@@ -157,7 +157,7 @@ exports.get = async (data, company) => {
             departments = await Department.find({
                 $or: [
                     {'dean': { $in: newRoles }}, 
-                    {'vice_dean':{ $in: newRoles }}, 
+                    {'viceDean':{ $in: newRoles }}, 
                     {'employee':{ $in: newRoles }}
                 ] 
             });
@@ -245,7 +245,7 @@ exports.getInforPersonal = async (email) => {
         departments = await Department.find({
             $or: [
                 {'dean': { $in: newRoles }}, 
-                {'vice_dean':{ $in: newRoles }}, 
+                {'viceDean':{ $in: newRoles }}, 
                 {'employee':{ $in: newRoles }}
             ] 
         });

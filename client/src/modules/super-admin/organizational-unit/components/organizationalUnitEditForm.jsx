@@ -140,7 +140,7 @@ class DepartmentEditForm extends Component {
             description: this.state.departmentDescription,
             parent: this.state.departmentParent,
             dean: this.state.departmentDean,
-            vice_dean: this.state.departmentViceDean,
+            viceDean: this.state.departmentViceDean,
             employee: this.state.departmentEmployee
         };
         if(this.isFormValidated()) return this.props.edit(data);

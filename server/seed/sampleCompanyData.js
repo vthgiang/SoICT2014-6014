@@ -285,7 +285,7 @@ const sampleCompanyData = async () => {
         description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         company:  vnist._id,
         dean: giamDoc._id,
-        vice_dean: phoGiamDoc._id,
+        viceDean: phoGiamDoc._id,
         employee: thanhVienBGĐ._id,
         parent: null
     });
@@ -295,7 +295,7 @@ const sampleCompanyData = async () => {
             description: "Phòng hành chính Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
             company:  vnist._id,
             dean: truongPhongHC._id,
-            vice_dean: phoPhongHC._id,
+            viceDean: phoPhongHC._id,
             employee: nvPhongHC._id,
             parent: Directorate._id
         },

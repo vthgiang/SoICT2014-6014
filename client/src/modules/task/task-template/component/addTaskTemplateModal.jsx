@@ -693,7 +693,7 @@ class ModalAddTaskTemplate extends Component {
             units = department.unitofuser;
             currentUnit = units.find(item =>
                 item.dean === this.state.currentRole
-                || item.vice_dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
 
             if (newTemplate.unit === ""){
@@ -764,7 +764,7 @@ class ModalAddTaskTemplate extends Component {
                                                         style={{width: "100%"}}
                                                         items={[
                                                             {value: listRole.dean._id, text: listRole.dean.name},
-                                                            {value: listRole.vice_dean._id, text: listRole.vice_dean.name},
+                                                            {value: listRole.viceDean._id, text: listRole.viceDean.name},
                                                             {value: listRole.employee._id, text: listRole.employee.name},
                                                         ]}
                                                         onChange={this.handleTaskTemplateRead}

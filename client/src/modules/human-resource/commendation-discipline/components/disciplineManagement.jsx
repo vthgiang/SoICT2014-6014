@@ -94,7 +94,7 @@ class DisciplineManager extends Component {
                     if (x._id === u) {
                         let position = [
                             { _id: x.dean._id, name: x.dean.name },
-                            { _id: x.vice_dean._id, name: x.vice_dean.name },
+                            { _id: x.viceDean._id, name: x.viceDean.name },
                             { _id: x.employee._id, name: x.employee.name }
                         ]
                         listPosition = listPosition.concat(position)

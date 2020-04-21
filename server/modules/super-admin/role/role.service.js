@@ -101,8 +101,8 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
         type: roleChucDanh._id,
         parents: [employeeAb._id]
     });
-    const vice_dean = await Role.create({
-        name: data.vice_dean,
+    const viceDean = await Role.create({
+        name: data.viceDean,
         company: companyID,
         type: roleChucDanh._id,
         parents: [employee._id, viceDeanAb._id]
@@ -111,11 +111,11 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
         name: data.dean,
         company: companyID,
         type: roleChucDanh._id,
-        parents: [employee._id, vice_dean._id, deanAb._id]
+        parents: [employee._id, viceDean._id, deanAb._id]
     });
 
     return {
-        dean, vice_dean, employee
+        dean, viceDean, employee
     }
 }
 
@@ -178,12 +178,12 @@ exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
     const roles = await Department.findOne({ 
         $or:[
             {'dean':id}, 
-            {'vice_dean':id}, 
+            {'viceDean':id}, 
             {'employee':id}
         ]  
     }).populate([
         {path:'dean'}, 
-        {path:'vice_dean'}, 
+        {path:'viceDean'}, 
         {path:'employee'}]
     );
     

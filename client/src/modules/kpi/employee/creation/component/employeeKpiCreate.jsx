@@ -378,7 +378,7 @@ class KPIPersonalCreate extends Component {
             currentUnit = unitList.filter(item => (
                 item.dean === this.state.currentRole
                 || item.employee === this.state.currentRole
-                || item.vice_dean === this.state.currentRole));
+                || item.viceDean === this.state.currentRole));
         }
         if (createKpiPersonal.currentKPI) currentKPI = createKpiPersonal.currentKPI;
         if (user.userdepartments) userdepartments = user.userdepartments;

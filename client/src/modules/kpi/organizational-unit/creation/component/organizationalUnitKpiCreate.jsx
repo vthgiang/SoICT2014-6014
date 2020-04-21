@@ -268,7 +268,7 @@ class KPIUnitCreate extends Component {
             unitList = department.unitofuser;
             currentUnit = unitList.filter(item =>
                 item.dean === this.state.currentRole
-                || item.vice_dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
         }
         if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;

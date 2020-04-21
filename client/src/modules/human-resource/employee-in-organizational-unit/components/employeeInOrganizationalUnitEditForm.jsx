@@ -65,7 +65,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             var idRoleDean = nextProps.department[0].dean._id,
-                idRoleViceDean = nextProps.department[0].vice_dean._id,
+                idRoleViceDean = nextProps.department[0].viceDean._id,
                 idRoleEmployee = nextProps.department[0].employee._id,
                 infoRoleDean = nextProps.role.filter(x => x._id === idRoleDean),
                 infoRoleViceDean = nextProps.role.filter(x => x._id === idRoleViceDean),

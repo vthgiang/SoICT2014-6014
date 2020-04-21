@@ -143,7 +143,7 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 
 // exports.getUsersOfDepartment = async (departmentId) => {
 //     const department = await Department.findById(departmentId); //lấy thông tin phòng ban hiện tại
-//     const roles = [department.dean, department.vice_dean, department.employee]; //lấy 3 role của phòng ban vào 1 arr
+//     const roles = [department.dean, department.viceDean, department.employee]; //lấy 3 role của phòng ban vào 1 arr
 //     const users = await UserRole.find({
 //         roleId: { $in: roles }
 //     });
@@ -155,10 +155,10 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
     var department = await Department.findById(departmentId);
     var dean = await UserRole.findOne({ roleId: department.dean }).populate('userId roleId');
-    var vice_dean = await UserRole.findOne({ roleId: department.vice_dean }).populate('userId roleId');
+    var viceDean = await UserRole.findOne({ roleId: department.viceDean }).populate('userId roleId');
     var employee = await UserRole.findOne({ roleId: department.employee }).populate('userId roleId');
     var users = [];
-    users = users.concat(dean, vice_dean, employee);
+    users = users.concat(dean, viceDean, employee);
 
     return users;
 }
@@ -170,16 +170,16 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
     var department = await Department.findOne({ 
         $or:[
             {'dean': id_role}, 
-            {'vice_dean': id_role}, 
+            {'viceDean': id_role}, 
             {'employee': id_role}
         ]  
     });
     if(department === null) throw({message: 'department_not_found'});
     var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
-    var vice_dean = await UserRole.findOne({ roleId: department.vice_dean}).populate('userId roleId');
+    var viceDean = await UserRole.findOne({ roleId: department.viceDean}).populate('userId roleId');
     var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');
     var users = [];
-    users = users.concat(dean, vice_dean, employee);
+    users = users.concat(dean, viceDean, employee);
 
     return users;
 }

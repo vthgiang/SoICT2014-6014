@@ -80,7 +80,7 @@ class ModalEditEducation extends Component {
         var listDepartment = list, listPosition = [];
         for (let n in listDepartment) {
             let position = [{ _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
-            { _id: listDepartment[n].vice_dean._id, name: listDepartment[n].vice_dean.name },
+            { _id: listDepartment[n].viceDean._id, name: listDepartment[n].viceDean.name },
             { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }]
             listPosition = listPosition.concat(position)
         }

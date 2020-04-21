@@ -200,7 +200,7 @@ class ModalAddTask extends Component {
             units = department.unitofuser;
             currentUnit = units.filter(item =>
                 item.dean === this.state.currentRole
-                || item.vice_dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
         }
         if (user.userdepartments) userdepartments = user.userdepartments;

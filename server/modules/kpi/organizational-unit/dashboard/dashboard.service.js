@@ -9,7 +9,7 @@ exports.get = async (id) => {
     var department = await Department.findOne({
         $or: [
             { 'dean': id },
-            { 'vice_dean': id },
+            { 'viceDean': id },
             { 'employee': id }
         ]
     });
@@ -25,7 +25,7 @@ exports.getByRole = async (id) => {
     var department = await Department.findOne({
         $or: [
             { dean: id },
-            { vice_dean: id },
+            { viceDean: id },
             { employee: id }
         ]
     });

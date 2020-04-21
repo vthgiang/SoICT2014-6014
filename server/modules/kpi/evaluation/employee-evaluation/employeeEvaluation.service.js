@@ -8,7 +8,7 @@ exports.getKPIAllMember = async (data) => {
     var department = await Department.findOne({
         $or: [
             { 'dean': data.role },
-            { 'vice_dean': data.role },
+            { 'viceDean': data.role },
             { 'employee': data.role }
         ]
     });

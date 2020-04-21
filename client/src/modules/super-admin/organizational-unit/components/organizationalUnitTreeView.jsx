@@ -98,7 +98,7 @@ class DepartmentTreeView extends Component {
                         departmentDescription={currentRow.description}
                         departmentParent={currentRow.parent_id}
                         departmentDean={currentRow.dean}
-                        departmentViceDean={currentRow.vice_dean}
+                        departmentViceDean={currentRow.viceDean}
                         departmentEmployee={currentRow.employee}
                     />
                 </React.Fragment>
