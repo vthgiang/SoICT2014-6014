@@ -1,20 +1,23 @@
-const Component = require('../models/component.model');
-const RoleType = require('../models/role_type.model');
-const Role = require('../models/role.model');
-const Company = require('../models/company.model');
-const Department = require('../models/department.model')
-const Link = require('../models/link.model');
-const Privilege = require('../models/privilege.model');
-const User = require('../models/user.model');
-const UserRole = require('../models/user_role.model');
-const Employee = require('../models/employee.model');
-const EmployeeContact = require('../models/employeeContact.model');
-const Salary = require('../models/salary.model');
-const Sabbatical = require('../models/sabbatical.model');
-const Discipline = require('../models/discipline.model');
-const Praise = require('../models/praise.model');
-const EducationProgram = require('../models/educationProgram.model');
-const Course = require('../models/course.model')
+const {
+    Component,
+    RoleType,
+    Role,
+    Company, 
+    OrganizationalUnit,
+    Link,
+    Privilege,
+    User,
+    UserRole,
+    Employee,
+    EmployeeContact,
+    AnnualLeave,
+    Salary,
+    Discipline,
+    Commendation,
+    EducationProgram,
+    Course
+} = require('../models').schema;
+
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -278,7 +281,7 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log('Tạo Phòng ban cho công ty...');
-    const Directorate = await Department.create({// Khởi tạo ban giám đốc công ty
+    const Directorate = await OrganizationalUnit.create({// Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
         description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         company:  vnist._id,
@@ -287,7 +290,7 @@ const sampleCompanyData = async () => {
         employee: thanhVienBGĐ._id,
         parent: null
     });
-    const departments = await Department.insertMany([
+    const departments = await OrganizationalUnit.insertMany([
         {
             name: "Phòng hành chính",
             description: "Phòng hành chính Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",

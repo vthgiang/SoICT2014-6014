@@ -1,7 +1,4 @@
-const Component = require('../../../models/super-admin/component.model');
-const Privilege = require('../../../models/auth/privilege.model');
-const Link = require('../../../models/super-admin/link.model');
-const Role = require('../../../models/auth/role.model');
+const { Privilege, Role, Link, Component } = require('../../../models').schema;
 
 exports.getAllComponents = async (id) => {
 
