@@ -111,7 +111,6 @@ class ModalPerformTask extends Component {
         }
     }
     componentDidMount() {
-        console.log('------mountPerform-----');
         let script2 = document.createElement('script');
         script2.src = '../lib/main/js/uploadfile/custom.js';//fix-------------------------------------------------------------
         script2.async = true;
@@ -276,7 +275,6 @@ class ModalPerformTask extends Component {
             confirmButtonText: 'Lưu'
         }).then((res) => {
             // Update dữ liệu: Thời gian kết thúc, time = oldTime + newTime
-            console.log(this.state);
             this.props.stopTimer(timer._id, this.state.timer);
             this.setState(state => {
                 // TODO: test sau
@@ -420,7 +418,6 @@ class ModalPerformTask extends Component {
         // data.append("parent", newComment.parent);
         // data.append("content", newComment.content);
         //  data.append("file", newComment.file);
-        console.log(newComment.creator);
         if (newComment.task && newComment.content && newComment.creator) {
             this.props.addComment(newComment);
         }
@@ -464,7 +461,6 @@ class ModalPerformTask extends Component {
 
     handleSaveEditComment = async (e, index) => {
         e.preventDefault();
-        console.log(index)
         await this.setState(state => {
             return {
                 ...state,
@@ -651,10 +647,8 @@ class ModalPerformTask extends Component {
         const { time } = this.state.timer;
         const { tasks, performtasks, user, overviewKpiPersonal } = this.props;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        // console.log('----task----MPT', task);
-        // console.log('----task.status----MPT', task && task.status);
+        
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        console.log('------status------', statusTask);
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.tasktemplate !== null) {
             actions = tasks.task.actions;
             informations = tasks.task.informations;

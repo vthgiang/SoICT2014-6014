@@ -29,7 +29,6 @@ class EmployeeDetailForm extends Component {
         }
     }
     render() {
-        console.log(this.state._id);
         const { employeesManager, translate } = this.props;
         var { _id, employee, employeeContact, salary, sabbatical, praise, discipline } = this.state;
         return (

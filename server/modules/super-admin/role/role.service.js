@@ -1,9 +1,5 @@
-const Role = require('../../../models/auth/role.model');
-const RoleType = require('../../../models/super-admin/roleType.model');
-const User = require('../../../models/auth/user.model');
-const UserRole = require('../../../models/auth/userRole.model');
-const Company = require('../../../models/system-admin/company.model');
 const Terms = require('../../../seed/terms');
+const {OrganizationalUnit, Company, Role, RoleType, User, UserRole} = require('../../../models').schema
 
 //lay tat ca role cua 1 cong ty
 exports.getAllRoles = async (company) => {
@@ -175,7 +171,7 @@ exports.editRelationshipUserRole = async( roleId, userArr ) => {
     };
 }
 exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
-    const roles = await Department.findOne({ 
+    const roles = await OrganizationalUnit.findOne({ 
         $or:[
             {'dean':id}, 
             {'viceDean':id}, 

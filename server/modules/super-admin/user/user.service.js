@@ -1,4 +1,4 @@
-const { Department, User, UserRole } = require('../../../models').schema;
+const { OrganizationalUnit, User, UserRole } = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -153,7 +153,7 @@ exports.editRolesForUser = async (userId, roleIdArr) => {
 
 //lấy user trong một phòng ban
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
-    var department = await Department.findById(departmentId);
+    var department = await OrganizationalUnit.findById(departmentId);
     var dean = await UserRole.findOne({ roleId: department.dean }).populate('userId roleId');
     var viceDean = await UserRole.findOne({ roleId: department.viceDean }).populate('userId roleId');
     var employee = await UserRole.findOne({ roleId: department.employee }).populate('userId roleId');
@@ -167,7 +167,7 @@ exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
  * do user có thể thuộc về nhiều phòng ban, nên phòng ban được xét sẽ lấy theo id role hiện tại của user
 */
 exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
-    var department = await Department.findOne({ 
+    var department = await OrganizationalUnit.findOne({ 
         $or:[
             {'dean': id_role}, 
             {'viceDean': id_role}, 

@@ -73,7 +73,6 @@ class ModalStartKPIUnit extends Component {
             })
         }
 
-        console.log('clicked');
         await this.setState(state => {
             return {
                 ...state,
@@ -96,7 +95,6 @@ class ModalStartKPIUnit extends Component {
     }
     
     render() {
-        console.log(this.state);
         const { unit } = this.props;
 
         // hàm để chuyển sang song ngữ

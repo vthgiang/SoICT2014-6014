@@ -356,7 +356,6 @@ class EmployeeEditFrom extends Component {
         }
     }
     render() {
-        console.log(this.state);
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
         return (

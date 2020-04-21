@@ -56,7 +56,6 @@ exports.createOrganizationalUnit = async(data, deanId, viceDeanId, employeeId, c
 }
 
 exports.edit = async(id, data) => {
-    console.log("data department: ", data);
     const department = await OrganizationalUnit.findById(id);
     if(department === null) throw('department_not_found');
     department.name = data.name;

@@ -88,7 +88,6 @@ export function link (state = initState, action) {
             };
 
         case LinkConstants.EDIT_LINK_SUCCESS:
-            console.log("EDIT SUSSCESS")
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
             if(index !== -1){

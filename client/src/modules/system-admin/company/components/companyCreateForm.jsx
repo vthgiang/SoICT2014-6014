@@ -111,7 +111,6 @@ class CompanyCreateForm extends Component {
             return true;
         }
         else{
-            console.log("CHECK ALL FALSE");
             return false;
         };
     }

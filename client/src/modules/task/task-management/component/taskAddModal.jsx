@@ -116,7 +116,7 @@ class ModalAddTask extends Component {
         var startdate = new Date(starttime[2], starttime[1] - 1, starttime[0]);
         var endtime = this.enddate.value.split("-");
         var enddate = new Date(endtime[2], endtime[1] - 1, endtime[0]);
-        console.log(newTask);
+
         if (newTask.name && newTask.description && newTask.startdate && newTask.enddate && newTask.priority) {
             if (Date.parse(startdate) < Date.now()) {
                 await this.setState(state => {
@@ -185,7 +185,6 @@ class ModalAddTask extends Component {
         if (responsible !== []) {
             // this.props.getAllKPIPersonalByMember(responsible);
             this.props.getAllKPIPersonalByUserID(responsible);
-            console.log('this response: ', responsible);
         }
     }
     render() {

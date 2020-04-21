@@ -184,8 +184,7 @@ class ModalMemberApprove extends Component {
     handleApproveKPI = async (id, listTarget) => {
         
         var totalWeight = listTarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
-        console.log(id);
-        console.log(totalWeight);
+        
         if(totalWeight!==100){
             await this.setState(state => {
                 return{

@@ -50,7 +50,6 @@ class SearchBar extends Component {
     render() { 
         const { columns, translate, option } = this.props;
         
-        console.log("SEARCH: ", this.state);
         return ( 
             <React.Fragment>
                 <div className="qlcv">

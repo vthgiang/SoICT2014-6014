@@ -56,7 +56,7 @@ exports.auth = async (req, res, next) => {
              * Nếu như người tạo ra JWT này đã đăng xuất thì JWT này sẽ được xóa đi khỏi CSDL của người dùng.
              * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
              */
-            const userToken = await User.findOne({ _id: req.user._id,  token: token });
+            const userToken = await User.findOne({ _id: req.user._id,  tokens: token });
             if(userToken === null) throw ('acc_log_out');
 
             /**
@@ -75,7 +75,7 @@ exports.auth = async (req, res, next) => {
                 const company = await Company.findById(req.user.company._id);
                 if(!company.active){ //dịch vụ của công ty người dùng đã tạm dừng
                     const resetUser = await User.findById(req.user._id);
-                    resetUser.token = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
+                    resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
                     await resetUser.save();
                     throw ('service_off');
                 };
@@ -91,7 +91,6 @@ exports.auth = async (req, res, next) => {
 
             //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
             const url = req.header('current-page');
-            console.log("Role truy cap: ", role);
             const link = role.name !== 'System Admin' ?
                 await Link.findOne({
                     url,
@@ -103,8 +102,6 @@ exports.auth = async (req, res, next) => {
                 });
             if(link === null) throw ('url_invalid');
             const roleArr = [role._id].concat(role.parents);
-            console.log("Links: ", link);
-            console.log("Roles: ", roleArr);
             const privilege = await Privilege.findOne({
                 resourceId: link._id,
                 resourceType: 'Link',

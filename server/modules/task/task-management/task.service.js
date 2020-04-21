@@ -10,7 +10,6 @@ exports.get = (req, res) => {
     Task.find()
         .then(tasks => res.status(200).json(tasks))
         .catch(err => res.status(400).json({ message: err }));
-    console.log("Get All Task");
 }
 
 //Lấy mẫu công việc theo Id
@@ -183,16 +182,13 @@ exports.getTaskInformedByUser = async (perpageId,numberId,unitId,userId,statusId
 
 //Tạo công việc mới
 exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,descriptionId,priorityId,tasktemplateId,roleId,kpiId,responsibleId,accounatableId,consultedId,informedId) => {
-    //req.body.parent,req.body.startdate,req.body.enddate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.tasktemplate,req.body.role,req.body.kpi,req.body.responsible,req.body.accounatable,req.body.consulted,req.body.informed
-    console.log('-------------------------đang them cong viec--------------------');
-            // console.log(req.body);
         // Lấy thông tin công việc cha
         var level = 1;
         if (mongoose.Types.ObjectId.isValid(parentId)) {
             var parent = await Task.findById(parentId);
             if (parent) level = parent.level + 1;
         }
-        // console.log(parent);
+        
         // convert thời gian từ string sang date
         var starttime = startdateId.split("-");
         var startdate = new Date(starttime[2], starttime[1]-1, starttime[0]);
@@ -216,7 +212,6 @@ exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,d
             consulted: consultedId,
             informed: informedId,
         });
-        console.log('----------------đã thêm task---------------------: ', task);
         if(tasktemplateId !== null){
             var tasktemplate = await TaskTemplate.findByIdAndUpdate(
                 tasktemplateId, { $inc: { 'count': 1} }, { new: true }

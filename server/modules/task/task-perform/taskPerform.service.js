@@ -15,7 +15,6 @@ exports.getLogTimer = (req, res) => {
     HistoryWorkingTime.find({ task: req.params.task }).populate("user")
         .then(logTimers => res.status(200).json(logTimers))
         .catch(err => res.status(400).json(err));
-    console.log("Get all log timer");
 }
 
 // Lấy trạng thái bấm giờ hiện tại. Bảng HistoryWorkingTime tìm hàng có endTime là rỗng 
@@ -24,7 +23,6 @@ exports.getTimerStatus = (req, res) => {
     HistoryWorkingTime.findOne({ task: req.params.task, user: req.params.user, stopTimer: null })
         .then(timerStatus => res.status(200).json(timerStatus))
         .catch(err => res.status(400).json(err));
-    console.log("Get Timer Status current");
 }
 
 // Bắt đầu bấm giờ: Lưu thời gian bắt đầu
@@ -82,7 +80,6 @@ exports.continueTimer = async (req, res) => {
 // Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (enndTime và time)
 exports.stopTimer = async (req, res) => {
     try {
-        console.log(req.body);
         var timer = await HistoryWorkingTime.findByIdAndUpdate(
             req.params.id, { stopTimer: req.body.stopTimer, time: req.body.time }, { new: true }
         );
@@ -135,7 +132,6 @@ exports.createCommentTask = async (req, res) => {
         //     name: req.file.filename,
         //     url: '/uploadfiles/'+req.file.filename
         // })
-        console.log(req.body);
         var commenttasks = await CommentTask.create({
             task: req.body.task,
             creator: req.body.creator,
@@ -306,13 +302,11 @@ exports.createResultTask = async (result, taskID) => {
             mypoint: item.mypoint,
             approverpoint: item.approverpoint
         }
-        console.log("-------------------result-------------------", resultTask);
         // Cập nhật thông tin công việc
         var task = await Task.findByIdAndUpdate(
             taskID, { $push: { results: resultTask } }, { new: true }
             // là _id của task muốn đánh giá.
         );
-        console.log('-------------------TASK----------------------', task);
     }
     return task;
     
@@ -324,7 +318,6 @@ exports.editResultTask = async (listResult,taskid) => {
     if (listResult !== []) {
         // Lưu thông tin kết quả  var listResultTask = await Promise.all
         listResult.forEach( async (item) => {
-            console.log('---item---', item);
             // var newTask = await Task.findOneAndUpdate({results: {$elemMatch: {_id : item._id} }},
             var newTask = await Task.updateOne({"results._id" : item._id},
             // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},

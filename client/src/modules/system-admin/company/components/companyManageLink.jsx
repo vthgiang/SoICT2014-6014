@@ -19,7 +19,7 @@ class CompanyManageLinks extends Component {
     render() { 
         const {translate, company, linksDefault} = this.props;
         const {companyId, linkDescriptionError} = this.state;
-        console.log("state: ", this.state)
+        
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
                 <a className="btn btn-success pull-right" onClick={this.showCreateLinkForm}>Thêm</a>
@@ -130,7 +130,6 @@ class CompanyManageLinks extends Component {
     isFormCreateLinkValidated = () => {
         const {linkUrl, linkDescription, linkDescriptionError} = this.state;
         if(linkDescriptionError === undefined && linkUrl !== undefined && linkDescription !== undefined){
-            console.log("linkurl: ", linkUrl)
             if(linkUrl !== 'noturl') return true;
             else return false;
         }

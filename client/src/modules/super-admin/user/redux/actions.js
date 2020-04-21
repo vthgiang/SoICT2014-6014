@@ -25,7 +25,6 @@ function get(){
             })
         })
         .catch(err => {
-            console.log("Error: ", err);
             dispatch({ type: UserConstants.GET_USERS_FAILE});
             AlertActions.handleAlert(dispatch, err);
         })
@@ -43,7 +42,6 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: UserConstants.GET_USERS_PAGINATE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
@@ -63,7 +61,6 @@ function edit(id, data){
                 resolve(res.data.content);
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: UserConstants.EDIT_USER_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
@@ -85,7 +82,6 @@ function create(data){
                     resolve(res.data.content);
                 })
                 .catch(err => {
-                    console.log("Error: ", err);
                     dispatch({ type: UserConstants.CREATE_USER_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
@@ -106,7 +102,6 @@ function destroy(id){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: UserConstants.DELETE_USER_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
@@ -131,7 +126,6 @@ export const getRoles = () => {
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: UserConstants.GET_USER_ROLES_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
@@ -149,7 +143,6 @@ export const getLinkOfRole = () => {
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: UserConstants.GET_LINK_OF_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })

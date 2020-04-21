@@ -152,7 +152,7 @@ class TaskTemplate extends Component {
 
     handleSearchPage = async () => {
         var newCurrentPage = this.newCurrentPage.value;
-        console.log(typeof newCurrentPage);
+        
         if (newCurrentPage) {
             this.handleGetDataPagination(parseInt(newCurrentPage));
             var element = document.getElementById("search-page");

@@ -110,12 +110,10 @@ function editTaskTemplate(id, taskTemplate) {
                 taskTemplate => { 
                     dispatch(success(taskTemplate));
                     //dispatch(alertActions.success('Edit target successful'));
-                    console.log("Edit target successful")
                 },
                 error => {
                     dispatch(failure(error.toString()));
                     //dispatch(alertActions.error(error.toString()));
-                    console.log(error.toString());
                 }
             );
     };

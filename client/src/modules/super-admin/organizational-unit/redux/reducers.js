@@ -59,12 +59,9 @@ export function department(state = initState, action) {
             };
 
         case DepartmentConstants.EDIT_DEPARTMENT_SUCCESS:
-            console.log("department edit: ", action.payload.department)
             index = findIndex(state.list, action.payload.department._id);
             if(index !== -1){
-                console.log("OLD: ",state.list[index]);
                 state.list[index] = action.payload.department;
-                console.log("NEW: ",state.list[index]);
             }
             return {
                 ...state,

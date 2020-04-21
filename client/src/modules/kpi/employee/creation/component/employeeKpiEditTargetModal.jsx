@@ -63,7 +63,6 @@ class ModalEditTargetKPIPersonal extends Component {
             }
         });
         const {newTarget} = this.state;
-        console.log(newTarget);
         if (newTarget.parent && newTarget.name && newTarget.weight && newTarget.criteria) {
             this.props.editTargetPersonal(id, newTarget);
             this.handleCloseModal(id);

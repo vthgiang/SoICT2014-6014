@@ -53,7 +53,6 @@ class ModalDetailKPIPersonal extends Component {
                 content: id
             }
         })
-        console.log(this.state);
     }
     formatDate(date) {
         var d = new Date(date),

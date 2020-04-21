@@ -38,7 +38,6 @@ function createResultTask(result) {
                     resolve(res.data);
                 })
                 .catch(err => {
-                    console.log('Error: ', err);
                     dispatch({ type: performTaskConstants.CREATE_RESULT_TASK_FAILURE, err });
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
@@ -61,7 +60,6 @@ function editResultTask(result, taskid) {
                     resolve(res.data);
                 })
                 .catch(err => {
-                    console.log('Error: ', err);
                     dispatch({ type: performTaskConstants.EDIT_RESULT_TASK_FAILURE, err });
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);

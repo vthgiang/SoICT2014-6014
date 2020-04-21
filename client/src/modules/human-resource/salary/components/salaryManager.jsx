@@ -117,7 +117,6 @@ class SalaryManager extends Component {
         this.props.getListSalary(this.state);
     }
     render() {
-        console.log(this.state);
         const { list } = this.props.department;
         const { translate, salary } = this.props;
         var formater = new Intl.NumberFormat();

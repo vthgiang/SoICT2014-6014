@@ -15,7 +15,7 @@ class LinkInfoForm extends Component {
     render() { 
         const { translate, rolesDefault, linksDefault } = this.props;
         const {linkId, linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
-        console.log("state link: ", this.state)
+        
         return ( 
             <DialogModal
                 size='50' func={this.save} isLoading={this.props.linksDefault.isLoading}
@@ -91,7 +91,6 @@ class LinkInfoForm extends Component {
     // Xy ly va validate role name
     handleUrl = (e) => {
         const {value} = e.target;
-        console.log("url value: ", value)
         this.validateUrl(value, true);
     }
     validateUrl = (value, willUpdateState=true) => {

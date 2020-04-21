@@ -12,7 +12,6 @@ export const kpiMemberServices = {
 };
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
-    console.log(infosearch);
     const requestOptions = {
         method: 'GET',
         headers: AuthenticateHeader()
@@ -22,11 +21,9 @@ function getAllKPIMemberOfUnit(infosearch) {
 }
 // Lấy tất cả kpi cá nhân
 async function getAllKPIMemberByMember() {
-    console.log("gọi API lấy tất cả kpi cá nhân");
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var member = verified._id;
-    console.log("MEMBER: ", member)
     const requestOptions = {
         method: 'GET',
         headers: AuthenticateHeader()

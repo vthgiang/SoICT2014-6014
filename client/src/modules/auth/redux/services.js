@@ -19,7 +19,6 @@ export const AuthService = {
 
 async function login(user) {
     const finger = await FingerPrint();
-    console.log("FINGER LOGIN", JSON.stringify(finger));
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
@@ -107,7 +106,6 @@ async function refresh() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    console.log("verified: ", verified)
     
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
