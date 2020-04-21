@@ -1,20 +1,22 @@
-const Component = require('../models/component.model');
-const RoleType = require('../models/role_type.model');
-const Role = require('../models/role.model');
-const Company = require('../models/company.model');
-const Department = require('../models/department.model')
-const Link = require('../models/link.model');
-const Privilege = require('../models/privilege.model');
-const User = require('../models/user.model');
-const UserRole = require('../models/user_role.model');
-const Employee = require('../models/employee.model');
-const EmployeeContact = require('../models/employeeContact.model');
-const Salary = require('../models/salary.model');
-const Sabbatical = require('../models/sabbatical.model');
-const Discipline = require('../models/discipline.model');
-const Praise = require('../models/praise.model');
-const EducationProgram = require('../models/educationProgram.model');
-const Course = require('../models/course.model')
+const {
+    Component,
+    RoleType,
+    Role,
+    Company, 
+    OrganizationalUnit,
+    Link,
+    Privilege,
+    User,
+    UserRole,
+    Employee,
+    EmployeeContact,
+    AnnualLeave,
+    Discipline,
+    Commendation,
+    EducationProgram,
+    Course
+} = require('../models').schema;
+
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -55,7 +57,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu công ty!");
     var vnist = await Company.create({
         name: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
-        short_name: 'VNIST',
+        shortName: 'VNIST',
         description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
     });
     console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
@@ -161,32 +163,32 @@ const sampleCompanyData = async () => {
 
     console.log("Lấy role mặc định của công ty...");
     const roleAbstract = await RoleType.findOne({
-        name: Terms.ROLE_TYPES.ABSTRACT
+        name: Terms.ROLE_TYPES.ROOT
     });
     const roleChucDanh = await RoleType.findOne({
         name: Terms.ROLE_TYPES.POSITION
     });
 
     const admin = await Role.create({
-        name: Terms.PREDEFINED_ROLES.ADMIN.NAME,
+        name: Terms.ROOT_ROLES.ADMIN.NAME,
         company: vnist._id,
         type: roleAbstract._id
     });
     const roles = await Role.insertMany([{
-        name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
+        name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
         company: vnist._id,
         type: roleAbstract._id,
         parents: [admin._id]
     },  {
-        name: Terms.PREDEFINED_ROLES.DEAN.NAME,
+        name: Terms.ROOT_ROLES.DEAN.NAME,
         company: vnist._id,
         type: roleAbstract._id
     }, {
-        name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME,
+        name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
         company: vnist._id,
         type: roleAbstract._id
     }, {
-        name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME,
+        name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
         company: vnist._id,
         type: roleAbstract._id
     }]);
@@ -286,22 +288,22 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log('Tạo Phòng ban cho công ty...');
-    const Directorate = await Department.create({// Khởi tạo ban giám đốc công ty
+    const Directorate = await OrganizationalUnit.create({// Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
         description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         company:  vnist._id,
         dean: giamDoc._id,
-        vice_dean: phoGiamDoc._id,
+        viceDean: phoGiamDoc._id,
         employee: thanhVienBGĐ._id,
         parent: null
     });
-    const departments = await Department.insertMany([
+    const departments = await OrganizationalUnit.insertMany([
         {
             name: "Phòng hành chính",
             description: "Phòng hành chính Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
             company:  vnist._id,
             dean: truongPhongHC._id,
-            vice_dean: phoPhongHC._id,
+            viceDean: phoPhongHC._id,
             employee: nvPhongHC._id,
             parent: Directorate._id
         },
@@ -991,142 +993,141 @@ const sampleCompanyData = async () => {
         employeeNumber: "MS2015122",
         status:"active",
         company:vnist._id,
-        MSCC: "123456",
+        employeeTimesheetId: "123456",
         gender: "male",
-        brithday: "17-04-1998",
+        birthdate: "17-04-1998",
         birthplace: "Hải Phương - Hải Hậu - Nam Định",
-        CMND: 163414569,
-        dateCMND: "20-10-2015",
-        addressCMND: "Nam Định",
-        emailCompany: "vtc.vnist@gmail.com",
-        numberTax: "12658974",
-        userTax: "Nguyễn Văn Hưng",
-        startTax: "12-08-2019",
-        unitTax: "Chi cục thuế Huyện Hải Hậu",
-        ATM: "102298653",
-        nameBank: "ViettinBank",
-        addressBank: "Hai Bà Trưng",
-        numberBHYT: "N1236589",
-        startDateBHYT: "09-02-2020",
-        endDateBHYT: "16-02-2020",
-        numberBHXH: "XH1569874",
-        BHXH: [{
+        identityCardNumber: 163414569,
+        identityCardDate: "20-10-2015",
+        identityCardAddress: "Nam Định",
+        emailInCompany: "vtc.vnist@gmail.com",
+        taxNumber: "12658974",
+        taxRepresentative: "Nguyễn Văn Hưng",
+        taxDateOfIssue: "12-08-2019",
+        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
+        atmNumber: "102298653",
+        bankName: "ViettinBank",
+        bankAddress: "Hai Bà Trưng",
+        healthInsuranceNumber: "N1236589",
+        healthInsuranceStartDate: "09-02-2020",
+        healthInsuranceEndDate: "16-02-2020",
+        socialInsuranceNumber: "XH1569874",
+        socialInsuranceDetails: [{
             unit: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
         }],
-        national: "Kinh",
+        ethnic: "Kinh",
         religion: "Không",
-        relationship: "single",
-        cultural: "12/12",
+        maritalStatus: "single",
+        educationalLevel: "12/12",
         foreignLanguage: "500 Toeic",
-        educational: "intermediate_degree",
-        experience: [{
+        experiences: [{
             unit: "Vnist",
             startDate: "06-2019",
             endDate: "02-2020",
             position: "Nhân viên"
         }],
-        certificate: [{
-            nameCertificate: "Bằng tốt nghiệp",
-            addressCertificate: "Đại học Bách Khoá",
-            yearCertificate: "2020",
-            typeCertificate: "good",
+        degrees: [{
+            name: "Bằng tốt nghiệp",
+            issuedBy: "Đại học Bách Khoa",
+            year: "2020",
+            degreeType: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        certificateShort: [{
-            "nameCertificateShort": "PHP",
-            "unit": "Hà Nội",
-            "startDate": "20-10-2019",
-            "endDate": "22-02-2020",
-            "file": "ViaVet Khoi San Xuat.xlsm",
-            "urlFile": "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
+        certificates: [{
+            name: "PHP",
+            issuedBy: "Hà Nội",
+            startDate: "20-10-2019",
+            endDate: "22-02-2020",
+            file: "ViaVet Khoi San Xuat.xlsm",
+            urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
-        contract: [{
-            nameContract: "Thực tập",
-            typeContract: "Phụ thuộc",
-            startDate : "28-01-2020",
-            endDate : "28-01-2020",
+        contracts: [{
+            name: "Thực tập",
+            contractType: "Phụ thuộc",
+            startDate: "28-01-2020",
+            endDate: "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courst: [],
-        nation: "Việt Nam",
-        numberFile: "T3 - 123698",
-        file: [],
+        courses: [],
+        nationality: "Việt Nam",
+        archivedRecordNumber: "T3 - 123698",
+        files: [],
     }, {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
         fullName: "Trần Văn B",
         employeeNumber: "MS2015124",
         status:"active",
         company:vnist._id,
-        MSCC: "123456",
+        employeeTimesheetId: "123456",
         gender: "male",
-        brithday: "17-04-1998",
+        birthdate: "17-04-1998",
         birthplace: "Hải Phương - Hải Hậu - Nam Định",
-        CMND: 163414569,
-        dateCMND: "20-10-2015",
-        addressCMND: "Nam Định",
-        emailCompany: "tvb.vnist@gmail.com",
-        numberTax: "12658974",
-        userTax: "Nguyễn Văn Hưng",
-        startTax: "12-08-2019",
-        unitTax: "Chi cục thuế Huyện Hải Hậu",
-        ATM: "102298653",
-        nameBank: "ViettinBank",
-        addressBank: "Hai Bà Trưng",
-        numberBHYT: "N1236589",
-        startDateBHYT: "09-02-2020",
-        endDateBHYT: "16-02-2020",
-        numberBHXH: "XH1569874",
-        BHXH: [{
+        identityCardNumber: 163414569,
+        identityCardDate: "20-10-2015",
+        identityCardAddress: "Nam Định",
+        emailInCompany: "tvb.vnist@gmail.com",
+        taxNumber: "12658974",
+        taxRepresentative: "Nguyễn Văn Hưng",
+        taxDateOfIssue: "12-08-2019",
+        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
+        atmNumber: "102298653",
+        bankName: "ViettinBank",
+        bankAddress: "Hai Bà Trưng",
+        healthInsuranceNumber: "N1236589",
+        healthInsuranceStartDate: "09-02-2020",
+        healthInsuranceEndDate: "16-02-2020",
+        socialInsuranceNumber: "XH1569874",
+        socialInsuranceDetails: [{
             unit: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
         }],
-        national: "Kinh",
+        ethnic: "Kinh",
         religion: "Không",
-        relationship: "single",
-        cultural: "12/12",
+        maritalStatus: "single",
+        educationalLevel: "12/12",
         foreignLanguage: "500 Toeic",
         educational: "intermediate_degree",
-        experience: [{
+        experiences: [{
             unit: "Vnist",
             startDate: "06-2019",
             endDate: "02-2020",
             position: "Nhân viên"
         }],
-        certificate: [{
-            nameCertificate: "Bằng tốt nghiệp",
-            addressCertificate: "Đại học Bách Khoá",
-            yearCertificate: "2020",
-            typeCertificate: "good",
+        degrees: [{
+            name: "Bằng tốt nghiệp",
+            issuedBy: "Đại học Bách Khoá",
+            year: "2020",
+            degreeType: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        certificateShort: [{
-            "nameCertificateShort": "PHP",
-            "unit": "Hà Nội",
-            "startDate": "20-10-2019",
-            "endDate": "22-02-2020",
-            "file": "ViaVet Khoi San Xuat.xlsm",
-            "urlFile": "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
+        certificates: [{
+            name: "PHP",
+            issuedBy: "Hà Nội",
+            startDate: "20-10-2019",
+            endDate: "22-02-2020",
+            file: "ViaVet Khoi San Xuat.xlsm",
+            urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
-        contract: [{
-            nameContract: "Thực tập",
-            typeContract: "Phụ thuộc",
+        contracts: [{
+            name: "Thực tập",
+            contractType: "Phụ thuộc",
             startDate : "28-01-2020",
             endDate : "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courst: [],
-        nation: "Việt Nam",
-        numberFile: "T3 - 123698",
-        file: [],
+        courses: [],
+        nationality: "Việt Nam",
+        archivedRecordNumber: "T3 - 123698",
+        files: [],
     }])
 
     await EmployeeContact.insertMany([{
@@ -1142,7 +1143,7 @@ const sampleCompanyData = async () => {
         friendEmail: "cuong@gmail.com",
         friendPhoneAddress: 962586789,
         friendAddress: "Hải Phương - Hải Hậu - Nam Định",
-        localAddress: "Hải Phương - Hải Hậu - Nam Định",
+        temporaryResidence: "Hải Phương - Hải Hậu - Nam Định",
         localNational: "Việt Nam",
         localCity: "Nam Định",
         localDistrict: "Hải Hậu",
@@ -1165,7 +1166,7 @@ const sampleCompanyData = async () => {
         friendEmail: "cuong@gmail.com",
         friendPhoneAddress: 962586789,
         friendAddress: "Hải Phương - Hải Hậu - Nam Định",
-        localAddress: "Hải Phương - Hải Hậu - Nam Định",
+        temporaryResidence: "Hải Phương - Hải Hậu - Nam Định",
         localNational: "Việt Nam",
         localCity: "Nam Định",
         localDistrict: "Hải Hậu",
@@ -1183,73 +1184,73 @@ const sampleCompanyData = async () => {
         employeeNumber: "MS2015123",
         status:"active",
         company:vnist._id,
-        MSCC: "123456",
+        employeeTimesheetId: "123456",
         gender: "male",
-        brithday: "17-04-1998",
+        birthdate: "17-04-1998",
         birthplace: "Hải Phương - Hải Hậu - Nam Định",
-        CMND: 163414569,
-        dateCMND: "20-10-2015",
-        addressCMND: "Nam Định",
-        emailCompany: "nva.vnist@gmail.com",
-        numberTax: "12658974",
-        userTax: "Nguyễn Văn Hưng",
-        startTax: "12-08-2019",
-        unitTax: "Chi cục thuế Huyện Hải Hậu",
-        ATM: "102298653",
-        nameBank: "ViettinBank",
-        addressBank: "Hai Bà Trưng",
-        numberBHYT: "N1236589",
-        startDateBHYT: "09-02-2020",
-        endDateBHYT: "16-02-2020",
-        numberBHXH: "XH1569874",
-        BHXH: [{
+        identityCardNumber: 163414569,
+        identityCardDate: "20-10-2015",
+        identityCardAddress: "Nam Định",
+        emailInCompany: "nva.vnist@gmail.com",
+        taxNumber: "12658974",
+        taxRepresentative: "Nguyễn Văn Hưng",
+        taxDateOfIssue: "12-08-2019",
+        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
+        atmNumber: "102298653",
+        bankName: "ViettinBank",
+        bankAddress: "Hai Bà Trưng",
+        healthInsuranceNumber: "N1236589",
+        healthInsuranceStartDate: "09-02-2020",
+        healthInsuranceEndDate: "16-02-2020",
+        socialInsuranceNumber: "XH1569874",
+        socialInsuranceDetails: [{
             unit: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
         }],
-        national: "Kinh",
+        ethnic: "Kinh",
         religion: "Không",
-        relationship: "single",
-        cultural: "12/12",
+        maritalStatus: "single",
+        educationalLevel: "12/12",
         foreignLanguage: "500 Toeic",
         educational: "intermediate_degree",
-        experience: [{
+        experiences: [{
             unit: "Vnist",
             startDate: "06-2019",
             endDate: "02-2020",
             position: "Nhân viên"
         }],
-        certificate: [{
-            nameCertificate: "Bằng tốt nghiệp",
-            addressCertificate: "Đại học Bách Khoá",
-            yearCertificate: "2020",
-            typeCertificate: "good",
+        degrees: [{
+            name: "Bằng tốt nghiệp",
+            issuedBy: "Đại học Bách Khoá",
+            year: "2020",
+            degreeType: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        certificateShort: [{
-            "nameCertificateShort": "PHP",
-            "unit": "Hà Nội",
-            "startDate": "20-10-2019",
-            "endDate": "22-02-2020",
-            "file": "ViaVet Khoi San Xuat.xlsm",
-            "urlFile": "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
+        certificates: [{
+            name: "PHP",
+            issuedBy: "Hà Nội",
+            startDate: "20-10-2019",
+            endDate: "22-02-2020",
+            file: "ViaVet Khoi San Xuat.xlsm",
+            urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
-        contract: [{
-            nameContract: "Thực tập",
-            typeContract: "Phụ thuộc",
+        contracts: [{
+            name: "Thực tập",
+            contractType: "Phụ thuộc",
             startDate : "28-01-2019",
             endDate : "28-02-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
-        courst: [],
-        nation: "Việt Nam",
-        numberFile: "T3 - 123698",
-        file: [{
-            nameFile : "Ảnh",
-            discFile : "Ảnh 3x4",
+        courses: [],
+        nationality: "Việt Nam",
+        archivedRecordNumber: "T3 - 123698",
+        files: [{
+            name: "Ảnh",
+            description : "Ảnh 3x4",
             number : "1",
             status : "submitted",
             file : "3.5.1.PNG",
@@ -1270,7 +1271,7 @@ const sampleCompanyData = async () => {
         friendEmail: "cuong@gmail.com",
         friendPhoneAddress: 962586789,
         friendAddress: "Hải Phương - Hải Hậu - Nam Định",
-        localAddress: "Hải Phương - Hải Hậu - Nam Định",
+        temporaryResidence: "Hải Phương - Hải Hậu - Nam Định",
         localNational: "Việt Nam",
         localCity: "Nam Định",
         localDistrict: "Hải Hậu",
@@ -1290,7 +1291,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
-    var sabbatical = await Sabbatical.insertMany([{
+    var sabbatical = await AnnualLeave.insertMany([{
         employee: employee._id,
         company:vnist._id,
         startDate: "04-02-2020",
@@ -1340,7 +1341,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
-    var praise = await Praise.insertMany([{
+    var praise = await Commendation.insertMany([{
         employee: employee._id,
         company:vnist._id,
         number: "123",
@@ -1401,8 +1402,8 @@ const sampleCompanyData = async () => {
         positionEducation: [
             nvPhongHC._id
         ],
-        nameEducation: "An toan lao dong",
-        numberEducation: "M123",
+        name: "An toan lao dong",
+        programId: "M123",
     }, {
         company:vnist._id,
         unitEducation: [
@@ -1411,8 +1412,8 @@ const sampleCompanyData = async () => {
         positionEducation: [
             nvPhongHC._id
         ],
-        nameEducation: "kỹ năng giao tiếp",
-        numberEducation: "M1234",
+        name: "kỹ năng giao tiếp",
+        programId: "M1234",
     }])
     console.log(`Xong! Thông tin chương trình đào tạo  đã được tạo`);
 
@@ -1425,28 +1426,28 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
     var course= await Course.insertMany([{
         company:vnist._id,
-        nameCourse : "An toàn lao động 1",
-        numberCourse : "LD1233",
+        name: "An toàn lao động 1",
+        courseId : "LD1233",
         unitCourse : "Vnists",
         address : "P9.01",
         startDate : "03-03-2020",
         endDate : "21-03-2020",
         costsCourse : "1200000",
         teacherCourse : "Nguyễn B",
-        typeCourse : "Đào tạo ngoài",
+        type: "Đào tạo ngoài",
         educationProgram : educationProgram[0]._id,
         time : "6",
     }, {
         company:vnist._id,
-        nameCourse : "An toàn lao động 2",
-        numberCourse : "LD123",
+        name: "An toàn lao động 2",
+        courseId : "LD123",
         unitCourse : "Vnists",
         address : "P9.01",
         startDate : "03-03-2020",
         endDate : "21-03-2020",
         costsCourse : "1200000",
         teacherCourse : "Nguyễn Văn B",
-        typeCourse : "Đào tạo ngoài",
+        type: "Đào tạo ngoài",
         educationProgram : educationProgram[0]._id,
         time : "6",
     }])

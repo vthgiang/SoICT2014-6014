@@ -1,4 +1,4 @@
-const Role = require('../models/role.model');
+const Role = require('../models/auth/role.model');
 
 /**
  * Kiểm tra vai trò hiện tại của user có được phép sử dụng service hay không?

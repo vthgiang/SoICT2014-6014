@@ -1,10 +1,10 @@
 exports.ROLE_TYPES= {
-    ABSTRACT: "Abstract",
+    ROOT: "Root",
     POSITION: "Position",
     COMPANY_DEFINED: "Company-Defined"
 }
 
-exports.PREDEFINED_ROLES = {
+exports.ROOT_ROLES = {
     SYSTEM_ADMIN: {NAME: "System Admin", DESCRIPTION: "Quản lý các doanh nghiệp/công ty sử dụng dịch vụ"},
     SUPER_ADMIN: {NAME: "Super Admin", DESCRIPTION: "Super Admin của một doanh nghiệp/công ty. Chỉ có một Super Admin duy nhất, không thể xóa"},
     ADMIN: {NAME: "Admin", DESCRIPTION: "Admin của một doanh nghiệp/công ty. Có thể có nhiều Admin"},

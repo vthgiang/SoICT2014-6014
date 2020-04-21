@@ -1,12 +1,7 @@
-const Log = require('../models/log.model');
-const RoleType = require('../models/role_type.model');
-const Role = require('../models/role.model');
-const RoleDefault = require('../models/roleDefault.model');
-const LinkDefault = require('../models/linkDefault.model');
-const Link = require('../models/link.model');
-const Privilege = require('../models/privilege.model');
-const User = require('../models/user.model');
-const UserRole = require('../models/user_role.model');
+const Log = require('../models/system-admin/log.model');
+
+const { RoleType, Role, RootRole, SystemLink, Link, Privilege, User, UserRole} = require('../models').schema;
+
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -35,7 +30,7 @@ const seedDatabase = async () => {
 
     // Tạo các roletype trong hệ thống
     await RoleType.insertMany([
-        { name: Terms.ROLE_TYPES.ABSTRACT }, 
+        { name: Terms.ROLE_TYPES.ROOT }, 
         { name: Terms.ROLE_TYPES.POSITION },
         { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
@@ -50,9 +45,9 @@ const seedDatabase = async () => {
     });
 
     // Tạo role System Admin 
-    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ABSTRACT});
+    var roleAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT});
     var roleSystemAdmin = await Role.create({
-        name: Terms.PREDEFINED_ROLES.SYSTEM_ADMIN.NAME,
+        name: Terms.ROOT_ROLES.SYSTEM_ADMIN.NAME,
         type: roleAbstract._id
     });
 
@@ -82,27 +77,27 @@ const seedDatabase = async () => {
     ]);
 
     // Tạo các role abstract mặc định để khởi tạo cho từng công ty
-    var roleAbstracts = await RoleDefault.insertMany([
+    var roleAbstracts = await RootRole.insertMany([
         {
-            name: Terms.PREDEFINED_ROLES.SUPER_ADMIN.NAME,
-            description: Terms.PREDEFINED_ROLES.SUPER_ADMIN.DESCRIPTION
+            name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
+            description: Terms.ROOT_ROLES.SUPER_ADMIN.DESCRIPTION
         },{
-            name: Terms.PREDEFINED_ROLES.ADMIN.NAME,
-            description: Terms.PREDEFINED_ROLES.ADMIN.DESCRIPTION
+            name: Terms.ROOT_ROLES.ADMIN.NAME,
+            description: Terms.ROOT_ROLES.ADMIN.DESCRIPTION
         },{
-            name: Terms.PREDEFINED_ROLES.DEAN.NAME,
-            description: Terms.PREDEFINED_ROLES.DEAN.DESCRIPTION
+            name: Terms.ROOT_ROLES.DEAN.NAME,
+            description: Terms.ROOT_ROLES.DEAN.DESCRIPTION
         },{
-            name: Terms.PREDEFINED_ROLES.VICE_DEAN.NAME,
-            description: Terms.PREDEFINED_ROLES.VICE_DEAN.DESCRIPTION
+            name: Terms.ROOT_ROLES.VICE_DEAN.NAME,
+            description: Terms.ROOT_ROLES.VICE_DEAN.DESCRIPTION
         },{
-            name: Terms.PREDEFINED_ROLES.EMPLOYEE.NAME,
-            description: Terms.PREDEFINED_ROLES.EMPLOYEE.DESCRIPTION
+            name: Terms.ROOT_ROLES.EMPLOYEE.NAME,
+            description: Terms.ROOT_ROLES.EMPLOYEE.DESCRIPTION
         }
     ])
     // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
     // index: 0-super admin, 1-admin, 2-dean, 3-vice dean, 4-employee
-    const linkDefaults = await LinkDefault.insertMany([
+    const linkDefaults = await SystemLink.insertMany([
 
         // Common
         {
@@ -138,8 +133,7 @@ const seedDatabase = async () => {
             description: 'Quản lý trang',
             category: Terms.CATEGORY_LINKS[1].name,
             roles: [ roleAbstracts[0]._id, roleAbstracts[1]._id ]
-        }
-        ,{
+        },{
             url: '/components-management',
             description: 'Quản lý thành phần UI',
             category: Terms.CATEGORY_LINKS[1].name,
@@ -258,7 +252,7 @@ const seedDatabase = async () => {
         // TASK
         {
             url:'/task-management',
-            description:'Xem danh sáng công việc',
+            description:'Xem danh sách công việc',
             category: Terms.CATEGORY_LINKS[3].name,
             roles: [roleAbstracts[2]._id, roleAbstracts[3]._id, roleAbstracts[4]._id]
         },{
@@ -291,8 +285,7 @@ const seedDatabase = async () => {
             resourceId: links[0]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
-        },
-        {
+        },{
             resourceId: links[1]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id

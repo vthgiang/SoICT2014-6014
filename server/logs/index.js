@@ -1,6 +1,6 @@
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, printf } = format;
-const Company = require('../models/company.model');
+const Company = require('../models/system-admin/company.model');
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
     return `${timestamp} |${label}| ${level} ${message}`;

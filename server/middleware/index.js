@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user.model');
-const Role = require('../models/role.model');
-const UserRole = require('../models/user_role.model');
-const Privilege = require('../models/privilege.model');
-const Link = require('../models/link.model');
-const Company = require('../models/company.model');
+const User = require('../models/auth/user.model');
+const Role = require('../models/auth/role.model');
+const UserRole = require('../models/auth/userRole.model');
+const Privilege = require('../models/auth/privilege.model');
+const Link = require('../models/super-admin/link.model');
+const Company = require('../models/system-admin/company.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 const {data, checkServicePermission} = require('./servicesPermission');
 const multer = require('multer');

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { RoleActions } from '../../super-admin-management/roles-management/redux/actions';
-import { LinkActions } from '../../super-admin-management/links-management/redux/actions';
+import { RoleActions } from '../../super-admin/role/redux/actions';
+import { LinkActions } from '../../super-admin/link/redux/actions';
 
 class Home extends Component {
     constructor(props) {

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const {loginValidation} = require('./auth.validation');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
-const { Privilege, Role, User, UserRole } = require('../../models/_export').data;
+const { Privilege, Role, User, UserRole } = require('../../models').schema;
 
 exports.login = async (fingerprint, data) => { // data bao gom email va password
 
@@ -47,7 +47,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         );
         
         user.status = 0; 
-        user.token.push(token);
+        user.tokens.push(token);
         user.save();
 
         return { 
@@ -72,7 +72,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         );
 
         user.status = 0; 
-        user.token.push(token);
+        user.tokens.push(token);
         user.save();
 
         return { 
@@ -89,8 +89,8 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
 
 exports.logout = async (id, token) => {
     var user = await User.findById(id);
-    var position = await user.token.indexOf(token);
-    user.token.splice(position, 1);
+    var position = await user.tokens.indexOf(token);
+    user.tokens.splice(position, 1);
     user.save();
 
     return user;
@@ -98,14 +98,14 @@ exports.logout = async (id, token) => {
 
 exports.logoutAllAccount = async (id) => {
     var user = await User.findById(id);
-    user.token = [];
+    user.tokens = [];
     user.save();
     
     return user;
 }
 
 //Quên mật khẩu tài khoản người dùng --------------------------------------//
-exports.forgotPassword = async (email) => {
+exports.forgetPassword = async (email) => {
     var user = await User.findOne({ email });
     if(user === null) throw("email_not_found");
     var code = await generator.generate({ length: 6, numbers: true });
@@ -196,7 +196,7 @@ exports.changePassword = async (id, password, new_password) => {
     return user;
 }
 
-exports.getLinksOfRole = async (idRole) => {
+exports.getLinksThatRoleCanAccess = async (idRole) => {
     
     const role = await Role.findById(idRole); //lay duoc role hien tai
     var roles = [role._id];
@@ -210,7 +210,7 @@ exports.getLinksOfRole = async (idRole) => {
     return links;
 }
 
-exports.show = async (id) => {
+exports.getProfile = async (id) => {
     var user = await User
         .findById(id)
         .select('-password -status -delete_soft -token')
