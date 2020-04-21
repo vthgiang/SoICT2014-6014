@@ -8,7 +8,7 @@ import { SalaryActions } from '../../../salary/redux/actions';
 import { SabbaticalActions } from '../../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../../commendation-discipline/redux/actions';
 import { toast } from 'react-toastify';
-import '../../../../../common-components/src/modal/node_modules/react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 import {
     TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
     TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent

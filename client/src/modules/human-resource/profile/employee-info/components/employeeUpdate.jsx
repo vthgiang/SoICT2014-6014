@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeInfoActions } from '../redux/actions';
 import { EmployeeManagerActions } from '../../employee-management/redux/actions'
 import { toast } from 'react-toastify';
-import '../../../../../common-components/src/modal/node_modules/react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 class UpdateEmployee extends Component {
     constructor(props) {
         super(props);
