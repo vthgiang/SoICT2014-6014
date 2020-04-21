@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Header from './header/components/header';
-import Sidebar from './sidebar/components/sidebar';
+import Sidebar from './sidebar/components/sidebar+';
 import Footer from './footer/components/footer';
 import Content from './content/components/content';
 import { connect } from 'react-redux';
