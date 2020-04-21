@@ -9,7 +9,7 @@ import Layout from '../layout/layout';
 
 import {NotFound} from '../modules/not-found/components';
 
-import Login from '../modules/auth/components/login';
+import Login from '../modules/auth/components/Login1';
 import ResetPassword from '../modules/auth/components/resetPassword';
 
 import ManageFormDocument from '../modules/document/components';
