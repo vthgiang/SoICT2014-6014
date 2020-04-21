@@ -1,6 +1,6 @@
-import React, { Component } from './node_modules/react';
-import { connect } from './node_modules/react-redux';
-import { withTranslate } from './node_modules/react-redux-multilingual';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 class ButtonModal extends Component {
     constructor(props) {

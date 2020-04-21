@@ -1,11 +1,11 @@
-import React, { Component } from './node_modules/react';
-import { connect } from './node_modules/react-redux';
-import { withTranslate } from './node_modules/react-redux-multilingual';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import './modal.css';
-import { toast } from './node_modules/react-toastify';
-import './node_modules/react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import {Loading} from '../loading/loading';
+import {Loading} from '../loading1/loading';
 
 class DialogModal extends Component {
     constructor(props) {
