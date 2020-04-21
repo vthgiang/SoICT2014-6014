@@ -1,11 +1,11 @@
 import {
     TOKEN_SECRET, LOCAL_SERVER_API
-} from '../../../../env';
+} from '../../../../../env';
 import {
     getStorage, AuthenticateHeader
-} from '../../../../config';
+} from '../../../../../config';
 import jwt from 'jsonwebtoken';
-import {handleResponse} from '../../../../helpers/handleResponse';
+import {handleResponse} from '../../../../../helpers/handleResponse';
 export const managerKPIPerService = {
     getAllKPIPersonalByMember,
     getAllKPIPersonalOfTask,

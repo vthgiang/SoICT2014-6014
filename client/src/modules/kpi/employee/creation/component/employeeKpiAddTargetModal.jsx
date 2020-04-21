@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createUnitKpiActions } from '../../../kpi-unit/kpi-unit-create/redux/actions';
+import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { createKpiActions } from "../redux/actions";
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { UserFormValidator} from '../../../super-admin-management/users-management/components/UserFormValidator';
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { UserFormValidator} from '../../../../super-admin/user/components/UserFormValidator';
 
 var translate = '';
 class ModalAddTargetKPIPersonal extends Component {

@@ -5,10 +5,10 @@ import { managerKpiActions } from '../redux/actions';
 
 import {
     TOKEN_SECRET
-} from '../../../../env';
+} from '../../../../../env';
 import {
     getStorage
-} from '../../../../config';
+} from '../../../../../config';
 import jwt from 'jsonwebtoken';
 
 class ModalCopyKPIPersonal extends Component {

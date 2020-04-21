@@ -1,6 +1,6 @@
 import {
     VALIDATOR
-} from '../../../../helpers/validator';
+} from '../../../../../helpers/validator';
 export const EmployeeCreateValidator = {
     validateEmployeeNumber,
     validateBrithday,

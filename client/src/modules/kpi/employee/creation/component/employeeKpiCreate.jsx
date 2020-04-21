@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { UserActions } from "../../../super-admin-management/users-management/redux/actions";
-import { DepartmentActions } from '../../../super-admin-management/departments-management/redux/actions';
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { createKpiActions } from '../redux/actions';
-import { createUnitKpiActions } from '../../../kpi-unit/kpi-unit-create/redux/actions';
+import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 
 import { ModalAddTargetKPIPersonal } from './employeeKpiAddTargetModal';
 import { ModalStartKPIPersonal } from './employeeKpiCreateModal';
 import { ModalEditTargetKPIPersonal } from './employeeKpiEditTargetModal';
 import Swal from 'sweetalert2';
 
-import { SlimScroll } from '../../../../common-components/index.js';
+import { SlimScroll } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ToastContainer, toast } from 'react-toastify';

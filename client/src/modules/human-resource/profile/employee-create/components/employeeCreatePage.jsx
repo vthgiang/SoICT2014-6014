@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
-import { SalaryActions } from '../../salary-employee/redux/actions';
-import { SabbaticalActions } from '../../annual-leave/redux/actions';
-import { DisciplineActions } from '../../praise-discipline/redux/actions';
+import { SalaryActions } from '../../../salary/redux/actions';
+import { SabbaticalActions } from '../../../annual-leave/redux/actions';
+import { DisciplineActions } from '../../../commendation-discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {

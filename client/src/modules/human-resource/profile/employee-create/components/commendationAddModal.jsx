@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { PraiseFromValidator } from '../../praise-discipline/components/CombineContent';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { PraiseFromValidator } from '../../../commendation-discipline/components/combinedContent';
 class ModalAddPraise extends Component {
     constructor(props) {
         super(props);

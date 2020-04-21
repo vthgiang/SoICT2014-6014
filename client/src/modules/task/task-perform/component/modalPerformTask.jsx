@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
-import { managerKpiActions } from "../../../kpi/kpi-personal/kpi-personal-manager/redux/actions";
+import { managerKpiActions } from "../../../kpi/employee/management/redux/actions";
 // import { taskManagementActions, performTaskAction, UserActions, kpiPersonalActions } from '../../../redux-actions/CombineActions';
 import ModalApproveTask from "./modalApproveTask";
 import { ButtonModal } from '../../../../common-components';

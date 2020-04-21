@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
 class ModalAddCertificate extends Component {
     constructor(props) {

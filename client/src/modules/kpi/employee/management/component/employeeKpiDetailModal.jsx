@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { managerServices } from '../../../kpi-unit/kpi-unit-manager/redux/services';
+import { managerServices } from '../../../organizational-unit/management/redux/services';
 
 class ModalDetailKPIPersonal extends Component {
     // componentDidMount() {

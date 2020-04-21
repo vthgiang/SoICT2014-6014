@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../common-components';
-import { SabbaticalFormValidator } from '../../annual-leave/components/combinedContent';
+import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../../common-components';
+import { SabbaticalFormValidator } from '../../../annual-leave/components/combinedContent';
 class ModalEditSabbatical extends Component {
     constructor(props) {
         super(props);

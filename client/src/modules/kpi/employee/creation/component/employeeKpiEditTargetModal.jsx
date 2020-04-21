@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createUnitKpiActions } from '../../../kpi-unit/kpi-unit-create/redux/actions';
+import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { createKpiActions } from "../redux/actions";
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';

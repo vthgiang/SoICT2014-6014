@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../common-components';
-import { SalaryFormValidator } from '../../salary-employee/components/CombineContent';
+import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../../common-components';
+import { SalaryFormValidator } from '../../../salary/components/combinedContent';
 class ModalAddSalary extends Component {
     constructor(props) {
         super(props);

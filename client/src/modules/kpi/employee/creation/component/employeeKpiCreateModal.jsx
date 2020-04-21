@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { UserActions } from "../../../super-admin-management/users-management/redux/actions"
+import { UserActions } from "../../../../super-admin/user/redux/actions"
 import { createKpiActions  } from '../redux/actions';
-import { DatePicker } from '../../../../../src/common-components';
-import { DialogModal } from '../../../../common-components';
+import { DatePicker, DialogModal } from '../../../../../../src/common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
