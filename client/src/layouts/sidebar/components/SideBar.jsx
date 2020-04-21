@@ -44,19 +44,20 @@ class SideBar extends Component {
         };
         const url1 = {
             path1: "/manage-type-asset", //Quản lý loại tài sản
-            path2: "/manage-info-asset", //Quản lý thông tin tài sản
-            path3: "/manage-history-asset", //Quản lý lịch sử hoạt động
-            path4: "/manage-repair-asset", //Quản lý sửa chữa, thay thế
-            path5: "/manage-maintain-asset", //Quản lý bảo trì, bảo dưỡng
-            path6: "/manage-distribute-asset", //Quản lý cấp phát, điều chuyển
-            path7: "/manage-depreciation-asset", //Quản lý khấu hao tài sản
-            path8: "/manage-room-asset", //Quản lý phòng & trang thiết bị
-            path9: "/manage-recommend-procure", //Quản lý đề nghị mua sắm
-            path10: "/manage-recommend-distribute-asset", //Quản lý đề nghị cấp phát
+            path2: "/add-asset", //Quản lý loại tài sản
+            path3: "/manage-info-asset", //Quản lý thông tin tài sản
+            path4: "/manage-history-asset", //Quản lý lịch sử hoạt động
+            path5: "/manage-repair-asset", //Quản lý sửa chữa, thay thế
+            path6: "/manage-maintain-asset", //Quản lý bảo trì, bảo dưỡng
+            path7: "/manage-distribute-asset", //Quản lý cấp phát, điều chuyển
+            path8: "/manage-depreciation-asset", //Quản lý khấu hao tài sản
+            path9: "/manage-room-asset", //Quản lý phòng & trang thiết bị
+            path10: "/manage-recommend-procure", //Quản lý đề nghị mua sắm
+            path11: "/manage-recommend-distribute-asset", //Quản lý đề nghị cấp phát
             
-            path11: "/recommend-equipment-procurement", //Đăng ký mua sắm thiết bị
-            path12: "/recommmend-distribute-asset", //Đăng ký cấp phát thiết bị
-            path13: "/manage-assigned-asset", //Quản lý thiết bị bàn giao
+            path12: "/recommend-equipment-procurement", //Đăng ký mua sắm thiết bị
+            path13: "/recommmend-distribute-asset", //Đăng ký cấp phát thiết bị
+            path14: "/manage-assigned-asset", //Quản lý thiết bị bàn giao
         };
         const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
@@ -207,7 +208,7 @@ class SideBar extends Component {
                                     this.checkURL(url1.path4, links) === true || this.checkURL(url1.path5, links) === true || this.checkURL(url1.path6, links) === true ||
                                     this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true || this.checkURL(url1.path9, links) === true || 
                                     this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true || this.checkURL(url1.path12, links) === true ||
-                                    this.checkURL(url1.path13, links) === true )   &&
+                                    this.checkURL(url1.path13, links) === true || this.checkURL(url1.path14, links) === true )  &&
                                 <li className="treeview" >
                                     <a href="">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_asset`)}</span>
@@ -226,18 +227,28 @@ class SideBar extends Component {
                                             </li>
                                         }
 
-                                        {/**Quản lý thông tin tài sản */}
+                                        {/**Thêm tài sản */}
                                         {this.checkURL(url1.path2, links) === true &&
                                             <li className={window.location.pathname === url1.path2 ? "active" : ""}>
                                                 <Link to={url1.path2}>
+                                                    <i className="fa fa-dashboard" />
+                                                    {translate(`menu.add_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/**Quản lý thông tin tài sản */}
+                                        {this.checkURL(url1.path3, links) === true &&
+                                            <li className={window.location.pathname === url1.path3 ? "active" : ""}>
+                                                <Link to={url1.path3}>
                                                     <i className="fa fa-sitemap" />
                                                     {translate(`menu.manage_info_asset`)}
                                                 </Link>
                                             </li>
                                         }
-                                        {this.checkURL(url1.path3, links) === true &&
-                                            <li className={window.location.pathname === url1.path3 ? "active" : ""}>
-                                                <Link to={url1.path3}>
+                                        {this.checkURL(url1.path4, links) === true &&
+                                            <li className={window.location.pathname === url1.path4 ? "active" : ""}>
+                                                <Link to={url1.path4}>
                                                     <i className="fa fa-user-plus" />
                                                     {translate(`menu.manage_history_asset`)}
                                                 </Link>
@@ -245,89 +256,89 @@ class SideBar extends Component {
                                         }
 
                                         {/** quản lý sửa chữa- thay thế - nâng cấp */}
-                                        {this.checkURL(url1.path4, links) === true &&
-                                            <li className={window.location.pathname === url1.path4 ? "active" : ""}>
-                                                <Link to={url1.path4}>
+                                        {this.checkURL(url1.path5, links) === true &&
+                                            <li className={window.location.pathname === url1.path5 ? "active" : ""}>
+                                                <Link to={url1.path5}>
                                                     <i className="fa fa-address-card" />
                                                     {translate(`menu.manage_repair_asset`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** quản lý bảo trì tài sản */}
-                                        {this.checkURL(url1.path5, links) === true &&
-                                            <li className={window.location.pathname === url1.path5 ? "active" : ""}>
-                                                <Link to={url1.path5}>
+                                        {this.checkURL(url1.path6, links) === true &&
+                                            <li className={window.location.pathname === url1.path6 ? "active" : ""}>
+                                                <Link to={url1.path6}>
                                                     <i className="fa fa-line-chart" />
                                                     {translate(`menu.manage_maintain_asset`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** quản lý cấp phát - điều chuyển - thu hồi tài sản */}
-                                        {this.checkURL(url1.path6, links) === true &&
-                                            <li className={window.location.pathname === url1.path6 ? "active" : ""}>
-                                                <Link to={url1.path6}>
+                                        {this.checkURL(url1.path7, links) === true &&
+                                            <li className={window.location.pathname === url1.path7 ? "active" : ""}>
+                                                <Link to={url1.path7}>
                                                     <i className="fa fa-calculator" />
                                                     {translate(`menu.manage_distribute_asset`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** quản lý khấu hao tài sản */}
-                                        {this.checkURL(url1.path7, links) === true &&
-                                            <li className={window.location.pathname === url1.path7 ? "active" : ""}>
-                                                <Link to={url1.path7}>
+                                        {this.checkURL(url1.path8, links) === true &&
+                                            <li className={window.location.pathname === url1.path8 ? "active" : ""}>
+                                                <Link to={url1.path8}>
                                                     <i className="fa fa-balance-scale" />
                                                     {translate(`menu.manage_depreciation_asset`)}
                                                 </Link>
                                             </li>
                                         }
-                                        {this.checkURL(url1.path8, links) === true &&
-                                            <li className={window.location.pathname === url1.path8 ? "active" : ""}>
-                                                <Link to={url1.path8}>
+                                        {this.checkURL(url1.path9, links) === true &&
+                                            <li className={window.location.pathname === url1.path9 ? "active" : ""}>
+                                                <Link to={url1.path9}>
                                                     <i className="fa fa-calendar-times-o" />
                                                     {translate(`menu.manage_room_asset`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** quản lý đề nghị mua sắm thiết bị */}
-                                        {this.checkURL(url1.path9, links) === true &&
-                                            <li className={window.location.pathname === url1.path9 ? "active" : ""}>
-                                                <Link to={url1.path9}>
+                                        {this.checkURL(url1.path10, links) === true &&
+                                            <li className={window.location.pathname === url1.path10 ? "active" : ""}>
+                                                <Link to={url1.path10}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.manage_recommend_procure`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** quản lý đề nghị cấp phát thiết bị */}
-                                        {this.checkURL(url1.path10, links) === true &&
-                                            <li className={window.location.pathname === url1.path10 ? "active" : ""}>
-                                                <Link to={url1.path10}>
+                                        {this.checkURL(url1.path11, links) === true &&
+                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
+                                                <Link to={url1.path11}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.manage_recommend_distribute_asset`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** đề nghị mua sắm thiết bị */}
-                                        {this.checkURL(url1.path11, links) === true &&
-                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
-                                                <Link to={url1.path11}>
+                                        {this.checkURL(url1.path12, links) === true &&
+                                            <li className={window.location.pathname === url1.path12 ? "active" : ""}>
+                                                <Link to={url1.path12}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.recommend_equipment_procurement`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** đề nghị cấp phát thiết bị */}
-                                        {this.checkURL(url1.path12, links) === true &&
-                                            <li className={window.location.pathname === url1.path12 ? "active" : ""}>
-                                                <Link to={url1.path12}>
+                                        {this.checkURL(url1.path13, links) === true &&
+                                            <li className={window.location.pathname === url1.path13 ? "active" : ""}>
+                                                <Link to={url1.path13}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.recommend_distribute_asset`)}
                                                 </Link>
                                             </li>
                                         }
                                         {/** quản lý tài sản được bàn giao */}
-                                        {this.checkURL(url1.path13, links) === true &&
-                                            <li className={window.location.pathname === url1.path13 ? "active" : ""}>
-                                                <Link to={url1.path13}>
+                                        {this.checkURL(url1.path14, links) === true &&
+                                            <li className={window.location.pathname === url1.path14 ? "active" : ""}>
+                                                <Link to={url1.path14}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.manage_assigned_asset`)}
                                                 </Link>

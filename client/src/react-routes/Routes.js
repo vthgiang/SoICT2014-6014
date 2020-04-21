@@ -53,6 +53,7 @@ import ManagerAssetType from "../modules/assets-manager/asset-type/components";
 import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerAsset from "../modules/assets-manager/asset-manager/components";
+import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
 
 class Routes extends Component {
 
@@ -680,6 +681,22 @@ class Routes extends Component {
                         pageName={ 'manage_type_asset' }
                         layout={ Layout }
                         component={ ManagerAssetType }
+                    /> 
+
+                    <PrivateRoute 
+                        // isLoading={ this.props.assetType.isLoading }
+                        key={ 'add-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/add-asset', name: 'add_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/add-asset' }
+                        path={ '/add-asset' }
+                        pageName={ 'add_asset' }
+                        layout={ Layout }
+                        component={ AssetCreatePage }
                     /> 
 
                     <PrivateRoute 

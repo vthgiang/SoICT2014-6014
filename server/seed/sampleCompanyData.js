@@ -20,11 +20,11 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 //tài sản
-const Asset = require('../models/asset.model'); //tài sản
-const AssetType = require('../models/assetType.model'); //loại tài sản
-const RecommendProcure = require('../models/recommendProcure.model'); //đề nghị mua sắm thiết bị
-const RepairUpgrade = require('../models/repairUpgrade.model'); //Sửa chữa - thay thế - nâng cấp
-const DistributeTransfer = require('../models/distributeTransfer.model'); // cấp phát - điều chuyển - thu hồi
+const Asset = require('../models/asset/asset.model'); //tài sản
+const AssetType = require('../models/asset/assetType.model'); //loại tài sản
+const RecommendProcure = require('../models/asset/recommendProcure.model'); //đề nghị mua sắm thiết bị
+const RepairUpgrade = require('../models/asset/repairUpgrade.model'); //Sửa chữa - thay thế - nâng cấp
+const DistributeTransfer = require('../models/asset/distributeTransfer.model'); // cấp phát - điều chuyển - thu hồi
 
 require('dotenv').config({
     path: '../.env'
@@ -468,78 +468,6 @@ const sampleCompanyData = async () => {
             description: 'Dashboard công việc',
             company: vnist._id
         },
-<<<<<<< HEAD
-
-        // thêm link quản lý tài sản
-        // QUẢN LÝ
-        { //31. quản lý loại tài sản
-            url: '/manage-type-asset',
-            description: 'Quản lý loại tài sản',
-            company: vnist._id
-        },
-        { //32. quản lý thông tin tài sản
-            url: '/manage-info-asset',
-            description: 'Quản lý thông tin tài sản',
-            company: vnist._id
-        },
-        { //33
-            url: '/manage-history-asset',
-            description: 'Quản lý lịch sử hoạt động sử dụng tài sản',
-            company: vnist._id
-        },
-        { //34
-            url: '/manage-repair-asset',
-            description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
-            company: vnist._id
-        },
-        { //35
-            url: '/manage-maintain-asset',
-            description: 'Quản lý bảo trì tài sản',
-            company: vnist._id
-        },
-        { //36
-            url: '/manage-distribute-asset',
-            description: 'Quản lý cấp phát, điều chuyển, thu hồi tài sản',
-            company: vnist._id
-        },
-        { //37
-            url: '/manage-depreciation-asset',
-            description: 'Quản lý khấu hao tài sản',
-            company: vnist._id
-        },
-        { //38
-            url: '/manage-room-asset',
-            description: 'Quản lý phòng và trang thiết bị tài sản',
-            company: vnist._id
-        },
-        { //39
-            url: '/manage-recommend-procure',
-            description: 'Quản lý đề nghị mua sắm tài sản',
-            company: vnist._id
-        },
-        { //40
-            url: '/manage-recommend-distribute-asset',
-            description: 'Quản lý đề nghị cấp phát tài sản',
-            company: vnist._id
-        },
-
-        // NHÂN VIÊN
-        { //41
-            url: '/recommend-equipment-procurement',
-            description: 'Đăng ký mua sắm tài sản',
-            company: vnist._id
-        },
-        { //42
-            url: '/recommmend-distribute-asset',
-            description: 'Đăng ký cấp phát tài sản',
-            company: vnist._id
-        },
-        { //43
-            url: '/manage-assigned-asset',
-            description: 'Quản lý tài sản được bàn giao',
-            company: vnist._id
-        },
-=======
         { // 31 /kpi-member-dashboard
             url: '/kpi-member/dashboard',
             description: 'Dashboard KPI nhân viên',
@@ -561,8 +489,83 @@ const sampleCompanyData = async () => {
             url: '/kpi-personals/dashboard',
             description: 'DashBoard Kpi cá nhân',
             company: vnist._id
-        }
->>>>>>> 0365d85e3590e4f1f2b282fbda404aa25ff9bb2d
+        },
+
+        
+        // thêm link quản lý tài sản
+        // QUẢN LÝ
+        { //35. quản lý loại tài sản
+            url: '/manage-type-asset',
+            description: 'Quản lý loại tài sản',
+            company: vnist._id
+        },
+        { //36. Thêm mới tài sản
+            url: '/add-asset',
+            description: 'Thêm mới tài sản',
+            company: vnist._id
+        },
+        { //37. quản lý thông tin tài sản
+            url: '/manage-info-asset',
+            description: 'Quản lý thông tin tài sản',
+            company: vnist._id
+        },
+        { //38
+            url: '/manage-history-asset',
+            description: 'Quản lý lịch sử hoạt động sử dụng tài sản',
+            company: vnist._id
+        },
+        { //39
+            url: '/manage-repair-asset',
+            description: 'Quản lý sửa chữa - thay thế - nâng cấp tài sản',
+            company: vnist._id
+        },
+        { //40
+            url: '/manage-maintain-asset',
+            description: 'Quản lý bảo trì tài sản',
+            company: vnist._id
+        },
+        { //41
+            url: '/manage-distribute-asset',
+            description: 'Quản lý cấp phát, điều chuyển, thu hồi tài sản',
+            company: vnist._id
+        },
+        { //42
+            url: '/manage-depreciation-asset',
+            description: 'Quản lý khấu hao tài sản',
+            company: vnist._id
+        },
+        { //43
+            url: '/manage-room-asset',
+            description: 'Quản lý phòng và trang thiết bị tài sản',
+            company: vnist._id
+        },
+        { //44
+            url: '/manage-recommend-procure',
+            description: 'Quản lý đề nghị mua sắm tài sản',
+            company: vnist._id
+        },
+        { //45
+            url: '/manage-recommend-distribute-asset',
+            description: 'Quản lý đề nghị cấp phát tài sản',
+            company: vnist._id
+        },
+
+        // NHÂN VIÊN
+        { //46
+            url: '/recommend-equipment-procurement',
+            description: 'Đăng ký mua sắm tài sản',
+            company: vnist._id
+        },
+        { //47
+            url: '/recommmend-distribute-asset',
+            description: 'Đăng ký cấp phát tài sản',
+            company: vnist._id
+        },
+        { //48
+            url: '/manage-assigned-asset',
+            description: 'Quản lý tài sản được bàn giao',
+            company: vnist._id
+        },
     ]);
     
     const updateVnist = await Company.findById(vnist._id);
@@ -897,29 +900,15 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
-<<<<<<< HEAD
+         // Gán quyền dashboard kpi cá nhân
+         {
+            resourceId: links[34]._id, // Tổng quan KPI đơn vị
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+
 
         // gán quyền quản lý tài sản cho Dean
-        {
-            resourceId: links[31]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[32]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[33]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
-        {
-            resourceId: links[34]._id,
-            resourceType: 'Link',
-            roleId: roles[1]._id // Dean
-        },
         {
             resourceId: links[35]._id,
             resourceType: 'Link',
@@ -950,25 +939,40 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
-
-        // gán quyền quản lý tài sản cho nhân viên
         {
             resourceId: links[41]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id // Employee
+            roleId: roles[1]._id // Dean
         },
         {
             resourceId: links[42]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id // Employee
+            roleId: roles[1]._id // Dean
         },
         {
             resourceId: links[43]._id,
-=======
-         // Gán quyền dashboard kpi cá nhân
-         {
-            resourceId: links[34]._id, // Tổng quan KPI đơn vị
->>>>>>> 0365d85e3590e4f1f2b282fbda404aa25ff9bb2d
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+        {
+            resourceId: links[44]._id,
+            resourceType: 'Link',
+            roleId: roles[1]._id // Dean
+        },
+
+        // gán quyền quản lý tài sản cho nhân viên
+        {
+            resourceId: links[45]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[46]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[47]._id,
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
@@ -1503,7 +1507,7 @@ const sampleCompanyData = async () => {
             recommendNumber: "MP0002",
             dateCreate: "20-02-2020",
             proponent: users[7]._id, //người đề nghị
-            equipment: "đề nghị mua TV abcd", //nội dung đề nghị
+            equipment: "đề nghị mua TV abcd", //thiết bị đề nghị
             supplier: "HanoiComputer", //nhà cung cấp
             total: "1", //số lượng
             unit: "cái", //đơn vị tính
@@ -1526,19 +1530,19 @@ const sampleCompanyData = async () => {
         assetNumber: "LT0001",
         company:vnist._id,
         assetType: listAssetType[1]._id,
-        datePurchase: "20-02/2020",
+        datePurchase: "20-02-2020",
         manager: users[2]._id,
         location: "P104",
         initialPrice: 50000000,
         status: "sẵn sàng sử dụng",
         description: "Laptop ver 2016",
         detailInfo: [{
-            nameField: "",
-            value: "",
-            unit: "",
+            nameField: "Bộ nhớ ổ cứng",
+            value: "500GB",
         }],
         depreciationInfo: [{
-
+            startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+            timeDeprecition: "5" // thời gian trích khấu hao
         }],
         numberFile: "T3 - 123698",
         file: [],
@@ -1548,7 +1552,7 @@ const sampleCompanyData = async () => {
         assetNumber: "LT0002",
         company:vnist._id,
         assetType: listAssetType[2]._id,
-        datePurchase: "20-02/2020",
+        datePurchase: "20-02-2020",
         manager: users[2]._id,
         location: "Nhà xe 1",
         initialPrice: 500000000,
@@ -1557,10 +1561,10 @@ const sampleCompanyData = async () => {
         detailInfo: [{
             nameField: "",
             value: "",
-            unit: "",
         }],
         depreciationInfo: [{
-
+            startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+            timeDeprecition: "5" // thời gian trích khấu hao
         }],
         numberFile: "T4 - 123698",
         file: [],
@@ -1579,12 +1583,12 @@ const sampleCompanyData = async () => {
         status: "sẵn sàng sử dụng",
         description: "Laptop ver 2016",
         detailInfo: [{
-            nameField: "",
-            value: "",
-            unit: "",
+            nameField: "Bộ nhớ ổ cứng",
+            value: "500GB",
         }],
         depreciationInfo: [{
-
+            startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+            timeDeprecition: "5" // thời gian trích khấu hao
         }],
         numberFile: "T3 - 123698",
         file: [],
@@ -1605,7 +1609,6 @@ const sampleCompanyData = async () => {
         type: "Sửa chữa",
         dateCreate: "20-02-2020",
         reason: "Sửa chữa hỏng hóc thiết bị",
-        status: "Đã chấp nhận",
         repairDate: "20-02-2020",
         completeDate: "22-02-2020",
         cost: "10000000",
@@ -1617,7 +1620,6 @@ const sampleCompanyData = async () => {
         type: "Nâng cấp",
         dateCreate: "20-02-2020",
         reason: "Nâng cấp thiết bị",
-        status: "Đã chấp nhận",
         repairDate: "20-02-2020",
         completeDate: "22-02-2020",
         cost: "10000000",
@@ -1638,9 +1640,9 @@ const sampleCompanyData = async () => {
         type: "Cấp phát",
         dateCreate: "20-02-2020",
         place: "Phòng 104",
-        firstPerson : users[2]._id,
-        secondPerson : users[7]._id,
-        firstLocation : asset.assetLocation,
+        handoverMan : users[2]._id,
+        receiver : users[7]._id,
+        firstLocation : "P104",
         secondLocation : "P105",
         reason: "Cấp phát abcd",
     }])

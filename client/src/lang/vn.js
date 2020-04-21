@@ -266,6 +266,7 @@ export default {
             // QUẢN LÝ
             manage_asset: 'Quản lý tài sản',
             manage_type_asset: 'Quản lý loại tài sản',
+            add_asset: 'Thêm tài sản',
             manage_info_asset: 'Quản lý thông tin tài sản',
             manage_history_asset: 'Quản lý lịch sử hoạt động',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',

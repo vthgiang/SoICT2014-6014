@@ -27,11 +27,11 @@ const DistributeTransferSchema = new Schema({
     place : {// vị trí bàn giao
         type: String
     },
-    firstPerson : {//người ban giao là người đang quản lý tài sản
+    handoverMan : {//người ban giao là người đang quản lý tài sản
         type: Schema.Types.ObjectId,
         ref: 'users'
     },
-    secondPerson : {//người tiếp nhận
+    receiver : {//người tiếp nhận: chọn từ danh sách user
         type: Schema.Types.ObjectId,
         ref: 'users'
     },

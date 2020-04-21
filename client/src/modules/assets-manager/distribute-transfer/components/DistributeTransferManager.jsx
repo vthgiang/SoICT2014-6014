@@ -209,9 +209,9 @@ class DistributeTransferManager extends Component {
                                         <td>{x.distributeNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.type}</td>
-                                        <td>{x.firstPerson}</td>
-                                        <td>{x.secondPerson}</td>
-                                        <td>{x.secondlocation}</td>
+                                        <td>{x.handoverMan}</td>
+                                        <td>{x.receiver}</td>
+                                        <td>{x.secondLocation}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
@@ -243,9 +243,9 @@ class DistributeTransferManager extends Component {
                         type={this.state.currentRow.type}
                         assetNumber={this.state.currentRow.assetNumber}
                         assetName={this.state.currentRow.assetName}
-                        firstPerson={this.state.currentRow.firstPerson}
-                        secondPerson={this.state.currentRow.secondPerson}
-                        secondlocation={this.state.currentRow.secondlocation}
+                        handoverMan={this.state.currentRow.handoverMan}
+                        receiver={this.state.currentRow.receiver}
+                        secondLocation={this.state.currentRow.secondLocation}
                     />
                 }
             </div >

@@ -77,10 +77,11 @@ const AssetSchema = new Schema({
     detailInfo: [{//thông tin chi tiết
         nameField: String,// tên trường dữ liệu
         value: String, //giá trị 
-        unit: String //đơn vị tính
     }],
     
     depreciationInfo: [{ //thông tin khấu hao
+        startDepreciation: String, //thời gian bắt đầu trích khấu hao (VD: 20-02-2020)
+        timeDeprecition: String //thời gian tính khấu hao (VD: 5 năm)
 
     }],
     numberFile: {

@@ -195,7 +195,7 @@ class AssetManager extends Component {
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
-                    <table id="repairupgrade-table" className="table table-striped table-bordered table-hover">
+                    <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "8%" }}>Mã tài sản</th>
