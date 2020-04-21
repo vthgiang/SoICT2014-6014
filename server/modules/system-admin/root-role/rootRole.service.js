@@ -1,6 +1,6 @@
-const { RoleDefault } = require('../../../models').schema;
+const { RootRole } = require('../../../models').schema;
 
-exports.get = async () => {
+exports.getAllRootRoles = async () => {
     
-    return await RoleDefault.find();
+    return await RootRole.find();
 }

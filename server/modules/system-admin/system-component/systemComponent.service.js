@@ -1,43 +1,43 @@
-const { ComponentDefault, LinkDefault, RoleDefault } = require('../../../models').schema;
+const { SystemComponent, SystemLink, RootRole } = require('../../../models').schema;
 
-exports.get = async () => {
+exports.getAllSystemComponents = async () => {
 
-    return await ComponentDefault.find().populate([
-        { path: 'roles', model: RoleDefault },
-        { path: 'link', model: LinkDefault }
+    return await SystemComponent.find().populate([
+        { path: 'roles', model: RootRole },
+        { path: 'link', model: SystemLink }
     ]);
 }
 
-exports.getPaginate = async (limit, page, data={}) => {
+exports.getPaginatedSystemComponents = async (limit, page, data={}) => {
 
-    return await ComponentDefault
+    return await SystemComponent
         .paginate( data , { 
             page, 
             limit,
             populate: [
-                { path: 'roles', model: RoleDefault },
-                { path: 'link', model: LinkDefault }
+                { path: 'roles', model: RootRole },
+                { path: 'link', model: SystemLink }
             ]
         });
 }
 
-exports.show = async (id) => {
+exports.getSystemComponent = async (id) => {
 
-    return await ComponentDefault.findById(id).populate([
-        { path: 'roles', model: RoleDefault },
-        { path: 'link', model: LinkDefault }
+    return await SystemComponent.findById(id).populate([
+        { path: 'roles', model: RootRole },
+        { path: 'link', model: SystemLink }
     ]);
 }
 
-exports.create = async(name, description, link, roles) => {
-    const component = await ComponentDefault.findOne({name});
+exports.createSystemComponent = async(name, description, link, roles) => {
+    const component = await SystemComponent.findOne({name});
     if(component !== null) throw ('component_name_exist');
 
-    return await ComponentDefault.create({ name, description, link, roles });
+    return await SystemComponent.create({ name, description, link, roles });
 }
 
-exports.edit = async(id, name, description, link, roles) => {
-    var component = await ComponentDefault.findById(id);
+exports.editSystemComponent = async(id, name, description, link, roles) => {
+    var component = await SystemComponent.findById(id);
     component.name = name;
     component.description = description;
     component.link = link;
@@ -47,23 +47,23 @@ exports.edit = async(id, name, description, link, roles) => {
     return component;
 }
 
-exports.delete = async(id) => {
-    var component = await ComponentDefault.findById(id);
-    await ComponentDefault.deleteOne({ _id: id});
+exports.deleteSystemComponent = async(id) => {
+    var component = await SystemComponent.findById(id);
+    await SystemComponent.deleteOne({ _id: id});
 
     return component;
 }
 
-exports.addComponentsToLink = async(linkId, componentId) => {
-    var link = await LinkDefault.findById(linkId);
+exports.addSystemComponentsToSystemLink = async(linkId, componentId) => {
+    var link = await SystemLink.findById(linkId);
     link.components.push(componentId);
     await link.save();
 
     return link;
 }
 
-exports.deleteComponentInLink = async(linkId, componentId) => {
-    var link = await LinkDefault.findById(linkId);
+exports.removeSystemComponentFromSystemLink = async(linkId, componentId) => {
+    var link = await SystemLink.findById(linkId);
     var index = link.components.indexOf(componentId);
     if(index !== -1) link.components.slice(index, 1); //xóa component khỏi link
     await link.save();

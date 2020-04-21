@@ -2,9 +2,9 @@ const CompanyService = require('./company.service');
 const { LogInfo, LogError } = require('../../../logs');
 const { ROOT_ROLES: PREDEFINED_ROLES } = require('../../../seed/terms');
 
-exports.get = async (req, res) => {
+exports.getAllCompanies = async (req, res) => {
     try {
-        const companies = await CompanyService.get();
+        const companies = await CompanyService.getAllCompanies();
         
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(200).json({
@@ -22,12 +22,12 @@ exports.get = async (req, res) => {
 };
 
 
-exports.getPaginate = async (req, res) => {
+exports.getPaginatedCompanies = async (req, res) => {
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var companies = await CompanyService.getPaginate(limit, page, req.body);
+        var companies = await CompanyService.getPaginatedCompanies(limit, page, req.body);
 
         LogInfo(req.user.email, 'PAGINATE_COMPANIES');
         res.status(200).json({
@@ -45,28 +45,28 @@ exports.getPaginate = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createCompany = async (req, res) => {
     try {
         //Tạo thông tin công ty mới(tên, tên ngắn, mô tả)
-        const company = await CompanyService.create(req.body);
+        const company = await CompanyService.createCompany(req.body);
         console.log("tao cty", company)
 
         //Tạo 5 role abstract cho công ty mới
-        const abstractRoles = await CompanyService.create5RoleAbstract(company._id);
+        const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
         console.log("tao role abs: ", abstractRoles)
         
         //Super admin cho công ty mới
-        const superadmin = await CompanyService.editSuperAdminOfCompany(company._id, req.body.email);
+        const superadmin = await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
         console.log("tao superadmin abs: ", superadmin)
 
         //Tạo link và các component tương ứng cho các trang mà công ty được phép truy cập
-        const links = await CompanyService.createLinksForCompany(company._id, req.body.links, abstractRoles);
+        const links = await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
         console.log("tạo các links: ", links);
 
-        const components = await CompanyService.createComponentsForCompany(company._id, req.body.links);
+        const components = await CompanyService.createCompanyComponents(company._id, req.body.links);
         console.log("tạo các components: ", components);
 
-        const resCompany = await CompanyService.getById(company._id);
+        const resCompany = await CompanyService.getCompany(company._id);
         
         LogInfo(req.user.email, 'CREATE_COMPANY');
         res.status(200).json({
@@ -84,9 +84,9 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getCompany = async (req, res) => {
     try {
-        const company = await CompanyService.getById(req.params.id);
+        const company = await CompanyService.getCompany(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(200).json({
@@ -104,11 +104,11 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editCompany = async (req, res) => {
     try {
-        const company = await CompanyService.edit(req.params.id, req.body);
-        await CompanyService.editSuperAdminOfCompany(company._id, req.body.email);
-        const resCompany = await CompanyService.getById(company._id);
+        const company = await CompanyService.editCompany(req.params.id, req.body);
+        await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
+        const resCompany = await CompanyService.getCompany(company._id);
         LogInfo(req.user.email, 'EDIT_COMPANY');
         res.status(200).json({
             success: true,
@@ -126,9 +126,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deleteCompany = async (req, res) => {
     try {
-        const company = await CompanyService.delete(req.params.id);
+        const company = await CompanyService.deleteCompany(req.params.id);
         
         LogInfo(req.user.email, 'DELETE_COMPANY');
         res.status(200).json({
@@ -146,9 +146,9 @@ exports.delete = async (req, res) => {
     }
 };
 
-exports.getLinksOfCompany = async (req, res) => {
+exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyService.getLinksOfCompany(req.params.id);
+        const links = await CompanyService.getCompanyLinks(req.params.id);
         
         LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(200).json({
@@ -166,9 +166,9 @@ exports.getLinksOfCompany = async (req, res) => {
     }
 };
 
-exports.addNewLinkForCompany = async (req, res) => {
+exports.addCompanyLink = async (req, res) => {
     try {
-        const link = await CompanyService.addNewLinkForCompany(req.params.id, req.body.url, req.body.description);
+        const link = await CompanyService.addCompanyLink(req.params.id, req.body.url, req.body.description);
         
         LogInfo(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(200).json({
@@ -186,9 +186,9 @@ exports.addNewLinkForCompany = async (req, res) => {
     }
 };
 
-exports.deleteLinkForCompany = async (req, res) => {
+exports.deleteCompanyLink = async (req, res) => {
     try {
-        const link = await CompanyService.deleteLinkForCompany(req.params.id, req.params.linkId);
+        const link = await CompanyService.deleteCompanyLink(req.params.id, req.params.linkId);
         
         LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(200).json({
@@ -206,9 +206,9 @@ exports.deleteLinkForCompany = async (req, res) => {
     }
 };
 
-exports.addNewComponentForCompany = async (req, res) => {
+exports.addCompanyComponent = async (req, res) => {
     try {
-        const component = await CompanyService.addNewComponentForCompany(req.params.id, req.body.name, req.body.description, req.body.link);
+        const component = await CompanyService.addCompanyComponent(req.params.id, req.body.name, req.body.description, req.body.link);
         const resComponent = await CompanyService.getComponentById(component._id);  
 
         LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
@@ -227,10 +227,10 @@ exports.addNewComponentForCompany = async (req, res) => {
     }
 };
 
-exports.deleteComponentForCompany = async (req, res) => {
+exports.deleteCompanyComponent = async (req, res) => {
     try {
         console.log("deletecomponent com: ", req.params.id, req.params.componentId)
-        const component = await CompanyService.deleteComponentForCompany(req.params.id, req.params.componentId);
+        const component = await CompanyService.deleteCompanyComponent(req.params.id, req.params.componentId);
         
         LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(200).json({
@@ -248,9 +248,9 @@ exports.deleteComponentForCompany = async (req, res) => {
     }
 };
 
-exports.getLinksListOfCompany = async (req, res) => {
+exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyService.getLinksListOfCompany(req.params.id);
+        const links = await CompanyService.getCompanyLinks(req.params.id);
         
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(200).json({
@@ -267,10 +267,10 @@ exports.getLinksListOfCompany = async (req, res) => {
     }
 };
 
-exports.getLinksPaginateOfCompany = async (req, res) => {
+exports.getPaginatedCompanyLinks = async (req, res) => {
     try {
         console.log('company link paginate: ', req.params.id, req.params.page, req.params.limit, req.body);
-        const links = await CompanyService.getLinksPaginateOfCompany(
+        const links = await CompanyService.getPaginatedCompanyLinks(
             req.params.id, 
             req.params.page, 
             req.params.limit, 
@@ -292,9 +292,9 @@ exports.getLinksPaginateOfCompany = async (req, res) => {
     }
 };
 
-exports.getComponentsListOfCompany = async (req, res) => {
+exports.getCompanyComponents = async (req, res) => {
     try {
-        const components = await CompanyService.getComponentsListOfCompany(req.params.id);
+        const components = await CompanyService.getCompanyComponents(req.params.id);
         
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(200).json({
@@ -311,9 +311,9 @@ exports.getComponentsListOfCompany = async (req, res) => {
     }
 };
 
-exports.getComponentsPaginateOfCompany = async (req, res) => {
+exports.getPaginatedCompanyComponents = async (req, res) => {
     try {
-        const components = await CompanyService.getComponentsPaginateOfCompany(
+        const components = await CompanyService.getPaginatedCompanyComponents(
             req.params.id,
             req.params.page,
             req.params.limit,

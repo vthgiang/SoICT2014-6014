@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const Terms = require("../../../seed/terms");
 
-exports.get = async () => {
+exports.getAllCompanies = async () => {
     const companies = await Company.find()
         .populate([
             { path: "links", model: Link },
@@ -14,15 +14,14 @@ exports.get = async () => {
     return companies;
 }
 
-exports.getById = async (id) => {
-    
+exports.getCompany = async (id) => {
     return await Company.findOne({_id: id}).populate([
         { path: "links", model: Link },
         { path: "super_admin", model: User, select: '_id name email' }
     ]);
 }
 
-exports.getPaginate = async (limit, page, data={}) => {
+exports.getPaginatedCompanies = async (limit, page, data={}) => {
     const companies = await Company.paginate( data , {page, limit, populate: [
         { path: 'links', model: Link },
         { path: "super_admin", model: User, select: '_id name email' }
@@ -31,7 +30,7 @@ exports.getPaginate = async (limit, page, data={}) => {
     return companies;
 }
 
-exports.create = async(data) => {
+exports.createCompany = async(data) => {
     const company = await Company.create({
         name: data.name,
         description: data.description,
@@ -41,7 +40,7 @@ exports.create = async(data) => {
     return company;
 }
 
-exports.edit = async(id, data) => {
+exports.editCompany = async(id, data) => {
     var company = await Company.findById(id);
     if(company === null) throw ('company_not_found');
     company.name = data.name;
@@ -54,12 +53,15 @@ exports.edit = async(id, data) => {
     return company;
 }
 
-exports.delete = async(id) => {
+exports.deleteCompany = async(id) => {
 
     return await Company.deleteOne({ _id: id, customer: true });
 }
 
-exports.create5RoleAbstract = async(companyId) => {
+/**
+ * Tạo 5 root roles khi tạo mới 1 company
+ */
+exports.createCompanyRootRoles = async(companyId) => {
     var data = await RoleDefault.find(); //dữ liệu về 5 role abstract có sẵn trong csdl
     var typeAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
     var roles = await data.map(role => {
@@ -74,7 +76,7 @@ exports.create5RoleAbstract = async(companyId) => {
     return await Role.insertMany(roles);
 }
 
-exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleSuperAdminId) => {
+exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail, roleSuperAdminId) => {
     var checkEmail = await User.findOne({email: userEmail});
     if(checkEmail !== null) throw ('email_exist');
     // 1.Tạo mật khẩu tự động cho acc Super Admin
@@ -130,7 +132,7 @@ exports.createSuperAdminAccount = async(companyId, companyName, userEmail, roleS
     return user;
 }
 
-exports.createLinksForCompany = async(companyId, linkArr, roleArr) => {
+exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
     // Lấy dữ liệu về các link mặc định ( url, thông tin, các role được phép truy cập)
     const linkDefaults = await LinkDefault.find({
         _id: { $in: linkArr }
@@ -181,7 +183,7 @@ exports.createLinksForCompany = async(companyId, linkArr, roleArr) => {
 } 
 
 // Tạo các component tương ứng với các trang của công ty
-exports.createComponentsForCompany = async(companyId, linkArr) => {
+exports.createCompanyComponents = async(companyId, linkArr) => {
     const linkDefaults = await LinkDefault // lấy các link mặc định tương ứng với các link mà công ty có
         .find({ _id: { $in: linkArr }})
         .populate({ path: 'components', model: ComponentDefault, populate:{ path: 'roles', model: RoleDefault}});
@@ -215,7 +217,7 @@ exports.createComponentsForCompany = async(companyId, linkArr) => {
 }
 
 // Lấy tất cả các links của 1 công ty/doanh nghiệp
-exports.getLinksForCompany = async(companyId) => {
+exports.getCompanyLinks = async(companyId) => {
     const check = await Company.findById(companyId);
     if(check === null) throw ('company_not_found');
     const links = await Link.find({company: companyId})
@@ -224,12 +226,12 @@ exports.getLinksForCompany = async(companyId) => {
     return links;
 }
 
-exports.editSuperAdminOfCompany = async(companyId, superAdminEmail) => {
+exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
     const com = await Company.findById(companyId);
     const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME}); // lay ttin role super admin cua cty do
     const user = await User.findOne({ company: com._id, email: superAdminEmail }); //tim thong tin ve tai khoan
     if(user === null){
-        const newUser = await this.createSuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
+        const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
         com.super_admin = newUser._id;
         await com.save();
 
@@ -242,7 +244,7 @@ exports.editSuperAdminOfCompany = async(companyId, superAdminEmail) => {
     }
 }
 
-exports.addNewLinkForCompany = async(companyId, linkUrl, linkDescription) => {
+exports.addCompanyLink = async(companyId, linkUrl, linkDescription) => {
     const check = await Link.findOne({
         company: companyId,
         url: linkUrl
@@ -257,7 +259,7 @@ exports.addNewLinkForCompany = async(companyId, linkUrl, linkDescription) => {
     return newLink;
 }
 
-exports.deleteLinkForCompany = async(companyId, linkId) => {
+exports.deleteCompanyLink = async(companyId, linkId) => {
     // Xóa tắt cả phân quyền liên quan đến link này (role)
     await Privilege.deleteMany({
         resourceId: linkId,
@@ -269,7 +271,7 @@ exports.deleteLinkForCompany = async(companyId, linkId) => {
     return linkId;
 }
 
-exports.addNewComponentForCompany = async(companyId, componentName, componentDescription, linkId) => {
+exports.addCompanyComponent = async(companyId, componentName, componentDescription, linkId) => {
     const check = await Component.findOne({
         company: companyId,
         name: componentName
@@ -285,7 +287,7 @@ exports.addNewComponentForCompany = async(companyId, componentName, componentDes
     return newComponent;
 }
 
-exports.deleteComponentForCompany = async(companyId, componentId) => {
+exports.deleteCompanyComponent = async(companyId, componentId) => {
     // Xóa tắt cả phân quyền liên quan đến component này (role)
     await Privilege.deleteMany({
         resourceId: componentId,
@@ -306,11 +308,11 @@ exports.deleteComponentForCompany = async(companyId, componentId) => {
     return componentId;
 }
 
-exports.getLinksListOfCompany = async(companyId) => {
+exports.getCompanyLinks = async(companyId) => {
     return await Link.find({ company: companyId });
 }
 
-exports.getLinksPaginateOfCompany = async (companyId, page, limit, data={}) => {
+exports.getPaginatedCompanyLinks = async (companyId, page, limit, data={}) => {
     const newData = await Object.assign({ company: companyId }, data );
     return await Link
         .paginate( newData , { 
@@ -319,7 +321,7 @@ exports.getLinksPaginateOfCompany = async (companyId, page, limit, data={}) => {
         });
 }
 
-exports.getComponentsListOfCompany = async (companyId) => {
+exports.getCompanyComponents = async (companyId) => {
     return await Component.find({ company: companyId })
         .populate([
             { path: 'link', model: Link}
@@ -333,7 +335,7 @@ exports.getComponentById = async (componentId) => {
         ]);
 }
 
-exports.getComponentsPaginateOfCompany = async (companyId, page, limit, data={}) => {
+exports.getPaginatedCompanyComponents = async (companyId, page, limit, data={}) => {
     const newData = await Object.assign({ company: companyId }, data );
     return await Component
         .paginate( newData , { 

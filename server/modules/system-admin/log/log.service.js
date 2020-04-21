@@ -1,4 +1,4 @@
-const Log = require('../../../models/system-admin/log.model');
+const { Log } = require('../../../models').schema;
 
 exports.getLogState = async () => {
     var log =  await Log.findOne({ name: 'log'}); 

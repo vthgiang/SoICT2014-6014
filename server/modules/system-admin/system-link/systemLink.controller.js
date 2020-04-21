@@ -1,9 +1,9 @@
 const LinkDefaultService = require('./systemLink.service');
 const {LogInfo, LogError} =  require('../../../logs');
 
-exports.get = async (req, res) => {
+exports.getAllSystemLinks = async (req, res) => {
     try {
-        var links = await LinkDefaultService.get();
+        var links = await LinkDefaultService.getAllSystemLinks();
         
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(200).json({
@@ -21,9 +21,9 @@ exports.get = async (req, res) => {
     }
 };
 
-exports.getCategories = async (req, res) => {
+exports.getAllSystemLinkCategories = async (req, res) => {
     try {
-        const categories = await LinkDefaultService.getCategories();
+        const categories = await LinkDefaultService.getAllSystemLinkCategories();
         
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
         res.status(200).json({
@@ -41,12 +41,12 @@ exports.getCategories = async (req, res) => {
     }
 };
 
-exports.getPaginate = async (req, res) => {
+exports.getPaginatedSystemLinks = async (req, res) => {
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var links = await LinkDefaultService.getPaginate(limit, page, req.body);
+        var links = await LinkDefaultService.getPaginatedSystemLinks(limit, page, req.body);
 
         LogInfo(req.user.email, 'PAGINATE_LINKS_DEFAULT')
         res.status(200).json({
@@ -64,11 +64,11 @@ exports.getPaginate = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createSystemLink = async (req, res) => {
     try {
         const { url, description, roles, category } = req.body;
-        const link = await LinkDefaultService.create(url, description, roles, category);
-        const data = await LinkDefaultService.show(link._id);
+        const link = await LinkDefaultService.createSystemLink(url, description, roles, category);
+        const data = await LinkDefaultService.getSystemLink(link._id);
 
         LogInfo(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(200).json({
@@ -86,9 +86,9 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getSystemLink = async (req, res) => {
     try {
-        var link = await LinkDefaultService.show(req.params.id);
+        var link = await LinkDefaultService.getSystemLink(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(200).json({
@@ -106,11 +106,11 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editSystemLink = async (req, res) => {
     try {
         const { url, description, roles, category } = req.body;
-        const link = await LinkDefaultService.edit(req.params.id, url, description, roles, category);
-        const data = await LinkDefaultService.show(link._id);
+        const link = await LinkDefaultService.editSystemLink(req.params.id, url, description, roles, category);
+        const data = await LinkDefaultService.getSystemLink(link._id);
         
         LogInfo(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(200).json({
@@ -128,9 +128,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deleteSystemLink = async (req, res) => {
     try {
-        const link = await LinkDefaultService.delete(req.params.id);
+        const link = await LinkDefaultService.deleteSystemLink(req.params.id);
         
         LogInfo(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(200).json({

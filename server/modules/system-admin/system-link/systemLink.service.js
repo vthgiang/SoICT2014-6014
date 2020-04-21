@@ -1,7 +1,7 @@
 const { LinkDefault, RoleDefault, ComponentDefault } = require('../../../models').schema;
 const {CATEGORY_LINKS} = require('../../../seed/terms');
 
-exports.get = async () => {
+exports.getAllSystemLinks = async () => {
 
     return await LinkDefault.find().populate([
         { path: 'roles', model: RoleDefault },
@@ -9,12 +9,12 @@ exports.get = async () => {
     ]);
 }
 
-exports.getCategories = async () => {
+exports.getAllSystemLinkCategories = async () => {
     
     return CATEGORY_LINKS;
 }
 
-exports.getPaginate = async (limit, page, data={}) => {
+exports.getPaginatedSystemLinks = async (limit, page, data={}) => {
     
     return await LinkDefault.paginate( data, {page, limit, populate: [
         { path: 'roles', model: RoleDefault },
@@ -22,19 +22,19 @@ exports.getPaginate = async (limit, page, data={}) => {
     ]});
 }
 
-exports.show = async (id) => {
+exports.getSystemLink = async (id) => {
 
     return await LinkDefault.findById(id).populate({path: 'roles', model: RoleDefault});
 }
 
-exports.create = async(url, description, roles, category) => {
+exports.createSystemLink = async(url, description, roles, category) => {
     const link = await LinkDefault.findOne({ url });
     if(link !== null) throw ('link_default_exist');
 
     return await LinkDefault.create({ url, description, category, roles });
 }
 
-exports.edit = async(id, url, description, roles, category) => {
+exports.editSystemLink = async(id, url, description, roles, category) => {
     var link = await LinkDefault.findById(id);
     link.url = url;
     link.description = description;
@@ -45,6 +45,6 @@ exports.edit = async(id, url, description, roles, category) => {
     return link;
 }
 
-exports.delete = async(id) => {
+exports.deleteSystemLink = async(id) => {
     return await LinkDefault.deleteOne({ _id: id });
 }
