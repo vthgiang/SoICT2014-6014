@@ -5,7 +5,7 @@ import './modal.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import {Loading} from '../loading1/loading';
+import {Loading} from '../loading/loading';
 
 class DialogModal extends Component {
     constructor(props) {
