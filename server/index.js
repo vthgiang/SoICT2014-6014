@@ -28,7 +28,7 @@ const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.ro
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
 const employeeKpiManagement = require("./modules/kpi/employee/management/management.route");
 const employeeKpiEvaluation = require('./modules/kpi/evaluation/employee-evaluation/employeeEvaluation.route');
-// const employeeKpiEvaluationDashboard = require('./modules/kpi/evaluation/dashboard/dashboard.route');
+const employeeKpiEvaluationDashboard = require('./modules/kpi/evaluation/dashboard/dashboard.route');
 const organizationalUnitKpiCreation = require("./modules/kpi/organizational-unit/creation/creation.route");
 const organizationalUnitKpiDashboard = require("./modules/kpi/organizational-unit/dashboard/dashboard.route");
 const organizationalUnitKpiManagement = require("./modules/kpi/organizational-unit/management/management.route");
@@ -91,7 +91,7 @@ mongoose // Connect to MongoDB
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
 global.isLog = false;
-const Logger = require('./models/system/log.model');
+const Logger = require('./models/system-admin/log.model');
 Logger.findOne({
         name: 'log'
     })
@@ -145,7 +145,6 @@ app.use("/tasktemplates", tasktemplate);
 
 app.use("/educationProgram", educationProgram);
 app.use("/course",course);
-app.use("/sample", sample);
 
 
 
