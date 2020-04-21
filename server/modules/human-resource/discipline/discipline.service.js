@@ -1,13 +1,13 @@
-const Discipline = require('../../../models/human-resource/discipline.model');
-const Employee = require('../../../models/human-resource/employee.model');
+const { Discipline, Employee } = require('../../../models').schema;
+
 const EmployeeService = require('../profile/profile.service');
 
 // Lấy danh sách kỷ luật của nhân viên
-exports.get = async (data, company) => {
+exports.searchDisciplines = async (data, company) => {
     var keySearchEmployee, keySearch = { company: company};
     // Bắt sựu kiện đơn vị tìm kiếm khác null 
     if (data.unit !== null) {
-        let emailCompany =await EmployeeService.getEmailCompanyByUnitAndPosition(data.unit, data.position);
+        let emailCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.unit, data.position);
         keySearchEmployee = {...keySearchEmployee, emailCompany: {$in: emailCompany}}
     }
     // Bắt sựu kiện MSNV tìm kiếm khác ""
@@ -28,14 +28,14 @@ exports.get = async (data, company) => {
     var listDiscipline = await Discipline.find(keySearch).populate({path: 'employee', model: Employee})
         .sort({'createDate': 'desc'}).skip(data.page).limit(data.limit);
     for (let n in listDiscipline) {
-        let value = await EmployeeService.getUnitAndPositionEmployee(listDiscipline[n].employee.emailCompany);
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listDiscipline[n].employee.emailCompany);
         listDiscipline[n] = {...listDiscipline[n]._doc, ...value}
     }
     return {totalList, listDiscipline}
 }
 
 // Thêm mới kỷ luật
-exports.create = async (data, company) => {
+exports.createDiscipline = async (data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailCompany: 1});
     if(employeeInfo!==null){
@@ -55,7 +55,7 @@ exports.create = async (data, company) => {
                 reason: data.reason,
             });
             // Lấy thông tin phòng ban, chức vụ của nhân viên
-            let value = await EmployeeService.getUnitAndPositionEmployee(employeeInfo.emailCompany);
+            let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailCompany);
             //Lấy thông tin kỷ luật vừa tạo
             let newDiscipline = await Discipline.findOne({_id: createDiscipline._id}).populate([{path: 'employee', model: Employee}]);
             return {...newDiscipline._doc, ...value}
@@ -64,12 +64,12 @@ exports.create = async (data, company) => {
 }
 
 // Xoá thông tin kỷ luật
-exports.delete = async (id) => {
+exports.deleteDiscipline = async (id) => {
     return await Discipline.findOneAndDelete({_id: id});
 }
 
 // Chỉnh sửa thông tin kỷ luật
-exports.update = async (id, data, company) => {
+exports.updateDiscipline = async (id, data, company) => {
     // Lấy thông tin nhân viên
     let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailCompany: 1});
     if(employeeInfo!==null){
@@ -86,7 +86,7 @@ exports.update = async (id, data, company) => {
         // Cập nhật thông tin kỷ luật vào database
         await Discipline.findOneAndUpdate({_id: id}, {$set: DisciplineChange});
         // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-        let value = await EmployeeService.getUnitAndPositionEmployee(employeeInfo.emailCompany);
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailCompany);
         // Lấy thông tin kỷ luật vừa cập nhật
         var updateDiscipline = await Discipline.findOne({_id: id}).populate([{path: 'employee', model: Employee}]);
         return {...updateDiscipline._doc, ...value}

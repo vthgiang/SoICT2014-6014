@@ -4,19 +4,21 @@ const Discipline = require('../../../models/human-resource/discipline.model');
 const Praise = require('../../../models/human-resource/commendation.model');
 const Sabbatical = require('../../../models/human-resource/annualLeave.model');
 const Salary = require('../../../models/human-resource/salary.model');
-const Department = require('../../../models/super-admin/organizationalUnit.model');
+const OrganizationalUnit = require('../../../models/super-admin/organizationalUnit.model');
 const UserRole = require('../../../models/auth/userRole.model');
 const User = require('../../../models/auth/user.model');
 const Role = require('../../../models/auth/role.model');
 
-// Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-exports.getUnitAndPositionEmployee = async (emailCompany)=>{
+/**
+ * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
+ */
+exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailCompany)=>{
     let roles = [], departments = [];
     let user = await User.findOne({email: emailCompany},{ _id:1 })
     if (user !== null) {
         roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
         let newRoles = roles.map(role => role.roleId._id);
-        departments = await Department.find({
+        departments = await OrganizationalUnit.find({
             $or: [
                 {'dean': { $in: newRoles }}, 
                 {'viceDean':{ $in: newRoles }}, 
@@ -28,43 +30,44 @@ exports.getUnitAndPositionEmployee = async (emailCompany)=>{
         roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
     }
     return { roles, departments }
+    // TODO: Còn có role tự tạo, cần loại bỏ Root roles và Company-Defined roles
 }
 
 // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-exports.getEmailCompanyByUnitAndPosition = async(unit, position)=>{
+exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(unit, position)=>{
     let units = [], roles = [];
-        for(let n in unit){
-            let unitInfo = await Department.findById(unit[n]);  // Lấy thông tin đơn vị
-            units = [...units, unitInfo]
-        }
-        if (position === null) {
-            units.forEach(u => {
-                let role = [u.dean, u.viceDean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
-                roles = roles.concat(role); 
-            })
-        } else {
-            roles = position
-        }
+    for(let n in unit){
+        let unitInfo = await OrganizationalUnit.findById(unit[n]);  // Lấy thông tin đơn vị
+        units = [...units, unitInfo]
+    }
+    if (position === null) {
+        units.forEach(u => {
+            let role = [u.dean, u.viceDean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
+            roles = roles.concat(role); 
+        })
+    } else {
+        roles = position
+    }
 
-        // lấy danh sách người dùng theo phòng ban và chức danh
-        let userRoles = await UserRole.find({roleId: {$in: roles}});
+    // lấy danh sách người dùng theo phòng ban và chức danh
+    let userRoles = await UserRole.find({roleId: {$in: roles}});
 
-        //lấy userID vào 1 arr
-        let userId = userRoles.map(userRole => userRole.userId); 
+    //lấy userID vào 1 arr
+    let userId = userRoles.map(userRole => userRole.userId); 
 
-        // Lấy email của người dùng theo phòng ban và chức danh
-        var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
-        return emailUsers.map(user => user.email)
+    // Lấy email của người dùng theo phòng ban và chức danh
+    var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
+    return emailUsers.map(user => user.email)
 }
 
 
 // Lấy dánh sách nhân viên
-exports.get = async (data, company) => {
+exports.searchEmployeeProfiles = async (data, company) => {
     var keySearch = {
         company: company
     };
     if (data.department !== "All") {
-        var department = await Department.findById(data.department); //lấy thông tin đơn vị
+        var department = await OrganizationalUnit.findById(data.department); //lấy thông tin đơn vị
         if (data.position === "All") {
             var roles = [department.dean, department.viceDean, department.employee]; //lấy 3 role của đơn vào 1 arr
         } else {
@@ -154,7 +157,7 @@ exports.get = async (data, company) => {
                 model: Role
             }]);
             let newRoles = roles.map(role => role.roleId._id);
-            departments = await Department.find({
+            departments = await OrganizationalUnit.find({
                 $or: [
                     {'dean': { $in: newRoles }}, 
                     {'viceDean':{ $in: newRoles }}, 
@@ -200,7 +203,7 @@ exports.get = async (data, company) => {
 }
 
 // Kiểm tra sự tồn tại của MSNV
-exports.checkMSNV = async (employeeNumber, company) => {
+exports.checkEmployeeExisted = async (employeeNumber, company) => {
     var idEmployee = await Employee.find({
         employeeNumber: employeeNumber,
         company: company
@@ -214,7 +217,7 @@ exports.checkMSNV = async (employeeNumber, company) => {
     return checkMSNV;
 }
 // Kiểm tra sự tồn tại của email công ty
-exports.checkEmail = async (email) => {
+exports.checkEmployeeCompanyEmailExisted = async (email) => {
     var idEmployee = await Employee.find({
         emailCompany: email
     }, {
@@ -228,7 +231,7 @@ exports.checkEmail = async (email) => {
 }
 
 // Lấy thông tin cá nhân
-exports.getInforPersonal = async (email) => {
+exports.getEmployeeProfile = async (email) => {
     var roles = [];
     var departments = [];
     let user = await User.findOne({
@@ -242,7 +245,7 @@ exports.getInforPersonal = async (email) => {
             model: Role
         }]);
         let newRoles = roles.map(role => role.roleId._id);
-        departments = await Department.find({
+        departments = await OrganizationalUnit.find({
             $or: [
                 {'dean': { $in: newRoles }}, 
                 {'viceDean':{ $in: newRoles }}, 
@@ -702,7 +705,7 @@ exports.delete = async (id) => {
 }
 
 // Kiểm tra sự tồn tại của MSNV trong array 
-exports.checkArrayMSNV = async (data, company) => {
+exports.checkEmployeesExisted = async (data, company) => {
     var list=[];
     for(let i=0;i<data.arrayMSNV.length;i++){
         let employee=await Employee.findOne({

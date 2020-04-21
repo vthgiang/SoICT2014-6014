@@ -2,9 +2,9 @@ const HolidayService = require('./holiday.service');
 const { LogInfo, LogError } = require('../../../logs');
 
 // Lấy danh sách nghỉ lễ tết
-exports.get = async (req, res) => {
+exports.getAllHolidays = async (req, res) => {
     try {
-        var listHoliday = await HolidayService.get(req.user.company._id);
+        var listHoliday = await HolidayService.getAllHolidays(req.user.company._id);
         await LogInfo(req.user.email, 'GET_HOLIDAY', req.user.company);
         res.status(200).json({
             message: "success",
@@ -19,9 +19,9 @@ exports.get = async (req, res) => {
 }
 
 // Tạo mới thông tin nghỉ lễ tết
-exports.create = async (req, res) => {
+exports.createHoliday = async (req, res) => {
     try {
-        var newHoliday = await HolidayService.create(req.body,req.user.company._id);
+        var newHoliday = await HolidayService.createHoliday(req.body,req.user.company._id);
         await LogInfo(req.user.email, 'CREATE_HOLIDAY', req.user.company);
         res.status(200).json({
             message: "success",
@@ -36,9 +36,9 @@ exports.create = async (req, res) => {
 }
 
 // delete thông tin nghỉ lễ tết
-exports.delete = async (req, res) => {
+exports.deleteHoliday = async (req, res) => {
     try {
-        var holidayDelete = await HolidayService.delete(req.params.id);
+        var holidayDelete = await HolidayService.deleteHoliday(req.params.id);
         await LogInfo(req.user.email, 'DELETE_HOLIDAY', req.user.company);
         res.status(200).json({
             message: "success",
@@ -53,9 +53,9 @@ exports.delete = async (req, res) => {
 }
 
 // update thông tin nghỉ lễ tết
-exports.update = async (req, res) => {
+exports.updateHoliday = async (req, res) => {
     try {
-        var holidayUpdate = await HolidayService.update(req.params.id,req.body);
+        var holidayUpdate = await HolidayService.updateHoliday(req.params.id,req.body);
         await LogInfo(req.user.email, 'EDIT_HOLIDAY', req.user.company);
         res.status(200).json({
             message: "success",

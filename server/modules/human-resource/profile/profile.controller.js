@@ -100,9 +100,9 @@ const uploadAvatar = multer({
 exports.uploadAvatar = uploadAvatar.single("fileUpload");
 
 // Lấy thông tin cá nhân theo emailCompany
-exports.getInforPersonal = async (req, res) => {
+exports.getEmployeeProfile = async (req, res) => {
     try {
-        var inforEmployee = await EmployeeService.getInforPersonal(req.params.email);
+        var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.email);
         await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
         res.status(200).json({ success: true, message: ["get_infor_personal_success"], content: inforEmployee });
     } catch (error) {
@@ -130,7 +130,7 @@ exports.updateInforPersonal = async (req, res) => {
 // Lấy danh sách nhân viên
 exports.get = async (req, res) => {
     try {
-        var allEmployee = await EmployeeService.get(req.body, req.user.company._id);
+        var allEmployee = await EmployeeService.searchEmployeeProfiles(req.body, req.user.company._id);
         res.status(200).json({
             message: "success",
             content: allEmployee
@@ -145,7 +145,7 @@ exports.get = async (req, res) => {
 // Kiểm tra sự tồn tại của MSNV
 exports.checkMSNV = async (req, res) => {
     try {
-        var checkMSNV = await EmployeeService.checkMSNV(req.params.employeeNumber, req.user.company._id);
+        var checkMSNV = await EmployeeService.checkEmployeeExisted(req.params.employeeNumber, req.user.company._id);
         res.status(200).json({
             message: "success",
             content: checkMSNV
@@ -159,7 +159,7 @@ exports.checkMSNV = async (req, res) => {
 // Kiểm tra sự tồn tại của email công ty
 exports.checkEmail = async (req, res) => {
     try {
-        var checkEmail = await EmployeeService.checkEmail(req.params.email);
+        var checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.params.email);
         res.status(200).json({
             message: "success",
             content: checkEmail
@@ -293,7 +293,7 @@ exports.delete = async (req, res) => {
 // Kiểm tra sự tồn tại của MSNV trong array
 exports.checkArrayMSNV = async (req, res) => {
     try {
-        var checkArrayMSNV = await EmployeeService.checkArrayMSNV(req.body, req.user.company._id);
+        var checkArrayMSNV = await EmployeeService.checkEmployeesExisted(req.body, req.user.company._id);
         res.status(200).json({
             message: "success",
             content: checkArrayMSNV

@@ -7,7 +7,7 @@ exports.get = async (data, company) => {
     var keySearchEmployee, keySearch = { company: company};
     // Bắt sựu kiện đơn vị tìm kiếm khác null 
     if (data.unit !== null) {
-        let emailCompany =await EmployeeService.getEmailCompanyByUnitAndPosition(data.unit, data.position);
+        let emailCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.unit, data.position);
         keySearchEmployee = {...keySearchEmployee, emailCompany: {$in: emailCompany}}
     }
     //Bắt sựu kiện MSNV tìm kiếm khác ""
@@ -28,7 +28,7 @@ exports.get = async (data, company) => {
     var listSalary = await Salary.find(keySearch).populate({ path: 'employee', model: Employee})
         .sort({ 'createDate': 'desc' }).skip(data.page).limit(data.limit);
     for (let n in listSalary) {
-        let value = await EmployeeService.getUnitAndPositionEmployee(listSalary[n].employee.emailCompany);
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listSalary[n].employee.emailCompany);
         listSalary[n] = {...listSalary[n]._doc, ...value}
     }
     return {totalList, listSalary}
@@ -53,7 +53,7 @@ exports.create = async (data, company) => {
                 bonus: data.bonus
             });
             // Lấy thông tin phòng ban, chức vụ của nhân viên
-            let value = await EmployeeService.getUnitAndPositionEmployee(employeeInfo.emailCompany);
+            let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailCompany);
             //Lấy thông tin bảng lương vừa tạo
             var newSalary = await Salary.findOne({ _id: createSalary._id }).populate([{ path: 'employee', model: Employee }])
             return {...newSalary._doc, ...value}
@@ -82,7 +82,7 @@ exports.update = async (id, data, company) => {
         // Cập nhật thông tin bảng lương vào database
         await Salary.findOneAndUpdate({ _id: id }, { $set: salaryChange });
         // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-        let value = await EmployeeService.getUnitAndPositionEmployee(employeeInfo.emailCompany);
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailCompany);
         // Lấy thông tin bảng lương vừa cập nhật
         var updateSalary = await Salary.findOne({ _id: id }).populate([{ path: 'employee', model: Employee }])
         return {...updateSalary._doc, ...value}

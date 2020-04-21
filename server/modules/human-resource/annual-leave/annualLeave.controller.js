@@ -2,9 +2,9 @@ const SabbaticalService = require('./annualLeave.service');
 const {LogInfo, LogError} = require('../../../logs');
 
 // Lấy danh sách nghỉ phép
-exports.get = async (req, res) => {
+exports.searchAnnualLeaves = async (req, res) => {
     try {
-        var listSabbatical = await SabbaticalService.get(req.body, req.user.company._id);
+        var listSabbatical = await SabbaticalService.searchAnnualLeaves(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_SABBATICAL', req.user.company);
         res.status(200).json({ success: true, message: ["get_sabbatical_success"], content: listSabbatical });
     } catch (error) {
@@ -14,7 +14,7 @@ exports.get = async (req, res) => {
 }
 
 // Tạo mới thông tin nghỉ phép
-exports.create = async (req, res) => {
+exports.createAnnualLeave = async (req, res) => {
     try {
         if(req.body.employeeNumber.trim()===""){
             await LogError(req.user.email, 'CREATE_SABBATICAL', req.user.company);
@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
             await LogError(req.user.email, 'CREATE_SABBATICAL', req.user.company);
             res.status(400).json({ success: false, message: ["status_sabbatical_required"], content:{ inputData: req.body } });
         } else {
-            var newSabbatical = await SabbaticalService.create(req.body, req.user.company._id);
+            var newSabbatical = await SabbaticalService.createAnnualLeave(req.body, req.user.company._id);
             if (newSabbatical === null) {
                 await LogError(req.user.email, 'CREATE_SABBATICAL', req.user.company);
                 res.status(404).json({ success: false, message: ["staff_code_not_find"], content:{ inputData: req.body } });
@@ -52,9 +52,9 @@ exports.create = async (req, res) => {
 }
 
 // Xoá thông tin nghỉ phép
-exports.delete = async (req, res) => {
+exports.deleteAnnualLeave = async (req, res) => {
     try {
-        var sabbaticalDelete = await SabbaticalService.delete(req.params.id);
+        var sabbaticalDelete = await SabbaticalService.deleteAnnualLeave(req.params.id);
         await LogInfo(req.user.email, 'DELETE_SABBATICAL', req.user.company);
         res.status(200).json({ 
             success: true, 
@@ -68,7 +68,7 @@ exports.delete = async (req, res) => {
 }
 
 // Cập nhật thông tin nghỉ phép
-exports.update = async (req, res) => {
+exports.updateAnnualLeave = async (req, res) => {
     try {
         if(req.body.employeeNumber.trim()===""){
             await LogError(req.user.email, 'CREATE_SABBATICAL', req.user.company);
@@ -86,7 +86,7 @@ exports.update = async (req, res) => {
             await LogError(req.user.email, 'EDIT_SABBATICAL', req.user.company);
             res.status(400).json({ success: false, message: ["status_sabbatical_required"], content: { inputData: req.body } });
         } else {
-            var sabbaticalUpdate = await SabbaticalService.update(req.params.id, req.body);
+            var sabbaticalUpdate = await SabbaticalService.updateAnnualLeave(req.params.id, req.body);
             if(sabbaticalUpdate===null){
                 await LogError(req.user.email, 'EDIT_SABBATICAL', req.user.company);
                 res.status(404).json({ success: false, message: ["staff_code_not_find"], content: { inputData: req.body } });

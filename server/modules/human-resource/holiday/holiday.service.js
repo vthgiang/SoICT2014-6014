@@ -1,7 +1,7 @@
 const Holiday = require('../../../models/human-resource/holiday.model');
 
-//lấy danh sách ngà nghỉ lễ tết
-exports.get = async (company) => {
+//lấy danh sách ngày nghỉ lễ tết
+exports.getAllHolidays = async (company) => {
     var listHoliday = await Holiday.find({
         company: company
     }).sort({
@@ -12,7 +12,7 @@ exports.get = async (company) => {
 }
 
 // thêm mới ngày nghỉ lễ tết
-exports.create = async (data, company) => {
+exports.createHoliday = async (data, company) => {
     var partStart = data.startDate.split('-');
     var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
     var partEnd = data.endDate.split('-');
@@ -27,14 +27,14 @@ exports.create = async (data, company) => {
 }
 
 // Xoá thông tin nghỉ lễ tết
-exports.delete = async (id) => {
+exports.deleteHoliday = async (id) => {
     return await Holiday.findOneAndDelete({
         _id: id
     });
 }
 
 // Update thông tin nghỉ lễ tết
-exports.update = async (id, data) => {
+exports.updateHoliday = async (id, data) => {
     var partStart = data.startDate.split('-');
     var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
     var partEnd = data.endDate.split('-');

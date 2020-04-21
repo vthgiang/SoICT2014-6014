@@ -4,7 +4,7 @@ const { auth } = require('../../../middleware');
 const EmployeeController = require("./profile.controller");
 
 // Lấy thông tin cá nhân
-router.get('/:email', auth, EmployeeController.getInforPersonal);
+router.get('/:email', auth, EmployeeController.getEmployeeProfile);
 
 // Cập nhật thông tin cá nhân
 router.put('/:email', auth, EmployeeController.updateInforPersonal);
