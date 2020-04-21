@@ -1,58 +1,43 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { RoleDefaultActions } from '../../root-role/redux/actions';
 import { ComponentDefaultActions } from '../redux/actions';
-import { DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
-import { ComponentDefaultValidator } from './providingComponentValidator';
+import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { LinkDefaultActions } from '../../system-link/redux/actions';
+import { ComponentDefaultValidator } from './systemComponentValidator';
 
-class ComponentInfoForm extends Component {
+class ComponentCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-    }
-    
-    // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.componentId !== prevState.componentId) {
-            return {
-                ...prevState,
-                componentId: nextProps.componentId,
-                componentName: nextProps.componentName,
-                componentDescription: nextProps.componentDescription,
-                componentRoles: nextProps.componentRoles,
-                componentLink: nextProps.componentLink,
-                componentNameError: undefined,
-                componentDescriptionError: undefined
-            } 
-        } else {
-            return null;
-        }
+        this.save = this.save.bind(this);
     }
 
     render() { 
-        const { translate, linksDefault, rolesDefault } = this.props;
-        const { componentId, componentName, componentDescription, componentLink, componentRoles, componentNameError, componentDescriptionError } = this.state;
+        const { translate, rolesDefault, linksDefault } = this.props;
+        const { componentNameError, componentDescriptionError } = this.state;
 
         return ( 
             <React.Fragment>
+                <ButtonModal modalID="modal-create-component" button_name={translate('manage_component.add')} title={translate('manage_component.add_title')}/>
                 <DialogModal
-                    size='50' func={this.save}
-                    modalID="modal-edit-component-default"
-                    formID="form-edit-component-default"
-                    title={translate('manage_component.edit')}
-                    msg_success={translate('manage_component.edit_success')}
-                    msg_faile={translate('manage_component.edit_faile')}
-                    disableSubmit={!this.isFormValidated()}
+                    modalID="modal-create-component"
+                    formID="form-create-component"
+                    title={translate('manage_component.add_title')}
+                    msg_success={translate('manage_component.add_success')}
+                    msg_faile={translate('manage_component.add_faile')}
+                    func={this.save}
                 >
-                    <form id="form-edit-component-default">
-                        <div className={`form-group ${componentNameError===undefined?"":"has-error"}`}>
+                    <form id="form-create-component">
+                    <div className={`form-group ${componentNameError===undefined?"":"has-error"}`}>
                             <label>{ translate('manage_component.name') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" value={componentName} onChange={this.handleName} />
+                            <input type="text" className="form-control" onChange={this.handleName} />
                             <ErrorLabel content={componentNameError}/>
                         </div>
                         <div className={`form-group ${componentDescriptionError===undefined?"":"has-error"}`}>
                             <label>{ translate('manage_component.description') }</label>
-                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
+                            <input type="text" className="form-control" onChange={this.handleDescription} />
                             <ErrorLabel content={componentDescriptionError}/>
                         </div>
                         <div className="form-group">
@@ -60,14 +45,13 @@ class ComponentInfoForm extends Component {
                             {
                                 linksDefault.list.length > 0 &&
                                 <SelectBox
-                                    id={`select-component-default-link-${componentId}`}
+                                    id={`select-component-default-link`}
                                     className="form-control select2"
                                     style={{width: "100%"}}
                                     items = {
                                         linksDefault.list.map( link => {return {value: link._id, text: link.url}})
                                     }
                                     onChange={this.handleLink}
-                                    value={componentLink}
                                     multiple={false}
                                 />
                             }
@@ -75,14 +59,13 @@ class ComponentInfoForm extends Component {
                         <div className="form-group">
                             <label>{ translate('manage_component.roles') }</label>
                             <SelectBox
-                                id={`select-component-default-roles-${componentId}`}
+                                id={`select-component-default-roles`}
                                 className="form-control select2"
                                 style={{width: "100%"}}
                                 items = {
                                     rolesDefault.list.map( role => {return {value: role._id, text: role.name}})
                                 }
                                 onChange={this.handleRoles}
-                                value={componentRoles}
                                 multiple={true}
                             />
                         </div>
@@ -92,7 +75,7 @@ class ComponentInfoForm extends Component {
          );
     }
 
-    
+
     // Xy ly va validate name
     handleName = (e) => {
         const {value} = e.target;
@@ -163,13 +146,20 @@ class ComponentInfoForm extends Component {
             link: this.state.componentLink,
             roles: this.state.componentRoles 
         };
-        if(this.isFormValidated()) return this.props.editComponent(this.state.componentId, component);
+        if(this.isFormValidated()) return this.props.createComponent(component);
+    }
+
+    componentDidMount(){
+        this.props.getRole();
+        this.props.getLink();
     }
 }
  
 const mapState = state => state;
 const getState = {
-    editComponent: ComponentDefaultActions.edit
+    getRole: RoleDefaultActions.get,
+    getLink: LinkDefaultActions.get,
+    createComponent: ComponentDefaultActions.create
 }
  
-export default connect(mapState, getState) (withTranslate(ComponentInfoForm));
+export default connect(mapState, getState) (withTranslate(ComponentCreateForm));

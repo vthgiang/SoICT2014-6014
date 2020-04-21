@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router } from "react-router-dom";
 import { createBrowserHistory } from 'history';
-import Routes from './react-routes/routes';
+import Routes from './react-routes/routes_';
 import { ToastContainer, toast } from 'react-toastify';
 import { IntlActions } from 'react-redux-multilingual';
 import store from './redux/store';

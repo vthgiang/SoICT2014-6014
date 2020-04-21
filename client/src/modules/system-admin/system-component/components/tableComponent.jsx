@@ -5,7 +5,7 @@ import { ComponentDefaultActions } from '../redux/actions';
 import ComponentInfoForm from './componentInfoForm';
 import { PaginateBar, DataTableSetting, DeleteNotification, SearchBar } from '../../../../common-components';
 import ComponentCreateForm from './componentCreateForm';
-import { LinkDefaultActions } from '../../providing-link/redux/actions';
+import { LinkDefaultActions } from '../../system-link/redux/actions';
 
 class TableComponent extends Component {
     constructor(props) {

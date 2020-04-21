@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RoleDefaultActions } from '../../root-role/redux/actions';
 import { LinkDefaultActions } from '../redux/actions';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { LinkDefaultValidator } from './providingLinkValidator';
+import { LinkDefaultValidator } from './systemLinkValidator';
 
 class CreateLinkForm extends Component {
     constructor(props) {

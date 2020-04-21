@@ -7,8 +7,8 @@ import CompanyServicesForm from './companyServiceForm';
 import CompanyCreateForm from './companyCreateForm';
 import { PaginateBar, DataTableSetting, SearchBar } from '../../../../common-components';
 import Swal from 'sweetalert2';
-import { LinkDefaultActions } from '../../providing-link/redux/actions';
-import { ComponentDefaultActions } from '../../providing-component/redux/actions';
+import { LinkDefaultActions } from '../../system-link/redux/actions';
+import { ComponentDefaultActions } from '../../system-component/redux/actions';
 
 class CompanyTable extends Component {
     constructor(props) {

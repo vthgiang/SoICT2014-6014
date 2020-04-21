@@ -5,7 +5,7 @@ import { alert } from '../modules/alert/redux/reducers';
 import { log } from '../modules/system-admin/log/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
-import { linksDefault } from '../modules/system-admin/providing-link/redux/reducers';
+import { linksDefault } from '../modules/system-admin/system-link/redux/reducers';
 import { user } from '../modules/super-admin/user/redux/reducers';
 import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
@@ -36,7 +36,7 @@ import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/re
 import { performtasks } from "../modules/task/task-perform/redux/reducers";
 import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rolesDefault } from "../modules/system-admin/root-role/redux/reducers";
-import { componentsDefault } from "../modules/system-admin/providing-component/redux/reducers";
+import { componentsDefault } from "../modules/system-admin/system-component/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
     alert,

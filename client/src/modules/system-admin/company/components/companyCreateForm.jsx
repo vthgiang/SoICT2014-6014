@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
-import { LinkDefaultActions } from '../../providing-link/redux/actions';
+import { LinkDefaultActions } from '../../system-link/redux/actions';
 import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
 import { CompanyFormValidator } from './companyFormValidator';
 

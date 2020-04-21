@@ -20,9 +20,9 @@ import { Notifications } from "../modules/combine-modules";
 
 import System from '../modules/system-admin/log/components';
 import Company from '../modules/system-admin/company/components';
-import LinksDefaultManagement from '../modules/system-admin/providing-link/components';
+import LinksDefaultManagement from '../modules/system-admin/system-link/components';
 import RolesDefaultManagement from '../modules/system-admin/root-role/components';
-import ComponentsDefaultManagement from '../modules/system-admin/providing-component/components';
+import ComponentsDefaultManagement from '../modules/system-admin/system-component/components';
 
 import ManageUser from '../modules/super-admin/user/components';
 import ManageRole from '../modules/super-admin/role/components';
