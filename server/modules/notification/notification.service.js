@@ -2,7 +2,7 @@ const NotificationUser = require('../../models/notification/notificationUser.mod
 const Notification = require('../../models/notification/notification.model')
 
 //Lấy tất cả các thông báo trong công ty
-exports.get = async (company) => { //id cua cong ty do
+exports.getAllNotifications = async (company) => { //id cua cong ty do
     return await Notification.find({ company })
         .populate([
             { path: 'creater', model: User }
@@ -10,7 +10,7 @@ exports.get = async (company) => { //id cua cong ty do
 }
 
 //Lấy danh sách thông báo theo số lượng
-exports.getPaginate = async (company, limit, page, data={}) => {
+exports.getPaginatedNotifications = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await Notification
         .paginate( newData , { 
@@ -20,12 +20,12 @@ exports.getPaginate = async (company, limit, page, data={}) => {
 }
 
 //Lấy thông tin về thông báo
-exports.getById = async (id) => {
+exports.getNotificationById = async (id) => {
     return await Notification.findById(id);
 }
 
 //Tạo thông báo mới
-exports.create = async (data, company) => {
+exports.createNotification = async (data, company) => {
     return await Notification.create({
         company,
         title: data.title,
@@ -47,12 +47,12 @@ exports.noticeToUsers = async (userArr, notificationId) => { //mảng các userI
     return await NotificationUser.insertMany(data);
 }
 
-exports.delete = async (id) => {
+exports.deleteReceivedNotification = async (id) => {
     return true;
 }
 
 //Lấy tất cả các thông báo đã nhận của user
-exports.getNotificationReceivered = async (userId) => {
+exports.getAllReceivedNotificationsOfUser = async (userId) => {
     var data = await NotificationUser
         .find({userId})
         .populate([{ path: 'notificationId', model: Notification }]);
@@ -62,20 +62,19 @@ exports.getNotificationReceivered = async (userId) => {
 }
 
 //Lấy tất cả các thông báo đã tạo của user
-exports.getNotificationSent = async (userId) => {
-    var notifications = await Notification.find({creater: userId});
+exports.getAllNotificationsSentByUser = async (userId) => {
+    var notifications = await Notification.find({creator: userId});
 
     return notifications;
 }
 
 // Xóa thông báo đã nhận - xóa trong collection NotificationUser
-exports.deleteNotificationReceivered = async (userId, notificationId) => {
-
+exports.deleteReceivedNotification = async (userId, notificationId) => {
     return await NotificationUser.deleteOne({userId, notificationId});
 }
 
 // Xóa thông báo đã gửi - xóa trực tiếp trong collection notifications
-exports.deleteNotificationSent = async (notificationId) => {
+exports.deleteSentNotification = async (notificationId) => {
     await NotificationUser.deleteMany({notificationId});
 
     return await Notification.deleteOne({_id: notificationId});

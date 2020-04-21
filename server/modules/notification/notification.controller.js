@@ -2,9 +2,9 @@ const NotificationServices = require('./notification.service');
 const UserServices = require('../super-admin/user/user.service');
 const { LogInfo, LogError } = require('../../logs');
 
-exports.get = async (req, res) => {
+exports.getAllNotifications = async (req, res) => {
     try {
-        var notifications = await NotificationServices.get(req.user.company._id);
+        var notifications = await NotificationServices.getAllNotifications(req.user.company._id);
 
         await LogInfo(req.user.email, 'GET_NOTIFICATIONS', req.user.company._id );
         res.status(200).json(notifications);
@@ -14,12 +14,12 @@ exports.get = async (req, res) => {
     }
 };
 
-exports.getPaginate = async (req, res) => {
+exports.getPaginatedNotifications = async (req, res) => {
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var notifications = await NotificationServices.getPaginate(req.user.company._id, limit, page, req.body);
+        var notifications = await NotificationServices.getPaginatedNotifications(req.user.company._id, limit, page, req.body);
 
         await LogInfo(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id );
         res.status(200).json(notifications);
@@ -30,10 +30,10 @@ exports.getPaginate = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createNotification = async (req, res) => {
     try {
         req.body.creater = req.user._id;
-        var notification = await NotificationServices.create(req.body, req.user.company._id);
+        var notification = await NotificationServices.createNotification(req.body, req.user.company._id);
         var {departments} = req.body;
         departments.forEach(async(department) => {
             var userArr =  await UserServices.getAllUsersInOrganizationalUnit(department);
@@ -49,9 +49,9 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getNotification = async (req, res) => {
     try {
-        var notification = await NotificationServices.getById(req.params.id);
+        var notification = await NotificationServices.getNotificationById(req.params.id);
 
         await LogInfo(req.user.email, 'SHOW_NOTIFICATION', req.user.company._id );
         res.status(200).json(notification)
@@ -62,9 +62,9 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editNotification = async (req, res) => {
     try {
-        var notification = await NotificationServices.edit(req.params.id, req.body);
+        var notification = await NotificationServices.editNotification(req.params.id, req.body);
         
         await LogInfo(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id );
         res.status(200).json(notification);
@@ -75,9 +75,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deleteNotification = async (req, res) => {
     try {
-        var notification = await NotificationServices.delete(req.params.id);
+        var notification = await NotificationServices.deleteReceivedNotification(req.params.id);
 
         await LogInfo(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
         res.status(200).json(notification);
@@ -90,7 +90,7 @@ exports.delete = async (req, res) => {
 
 exports.getNotificationReceivered = async (req, res) => {
     try {
-        var notifications = await NotificationServices.getNotificationReceivered(req.params.userId);
+        var notifications = await NotificationServices.getAllReceivedNotificationsOfUser(req.params.userId);
 
         await LogInfo(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id );
         res.status(200).json(notifications);
@@ -103,7 +103,7 @@ exports.getNotificationReceivered = async (req, res) => {
 
 exports.getNotificationSent = async (req, res) => {
     try {
-        var notifications = await NotificationServices.getNotificationSent(req.params.userId);
+        var notifications = await NotificationServices.getAllNotificationsSentByUser(req.params.userId);
 
         await LogInfo(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id );
         res.status(200).json(notifications);
@@ -116,7 +116,7 @@ exports.getNotificationSent = async (req, res) => {
 
 exports.deleteNotificationReceivered = async (req, res) => {
     try {
-        var notification = await NotificationServices.deleteNotificationReceivered(req.params.userId, req.params.notificationId);
+        var notification = await NotificationServices.deleteReceivedNotification(req.params.userId, req.params.notificationId);
 
         await LogInfo(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
         res.status(200).json({
@@ -136,7 +136,7 @@ exports.deleteNotificationReceivered = async (req, res) => {
 
 exports.deleteNotificationSent = async (req, res) => {
     try {
-        var notification = await NotificationServices.deleteNotificationSent(req.params.id);
+        var notification = await NotificationServices.deleteSentNotification(req.params.id);
 
         await LogInfo(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
         res.status(200).json({
