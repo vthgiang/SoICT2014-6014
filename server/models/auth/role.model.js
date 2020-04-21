@@ -18,7 +18,7 @@ const RoleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Company
     },
-    extendFromRoles: [{ //có tất cả các quyền của những role bên trong mảng này
+    parents: [{ // các roles cha. Role này sẽ có tất cả các quyền của những role cha khai báo trong mảng này
         type: Schema.Types.ObjectId,
         replies: this
     }],

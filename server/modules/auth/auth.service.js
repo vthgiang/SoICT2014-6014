@@ -47,7 +47,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         );
         
         user.status = 0; 
-        user.token.push(token);
+        user.tokens.push(token);
         user.save();
 
         return { 
@@ -72,7 +72,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         );
 
         user.status = 0; 
-        user.token.push(token);
+        user.tokens.push(token);
         user.save();
 
         return { 
@@ -89,8 +89,8 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
 
 exports.logout = async (id, token) => {
     var user = await User.findById(id);
-    var position = await user.token.indexOf(token);
-    user.token.splice(position, 1);
+    var position = await user.tokens.indexOf(token);
+    user.tokens.splice(position, 1);
     user.save();
 
     return user;
@@ -98,7 +98,7 @@ exports.logout = async (id, token) => {
 
 exports.logoutAllAccount = async (id) => {
     var user = await User.findById(id);
-    user.token = [];
+    user.tokens = [];
     user.save();
     
     return user;

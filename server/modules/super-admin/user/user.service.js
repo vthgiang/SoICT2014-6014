@@ -103,7 +103,7 @@ exports.editUser = async (id, data) => {
     }
     if(data.active !== undefined && data.active !== null) user.active = data.active;
     if(user.active === false) 
-        user.token = [];
+        user.tokens = [];
     user.save();
 
     return user;
