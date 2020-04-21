@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ComponentDefaultController = require('./providingComponent.controller');
+const ComponentDefaultController = require('./systemComponent.controller');
 const { auth } = require('../../../middleware');
 
 router.get("/", auth, ComponentDefaultController.get);

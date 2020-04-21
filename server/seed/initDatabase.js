@@ -1,6 +1,6 @@
 const Log = require('../models/system-admin/log.model');
 
-const { RoleType, Role, RootRole, ProvidingLink, Link, Privilege, User, UserRole} = require('../models').schema;
+const { RoleType, Role, RootRole, SystemLink, Link, Privilege, User, UserRole} = require('../models').schema;
 
 const Terms = require('./terms');
 const mongoose = require("mongoose");
@@ -97,7 +97,7 @@ const seedDatabase = async () => {
     ])
     // Khởi tạo các link default để áp dụng cho các công ty sử dụng dịch vụ
     // index: 0-super admin, 1-admin, 2-dean, 3-vice dean, 4-employee
-    const linkDefaults = await ProvidingLink.insertMany([
+    const linkDefaults = await SystemLink.insertMany([
 
         // Common
         {

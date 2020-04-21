@@ -44,8 +44,8 @@ const user = require('./modules/super-admin/user/user.route');
 
 const company = require('./modules/system-admin/company/company.route');
 const log = require('./modules/system-admin/log/log.route');
-const providingComponent = require('./modules/system-admin/providing-component/providingComponent.route');
-const providingLink = require('./modules/system-admin/providing-link/providingLink.route');
+const systemComponent = require('./modules/system-admin/system-component/systemComponent.route');
+const systemLink = require('./modules/system-admin/system-link/systemLink.route');
 const rootRole = require('./modules/system-admin/root-role/rootRole.route');
 
 const tasktemplate =require ("./modules/task/task-template/taskTemplate.route")
@@ -135,8 +135,8 @@ app.use("/user", user);
 
 app.use("/company", company);
 app.use("/log", log);
-app.use("/components-default-management", providingComponent);
-app.use("/links-default-management", providingLink);
+app.use("/components-default-management", systemComponent);
+app.use("/links-default-management", systemLink);
 app.use("/roles-default-management", rootRole);
 
 app.use("/tasks", taskManagement);

@@ -1,4 +1,4 @@
-const LinkDefaultService = require('./providingLink.service');
+const LinkDefaultService = require('./systemLink.service');
 const {LogInfo, LogError} =  require('../../../logs');
 
 exports.get = async (req, res) => {

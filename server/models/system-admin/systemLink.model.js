@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const ProvidingComponent = require('./providingComponent.model');
+const SystemComponent = require('./systemComponent.model');
 const RootRole = require('./rootRole.model');
 
 // Create Schema
-const ProvidingLinkSchema = new Schema({
+const SystemLinkSchema = new Schema({
     url: {
         type: String,
         required: true
@@ -16,7 +16,7 @@ const ProvidingLinkSchema = new Schema({
     },
     components: [{
         type: Schema.Types.ObjectId,
-        ref: ProvidingComponent
+        ref: SystemComponent
     }],
     roles: [{
         type: Schema.Types.ObjectId,
@@ -30,6 +30,6 @@ const ProvidingLinkSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-ProvidingLinkSchema.plugin(mongoosePaginate);
+SystemLinkSchema.plugin(mongoosePaginate);
 
-module.exports = ProvidingLink = mongoose.model("providing_links", ProvidingLinkSchema);
+module.exports = SystemLink = mongoose.model("system_links", SystemLinkSchema);

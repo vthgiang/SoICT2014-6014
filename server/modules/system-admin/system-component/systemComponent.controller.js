@@ -1,4 +1,4 @@
-const ComponentDefaultServices = require('./providingComponent.service');
+const ComponentDefaultServices = require('./systemComponent.service');
 const {LogInfo, LogError} = require('../../../logs');
 exports.get = async (req, res) => {
     try {

@@ -31,8 +31,8 @@ const RoleType = require('./super-admin/roleType.model');
 
 const Company = require('./system-admin/company.model');
 const Log = require('./system-admin/log.model');
-const ProvidingComponent = require('./system-admin/providingComponent.model');
-const ProvidingLink = require('./system-admin/providingLink.model');
+const SystemComponent = require('./system-admin/systemComponent.model');
+const SystemLink = require('./system-admin/systemLink.model');
 const RootRole = require('./system-admin/rootRole.model');
 
 const Task = require('./task/task.model');
@@ -85,8 +85,8 @@ exports.schema = {
 
     Company,
     Log,
-    ProvidingComponent,
-    ProvidingLink,
+    SystemComponent,
+    SystemLink,
     RootRole,
 
     Task,
