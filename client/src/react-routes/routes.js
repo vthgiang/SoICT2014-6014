@@ -63,7 +63,6 @@ import { TaskManagement } from "../modules/task/task-management/component/taskMa
 import { TaskDashboard } from "../modules/task/task-management/component/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
 
-
 //asset
 import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure/components";
 import ManagerAssetType from "../modules/assets-manager/asset-type/components";
@@ -71,6 +70,7 @@ import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/compo
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerAsset from "../modules/assets-manager/asset-manager/components";
 import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
+
 class Routes extends Component {
 
     render() {
@@ -664,24 +664,6 @@ class Routes extends Component {
                         component={ TaskDashboard }
                     />
 
-                    {/** Quản lý tài sản */}
-                    {/** Nhân viên */}
-                    <PrivateRoute 
-                        isLoading={ this.props.recommendProcure.isLoading }
-                        key={ 'recommend-equipment-procurement' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/recommend-equipment-procurement', name: 'recommend_equipment_procurement', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/recommend-equipment-procurement' }
-                        path={ '/recommend-equipment-procurement' }
-                        pageName={ 'recommend_equipment_procurement' }
-                        layout={ Layout }
-                        component={ ManagerRecommendProcure }
-                    />
-
                     {/** Quản lý */}
                     <PrivateRoute 
                         isLoading={ this.props.assetType.isLoading }
@@ -713,6 +695,22 @@ class Routes extends Component {
                         pageName={ 'add_asset' }
                         layout={ Layout }
                         component={ AssetCreatePage }
+                    /> 
+
+                    <PrivateRoute 
+                        isLoading={ this.props.asset.isLoading }
+                        key={ 'manage-info-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-info-asset', name: 'manage_info_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-info-asset' }
+                        path={ '/manage-info-asset' }
+                        pageName={ 'manage_info_asset' }
+                        layout={ Layout }
+                        component={ ManagerAsset }
                     />
 
                     <PrivateRoute 
@@ -746,7 +744,7 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ ManagerDistributeTransfer }
                     />
-                    
+
                     {/* NOT FOUND */}
                     <Route component={ NotFound }></Route>
                 </Switch>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../redux/actions';
 import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../../../Chart/canvasjs.react.js';
+import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
  
 class DashBoardKPIMember extends Component {
     constructor(props) {

@@ -45,7 +45,7 @@ class SideBar extends Component {
 
         const url1 = {
             path1: "/manage-type-asset", //Quản lý loại tài sản
-            path2: "/add-asset", //Quản lý loại tài sản
+            path2: "/add-asset", //Thêm tài sản
             path3: "/manage-info-asset", //Quản lý thông tin tài sản
             path4: "/manage-history-asset", //Quản lý lịch sử hoạt động
             path5: "/manage-repair-asset", //Quản lý sửa chữa, thay thế
