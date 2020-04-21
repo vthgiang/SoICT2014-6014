@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RepairUpgradeCreateForm } from './RepairUpgradeCreateForm';
 import { RepairUpgradeEditForm } from './RepairUpgradeEditForm';
-import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 // import { RepairUpgradeActions } from '../redux/actions';
 
 class RepairUpgradeManager extends Component {
@@ -209,7 +209,7 @@ class RepairUpgradeManager extends Component {
                                 <th style={{ width: "10%" }}>Chi phí</th>
                                 <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>Hành động
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="repairupgrade-table"
                                         columnArr={[
                                             "Mã tài sản",

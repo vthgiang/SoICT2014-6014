@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AssetTypeCreateForm } from './AssetTypeCreateForm';
 import { AssetTypeEditForm } from './AssetTypeEditForm';
-import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 // import { AssetTypeActions } from '../redux/actions';
 
 class AssetTypeManager extends Component {
@@ -119,7 +119,7 @@ class AssetTypeManager extends Component {
                                 <th style={{ width: "25%" }}>Loại tài sản cha</th>
                                 <th style={{ width: "20%" }}>Mô tả</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="assettype-table"
                                         columnArr={[
                                             "Mã loại tài sản",

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RecommendProcureCreateForm } from './RecommendProcureCreateForm';
 import { RecommendProcureEditForm } from './RecommendProcureEditForm';
-import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 // import { RecommendProcureActions } from '../redux/actions';
 
 class RecommendProcureManager extends Component {
@@ -167,7 +167,7 @@ class RecommendProcureManager extends Component {
                                 <th style={{ width: "17%" }}>Ghi chú</th>
                                 <th style={{ width: "11%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="recommendprocure-table"
                                         columnArr={[
                                             "Mã phiếu",

@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import {
     ModalAddDistribute, ModalEditDistribute, //ModalAddDiscipline, ModalEditDiscipline
 } from './CombineContent';
-import {  DatePicker, ActionColumn, SelectMulti } from '../../../../common-components';
+import {  DatePicker, DataTableSetting, SelectMulti } from '../../../../common-components';
 
 class TabDistributeContent extends Component {
     constructor(props) {
@@ -140,7 +140,7 @@ class TabDistributeContent extends Component {
                                 <th style={{ width: "10%" }}>Người tiếp nhận</th>
                                 <th style={{ width: "10%" }}>Vị trí tài sản</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>Hành động
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="distributetransfer-table"
                                         columnArr={[
                                             "Mã phiếu",

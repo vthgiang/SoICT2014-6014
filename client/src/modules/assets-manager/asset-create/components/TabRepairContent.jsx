@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import {
     ModalAddRepair, ModalEditRepair,// ModalAddDiscipline, ModalEditDiscipline
 } from './CombineContent';
-import {  DatePicker, ActionColumn, SelectMulti } from '../../../../common-components';
+import {  DatePicker, DataTableSetting, SelectMulti } from '../../../../common-components';
 
 class TabRepairContent extends Component {
     constructor(props) {
@@ -153,7 +153,7 @@ class TabRepairContent extends Component {
                                 <th style={{ width: "10%" }}>Chi phí</th>
                                 <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="repairupgrade-table"
                                         columnArr={[
                                             "Mã phiếu",

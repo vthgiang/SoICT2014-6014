@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DistributeTransferCreateForm } from './DistributeTransferCreateForm';
 import { DistributeTransferEditForm } from './DistributeTransferEditForm';
-import { DeleteNotification, DatePicker, PaginateBar, ActionColumn, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 // import { DistributeTransferActions } from '../redux/actions';
 
 class DistributeTransferManager extends Component {
@@ -181,7 +181,7 @@ class DistributeTransferManager extends Component {
                                 <th style={{ width: "10%" }}>Người tiếp nhận</th>
                                 <th style={{ width: "10%" }}>Vị trí tài sản</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>Hành động
-                                    <ActionColumn
+                                    <DataTableSetting
                                         tableId="distributetransfer-table"
                                         columnArr={[
                                             "Mã tài sản",
