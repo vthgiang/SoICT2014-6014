@@ -18,7 +18,6 @@ class NotificationReceivered extends Component {
 
     convertContent = (content) => {
         const newContent = content.slice(0,24);
-        console.log("new content: ",newContent);
         return newContent.concat(newContent, ' ... ');
     }
 

@@ -49,22 +49,17 @@ exports.createCompany = async (req, res) => {
     try {
         //Tạo thông tin công ty mới(tên, tên ngắn, mô tả)
         const company = await CompanyService.createCompany(req.body);
-        console.log("tao cty", company)
 
         //Tạo 5 role abstract cho công ty mới
         const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
-        console.log("tao role abs: ", abstractRoles)
         
         //Super admin cho công ty mới
         const superadmin = await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
-        console.log("tao superadmin abs: ", superadmin)
 
         //Tạo link và các component tương ứng cho các trang mà công ty được phép truy cập
         const links = await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
-        console.log("tạo các links: ", links);
 
         const components = await CompanyService.createCompanyComponents(company._id, req.body.links);
-        console.log("tạo các components: ", components);
 
         const resCompany = await CompanyService.getCompany(company._id);
         
@@ -75,7 +70,6 @@ exports.createCompany = async (req, res) => {
             content: resCompany
         });
     } catch (error) {
-        console.log("err-com: ", error);
         LogError(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
@@ -116,8 +110,6 @@ exports.editCompany = async (req, res) => {
             content: resCompany
         });
     } catch (error) {
-        
-        console.log("err-com: ", error);
         LogError(req.user.email, 'EDIT_COMPANY');
         res.status(400).json({
             success: false,
@@ -229,7 +221,6 @@ exports.addCompanyComponent = async (req, res) => {
 
 exports.deleteCompanyComponent = async (req, res) => {
     try {
-        console.log("deletecomponent com: ", req.params.id, req.params.componentId)
         const component = await CompanyService.deleteCompanyComponent(req.params.id, req.params.componentId);
         
         LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
@@ -269,7 +260,6 @@ exports.getCompanyLinks = async (req, res) => {
 
 exports.getPaginatedCompanyLinks = async (req, res) => {
     try {
-        console.log('company link paginate: ', req.params.id, req.params.page, req.params.limit, req.body);
         const links = await CompanyService.getPaginatedCompanyLinks(
             req.params.id, 
             req.params.page, 

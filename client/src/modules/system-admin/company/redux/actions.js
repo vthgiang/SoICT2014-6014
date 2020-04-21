@@ -30,7 +30,6 @@ function get(){
             .catch(err => {
                 AlertActions.handleAlert(dispatch, err);
                 dispatch({ type: CompanyConstants.GET_COMPANIES_FAILE});
-                console.log("Error: ", err);
             })
     }
 }
@@ -48,7 +47,6 @@ function getPaginate(data){
             .catch(err => {
                 dispatch({ type: CompanyConstants.GET_COMPANIES_PAGINATE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
             })
     }
 }
@@ -68,7 +66,6 @@ function create(company){
             .catch(err => {
                 dispatch({ type: CompanyConstants.CREATE_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -91,7 +88,6 @@ function edit(id, data){
             .catch(err => {
                 dispatch({ type: CompanyConstants.EDIT_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -105,7 +101,6 @@ function addNewLink(id, data){
         return new Promise((resolve, reject) => {
             CompanyServices.addNewLink(id, data)
             .then(res => {
-                console.log("add new link: ",res);
                 dispatch({
                     type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS,
                     payload: res.data.content
@@ -115,7 +110,6 @@ function addNewLink(id, data){
             .catch(err => {
                 dispatch({ type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -129,7 +123,6 @@ function deleteLink(companyId, linkId){
         return new Promise((resolve, reject) => {
             CompanyServices.deleteLink(companyId, linkId)
             .then(res => {
-                console.log("delete link: ",res);
                 dispatch({
                     type: CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS,
                     payload: res.data.content
@@ -139,7 +132,6 @@ function deleteLink(companyId, linkId){
             .catch(err => {
                 dispatch({ type: CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err.response.data);
                 reject(err);
             })
         });
@@ -162,7 +154,6 @@ function addNewComponent(id, data){
             .catch(err => {
                 dispatch({ type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -185,7 +176,6 @@ function deleteComponent(companyId, componentId){
             .catch(err => {
                 dispatch({ type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err.response.data);
                 reject(err);
             })
         });
@@ -208,7 +198,6 @@ function linksList(companyId){
             .catch(err => {
                 dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -231,7 +220,6 @@ function linksPaginate(companyId, page, limit, data={}){
             .catch(err => {
                 dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -254,7 +242,6 @@ function componentsList(companyId){
             .catch(err => {
                 dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });
@@ -277,7 +264,6 @@ function componentsPaginate(companyId, page, limit, data={}){
             .catch(err => {
                 dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         });

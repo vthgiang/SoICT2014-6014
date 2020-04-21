@@ -124,7 +124,6 @@ function deleteTarget(id, kpipersonal) {
 
 // thêm mục tiêu KPI cá nhân
 function addNewTargetPersonal(newTarget) {
-    console.log(newTarget);
     return dispatch => {
         dispatch({ type: createKpiConstants.ADDTARGET_KPIPERSONAL_REQUEST });
 

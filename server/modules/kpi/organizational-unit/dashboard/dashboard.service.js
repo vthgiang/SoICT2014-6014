@@ -137,7 +137,7 @@ exports.evaluateKPI = async (id) => {
             // tính điểm cho cả KPI đơn vị
             var totaltarget = listtarget.length;
             var totalpoint = listtarget.reduce((sum, item) => sum + item.result, 0);
-            // console.log(totalpoint);
+            
             pointkpi = Math.round((totalpoint / totaltarget) * 10) / 10;
             kpiunit = await KPIUnit.findByIdAndUpdate(id, { result: pointkpi }, { new: true });
             kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();

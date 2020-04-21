@@ -109,7 +109,6 @@ class UpdateEmployee extends Component {
                     let employeeNumber = this.props.employeesInfo.employee.map(x => x.employeeNumber);
                     let formData = new FormData();
                     formData.append('fileUpload', this.state.avatar);
-                    console.log(employeeNumber);
                     await this.props.uploadAvatar(employeeNumber, formData)
                         .then(res => {
                             updateAvater = res.success;

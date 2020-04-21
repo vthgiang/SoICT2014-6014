@@ -20,7 +20,6 @@ class TableComponent extends Component {
 
     // Cac ham xu ly du lieu voi modal
     handleEdit = async (component) => {
-        console.log("click")
         await this.setState(state => {
             return {
                 ...state,

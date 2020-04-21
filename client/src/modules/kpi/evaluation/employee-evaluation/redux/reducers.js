@@ -82,8 +82,6 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_SUCCESS:
-      console.log(action.newKPI.kpimembers);
-      console.log(state.kpimembers);
       return {
         ...state,
         currentKPI: action.newKPI.kpimember,

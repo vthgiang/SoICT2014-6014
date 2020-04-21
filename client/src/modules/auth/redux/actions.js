@@ -32,7 +32,6 @@ function login(user){
                 })
             })
             .catch(err => {
-                console.log(err.response)
                 dispatch({type: AuthConstants.LOGIN_FAILE, payload: err.response.data});
             })
     }
@@ -47,7 +46,6 @@ function logout(){
                 dispatch({type: 'RESET'})
             })
             .catch(err => {
-                console.log(err);
                 dispatch({type: AuthConstants.LOGOUT_FAILE});
             })
     }
@@ -62,7 +60,6 @@ function logoutAllAccount(){
                 dispatch({type: 'RESET'});
             })
             .catch(err => {
-                console.log(err);
                 dispatch({type: AuthConstants.LOGOUT_ALL_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
@@ -82,7 +79,6 @@ function editProfile(data){
                 resolve(res);
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({type: AuthConstants.EDIT_PROFILE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
@@ -104,7 +100,6 @@ function changeInformation(data){
                 resolve(res);
             })
             .catch(err => {
-                console.log("Error: ", err.response);
                 dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
@@ -126,7 +121,6 @@ function changePassword(data){
                 resolve(res);
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_FAILE });
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
@@ -147,7 +141,6 @@ function getLinksOfRole(idRole){
                 resolve(res);
             })
             .catch(err => {
-                console.log(err.response);
                 dispatch({type: AuthConstants.GET_LINKS_OF_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
@@ -167,7 +160,6 @@ function refresh(){
                 })
             })
             .catch(err => {
-                console.log(err.response);
                 dispatch({type: AuthConstants.REFRESH_DATA_USER_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
@@ -189,7 +181,6 @@ function forgotPassword(email){
             .catch(err => {
                 dispatch({type: AuthConstants.FORGOT_PASSWORD_FAILE});
                 reject(err);
-                console.log("Error: ", err);
             })
         });
     }
@@ -208,7 +199,6 @@ function resetPassword(otp, email, password){
                     resolve(res);
                 })
                 .catch(err => {
-                    console.log("Error: ", err);
                     dispatch({type: AuthConstants.RESET_PASSWORD_FAILE});
                     reject(err);
                 })
@@ -228,7 +218,6 @@ function getComponentOfUserInLink(curentRole, linkId){
                 })
             })
             .catch(err => {
-                console.log(err.response);
                 dispatch({type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })

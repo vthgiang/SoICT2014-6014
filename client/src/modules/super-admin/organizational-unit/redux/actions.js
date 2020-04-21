@@ -25,7 +25,6 @@ function get(){
                     resolve(res);
                 })
                 .catch(err => {
-                    console.log("Error: ", err.response);
                     dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
@@ -48,7 +47,6 @@ function create(data){
                     resolve(res.data.content);
                 })
                 .catch(err => {
-                    console.log("Error: ", err);
                     dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
@@ -71,7 +69,6 @@ function edit(data){
                     resolve(res.data.content);
                 })
                 .catch(err => {
-                    console.log("Error: ", err);
                     dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
@@ -96,7 +93,6 @@ function destroy(departmentId){
                 resolve(res);
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);

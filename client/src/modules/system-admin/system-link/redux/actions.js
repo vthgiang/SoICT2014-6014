@@ -25,7 +25,6 @@ function get(){
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
             })
     }
 }
@@ -43,7 +42,6 @@ function getCategories(){
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
             })
     }
 }
@@ -61,7 +59,6 @@ function getPaginate(data){
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
             })
     }
 }
@@ -79,7 +76,6 @@ function show(id){
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.SHOW_LINK_DEFAULT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
             })
     }
 }
@@ -100,7 +96,6 @@ function create(link){
                 .catch(err => {
                     dispatch({ type: LinkDefaultConstants.CREATE_LINK_DEFAULT_FAILE});
                     AlertActions.handleAlert(dispatch, err);
-                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -122,7 +117,6 @@ function edit(id, link){
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.EDIT_LINK_DEFAULT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
                 reject(err);
             })
         })
@@ -142,7 +136,6 @@ function destroy(id, link){
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.DELETE_LINK_DEFAULT_FAILE});
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err.response.data);
             })
     }
 }

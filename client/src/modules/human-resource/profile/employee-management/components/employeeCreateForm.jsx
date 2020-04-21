@@ -310,7 +310,6 @@ class EmployeeCreateForm extends Component {
         }
     }
     render() {
-        console.log(this.state);
         const { translate, employeesManager } = this.props;
         return (
             <React.Fragment>

@@ -117,7 +117,6 @@ async function createKPIPersonal(newKPI) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    console.log(id);
     newKPI = {...newKPI, creater: id};
 
     const requestOptions = {

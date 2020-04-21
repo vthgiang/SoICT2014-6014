@@ -239,7 +239,6 @@ export function performtasks(state = {}, action) {
                 commenttasks: state.commenttasks.filter(comment => comment._id !== action.id)
             };
         case performTaskConstants.DELETE_ACTIONTASK_REQUEST:
-            console.log(action.id)
             return {
                 ...state,
                 actiontasks: state.actiontasks.map(action1=>

@@ -13,7 +13,6 @@ exports.get = (req, res) => {
     TaskTemplate.find()
         .then(templates => res.status(200).json(templates))
         .catch(err => res.status(400).json({ message: err }));
-    console.log("Get Task Template");
 }
 
 //Lấy mẫu công việc theo Id
@@ -137,8 +136,6 @@ exports.create = async (body) => {
             })
         });
         var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
-
-        console.log("Create Task Template sucessfully");
 
         return ({
             message: "Create Task Template Successfully!",

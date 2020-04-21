@@ -85,7 +85,6 @@ class ModalApproveTask extends Component {
         await this.setState(state => {
             var percent = parseInt(this.percent.value);
             var a = this.validatePoint(percent)
-            console.log('---errorOnPercent---', a);
             return {
                 ...state,
                 systempoint: percent,
@@ -191,11 +190,8 @@ class ModalApproveTask extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) { // nếu next != prev thì cập nhật state
-        console.log('-----Next----', nextProps);
-        console.log('-----Prev----', prevState);
         const { tasks } = nextProps;
         if (nextProps.taskID !== prevState.taskID) {
-            console.log('-----update----');
             var task;
             var respPoint, consultPoint, accoutPoint;
             if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;

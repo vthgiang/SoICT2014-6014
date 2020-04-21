@@ -24,7 +24,7 @@ class NotificationCreate extends Component {
         var departments = [].filter.call(this.refs.departments.options, o => o.selected).map(o => o.value);
         var users = [].filter.call(this.refs.users.options, o => o.selected).map(o => o.value);
         var data = {title, icon, content, departments, users};
-        console.log("data notification: ",data);
+        
 
         return this.props.create(data);
     }

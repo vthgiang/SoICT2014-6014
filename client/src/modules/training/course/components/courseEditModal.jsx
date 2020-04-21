@@ -60,7 +60,6 @@ class ModalEditTrainingPlan extends Component {
             endDate: this.refs.endDate.value,
             educationProgram: this.refs.educationProgram.value,
         });
-        console.log(this.state);
         if (this.state.numberCourse === "") {
             this.notifyerror("Bạn chưa nhập mã khoá học");
         } else if (this.state.nameCourse === "") {

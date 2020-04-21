@@ -18,7 +18,6 @@ export const getLogState = () => {
                     payload: err.response
                 })
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
             })
     }
 }
@@ -39,7 +38,6 @@ export const toggleLogState = () => {
                     payload: err.response
                 })
                 AlertActions.handleAlert(dispatch, err);
-                console.log("Error: ", err);
             })
     }
 }

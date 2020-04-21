@@ -59,7 +59,6 @@ export function auth(state = initState, action) {
 
         case AuthConstants.CHANGE_USER_INFORMATION_SUCCESS:
         case AuthConstants.CHANGE_USER_PASSWORD_SUCCESS:
-            console.log()
             return {
                 ...state,
                 calledAPI: true,

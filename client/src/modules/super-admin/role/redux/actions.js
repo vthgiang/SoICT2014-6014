@@ -22,7 +22,6 @@ function get(){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err.response);
                 AlertActions.handleAlert(dispatch, err);
                 dispatch({ type: RoleConstants.GET_ROLES_FAILE});
             })
@@ -40,7 +39,6 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
                 AlertActions.handleAlert(dispatch, err);
                 dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_FAILE});
             })
@@ -58,7 +56,6 @@ function show(id){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: RoleConstants.SHOW_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })
@@ -79,7 +76,6 @@ function create(role){
                     resolve(res.data.content);
                 })
                 .catch(err => {
-                    console.log("Error: ", err);
                     dispatch({ type: RoleConstants.CREATE_ROLE_FAILE});
                     AlertActions.handleAlert(dispatch, err);
                     reject(err);
@@ -101,7 +97,6 @@ function edit(role){
                 resolve(res.data.content);
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: RoleConstants.EDIT_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
                 reject(err);
@@ -121,7 +116,6 @@ function destroy(roleId){
                 })
             })
             .catch(err => {
-                console.log("Error: ", err);
                 dispatch({ type: RoleConstants.DELETE_ROLE_FAILE});
                 AlertActions.handleAlert(dispatch, err);
             })

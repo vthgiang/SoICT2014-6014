@@ -183,7 +183,6 @@ class ModalAddTaskTemplate extends Component {
 
     handleTaskTemplateDesc = (event) => {
         let value = event.target.value;
-        console.log(value);
         this.validateTaskTemplateDesc(value, true);
     }
     validateTaskTemplateDesc = (value, willUpdateState=true) => {

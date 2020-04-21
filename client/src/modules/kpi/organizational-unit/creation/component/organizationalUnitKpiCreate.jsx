@@ -272,7 +272,6 @@ class KPIUnitCreate extends Component {
                 || item.employee === this.state.currentRole);
         }
         if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
-        console.log(currentKPI);
 
         // hàm để chuyển sang song ngữ
         const { translate } = this.props;

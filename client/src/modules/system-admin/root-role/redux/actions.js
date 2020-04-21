@@ -18,7 +18,6 @@ function get(){
             })
             .catch(err => {
                 dispatch({ type: RoleDefaultConstants.GET_ROLES_DEFAULT_FAILE});
-                console.log("Error: ", err.response);
                 AlertActions.handleAlert(dispatch, err);
             })
     }

@@ -110,7 +110,6 @@ class TabTaskContent extends Component {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Lưu'
             }).then((res) => {
-                console.log("okokokok");
             });
         }
         await this.setState(state => {

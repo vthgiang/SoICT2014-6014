@@ -91,8 +91,7 @@ class ModalMemberEvaluate extends Component {
         var myTask=[];
         const { kpimembers } = this.props;
         if(typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
-        console.log("=========================");
-        console.log(kpimembers.tasks);
+        
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.listtarget;
         }

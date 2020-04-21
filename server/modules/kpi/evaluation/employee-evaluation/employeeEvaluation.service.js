@@ -18,7 +18,7 @@ exports.getKPIAllMember = async (data) => {
     var endtime = data.endtime.split("-");
     var enddate = new Date(endtime[1], endtime[0], 28);
     var status = parseInt(data.status);
-    console.log(enddate);
+    
     if (data.user === "all") {
         if (status === 5) {
             kpipersonals = await KPIPersonal.find({
@@ -168,28 +168,25 @@ exports.getById = async (id) => {
 exports.getTaskById= async (id) =>{
     var task = await Task.find({kpi: id}) 
     .populate({ path: "unit responsible accounatable consulted informed results parent tasktemplate comments" });
-    console.log(task);
-        return {
-            message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
-            content: task
-        }
+    
+    return {
+        message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
+        content: task
+    }
 }
 
 exports.getSystemPoint= async(id)=>{
-    console.log("---------------");
     var task = await Task.find({ kpi: id })
         .populate({ path: "unit responsible accounatable consulted informed results parent tasktemplate comments" });
     var kpi= await DetailKPIPersonal.findById(id);
-    console.log(kpi);
+    
     var sum = 0,i=0;
     for (i=0; i<task.length;i++){
         sum +=task[i].point;
-        console.log(task[i].point);
     }
-    console.log(kpi.weight);
+    
     var systempoint= sum/task.length*kpi.weight/100;
-    console.log(systempoint);
-    console.log("========");
+    
     var kpipersonal= await DetailKPIPersonal.findByIdAndUpdate(id, { $set: { systempoint: systempoint} }, { new: true });
     return {
         message: "DetailKPI tính điểm sys thành công",

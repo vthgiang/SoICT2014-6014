@@ -79,7 +79,6 @@ class ModalStartKPIPersonal extends Component {
         }
 
         await this.setState(state => {
-            console.log('clicked');
             return {
                 ...state,
                 kpipersonal: {
@@ -100,7 +99,6 @@ class ModalStartKPIPersonal extends Component {
         var userdepartments;
         const { unit, user, translate } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
-        // console.log(this.getCreater());
 
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -113,7 +111,6 @@ class ModalStartKPIPersonal extends Component {
             day = '0' + day;
         var defaultTime =  [month, year].join('-');
 
-        console.log(this.state);
         return (
             <React.Fragment>
                 <DialogModal

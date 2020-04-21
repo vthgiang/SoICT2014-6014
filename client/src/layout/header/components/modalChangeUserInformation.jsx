@@ -16,7 +16,6 @@ class ModalChangeUserInformation extends Component {
     render() { 
         const {translate} = this.props;
         const {userAvatar, userName, userEmail, userNameError, userEmailError} = this.state;
-        console.log("state user: ", this.state)
         return ( 
             <DialogModal
                 modalID="modal-profile"

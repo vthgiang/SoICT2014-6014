@@ -26,7 +26,6 @@ function get(){
                 })
                 .catch(err => {
                     AlertActions.handleAlert(dispatch, err);
-                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -48,7 +47,6 @@ function getNotificationReceivered(){
                 })
                 .catch(err => {
                     AlertActions.handleAlert(dispatch, err);
-                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -70,7 +68,6 @@ function getNotificationSent(){
                 })
                 .catch(err => {
                     AlertActions.handleAlert(dispatch, err);
-                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -92,7 +89,6 @@ function create(data){
                 })
                 .catch(err => {
                     AlertActions.handleAlert(dispatch, err);
-                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -115,7 +111,6 @@ function deleteNotificationReceiverd(notificationId){
                 .catch(err => {
                     dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_FAILE});
                     AlertActions.handleAlert(dispatch, err);
-                    console.log("Error: ", err);
                     reject(err);
                 })
         })
@@ -138,7 +133,6 @@ function deleteNotificationSent(id){
                 .catch(err => {
                     dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_SENT_FAILE});
                     AlertActions.handleAlert(dispatch, err);
-                    console.log("Error: ", err);
                     reject(err);
                 })
         })
