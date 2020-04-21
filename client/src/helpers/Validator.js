@@ -5,8 +5,6 @@ const employeeNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
 const urlRegex = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
 const stringNotSpaceRegex = /^[^~`!@#$%^&*()+=/ *';\\<>?:",]*$/;
 
-const recommendNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
-
 /**
  * Validate dữ liệu nhập vào từ người dùng trươc khi gửi đến cho server xử lý
  */

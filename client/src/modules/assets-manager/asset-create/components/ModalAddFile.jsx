@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ModalButton, ErrorLabel } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-components';
 import { AssetCreateValidator } from './CombineContent';
 class ModalAddFile extends Component {
     constructor(props) {
@@ -117,8 +117,8 @@ class ModalAddFile extends Component {
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
-                <ModalDialog
+                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
+                <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
                     title={translate('manage_employee.add_file')}
@@ -156,7 +156,7 @@ class ModalAddFile extends Component {
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
             </React.Fragment>
         );
     }

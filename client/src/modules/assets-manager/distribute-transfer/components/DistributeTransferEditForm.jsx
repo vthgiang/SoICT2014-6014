@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { DistributeTransferFromValidator } from './DistributeTransferFromValidator';
 // import { DistributeTransferActions } from '../redux/actions';
 class DistributeTransferEditForm extends Component {
@@ -205,7 +205,7 @@ class DistributeTransferEditForm extends Component {
                 errorOnDateCreate, errorOnPlace, errorOnHandoverMan, errorOnReceiver, errorOnAssetNumber, errorOnLocation, errorOnReason } = this.state;
         return (
             <React.Fragment>
-                <ModalDialog
+                <DialogModal
                     size='75' modalID="modal-edit-distribute" isLoading={distributeTransfer.isLoading}
                     formID="form-edit-distributetransfer"
                     title="Chỉnh sửa thông tin phiếu cấp phát - điều chuyển - thu hồi"
@@ -299,7 +299,7 @@ class DistributeTransferEditForm extends Component {
                             </div>
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
             </React.Fragment>
         );
     }

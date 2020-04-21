@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CanvasJSReact from '../../../../chart/canvasjs.react';
+import CanvasJSReact from '../../../../Chart/canvasjs.react';
 // import CanvasJSReact from '../../../../components/Content/TaskManagement/Chart/canvasjs.react';
 
 class TaskDashboard extends Component {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
+import CanvasJSReact from '../../../../../Chart/canvasjs.react';
  
 class ModalMemberEvaluate extends Component {
     constructor(props) {

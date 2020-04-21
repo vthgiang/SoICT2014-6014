@@ -42,6 +42,7 @@ class SideBar extends Component {
             path12: "/hr-manage-department",
             path13: "/hr-manage-holiday",
         };
+
         const url1 = {
             path1: "/manage-type-asset", //Quản lý loại tài sản
             path2: "/add-asset", //Quản lý loại tài sản
@@ -59,6 +60,7 @@ class SideBar extends Component {
             path13: "/recommmend-distribute-asset", //Đăng ký cấp phát thiết bị
             path14: "/manage-assigned-asset", //Quản lý thiết bị bàn giao
         };
+
         const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
         return (
@@ -208,7 +210,7 @@ class SideBar extends Component {
                                     this.checkURL(url1.path4, links) === true || this.checkURL(url1.path5, links) === true || this.checkURL(url1.path6, links) === true ||
                                     this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true || this.checkURL(url1.path9, links) === true || 
                                     this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true || this.checkURL(url1.path12, links) === true ||
-                                    this.checkURL(url1.path13, links) === true || this.checkURL(url1.path14, links) === true )  &&
+                                    this.checkURL(url1.path13, links) === true || this.checkURL(url1.path14, links) === true )   &&
                                 <li className="treeview" >
                                     <a href="">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_asset`)}</span>

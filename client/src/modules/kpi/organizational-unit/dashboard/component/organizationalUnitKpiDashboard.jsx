@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { dashboardActions } from '../redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
+import CanvasJSReact from '../../../../../Chart/canvasjs.react';
 // import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
 
 class KPIUnitDashboard extends Component {

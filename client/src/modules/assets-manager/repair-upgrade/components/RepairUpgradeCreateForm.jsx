@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ModalButton, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { RepairUpgradeFromValidator } from './RepairUpgradeFromValidator';
 // import { RepairUpgradeActions } from '../redux/actions';
 class RepairUpgradeCreateForm extends Component {
@@ -198,8 +198,8 @@ class RepairUpgradeCreateForm extends Component {
                 errorOnRepairNumber, errorOnDateCreate, errorOnAssetNumber, errorOnReason, errorOnRepairDate, errorOnCost } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID="modal-create-repairupgrade" button_name="Thêm mới phiếu" title="Thêm mới phiếu sửa chữa - thay thế - nâng cấp" />
-                <ModalDialog
+                <ButtonModal modalID="modal-create-repairupgrade" button_name="Thêm mới phiếu" title="Thêm mới phiếu sửa chữa - thay thế - nâng cấp" />
+                <DialogModal
                     size='75' modalID="modal-create-repairupgrade" isLoading={repairUpgrade.isLoading}
                     formID="form-create-repairupgrade"
                     title="Thêm mới phiếu sửa chữa - thay thế - nâng cấp"
@@ -287,7 +287,7 @@ class RepairUpgradeCreateForm extends Component {
                             </div>
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
             </React.Fragment>
         );
     }

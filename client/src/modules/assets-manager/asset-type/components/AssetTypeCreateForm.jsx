@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ModalButton, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { AssetTypeFromValidator } from './AssetTypeFromValidator';
 
 // import { AssetTypeActions } from '../redux/actions';
@@ -116,8 +116,8 @@ class AssetTypeCreateForm extends Component {
             errorOnTypeNumber, errorOnTypeName } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID="modal-create-assettype" button_name="Thêm mới " title="Thêm mới loại tài sản" />
-                <ModalDialog
+                <ButtonModal modalID="modal-create-assettype" button_name="Thêm mới " title="Thêm mới loại tài sản" />
+                <DialogModal
                     size='50' modalID="modal-create-assettype" isLoading={assetType.isLoading}
                     formID="form-create-assettype"
                     title="Thêm mới loại tài sản"
@@ -152,7 +152,7 @@ class AssetTypeCreateForm extends Component {
                             <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder="Mô tả"></textarea>
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
             </React.Fragment>
         );
     }

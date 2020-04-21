@@ -6,7 +6,7 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
 import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
+import CanvasJSChart from '../../../../../Chart/canvasjs.react.js';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 // import { withTranslate } from 'react-redux-multilingual';
  

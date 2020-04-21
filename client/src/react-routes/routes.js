@@ -71,7 +71,6 @@ import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/compo
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerAsset from "../modules/assets-manager/asset-manager/components";
 import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
-
 class Routes extends Component {
 
     render() {
@@ -701,7 +700,7 @@ class Routes extends Component {
                     /> 
 
                     <PrivateRoute 
-                        // isLoading={ this.props.assetType.isLoading }
+                        isLoading={ this.props.asset.isLoading }
                         key={ 'add-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -714,22 +713,6 @@ class Routes extends Component {
                         pageName={ 'add_asset' }
                         layout={ Layout }
                         component={ AssetCreatePage }
-                    /> 
-
-                    <PrivateRoute 
-                        isLoading={ this.props.asset.isLoading }
-                        key={ 'manage-info-asset' }
-                        arrPage={[
-                            { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/manage-info-asset', name: 'manage_info_asset', icon:'' }
-                        ]}
-                        auth={ auth }
-                        exact={ true }
-                        link={ '/manage-info-asset' }
-                        path={ '/manage-info-asset' }
-                        pageName={ 'manage_info_asset' }
-                        layout={ Layout }
-                        component={ ManagerAsset }
                     />
 
                     <PrivateRoute 
@@ -763,7 +746,7 @@ class Routes extends Component {
                         layout={ Layout }
                         component={ ManagerDistributeTransfer }
                     />
-
+                    
                     {/* NOT FOUND */}
                     <Route component={ NotFound }></Route>
                 </Switch>

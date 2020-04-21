@@ -1,7 +1,7 @@
 // import React, { Component } from 'react';
 // import { connect } from 'react-redux';
 // import { withTranslate } from 'react-redux-multilingual';
-// import { ModalDialog } from '../../../../common-components';
+// import { DialogModal } from '../../../../common-components';
 
 // import { EmployeeManagerActions } from '../redux/actions';
 // import { SalaryActions } from '../../salary-employee/redux/actions';
@@ -361,7 +361,7 @@
 //         const { _id } = this.state;
 //         return (
 //             <React.Fragment>
-//                 <ModalDialog
+//                 <DialogModal
 //                     size='100' modalID="modal-edit-employee" isLoading={false}
 //                     formID="form-edit-employee"
 //                     title="Chỉnh sửa thông tin nhân viên"
@@ -469,7 +469,7 @@
 //                         </div>
 //                     </div>
 //                     {/* </form> */}
-//                 </ModalDialog>
+//                 </DialogModal>
 //             </React.Fragment>
 //         )
 //     }

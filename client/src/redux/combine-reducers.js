@@ -38,13 +38,6 @@ import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rolesDefault } from "../modules/system-admin/root-role/redux/reducers";
 import { componentsDefault } from "../modules/system-admin/system-component/redux/reducers";
 
-//asset
-import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
-import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
-import { asset } from "../modules/assets-manager/asset-manager/redux/reducers";
-import { repairUpgrade } from "../modules/assets-manager/repair-upgrade/redux/reducers";
-import { distributeTransfer } from "../modules/assets-manager/distribute-transfer/redux/reducers";
-
 const appReducer = combineReducers(Object.assign({
     alert,
 
@@ -97,8 +90,7 @@ const appReducer = combineReducers(Object.assign({
     assetType,
     asset,
     repairUpgrade,
-    distributeTransfer,
-
+    distributeTransfer
 }, { Intl }));
 
 const rootReducer = (state, action) => {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ModalButton, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { RecommendProcureFromValidator } from './RecommendProcureFromValidator';
 // import { RecommendProcureActions } from '../redux/actions';
 class RecommendProcureCreateForm extends Component {
@@ -163,8 +163,8 @@ class RecommendProcureCreateForm extends Component {
                 errorOnRecommendNumber, errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID="modal-create-recommendprocure" button_name="Thêm mới phiếu" title="Thêm mới phiếu đề nghị" />
-                <ModalDialog
+                <ButtonModal modalID="modal-create-recommendprocure" button_name="Thêm mới phiếu" title="Thêm mới phiếu đề nghị" />
+                <DialogModal
                     size='75' modalID="modal-create-recommendprocure" isLoading={recommendProcure.isLoading}
                     formID="form-create-recommendprocure"
                     title="Thêm mới phiếu đề nghị mua sắm thiết bị"
@@ -247,7 +247,7 @@ class RecommendProcureCreateForm extends Component {
                             </div>
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
             </React.Fragment>
         );
     }

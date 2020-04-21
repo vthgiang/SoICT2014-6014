@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ModalButton, ErrorLabel, DatePicker } from '../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { DistributeTransferFromValidator } from '../../distribute-transfer/components/DistributeTransferFromValidator';
 class ModalAddDistribute extends Component {
     constructor(props) {
@@ -201,8 +201,8 @@ class ModalAddDistribute extends Component {
             errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnHandoverMan, errorOnReceiver, errorOnLocation, errorOnReason } = this.state;
         return (
             <React.Fragment>
-                <ModalButton modalID={`modal-create-distributetransfer-${id}`} button_name="Thêm mới phiếu" title="Thêm mới phiếu cấp phát - điều chuyển - thu hồi" />
-                <ModalDialog
+                <ButtonModal modalID={`modal-create-distributetransfer-${id}`} button_name="Thêm mới phiếu" title="Thêm mới phiếu cấp phát - điều chuyển - thu hồi" />
+                <DialogModal
                     size='75' modalID={`modal-create-distributetransfer-${id}`} isLoading={false}
                     formID={`form-create-distributetransfer-${id}`}
                     title="Thêm mới phiếu cấp phát - điều chuyển - thu hồi"
@@ -288,7 +288,7 @@ class ModalAddDistribute extends Component {
                             </div>
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
             </React.Fragment>
         );
     }

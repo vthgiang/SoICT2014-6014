@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalDialog, ErrorLabel } from '../../../../common-components';
+import { DialogModal, ErrorLabel } from '../../../../common-components';
 import { AssetCreateValidator } from './CombineContent';
 class ModalEditFile extends Component {
     constructor(props) {
@@ -128,7 +128,7 @@ class ModalEditFile extends Component {
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
         return (
             <React.Fragment>
-                <ModalDialog
+                <DialogModal
                     size='50' modalID={`modal-edit-file-${id}`} isLoading={false}
                     formID={`form-edit-file-${id}`}
                     title={translate('manage_employee.edit_file')}
@@ -164,7 +164,7 @@ class ModalEditFile extends Component {
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>
-                </ModalDialog>
+                </DialogModal>
             </React.Fragment>
         );
     }
