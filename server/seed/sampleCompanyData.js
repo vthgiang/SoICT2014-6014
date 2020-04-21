@@ -858,7 +858,7 @@ const sampleCompanyData = async () => {
         healthInsuranceStartDate: "09-02-2020",
         healthInsuranceEndDate: "16-02-2020",
         socialInsuranceNumber: "XH1569874",
-        socialInsuranceDetail: [{
+        socialInsuranceDetails: [{
             unit: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
@@ -892,7 +892,7 @@ const sampleCompanyData = async () => {
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         contracts: [{
-            contractName: "Thực tập",
+            name: "Thực tập",
             contractType: "Phụ thuộc",
             startDate: "28-01-2020",
             endDate: "28-01-2020",
@@ -928,7 +928,7 @@ const sampleCompanyData = async () => {
         healthInsuranceStartDate: "09-02-2020",
         healthInsuranceEndDate: "16-02-2020",
         socialInsuranceNumber: "XH1569874",
-        socialInsuranceDetail: [{
+        socialInsuranceDetails: [{
             unit: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
@@ -963,7 +963,7 @@ const sampleCompanyData = async () => {
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         contracts: [{
-            contractName: "Thực tập",
+            name: "Thực tập",
             contractType: "Phụ thuộc",
             startDate : "28-01-2020",
             endDate : "28-01-2020",
@@ -1049,7 +1049,7 @@ const sampleCompanyData = async () => {
         healthInsuranceStartDate: "09-02-2020",
         healthInsuranceEndDate: "16-02-2020",
         socialInsuranceNumber: "XH1569874",
-        socialInsuranceDetail: [{
+        socialInsuranceDetails: [{
             unit: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
@@ -1084,7 +1084,7 @@ const sampleCompanyData = async () => {
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
         contracts: [{
-            contractName: "Thực tập",
+            name: "Thực tập",
             contractType: "Phụ thuộc",
             startDate : "28-01-2019",
             endDate : "28-02-2020",
@@ -1095,8 +1095,8 @@ const sampleCompanyData = async () => {
         nationality: "Việt Nam",
         archivedRecordNumber: "T3 - 123698",
         files: [{
-            nameFile : "Ảnh",
-            discFile : "Ảnh 3x4",
+            name: "Ảnh",
+            description : "Ảnh 3x4",
             number : "1",
             status : "submitted",
             file : "3.5.1.PNG",

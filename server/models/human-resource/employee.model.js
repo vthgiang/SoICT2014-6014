@@ -97,7 +97,7 @@ const EmployeeSchema = new Schema({
     socialInsuranceNumber: { // Bảo hiểm XH
         type: String,
     },
-    socialInsuranceDetail: [{
+    socialInsuranceDetails: [{
         startDate: String,
         endDate: String,
         position: String,
@@ -138,7 +138,7 @@ const EmployeeSchema = new Schema({
         position: String
     }],
     contracts: [{
-        contractName: String,
+        name: String,
         contractType: String,
         startDate: String,
         endDate: String,
@@ -146,7 +146,7 @@ const EmployeeSchema = new Schema({
         urlFile: String
     }],
     courses: [{
-        nameCourse: String,
+        name: String,
         startDate: String,
         endDate: String,
         courseType: String,
@@ -157,8 +157,8 @@ const EmployeeSchema = new Schema({
         type: String
     },
     files: [{ // Các file scan đính kèm
-        nameFile: String,
-        discFile: String,
+        name: String,
+        description: String,
         number: String,
         status: String,
         file: String,
