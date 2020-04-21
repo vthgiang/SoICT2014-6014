@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { managerActions } from '../redux/actions';
-import { ModalDetailKPI } from './kpiDetailModal';
+import { ModalDetailKPI } from './organizationalUnitKpiDetailModal';
 import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 

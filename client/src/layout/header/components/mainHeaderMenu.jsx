@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import '../css/MainHeaderMenu.css';
+import '../css/mainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
-import Notifications from './Notification';
+import Notifications from './notification';
 import Profile from './profile';
 import Roles from './roles';
 import Language from './language';

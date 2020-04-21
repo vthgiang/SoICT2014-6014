@@ -6,7 +6,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
-import { UserFormValidator} from '../../../../super-admin/user/components/UserFormValidator';
+import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 var translate = '';
 class ModalAddTargetKPIPersonal extends Component {

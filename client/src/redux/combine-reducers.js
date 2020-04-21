@@ -26,11 +26,11 @@ import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux
 import { dashboardKpiUnit } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
 
-import {createKpiPersonal} from "../modules/kpi/kpi-personal/kpi-personal-create/redux/reducers"
-import {KPIPersonalManager} from "../modules/kpi/kpi-personal/kpi-personal-manager/redux/reducers"
-import {dashboardKPIPersonal} from "../modules/kpi/kpi-personal/kpi-personal-dashboard/redux/reducers"
+import {createKpiPersonal} from "../modules/kpi/employee/creation/redux/reducers"
+import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
+import {dashboardKPIPersonal} from "../modules/kpi/employee/dashboard/redux/reducers"
 
-import {tasktemplates} from '../modules/task-template-man/redux/reducers';
+import {tasktemplates} from '../modules/task/task-template/redux/reducers';
 import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/reducers';
 
 import { performtasks } from "../modules/task/task-perform/redux/reducers";

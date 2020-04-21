@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, ErrorLabel } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './employeeCreateValidator';
-import "./add-employee.css";
+import "./addEmployee.css";
 class TabGeneralContent extends Component {
     constructor(props) {
         super(props);

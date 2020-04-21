@@ -8,7 +8,7 @@ import { Loading } from '../../../common-components';
 import { NonPassiveEventListenerWarningFix } from '../../../common-components';
 
 
-import './Content.css'
+import './content.css'
 
 class Content extends Component {
     constructor(props) {
