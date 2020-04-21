@@ -5,6 +5,9 @@ const generator = require("generate-password");
 const nodemailer = require("nodemailer");
 const { Privilege, Role, User, UserRole } = require('../../models').schema;
 
+/**
+ * Phương thức đăng nhập
+ */
 exports.login = async (fingerprint, data) => { // data bao gom email va password
 
     const {error} = loginValidation(data);
@@ -32,6 +35,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
     }
     if(user.roles.length < 1) throw 'acc_have_not_role'
     if(user.roles[0].roleId.name !== 'System Admin'){ 
+        
         //Không phải phiên đăng nhập của system admin 
         if(!user.active) throw { message: 'acc_blocked'};
         if(!user.company.active) throw 'service_off'
@@ -104,7 +108,10 @@ exports.logoutAllAccount = async (id) => {
     return user;
 }
 
-//Quên mật khẩu tài khoản người dùng --------------------------------------//
+/**
+ * Quên mật khẩu tài khoản người dùng
+ * @email: email người dùng
+ */
 exports.forgetPassword = async (email) => {
     var user = await User.findOne({ email });
     if(user === null) throw("email_not_found");
