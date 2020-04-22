@@ -8,7 +8,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabRepairContent, TabDistributeContent, TabAttachmentsContent// TabMaintenanceContent, TabDepreciationContent, 
+    TabGeneralContent, TabRepairContent, TabDistributeContent, TabAttachmentsContent, TabDepreciationContent// TabMaintenanceContent, , 
 } from './CombineContent';
 
 class AssetCreatePage extends Component {
@@ -343,53 +343,8 @@ render() {
                         img={this.state.img}
                         handleChange={this.handleChange}
                         handleUpload={this.handleUpload}
-                        employee={this.state.employeeNew}
+                        asset={this.state.assetNew}
                     />
-                    {/* <TabContactContent
-                        id="suachua"
-                        handleChange={this.handleChange}
-                        employeeContact={this.state.employeeNew}
-                    /> */}
-                    {/* <TabExperienceContent
-                        id="kinhnghiem"
-                        employee={this.state.employeeNew}
-                        handleAddExperience={this.handleChangeExperience}
-                        handleEditExperience={this.handleChangeExperience}
-                        handleDeleteExperience={this.handleChangeExperience}
-                    />
-                    <TabCertificateContent
-                        id="bangcap"
-                        certificate={this.state.certificate}
-                        certificateShort={this.state.certificateShort}
-                        handleAddCertificate={this.handleChangeCertificate}
-                        handleEditCertificate={this.handleChangeCertificate}
-                        handleDeleteCertificate={this.handleChangeCertificate}
-                        handleAddCertificateShort={this.handleChangeCertificateShort}
-                        handleEditCertificateShort={this.handleChangeCertificateShort}
-                        handleDeleteCertificateShort={this.handleChangeCertificateShort}
-                    />
-                    <TabTaxContent
-                        id="taikhoan"
-                        employee={this.state.employeeNew}
-                        handleChange={this.handleChange} 
-                        /> */}
-                    {/* <TabInsurranceContent
-                        id="capphat"
-                        BHXH={this.state.employeeNew.BHXH}
-                        employee={this.state.employeeNew}
-                        handleChange={this.handleChange}
-                        handleAddBHXH={this.handleChangeBHXH}
-                        handleEditBHXH={this.handleChangeBHXH}
-                        handleDeleteBHXH={this.handleChangeBHXH}
-                    />
-                    <TabContractContent
-                        id="baohanh"
-                        contract={this.state.contract}
-                        course={this.state.employeeNew.course}
-                        handleAddContract={this.handleChangeContract}
-                        handleEditContract={this.handleChangeContract}
-                        handleDeleteContract={this.handleChangeContract}
-                    /> */}
                     <TabRepairContent
                         id="suachua"
                         // praise={this.state.praiseNew}
@@ -423,27 +378,17 @@ render() {
                         // handleEditDiscipline={this.handleChangeDiscipline}
                         // handleDeleteDiscipline={this.handleChangeDiscipline}
                     />
-                    {/* <TabSalaryContent
+                    <TabDepreciationContent
                         id="khauhao"
-                        salary={this.state.salaryNew}
-                        sabbatical={this.state.sabbaticalNew}
-                        handleAddSalary={this.handleChangeSalary}
-                        handleEditSalary={this.handleChangeSalary}
-                        handleDeleteSalary={this.handleChangeSalary}
-                        handleAddSabbatical={this.handleChangeSabbatical}
-                        handleEditSabbatical={this.handleChangeSabbatical}
-                        handleDeleteSabbatical={this.handleChangeSabbatical}
+                        // praise={this.state.praiseNew}
+                        // discipline={this.state.disciplineNew}
+                        // handleAddPraise={this.handleChangePraise}
+                        // handleEditPraise={this.handleChangePraise}
+                        // handleDeletePraise={this.handleChangePraise}
+                        // handleAddDiscipline={this.handleChangeDiscipline}
+                        // handleEditDiscipline={this.handleChangeDiscipline}
+                        // handleDeleteDiscipline={this.handleChangeDiscipline}
                     />
-                    <TabAttachmentsContent
-                        id="tailieu"
-                        file={this.state.file}
-                        employee={this.state.employeeNew}
-                        handleChange={this.handleChange}
-                        handleAddFile={this.handleChangeFile}
-                        handleEditFile={this.handleChangeFile}
-                        handleDeleteFile={this.handleChangeFile}
-                        handleSubmit={this.handleSubmit}
-                    /> */}
                 </div>
             </div>
             <ToastContainer />

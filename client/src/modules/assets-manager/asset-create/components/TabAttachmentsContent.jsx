@@ -141,7 +141,7 @@ class TabAttachmentsContent extends Component {
                     </div>
                 </div>
                 {
-                    id === "pageAttachments" &&
+                    id === "tailieu" &&
                     <div className=" box-footer">
                         <button type="reset" title="Thêm tài sản mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.props.handleSubmit()}>Thêm tài sản mới</button>
                     </div>

@@ -3,7 +3,7 @@ export * from './AssetCreatePage';
 export * from './TabGeneralContent';
 export * from './TabRepairContent';
 export * from './TabDistributeContent';
-// export * from './TabDepreciationContent';
+export * from './TabDepreciationContent';
 // export * from './TabMaintenanceContent';
 export * from './TabAttachmentsContent';
 
