@@ -272,7 +272,7 @@ class KPIUnitCreate extends Component {
                 || item.employee === this.state.currentRole);
         }
         if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
-
+        
         // hàm để chuyển sang song ngữ
         const { translate } = this.props;
 
@@ -310,12 +310,12 @@ class KPIUnitCreate extends Component {
                                     <a className="btn btn-app" data-toggle="modal" data-target="#modal-add-target" data-backdrop="static" data-keyboard="false">
                                         <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.add_target')}
                                     </a>
-                                    <ModalAddTargetKPIUnit kpiunit={currentKPI._id} unit={currentKPI.unit._id} />
+                                    <ModalAddTargetKPIUnit kpiunit={currentKPI._id} unit={currentKPI.organizationalUnit._id} />
                                 </div>
                             }
                             <div className="">
                                 <h4 style={{ display: "inline-block", fontWeight: "600" }}>
-                                    KPI {currentKPI.unit.name} {!editing && this.formatDate(currentKPI.time)}
+                                    KPI {currentKPI.organizationalUnit.name} {!editing && this.formatDate(currentKPI.time)}
                                 </h4>
                                 {editing &&
                                     <div className='input-group form-group'>
@@ -327,11 +327,11 @@ class KPIUnitCreate extends Component {
                                 }
                                 <div className="form-group">
                                     <span>
-                                        {currentKPI.listtarget.reduce(sum => sum + 1, 0)} {translate('kpi_unit_create.target')} -&nbsp;
+                                        {currentKPI.kpis.reduce(sum => sum + 1, 0)} {translate('kpi_unit_create.target')} -&nbsp;
                                         {translate('kpi_unit_create.weight_total')} &nbsp;
-                                        {currentKPI.listtarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100
+                                        {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100
                                     </span>
-                                    {currentKPI.listtarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
+                                    {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
                                         <span className="text-danger" style={{fontWeight: "bold"}}> - Chưa thỏa mãn </span>:
                                         <span className="text-success" style={{fontWeight: "bold"}}> - Đã thỏa mãn </span>
                                     }
@@ -353,7 +353,7 @@ class KPIUnitCreate extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            currentKPI.listtarget.map((item, index) =>
+                                            currentKPI.kpis.map((item, index) =>
                                                 <tr key={item._id}>
                                                     <td>{index + 1}</td>
                                                     <td title={item.name}>{item.name}</td>
