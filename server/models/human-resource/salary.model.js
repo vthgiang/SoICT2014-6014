@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
 
-// tạo bảng datatbale lương nhân viên
+// Tạo bảng datatbale lương nhân viên
 const SalarySchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
@@ -19,22 +19,20 @@ const SalarySchema = new Schema({
         type: String,
         require: true,
     },
-    mainSalary: {
+    mainSalary: { // Lương chính
         type: String,
         require: true,
     },
-    bonus: [{
+    unit: { // Đơn vị tiền lương(VND hoặc USD)
+        type: String,
+        required: true,
+    },
+    bonus: [{   // Tiền lương thưởng khác
         nameBonus: String,
         number: String,
     }],
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-})
+}, {
+    timestamps: true,
+});
 
 module.exports = Salary = mongoose.model("salaries", SalarySchema);
