@@ -1,11 +1,11 @@
-const { LinkDefault, RoleDefault, ComponentDefault } = require('../../../models').schema;
+const { SystemLink, RootRole, SystemComponent } = require('../../../models').schema;
 const {CATEGORY_LINKS} = require('../../../seed/terms');
 
 exports.getAllSystemLinks = async () => {
 
-    return await LinkDefault.find().populate([
-        { path: 'roles', model: RoleDefault },
-        { path: 'components', model: ComponentDefault }
+    return await SystemLink.find().populate([
+        { path: 'roles', model: RootRole },
+        { path: 'components', model: SystemComponent }
     ]);
 }
 
@@ -16,26 +16,26 @@ exports.getAllSystemLinkCategories = async () => {
 
 exports.getPaginatedSystemLinks = async (limit, page, data={}) => {
     
-    return await LinkDefault.paginate( data, {page, limit, populate: [
-        { path: 'roles', model: RoleDefault },
-        { path: 'components', model: ComponentDefault }
+    return await SystemLink.paginate( data, {page, limit, populate: [
+        { path: 'roles', model: RootRole },
+        { path: 'components', model: SystemComponent }
     ]});
 }
 
 exports.getSystemLink = async (id) => {
 
-    return await LinkDefault.findById(id).populate({path: 'roles', model: RoleDefault});
+    return await SystemLink.findById(id).populate({path: 'roles', model: RootRole});
 }
 
 exports.createSystemLink = async(url, description, roles, category) => {
-    const link = await LinkDefault.findOne({ url });
+    const link = await SystemLink.findOne({ url });
     if(link !== null) throw ('link_default_exist');
 
-    return await LinkDefault.create({ url, description, category, roles });
+    return await SystemLink.create({ url, description, category, roles });
 }
 
 exports.editSystemLink = async(id, url, description, roles, category) => {
-    var link = await LinkDefault.findById(id);
+    var link = await SystemLink.findById(id);
     link.url = url;
     link.description = description;
     link.roles = roles;
@@ -46,5 +46,5 @@ exports.editSystemLink = async(id, url, description, roles, category) => {
 }
 
 exports.deleteSystemLink = async(id) => {
-    return await LinkDefault.deleteOne({ _id: id });
+    return await SystemLink.deleteOne({ _id: id });
 }
