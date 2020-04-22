@@ -32,17 +32,17 @@ exports.stopTimer = (req, res) => {
 }
 
 // Lấy tất cả bình luận và hoạt động của một công việc
-exports.getCommentTask = (req, res) => {
-    return PerformTaskService.getCommentTask(req, res);
+exports.getActionComments = (req, res) => {
+    return PerformTaskService.getActionComments(req, res);
 }
 //
-exports.getActionTask = (req, res) => {
-    return PerformTaskService.getActionTask(req, res);
+exports.getTaskActions = (req, res) => {
+    return PerformTaskService.getTaskActions(req, res);
 }
 
 // Tạo một bình luận hoặc hoạt động cho công việc
-exports.createCommentTask = (req, res) => {
-    return PerformTaskService.createCommentTask(req, res);
+exports.createActionComment = (req, res) => {
+    return PerformTaskService.createActionComment(req, res);
 }
 
 // Test thêm 1 kết quả nhập liệu cho thông tin mẫu công việc
@@ -61,13 +61,13 @@ exports.editResultInformationTask = (req, res) => {
 }
 
 // Chỉnh sửa một hoạt động hoặc bình luận
-exports.editCommentTask = (req, res) => {
-    return PerformTaskService.editCommentTask(req, res);
+exports.editActionComment = (req, res) => {
+    return PerformTaskService.editActionComment(req, res);
 }
 
 // Xóa bỏ một bình luận hoặc hoạt động
-exports.deleteCommentTask = (req, res) => {
-    return PerformTaskService.deleteCommentTask(req, res);
+exports.deleteActionComment = (req, res) => {
+    return PerformTaskService.deleteActionComment(req, res);
 }
 // Thêm kết quả đánh giá công việc cho từng người tham gia
 exports.createResultTask = async (req, res) => {
@@ -108,12 +108,12 @@ exports.editResultTask = async (req, res) => {
         });
     }
 }
-exports.createActionTask = (req,res) => {
-    return PerformTaskService.createActionTask(req,res);
+exports.createTaskAction = (req,res) => {
+    return PerformTaskService.createTaskAction(req,res);
 }
-exports.editActionTask = (req,res) =>{
-    return PerformTaskService.editActionTask(req,res);
+exports.editTaskAction = (req,res) =>{
+    return PerformTaskService.editTaskAction(req,res);
 }
-exports.deleteActionTask = (req,res)=>{
-    return PerformTaskService.deleteActionTask(req,res)
+exports.deleteTaskAction = (req,res)=>{
+    return PerformTaskService.deleteTaskAction(req,res)
 }
