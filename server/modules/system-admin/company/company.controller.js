@@ -47,6 +47,7 @@ exports.getPaginatedCompanies = async (req, res) => {
 
 exports.createCompany = async (req, res) => {
     try {
+        console.log("create new company")
         //Tạo thông tin công ty mới(tên, tên ngắn, mô tả)
         const company = await CompanyService.createCompany(req.body);
 

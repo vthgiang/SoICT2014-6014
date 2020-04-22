@@ -105,13 +105,13 @@ class SabbaticalEditForm extends Component {
     }
 
     render() {
-        const { translate, sabbatical } = this.props;
+        const { translate, annualLeave } = this.props;
         const { employeeNumber, startDate, endDate, reason, status,
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' modalID="modal-edit-sabbtical" isLoading={sabbatical.isLoading}
+                    size='50' modalID="modal-edit-sabbtical" isLoading={annualLeave.isLoading}
                     formID="form-edit-sabbtical"
                     title={translate('sabbatical.edit_sabbatical')}
                     msg_success={translate('manage_user.edit_success')}
@@ -165,8 +165,8 @@ class SabbaticalEditForm extends Component {
 };
 
 function mapState(state) {
-    const { sabbatical } = state;
-    return { sabbatical };
+    const { annualLeave } = state;
+    return { annualLeave };
 };
 
 const actionCreators = {

@@ -148,7 +148,7 @@ const TaskSchema = new Schema({
             ref : User,
             required:true
         },
-        name:{
+        content:{
             type: String,
             required:true
         },

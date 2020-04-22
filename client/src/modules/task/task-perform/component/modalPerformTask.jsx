@@ -431,12 +431,12 @@ class ModalPerformTask extends Component {
                 ...state,
                 newAction: {
                     ...state.newAction,
-                    name: this.contentAction[index].value,
+                    content: this.contentAction[index].value,
                 }
             }
         })
         var { newAction } = this.state;
-        if (newAction.name && newAction.creator) {
+        if (newAction.content && newAction.creator) {
             this.props.addAction(newAction);
         }
         this.contentAction[index].value = "";

@@ -1,6 +1,5 @@
-const Salary = require('../../../models/human-resource/salary.model');
-const Employee = require('../../../models/human-resource/employee.model');
 const EmployeeService = require('../profile/profile.service');
+const { Employee, Salary } = require('../../../models').schema;
 
 /**
  * Lấy danh sách các bảng lương của nhân viên
