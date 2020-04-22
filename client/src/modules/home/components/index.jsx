@@ -16,7 +16,6 @@ class Home extends Component {
     }
 
     render() { 
-
         return ( 
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
@@ -31,11 +30,9 @@ const mapStateToProps = state => {
     return state;
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        getRoles: RoleActions.get,
-        getLinks: LinkActions.get
-    }
+const mapDispatchToProps = {
+    getRoles: RoleActions.get,
+    getLinks: LinkActions.get
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( Home );

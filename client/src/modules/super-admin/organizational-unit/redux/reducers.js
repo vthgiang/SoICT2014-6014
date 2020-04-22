@@ -15,6 +15,7 @@ var findIndex = (array, id) => {
             result = index;
         }
     });
+    
     return result;
 }
 
@@ -25,6 +26,7 @@ export function department(state = initState, action) {
         case DepartmentConstants.CREATE_DEPARTMENT_REQUEST:
         case DepartmentConstants.EDIT_DEPARTMENT_REQUEST:
         case DepartmentConstants.DELETE_DEPARTMENT_REQUEST:
+
             return {
                 ...state,
                 isLoading: true
@@ -34,12 +36,14 @@ export function department(state = initState, action) {
         case DepartmentConstants.CREATE_DEPARTMENT_FAILE:
         case DepartmentConstants.EDIT_DEPARTMENT_FAILE:
         case DepartmentConstants.DELETE_DEPARTMENT_FAILE:
+
             return {
                 ...state,
                 isLoading: false
             }
 
         case DepartmentConstants.GET_DEPARTMENTS_SUCCESS:
+
             return {
                 ...state,
                 list: action.payload.list,
@@ -48,6 +52,7 @@ export function department(state = initState, action) {
             };
 
         case DepartmentConstants.CREATE_DEPARTMENT_SUCCESS:
+
             return {
                 ...state,
                 list: [
@@ -63,6 +68,7 @@ export function department(state = initState, action) {
             if(index !== -1){
                 state.list[index] = action.payload.department;
             }
+
             return {
                 ...state,
                 tree: action.payload.tree,
@@ -79,50 +85,76 @@ export function department(state = initState, action) {
                 tree: action.payload.data.tree,
                 isLoading: false
             };
+
         case DepartmentConstants.GETALL_REQUEST:
-                return {
-                  loading: true
-                };
-        case DepartmentConstants.GETALL_SUCCESS:
-                return {
-                  items: action.departments.content
-                };
-        case DepartmentConstants.GETALL_FAILURE:
-                return { 
-                  error: action.error
-                };
-        case DepartmentConstants.GETDEPARTMENT_OFUSER_REQUEST:
-            return {
-                loading: true
-            };
-        case DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS:
+
             return {
                 ...state,
-                unitofuser: action.departments.content
+                isLoading: true
             };
-        case DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE:
+
+        case DepartmentConstants.GETALL_SUCCESS:
+
+            return {
+                ...state,
+                items: action.departments.content,
+                isLoading: false
+            };
+
+        case DepartmentConstants.GETALL_FAILURE:
+
             return { 
+                ...state,
+                isLoading: false,
                 error: action.error
+            };
+        case DepartmentConstants.GETDEPARTMENT_OFUSER_REQUEST:
+
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS:
+
+            return {
+                ...state,
+                unitofuser: action.departments.content,
+                isLoading: false
+            };
+
+        case DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE:
+
+            return { 
+                ...state,
+                error: action.error,
+                isLoading: false
             };
         
         case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST:
-            return {
-                loading: true
-            };
-        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS:
+
             return {
                 ...state,
-                departmentsThatUserIsDean: action.payload.data
-            };
-        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE:
-            return { 
-                error: action.error
+                isLoading: true
             };
 
-        case 'LOGOUT':
-            return initState;
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS:
+
+            return {
+                ...state,
+                departmentsThatUserIsDean: action.payload.data,
+                isLoading: false
+            };
+
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE:
+
+            return { 
+                ...state,
+                error: action.error,
+                isLoading: false
+            };
 
         default:
-            return state;
+            return {...state};
     }
 }
