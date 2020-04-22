@@ -1,8 +1,12 @@
 .display-block {
     display: block;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.356);
 }
 
 .display-none {
     display: none;
+}
+
+.top-200 {
+    margin-top: 200px;
 }

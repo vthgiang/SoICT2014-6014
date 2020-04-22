@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SalaryCreateForm ,SalaryEditForm ,SalaryImportFrom } from './combinedContent';
+import { SalaryCreateForm, SalaryEditForm, SalaryImportFrom } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../redux/actions';
@@ -13,7 +13,7 @@ class SalaryManager extends Component {
             position: null,
             month: null,
             employeeNumber: "",
-            unit: null,
+            organizationalUnit: null,
             page: 0,
             limit: 5,
         }
@@ -53,7 +53,7 @@ class SalaryManager extends Component {
         };
         this.setState({
             ...this.state,
-            unit: value
+            organizationalUnit: value
         })
     }
 
@@ -121,9 +121,9 @@ class SalaryManager extends Component {
         const { translate, salary } = this.props;
         var formater = new Intl.NumberFormat();
         var listSalary = "", listPosition = [];
-        if (this.state.unit !== null) {
-            let unit = this.state.unit;
-            unit.forEach(u => {
+        if (this.state.organizationalUnit !== null) {
+            let organizationalUnit = this.state.organizationalUnit;
+            organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [
@@ -220,15 +220,12 @@ class SalaryManager extends Component {
                         <tbody>
                             {(typeof listSalary !== 'undefined' && listSalary.length !== 0) &&
                                 listSalary.map((x, index) => {
-
-                                    let salary = x.mainSalary.slice(0, x.mainSalary.length - 3);
                                     if (x.bonus.length !== 0) {
                                         var total = 0;
                                         for (let count in x.bonus) {
                                             total = total + parseInt(x.bonus[count].number)
                                         }
                                     }
-                                    var unit = x.mainSalary.slice(x.mainSalary.length - 3, x.mainSalary.length);
                                     return (
                                         <tr key={index}>
                                             <td>{x.employee.employeeNumber}</td>
@@ -237,11 +234,11 @@ class SalaryManager extends Component {
                                             <td>
                                                 {
                                                     (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
-                                                        formater.format(parseInt(salary)) :
-                                                        formater.format(total + parseInt(salary))
-                                                } {unit}
+                                                        formater.format(parseInt(x.mainSalary)) :
+                                                        formater.format(total + parseInt(x.mainSalary))
+                                                } {x.unit}
                                             </td>
-                                            <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                            <td>{x.organizationalUnit.length !== 0 ? x.organizationalUnit.map(unit => (
                                                 <React.Fragment key={unit._id}>
                                                     {unit.name}<br />
                                                 </React.Fragment>
@@ -279,10 +276,10 @@ class SalaryManager extends Component {
                     this.state.currentRow !== undefined &&
                     <SalaryEditForm
                         _id={this.state.currentRow._id}
-                        unit={this.state.currentRow.mainSalary.slice(-3, this.state.currentRow.mainSalary.length)}
+                        unit={this.state.currentRow.unit}
                         employeeNumber={this.state.currentRow.employee.employeeNumber}
                         month={this.state.currentRow.month}
-                        mainSalary={this.state.currentRow.mainSalary.slice(0, this.state.currentRow.mainSalary.length - 3)}
+                        mainSalary={this.state.currentRow.mainSalary}
                         bonus={this.state.currentRow.bonus}
                     />
                 }

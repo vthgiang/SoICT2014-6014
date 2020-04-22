@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import Alert from '../../../modules/alert/components';
 
 import { Loading } from '../../../common-components';
 
@@ -148,7 +147,6 @@ class Content extends Component {
                         </ol>
                     </section>
                     <section className="content">
-                        <Alert/>
                         { this.props.children }
                     </section>
                 </div>

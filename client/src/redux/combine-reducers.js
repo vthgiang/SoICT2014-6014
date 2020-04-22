@@ -17,7 +17,7 @@ import {education} from '../modules/training/education-program/redux/reducers';
 import {course} from '../modules/training/course/redux/reducers';
 import {salary} from '../modules/human-resource/salary/redux/reducers';
 import {discipline} from '../modules/human-resource/commendation-discipline/redux/reducers';
-import {sabbatical} from '../modules/human-resource/annual-leave/redux/reducers';
+import {annualLeave} from '../modules/human-resource/annual-leave/redux/reducers';
 import {holiday} from '../modules/human-resource/holiday/redux/reducers';
 import {notifications} from '../modules/notification/redux/reducers';
 
@@ -70,7 +70,7 @@ const appReducer = combineReducers(Object.assign({
     course,
     salary,
     discipline,
-    sabbatical,
+    annualLeave,
     holiday,
 
     // kpi-unit

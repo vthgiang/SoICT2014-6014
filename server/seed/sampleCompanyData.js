@@ -1180,7 +1180,7 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu nhân viên!");
     var employee = await Employee.create({
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Nguyễn Văn A",
+        fullName: "Nguyễn Văn An",
         employeeNumber: "MS2015123",
         status:"active",
         company:vnist._id,
@@ -1291,7 +1291,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
-    var sabbatical = await AnnualLeave.insertMany([{
+    var annualLeave = await AnnualLeave.insertMany([{
         employee: employee._id,
         company:vnist._id,
         startDate: "04-02-2020",
@@ -1318,7 +1318,8 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company:vnist._id,
         month: "02-2020",
-        mainSalary: "10000000VND",
+        mainSalary: "10000000",
+        unit:'VND',
         bonus: [{
             nameBonus: "Thưởng dự án",
             number: "1000000"
@@ -1327,7 +1328,8 @@ const sampleCompanyData = async () => {
         employee: employee._id,
         company:vnist._id,
         month: "01-2020",
-        mainSalary: "10000000VND",
+        mainSalary: "10000000",
+        unit:'VND',
         bonus: [{
             nameBonus: "Thưởng tháng 1",
             number: "1000000"

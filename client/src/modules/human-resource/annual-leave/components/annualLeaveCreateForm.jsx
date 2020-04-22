@@ -128,14 +128,14 @@ class SabbaticalCreateForm extends Component {
     }
 
     render() {
-        const { translate, sabbatical } = this.props;
+        const { translate, annualLeave } = this.props;
         const { employeeNumber, startDate, endDate, reason, status,
             errorOnEmployeeNumber, errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-sabbtical" button_name={translate('sabbatical.add_sabbatical')} title={translate('sabbatical.add_sabbatical_title')} />
                 <DialogModal
-                    size='50' modalID="modal-create-sabbtical" isLoading={sabbatical.isLoading}
+                    size='50' modalID="modal-create-sabbtical" isLoading={annualLeave.isLoading}
                     formID="form-create-sabbtical"
                     title={translate('sabbatical.add_sabbatical_title')}
                     msg_success={translate('modal.add_success')}
@@ -190,8 +190,8 @@ class SabbaticalCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { sabbatical } = state;
-    return { sabbatical };
+    const { annualLeave } = state;
+    return { annualLeave };
 };
 
 const actionCreators = {

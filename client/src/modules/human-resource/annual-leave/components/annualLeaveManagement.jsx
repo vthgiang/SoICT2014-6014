@@ -11,7 +11,7 @@ class SabbaticalManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: null,
+            organizationalUnit: null,
             position: null,
             employeeNumber: "",
             month: null,
@@ -74,7 +74,7 @@ class SabbaticalManager extends Component {
         };
         this.setState({
             ...this.state,
-            unit: value
+            organizationalUnit: value
         })
     }
 
@@ -131,11 +131,11 @@ class SabbaticalManager extends Component {
 
     render() {
         const { list } = this.props.department;
-        const { translate, sabbatical } = this.props;
-        var listSabbatical = "", listPosition = [];
-        if (this.state.unit !== null) {
-            let unit = this.state.unit;
-            unit.forEach(u => {
+        const { translate, annualLeave } = this.props;
+        var listAnnualLeaves = "", listPosition = [];
+        if (this.state.organizationalUnit !== null) {
+            let organizationalUnit = this.state.organizationalUnit;
+            organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [
@@ -148,12 +148,12 @@ class SabbaticalManager extends Component {
                 })
             })
         }
-        if (this.props.sabbatical.isLoading === false) {
-            listSabbatical = this.props.sabbatical.listSabbatical;
+        if (this.props.annualLeave.isLoading === false) {
+            listAnnualLeaves = this.props.annualLeave.listAnnualLeaves;
         }
-        var pageTotal = ((this.props.sabbatical.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.sabbatical.totalList / this.state.limit) :
-            parseInt((this.props.sabbatical.totalList / this.state.limit) + 1);
+        var pageTotal = ((this.props.annualLeave.totalList % this.state.limit) === 0) ?
+            parseInt(this.props.annualLeave.totalList / this.state.limit) :
+            parseInt((this.props.annualLeave.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box" >
@@ -245,15 +245,15 @@ class SabbaticalManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSabbatical !== 'undefined' && listSabbatical.length !== 0) &&
-                                listSabbatical.map((x, index) => (
+                            {(typeof listAnnualLeaves !== 'undefined' && listAnnualLeaves.length !== 0) &&
+                                listAnnualLeaves.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
                                         <td>{x.employee.fullName}</td>
                                         <td>{x.startDate}</td>
                                         <td>{x.endDate}</td>
                                         <td>{x.reason}</td>
-                                        <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                        <td>{x.organizationalUnit.length !== 0 ? x.organizationalUnit.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
                                             </React.Fragment>
@@ -279,9 +279,9 @@ class SabbaticalManager extends Component {
                             }
                         </tbody>
                     </table>
-                    {sabbatical.isLoading ?
+                    {annualLeave.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listSabbatical === 'undefined' || listSabbatical.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listAnnualLeaves === 'undefined' || listAnnualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -302,8 +302,8 @@ class SabbaticalManager extends Component {
 };
 
 function mapState(state) {
-    const { sabbatical, department } = state;
-    return { sabbatical, department };
+    const { annualLeave, department } = state;
+    return { annualLeave, department };
 };
 
 const actionCreators = {
