@@ -64,7 +64,7 @@ import { TaskDashboard } from "../modules/task/task-management/component/taskDas
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
 
 //asset
-import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure/components";
+import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
 import ManagerAssetType from "../modules/assets-manager/asset-type/components";
 import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
@@ -680,7 +680,7 @@ class Routes extends Component {
                         path={ '/recommend-equipment-procurement' }
                         pageName={ 'recommend_equipment_procurement' }
                         layout={ Layout }
-                        component={ ManagerRecommendProcure }
+                        component={ RecommendProcure }
                     />
 
                     {/** Quản lý */}

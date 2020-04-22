@@ -101,44 +101,7 @@ handleChange = (name, value) => {
         }
     });
 }
-// // Function thêm mới kinh nghiệm làm việc
-// handleChangeExperience = (data) => {
-//     const { employeeNew } = this.state;
-//     this.setState({
-//         employeeNew: {
-//             ...employeeNew,
-//             experience: data
-//         }
-//     })
-// }
-// // Function thêm, chỉnh sửa thông tin bằng cấp
-// handleChangeCertificate = (data) => {
-//     this.setState({
-//         certificate: data
-//     })
-// }
-// // Function thêm, chỉnh sửa thông tin chứng chỉ
-// handleChangeCertificateShort = (data) => {
-//     this.setState({
-//         certificateShort: data
-//     })
-// }
-// // Function thêm, chỉnh sửa thông tin quá trình đóng BHXH
-// handleChangeBHXH = (data) => {
-//     const { employeeNew } = this.state;
-//     this.setState({
-//         employeeNew: {
-//             ...employeeNew,
-//             BHXH: data
-//         }
-//     })
-// }
-// // Function thêm thông tin hợp đồng lao động
-// handleChangeContract = (data) => {
-//     this.setState({
-//         contract: data
-//     })
-// }
+
 // // Function thêm thông tin khen thưởng
 // handleChangePraise = (data) => {
 //     this.setState({
@@ -163,12 +126,13 @@ handleChange = (name, value) => {
 //         sabbaticalNew: data
 //     })
 // }
-// // Function thêm thông tin tài liệu đính kèm
-// handleChangeFile = (data) => {
-//     this.setState({
-//         file: data
-//     })
-// }
+
+// Function thêm thông tin tài liệu đính kèm
+handleChangeFile = (data) => {
+    this.setState({
+        file: data
+    })
+}
 
 // TODO: function thêm thông tin quá trình đào tạo
 // handleChangeCourse = (data) => {
@@ -183,6 +147,7 @@ handleChange = (name, value) => {
 //         }
 //     })
 // }
+
 // // function thêm mới thông tin nhân viên
 // handleSubmit = async () => {
 //     let newEmployee = this.state.employeeNew;
@@ -231,51 +196,7 @@ handleChange = (name, value) => {
 //             formData.append('fileUpload', this.state.avatar);
 //             this.props.uploadAvatar(this.state.employeeNew.employeeNumber, formData);
 //         };
-//         // lưu hợp đồng lao động
-//         if (this.state.contract.length !== 0) {
-//             let listContract = this.state.contract;
-//             listContract = listContract.filter(contract => (contract.fileUpload !== " "))
-//             listContract.map(x => {
-//                 let formData = new FormData();
-//                 formData.append('fileUpload', x.fileUpload);
-//                 formData.append('nameContract', x.nameContract);
-//                 formData.append('typeContract', x.typeContract);
-//                 formData.append('file', x.file);
-//                 formData.append('startDate', x.startDate);
-//                 formData.append('endDate', x.endDate);
-//                 this.props.updateContract(this.state.employeeNew.employeeNumber, formData)
-//             })
-//         }
-//         // lưu thông tin bằng cấp
-//         if (this.state.certificate.length !== 0) {
-//             let listCertificate = this.state.certificate;
-//             listCertificate = listCertificate.filter(certificate => (certificate.fileUpload !== " "))
-//             listCertificate.map(x => {
-//                 let formData = new FormData();
-//                 formData.append('fileUpload', x.fileUpload);
-//                 formData.append('nameCertificate', x.nameCertificate);
-//                 formData.append('addressCertificate', x.addressCertificate);
-//                 formData.append('file', x.file);
-//                 formData.append('yearCertificate', x.yearCertificate);
-//                 formData.append('typeCertificate', x.typeCertificate);
-//                 this.props.updateCertificate(this.state.employeeNew.employeeNumber, formData)
-//             })
-//         }
-//         // lưu thông tin chứng chỉ
-//         if (this.state.certificateShort.length !== 0) {
-//             let listCertificateShort = this.state.certificateShort;
-//             listCertificateShort = listCertificateShort.filter(certificateShort => (certificateShort.fileUpload !== " "))
-//             listCertificateShort.map(x => {
-//                 let formData = new FormData();
-//                 formData.append('fileUpload', x.fileUpload);
-//                 formData.append('nameCertificateShort', x.nameCertificateShort);
-//                 formData.append('unit', x.unit);
-//                 formData.append('file', x.file);
-//                 formData.append('startDate', x.startDate);
-//                 formData.append('endDate', x.endDate);
-//                 this.props.updateCertificateShort(this.state.employeeNew.employeeNumber, formData)
-//             })
-//         }
+
 //         // lưu thông tin tài liệu đính kèm
 //         if (this.state.file.length !== 0) {
 //             let listFile = this.state.file;
@@ -345,6 +266,7 @@ render() {
                         handleUpload={this.handleUpload}
                         asset={this.state.assetNew}
                     />
+
                     <TabRepairContent
                         id="suachua"
                         // praise={this.state.praiseNew}
@@ -356,38 +278,20 @@ render() {
                         // handleEditDiscipline={this.handleChangeDiscipline}
                         // handleDeleteDiscipline={this.handleChangeDiscipline}
                     />
+
                     <TabDistributeContent
                         id="capphat"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
+                        
                     />
-                    <TabAttachmentsContent
-                        id="tailieu"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
-                    />
+                    
                     <TabDepreciationContent
                         id="khauhao"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
+                        
+                    />
+
+                    <TabAttachmentsContent
+                        id="tailieu"
+                        
                     />
                 </div>
             </div>

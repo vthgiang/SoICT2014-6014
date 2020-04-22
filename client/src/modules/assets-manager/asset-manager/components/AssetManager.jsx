@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AssetCreateForm } from './AssetCreateForm';
-import { AssetEditForm } from './AssetEditForm';
+// import { AssetEditForm } from './AssetEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 // import { AssetActions } from '../redux/actions';
 
@@ -139,7 +139,7 @@ class AssetManager extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    {/* <AssetCreateForm /> */}
+                    <AssetCreateForm />
                     <div className="form-group">
                         <h4 className="box-title">Danh sách tài sản: </h4>
                     </div>
@@ -156,7 +156,7 @@ class AssetManager extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
-                            <SelectMulti id={`multiSelectType`} multiple="multiple"
+                            <SelectMulti id={`multiSelectType2`} multiple="multiple"
                                 options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
                                 onChange={this.handleTypeChange}
                                 items={[
@@ -178,7 +178,7 @@ class AssetManager extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
-                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                            <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
@@ -235,7 +235,7 @@ class AssetManager extends Component {
                                         <td>{x.assetType}</td>
                                         <td>{x.datePurchase}</td>
                                         <td>{x.manager}</td>
-                                        <td>{x.chucvu}</td>
+                                        <td>{x.position}</td>
                                         <td>{x.location}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -260,7 +260,7 @@ class AssetManager extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 
-                {
+                {/* {
                     this.state.currentRow !== undefined &&
                     <AssetEditForm
                         _id={this.state.currentRow._id}
@@ -274,7 +274,7 @@ class AssetManager extends Component {
                         cost={this.state.currentRow.cost}
                         status={this.state.currentRow.status}
                     />
-                }
+                } */}
             </div >
         );
     }

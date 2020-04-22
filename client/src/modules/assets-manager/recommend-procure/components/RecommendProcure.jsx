@@ -6,7 +6,7 @@ import { RecommendProcureEditForm } from './RecommendProcureEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 // import { RecommendProcureActions } from '../redux/actions';
 
-class RecommendProcureManager extends Component {
+class RecommendProcure extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -244,5 +244,5 @@ const actionCreators = {
     // deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
 };
 
-const connectedListRecommendProcure = connect(mapState, actionCreators)(withTranslate(RecommendProcureManager));
-export { connectedListRecommendProcure as RecommendProcureManager };
+const connectedListRecommendProcure = connect(mapState, actionCreators)(withTranslate(RecommendProcure));
+export { connectedListRecommendProcure as RecommendProcure };
