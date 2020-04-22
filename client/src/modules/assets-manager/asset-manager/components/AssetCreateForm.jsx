@@ -68,6 +68,27 @@ class AssetCreateForm extends Component {
             }
         });
     }
+
+    // Function thêm thông tin sửa chữa - thay thế - nâng cấp
+handleChangeRepairUpgrade = (data) => {
+    this.setState({
+        repairUpgradeNew: data
+    })
+}
+
+// Function thêm thông tin cấp phát - điều chuyển - thu hồi
+handleChangeDistributeTransfer = (data) => {
+    this.setState({
+        distributeTransferNew: data
+    })
+}
+
+// Function thêm thông tin tài liệu đính kèm
+handleChangeFile = (data) => {
+    this.setState({
+        file: data
+    })
+}
     // // Function thêm mới kinh nghiệm làm việc
     // handleChangeExperience = (data) => {
     //     const { employeeNew } = this.state;
@@ -320,56 +341,45 @@ class AssetCreateForm extends Component {
                             </ul>
                             < div className="tab-content">
                             <TabGeneralContent
-                        id="thongtinchung"
-                        img={this.state.img}
-                        handleChange={this.handleChange}
-                        handleUpload={this.handleUpload}
-                        asset={this.state.assetNew}
-                    />
-                    <TabRepairContent
-                        id="suachua"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
-                    />
-                    <TabDistributeContent
-                        id="capphat"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
-                    />
-                    <TabAttachmentsContent
-                        id="tailieu"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
-                    />
-                    <TabDepreciationContent
-                        id="khauhao"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
-                    />
+                                id="thongtinchung"
+                                img={this.state.img}
+                                handleChange={this.handleChange}
+                                handleUpload={this.handleUpload}
+                                asset={this.state.assetNew}
+                            />
+
+                            <TabRepairContent
+                                id="suachua"
+                                repairUpgrade={this.state.repairUpgradeNew}
+                                handleAddRepairUpgrade={this.handleChangeRepairUpgrade}
+                                handleEditRepairUpgrade={this.handleChangeRepairUpgrade}
+                                handleDeleteRepairUpgrade={this.handleChangeRepairUpgrade}
+                            />
+
+                            <TabDistributeContent
+                                id="capphat"
+                                distributeTransfer={this.state.distributeTransferNew}
+                                handleAddDistributeTransfer={this.handleChangeDistributeTransfer}
+                                handleEditDistributeTransfer={this.handleChangeDistributeTransfer}
+                                handleDeleteDistributeTransfer={this.handleChangeDistributeTransfer}
+                            />
+                    
+                            <TabDepreciationContent
+                                id="khauhao"
+                                handleChange={this.handleChange}
+                                asset={this.state.assetNew}
+                            />
+
+                            <TabAttachmentsContent
+                                id="tailieu"
+                                file={this.state.file}
+                                asset={this.state.assetNew}
+                                handleChange={this.handleChange}
+                                handleAddFile={this.handleChangeFile}
+                                handleEditFile={this.handleChangeFile}
+                                handleDeleteFile={this.handleChangeFile}
+                                handleSubmit={this.handleSubmit}
+                            />
                             </div>
                         </div>
                     {/* </form> */}

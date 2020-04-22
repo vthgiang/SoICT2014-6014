@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { EmployeeManagerActions } from '../../employee-manager/redux/actions';
-// import { SalaryActions } from '../../salary-employee/redux/actions';
-// import { SabbaticalActions } from '../../sabbatical/redux/actions';
-// import { DisciplineActions } from '../../praise-discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabRepairContent, TabDistributeContent, TabAttachmentsContent, TabDepreciationContent// TabMaintenanceContent, , 
+    TabGeneralContent, TabRepairContent, TabDistributeContent, TabAttachmentsContent, TabDepreciationContent// TabMaintenanceContent,
 } from './CombineContent';
 
 class AssetCreatePage extends Component {
@@ -24,47 +20,12 @@ class AssetCreatePage extends Component {
                 depreciationInfo: [],
             },
             file: [],
-            repairNew: [],
-            distributeNew: [],
+            repairUpgradeNew: [],
+            distributeTransferNew: [],
         };
-        // this.handleChangeCourse = this.handleChangeCourse.bind(this);
-    }
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+    }
 
-        return [day, month, year].join('-');
-    }
-    // function: notification the result of an action
-    notifysuccess = (message) => toast(message);
-    notifyerror = (message) => toast.error(message);
-    notifywarning = (message) => toast.warning(message);
-
-    // Function upload avatar 
-    handleUpload = (img, avatar) => {
-        this.setState({
-            img: img,
-            avatar: avatar
-        })
-    }
-    // Function lưu các trường thông tin vào state
-    handleChange = (name, value) => {
-        const { assetNew } = this.state;
-        this.setState({
-            assetNew: {
-                ...assetNew,
-                [name]: value
-            }
-        });
-    }
 // Function format ngày hiện tại thành dạnh mm-yyyy
 formatDate = (date) => {
     var d = new Date(date),
@@ -102,30 +63,19 @@ handleChange = (name, value) => {
     });
 }
 
-// // Function thêm thông tin khen thưởng
-// handleChangePraise = (data) => {
-//     this.setState({
-//         praiseNew: data
-//     })
-// }
-// // Function thêm thông tin kỷ luật
-// handleChangeDiscipline = (data) => {
-//     this.setState({
-//         disciplineNew: data
-//     })
-// }
-// // Function thêm thông tin lịch sử lương
-// handleChangeSalary = (data) => {
-//     this.setState({
-//         salaryNew: data
-//     })
-// }
-// // Function thêm thông tin nghỉ phép
-// handleChangeSabbatical = (data) => {
-//     this.setState({
-//         sabbaticalNew: data
-//     })
-// }
+// Function thêm thông tin sửa chữa - thay thế - nâng cấp
+handleChangeRepairUpgrade = (data) => {
+    this.setState({
+        repairUpgradeNew: data
+    })
+}
+
+// Function thêm thông tin cấp phát - điều chuyển - thu hồi
+handleChangeDistributeTransfer = (data) => {
+    this.setState({
+        distributeTransferNew: data
+    })
+}
 
 // Function thêm thông tin tài liệu đính kèm
 handleChangeFile = (data) => {
@@ -269,29 +219,35 @@ render() {
 
                     <TabRepairContent
                         id="suachua"
-                        // praise={this.state.praiseNew}
-                        // discipline={this.state.disciplineNew}
-                        // handleAddPraise={this.handleChangePraise}
-                        // handleEditPraise={this.handleChangePraise}
-                        // handleDeletePraise={this.handleChangePraise}
-                        // handleAddDiscipline={this.handleChangeDiscipline}
-                        // handleEditDiscipline={this.handleChangeDiscipline}
-                        // handleDeleteDiscipline={this.handleChangeDiscipline}
+                        repairUpgrade={this.state.repairUpgradeNew}
+                        handleAddRepairUpgrade={this.handleChangeRepairUpgrade}
+                        handleEditRepairUpgrade={this.handleChangeRepairUpgrade}
+                        handleDeleteRepairUpgrade={this.handleChangeRepairUpgrade}
                     />
 
                     <TabDistributeContent
                         id="capphat"
-                        
+                        distributeTransfer={this.state.distributeTransferNew}
+                        handleAddDistributeTransfer={this.handleChangeDistributeTransfer}
+                        handleEditDistributeTransfer={this.handleChangeDistributeTransfer}
+                        handleDeleteDistributeTransfer={this.handleChangeDistributeTransfer}
                     />
                     
                     <TabDepreciationContent
                         id="khauhao"
-                        
+                        handleChange={this.handleChange}
+                        asset={this.state.assetNew}
                     />
 
                     <TabAttachmentsContent
                         id="tailieu"
-                        
+                        file={this.state.file}
+                        asset={this.state.assetNew}
+                        handleChange={this.handleChange}
+                        handleAddFile={this.handleChangeFile}
+                        handleEditFile={this.handleChangeFile}
+                        handleDeleteFile={this.handleChangeFile}
+                        handleSubmit={this.handleSubmit}
                     />
                 </div>
             </div>

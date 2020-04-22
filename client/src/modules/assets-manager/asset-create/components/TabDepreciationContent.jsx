@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-// import { ModalAddExperience, ModalEditExperience } from './combinedContent';
+import { AssetCreateValidator } from './AssetCreateValidator';
 import { DatePicker, ErrorLabel } from '../../../../common-components';
 
 class TabDepreciationContent extends Component {
@@ -9,183 +9,125 @@ class TabDepreciationContent extends Component {
         super(props);
         this.state = {};
     }
-    // // Bắt sự kiện click edit kinh nghiệm làm việc
-    // handleEdit = async (value, index) => {
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             currentRow: { ...value, index: index }
-    //         }
-    //     });
-    //     window.$(`#modal-edit-experience-editExperience${index}`).modal('show');
-    // }
-    // // Function lưu các trường thông tin vào state
-    // handleChange = (e) => {
-    //     const { name, value } = e.target;
-    //     this.props.handleChange(name, value);
-    // }
 
-    // // Function thêm mới kinh nghiệm làm việc
-    // handleAddExperience = async (data) => {
-    //     await this.setState({
-    //         ...this.state,
-    //         experience: [...this.state.experience, {
-    //             ...data
-    //         }]
-    //     })
-    //     this.props.handleAddExperience(this.state.experience);
-    // }
-    // // Function chỉnh sửa kinh nghiệm làm việc
-    // handleEditExperience = async (data) => {
-    //     const { experience } = this.state;
-    //     experience[data.index] = data;
-    //     await this.setState({
-    //         ...this.state,
-    //         experience: experience
-    //     });
-    //     this.props.handleEditExperience(this.state.experience);
-    // }
-    // // Function xoá kinh nghiệm làm việc
-    // delete = async (index) => {
-    //     var { experience } = this.state;
-    //     experience.splice(index, 1);
-    //     await this.setState({
-    //         ...this.state,
-    //         experience: [...experience]
-    //     })
-    //     this.props.handleDeleteExperience(this.state.experience);
-    // }
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (nextProps.id !== prevState.id) {
-    //         return {
-    //             ...prevState,
-    //             id: nextProps.id,
-    //             experience: nextProps.employee.experience,
-    //             cultural: nextProps.employee.cultural,
-    //             foreignLanguage: nextProps.employee.foreignLanguage,
-    //             educational: nextProps.employee.educational,
-    //         }
-    //     } else {
-    //         return null;
-    //     }
-    // }
+    // Function lưu các trường thông tin vào state
+    handleChange = (e) => {
+        const { name, value } = e.target;
+        this.props.handleChange(name, value);
+    }
+
+    // Function bắt sự kiện thay đổi thời gian bắt đầu trích khấu hao
+    handleStartDepreciationChange = (value) => {
+        this.validateStartDepreciation(value, true);
+    }
+    validateStartDepreciation = (value, willUpdateState = true) => {
+        let msg = AssetCreateValidator.validateStartDepreciation(value, this.props.translate)
+        if (willUpdateState) {
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnStartDepreciation: msg,
+                    assetNumber: value,
+                }
+            });
+            this.props.handleChange("startDepreciation", value);
+        }
+        return msg === undefined;
+    }
+
+    // Function bắt sự kiện thay đồi thời gian trích khấu hao
+    handleTimeDepreciationChange = (e) => {
+        const { value } = e.target;
+        this.validateTimeDepreciation(value, true);
+    }
+    validateTimeDepreciation = (value, willUpdateState = true) => {
+        let msg = AssetCreateValidator.validateTimeDepreciation(value, this.props.translate)
+        if (willUpdateState) {
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnTimeDepreciation: msg,
+                    timeDepreciation: value,
+                }
+            });
+            this.props.handleChange("timeDepreciation", value);
+        }
+        return msg === undefined;
+    }
+
+    
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+                assetCost: nextProps.asset.assetCost,
+                startDepreciation: nextProps.asset.startDepreciation,
+                timeDepreciation: nextProps.asset.timeDepreciation,
+                endDepreciation: nextProps.asset.endDepreciation,
+                annualDepreciationValue: nextProps.asset.annualDepreciationValue,
+                monthlyDepreciationValue: nextProps.asset.monthlyDepreciationValue,
+
+                errorOnStartDepreciation: undefined,
+                errorOnTimeDepreciation: undefined,
+            }
+        } else {
+            return null;
+        }
+    }
 
 
     render() {
         const { id, translate } = this.props;
-        const { cultural, foreignLanguage, educational, experience } = this.state;
+        const { assetCost, startDepreciation, timeDepreciation, endDepreciation, annualDepreciationValue, 
+                monthlyDepreciationValue, errorOnStartDepreciation, errorOnTimeDepreciation
+        } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin khấu hao</h4></legend>
                         <div className="form-group">
-                            {/* <label htmlFor="foreignLanguage ">Nguyên giá</label>
-                            <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder="Nguyên giá" autoComplete="off" /> */}
                             <label htmlFor="initialPrice">Nguyên giá<span className="text-red">*</span></label><br/>
-                            <input style={{ display: "inline", width: "95%" }} type="number" className="form-control" name="initialPrice"  onChange={this.handleInitialPriceChange} placeholder="Nguyên giá" autoComplete="off" />
+                            <input style={{ display: "inline", width: "95%" }} type="number" className="form-control" name="initialPrice" value={assetCost} placeholder="Nguyên giá = Giá trị ban đầu + Chi phí nâng cấp (không tính chi phí sửa chữa, thay thế)" autoComplete="off" />
                             <label style={{ height: 34, display: "inline", width: "2%" }}>&nbsp; VNĐ</label>
                         </div>
-                        <div className="form-group">
-                            {/* <label htmlFor="foreignLanguage ">Thời gian bắt đầu trích khấu hao</label> */}
-                            {/* <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('manage_employee.language_level')} autoComplete="off" /> */}
-                            <label htmlFor="datePurchase">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span></label>
+                        <div className={`form-group ${errorOnStartDepreciation === undefined ? "" : "has-error"} `}>
+                            <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span></label>
                             <DatePicker
-                                id="abcd"
-                                // value={datePurchase}
-                                // onChange={this.handleDatePurchaseChange}
+                                id={`startDepreciation${id}`}
+                                value={startDepreciation}
+                                onChange={this.handleStartDepreciationChange}
                             />
+                            <ErrorLabel content={errorOnStartDepreciation} />
                         </div>
-                        <div className="form-group">
-                            {/* <label htmlFor="foreignLanguage ">Thời gian trích khấu hao</label>
-                            <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('manage_employee.language_level')} autoComplete="off" /> */}
-                            <label htmlFor="initialPrice">Thời gian trích khấu hao<span className="text-red">*</span></label><br/>
-                            <input style={{ display: "inline", width: "95%" }} type="number" className="form-control" name="initialPrice"  onChange={this.handleInitialPriceChange} placeholder="Thời gian trích khấu hao" autoComplete="off" />
+                        <div className={`form-group ${errorOnTimeDepreciation === undefined ? "" : "has-error"} `}>
+                            <label htmlFor="timeDepreciation">Thời gian trích khấu hao<span className="text-red">*</span></label><br/>
+                            <input style={{ display: "inline", width: "95%" }} type="number" className="form-control" name="timeDepreciation" value={timeDepreciation}  onChange={this.handleTimeDepreciationChange} placeholder="Thời gian trích khấu hao" autoComplete="off" />
                             <label style={{ height: 34, display: "inline", width: "2%" }}>&nbsp; Năm</label>
+                            <ErrorLabel content={errorOnTimeDepreciation} />
                         </div>
                         <div className="form-group">
-                            {/* <label htmlFor="foreignLanguage ">Thời gian kết thúc trích khấu hao</label> */}
-                            {/* <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('manage_employee.language_level')} autoComplete="off" /> */}
-                            <label htmlFor="datePurchase">Thời gian kết thúc trích khấu hao<span className="text-red">*</span></label>
+                            <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao</label>
                             <DatePicker
-                                id="abcd"
-                                // value={datePurchase}
-                                // onChange={this.handleDatePurchaseChange}
+                                id="end_depreciation"
+                                value={endDepreciation}
                             />
                         </div>
                         <div className="form-group">
-                            {/* <label htmlFor="foreignLanguage ">Mức độ khấu hao trung bình hằng năm</label>
-                            <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('manage_employee.language_level')} autoComplete="off" /> */}
-                            <label htmlFor="initialPrice">Mức độ khấu hao trung bình hằng năm</label><br/>
-                            <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="initialPrice"  onChange={this.handleInitialPriceChange} placeholder="Mức độ khấu hao trung bình hằng năm" autoComplete="off" />
+                            <label htmlFor="annualDepreciationValue">Mức độ khấu hao trung bình hằng năm</label><br/>
+                            <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="initialPrice" value={annualDepreciationValue} placeholder="Mức độ khấu hao trung bình hằng năm" autoComplete="off" />
                             <label style={{ height: 34, display: "inline", width: "5%" }}>&nbsp; VNĐ/Năm</label>
                         </div>
                         <div className="form-group">
-                            {/* <label htmlFor="foreignLanguage ">Mức độ khấu hao trung bình hằng tháng</label>
-                            <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('manage_employee.language_level')} autoComplete="off" /> */}
-                            <label htmlFor="initialPrice">Mức độ khấu hao trung bình hằng tháng</label><br/>
-                            <input style={{ display: "inline", width: "92%" }} type="number" className="form-control" name="initialPrice"  onChange={this.handleInitialPriceChange} placeholder="Mức độ khấu hao trung bình hằng tháng" autoComplete="off" />
+                            <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng</label><br/>
+                            <input style={{ display: "inline", width: "92%" }} type="number" className="form-control" name="initialPrice" value={monthlyDepreciationValue} placeholder="Mức độ khấu hao trung bình hằng tháng" autoComplete="off" />
                             <label style={{ height: 34, display: "inline", width: "5%" }}>&nbsp; VNĐ/Tháng</label>
                         </div>
-                        {/* <div className="form-group">
-                            <label htmlFor="educational ">{translate('manage_employee.qualification')}</label>
-                            <select className="form-control" name="educational" value={educational} onChange={this.handleChange}>
-                                <option value="intermediate_degree">{translate('manage_employee.intermediate_degree')}</option>
-                                <option value="colleges">{translate('manage_employee.colleges')}</option>
-                                <option value="university">{translate('manage_employee.university')}</option>
-                                <option value="master_degree">{translate('manage_employee.master_degree')}</option>
-                                <option value="phd">{translate('manage_employee.phd')}</option>
-                                <option value="unavailable">{translate('manage_employee.unavailable')}</option>
-                            </select>
-                        </div> */}
                     </fieldset>
-                    {/* <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.work_experience')}</h4></legend>
-                        <ModalAddExperience handleChange={this.handleAddExperience} id={`addExperience${id}`} />
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
-                            <thead>
-                                <tr>
-                                    <th>{translate('manage_employee.from_month_year')}</th>
-                                    <th>{translate('manage_employee.to_month_year')}</th>
-                                    <th>{translate('manage_employee.unit')}</th>
-                                    <th>{translate('table.position')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(typeof experience !== 'undefined' && experience.length !== 0) &&
-                                    experience.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
-                                            <td>{x.unit}</td>
-                                            <td>{x.position}</td>
-                                            <td >
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_experience')} edit_experience><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                        {
-                            (typeof experience === 'undefined' || experience.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-
-                    </fieldset> */}
                 </div>
-                {/* {
-                    this.state.currentRow !== undefined &&
-                    <ModalEditExperience
-                        id={`editExperience${this.state.currentRow.index}`}
-                        index={this.state.currentRow.index}
-                        unit={this.state.currentRow.unit}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
-                        position={this.state.currentRow.position}
-                        handleChange={this.handleEditExperience}
-                    />
-                } */}
             </div>
         );
     }

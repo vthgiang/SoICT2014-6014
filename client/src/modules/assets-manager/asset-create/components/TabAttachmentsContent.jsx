@@ -83,7 +83,7 @@ class TabAttachmentsContent extends Component {
                 ...prevState,
                 id: nextProps.id,
                 file: nextProps.file,
-                // numberFile: nextProps.asset.numberFile,
+                numberFile: nextProps.asset.numberFile,
             }
         } else {
             return null;
@@ -105,14 +105,12 @@ class TabAttachmentsContent extends Component {
                     <div className="col-md-12">
                         <h4 className="row col-md-6">Danh sách tài liệu đính kèm:</h4>
                         <ModalAddFile handleChange={this.handleAddFile} id={`addFile${id}`} />
-                        {/* <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button> */}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
                                     <th>Tên tài liệu</th>
                                     <th>Mô tả</th>
                                     <th>Số lượng</th>
-                                    {/* <th>{translate('table.status')}</th> */}
                                     <th>File đính kèm</th>
                                     <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
@@ -124,7 +122,6 @@ class TabAttachmentsContent extends Component {
                                             <td>{x.nameFile}</td>
                                             <td>{x.discFile}</td>
                                             <td>{x.number}</td>
-                                            {/* <td>{translate(`manage_employee.${x.status}`)}</td> */}
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td >
@@ -155,7 +152,6 @@ class TabAttachmentsContent extends Component {
                         nameFile={this.state.currentRow.nameFile}
                         discFile={this.state.currentRow.discFile}
                         number={this.state.currentRow.number}
-                        status={this.state.currentRow.status}
                         file={this.state.currentRow.file}
                         urlFile={this.state.currentRow.urlFile}
                         fileUpload={this.state.currentRow.fileUpload}

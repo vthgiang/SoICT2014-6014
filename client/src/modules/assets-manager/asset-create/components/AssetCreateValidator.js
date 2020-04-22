@@ -2,6 +2,7 @@ import {
     VALIDATOR
 } from '../../../../helpers/validator';
 export const AssetCreateValidator = {
+
     /** Thông tin chung */
     validateAssetNumber, //mã tài sản
     validateDatePurchase, //ngày nhập
@@ -14,35 +15,14 @@ export const AssetCreateValidator = {
     validateValue, //giá trị
 
     /** Sửa chữa - thay thế - nâng cấp */
+
     /** Cấp phát - điều chuyển - thu hồi */
+
     /** Thông tin khấu hao */
+    validateStartDepreciation,
+    validateTimeDepreciation,
+
     /** Tài liệu đính kèm */
-
-
-
-
-    // validateTaxNumber,
-    // validateStartTax,
-    // validateUnitTax,
-    // validateUserTax,
-
-    // validateExperienceUnit,
-    // validateExperiencePosition,
-    // validateExperienceStartDate,
-    // validateExperienceEndDate,
-
-    // validateNameCertificate,
-    // validateAddressCertificate,
-    // validateYearCertificate,
-    // validateNameCertificateShort,
-    // validateUnitCertificateShort,
-    // validateStartDateCertificateShort,
-    // validateEndDateCertificateShort,
-
-    // validateStartDateContract,
-    // validateNameContract,
-    // validateTypeContract,
-
     validateNameFile,
     validateDiscFile,
     validateNumberFile,
@@ -117,180 +97,27 @@ function validateManager(value, translate) {
     return msg;
 }
 
-// // Validate TabContactContent (Thông tin liên hệ)
-// function validateAddress(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Địa chỉ chỗ ở hiện tại không được để trống";
-//     }
-//     return msg;
-// }
+/**
+ * Validate TabGeneralContent (Thông tin chung)
+ */
 
-// function validateEmail(value, translate) {
-//     let msg = undefined;
-//     if (!VALIDATOR.isValidEmail(value)) {
-//         msg = "Email không hợp lệ";
-//     }
-//     return msg;
-// }
+//kiểm tra thời  gian bắt đầu trích khấu hao
+function validateStartDepreciation(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Thời gian bắt đầu trích khấu hao không được để trống";
+    }
+    return msg;
+}
 
-// function validatePhone(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Điện thoại di động 1 không được để trống";
-//     }
-//     return msg;
-// }
-
-
-// // Validate TabExperienceContent (học vấn và kinh nghiêm làm việc)
-// function validateExperienceUnit(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Đơn vị công tác không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateExperiencePosition(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Chức vụ không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateExperienceStartDate(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Từ tháng/năm không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateExperienceEndDate(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Đến tháng/năm không được để trống";
-//     }
-//     return msg;
-// }
-
-// // Validate TabCertificateContent (bằng cấp và chứng chỉ)
-// function validateNameCertificate(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Tên bằng cấp không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateAddressCertificate(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Nơi đào tạo không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateYearCertificate(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Năm tốt nghiệp không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateNameCertificateShort(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Tên chứng chỉ không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateUnitCertificateShort(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Nơi cấp không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateStartDateCertificateShort(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Ngày cấp không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateEndDateCertificateShort(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Ngày hết hạn không được để trống";
-//     }
-//     return msg;
-// }
-
-// // Validate TabContractContent (hợp đồng lao động và quá trình đào tạo)
-// function validateStartDateContract(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Ngày có hiệu lực không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateNameContract(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Tên hợp đồng không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateTypeContract(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Loại hợp đồng không được để trống";
-//     }
-//     return msg;
-// }
-
-// // Validate TabTaxContent (Tài khoản và thuế)
-// function validateTaxNumber(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Mã số thuế không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateStartTax(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Ngày hoạt động không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateUnitTax(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Đơn vị quản lý không được để trống";
-//     }
-//     return msg;
-// }
-
-// function validateUserTax(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = "Người đạo diện không được để trống";
-//     }
-//     return msg;
-// }
-
+//kiểm tra thời gian trích khấu hao
+function validateTimeDepreciation(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Thời gian trích khấu hao không được để trống";
+    }
+    return msg;
+}
 
 // Validate TabAttachmentsContent (Tài liệu đính kèm)
 function validateNameFile(value, translate) {

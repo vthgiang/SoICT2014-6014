@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import {
-    ModalAddRepair, ModalEditRepair,// ModalAddDiscipline, ModalEditDiscipline
+    ModalAddRepair, ModalEditRepair
 } from './CombineContent';
 import {  DatePicker, DataTableSetting, SelectMulti } from '../../../../common-components';
 
@@ -26,6 +26,64 @@ class TabRepairContent extends Component {
             day = '0' + day;
 
         return [month, year].join('-');
+    }
+
+    // Function lưu giá trị mã phiếu vào state khi thay đổi
+    handleRepairNumberChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    // Function lưu giá trị mã tài sản vào state khi thay đổi
+    handleAssetNumberChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    handleMonthChange = (value) => {
+        this.setState({
+            ...this.state,
+            month: value
+        });
+    }
+
+    // Function lưu giá trị loại phiếu vào state khi thay đổi
+    handleTypeChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            type: value
+        })
+    }
+
+    // Function lưu giá trị status vào state khi thay đổi
+    handleStatusChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            status: value
+        })
+    }
+
+    // Function bắt sự kiện tìm kiếm 
+    handleSunmitSearch = async () => {
+        if (this.state.month === "") {
+            await this.setState({
+                month: this.formatDate(Date.now())
+            })
+        }
+        // this.props.getListRepairUpgrade(this.state);
     }
 
     // Bắt sự kiện click edit phiếu

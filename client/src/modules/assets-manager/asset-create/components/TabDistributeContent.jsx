@@ -27,6 +27,52 @@ class TabDistributeContent extends Component {
 
         return [month, year].join('-');
     }
+    // Function lưu giá trị mã phiếu vào state khi thay đổi
+    handleDistributeNumberChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    // Function lưu giá trị mã tài sản vào state khi thay đổi
+    handleAssetNumberChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    handleMonthChange = (value) => {
+        this.setState({
+            ...this.state,
+            month: value
+        });
+    }
+
+    // Function lưu giá trị loại phiếu vào state khi thay đổi
+    handleTypeChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            type: value
+        })
+    }
+
+    // Function bắt sự kiện tìm kiếm 
+    handleSunmitSearch = async () => {
+        if (this.state.month === "") {
+            await this.setState({
+                month: this.formatDate(Date.now())
+            })
+        }
+
+    }
 
     // Bắt sự kiện click edit phiếu
     handleEdit = async (value, index) => {
@@ -49,7 +95,8 @@ class TabDistributeContent extends Component {
         })
         this.props.handleAddDistribute(this.state.distributeTransfer)
     }
-    // Function chỉnh sửa thông tin khen thưởng
+
+    // Function chỉnh sửa thông tin phiếu
     handleEditDistribute = async (data) => {
         const { distributeTransfer } = this.state;
         distributeTransfer[data.index] = data;
@@ -58,7 +105,8 @@ class TabDistributeContent extends Component {
         })
         this.props.handleEditDistribute(this.state.distributeTransfer)
     }
-    // Function bắt sự kiện xoá thông tin khen thưởng
+
+    // Function bắt sự kiện xoá thông tin phiếu
     delete = async (index) => {
         var distributeTransfer = this.state.distributeTransfer;
         distributeTransfer.splice(index, 1);
