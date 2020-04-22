@@ -13,6 +13,7 @@ class Layout extends Component {
     }
     render() { 
         const { translate, auth } = this.props;
+        const {display} = this.props.alert;
         
         return ( 
             <React.Fragment>

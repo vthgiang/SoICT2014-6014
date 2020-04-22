@@ -101,13 +101,13 @@ exports.auth = async (req, res, next) => {
                     company: undefined
                 });
             if(link === null) throw ('url_invalid');
-            const roleArr = [role._id].concat(role.parents);
-            const privilege = await Privilege.findOne({
-                resourceId: link._id,
-                resourceType: 'Link',
-                roleId: { $in: roleArr }
-            });
-            if(privilege === null) throw ('page_access_denied');
+            // const roleArr = [role._id].concat(role.parents);
+            // const privilege = await Privilege.findOne({
+            //     resourceId: link._id,
+            //     resourceType: 'Link',
+            //     roleId: { $in: roleArr }
+            // });
+            // if(privilege === null) throw ('page_access_denied');
 
             /**
              * Kiểm tra xem user này có được gọi tới service này hay không?
