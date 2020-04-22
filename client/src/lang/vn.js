@@ -92,7 +92,7 @@ export default {
             log_again: 'Đã xảy ra lỗi. Vui lòng đăng nhập lại!',
             access_denied: 'ACCESS DENIED! Truy cập trái phép! Vui lòng đăng nhập!',
             role_invalid: 'ROLE INVALID! Quyền truy cập không hợp lệ! Vui lòng thử lại sau!',
-            page_access_denied: 'PAGE ACCESS DENIED! Quyền truy cập vào trang này của bạn đã được thay đổi! Vui lòng đăng nhập lại!',
+            page_access_denied: 'Phân quyền hiện tại của bạn không được phép truy cập vào trang này!',
             user_role_invalid: 'USER-ROLE INVALID! Quyền hiện tại của bạn đã bị thay đổi! Vui lòng đăng nhập lại!',
             acc_logged_out: 'JWT - phiên làm việc không chính xác. Vui lòng đăng nhập lại!',
             service_off: 'SERVICE OFF! Dịch vụ của công ty bạn đã tạm ngưng! Phiên làm việc của bạn sẽ bị tạm ngưng!',
