@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
 import { AlertActions } from '../redux/actions';
 import './alert.css';
-import { createBrowserHistory } from 'history';
-const history = createBrowserHistory();
 
 class Alert extends Component {
     
@@ -37,11 +34,7 @@ class Alert extends Component {
                                 </strong>
                             </div>
                             <div className="modal-footer">
-                                {
-                                    message === 'page_access_denied' ?
-                                    <a className="btn btn-primary" href="/">Quay về trang chủ</a>:
-                                    <button className="btn btn-primary" onClick={this.handleButton}>Đăng xuất</button>
-                                }
+                                <button className="btn btn-primary" onClick={this.handleButton}>Đăng xuất</button>
                             </div>
                         </div>
                     </div>
@@ -57,7 +50,6 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    resetAlertState: AlertActions.resetAlertState,
     reset: AlertActions.reset
 }
 
