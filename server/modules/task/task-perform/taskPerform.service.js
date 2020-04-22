@@ -296,11 +296,11 @@ exports.createResultTask = async (result, taskID) => {
     if (item !== null) {
         // Lưu thông tin kết quả 
         var resultTask = {
-            member: item.member,
-            roleMember: item.roleMember,
-            systempoint: item.systempoint,
-            mypoint: item.mypoint,
-            approverpoint: item.approverpoint
+            employee: item.member,
+            role: item.roleMember,
+            automaticPoint: item.systempoint,
+            employeePoint: item.mypoint,
+            approvedPoint: item.approverpoint
         }
         // Cập nhật thông tin công việc
         var task = await Task.findByIdAndUpdate(
@@ -322,9 +322,9 @@ exports.editResultTask = async (listResult,taskid) => {
             var newTask = await Task.updateOne({"results._id" : item._id},
             // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},
                 { $set: {
-                    "results.$.systempoint": item.systempoint,
-                    "results.$.mypoint": item.mypoint,
-                    "results.$.approverpoint": item.approverpoint
+                    "results.$.automaticPoint": item.systempoint,
+                    "results.$.employeePoint": item.mypoint,
+                    "results.$.approvedPoint": item.approverpoint
                 }}
             );
         })

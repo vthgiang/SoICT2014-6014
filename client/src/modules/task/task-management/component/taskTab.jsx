@@ -424,10 +424,10 @@ class TabTaskContent extends Component {
                                         this.list_to_tree(currentTasks).map(item =>
                                             <tr key={item._id} data-id={item._id} data-parent={item.parent === null ? item.parent : item.parent._id} data-level={item.level}>
                                                 <td title={item.name} data-column="name">{item.name}</td>
-                                                <td title={item.unit.name}>{item.unit.name}</td>
+                                                <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
                                                 <td title={item.priority}>{item.priority}</td>
-                                                <td title={this.formatDate(item.startdate)}>{this.formatDate(item.startdate)}</td>
-                                                <td title={this.formatDate(item.enddate)}>{this.formatDate(item.enddate)}</td>
+                                                <td title={this.formatDate(item.startDate)}>{this.formatDate(item.startDate)}</td>
+                                                <td title={this.formatDate(item.endDate)}>{this.formatDate(item.endDate)}</td>
                                                 <td title={item.status}>{item.status}</td>
                                                 <td title={item.progress + "%"}>{item.progress + "%"}</td>
                                                 <td title={this.convertTime(item.time)}>{this.convertTime(item.time)}</td>
@@ -437,8 +437,8 @@ class TabTaskContent extends Component {
                                                         this.state.showModal === item._id &&
 
                                                         <ModalPerformTask
-                                                            responsible={item.responsible}
-                                                            unit={item.unit._id}
+                                                            responsible={item.responsibleEmployees}
+                                                            unit={item.organizationalUnit._id}
                                                             id={item._id}
                                                             role={this.props.role}
                                                         />
