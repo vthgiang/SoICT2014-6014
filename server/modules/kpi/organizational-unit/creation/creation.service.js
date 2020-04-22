@@ -138,13 +138,12 @@ exports.editTargetById = async (nameId,parentId,weightId,criteriaId,id) => {
     return target;  
 }
 
-// TODO
 // Xóa mục tiêu của KPI đơn vị
 exports.deleteTarget = async (id,kpiunitId) => {
     //req.params.id,req.params.kpiunit
     var target = await OrganizationalUnitKpi.findByIdAndDelete(id);
-        var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(kpiunitId, { $pull: { listtarget: id } }, { new: true });
-        kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+        var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(kpiunitId, { $pull: { kpis: id } }, { new: true });
+        kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
         return kpiunit;
         
 }
@@ -152,21 +151,21 @@ exports.deleteTarget = async (id,kpiunitId) => {
 exports.editStatusKPIUnit = async (id, statusId) => {
     //req.params.id,req.params.status
     var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
-        kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+        kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
         return kpiunit;     
 }
 
 // Xóa toàn bộ KPI đơn vị
 exports.delete = async (id) => {
     //req.params.id
-    var listTarget = [];
+    var kpis = [];
         var kpiunit = await OrganizationalUnitKpiSet.findById(id);
-        if (kpiunit.listtarget) listTarget = kpiunit.listtarget;
-        if (listTarget !== []) {
-            listTarget = await Promise.all(listTarget.map(async (item) => {
+        if (kpiunit.kpis) kpis = kpiunit.kpis;
+        if (kpis !== []) {
+            kpis = await Promise.all(kpis.map(async (item) => {
                 return OrganizationalUnitKpi.findByIdAndDelete(item._id);
             }))
         }
         kpiunit = await OrganizationalUnitKpiSet.findByIdAndDelete(id);
-        return [kpiunit,listTarget];      
+        return [kpiunit,kpis];      
 }

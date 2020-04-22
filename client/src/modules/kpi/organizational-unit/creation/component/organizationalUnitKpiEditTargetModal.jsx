@@ -50,7 +50,7 @@ class ModalEditTargetKPIUnit extends Component {
             weight: this.state.weight,
             criteria: this.state.criteria,
         }
-
+        
         if (this.isFormValidated()){
             return this.props.editTargetKPIUnit(id, newTarget);
         }
@@ -177,7 +177,7 @@ class ModalEditTargetKPIUnit extends Component {
             items = [];
         }
         else{    
-            items = parentKPI.listtarget.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = parentKPI.kpis.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                 return {value: x._id, text: x.name} });
         }
 

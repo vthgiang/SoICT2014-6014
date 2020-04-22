@@ -117,7 +117,7 @@ class KPIUnitCreate extends Component {
     }
     approveKPIUnit = (event,currentStatus, currentKPI, status) => {
         event.preventDefault();
-        var totalWeight = currentKPI.listtarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
+        var totalWeight = currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
         if(currentStatus === 1){
             Swal.fire({
                 title: translate('kpi_unit_create.approve_already'),
