@@ -27,7 +27,7 @@ const SalarySchema = new Schema({
         type: String,
         required: true,
     },
-    bonus: [{   // Tiền lương thưởng khác
+    bonus: [{ // Tiền lương thưởng khác
         nameBonus: String,
         number: String,
     }],
