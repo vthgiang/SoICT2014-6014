@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
 
-// tạo bảng datatable nghỉ phép
+// Tạo bảng datatable nghỉ phép
 const AnnualLeaveSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
@@ -30,15 +30,9 @@ const AnnualLeaveSchema = new Schema({
     status: {
         type: String,
         required: true
-    }, // TODO: dùng timestamp tương tự Thái ở collection User
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-})
+}, {
+    timestamps: true,
+});
 
 module.exports = AnnualLeave = mongoose.model("annual_leaves", AnnualLeaveSchema);

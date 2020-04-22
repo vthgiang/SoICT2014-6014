@@ -353,7 +353,7 @@ class Routes extends Component {
                         component={ ManagerPraiseDiscipline }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.sabbatical.isLoading }
+                        isLoading={ this.props.annualLeave.isLoading }
                         key={ 'sabbatical' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
