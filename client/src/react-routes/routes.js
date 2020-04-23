@@ -50,7 +50,7 @@ import {KPIUnitDashboard} from "../modules/kpi/organizational-unit/dashboard/com
 import {KPIUnitManager} from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
 import {KPIUnitEvaluate} from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
 
-import {KPIPersonalCreate} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
+import {CreateEmployeeKpiSet} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
 import {KPIPersonalManager} from "../modules/kpi/employee/management/component/employeeKpiManagement";
 import {DashBoardKPIPersonal} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
@@ -505,7 +505,7 @@ class Routes extends Component {
                         component={ KPIUnitManager }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.createKpiPersonal.isLoading }
+                        isLoading={ this.props.createEmployeeKpiSet.isLoading }
                         key={ 'kpi-personal-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -517,7 +517,7 @@ class Routes extends Component {
                         path={ '/kpi-personals/create' }
                         pageName={ 'kpi_personal_create' }
                         layout={ Layout }
-                        component={ KPIPersonalCreate }
+                        component={ CreateEmployeeKpiSet }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.KPIPersonalManager.isLoading }

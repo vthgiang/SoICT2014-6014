@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UserActions } from "../../../../super-admin/user/redux/actions"
-import { createKpiActions  } from '../redux/actions';
+import { createKpiSetActions  } from '../redux/actions';
 import { DatePicker, DialogModal } from '../../../../../../src/common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 var translate='';
-class ModalStartKPIPersonal extends Component {
+class ModalCreateEmployeeKpiSet extends Component {
     constructor(props) {
         super(props);
         translate = this.props.translate;
@@ -54,7 +54,7 @@ class ModalStartKPIPersonal extends Component {
     }
 
     //chu
-    handleCreateKPIPersonal = async () => {
+    handleCreateEmployeeKpiSet = async () => {
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -90,8 +90,8 @@ class ModalStartKPIPersonal extends Component {
         })
         var {kpipersonal} = this.state;
         if(kpipersonal.unit  && kpipersonal.time && kpipersonal.approver){//&& kpipersonal.creater
-            this.props.createKPIPersonal(kpipersonal);
-            window.$("#startKPIPersonal").modal("hide");
+            this.props.createEmployeeKpiSet(kpipersonal);
+            window.$("#createEmployeeKpiSet").modal("hide");
         }
     }
     
@@ -114,15 +114,15 @@ class ModalStartKPIPersonal extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="startKPIPersonal" isLoading={false}
-                    formID="formStartKPIPersonal"
+                    modalID="createEmployeeKpiSet" isLoading={false}
+                    formID="formCreateEmployeeKpiSet"
                     title={translate('kpi_personal.start.initialize_kpi')}
                     msg_success={translate('kpi_personal.start.success')}
                     msg_faile={translate('kpi_unit_create.error')}
-                    func={this.handleCreateKPIPersonal}
+                    func={this.handleCreateEmployeeKpiSet}
                     // disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formStartKPIPersonal" onSubmit={() => this.handleCreateKPIPersonal(translate('kpi_unit_create.init_success'))}>
+                    <form id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('kpi_unit_create.init_success'))}>
                         <div className="form-group">
                             <label className="col-sm-3">{translate('kpi_unit_create.unit')}</label>
                             <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
@@ -167,7 +167,7 @@ class ModalStartKPIPersonal extends Component {
                 </DialogModal>
             </React.Fragment>
 
-            // <div className="modal fade" id="startKPIPersonal">
+            // <div className="modal fade" id="CreateEmployeeKpiSet">
             //     <div className="modal-dialog">
             //         <div className="modal-content">
             //             <div className="modal-header">
@@ -247,8 +247,8 @@ function mapState(state) {
 
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    createKPIPersonal: createKpiActions.createKPIPersonal
+    createEmployeeKpiSet: createKpiSetActions.createEmployeeKpiSet
 };
 
-const connectedModalStartKPIPersonal = connect( mapState, actionCreators )( withTranslate(ModalStartKPIPersonal)) ;
-export { connectedModalStartKPIPersonal as ModalStartKPIPersonal };
+const connectedModalCreateEmployeeKpiSet = connect( mapState, actionCreators )( withTranslate(ModalCreateEmployeeKpiSet)) ;
+export { connectedModalCreateEmployeeKpiSet as ModalCreateEmployeeKpiSet };
