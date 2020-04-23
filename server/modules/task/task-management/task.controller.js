@@ -140,14 +140,14 @@ exports.editStatusOfTask = async (req, res) => {
         // await LogInfo(req.user.email, ` edit status of task  `,req.user.company);
         res.status(200).json({
             success: true,
-            message: 'Chinh sua trang thai thanh cong',
+            message: ['Chinh sua trang thai thanh cong'],
             content: task
         })
     } catch (error) {
         // await LogError(req.user.email, ` edit status of task `,req.user.company);
         res.status(400).json({
             success: false,
-            message: 'Chinh sua trang thai that bai',
+            message: ['Chinh sua trang thai that bai'],
             content: error
         });
     }

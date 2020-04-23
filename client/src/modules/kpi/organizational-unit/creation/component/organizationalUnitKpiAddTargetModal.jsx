@@ -10,7 +10,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
-class ModalAddTargetKPIUnit extends Component {
+class OrganizationalUnitKpiAddTargetModal extends Component {
     componentDidMount() {
         // get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
@@ -238,5 +238,5 @@ const actionCreators = {
     getParentTarget: createUnitKpiActions.getKPIParent,
     addTargetKPIUnit: createUnitKpiActions.addTargetKPIUnit
 };
-const connectedModalAddTargetKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalAddTargetKPIUnit));
-export { connectedModalAddTargetKPIUnit as ModalAddTargetKPIUnit };
+const connectedOrganizationalUnitKpiAddTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiAddTargetModal));
+export { connectedOrganizationalUnitKpiAddTargetModal as OrganizationalUnitKpiAddTargetModal };
