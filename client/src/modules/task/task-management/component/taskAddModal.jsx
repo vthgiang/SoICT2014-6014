@@ -25,7 +25,7 @@ class ModalAddTask extends Component {
     componentDidMount() {
         // get id current role
         // this.props.getTaskTemplateByUser("1", "[]");
-        this.props.getTaskTemplateByUser( "1", "0", "[]");//fix--localStorage.getItem('id'),---------------------------------------------------
+        this.props.getTaskTemplateByUser("1", "0", "[]");//fix--localStorage.getItem('id'),---------------------------------------------------
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // load js for form
@@ -65,6 +65,7 @@ class ModalAddTask extends Component {
 
     // update state before submit because setState async
     updateState = async () => {
+
         // get data in multi select
         let selectResponsible = this.refs.responsible;
         let responsible = [].filter.call(selectResponsible.options, o => o.selected).map(o => o.value);
@@ -79,7 +80,17 @@ class ModalAddTask extends Component {
         const token = getStorage();
         const verified = await jwt.verify(token, TOKEN_SECRET);
         var idUser = verified._id;
+        var listTaskTemplate;
         
+        var ckTemplate = false;
+
+        const {  tasktemplates } = this.props;
+        if (tasktemplates.items) listTaskTemplate = tasktemplates.items;
+        if (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0){
+            ckTemplate = true;
+        } 
+        console.log('---check----', ckTemplate);
+
         await this.setState(state => {
             
             return {
@@ -93,7 +104,7 @@ class ModalAddTask extends Component {
                     enddate: this.enddate.value,
                     priority: this.priority.value,
                     unit: this.unit.value,
-                    tasktemplate: this.tasktemplate.value !== "" ? this.tasktemplate.value : null,
+                    tasktemplate: (ckTemplate && this.tasktemplate.value !== "") ? this.tasktemplate.value : null,
                     role: localStorage.getItem("currentRole"),
                     parent: this.parent.value !== "" ? this.parent.value : null,
                     kpi: kpi,
@@ -192,7 +203,7 @@ class ModalAddTask extends Component {
         const { newTask, submitted } = this.state;
         const { department, tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
         if (tasktemplates.items) {
-            listTaskTemplate = tasktemplates.items;
+            listTaskTemplate = tasktemplates.items; // listTaskTemplate = tasktemplates.items;
             currentTemplate = listTaskTemplate.filter(item => item.resourceId._id === this.state.currentTemplate);
         }
         if (department.unitofuser) {
@@ -380,7 +391,7 @@ class ModalAddTask extends Component {
                                         </div>
                                     </fieldset>
                                 </div>
-                                
+
                                 <div className="col-sm-6">
                                     <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">Liên kết công việc (Object and Key Results)</legend>
@@ -398,7 +409,11 @@ class ModalAddTask extends Component {
                                                 <div className="col-sm-4 help-block">Hãy chọn đơn vị</div>
                                             }
                                         </div>
-                                        <div className="form-group  has-feedback">
+                                        
+
+                                        {/* 
+
+                                         <div className="form-group  has-feedback">
                                             <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
                                                 {
@@ -414,6 +429,28 @@ class ModalAddTask extends Component {
                                                 }
                                             </div>
                                         </div>
+                                        
+                                        */}<div className="form-group  has-feedback">
+                                        {
+                                            
+                                                (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) ?
+                                                <div>
+                                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
+                                                    <div className="col-sm-10" style={{ width: '100%' }}>
+                                                    (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) &&
+                                                        <select className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskTemplate} ref={input => this.tasktemplate = input}>
+                                                            <option value="">--Hãy chọn mẫu công việc--</option>
+                                                            {
+                                                                listTaskTemplate.map(item => {
+                                                                    return <option key={item.resourceId._id} value={item.resourceId._id}>{item.resourceId.name}</option>
+                                                                })
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>: null
+                                            
+                                        }
+                                       </div>
                                         <div className="form-group  has-feedback">
                                             <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Công việc cha</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
@@ -448,7 +485,7 @@ class ModalAddTask extends Component {
                                         </div>
                                     </fieldset>
                                 </div>
-                                
+
                             </form>
                         </div>
                         <div className="modal-footer">

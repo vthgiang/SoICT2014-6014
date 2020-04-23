@@ -66,7 +66,7 @@ class ModalApproveTask extends Component {
                 mypoint: this.state.mypoint1,
                 approverpoint: this.state.approvepoint1,
                 _id: task && task.results[0]._id,
-                member: task && task.responsible[0]._id,
+                member: task && task.responsibleEmployees[0]._id,
                 roleMember: "responsible"
             },
             {
@@ -74,7 +74,7 @@ class ModalApproveTask extends Component {
                 mypoint: this.state.mypoint2,
                 approverpoint: this.state.approvepoint2,
                 _id: task && task.results[1]._id,
-                member: task && task.consulted[0]._id,
+                member: task && task.consultedEmployees[0]._id,
                 roleMember: "consulted"
             }
         ]; // currentTask.results;
@@ -198,24 +198,24 @@ class ModalApproveTask extends Component {
             if (task && task.results) {
                 var listResult = task.results;
                 listResult.map((item) => {
-                    if (task.responsible[0]._id === item.member && item.roleMember === "responsible") respPoint = item;
-                    if (task.consulted[0]._id === item.member && item.roleMember === "consulted") consultPoint = item;
-                    if (task.accounatable[0]._id === item.member && item.roleMember === "accountable") accoutPoint = item;
+                    if (task.responsibleEmployees[0]._id === item.employee && item.role === "responsible") respPoint = item;
+                    if (task.consultedEmployees[0]._id === item.employee && item.role === "consulted") consultPoint = item;
+                    if (task.accountableEmployees[0]._id === item.employee && item.role === "accountable") accoutPoint = item;
                 })
             }
-            const systempoint_def = (respPoint) ? respPoint.systempoint : 0;
+            const systempoint_def = (respPoint) ? respPoint.automaticPoint : 0;
             const defaultPoint = {
-                systempoint: (respPoint) ? respPoint.systempoint : 0,
+                systempoint: (respPoint) ? respPoint.automaticPoint : 0,
                 responsible: {
-                    mypoint: (respPoint) ? respPoint.mypoint : 0,
-                    approverpoint: (respPoint) ? respPoint.approverpoint : 0
+                    mypoint: (respPoint) ? respPoint.employeePoint : 0,
+                    approverpoint: (respPoint) ? respPoint.approvedPoint : 0
                 },
                 consulted: {
-                    mypoint: (consultPoint) ? consultPoint.mypoint : 0,
-                    approverpoint: (consultPoint) ? consultPoint.approverpoint : 0
+                    mypoint: (consultPoint) ? consultPoint.employeePoint : 0,
+                    approverpoint: (consultPoint) ? consultPoint.approvedPoint : 0
                 },
                 accountable: {
-                    mypoint: (accoutPoint) ? (accoutPoint.mypoint) : systempoint_def
+                    mypoint: (accoutPoint) ? (accoutPoint.employeePoint) : systempoint_def
                 }
             }
             return {
