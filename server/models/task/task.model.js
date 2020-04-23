@@ -173,6 +173,14 @@ const TaskSchema = new Schema({
                 default: 0,
                 required: true
             },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            },
+            updatedAt: {
+                type : Date,
+                default: Date.now
+            },
             // file: {
             //     type: Schema.Types.ObjectId,
             //     ref: TaskFile,

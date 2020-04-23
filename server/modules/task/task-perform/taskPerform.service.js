@@ -106,7 +106,9 @@ exports.stopTimer = async (req, res) => {
     }
 }
 
-// Lấy tất cả bình luận của một công việc
+/**
+ * Lấy tất cả nội dung bình luận của hoạt động
+ */
 exports.getActionComments = async (req, res) => {
     try {
         var actionComments = await Task.aggregate([
@@ -129,7 +131,7 @@ exports.getActionComments = async (req, res) => {
         res.status(200).json({
             success: true,
             messages:"get comment action sucess",
-            contents : actionComments
+            content : actionComments
         })
     } catch (error) {
         res.status(400).json({
@@ -139,6 +141,9 @@ exports.getActionComments = async (req, res) => {
     }
     
 }
+/**
+ * Lấy thông tin tất cả các hoạt động của công việc
+ */
 exports.getTaskActions =async (req,res)=>{
     try {
         //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
@@ -148,7 +153,7 @@ exports.getTaskActions =async (req,res)=>{
         res.status(200).json({
             success:true,
             messages: 'Get all task actions success',
-            contents: taskactions
+            content: taskactions
         })
     } catch (error) {
         res.status(400).json({
@@ -157,7 +162,9 @@ exports.getTaskActions =async (req,res)=>{
         })
     }
 };
-// Thêm bình luận: Update nội dung bình luận và file đính kèm
+/**
+ * Thêm bình luận của hoạt động
+ */
 exports.createActionComment = async (req, res) => {
     try {
         // var file = await TaskFile.create({
@@ -178,19 +185,19 @@ exports.createActionComment = async (req, res) => {
         )
         var commentAction= await Task.aggregate([
             {
-                $match: {"actionTask._id": mongoose.Types.ObjectId(req.body.id)}
+                $match: {"taskActions._id": mongoose.Types.ObjectId(req.body.id)}
             },
-            { $unwind: "$actionTask"},
-            { $replaceRoot: { newRoot: "$actionTask" } },
+            { $unwind: "$taskActions"},
+            { $replaceRoot: { newRoot: "$taskActions" } },
             { $match: {"_id": mongoose.Types.ObjectId(req.body.id)}},
-            { $unwind: "$commentAction"},
-            { $sort: {"commentAction.createdAt": -1}},
+            { $unwind: "$actionComments"},
+            { $sort: {"actionComments.createdAt": -1}},
              {$group: {
                   _id: null,
                   first: { $first: "$$ROOT" }
                 }
             },
-            { $replaceRoot: { newRoot: "$first.commentAction" } },
+            { $replaceRoot: { newRoot: "$first.actionComments" } },
             { $lookup: {
                     from: "users",
                     localField: "creator",
@@ -203,23 +210,25 @@ exports.createActionComment = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: "Thêm bình luận thành công",
+            messages: "Thêm bình luận thành công",
             content : commentAction[0]
         });
     }catch (error) {
         res.status(400).json({ message: "Hello" });
      }
 }
-// Sửa bình luận: Sửa nội dung bình luận và file đính kèm
+/**
+ * Sửa nội dung bình luận hoạt động
+ */
 exports.editActionComment = async (req, res) => {
     try {
         const now = new Date()
         var action = await Task.updateOne(
-            { "actionTask.commentAction._id" :req.params.id },
+            { "taskActions.commentAction._id" :req.params.id },
             { $set: 
                 {   
-                    "actionTask.$[].commentAction.$[elem].content": req.body.content,
-                    "actionTask.$[].commentAction.$[elem].updatedAt": now
+                    "taskActions.$[].actionComments.$[elem].content": req.body.content,
+                    "taskActions.$[].actionComments.$[elem].updatedAt": now
                 }
             },
             {
@@ -231,11 +240,11 @@ exports.editActionComment = async (req, res) => {
             }
         )      
         var commentAction = await Task.aggregate([
-            { $match: {"actionTask.commentAction._id":mongoose.Types.ObjectId(req.params.id)}},
-            { $unwind :"$actionTask"},
-            { $replaceRoot: {newRoot : "$actionTask"}},
-            { $unwind :"$commentAction"},
-            { $replaceRoot: {newRoot: "$commentAction"}},
+            { $match: {"taskActions.actionComments._id":mongoose.Types.ObjectId(req.params.id)}},
+            { $unwind :"$taskActions"},
+            { $replaceRoot: {newRoot : "$taskActions"}},
+            { $unwind :"$actionComments"},
+            { $replaceRoot: {newRoot: "$actionComments"}},
             { $match : {_id:mongoose.Types.ObjectId(req.params.id)}},
             { $lookup: {
                 from: "users",
@@ -251,22 +260,26 @@ exports.editActionComment = async (req, res) => {
             content: commentAction
         });
     } catch (error) {
-        res.json({ message: "error" });
+        res.json({ 
+            success: false,
+            message: "error" });
     }
 }
-//Sửa nội dung hoạt động của công việc không theo mẫu
+/**
+ * Sửa hoạt động của cộng việc
+ */
 exports.editTaskAction = async (req,res) =>{
     try {
         
         var action = await Task.updateOne(
-            {"actionTask._id" : req.params.id},
+            {"taskActions._id" : req.params.id},
             {$set:{
-                "actionTask.$.name": req.body.content
+                "taskActions.$.name": req.body.content
             }}
             )
         var actionTask = await Task.findOne(
-            {"actionTask._id": req.params.id}, 
-            {_id: 0, actionTask: {$elemMatch: {name:req.body.content}}}).populate("actionTask.creator");
+            {"taskActions._id": req.params.id}, 
+            {_id: 0, taskActions: {$elemMatch: {content:req.body.content}}}).populate("taskActions.creator");
         res.status(200).json({
             success: true,
             message:'Edit thành công',
@@ -279,7 +292,9 @@ exports.editTaskAction = async (req,res) =>{
         })
     }
 }
-// Xóa bình luận: Xóa nội dung bình luận và file đính kèm
+/**
+ * Xóa bình luận hoạt động
+ */
 exports.deleteActionComment = async (req, res) => {
     try {
         var comment = await CommentTask.findByIdAndDelete(req.params.id); // xóa comment theo id
@@ -288,11 +303,14 @@ exports.deleteActionComment = async (req, res) => {
         res.json({ message: error });
     }
 }
+/**
+ * Xóa hoạt động của công việc
+ */
 exports.deleteTaskAction = async (req,res) => {
     try {
         var action = await Task.update(
-            { "actionTask._id": req.params.id },
-            { $pull: { actionTask : { _id : req.params.id } } },
+            { "taskActions._id": req.params.id },
+            { $pull: { taskActions : { _id : req.params.id } } },
             { safe: true },)
         res.status(200).json({
             success: true,
@@ -302,6 +320,32 @@ exports.deleteTaskAction = async (req,res) => {
         res.status(400).json({
             message:'Lỗi rồi'
         })
+    }
+}
+/**
+ * Thêm hoạt động cho công việc
+ */
+exports.createTaskAction = async (req,res) => {
+    try {
+        var actionInformation = {
+            creator : req.body.creator,
+            content : req.body.content
+        }
+        // var actionTaskabc = await Task.findById(req.body.task)
+        var taskAction1 = await Task.findByIdAndUpdate(req.body.task,
+                {$push: {taskActions:actionInformation}},{new: true}
+        )
+        .populate(
+           'taskActions.creator'
+        )
+        var taskAction =taskAction1.taskActions
+        res.status(200).json({
+            success: true,
+            messages: "Thêm hoạt động thành công",
+            content: taskAction
+        });
+    } catch (error) {
+        res.status(400).json({ message: "Lỗi thêm hoạt động" });
     }
 }
 // Test insert result info task

@@ -26,7 +26,7 @@ class ModalPerformTask extends Component {
         super(props);
         this.state = {
             currentUser: idUser,//fix---------------localStorage.getItem('id')-------------------
-            selected: "actionTask",
+            selected: "taskAction",
             extendDescription: false,
             editDescription: false,
             extendInformation: true,
@@ -122,8 +122,8 @@ class ModalPerformTask extends Component {
         this.props.getAllKPIPersonalByMember(this.props.responsible);
         this.props.getAllUserOfDepartment(this.props.unit);
         this.props.getTaskById(this.props.id);
-        this.props.getCommentTask(this.props.id);
-        this.props.getActionTask(this.props.id);
+        this.props.getActionComments(this.props.id);
+        this.props.getTaskActions(this.props.id);
         this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
     }
     handleChangeContent = async (content) => {
@@ -419,7 +419,7 @@ class ModalPerformTask extends Component {
         // data.append("content", newComment.content);
         //  data.append("file", newComment.file);
         if (newComment.task && newComment.content && newComment.creator) {
-            this.props.addComment(newComment);
+            this.props.addActionComment(newComment);
         }
         this.contentComment[index].value = "";
     }
@@ -437,11 +437,11 @@ class ModalPerformTask extends Component {
         })
         var { newAction } = this.state;
         if (newAction.content && newAction.creator) {
-            this.props.addAction(newAction);
+            this.props.addTaskAction(newAction);
         }
         this.contentAction[index].value = "";
     }
-    handleEditComment = async (id) => {
+    handleEditActionComment = async (id) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -459,7 +459,7 @@ class ModalPerformTask extends Component {
     }
     //Lưu hoạt động
 
-    handleSaveEditComment = async (e, index) => {
+    handleSaveEditActionComment = async (e, index) => {
         e.preventDefault();
         await this.setState(state => {
             return {
@@ -474,7 +474,7 @@ class ModalPerformTask extends Component {
         })
         var { newComment } = this.state;
         if (newComment.content) {
-            this.props.editComment(index, newComment);
+            this.props.editActionComment(index, newComment);
         }
     }
     handleSaveEditAction = async (e, index) => {
@@ -492,7 +492,7 @@ class ModalPerformTask extends Component {
         })
         var { newAction } = this.state;
         if (newAction.content) {
-            this.props.editAction(index, newAction);
+            this.props.editTaskAction(index, newAction);
         }
     }
     onHandleChangeFile = (event) => {
@@ -640,7 +640,7 @@ class ModalPerformTask extends Component {
     }
 
     render() {
-        var task, commentTasks, actionTasks, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
+        var task, actionComments, taskActions, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
         const { comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action } = this.state;
@@ -653,8 +653,8 @@ class ModalPerformTask extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
-        if (typeof performtasks.commenttasks !== 'undefined' && performtasks.commenttasks !== null) commentTasks = performtasks.commenttasks;
-        if (typeof performtasks.actiontasks !== 'undefined' && performtasks.actiontasks !== null) actionTasks = performtasks.actiontasks;
+        if (typeof performtasks.actioncomments !== 'undefined' && performtasks.actioncomments !== null) actionComments = performtasks.actioncomments;
+        if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
         if (user.userdepartments) userdepartments = user.userdepartments;
@@ -1108,14 +1108,14 @@ class ModalPerformTask extends Component {
                             </form>
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs" style={{ borderTop: "solid", borderWidth: "thin", borderColor: "aliceblue", width: "60%" }}>
-                                    <li className="active"><a href="#actionTask" onClick={() => this.handleChangeContent("actionTask")} data-toggle="tab">Hoạt động</a></li>
-                                    <li><a href="#commentTask" onClick={() => this.handleChangeContent("commentTask")} data-toggle="tab">Trao đổi</a></li>
+                                    <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">Hoạt động</a></li>
+                                    <li><a href="#actionComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">Trao đổi</a></li>
                                     <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">Tài liệu</a></li>
                                     <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">Công việc con</a></li>
                                     <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">Lịch sử bấm giờ</a></li>
                                 </ul>
                                 <div className="tab-content">
-                                    <div className={selected === "actionTask" ? "active tab-pane" : "tab-pane"} id="actionTask">
+                                    <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
                                         {/* Hoạt động của công việc theo mẫu */}
                                         {actions &&
                                             actions.map((item, index) =>
@@ -1151,7 +1151,7 @@ class ModalPerformTask extends Component {
                                                         {showChildComment === item._id &&
                                                             <div className="comment-content-child">
                                                                 {
-                                                                    commentTasks.map(child => {
+                                                                    actionComments.map(child => {
                                                                         if (child.parent === item._id) return <div className="col-sm-12 " key={child._id} style={{ marginBottom: "10px" }}>
                                                                             <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
@@ -1164,8 +1164,8 @@ class ModalPerformTask extends Component {
                                                                                 <span className="description">19:30 19-11-2020</span>
                                                                                 {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
                                                                                     <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                        <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                        <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteComment(child._id)}><i className="material-icons">delete</i></a>
+                                                                                        <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
+                                                                                        <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id)}><i className="material-icons">delete</i></a>
                                                                                     </div>
                                                                                 }
                                                                             </div>
@@ -1178,8 +1178,8 @@ class ModalPerformTask extends Component {
                                                                                     />
                                                                                     <div className="row action-post" style={{ marginLeft: "40px", marginRight: "18px" }}>
                                                                                         <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                        <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditComment(e)}>Hủy bỏ</button>
+                                                                                        <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
                                                                                     </div>
                                                                                 </React.Fragment>
                                                                             }
@@ -1215,9 +1215,9 @@ class ModalPerformTask extends Component {
                                                     </React.Fragment>
                                                 </div>)
                                         }
-                                        {typeof actionTasks !== 'undefined' && actionTasks.length !== 0 ?
+                                        {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                             // Hiển thị hoạt động của công việc không theo mẫu
-                                            actionTasks.map(item => {
+                                            taskActions.map(item => {
                                                 // if (item.parent === null)
                                                 return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "5%", marginLeft: "15px" }} key={item._id}>
                                                     <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
@@ -1263,7 +1263,7 @@ class ModalPerformTask extends Component {
                                                                 <ul className="list-inline">
                                                                     <li className="pull-right">
                                                                         <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
-                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({commentTasks.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
+                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({actionComments.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
                                                                             {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
                                                                         </a>
                                                                     </li>
@@ -1271,7 +1271,7 @@ class ModalPerformTask extends Component {
                                                                 {/* Hiển thị bình luận cho hoạt động không theo mẫu */}
                                                                 {showChildComment === item._id &&
                                                                     <div className="comment-content-child">
-                                                                        {commentTasks.map(child => {
+                                                                        {actionComments.map(child => {
                                                                             if (child.parent === item._id) return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
                                                                                 <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
                                                                                     <img className="img-circle img-bordered-sm"
@@ -1287,8 +1287,8 @@ class ModalPerformTask extends Component {
                                                                                     <span className="description">19:30 19-11-2019</span>
                                                                                     {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
                                                                                         <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteComment(child._id)}><i className="material-icons">delete</i></a>
+                                                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
+                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id)}><i className="material-icons">delete</i></a>
                                                                                         </div>
                                                                                     }
                                                                                     {editComment === child._id &&
@@ -1300,8 +1300,8 @@ class ModalPerformTask extends Component {
                                                                                             />
                                                                                             <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
                                                                                                 <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                                <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditComment(e)}>Hủy bỏ</button>
+                                                                                                <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
                                                                                             </div>
                                                                                         </React.Fragment>
                                                                                     }
@@ -1362,7 +1362,7 @@ class ModalPerformTask extends Component {
                                             </form>}
                                     </div>
                                     {/* Chuyển qua tab trao đổi */}
-                                    <div className={selected === "commentTask" ? "active tab-pane" : "tab-pane"} id="commentTask">
+                                    <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
                                         <div>Tab trao đổi</div>
                                     </div>
                                     {/* Chuyển qua tab tài liệu */}
@@ -1404,14 +1404,15 @@ function mapState(state) {
 
 const actionCreators = {
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getCommentTask: performTaskAction.getCommentTask,
-    getActionTask: performTaskAction.getActionTask,
     getTaskById: taskManagementActions.getTaskById,
-    addComment: performTaskAction.addCommentTask,
-    editComment: performTaskAction.editCommentTask,
-    deleteComment: performTaskAction.deleteCommentTask,
-    deleteAction: performTaskAction.deleteActionTask,
-    editAction: performTaskAction.editActionTask,
+    getActionComments: performTaskAction.getActionComments,
+    addActionComment: performTaskAction.addActionComment,
+    editActionComment: performTaskAction.editActionComment,
+    deleteActionComment: performTaskAction.deleteActionComment,
+    getTaskActions: performTaskAction.getTaskActions,
+    addTaskAction: performTaskAction.addTaskAction,
+    editTaskAction: performTaskAction.editTaskAction,
+    deleteTaskAction: performTaskAction.deleteTaskAction,
     startTimer: performTaskAction.startTimerTask,
     pauseTimer: performTaskAction.pauseTimerTask,
     continueTimer: performTaskAction.continueTimerTask,
@@ -1419,7 +1420,6 @@ const actionCreators = {
     getLogTimer: performTaskAction.getLogTimerTask,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    addAction: performTaskAction.addActionTask,
     getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    //kpi member actions ko thì cho vào managerKpiActions (của personal) cũng đc
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);
