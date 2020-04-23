@@ -1,9 +1,5 @@
 const mongoose = require("mongoose");
-const Task = require('../../../models/task/task.model');
-const Role = require('../../../models/auth/role.model');
-const ActionTask = require('../../../models/task/taskAction.model');
-const InformationTaskTemplate = require('../../../models/task/taskTemplateInformation.model');
-const Department = require('../../../models/super-admin/organizationalUnit.model');
+const { Task, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit } = require('../../../models/index').schema;
 
 //Lấy tất cả các công việc
 exports.get = (req, res) => {
@@ -16,12 +12,12 @@ exports.get = (req, res) => {
 exports.getById = async (id) => {
     //req.params.id
     var task = await Task.findById(id)
-            .populate({ path: "unit responsible accounatable consulted informed parent tasktemplate comments " });// results.member
+            .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees parent taskTemplate comments " });// results.member
             // .populate({path: "results", populate : {path: "member"}});
             // .populate('results.member')
-        if (task.tasktemplate !== null) {
-            var actionTemplates = await ActionTask.find({ tasktemplate: task.tasktemplate._id });
-            var informationTemplate = await InformationTaskTemplate.find({ tasktemplate: task.tasktemplate._id });
+        if (task.taskTemplate !== null) {
+            var actionTemplates = await TaskAction.find({ taskTemplate: task.taskTemplate._id });
+            var informationTemplate = await TaskTemplateInformation.find({ taskTemplate: task.taskTemplate._id });
             return {
                 "info": task,
                 "actions": actionTemplates,
@@ -40,7 +36,7 @@ exports.getByRole = async (roleId,id) => {
     var tasks = await Task.find({
         role: roleId,
         creator: id
-    }).populate({ path: 'tasktemplate', model: TaskTemplate });
+    }).populate({ path: 'taskTemplate', model: TaskTemplate });
     return tasks;
 }
 
@@ -51,19 +47,19 @@ exports.getTaskResponsibleByUser = async (perpageId,numberId,unitId,userId,statu
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskResponsibles = await Task.find({ responsible: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+            taskResponsibles = await Task.find({ responsibleEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
             taskResponsibles = await Task.find({
-                responsible: { $in: [userId] },
+                responsibleEmployees: { $in: [userId] },
                 $or: [
-                    { unit: { $in: unitId.split(",") } },
+                    { organizationalUnit: { $in: unitId.split(",") } },
                     { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         }
-        var totalCount = await Task.count({ responsible: { $in: [userId] } });
+        var totalCount = await Task.count({ responsibleEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
             "tasks": taskResponsibles,
@@ -78,19 +74,19 @@ exports.getTaskAccounatableByUser = async (perpageId,numberId,unitId,statusId,us
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskAccounatables = await Task.find({ accounatable: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+            taskAccounatables = await Task.find({ accountableEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
             taskAccounatables = await Task.find({
-                accounatable: { $in: [userId] },
+                accountableEmployees: { $in: [userId] },
                 $or: [
-                    { unit: { $in: unitId.split(",") } },
+                    { organizationalUnit: { $in: unitId.split(",") } },
                     { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         }
-        var totalCount = await Task.count({ accounatable: { $in: [userId] } });
+        var totalCount = await Task.count({ accountableEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
             "tasks": taskAccounatables,
@@ -105,19 +101,19 @@ exports.getTaskConsultedByUser = async (perpageId,numberId,unitId,userId,statusI
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskConsulteds = await Task.find({ consulted: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+            taskConsulteds = await Task.find({ consultedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
             taskConsulteds = await Task.find({
-                consulted: { $in: [userId] },
+                consultedEmployees: { $in: [userId] },
                 $or: [
-                    { unit: { $in: unitId.split(",") } },
+                    { organizationalUnit: { $in: unitId.split(",") } },
                     { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         }
-        var totalCount = await Task.count({ consulted: { $in: [userId] } });
+        var totalCount = await Task.count({ consultedEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
             "tasks": taskConsulteds,
@@ -133,16 +129,16 @@ exports.getTaskCreatorByUser = async (perpageId,numberId,unitId,statusId,userId)
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
             taskCreators = await Task.find({ creator: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
             taskCreators = await Task.find({
                 creator: { $in: [userId] },
                 $or: [
-                    { unit: { $in: unitId.split(",") } },
+                    { organizationalUnit: { $in: unitId.split(",") } },
                     { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         }
         var totalCount = await Task.count({ creator: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
@@ -159,20 +155,20 @@ exports.getTaskInformedByUser = async (perpageId,numberId,unitId,userId,statusId
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskInformeds = await Task.find({ informed: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit.apply(perPage)
-                .populate({ path: "unit creator parent" });
+            taskInformeds = await Task.find({ informedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+                .skip(perPage * (page - 1)).limit(perPage)
+                .populate({ path: "organizationalUnit creator parent" });
         } else {
             taskInformeds = await Task.find({
-                informed: { $in: [userId] },
+                informedEmployees: { $in: [userId] },
                 $or: [
-                    { unit: { $in: unitId.split(",") } },
+                    { organizationalUnit: { $in: unitId.split(",") } },
                     { status: { $in: statusId.split(",") } }
                 ]
             }).sort({ 'createdAt': 'asc' })
-                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "unit creator parent" });
+                .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         }
-        var totalCount = await Task.count({ informed: { $in: [userId] } });
+        var totalCount = await Task.count({ informedEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
             "tasks": taskInformeds,
@@ -182,7 +178,8 @@ exports.getTaskInformedByUser = async (perpageId,numberId,unitId,userId,statusId
 
 //Tạo công việc mới
 exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,descriptionId,priorityId,tasktemplateId,roleId,kpiId,responsibleId,accounatableId,consultedId,informedId) => {
-        // Lấy thông tin công việc cha
+    console.log('--------create task---------');    
+    // Lấy thông tin công việc cha
         var level = 1;
         if (mongoose.Types.ObjectId.isValid(parentId)) {
             var parent = await Task.findById(parentId);
@@ -194,24 +191,26 @@ exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,d
         var startdate = new Date(starttime[2], starttime[1]-1, starttime[0]);
         var endtime = enddateId.split("-");
         var enddate = new Date(endtime[2], endtime[1]-1, endtime[0]);
+        
         var task = await Task.create({ //Tạo dữ liệu mẫu công việc
-            unit: unitId,
+            organizationalUnit: unitId,
             creator: creatorId, //id của người tạo
             name: nameId,
             description: descriptionId,
-            startdate: startdate,
-            enddate: enddate,
+            startDate: startdate,
+            endDate: enddate,
             priority: priorityId,
-            tasktemplate: tasktemplateId,
+            taskTemplate: tasktemplateId,
             role: roleId,
             parent: parentId,
             level: level,
-            kpi: kpiId,
-            responsible: responsibleId,
-            accounatable: accounatableId,
-            consulted: consultedId,
-            informed: informedId,
+            kpis: kpiId,
+            responsibleEmployees: responsibleId,
+            accountableEmployees: accounatableId,
+            consultedEmployees: consultedId,
+            informedEmployees: informedId,
         });
+        console.log('task--->', task);
         if(tasktemplateId !== null){
             var tasktemplate = await TaskTemplate.findByIdAndUpdate(
                 tasktemplateId, { $inc: { 'count': 1} }, { new: true }
