@@ -51,7 +51,7 @@ class ModalAddTargetKPIUnit extends Component {
                 parent = null;
             }
             else{    
-                items = parentKPI.listtarget.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+                items = parentKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                 return {value: x._id, text: x.name} });
 
                 parent = items[0].value;
@@ -168,7 +168,7 @@ class ModalAddTargetKPIUnit extends Component {
             items = [];
         }
         else{    
-            items = parentKPI.listtarget.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = parentKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
 

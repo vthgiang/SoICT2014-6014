@@ -29,19 +29,19 @@ router.post('/log-timer/start-timer', PerformTaskController.startTimer);
 router.put('/log-timer/pause-timer/:id', PerformTaskController.pauseTimer);
 router.put('/log-timer/continue-timer/:id', PerformTaskController.continueTimer);
 router.put('/log-timer/stop-timer/:id', PerformTaskController.stopTimer);
-router.delete('/action-task/:id',PerformTaskController.deleteActionTask);
-router.get('/comment-task/:task', PerformTaskController.getCommentTask);
-router.post('/comment-task/create', PerformTaskController.createCommentTask);//,upload.single('file')
-router.put('/comment-task/:id', PerformTaskController.editCommentTask);
-router.put('/action-task/:id',PerformTaskController.editActionTask)
-router.delete('/comment-task/:id', PerformTaskController.deleteCommentTask);
-router.get('/action-task/:task',PerformTaskController.getActionTask);
-router.post('/action-task/create',PerformTaskController.createActionTask)
+router.delete('/task-action/:id',PerformTaskController.deleteTaskAction);
+router.get('/action-comment/:task', PerformTaskController.getActionComments);
+router.post('/action-comment/create', PerformTaskController.createActionComment);//,upload.single('file')
+router.put('/action-comment/:id', PerformTaskController.editActionComment);
+router.put('/task-action/:id',PerformTaskController.editTaskAction)
+router.delete('/action-comment/:id', PerformTaskController.deleteActionComment);
+router.get('/task-action/:task',PerformTaskController.getTaskActions);
+router.post('/task-action/create',PerformTaskController.createTaskAction)
 router.post('/add-result/create', PerformTaskController.createResultInfoTask);
 router.post('/information-task-template/create', PerformTaskController.createResultInformationTask);
 router.put('/information-task-template', PerformTaskController.editResultInformationTask);
 router.post('/result-task/create',auth, PerformTaskController.createResultTask);
 router.put('/result-task/:id', auth, PerformTaskController.editResultTask);
-router.post('/action-task/create',PerformTaskController.createActionTask);
+
 
 module.exports = router;

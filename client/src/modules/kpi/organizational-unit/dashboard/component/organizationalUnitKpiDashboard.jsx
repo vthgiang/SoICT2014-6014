@@ -98,24 +98,25 @@ class KPIUnitDashboard extends Component {
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
         }
+        
         if (dashboardKpiUnit.kpis) {
             listkpi = dashboardKpiUnit.kpis;
             if(typeof listkpi !== "undefined" && listkpi.length !== 0)//listkpi.content
             {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
-                currentTargets =currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
+                currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 datachat1 = kpiApproved.map(item => {
                     return { label: this.formatDate(item.time), y: item.result }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[0].result }
+                    return { label: this.formatDate(item.time), y: item.kpis[0].result }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[1].result }
+                    return { label: this.formatDate(item.time), y: item.kpis[1].result }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
+                    return { label: this.formatDate(item.time), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
                     return { label: this.formatDate(item.time), y: (100 - item.result) }

@@ -1,4 +1,4 @@
-const {
+var {
     Component,
     RoleType,
     Role,
@@ -17,6 +17,7 @@ const {
     Course
 } = require('../models').schema;
 
+<<<<<<< HEAD
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -28,12 +29,17 @@ const RecommendProcure = require('../models/asset/recommendProcure.model'); //đ
 const RepairUpgrade = require('../models/asset/repairUpgrade.model'); //Sửa chữa - thay thế - nâng cấp
 const DistributeTransfer = require('../models/asset/distributeTransfer.model'); // cấp phát - điều chuyển - thu hồi
 
+=======
+var Terms = require('./terms');
+var mongoose = require("mongoose");
+var bcrypt = require("bcryptjs");
+>>>>>>> dd9e9ef1d8071ba9cef6b465d915af832325c3dc
 require('dotenv').config({
     path: '../.env'
 });
 
 // DB CONFIG
-const db = process.env.DATABASE;
+var db = process.env.DATABASE;
 
 // kẾT NỐI TỚI CSDL MONGODB
 mongoose.connect(db, {
@@ -45,7 +51,7 @@ mongoose.connect(db, {
     console.log("Kết nối thành công đến MongoDB!\n");
 }).catch(err => console.log("ERROR! :(\n", err));
 
-const sampleCompanyData = async () => {
+var sampleCompanyData = async () => {
     console.log("Đang tạo dữ liệu ...");
 
     /*---------------------------------------------------------------------------------------------
@@ -71,10 +77,10 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log(`Khởi tạo các tài khoản cho công ty [${vnist.name}]`);
-    const salt = await bcrypt.genSaltSync(10);
-    const hash = await bcrypt.hashSync('123456', salt);
+    var salt = await bcrypt.genSaltSync(10);
+    var hash = await bcrypt.hashSync('123456', salt);
 
-    const users = await User.insertMany([{
+    var users = await User.insertMany([{
             name: 'Super Admin VNIST',
             email: 'super.admin.vnist@gmail.com',
             password: hash,
@@ -154,7 +160,6 @@ const sampleCompanyData = async () => {
     console.log("Xong! Đã thêm tài khoản:", users);
     //END
 
-
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
         TẠO CÁC ROLE MẶC ĐỊNH CỦA CÔNG TY 
@@ -162,19 +167,19 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Lấy role mặc định của công ty...");
-    const roleAbstract = await RoleType.findOne({
+    var roleAbstract = await RoleType.findOne({
         name: Terms.ROLE_TYPES.ROOT
     });
-    const roleChucDanh = await RoleType.findOne({
+    var roleChucDanh = await RoleType.findOne({
         name: Terms.ROLE_TYPES.POSITION
     });
 
-    const admin = await Role.create({
+    var admin = await Role.create({
         name: Terms.ROOT_ROLES.ADMIN.NAME,
         company: vnist._id,
         type: roleAbstract._id
     });
-    const roles = await Role.insertMany([{
+    var roles = await Role.insertMany([{
         name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME,
         company: vnist._id,
         type: roleAbstract._id,
@@ -193,37 +198,37 @@ const sampleCompanyData = async () => {
         type: roleAbstract._id
     }]);
 
-    const thanhVienBGĐ = await Role.create({
+    var thanhVienBGĐ = await Role.create({
         parents: [roles[3]._id],
         name: "Thành viên ban giám đốc",
         company: vnist._id,
         type: roleChucDanh._id
     });
-    const phoGiamDoc = await Role.create({
+    var phoGiamDoc = await Role.create({
         parents: [roles[2]._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
         company: vnist._id,
         type: roleChucDanh._id
     });
-    const giamDoc = await Role.create({
+    var giamDoc = await Role.create({
         parents: [roles[1]._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
         company: vnist._id,
         type: roleChucDanh._id
     });
-    const nvPhongHC = await Role.create({
+    var nvPhongHC = await Role.create({
         parents: [roles[3]._id],
         name: "Nhân viên phòng hành chính",
         company: vnist._id,
         type: roleChucDanh._id
     });
-    const phoPhongHC = await Role.create({
+    var phoPhongHC = await Role.create({
         parents: [roles[2]._id, nvPhongHC._id],
         name: "Phó phòng hành chính",
         company: vnist._id,
         type: roleChucDanh._id
     });
-    const truongPhongHC = await Role.create({
+    var truongPhongHC = await Role.create({
         parents: [roles[1]._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng hành chính",
         company: vnist._id,
@@ -288,7 +293,7 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log('Tạo Phòng ban cho công ty...');
-    const Directorate = await OrganizationalUnit.create({// Khởi tạo ban giám đốc công ty
+    var Directorate = await OrganizationalUnit.create({// Khởi tạo ban giám đốc công ty
         name: "Ban giám đốc",
         description: "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         company:  vnist._id,
@@ -297,7 +302,7 @@ const sampleCompanyData = async () => {
         employee: thanhVienBGĐ._id,
         parent: null
     });
-    const departments = await OrganizationalUnit.insertMany([
+    var departments = await OrganizationalUnit.insertMany([
         {
             name: "Phòng hành chính",
             description: "Phòng hành chính Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
@@ -319,7 +324,7 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Tạo link cho các trang web của công ty...");
-    const links = await Link.insertMany([
+    var links = await Link.insertMany([
         { // 0
             url: '/',
             description: `Trang chủ công ty ${vnist.name}`,
@@ -570,13 +575,13 @@ const sampleCompanyData = async () => {
         },
     ]);
     
-    const updateVnist = await Company.findById(vnist._id);
-    updateVnist.super_admin = users[0]._id;
+    var updateVnist = await Company.findById(vnist._id);
+    updateVnist.superAdmin = users[0]._id;
     await updateVnist.save();
     console.log("Xong! Đã tạo links: ", links);
 
     //Thêm component -------------------------------------------------------
-    const components = await Component.insertMany([
+    var components = await Component.insertMany([
         {
             name: 'create-notification',
             description: 'Tạo thông báo mới',
@@ -588,11 +593,11 @@ const sampleCompanyData = async () => {
             company: vnist._id
         }
     ]);
-    const notificationLink = await Link.findById(links[25]._id);
+    var notificationLink = await Link.findById(links[25]._id);
     await notificationLink.components.push(components[0]._id);
     await notificationLink.save();
 
-    const taskTemplateManagementLink = await Link.findById(links[27]._id);
+    var taskTemplateManagementLink = await Link.findById(links[27]._id);
     await taskTemplateManagementLink.components.push(components[1]._id);
     await taskTemplateManagementLink.save();
 
@@ -620,7 +625,7 @@ const sampleCompanyData = async () => {
 
     //END
 
-    const privileges = await Privilege.insertMany([
+    var privileges = await Privilege.insertMany([
         //gán 7 link trên cho super admin
         {
             resourceId: links[0]._id,

@@ -116,142 +116,143 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.GET_COMMENTTASK_REQUEST:
+        case performTaskConstants.GET_ACTIONCOMMENT_REQUEST:
             return {
                 ...state,
                 loading: true
             };
-        case performTaskConstants.GET_COMMENTTASK_SUCCESS:
+        case performTaskConstants.GET_ACTIONCOMMENT_SUCCESS:
             return {
                 ...state,
-                commenttasks: action.commentTasks
+                actioncomments: action.actionComments.content
             };
-        case performTaskConstants.GET_COMMENTTASK_FAILURE:
+        case performTaskConstants.GET_ACTIONCOMMENT_FAILURE:
             return {
                 error: action.error
             };
-        case performTaskConstants.GET_ACTIONTASK_REQUEST:
+        case performTaskConstants.GET_TASKACTION_REQUEST:
             return {
                 ...state,
                 loading: true
             };
-        case performTaskConstants.GET_ACTIONTASK_SUCCESS:
+        case performTaskConstants.GET_TASKACTION_SUCCESS:
             return {
                 ...state,
-                actiontasks: action.actionTask.actionTask
+                taskactions: action.taskActions.content
             };
-        case performTaskConstants.GET_ACTIONTASK_FAILURE:
+        case performTaskConstants.GET_TASKACTION_FAILURE:
             return {
                 error: action.error
             };    
-        case performTaskConstants.ADDNEW_COMMENTTASK_REQUEST:
+        case performTaskConstants.ADDNEW_ACTIONCOMMENT_REQUEST:
             return {
                 ...state,
                 adding: true
             };
-        case performTaskConstants.ADDNEW_COMMENTTASK_SUCCESS:
+        case performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS:
             return {
                 
                 ...state,
-                commenttasks: [
-                    ...state.commenttasks,
+                actioncomments: [
+                    ...state.actioncomments,
                     action.newComment.commentTask
                 ]
             };
-        case performTaskConstants.ADDNEW_COMMENTTASK_FAILURE:
+        case performTaskConstants.ADDNEW_ACTIONCOMMENT_FAILURE:
             return {
                 error: action.error
             };
-        case performTaskConstants.ADDNEW_ACTIONTASK_REQUEST:
+        case performTaskConstants.ADDNEW_TASKACTION_REQUEST:
             return {
                 ...state,
                 adding: true
             };
-        case performTaskConstants.ADDNEW_ACTIONTASK_SUCCESS:
+        case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
              return {
                 ...state,
-                actiontasks:[
-                    ...state.actiontasks,
+                taskactions:[
+                    ...state.taskactions,
                     //action.newAction là respone sv trả về.
                     //action.newAction.actionTask.actionTask
                     // actionstasks
+                    //casi nafy can fix
                     action.newAction.actionTask[action.newAction.actionTask.length-1]
                 ]
             }
-        case performTaskConstants.ADDNEW_ACTIONTASK_FAILURE:
+        case performTaskConstants.ADDNEW_TASKACTION_FAILURE:
             return {
                 error: action.error
             };        
-        case performTaskConstants.EDIT_COMMENTTASK_REQUEST:
+        case performTaskConstants.EDIT_ACTIONCOMMENT_REQUEST:
             return {
                 ...state,
-                commenttasks: state.commenttasks.map(comment =>
+                actioncomments: state.actioncomments.map(comment =>
                     comment._id === action.id
                         ? { ...comment, editing: true }
                         : comment
                 )
             };
-        case performTaskConstants.EDIT_COMMENTTASK_SUCCESS:
+        case performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS:
             return {
                 ...state,
-                commenttasks: state.commenttasks.map(comment =>
+                actioncomments: state.actioncomments.map(comment =>
                     comment._id === action.newComment.commentTask._id
                         ? action.newComment.commentTask : comment
                 )
             };
-        case performTaskConstants.EDIT_COMMENTTASK_FAILURE:
+        case performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE:
             return {
                 error: action.error
             };
             //đây này
-        case performTaskConstants.EDIT_ACTIONTASK_REQUEST:
+        case performTaskConstants.EDIT_TASKACTION_REQUEST:
             return {
                 ...state,
-                actiontasks: state.actiontasks.map(action =>
+                taskactions: state.taskactions.map(action =>
                     action._id === action.id
                         ? { ...action, editing: true }
                         : action
                 )
             };
-        case performTaskConstants.EDIT_ACTIONTASK_SUCCESS:
+        case performTaskConstants.EDIT_TASKACTION_SUCCESS:
             return {
                 ...state,
-                actiontasks: state.actiontasks.map(action1=>
+                taskactions: state.taskactions.map(action1=>
                     action1._id === action.newAction.content._id ? 
                     action.newAction.content : action1)
             };
-        case performTaskConstants.EDIT_ACTIONTASK_FAILURE:
+        case performTaskConstants.EDIT_TASKACTION_FAILURE:
             return {
                 error: action.error
             };
         case performTaskConstants.DELETE_COMMENTTASK_REQUEST:
             return {
                 ...state,
-                commenttasks: state.commenttasks.map(comment =>
+                actioncomments: state.actioncomments.map(comment =>
                     comment._id === action.id
                         ? { ...comment, deleting: true }
                         : comment
                 )
             };
-        case performTaskConstants.DELETE_COMMENTTASK_SUCCESS:
+        case performTaskConstants.DELETE_ACTIONCOMMENT_SUCCESS:
             return {
                 ...state,
-                commenttasks: state.commenttasks.filter(comment => comment._id !== action.id)
+                actioncomments: state.actioncomments.filter(comment => comment._id !== action.id)
             };
         case performTaskConstants.DELETE_ACTIONTASK_REQUEST:
             return {
                 ...state,
-                actiontasks: state.actiontasks.map(action1=>
+                taskactions: state.taskactions.map(action1=>
                     action1._id=== action.id?
                     {...action1,deleting: true}:action1)
             }
-        case performTaskConstants.DELETE_ACTIONTASK_SUCCESS:
+        case performTaskConstants.DELETE_TASKACTION_SUCCESS:
             
             return {
                 ...state,
-                actiontasks: state.actiontasks.filter(action1 => action1._id !== action.id)
+                taskactions: state.taskactions.filter(action1 => action1._id !== action.id)
             }
-        case performTaskConstants.DELETE_ACTIONTASK_FAILURE:
+        case performTaskConstants.DELETE_TASKACTION_FAILURE:
             return {
                 error: action.error
             }          
