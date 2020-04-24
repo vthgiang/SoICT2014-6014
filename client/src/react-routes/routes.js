@@ -45,12 +45,12 @@ import { Timekeeping} from '../modules/human-resource/timesheet/components/times
 import { ListEducation} from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan} from '../modules/training/course/components/course';
 
-import {KPIUnitCreate} from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
-import {KPIUnitDashboard} from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
+import {OrganizationalUnitKpiCreate} from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
+import {OrganizationalUnitKpiDashboard} from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import {KPIUnitManager} from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
 import {KPIUnitEvaluate} from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
 
-import {KPIPersonalCreate} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
+import {CreateEmployeeKpiSet} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
 import {KPIPersonalManager} from "../modules/kpi/employee/management/component/employeeKpiManagement";
 import {DashBoardKPIPersonal} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
@@ -457,7 +457,7 @@ class Routes extends Component {
                         path={ '/kpi-units/create' }
                         pageName={ 'kpi_unit_create' }
                         layout={ Layout }
-                        component={ KPIUnitCreate }
+                        component={ OrganizationalUnitKpiCreate }
                     />
                     <PrivateRoute 
                         isLoading={ false }
@@ -487,7 +487,7 @@ class Routes extends Component {
                         path={ '/kpi-units/dashboard' }
                         pageName={ 'kpi_unit_dashboard' }
                         layout={ Layout }
-                        component={ KPIUnitDashboard }
+                        component={ OrganizationalUnitKpiDashboard }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.managerKpiUnit.isLoading }
@@ -505,7 +505,7 @@ class Routes extends Component {
                         component={ KPIUnitManager }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.createKpiPersonal.isLoading }
+                        isLoading={ this.props.createEmployeeKpiSet.isLoading }
                         key={ 'kpi-personal-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -517,7 +517,7 @@ class Routes extends Component {
                         path={ '/kpi-personals/create' }
                         pageName={ 'kpi_personal_create' }
                         layout={ Layout }
-                        component={ KPIPersonalCreate }
+                        component={ CreateEmployeeKpiSet }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.KPIPersonalManager.isLoading }

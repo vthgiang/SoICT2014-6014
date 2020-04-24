@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
-import { createKpiActions } from "../redux/actions";
+import { createKpiSetActions } from "../redux/actions";
 import { withTranslate } from 'react-redux-multilingual';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,10 +9,10 @@ import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 var translate = '';
-class ModalAddTargetKPIPersonal extends Component {
+class ModalCreateEmployeeKpi extends Component {
     componentDidMount() {
         // get all parent target of unit
-        this.props.getParentTarget(localStorage.getItem("currentRole"));
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
     }
 
     constructor(props) {
@@ -33,7 +33,7 @@ class ModalAddTargetKPIPersonal extends Component {
             submitted: false
         };
 
-        this.onAddItem = this.onAddItem.bind(this);
+        this.handleCreateEmployeeKpi = this.handleCreateEmployeeKpi.bind(this);
 
     }
 
@@ -41,7 +41,7 @@ class ModalAddTargetKPIPersonal extends Component {
     notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
 
     // function: create new target of personal kpi
-    onAddItem = async () => {
+    handleCreateEmployeeKpi = async () => {
         let currentKPI = null;
         let items;
         let parent = null;
@@ -52,7 +52,7 @@ class ModalAddTargetKPIPersonal extends Component {
                 parent = null;
             }
             else{    
-                items = currentKPI.listtarget.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+                items = currentKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                     return {value: x._id, text: x.name} });
 
                 parent = items[0].value;
@@ -63,7 +63,7 @@ class ModalAddTargetKPIPersonal extends Component {
         }
 
         if (this.isFormValidated()){
-            let res = await this.props.addNewTargetPersonal({
+            let res = await this.props.createEmployeeKpi({
                 name: this.state.name,
                 parent: parent,
                 weight: this.state.weight,
@@ -71,7 +71,7 @@ class ModalAddTargetKPIPersonal extends Component {
                 kpipersonal: this.props.kpipersonal, 
             });
 
-            window.$("#addNewTargetKPIPersonal").modal("hide");
+            window.$("#createEmployeeKpi").modal("hide");
             window.$(".modal-backdrop").remove();
             window.$('body').removeClass('modal-open');
             window.$('body').css('padding-right',"0px");
@@ -83,7 +83,7 @@ class ModalAddTargetKPIPersonal extends Component {
         
         // if (newTarget.parent && newTarget.name && newTarget.weight && newTarget.criteria) {
         //     this.props.addNewTargetPersonal(newTarget);
-        //     window.$("#addNewTargetKPIPersonal").modal("hide");
+        //     window.$("#CreateEmployeeKpi").modal("hide");
         //     window.$(".modal-backdrop").remove();
         //     window.$('body').removeClass('modal-open');
         //     window.$('body').css('padding-right',"0px");
@@ -175,17 +175,16 @@ class ModalAddTargetKPIPersonal extends Component {
     }
     
     render() {
-        var parentTargets;
+        var currentUnitKPI;
         const { newTarget, adding } = this.state;
         const { createKpiUnit, translate } = this.props;
-        if (createKpiUnit.currentKPI) parentTargets = createKpiUnit.currentKPI.listtarget;
+        if (createKpiUnit.currentKPI) currentUnitKPI = createKpiUnit.currentKPI;
 
         var items;
         if(createKpiUnit.currentKPI === null){
             items = [];
-        }
-        else{    
-            items = parentTargets.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+        } else {    
+            items = currentUnitKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
 
@@ -194,15 +193,15 @@ class ModalAddTargetKPIPersonal extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="addNewTargetKPIPersonal" isLoading={adding}
-                    formID="formAddNewTargetKPIPersonal"
+                    modalID="createEmployeeKpi" isLoading={adding}
+                    formID="formCreateEmployeeKpi"
                     title={translate('kpi_personal.add_target_kpi.add_target_personal')}
                     msg_success={translate('kpi_personal.add_target_kpi.add_success')}
                     msg_faile={translate('kpi_unit_create.error')}
-                    func={this.onAddItem}
+                    func={this.handleCreateEmployeeKpi}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formAddNewTargetKPIPersonal" onSubmit={() => this.onAddItem(translate('kpi_unit_create.add_target_success'))}>
+                    <form id="formCreateEmployeeKpi" onSubmit={() => this.handleCreateEmployeeKpi(translate('kpi_unit_create.add_target_success'))}>
                         <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
                             <label>{translate('kpi_unit_create.target_name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
@@ -248,9 +247,9 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getParentTarget: createUnitKpiActions.getCurrentKPIUnit,
-    addNewTargetPersonal: createKpiActions.addNewTargetPersonal
+    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
+    createEmployeeKpi: createKpiSetActions.createEmployeeKpi
 };
 
-const connectedModalAddTargetKPIPersonal = connect( mapState, actionCreators )( withTranslate(ModalAddTargetKPIPersonal) );
-export { connectedModalAddTargetKPIPersonal as ModalAddTargetKPIPersonal };
+const connectedModalCreateEmployeeKpi = connect( mapState, actionCreators )( withTranslate(ModalCreateEmployeeKpi) );
+export { connectedModalCreateEmployeeKpi as ModalCreateEmployeeKpi };

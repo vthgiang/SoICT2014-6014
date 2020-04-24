@@ -12,7 +12,7 @@ import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 
-class ModalEditTargetKPIUnit extends Component {
+class OrganizationalUnitKpiEditTargetModal extends Component {
     componentDidMount() {
         // get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
@@ -50,7 +50,7 @@ class ModalEditTargetKPIUnit extends Component {
             weight: this.state.weight,
             criteria: this.state.criteria,
         }
-
+        
         if (this.isFormValidated()){
             return this.props.editTargetKPIUnit(id, newTarget);
         }
@@ -177,7 +177,7 @@ class ModalEditTargetKPIUnit extends Component {
             items = [];
         }
         else{    
-            items = parentKPI.listtarget.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = parentKPI.kpis.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                 return {value: x._id, text: x.name} });
         }
 
@@ -299,5 +299,5 @@ const actionCreators = {
     getParentTarget: createUnitKpiActions.getKPIParent,
     editTargetKPIUnit: createUnitKpiActions.editTargetKPIUnit
 };
-const connectedModalEditTargetKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalEditTargetKPIUnit));
-export { connectedModalEditTargetKPIUnit as ModalEditTargetKPIUnit };
+const connectedOrganizationalUnitKpiEditTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiEditTargetModal));
+export { connectedOrganizationalUnitKpiEditTargetModal as OrganizationalUnitKpiEditTargetModal };

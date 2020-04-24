@@ -9,21 +9,21 @@ import {
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
-export const createKpiService = {
-    getCurrentKPIPersonal,
-    editKPIPersonal,
-    editStatusKPIPersonal,
-    deleteKPIPersonal,
-    deleteTarget,
+export const createKpiSetService = {
+    getEmployeeKpiSet,
+    editEmployeeKpiSet,
+    updateEmployeeKpiSetStatus,
+    deleteEmployeeKpiSet,
+    deleteEmployeeKpi,
 
-    addNewTargetPersonal,
-    editTargetKPIPersonal,
-    createKPIPersonal,
-    approveKPIPersonal
+    createEmployeeKpi,
+    editEmployeeKpi,
+    createEmployeeKpiSet,
+    approveEmployeeKpiSet
 };
 
-// Lấy KPI cá nhân hiện tại
-async function getCurrentKPIPersonal() {
+/** Lấy tập KPI cá nhân hiện tại */ 
+async function getEmployeeKpiSet() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
@@ -37,8 +37,8 @@ async function getCurrentKPIPersonal() {
     return axios(requestOptions);
 }
 
-// chỉnh sửa kpi cá nhân
-async function editKPIPersonal(id, newTarget) {
+/** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
+async function editEmployeeKpiSet(id, newTarget) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var creater = verified._id;
@@ -54,8 +54,8 @@ async function editKPIPersonal(id, newTarget) {
     return axios(requestOptions);
 }
 
-// chỉnh sửa trạng thái của kpi cá nhân
-function editStatusKPIPersonal(id, status) {
+/** Chỉnh sửa trạng thái của KPI cá nhân */ 
+function updateEmployeeKpiSetStatus(id, status) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`,
         method: 'PUT',
@@ -65,8 +65,8 @@ function editStatusKPIPersonal(id, status) {
     return axios(requestOptions);
 }
 
-// Xóa KPI cá nhân
-function deleteKPIPersonal(id) {
+/** Xóa KPI cá nhân */
+function deleteEmployeeKpiSet(id) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
         method: 'DELETE',
@@ -76,8 +76,8 @@ function deleteKPIPersonal(id) {
     return axios(requestOptions);
 }
 
-// Xóa mục tiêu kpi cá nhân
-function deleteTarget(id, kpipersonal) {
+/** Xóa mục tiêu KPI cá nhân */ 
+function deleteEmployeeKpi(id, kpipersonal) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`,
         method: 'DELETE',
@@ -87,8 +87,8 @@ function deleteTarget(id, kpipersonal) {
     return axios(requestOptions);
 }
 
-// thêm mục tiêu KPI cá nhân 
-function addNewTargetPersonal(newTarget) {
+/** Tạo 1 mục tiêu KPI cá nhân mới */  
+function createEmployeeKpi(newTarget) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/kpipersonals/create-target`,
         method: 'POST',
@@ -100,8 +100,8 @@ function addNewTargetPersonal(newTarget) {
 }
 
 
-// Chỉnh sửa mục tiêu KPI cá nhân
-function editTargetKPIPersonal(id, newTarget) {
+/** Chỉnh sửa mục tiêu KPI cá nhân */ 
+function editEmployeeKpi(id, newTarget) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/kpipersonals/target/${id}`,
         method: 'PUT',
@@ -112,12 +112,12 @@ function editTargetKPIPersonal(id, newTarget) {
     return axios(requestOptions);
 }
 
-// khởi tạo kpi cá nhân 
-async function createKPIPersonal(newKPI) {
+/** Khởi tạo KPI cá nhân */  
+async function createEmployeeKpiSet(newKPI) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    newKPI = {...newKPI, creater: id};
+    newKPI = {...newKPI, creator: id};
 
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/kpipersonals/create`,
@@ -130,8 +130,8 @@ async function createKPIPersonal(newKPI) {
     return axios(requestOptions);
 }
 
-// Phê duyệt kpi cá nhân
-function approveKPIPersonal(id) {
+/** Phê duyệt kpi cá nhân */ 
+function approveEmployeeKpiSet(id) {
     const requestOptions = {
         url: `${LOCAL_SERVER_API}/kpipersonals/approve/${id}`,
         method: 'PUT',
