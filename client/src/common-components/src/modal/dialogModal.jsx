@@ -31,26 +31,31 @@ class DialogModal extends Component {
         if(func !== undefined){
             func.then(res => {
                 this.closeModal(resetOnSave);
-                toast.success(this.props.msg_success, {containerId: 'toast-notification'});
+                let html = () => {
+                    return <React.Fragment>
+                        <h2 style={{textAlign: 'center'}}>Success</h2>
+                        <ul> {
+                            res.data.message.map(message => <li key={message}>{translate(`success.${message}`)}</li>)
+                        }</ul>
+                    </React.Fragment>
+                }
+                toast.success(html, {containerId: 'toast-notification'});
             }).catch(err => {
-                document.getElementById(this.props.formID).reset();
                 if(err.response.data.message){
-                    // Nếu thông báo lỗi trả về là một mảng các thông báo lỗi
-                    if(Array.isArray(err.response.data.message)){
-                        err.response.data.message.forEach(message => {
-                            if(translate(`error.${message}`) !== undefined)
-                                toast.error(translate(`error.${message}`), {containerId: 'toast-notification'});
-                            else
-                                toast.error(message, {containerId: 'toast-notification'});
-                        });
+                    let messages;
+                    if(Array.isArray(err.response.data.message))
+                        messages = err.response.data.message;
+                    else messages = [err.response.data.message];
+                    console.log("ERROR RESPONSE: ", messages);
+                    let html = () => {
+                        return <React.Fragment>
+                            <h2 style={{textAlign: 'center'}}>Error</h2>
+                            <ul> {
+                                messages.map(message => <li key={message}>{translate(`error.${message}`)}</li>)
+                            }</ul>
+                        </React.Fragment>
                     }
-                    // Ngược lại nếu thông báo lỗi trả về chỉ là 1 lỗi
-                    else {
-                        if(translate(`error.${err.response.data.message}`) !== undefined)
-                            toast.error(translate(`error.${err.response.data.message}`), {containerId: 'toast-notification'});
-                        else
-                            toast.error(err.response.data.message, {containerId: 'toast-notification'});
-                    }
+                    toast.error(html, {containerId: 'toast-notification'});
                 }else
                     toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
             });

@@ -31,13 +31,16 @@ exports.getSystemComponent = async (id) => {
 
 exports.createSystemComponent = async(name, description, link, roles) => {
     const component = await SystemComponent.findOne({name});
-    if(component !== null) throw ('component_name_exist');
+    if(component !== null) throw ['system_component_name_invalid', 'system_component_name_exist'];
 
     return await SystemComponent.create({ name, description, link, roles });
 }
 
 exports.editSystemComponent = async(id, name, description, link, roles) => {
-    var component = await SystemComponent.findById(id);
+    const component = await SystemComponent.findById(id);
+    const checkComponent = await SystemComponent.findOne({name});
+    if(JSON.stringify(component._id) !== JSON.stringify(checkComponent._id)) throw ['system_component_name_invalid', 'system_component_name_exist'];
+
     component.name = name;
     component.description = description;
     component.link = link;

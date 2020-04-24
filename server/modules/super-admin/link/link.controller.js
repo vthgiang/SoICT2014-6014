@@ -12,7 +12,7 @@ exports.getAllLinks = async (req, res) => {// TODO: không khác gì phương th
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_links_success',
+            message: ['get_links_success'],
             content: links
         });
     } catch (error) {
@@ -35,7 +35,7 @@ exports.getPaginatedLinks = async (req, res) => {
         await LogInfo(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'paginate_links_success',
+            message: ['paginate_links_success'],
             content: links
         });
     } catch (error) {
@@ -57,7 +57,7 @@ exports.createLink = async (req, res) => {
         await LogInfo(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'create_link_success',
+            message: ['create_link_success'],
             content: link
         });
     } catch (error) {
@@ -77,7 +77,7 @@ exports.getLinkById = async (req, res) => {
         await LogInfo(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'show_link_success',
+            message: ['show_link_success'],
             content: link
         });
     } catch (error) {
@@ -93,13 +93,13 @@ exports.getLinkById = async (req, res) => {
 exports.editLink = async (req, res) => {
     try {
         await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
-        var link = await LinkService.editLink(req.params.id, req.body);
-        var data = await LinkService.getLinkById(link._id);
+        const link = await LinkService.editLink(req.params.id, req.body);
+        const data = await LinkService.getLinkById(link._id);
         
         await LogInfo(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'edit_link_success',
+            message: ['edit_link_success'],
             content: data
         });
     } catch (error) {
@@ -119,7 +119,7 @@ exports.deleteLink = async (req, res) => {
         await LogInfo(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'delete_link_success',
+            message: ['delete_link_success'],
             content: link
         });
     } catch (error) {
@@ -141,7 +141,7 @@ exports.getLinksOfCompany = async (req, res) => {
         await LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_links_of_company_success',
+            message: ['get_links_of_company_success'],
             content: links
         });
     } catch (error) {

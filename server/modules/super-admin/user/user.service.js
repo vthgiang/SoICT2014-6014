@@ -40,7 +40,7 @@ exports.getUserById = async (id) => { //tim user theo id
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    if(user === null) throw ({ message: 'user_not_found'});
+    if(user === null) throw ['user_not_found'];
     
     return user;
 }
@@ -52,7 +52,7 @@ exports.createUser = async (data, company) => {
     var hash = bcrypt.hashSync(password, salt);
 
     var checkUser = await User.findOne({ email: data.email, company});
-    if(checkUser !== null) throw({message: 'email_exist'}); // Email đã được sử dụng
+    if(checkUser !== null) throw['email_exist']; // Email đã được sử dụng
     var user = await User.create({
         name: data.name,
         email: data.email,
@@ -126,10 +126,9 @@ exports.editUser = async (id, data) => {
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    if(user === null) throw ({ message: 'user_not_found'});
+    if(user === null) throw ['user_not_found'];
     if(user.email !== data.email){
         const checkEmail = await User.findOne({email: data.email});
-        console.log("check email: ", checkEmail, data.email)
         if(checkEmail !== null) throw ['email_exist'];
         user.email = data.email;
         await this.sendMailAboutChangeEmailOfUserAccount(user.email, data.email);
@@ -213,7 +212,7 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
             {'employee': id_role}
         ]  
     });
-    if(department === null) throw({message: 'department_not_found'});
+    if(department === null) throw['department_not_found'];
     var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
     var viceDean = await UserRole.findOne({ roleId: department.viceDean}).populate('userId roleId');
     var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');

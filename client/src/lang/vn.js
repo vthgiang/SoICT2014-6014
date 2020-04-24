@@ -1,7 +1,42 @@
 export default {
     locale: 'vn',
     messages: {
+        success: {
+            // Quản lý doanh nghiệp, công ty
+            create_company_success: 'Khởi tạo dữ liệu công ty thành công',
+            show_company_success: 'Lấy dữ liệu công ty thành công',
+            edit_company_success: 'Chỉnh sửa thông tin công ty thành công',
+            delete_company_success: 'Xóa dữ liệu công ty thành công',
+            add_new_link_for_company_success: 'Thêm mới link cho công ty thành công',
+            delete_link_for_company_success: 'Xóa link thành công',
+            add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
+            delete_component_for_company_success: 'Xóa component thành công',
+            
+
+            // Quản lý system link
+            create_system_link_success: 'Tạo system link thành công',
+            edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
+
+            // Quản lý system component
+            create_system_component_success: 'Tạo system component thành công',
+            show_system_component_success: 'Lấy dữ liệu system component thành công',
+            edit_system_component_success: 'Chỉnh sửa system admin thành công',
+            delete_system_component_success: 'Xóa system component thành công',
+        },
         error: {
+            // Quản lý doanh nghiệp, công ty
+            email_exist: 'Email này đã được sử dụng',
+            company_not_found: 'Không tìm thấy thông tin về công ty',
+            link_exist: 'Url cho link đã tồn tại',
+            component_exist: 'Component này đã tồn tại',
+            
+            // Quản lý system link
+            system_link_url_exist: 'Url này đã được sử dụng',
+
+            // Quản lý system component
+            system_component_name_invalid: 'Tên không hợp lệ',
+            system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
+
             email_does_not_exist: 'Email này đã được sử dụng',
             field_invalid: 'Trường nhập vào không hợp lệ',
 

@@ -8,7 +8,7 @@ exports.getAllSystemLinks = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'get_links_default_success',
+            message: ['get_links_default_success'],
             content: links
         });
     } catch (error) {
@@ -28,7 +28,7 @@ exports.getAllSystemLinkCategories = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
         res.status(200).json({
             success: true,
-            message: 'get_links_default_categories_success',
+            message: ['get_links_default_categories_success'],
             content: categories
         });
     } catch (error) {
@@ -51,7 +51,7 @@ exports.getPaginatedSystemLinks = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_LINKS_DEFAULT')
         res.status(200).json({
             success: true,
-            message: 'paginate_links_default_success',
+            message: ['paginate_links_default_success'],
             content: links
         });
     } catch (error) {
@@ -73,7 +73,7 @@ exports.createSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'create_link_default_success',
+            message: ['create_system_link_success'],
             content: data
         });
     } catch (error) {
@@ -93,7 +93,7 @@ exports.getSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'show_link_default_success',
+            message: ['show_link_default_success'],
             content: link
         });
     } catch (error) {
@@ -115,7 +115,7 @@ exports.editSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'edit_link_default_success',
+            message: 'edit_system_link_success',
             content: data
         });
     } catch (error) {

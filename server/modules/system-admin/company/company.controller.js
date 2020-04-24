@@ -9,7 +9,7 @@ exports.getAllCompanies = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(200).json({
             success: true,
-            message: 'get_companies_success',
+            message: ['get_companies_success'],
             content: companies
         });
     } catch (error) {
@@ -32,7 +32,7 @@ exports.getPaginatedCompanies = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_COMPANIES');
         res.status(200).json({
             success: true,
-            message: 'paginate_companies_success',
+            message: ['paginate_companies_success'],
             content: companies
         });
     } catch (error) {
@@ -48,18 +48,21 @@ exports.getPaginatedCompanies = async (req, res) => {
 exports.createCompany = async (req, res) => {
     try {
         const company = await CompanyService.createCompany(req.body);
-        const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
-        
-        await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
-        await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
-        await CompanyService.createCompanyComponents(company._id, req.body.links);
 
+        const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
+        console.log("abstract role: ", abstractRoles)
+        const companySuperAdmin = await CompanyService.createCompanySuperAdminAccount(company._id, company.name, req.body.email);
+        console.log("com super admin: ", companySuperAdmin)
+        const links = await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
+        console.log("com links: ", links)
+        const components = await CompanyService.createCompanyComponents(company._id, req.body.links);
+        console.log("com components: ", components)
         const resCompany = await CompanyService.getCompany(company._id);
         
         LogInfo(req.user.email, 'CREATE_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'create_company_success',
+            message: ['create_company_success'],
             content: resCompany
         });
     } catch (error) {
@@ -78,7 +81,7 @@ exports.getCompany = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(200).json({
             success: true,
-            message: 'show_company_success',
+            message: ['show_company_success'],
             content: company
         });
     } catch (error) {
@@ -93,18 +96,14 @@ exports.getCompany = async (req, res) => {
 
 exports.editCompany = async (req, res) => {
     try {
-        console.log("edit company")
         const company = await CompanyService.editCompany(req.params.id, req.body);
-        console.log("edit company 1")
         await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
-        console.log("edit company 2")
         const resCompany = await CompanyService.getCompany(company._id);
-        console.log("edit company 3")
 
         LogInfo(req.user.email, 'EDIT_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'edit_company_success',
+            message: ['edit_company_success'],
             content: resCompany
         });
     } catch (error) {
@@ -123,7 +122,7 @@ exports.deleteCompany = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'delete_company_success',
+            message: ['delete_company_success'],
             content: company
         });
     } catch (error) {
@@ -143,7 +142,7 @@ exports.getCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_links_of_company_success',
+            message: ['get_links_of_company_success'],
             content: links
         });
     } catch (error) {
@@ -163,7 +162,7 @@ exports.addCompanyLink = async (req, res) => {
         LogInfo(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'add_new_link_for_company_success',
+            message: ['add_new_link_for_company_success'],
             content: link
         });
     } catch (error) {
@@ -183,7 +182,7 @@ exports.deleteCompanyLink = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'delete_link_for_company_success',
+            message: ['delete_link_for_company_success'],
             content: link
         });
     } catch (error) {
@@ -204,7 +203,7 @@ exports.addCompanyComponent = async (req, res) => {
         LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'add_new_component_for_company_success',
+            message: ['add_new_component_for_company_success'],
             content: resComponent
         });
     } catch (error) {
@@ -224,7 +223,7 @@ exports.deleteCompanyComponent = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'delete_component_for_company_success',
+            message: ['delete_component_for_company_success'],
             content: component
         });
     } catch (error) {
@@ -244,7 +243,7 @@ exports.getCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_links_list_of_company_success',
+            message: ['get_links_list_of_company_success'],
             content: links
         });
     } catch (error) {
@@ -268,7 +267,7 @@ exports.getPaginatedCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'LINKS_PAGINATE_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_links_paginate_of_company_success',
+            message: ['get_links_paginate_of_company_success'],
             content: links
         });
     } catch (error) {
@@ -287,7 +286,7 @@ exports.getCompanyComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(200).json({
             success: true,
-            message: 'get_components_list_of_company',
+            message: ['get_components_list_of_company'],
             content: components
         });
     } catch (error) {
@@ -311,7 +310,7 @@ exports.getPaginatedCompanyComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENTS_PAGINATE_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_components_paginate_of_company_success',
+            message: ['get_components_paginate_of_company_success'],
             content: components
         });
     } catch (error) {
