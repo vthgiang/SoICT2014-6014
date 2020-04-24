@@ -88,7 +88,7 @@ class CompanyEditForm extends Component {
     save = () => {
         const data = { 
             name: this.state.companyName, 
-            short_name: this.state.companyShortName, 
+            shortName: this.state.companyShortName, 
             log: this.state.companyLog, 
             description: this.state.companyDescription, 
             email: this.state.companyEmail, 

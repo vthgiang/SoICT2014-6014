@@ -12,7 +12,7 @@ import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 
-class ModalEditTargetKPIUnit extends Component {
+class OrganizationalUnitKpiEditTargetModal extends Component {
     componentDidMount() {
         // get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
@@ -299,5 +299,5 @@ const actionCreators = {
     getParentTarget: createUnitKpiActions.getKPIParent,
     editTargetKPIUnit: createUnitKpiActions.editTargetKPIUnit
 };
-const connectedModalEditTargetKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalEditTargetKPIUnit));
-export { connectedModalEditTargetKPIUnit as ModalEditTargetKPIUnit };
+const connectedOrganizationalUnitKpiEditTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiEditTargetModal));
+export { connectedOrganizationalUnitKpiEditTargetModal as OrganizationalUnitKpiEditTargetModal };

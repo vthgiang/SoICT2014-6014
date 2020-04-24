@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const User = require('../auth/user.model');
-
 const CompanySchema = new Schema({
     name: {
         type: String,
@@ -27,7 +25,7 @@ const CompanySchema = new Schema({
     },
     superAdmin: {
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'users'
     }
 },{
     timestamps: true
