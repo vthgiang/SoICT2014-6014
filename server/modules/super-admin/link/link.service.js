@@ -27,9 +27,10 @@ exports.getLinkById = async (id) => {
 }
 
 exports.createLink = async(data, companyId) => {
-    if(data.url === '/system') throw ('cannot_create_this_url');
+    if(data.url === '/system') throw ['cannot_create_this_url', 'this_url_cannot_be_use'];
     const check = await Link.findOne({company: componentId, url: data.url});
-    if(check !== null) throw ('url_exist');
+    if(check !== null) throw ['url_exist'];
+
     return await Link.create({
         url: data.url,
         description: data.description,
@@ -38,14 +39,12 @@ exports.createLink = async(data, companyId) => {
 }
 
 exports.editLink = async(id, data) => {
-    var link = await Link
-        .findById(id)
-        .populate({ path: 'roles', model: Privilege });
+    const link = await Link.findById(id);
 
     link.url = data.url;
     link.description = data.description;
     link.company = data.company ? data.company : link.company;
-    link.save();
+    await link.save();
 
     return link;
 }

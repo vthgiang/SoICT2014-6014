@@ -25,7 +25,7 @@ class ModalAddTask extends Component {
     componentDidMount() {
         // get id current role
         // this.props.getTaskTemplateByUser("1", "[]");
-        this.props.getTaskTemplateByUser("1", "0", "[]");//fix--localStorage.getItem('id'),---------------------------------------------------
+        this.props.getTaskTemplateByUser("1", "0", "[]");//fix--localStorage.getItem('id'),
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // load js for form
@@ -35,7 +35,7 @@ class ModalAddTask extends Component {
     // Load js for form
     handleLoadjs = () => {
         let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';//fix---------------------------------------------------------------
+        script.src = '../lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -48,7 +48,7 @@ class ModalAddTask extends Component {
                 accounatable: [],
                 consulted: [],
                 informed: [],
-                creator: "",//fix-----------localStorage.getItem('id')----------------bên service của addTask() line 114---------------------------------------
+                creator: "",
                 tasktemplate: null,
                 role: localStorage.getItem('currentRole'),
                 parent: null,

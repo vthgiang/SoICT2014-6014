@@ -206,7 +206,7 @@ class TaskTemplate extends Component {
         return ( 
             <div className="box">
                 {/* /.box-header */}
-                <div className="box-body qlcv">
+                <div className="box-body qlcv" id="table-task-template">
 
                     <div className = "form-group">
                         {this.checkHasComponent('create-task-template-button') &&
@@ -235,7 +235,7 @@ class TaskTemplate extends Component {
                         </div>
                     </div>
                     <DataTableSetting 
-                        tableId="user-table"
+                        tableId="table-task-template"
                         columnArr={[
                             'Tên mẫu công việc',
                             'Mô tả',
@@ -248,7 +248,7 @@ class TaskTemplate extends Component {
                         hideColumnOption = {true}
                     />
                     
-                    <table className="table table-bordered table-striped table-hover" id="myTable">
+                    <table className="table table-bordered table-striped table-hover" id="table-task-template">
                         <thead>
                             <tr>
                                 <th title="Tên mẫu công việc">{translate('task_template.tasktemplate_name')}</th>

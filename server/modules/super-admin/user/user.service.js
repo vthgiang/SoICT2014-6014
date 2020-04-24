@@ -7,7 +7,7 @@ const generator = require("generate-password");
 exports.getAllUsers = async (company) => {
     const users = await User
         .find({ company })
-        .select('-password -status -delete_soft -token')
+        .select('-password -status -deleteSoft -tokens')
         .populate([
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
@@ -23,7 +23,7 @@ exports.getPaginatedUsers = async (company, limit, page, data={}) => {
         .paginate( newData , { 
             page, 
             limit,
-            select: '-token -status -password -delete_soft',
+            select: '-tokens -status -password -deleteSoft',
             populate: [
                 { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
                 { path: 'company' }
@@ -35,12 +35,12 @@ exports.getPaginatedUsers = async (company, limit, page, data={}) => {
 exports.getUserById = async (id) => { //tim user theo id
     var user = await User
         .findById(id)
-        .select('-password -status -delete_soft -token')
+        .select('-password -status -deleteSoft -tokens')
         .populate([
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    if(user === null) throw ({ message: 'user_not_found'});
+    if(user === null) throw ['user_not_found'];
     
     return user;
 }
@@ -50,51 +50,89 @@ exports.createUser = async (data, company) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({ length: 10, numbers: true });
     var hash = bcrypt.hashSync(password, salt);
-    var transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
-    });
-    var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
-        from: 'vnist.qlcv@gmail.com',
-        to: data.email,
-        subject: 'Xác thực tạo tài khoản trên hệ thống quản lý công việc',
-        text: 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + data.email,
-        html:   
-                '<p>Tài khoản dùng để đăng nhập của bạn là : </p' + 
-                '<ul>' + 
-                    '<li>Tài khoản :' + data.email + '</li>' +
-                    '<li>Mật khẩu :' + password + '</li>' + 
-                '</ul>' + 
-                `<p>Đăng nhập ngay tại : <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>` + '<br>' +
-                '<p>Your account use to login in system : </p' + 
-                '<ul>' + 
-                    '<li>Account :' + data.email + '</li>' +
-                    '<li>Password :' + password + '</li>' + 
-                '</ul>' + 
-                `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
-    }
+
     var checkUser = await User.findOne({ email: data.email, company});
-    if(checkUser !== null) throw({message: 'email_exist'}); // Email đã được sử dụng
+    if(checkUser !== null) throw['email_exist']; // Email đã được sử dụng
     var user = await User.create({
         name: data.name,
         email: data.email,
         password: hash,
         company: company
     });
-    var mail = await transporter.sendMail(mainOptions);
-    
+    await this.sendMailAboutCreatedAccount(data.email, password)
+
     return user;
+}
+
+exports.sendMailAboutCreatedAccount = async(email, password) => {
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+    });
+    var mainOptions = {
+        from: 'vnist.qlcv@gmail.com',
+        to: email,
+        subject: 'Xác thực tạo tài khoản trên hệ thống quản lý công việc',
+        text: 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + email,
+        html:   
+                '<p>Tài khoản dùng để đăng nhập của bạn là : </p' + 
+                '<ul>' + 
+                    '<li>Tài khoản :' + email + '</li>' +
+                    '<li>Mật khẩu :' + password + '</li>' + 
+                '</ul>' + 
+                `<p>Đăng nhập ngay tại : <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>` + '<br>' +
+                '<p>Your account use to login in system : </p' + 
+                '<ul>' + 
+                    '<li>Account :' + email + '</li>' +
+                    '<li>Password :' + password + '</li>' + 
+                '</ul>' + 
+                `<p>Login in: <a href="${process.env.WEBSITE}/login">${process.env.WEBSITE}/login</a></p>`
+    }
+
+    return await transporter.sendMail(mainOptions);
+}
+
+exports.sendMailAboutChangeEmailOfUserAccount = async(oldEmail, newEmail) => {
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+    });
+    var mainOptions = {
+        from: 'vnist.qlcv@gmail.com',
+        to: email,
+        subject: 'Xác thực thay đổi email',
+        text: `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `,
+        html:   
+                '<p>Tài khoản dùng để đăng nhập của bạn là : </p' + 
+                '<ul>' + 
+                    '<li>Email cũ :' + oldEmail + '</li>' +
+                    '<li>Email mới :' + newEmail + '</li>' +
+                '</ul>' + 
+                '<p>Your account use to login in system : </p' + 
+                '<ul>' + 
+                    '<li>Old email :' + oldEmail + '</li>' +
+                    '<li>New email :' + newEmail + '</li>' +
+                '</ul>'
+    }
+
+    return await transporter.sendMail(mainOptions);
 }
 
 exports.editUser = async (id, data) => {
     var user = await User
         .findById(id)
-        .select('-password -status -delete_soft')
+        .select('-password -status -deleteSoft')
         .populate([
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    if(user === null) throw ({ message: 'user_not_found'}); //Không tìm thấy dữ liệu về user với id 
+    if(user === null) throw ['user_not_found'];
+    if(user.email !== data.email){
+        const checkEmail = await User.findOne({email: data.email});
+        if(checkEmail !== null) throw ['email_exist'];
+        user.email = data.email;
+        await this.sendMailAboutChangeEmailOfUserAccount(user.email, data.email);
+    }
     user.name = data.name;
     if(data.password !== undefined && data.password !== null){
         var salt = bcrypt.genSaltSync(10);
@@ -174,7 +212,7 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
             {'employee': id_role}
         ]  
     });
-    if(department === null) throw({message: 'department_not_found'});
+    if(department === null) throw['department_not_found'];
     var dean = await UserRole.findOne({ roleId: department.dean}).populate('userId roleId');
     var viceDean = await UserRole.findOne({ roleId: department.viceDean}).populate('userId roleId');
     var employee = await UserRole.findOne({ roleId: department.employee}).populate('userId roleId');

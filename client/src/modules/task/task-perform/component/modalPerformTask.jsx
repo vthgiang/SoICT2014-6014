@@ -46,7 +46,8 @@ class ModalPerformTask extends Component {
                 creator: idUser,//fix---------------localStorage.getItem("id")-------------------
                 parent: null,
                 content: "",
-                file: null
+                file: null,
+                taskActionId: null
             },
             newAction: {
                 task: this.props.id,
@@ -408,6 +409,7 @@ class ModalPerformTask extends Component {
                     ...state.newComment,
                     parent: id,
                     content: this.contentComment[index].value,
+                    taskActionId : id
                 }
             }
         })
@@ -1225,13 +1227,13 @@ class ModalPerformTask extends Component {
                                                         <span className="username">
                                                             <a href="#abc">{item.creator.name}</a>
                                                         </span>
-                                                        <p style={{ marginBottom: "4px", marginLeft: "60px" }}>&nbsp;{item.name}</p>
+                                                        <p style={{ marginBottom: "4px", marginLeft: "60px" }}>&nbsp;{item.content}</p>
                                                         <span className="description">19:30 19-11-2021</span>
                                                     </div>
                                                     {(item.creator._id === this.state.currentUser && this.props.role === "responsible") &&
                                                         <div className="action-comment " style={{ display: "inline-block" }}>
                                                             <a href="#abc" title="Sửa hành động" className="edit" onClick={() => this.handleEditAction(item._id)}><i className="material-icons">edit</i></a>
-                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteAction(item._id)}><i className="material-icons">delete</i></a>
+                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id)}><i className="material-icons">delete</i></a>
                                                         </div>
                                                     }
                                                     {this.props.role === "accountable" &&
@@ -1246,7 +1248,7 @@ class ModalPerformTask extends Component {
                                                                 {/* Chỉnh sửa nội dung hoạt động của công việc không theo mẫu */}
                                                                 <textarea
                                                                     style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd' }}
-                                                                    defaultValue={item.name}
+                                                                    defaultValue={item.content}
                                                                     ref={input => this.newContentAction[item._id] = input}
                                                                 />
                                                                 <div className="row action-post">
