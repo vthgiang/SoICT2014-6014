@@ -1,4 +1,4 @@
-const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User } = require('../../../models').schema;
+const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User, UserRole } = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -62,6 +62,7 @@ exports.createCompany = async(data) => {
  * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
  */
 exports.editCompany = async(id, data) => {
+    console.log("edit data: ", data);
     const company = await Company.findById(id);
     if(company === null) throw ('company_not_found');
     company.name = data.name;
@@ -92,13 +93,13 @@ exports.deleteCompany = async(id) => {
  * @Employee nhân viên đơn vị
  */
 exports.createCompanyRootRoles = async(companyId) => {
-    const data = await RoleDefault.find();
-    const typeAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
+    const data = await RootRole.find();
+    const rootType = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
     const roles = await data.map(role => {
         return {
             name: role.name,
             company: companyId,
-            type: typeAbstract._id
+            type: rootType._id
         };
     })
 
@@ -176,7 +177,7 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
 
     const systemLinks = await SystemLink.find({
         _id: { $in: linkArr }
-    }).populate({ path: 'roles', model: RoleDefault });
+    }).populate({ path: 'roles', model: RootRole });
 
     const dataLinks = systemLinks.map( link => {
         return {
@@ -275,20 +276,30 @@ exports.getCompanyLinks = async(companyId) => {
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
 exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
-    const com = await Company.findById(companyId);
-    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.superAdmin.NAME});
-    const user = await User.findOne({ company: com._id, email: superAdminEmail });
-    if(user === null){
-        const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
-        com.superAdmin = newUser._id;
-        await com.save();
+    
+    const com = await Company.findById(companyId).populate({path: 'superAdmin', model: User});
+    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME});
+    const oldSuperAdmin = await User.findById(com.superAdmin._id);
 
-        return newUser;
-    }else{
-        com.superAdmin = user._id;
-        await com.save();
+    if(oldSuperAdmin.email === superAdminEmail)
+        return oldSuperAdmin;
+    else{
+        await UserRole.deleteOne({ userId: oldSuperAdmin._id, roleId: roleSuperAdmin._id });
 
-        return user;
+        const user = await User.findOne({ company: com._id, email: superAdminEmail });
+        if(user === null){
+            const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
+            com.superAdmin = newUser._id;
+            await com.save();
+    
+            return newUser;
+        }else{
+            com.superAdmin = user._id;
+            await com.save();
+            await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
+    
+            return user;
+        }
     }
 }
 

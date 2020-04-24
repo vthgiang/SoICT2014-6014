@@ -14,42 +14,43 @@ class ModalApproveTask extends Component {
     UNSAFE_componentWillMount() {
         this.props.getTaskById(this.props.taskID);
     }
-
+    
     addResult = (taskID) => { // tạo mới result task rồi thêm vào db, cập nhật lại result trong task
         var { currentUser, role, performtasks } = this.props;
         //1-responsible, 2-accountable, 3-consulted
         if (role === "responsible") {
             return this.props.createResult({
                 result: {
-                    member: currentUser,
-                    systempoint: this.state.systempoint,
-                    mypoint: this.state.mypoint1,
-                    approverpoint: this.state.approvepoint1,
-                    roleMember: "responsible"
+                    employee: currentUser,
+                    automaticPoint: this.state.automaticPoint,
+                    employeePoint: this.state.employeePoint1,
+                    approvedPoint: this.state.approvedPoint1,
+                    role: "responsible"
                 },
                 task: taskID
             });
         } else if (role === "consulted") {
             return this.props.createResult({
+             
                 result: {
-                    member: currentUser,
-
-                    systempoint: this.state.systempoint,
-                    mypoint: this.state.mypoint2,
-                    approverpoint: this.state.approvepoint2,
-                    roleMember: "consulted"
+                    employee: currentUser,
+                    automaticPoint: this.state.automaticPoint,
+                    employeePoint: this.state.employeePoint2,
+                    approvedPoint: this.state.approvedPoint2,
+                    role: "consulted"
                 },
                 task: taskID
             });
         } else if (role === "accountable") {
-            var mypoint = this.state.mypoint3;
+            var employeePoint = this.state.employeePoint3;
             return this.props.createResult({
+   
                 result: {
-                    member: currentUser,
-                    systempoint: this.state.systempoint,
-                    mypoint: mypoint,
-                    approverpoint: mypoint,
-                    roleMember: "accountable"
+                    employee: currentUser,
+                    automaticPoint: this.state.automaticPoint,
+                    employeePoint: employeePoint,
+                    approvedPoint: employeePoint,
+                    role: "accountable"
                 },
                 task: taskID
             });
@@ -62,19 +63,19 @@ class ModalApproveTask extends Component {
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         var listResult = [
             {
-                systempoint: this.state.systempoint,
-                mypoint: this.state.mypoint1,
-                approverpoint: this.state.approvepoint1,
+                automaticPoint: this.state.automaticPoint,
+                employeePoint: this.state.employeePoint1,
+                approvedPoint: this.state.approvedPoint1,
                 _id: task && task.results[0]._id,
-                member: task && task.responsibleEmployees[0]._id,
-                roleMember: "responsible"
+                employee: task && task.responsibleEmployees[0]._id,
+                role: "responsible"
             },
             {
-                systempoint: this.state.systempoint,
-                mypoint: this.state.mypoint2,
-                approverpoint: this.state.approvepoint2,
+                automaticPoint: this.state.automaticPoint,
+                employeePoint: this.state.employeePoint2,
+                approvedPoint: this.state.approvedPoint2,
                 _id: task && task.results[1]._id,
-                member: task && task.consultedEmployees[0]._id,
+                employee: task && task.consultedEmployees[0]._id,
                 roleMember: "consulted"
             }
         ]; // currentTask.results;
@@ -87,7 +88,7 @@ class ModalApproveTask extends Component {
             var a = this.validatePoint(percent)
             return {
                 ...state,
-                systempoint: percent,
+                automaticPoint: percent,
                 errorOnPercent: this.validatePoint(percent)
             }
         });
@@ -97,63 +98,63 @@ class ModalApproveTask extends Component {
     onHandleChange = async (e, namePoint) => {
         // var name = e.target.name;
         var value = parseInt(e.target.value);
-        if (namePoint === "systempoint") {
+        if (namePoint === "automaticPoint") {
             await this.setState(state => {
                 return {
                     // [name]: value,
                     ...state,
-                    systempoint: value,
+                    automaticPoint: value,
                     errorOnPercent: this.validatePoint(value)
                 }
             });
         }
-        if (namePoint === "mypoint1") {
+        if (namePoint === "employeePoint1") {
             await this.setState(state => {
                 return {
                     // [name]: value,
                     ...state,
-                    mypoint1: value,
-                    errorOnResMypoint: this.validatePoint(value)
+                    employeePoint1: value,
+                    errorOnResponsibleEmployeePoint: this.validatePoint(value)
                 }
             });
         }
-        if (namePoint === "approvepoint1") {
+        if (namePoint === "approvedPoint1") {
             await this.setState(state => {
                 return {
                     // [name]: value,
                     ...state,
-                    approvepoint1: value,
-                    errorOnResApprovepoint: this.validatePoint(value)
+                    approvedPoint1: value,
+                    errorOnResponsibleApprovedPoint: this.validatePoint(value)
                 }
             });
         }
-        if (namePoint === "mypoint2") {
+        if (namePoint === "employeePoint2") {
             await this.setState(state => {
                 return {
                     // [name]: value,
                     ...state,
-                    mypoint2: value,
-                    errorOnConsMypoint: this.validatePoint(value)
+                    employeePoint2: value,
+                    errorOnConsultedEmployeePoint: this.validatePoint(value)
                 }
             });
         }
-        if (namePoint === "approvepoint2") {
+        if (namePoint === "approvedPoint2") {
             await this.setState(state => {
                 return {
                     // [name]: value,
                     ...state,
-                    approvepoint2: value,
-                    errorOnConsApprovepoint: this.validatePoint(value)
+                    approvedPoint2: value,
+                    errorOnConsultedApprovedPoint: this.validatePoint(value)
                 }
             });
         }
-        if (namePoint === "mypoint3") {
+        if (namePoint === "employeePoint3") {
             await this.setState(state => {
                 return {
                     // [name]: value,
                     ...state,
-                    mypoint3: value,
-                    errorOnApprovepoint: this.validatePoint(value)
+                    employeePoint3: value,
+                    errorOnApprovedPoint: this.validatePoint(value)
                 }
             });
         }
@@ -193,49 +194,49 @@ class ModalApproveTask extends Component {
         const { tasks } = nextProps;
         if (nextProps.taskID !== prevState.taskID) {
             var task;
-            var respPoint, consultPoint, accoutPoint;
+            var responsiblePoint, consultedPoint, accountablePoint;
             if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
             if (task && task.results) {
                 var listResult = task.results;
                 listResult.map((item) => {
-                    if (task.responsibleEmployees[0]._id === item.employee && item.role === "responsible") respPoint = item;
-                    if (task.consultedEmployees[0]._id === item.employee && item.role === "consulted") consultPoint = item;
-                    if (task.accountableEmployees[0]._id === item.employee && item.role === "accountable") accoutPoint = item;
+                    if (task.responsibleEmployees[0]._id === item.employee && item.role === "responsible") responsiblePoint = item;
+                    if (task.consultedEmployees[0]._id === item.employee && item.role === "consulted") consultedPoint = item;
+                    if (task.accountableEmployees[0]._id === item.employee && item.role === "accountable") accountablePoint = item;
                 })
             }
-            const systempoint_def = (respPoint) ? respPoint.automaticPoint : 0;
+            const automaticPoint_def = (responsiblePoint) ? responsiblePoint.automaticPoint : 0;
             const defaultPoint = {
-                systempoint: (respPoint) ? respPoint.automaticPoint : 0,
+                automaticPoint: (responsiblePoint) ? responsiblePoint.automaticPoint : 0,
                 responsible: {
-                    mypoint: (respPoint) ? respPoint.employeePoint : 0,
-                    approverpoint: (respPoint) ? respPoint.approvedPoint : 0
+                    employeePoint: (responsiblePoint) ? responsiblePoint.employeePoint : 0,
+                    approvedPoint: (responsiblePoint) ? responsiblePoint.approvedPoint : 0
                 },
                 consulted: {
-                    mypoint: (consultPoint) ? consultPoint.employeePoint : 0,
-                    approverpoint: (consultPoint) ? consultPoint.approvedPoint : 0
+                    employeePoint: (consultedPoint) ? consultedPoint.employeePoint : 0,
+                    approvedPoint: (consultedPoint) ? consultedPoint.approvedPoint : 0
                 },
                 accountable: {
-                    mypoint: (accoutPoint) ? (accoutPoint.employeePoint) : systempoint_def
+                    employeePoint: (accountablePoint) ? (accountablePoint.employeePoint) : automaticPoint_def
                 }
             }
             return {
                 ...prevState,
-                //  systempoint, mypoint1, mypoint2, mypoint3, approvepoint1, approvepoint2 
+                //  automaticPoint, employeePoint1, employeePoint2, employeePoint3, approvedPoint1, approvedPoint2 
                 taskID: nextProps.taskID,
-                systempoint: task && defaultPoint.systempoint,
-                mypoint1: task && defaultPoint.responsible.mypoint,
-                approvepoint1: task && defaultPoint.responsible.approverpoint,
-                mypoint2: task && defaultPoint.consulted.mypoint,
-                approvepoint2: task && defaultPoint.consulted.approverpoint,
-                mypoint3: task && defaultPoint.accountable.mypoint,
+                automaticPoint: task && defaultPoint.automaticPoint,
+                employeePoint1: task && defaultPoint.responsible.employeePoint,
+                approvedPoint1: task && defaultPoint.responsible.approvedPoint,
+                employeePoint2: task && defaultPoint.consulted.employeePoint,
+                approvedPoint2: task && defaultPoint.consulted.approvedPoint,
+                employeePoint3: task && defaultPoint.accountable.employeePoint,
 
-                errorOnApprovepoint: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnConsApprovepoint: undefined,
-                errorOnConsMypoint: undefined,
+                errorOnApprovedPoint: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnConsultedApprovedPoint: undefined,
+                errorOnConsultedEmployeePoint: undefined,
                 errorOnPercent: undefined,
-                errorOnResApprovepoint: undefined,
-                errorOnResMypoint: undefined,
-                errorOnSytempoint: undefined,
+                errorOnResponsibleApprovedPoint: undefined,
+                errorOnResponsibleEmployeePoint: undefined,
+                errorOnAutomaticPoint: undefined,
             }
         } else {
             return null;
@@ -244,8 +245,8 @@ class ModalApproveTask extends Component {
 
     render() {
         const { currentUser, role, resultTask } = this.props;
-        var { systempoint, mypoint1, mypoint2, mypoint3, approvepoint1, approvepoint2 } = this.state;
-        var { errorOnApprovepoint, errorOnConsApprovepoint, errorOnConsMypoint, errorOnPercent, errorOnResApprovepoint, errorOnResMypoint, errorOnSytempoint } = this.state;
+        var { automaticPoint, employeePoint1, employeePoint2, employeePoint3, approvedPoint1, approvedPoint2 } = this.state;
+        var { errorOnApprovedPoint, errorOnConsultedApprovedPoint, errorOnConsultedEmployeePoint, errorOnPercent, errorOnResponsibleApprovedPoint, errorOnResponsibleEmployeePoint, errorOnAutomaticPoint } = this.state;
 
         return (
             <React.Fragment>
@@ -273,64 +274,64 @@ class ModalApproveTask extends Component {
                                     id="percent"
                                     placeholder={10}
                                     ref={input => this.percent = input}
-                                    value={systempoint}
+                                    value={automaticPoint}
                                     onChange={() => this.handleChangeMyPoint()}
                                     disabled={role !== "responsible"}
                                 />
                                 <ErrorLabel content={errorOnPercent} />
                             </div>
-                            <div className={`form-group ${errorOnSytempoint === undefined ? "" : "has-error"}`}>
-                                <label className="form-control-static" htmlfor="systempoint">Điểm hệ thống:</label>
+                            <div className={`form-group ${errorOnAutomaticPoint === undefined ? "" : "has-error"}`}>
+                                <label className="form-control-static" htmlfor="automaticPoint">Điểm hệ thống:</label>
                                 <input
                                     type="number"
                                     className="form-control"
-                                    id="systempoint"
+                                    id="automaticPoint"
                                     placeholder={10}
-                                    // ref={input => this.systempoint = input} 
-                                    // defaultValue={task && defaultPoint.systempoint} 
+                                    // ref={input => this.automaticPoint = input} 
+                                    // defaultValue={task && defaultPoint.automaticPoint} 
                                     disabled="true"
-                                    name="systempoint"
-                                    value={systempoint}
-                                    onChange={(e) => this.onHandleChange(e, "systempoint")}
+                                    name="automaticPoint"
+                                    value={automaticPoint}
+                                    onChange={(e) => this.onHandleChange(e, "automaticPoint")}
                                 />
-                                <ErrorLabel content={errorOnSytempoint} />
+                                <ErrorLabel content={errorOnAutomaticPoint} />
                             </div>
                         </fieldset>
 
                         {(role === "responsible" || role === "accountable") &&
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Vai trò người thực hiện:</legend>
-                                <div className={`form-group ${errorOnResMypoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="mypoint1">Điểm tự đánh giá:</label>
+                                <div className={`form-group ${errorOnResponsibleEmployeePoint === undefined ? "" : "has-error"}`}>
+                                    <label className="form-control-static" htmlfor="employeePoint1">Điểm tự đánh giá:</label>
                                     <input
                                         type="number"
                                         className="form-control"
-                                        id="mypoint1"
+                                        id="employeePoint1"
                                         placeholder={80}
-                                        // ref={input => this.mypoint1 = input} 
-                                        // defaultValue={task && defaultPoint.responsible.mypoint} 
+                                        // ref={input => this.employeePoint1 = input} 
+                                        // defaultValue={task && defaultPoint.responsible.employeePoint} 
                                         disabled={role !== "responsible"}
-                                        name="mypoint1"
-                                        value={mypoint1}
-                                        onChange={(e) => this.onHandleChange(e, "mypoint1")}
+                                        name="employeePoint1"
+                                        value={employeePoint1}
+                                        onChange={(e) => this.onHandleChange(e, "employeePoint1")}
                                     />
-                                    <ErrorLabel content={errorOnResMypoint} />
+                                    <ErrorLabel content={errorOnResponsibleEmployeePoint} />
                                 </div>
-                                <div className={`form-group ${errorOnResApprovepoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="approvepoint1">Điểm quản lý đánh giá:</label>
+                                <div className={`form-group ${errorOnResponsibleApprovedPoint === undefined ? "" : "has-error"}`}>
+                                    <label className="form-control-static" htmlfor="approvedPoint1">Điểm quản lý đánh giá:</label>
                                     <input
                                         type="number"
                                         className="form-control"
-                                        id="approvepoint1"
+                                        id="approvedPoint1"
                                         placeholder={80}
-                                        // ref={input => this.approvepoint1 = input} 
-                                        // defaultValue={task && defaultPoint.responsible.approverpoint} 
+                                        // ref={input => this.approvedPoint1 = input} 
+                                        // defaultValue={task && defaultPoint.responsible.approvedPoint} 
                                         disabled={role !== "accountable"}
-                                        name="approvepoint1"
-                                        value={approvepoint1}
-                                        onChange={(e) => this.onHandleChange(e, "approvepoint1")}
+                                        name="approvedPoint1"
+                                        value={approvedPoint1}
+                                        onChange={(e) => this.onHandleChange(e, "approvedPoint1")}
                                     />
-                                    <ErrorLabel content={errorOnResApprovepoint} />
+                                    <ErrorLabel content={errorOnResponsibleApprovedPoint} />
                                 </div>
                             </fieldset>
                         }
@@ -338,63 +339,59 @@ class ModalApproveTask extends Component {
                         {(role === "consulted" || role === "accountable") &&
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Vai trò người hỗ trợ:</legend>
-                                <div className={`form-group ${errorOnConsMypoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="mypoint2">Điểm tự đánh giá:</label>
+                                <div className={`form-group ${errorOnConsultedEmployeePoint === undefined ? "" : "has-error"}`}>
+                                    <label className="form-control-static" htmlfor="employeePoint2">Điểm tự đánh giá:</label>
                                     <input
                                         type="number"
                                         className="form-control"
-                                        id="mypoint2"
+                                        id="employeePoint2"
                                         placeholder={10}
-                                        // ref={input => this.mypoint2 = input} 
-                                        // defaultValue={task && defaultPoint.consulted.mypoint} 
+                                        // ref={input => this.employeePoint2 = input} 
+                                        // defaultValue={task && defaultPoint.consulted.employeePoint} 
                                         disabled={role !== "consulted"}
-                                        name="mypoint2"
-                                        value={mypoint2}
-                                        onChange={(e) => this.onHandleChange(e, "mypoint2")}
+                                        name="employeePoint2"
+                                        value={employeePoint2}
+                                        onChange={(e) => this.onHandleChange(e, "employeePoint2")}
                                     />
-                                    <ErrorLabel content={errorOnConsMypoint} />
+                                    <ErrorLabel content={errorOnConsultedEmployeePoint} />
                                 </div>
-                                <div className={`form-group ${errorOnConsApprovepoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="approvepoint2">Điểm quản lý đánh giá:</label>
+                                <div className={`form-group ${errorOnConsultedApprovedPoint === undefined ? "" : "has-error"}`}>
+                                    <label className="form-control-static" htmlfor="approvedPoint2">Điểm quản lý đánh giá:</label>
                                     <input
                                         type="number"
                                         className="form-control"
-                                        id="approvepoint2"
+                                        id="approvedPoint2"
                                         placeholder={10}
-                                        // ref={input => this.approvepoint2 = input} 
-                                        // defaultValue={task && defaultPoint.consulted.approverpoint} 
+                                        // ref={input => this.approvedPoint2 = input} 
+                                        // defaultValue={task && defaultPoint.consulted.approvedPoint} 
                                         disabled={role !== "accountable"}
-                                        name="approvepoint2"
-                                        value={approvepoint2}
-                                        onChange={(e) => this.onHandleChange(e, "approvepoint2")}
+                                        name="approvedPoint2"
+                                        value={approvedPoint2}
+                                        onChange={(e) => this.onHandleChange(e, "approvedPoint2")}
                                     />
-                                    <ErrorLabel content={errorOnConsApprovepoint} />
+                                    <ErrorLabel content={errorOnConsultedApprovedPoint} />
                                 </div>
                             </fieldset>
                         }
                         {(role === "accountable") &&
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Vai trò người phê duyệt:</legend>
-                                <div className={`form-group ${errorOnApprovepoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="mypoint3">Điểm tự đánh giá:</label>
+                                <div className={`form-group ${errorOnApprovedPoint === undefined ? "" : "has-error"}`}>
+                                    <label className="form-control-static" htmlfor="employeePoint3">Điểm tự đánh giá:</label>
                                     <input
                                         type="number"
                                         className="form-control"
-                                        id="mypoint3"
+                                        id="employeePoint3"
                                         placeholder={10}
-                                        // ref={input => this.mypoint3 = input} 
-                                        // defaultValue={task && defaultPoint.accountable.mypoint} 
+                                        // ref={input => this.employeePoint3 = input} 
+                                        // defaultValue={task && defaultPoint.accountable.employeePoint} 
                                         disabled={role !== "accountable"}
-                                        name="mypoint3"
-                                        value={mypoint3}
-                                        onChange={(e) => this.onHandleChange(e, "mypoint3")}
+                                        name="employeePoint3"
+                                        value={employeePoint3}
+                                        onChange={(e) => this.onHandleChange(e, "employeePoint3")}
                                     />
-                                    <ErrorLabel content={errorOnApprovepoint} />
+                                    <ErrorLabel content={errorOnApprovedPoint} />
                                 </div>
-                                {/* <div className={`form-group ${errorOnApprovepoint===undefined?"":"has-error"}`}>
-                                    <label className = "form-control-static" htmlfor="approvepoint3">Điểm quản lý đánh giá:</label>
-                                    <input type="number" className="form-control" id="approvepoint3" placeholder={80} ref={input => this.approvepoint3 = input} disabled={ role !== "accountable" }  />
-                        </div> */}
                             </fieldset>
                         }
 

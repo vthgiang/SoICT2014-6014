@@ -16,17 +16,6 @@ class NotificationTable extends Component {
         this.convertContent = this.convertContent.bind(this);
     }
 
-    convertContent = (content) => {
-        const newContent = content.slice(0,24);
-        return newContent.concat(newContent, ' ... ');
-    }
-
-    componentDidMount(){
-        this.props.get();
-        this.props.getReceivered();
-        this.props.getSent();
-    }
-
     render() { 
         const {translate, notifications, auth} = this.props;
         return ( 
@@ -90,7 +79,7 @@ class NotificationTable extends Component {
                                 </div>
                             </div> */}
                         </div>
-
+                        { this.checkHasComponent('create-notification') &&   
                         <div role="tabpanel" className="tab-pane" id="notification-sent">
                             <div className="box-header with-border">
                                 <div className="col-md-6">
@@ -145,10 +134,32 @@ class NotificationTable extends Component {
                                 </div> */}
                             </div>
                         </div>
+                        }
                     </div>
                 </div>
             </React.Fragment>
         );
+    }
+    
+    convertContent = (content) => {
+        const newContent = content.slice(0,24);
+        return newContent.concat(newContent, ' ... ');
+    }
+
+    componentDidMount(){
+        this.props.get();
+        this.props.getReceivered();
+        this.props.getSent();
+    }
+
+    checkHasComponent = (name) => {
+        var {auth} = this.props;
+        var result = false;
+        auth.components.forEach(component => {
+            if(component.name === name) result=true;
+        });
+
+        return result;
     }
 }
 

@@ -191,7 +191,7 @@ function getTaskActions(task) {
     return dispatch => {
         dispatch(request(task));
 
-        performTaskService.getTaskActions(task)
+        performTaskService.getTaskAction(task)
             .then(
                 taskActions => dispatch(success(taskActions)),
                 error => dispatch(failure(error.toString()))
@@ -206,7 +206,7 @@ function getActionComments(task) {
     return dispatch => {
         dispatch(request(task));
 
-        performTaskService.getActionComments(task)
+        performTaskService.getActionComment(task)
             .then(
                 actionComments => dispatch(success(actionComments)),
                 error => dispatch(failure(error.toString()))
