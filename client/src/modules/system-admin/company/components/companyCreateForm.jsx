@@ -11,7 +11,7 @@ class CompanyCreateForm extends Component {
         super(props);
         this.state = { 
             name: null,
-            short_name: null,
+            shortName: null,
             description: null,
             email: null,
             linkDefaultArr: []
@@ -161,7 +161,7 @@ class CompanyCreateForm extends Component {
     save = () => {
         const company = {
             name: this.state.companyName, 
-            short_name: this.state.companyShortName, 
+            shortName: this.state.companyShortName, 
             description: this.state.companyDescription, 
             email: this.state.companyEmail, 
             links: this.state.linkDefaultArr
@@ -193,7 +193,7 @@ class CompanyCreateForm extends Component {
         return msg === undefined;
     }
 
-    // Xu ly thay doi va validate short_name cong ty
+    // Xu ly thay doi va validate shortName cong ty
     handleChangeShortName = (e) => {
         const value = e.target.value;
         this.validateShortName(value, true);

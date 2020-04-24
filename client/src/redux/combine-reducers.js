@@ -17,7 +17,7 @@ import {education} from '../modules/training/education-program/redux/reducers';
 import {course} from '../modules/training/course/redux/reducers';
 import {salary} from '../modules/human-resource/salary/redux/reducers';
 import {discipline} from '../modules/human-resource/commendation-discipline/redux/reducers';
-import {sabbatical} from '../modules/human-resource/annual-leave/redux/reducers';
+import {annualLeave} from '../modules/human-resource/annual-leave/redux/reducers';
 import {holiday} from '../modules/human-resource/holiday/redux/reducers';
 import {notifications} from '../modules/notification/redux/reducers';
 
@@ -26,7 +26,7 @@ import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux
 import { dashboardKpiUnit } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
 
-import {createKpiPersonal} from "../modules/kpi/employee/creation/redux/reducers"
+import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
 import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
 import {dashboardKPIPersonal} from "../modules/kpi/employee/dashboard/redux/reducers"
 
@@ -63,7 +63,7 @@ const appReducer = combineReducers(Object.assign({
     course,
     salary,
     discipline,
-    sabbatical,
+    annualLeave,
     holiday,
 
     // kpi-unit
@@ -72,7 +72,7 @@ const appReducer = combineReducers(Object.assign({
     managerKpiUnit,
 
     //kpi-personal
-    createKpiPersonal,
+    createEmployeeKpiSet,
     KPIPersonalManager,
     dashboardKPIPersonal,
 

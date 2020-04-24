@@ -16,16 +16,16 @@ export const performTaskService = {
     stopTimerTask,
     pauseTimerTask,
     continueTimerTask,
-    addCommentTask,
-    deleteCommentTask,
-    editCommentTask,
-    getCommentTask,
+    addActionComment,
+    deleteActionComment,
+    editActionComment,
+    getActionComment,
     createResultTask,
     editResultTask,
-    addActionTask,
-    getActionTask,
-    editActionTask,
-    deleteActionTask
+    addTaskAction,
+    getTaskAction,
+    editTaskAction,
+    deleteTaskAction
 };
 /**
  * // example for axios
@@ -130,79 +130,79 @@ function continueTimerTask(id, newTimer) {
     return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/continue-timer/${id}`, requestOptions).then(handleResponse);
 }
 //getall Action task
-function getActionTask(task) {
+function getTaskAction(task) {
     const requestOptions = {
         method: 'GET',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-task/${task}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/${task}`, requestOptions).then(handleResponse);
     
 }
 // get all comment task
-function getCommentTask(task) {
+function getActionComment(task) {
     const requestOptions = {
         method: 'GET',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${task}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/${task}`, requestOptions).then(handleResponse);
 }
 // add comment task
-function addCommentTask(newComment) {
+function addActionComment(newComment) {
     const requestOptions = {
         method: 'POST',
         body: JSON.stringify(newComment),
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/create`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/create`, requestOptions).then(handleResponse);
 }
-function addActionTask(newAction){
+function addTaskAction(newAction){
     const requestOptions = {
         method :'POST',
         body: JSON.stringify(newAction),
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-task/create`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/create`, requestOptions).then(handleResponse);
 }
 
 // edit comment task
-function editCommentTask(id, newComment) {
+function editActionComment(id, newComment) {
     const requestOptions = {
         method: 'PUT',
         body: JSON.stringify(newComment),
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/${id}`, requestOptions).then(handleResponse);
 }
-function editActionTask(id,newAction) {
+function editTaskAction(id,newAction) {
     const requestOptions = {
         method: 'PUT',
         body: JSON.stringify(newAction),
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-task/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/${id}`, requestOptions).then(handleResponse);
 }
 
 // delete comment task
-function deleteCommentTask(id) {
+function deleteActionComment(id) {
     const requestOptions = {
         method: 'DELETE',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/comment-task/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/${id}`, requestOptions).then(handleResponse);
 }
 
-function deleteActionTask(id){
+function deleteTaskAction(id){
     const requestOptions = {
         method: 'DELETE',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-task/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/${id}`, requestOptions).then(handleResponse);
 }

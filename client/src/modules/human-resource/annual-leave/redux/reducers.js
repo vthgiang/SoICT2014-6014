@@ -1,11 +1,11 @@
 import { SabbaticalConstants } from './constants';
 const initState = {
     isLoading: false,
-    listSabbatical: [],
+    listAnnualLeaves: [],
     totalList: "",
     error:"",
 }
-export function sabbatical(state =initState, action) {
+export function annualLeave(state =initState, action) {
     switch (action.type) {
         case SabbaticalConstants.GET_SABBATICAL_REQUEST:
         case SabbaticalConstants.CREATE_SABBATICAL_REQUEST:
@@ -19,26 +19,26 @@ export function sabbatical(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listSabbatical: action.payload.listSabbatical,
+                listAnnualLeaves: action.payload.listAnnualLeaves,
                 totalList: action.payload.totalList,   
             };
         case SabbaticalConstants.CREATE_SABBATICAL_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listSabbatical: [...state.listSabbatical, action.payload],
+                listAnnualLeaves: [...state.listAnnualLeaves, action.payload],
             };
         case SabbaticalConstants.DELETE_SABBATICAL_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listSabbatical: state.listSabbatical.filter(sabbatical => (sabbatical._id !== action.payload._id)),
+                listAnnualLeaves: state.listAnnualLeaves.filter(sabbatical => (sabbatical._id !== action.payload._id)),
             };
         case SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listSabbatical: state.listSabbatical.map(sabbatical =>sabbatical._id === action.payload._id ?action.payload : sabbatical),
+                listAnnualLeaves: state.listAnnualLeaves.map(sabbatical =>sabbatical._id === action.payload._id ?action.payload : sabbatical),
             };
         case SabbaticalConstants.GET_SABBATICAL_FAILURE:
         case SabbaticalConstants.CREATE_SABBATICAL_FAILURE:

@@ -133,7 +133,7 @@ export function createKpiUnit (state = {}, action){
             ...state,
             currentKPI: {
               ...state.currentKPI,
-              listtarget: state.currentKPI.listtarget.map(target =>
+              kpis: state.currentKPI.kpis.map(target =>
                 target._id === action.id
                   ? { ...target, editing: true }
                   : target)
@@ -145,7 +145,7 @@ export function createKpiUnit (state = {}, action){
             ...state,
             currentKPI: {
               ...state.currentKPI,
-              listtarget: state.currentKPI.listtarget.map(target =>
+              kpis: state.currentKPI.kpis.map(target =>
                 target._id === action.newTarget.target._id
                   ? action.newTarget.target : target)
             },
@@ -161,7 +161,7 @@ export function createKpiUnit (state = {}, action){
             ...state,
             currentKPI: {
               ...state.currentKPI,
-              listtarget: state.currentKPI.listtarget.map(target =>
+              kpis: state.currentKPI.kpis.map(target =>
                 target._id === action.id
                   ? { ...target, deleting: true }
                   : target)

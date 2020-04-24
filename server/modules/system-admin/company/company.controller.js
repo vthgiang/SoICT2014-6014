@@ -47,19 +47,12 @@ exports.getPaginatedCompanies = async (req, res) => {
 
 exports.createCompany = async (req, res) => {
     try {
-        //Tạo thông tin công ty mới(tên, tên ngắn, mô tả)
         const company = await CompanyService.createCompany(req.body);
-
-        //Tạo 5 role abstract cho công ty mới
         const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
         
-        //Super admin cho công ty mới
-        const superadmin = await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
-
-        //Tạo link và các component tương ứng cho các trang mà công ty được phép truy cập
-        const links = await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
-
-        const components = await CompanyService.createCompanyComponents(company._id, req.body.links);
+        await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
+        await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
+        await CompanyService.createCompanyComponents(company._id, req.body.links);
 
         const resCompany = await CompanyService.getCompany(company._id);
         
@@ -100,9 +93,14 @@ exports.getCompany = async (req, res) => {
 
 exports.editCompany = async (req, res) => {
     try {
+        console.log("edit company")
         const company = await CompanyService.editCompany(req.params.id, req.body);
+        console.log("edit company 1")
         await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
+        console.log("edit company 2")
         const resCompany = await CompanyService.getCompany(company._id);
+        console.log("edit company 3")
+
         LogInfo(req.user.email, 'EDIT_COMPANY');
         res.status(200).json({
             success: true,

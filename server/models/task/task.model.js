@@ -148,12 +148,20 @@ const TaskSchema = new Schema({
             ref : User,
             required:true
         },
-        name:{
+        content:{
             type: String,
             required:true
         },
         date:{
             type: Date
+        },
+        createdAt:{
+            type: Date,
+            default: Date.now
+        },
+        updatedAt:{
+            type: Date,
+            default: Date.now
         },
         actionComments: [{
             creator: {
@@ -172,6 +180,14 @@ const TaskSchema = new Schema({
                 type: Number,
                 default: 0,
                 required: true
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            },
+            updatedAt: {
+                type : Date,
+                default: Date.now
             },
             // file: {
             //     type: Schema.Types.ObjectId,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AlertActions } from '../redux/actions';
-import './alert.css'
+import './alert.css';
 
 class Alert extends Component {
     
@@ -19,11 +19,12 @@ class Alert extends Component {
     render() { 
         const { display, message } = this.props.alert;
         const { translate } = this.props;
+        
         return ( 
             <React.Fragment>
                 <div id="alert" className={display ? 'modal fade in display-block' : 'modal fade in display-none'} >
                     <div className="modal-dialog">
-                        <div className="modal-content">
+                        <div className="modal-content top-200">
                             <div className="modal-header">
                                 <h4 className="modal-title text-center text-red">{translate('alert.title')}</h4>
                             </div>
@@ -33,14 +34,14 @@ class Alert extends Component {
                                 </strong>
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-primary" onClick={this.handleButton}>OK</button>
+                                <button className="btn btn-primary" onClick={this.handleButton}>Đăng xuất</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 
             </React.Fragment>
-         );
+        );
     }
 }
  

@@ -36,7 +36,7 @@ class CompanyTable extends Component {
             if (result.value) {
                 this.props.edit(id, {
                     name: data.name,
-                    short_name: data.short_name,
+                    shortName: data.shortName,
                     description: data.description,
                     log: value ? data.log : value,
                     active: value
@@ -92,11 +92,11 @@ class CompanyTable extends Component {
                     <CompanyEditForm
                         companyId={ currentRow._id }
                         companyName={ currentRow.name }
-                        companyShortName={ currentRow.short_name }
+                        companyShortName={ currentRow.shortName }
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.super_admin !== undefined ? currentRow.super_admin.email : 'Chưa xác định'}
+                        companyEmail={currentRow.superAdmin !== undefined ? currentRow.superAdmin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }
@@ -105,18 +105,18 @@ class CompanyTable extends Component {
                     <CompanyServicesForm
                         companyId={ currentRow._id }
                         companyName={ currentRow.name }
-                        companyShortName={ currentRow.short_name }
+                        companyShortName={ currentRow.shortName }
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.super_admin !== undefined ? currentRow.super_admin.email : 'Chưa xác định'}
+                        companyEmail={currentRow.superAdmin !== undefined ? currentRow.superAdmin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }
                 <SearchBar 
                     columns={[
                         { title: translate('manage_company.name'), value: 'name' },
-                        { title: translate('manage_company.short_name'), value: 'short_name' },
+                        { title: translate('manage_company.short_name'), value: 'shortName' },
                         { title: translate('manage_company.description'), value: 'description' },
                     ]}
                     option={this.state.option}
@@ -154,7 +154,7 @@ class CompanyTable extends Component {
                                             className={com.active ? "bg bg-white" : "bg bg-gray"}
                                         >
                                             <td>{ com.name }</td>
-                                            <td>{ com.short_name }</td>
+                                            <td>{ com.shortName }</td>
                                             <td>{ com.description }</td>
                                             <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
                                             <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>

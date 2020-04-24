@@ -36,6 +36,7 @@ class UserEditForm extends Component {
     save = () => {
         if (this.isFormValidated()) {
             return this.props.edit(this.props.userId, {
+                email: this.state.userEmail,
                 name: this.state.userName,
                 active: this.state.userActive,
                 roles: this.state.userRoles
@@ -45,8 +46,27 @@ class UserEditForm extends Component {
 
     isFormValidated = () => {
         let result = 
+            this.validateUserEmail(this.state.userEmail, false) &&
             this.validateUserName(this.state.userName, false); // Kết hợp với kết quả validate các trường khác (nếu có trong form)
         return result;
+    }
+
+    handleUserEmailChange = (e) => {
+        let value = e.target.value;
+        this.validateUserEmail(value, true);
+    }
+    validateUserEmail = (value, willUpdateState=true) => {
+        let msg = UserFormValidator.validateEmail(value);
+        if (willUpdateState){
+            this.setState(state => {
+                return {
+                    ...state,
+                    userEmailError: msg,
+                    userEmail: value,
+                }
+            });
+        }
+        return msg === undefined;
     }
 
     handleUserNameChange = (e) => {
@@ -95,6 +115,7 @@ class UserEditForm extends Component {
                 userName: nextProps.userName,
                 userActive: nextProps.userActive,
                 userRoles: nextProps.userRoles,
+                userEmailError: undefined,
                 errorOnUserName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
             } 
         } else {
@@ -103,8 +124,8 @@ class UserEditForm extends Component {
     }
 
     render() { 
-        const { translate, role, user } = this.props;
-        const { userId, userEmail, userName, userActive, userRoles, status, errorOnUserName } = this.state;
+        const { translate, role, user, auth } = this.props;
+        const { userId, userEmail, userName, userActive, userRoles, status, errorOnUserName, userEmailError } = this.state;
         return ( 
             <React.Fragment>
                 <DialogModal
@@ -118,48 +139,79 @@ class UserEditForm extends Component {
                 >
                     <form id={`form-edit-user`}>
                         <div className="row">
-                            <div className="form-group col-sm-8">
-                                <label>{ translate('table.email') }<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={ userEmail } disabled/>
-                            </div>
-                            <div className="form-group col-sm-4">
-                                <label>{ translate('table.status') }<span className="text-red">*</span></label>
-                                <select 
-                                    className="form-control" 
-                                    style={{width: '100%'}} 
-                                    value={ userActive }
-                                    onChange = {this.handleUserActiveChange}
-                                    ref="active"
-                                    disabled={this.checkSuperAdmin(userRoles) ? true : false}>
-                                    {   
-                                        status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
-                                    }
-                                </select>
-                            </div>
+                            {
+                                this.checkSuperAdmin(userRoles) ? // là super admin của công ty
+                                <React.Fragment>
+                                    <div className={`form-group col-sm-8 ${userEmailError===undefined?"":"has-error"}`}>
+                                        <label>{ translate('table.email') }<span className="text-red">*</span></label>
+                                        {
+                                            auth.user._id === userId ?
+                                            <input type="text" className="form-control" value={ userEmail } onChange={this.handleUserEmailChange}/>:
+                                            <input type="text" className="form-control" value={ userEmail } disabled/>
+                                        }
+                                        <ErrorLabel content={userEmailError}/>
+                                    </div>
+                                    <div className="form-group col-sm-4">
+                                        <label>{ translate('table.status') }<span className="text-red">*</span></label>
+                                        <select 
+                                            className="form-control" 
+                                            style={{width: '100%'}} 
+                                            value={ userActive }
+                                            disabled={true}>
+                                            {   
+                                                status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
+                                            }
+                                        </select>
+                                    </div>
+                                </React.Fragment> :
+                                <React.Fragment>
+                                    <div className={`form-group col-sm-8 ${userEmailError===undefined?"":"has-error"}`}>
+                                        <label>{ translate('table.email') }<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" value={ userEmail } onChange={this.handleUserEmailChange}/>
+                                        <ErrorLabel content={userEmailError}/>
+                                    </div>
+                                    <div className="form-group col-sm-4">
+                                        <label>{ translate('table.status') }<span className="text-red">*</span></label>
+                                        <select 
+                                            className="form-control" 
+                                            style={{width: '100%'}} 
+                                            value={ userActive }
+                                            onChange = {this.handleUserActiveChange}>
+                                            {   
+                                                status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)    
+                                            }
+                                        </select>
+                                    </div>
+                                </React.Fragment>
+                            }
                         </div>
                         <div className={`form-group ${errorOnUserName===undefined?"":"has-error"}`}>
                             <label>{ translate('table.name') }<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" ref="name" value={ userName } onChange = {this.handleUserNameChange}/>
+                            <input type="text" className="form-control" value={ userName } onChange = {this.handleUserNameChange}/>
                             <ErrorLabel content={errorOnUserName}/>
                         </div>
-                        <div className="form-group">
-                            <label>{ translate('manage_user.roles') }</label>
-                            <SelectBox
-                                id={`user-role-form${userId}`}
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    this.checkSuperAdmin(userRoles) ? //neu tai khoan nay hien tai khong co role la Super Admin
-                                    role.list.map( role => {return {value: role._id, text: role.name}}):
-                                    role.list.filter( role => {
-                                        return role.name !== 'Super Admin'
-                                    }).map( role => {return {value: role._id, text: role.name}})
-                                }
-                                onChange={this.handleRolesChange}
-                                value={userRoles}
-                                multiple={true}
-                            />
-                        </div>
+                        {
+                            this.checkSuperAdmin(userRoles) && auth.user._id !== userId ?
+                            null :
+                            <div className="form-group">
+                                <label>{ translate('manage_user.roles') }</label>
+                                <SelectBox
+                                    id={`user-role-form${userId}`}
+                                    className="form-control select2"
+                                    style={{width: "100%"}}
+                                    items = {
+                                        this.checkSuperAdmin(userRoles) ? //neu tai khoan nay hien tai khong co role la Super Admin
+                                        role.list.map( role => {return {value: role._id, text: role.name}}):
+                                        role.list.filter( role => {
+                                            return role.name !== 'Super Admin'
+                                        }).map( role => {return {value: role._id, text: role.name}})
+                                    }
+                                    onChange={this.handleRolesChange}
+                                    value={userRoles}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
                     </form>
                 </DialogModal>
             </React.Fragment>

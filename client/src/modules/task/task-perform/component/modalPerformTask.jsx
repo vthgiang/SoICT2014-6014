@@ -26,7 +26,7 @@ class ModalPerformTask extends Component {
         super(props);
         this.state = {
             currentUser: idUser,//fix---------------localStorage.getItem('id')-------------------
-            selected: "actionTask",
+            selected: "taskAction",
             extendDescription: false,
             editDescription: false,
             extendInformation: true,
@@ -46,7 +46,8 @@ class ModalPerformTask extends Component {
                 creator: idUser,//fix---------------localStorage.getItem("id")-------------------
                 parent: null,
                 content: "",
-                file: null
+                file: null,
+                taskActionId: null
             },
             newAction: {
                 task: this.props.id,
@@ -122,8 +123,8 @@ class ModalPerformTask extends Component {
         this.props.getAllKPIPersonalByMember(this.props.responsible);
         this.props.getAllUserOfDepartment(this.props.unit);
         this.props.getTaskById(this.props.id);
-        this.props.getCommentTask(this.props.id);
-        this.props.getActionTask(this.props.id);
+        this.props.getActionComments(this.props.id);
+        this.props.getTaskActions(this.props.id);
         this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
     }
     handleChangeContent = async (content) => {
@@ -408,6 +409,7 @@ class ModalPerformTask extends Component {
                     ...state.newComment,
                     parent: id,
                     content: this.contentComment[index].value,
+                    taskActionId : id
                 }
             }
         })
@@ -419,7 +421,7 @@ class ModalPerformTask extends Component {
         // data.append("content", newComment.content);
         //  data.append("file", newComment.file);
         if (newComment.task && newComment.content && newComment.creator) {
-            this.props.addComment(newComment);
+            this.props.addActionComment(newComment);
         }
         this.contentComment[index].value = "";
     }
@@ -431,17 +433,17 @@ class ModalPerformTask extends Component {
                 ...state,
                 newAction: {
                     ...state.newAction,
-                    name: this.contentAction[index].value,
+                    content: this.contentAction[index].value,
                 }
             }
         })
         var { newAction } = this.state;
-        if (newAction.name && newAction.creator) {
-            this.props.addAction(newAction);
+        if (newAction.content && newAction.creator) {
+            this.props.addTaskAction(newAction);
         }
         this.contentAction[index].value = "";
     }
-    handleEditComment = async (id) => {
+    handleEditActionComment = async (id) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -459,7 +461,7 @@ class ModalPerformTask extends Component {
     }
     //Lưu hoạt động
 
-    handleSaveEditComment = async (e, index) => {
+    handleSaveEditActionComment = async (e, index) => {
         e.preventDefault();
         await this.setState(state => {
             return {
@@ -474,7 +476,7 @@ class ModalPerformTask extends Component {
         })
         var { newComment } = this.state;
         if (newComment.content) {
-            this.props.editComment(index, newComment);
+            this.props.editActionComment(index, newComment);
         }
     }
     handleSaveEditAction = async (e, index) => {
@@ -492,7 +494,7 @@ class ModalPerformTask extends Component {
         })
         var { newAction } = this.state;
         if (newAction.content) {
-            this.props.editAction(index, newAction);
+            this.props.editTaskAction(index, newAction);
         }
     }
     onHandleChangeFile = (event) => {
@@ -640,25 +642,25 @@ class ModalPerformTask extends Component {
     }
 
     render() {
-        var task, commentTasks, actionTasks, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
+        var task, actionComments, taskActions, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
         const { comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action } = this.state;
         const { time } = this.state.timer;
-        const { tasks, performtasks, user, overviewKpiPersonal } = this.props;
+        const { tasks, performtasks, user, KPIPersonalManager } = this.props;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
         
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.tasktemplate !== null) {
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
-        if (typeof performtasks.commenttasks !== 'undefined' && performtasks.commenttasks !== null) commentTasks = performtasks.commenttasks;
-        if (typeof performtasks.actiontasks !== 'undefined' && performtasks.actiontasks !== null) actionTasks = performtasks.actiontasks;
+        if (typeof performtasks.actioncomments !== 'undefined' && performtasks.actioncomments !== null) actionComments = performtasks.actioncomments;
+        if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
         if (user.userdepartments) userdepartments = user.userdepartments;
-        if (overviewKpiPersonal.kpipersonals) listKPIPersonal = overviewKpiPersonal.kpipersonals;//sửa ten -> ten-props.kpipersonals//chắc là cho vào overviewkpipersonal
+        if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;//sửa ten -> ten-props.kpipersonals//chắc là cho vào overviewkpipersonal
         return (
             <div className="modal modal-full fade" data-backdrop="false" id={`modelPerformTask${this.props.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">
@@ -817,7 +819,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người thực hiện*</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" defaultValue={task && task.responsible.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="responsible" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.responsibleEmployees.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="responsible" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -839,7 +841,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người phê duyệt*</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" defaultValue={task && task.accounatable.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="accounatable" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.accountableEmployees.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="accounatable" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -861,7 +863,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người hỗ trợ</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" defaultValue={task && task.consulted.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="consulted" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.consultedEmployees.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="consulted" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -883,7 +885,7 @@ class ModalPerformTask extends Component {
                                             <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>Người quan sát</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select multiline="true" defaultValue={task && task.informed.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="informed" style={{ width: '100%' }}>
+                                                    <select multiline="true" defaultValue={task && task.informedEmployees.map(item => item._id)} disabled={this.props.role !== "accounatable"} className="form-control select2" multiple="multiple" ref="informed" style={{ width: '100%' }}>
                                                         {userdepartments &&
                                                             userdepartments.map(item =>
                                                                 <optgroup label={item.roleId.name} key={item.roleId._id}>
@@ -920,7 +922,7 @@ class ModalPerformTask extends Component {
                                             return <div className='col-sm-12' style={{ paddingTop: "10px" }}>
                                                 <label className="col-sm-2 control-label" style={{ width: '12%', textAlign: 'left', fontWeight: "500" }}>{item.creater.name}</label>
                                                 <div className="col-sm-8" style={{ width: '88%' }}>
-                                                    <select className="form-control select2" defaultValue={task && task.kpi} disabled={this.props.role !== "accounatable" && this.props.role !== "responsible"} multiple="multiple" ref="kpi" data-placeholder="Select a State" style={{ width: '100%' }} >
+                                                    <select className="form-control select2" defaultValue={task && task.kpis} disabled={this.props.role !== "accounatable" && this.props.role !== "responsible"} multiple="multiple" ref="kpi" data-placeholder="Select a State" style={{ width: '100%' }} >
                                                         {item.listtarget.map(x => {
                                                             return <option key={x._id} value={x._id}>{x.name}</option>
                                                         })}
@@ -949,7 +951,7 @@ class ModalPerformTask extends Component {
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
                                                         </div>
-                                                        <input type="text" className="form-control" value={this.formatDate(task && task.startdate)} disabled={this.props.role === "informed" || this.props.role === "consulted"} ref={input => this.startdate = input} name="time" id="datepicker4" data-date-format="dd-mm-yyyy" />
+                                                        <input type="text" className="form-control" value={this.formatDate(task && task.startDate)} disabled={this.props.role === "informed" || this.props.role === "consulted"} ref={input => this.startdate = input} name="time" id="datepicker4" data-date-format="dd-mm-yyyy" />
                                                     </div>
                                                 </div>
                                                 <div className="col-sm-4">
@@ -958,14 +960,14 @@ class ModalPerformTask extends Component {
                                                         <div className="input-group-addon">
                                                             <i className="fa fa-calendar" />
                                                         </div>
-                                                        <input type="text" className="form-control" value={this.formatDate(task && task.enddate)} disabled={this.props.role === "informed" || this.props.role === "consulted"} ref={input => this.enddate = input} name="time" id="datepicker5" data-date-format="dd-mm-yyyy" />
+                                                        <input type="text" className="form-control" value={this.formatDate(task && task.endDate)} disabled={this.props.role === "informed" || this.props.role === "consulted"} ref={input => this.enddate = input} name="time" id="datepicker5" data-date-format="dd-mm-yyyy" />
                                                     </div>
                                                 </div>
                                                 <div className="col-sm-4">
                                                     <div className='form-group has-feedback'>
                                                         <label className="col-sm-2 control-label" style={{ width: '40%', textAlign: 'left', fontWeight: "500" }}>Thời gian quá hạn:</label>
                                                         <div className="col-sm-8" style={{ width: '60%' }}>
-                                                            <input type="text" className="form-control" value={this.calculateOverdueDate(task && task.enddate)} ref={input => this.overdate = input} disabled />
+                                                            <input type="text" className="form-control" value={this.calculateOverdueDate(task && task.endDate)} ref={input => this.overdate = input} disabled />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -975,7 +977,7 @@ class ModalPerformTask extends Component {
                                                     <div className='form-group has-feedback'>
                                                         <label className="col-sm-2 control-label" style={{ width: '40%', textAlign: 'left', fontWeight: "500" }}>Mức độ hoàn thành:</label>
                                                         <div className="col-sm-8" style={{ width: '60%' }}>
-                                                            <input type="text" defaultValue={task && task.progress} className="form-control" onChange={() => this.calculateTaskRessultByProgress(informations, task && task.tasktemplate && task.tasktemplate.formula)} disabled={this.props.role === "informed" || this.props.role === "consulted"} ref={input => this.progress = input} />
+                                                            <input type="text" defaultValue={task && task.progress} className="form-control" onChange={() => this.calculateTaskRessultByProgress(informations, task && task.taskTemplate && task.taskTemplate.formula)} disabled={this.props.role === "informed" || this.props.role === "consulted"} ref={input => this.progress = input} />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -990,7 +992,7 @@ class ModalPerformTask extends Component {
                                             </div>
                                         </React.Fragment>}
                                     {/* Thông tin công viêc theo mẫu */}
-                                    {task && task.tasktemplate &&
+                                    {task && task.taskTemplate &&
                                         <React.Fragment>
                                             <div className="col-sm-12" >
                                                 <label className="control-label" style={{ textAlign: 'left', width: "100%", marginTop: "3px", marginLeft: "10px", fontWeight: "500" }}>
@@ -1008,7 +1010,7 @@ class ModalPerformTask extends Component {
                                                         <div className='form-group has-feedback'>
                                                             <label className="col-sm-2" style={{ width: '40%', textAlign: 'left', fontWeight: "500" }}>{item.name}</label>
                                                             <div className="col-sm-8" style={{ width: '60%' }}>
-                                                                <input type={item.type} className="form-control" placeholder="80" onChange={() => this.calculateTaskRessult(informations, task && task.tasktemplate.formula)} ref={item.code} disabled={this.props.role !== "responsible" && this.props.role !== "accountable"} />
+                                                                <input type={item.type} className="form-control" placeholder="80" onChange={() => this.calculateTaskRessult(informations, task && task.taskTemplate.formula)} ref={item.code} disabled={this.props.role !== "responsible" && this.props.role !== "accountable"} />
                                                             </div>
                                                         </div>
                                                     </div>)}
@@ -1033,11 +1035,11 @@ class ModalPerformTask extends Component {
                                                     <div className="col-sm-8" style={{ width: '30%' }}>
                                                         <input type="number" className="form-control" placeholder="75" value={this.state.resultTask} ref={input => this.resultTask = input} disabled />
                                                     </div>
-                                                    {/* <label className="col-sm-2 control-label" style={{width: "57%", color: "blue"}}>(Điểm được tính theo công thức {task && task.tasktemplate.formula}. Trong đó, px là các thông tin nhập liệu từ mẫu công việc)</label> */}
+                                                    {/* <label className="col-sm-2 control-label" style={{width: "57%", color: "blue"}}>(Điểm được tính theo công thức {task && task.taskTemplate.formula}. Trong đó, px là các thông tin nhập liệu từ mẫu công việc)</label> */}
                                                 </div>
                                             </div>
                                             <label className="col-sm-12" style={{ fontSize: "medium", fontWeight: "500" }}>Vai trò người thực hiện:</label>
-                                            {task && task.responsible.map(item => <div className="col-sm-12" key={item._id}>
+                                            {task && task.responsibleEmployees.map(item => <div className="col-sm-12" key={item._id}>
                                                 <div className="control-label col-sm-3" style={{ width: "12%" }}>
                                                     <label style={{ fontWeight: "500" }}>{item.name}:</label>
                                                 </div>
@@ -1059,7 +1061,7 @@ class ModalPerformTask extends Component {
                                                 </div>
                                             </div>)}
                                             <label className="col-sm-12" style={{ fontSize: "medium", fontWeight: "500" }}>Vai trò người phê duyệt:</label>
-                                            {task && task.accounatable.map(item => <div className="col-sm-12" key={item._id}>
+                                            {task && task.accountableEmployees.map(item => <div className="col-sm-12" key={item._id}>
                                                 <div className="control-label col-sm-3" style={{ width: "12%" }}>
                                                     <label style={{ fontWeight: "500" }}>{item.name}:</label>
                                                 </div>
@@ -1081,7 +1083,7 @@ class ModalPerformTask extends Component {
                                                 </div>
                                             </div>)}
                                             <label className="col-sm-12" style={{ fontSize: "medium", fontWeight: "500" }}>Vai trò người hỗ trợ:</label>
-                                            {task && task.consulted.map(item => <div className="col-sm-12" key={item._id}>
+                                            {task && task.consultedEmployees.map(item => <div className="col-sm-12" key={item._id}>
                                                 <div className="control-label col-sm-3" style={{ width: "12%" }}>
                                                     <label style={{ fontWeight: "500" }}>{item.name}:</label>
                                                 </div>
@@ -1108,14 +1110,14 @@ class ModalPerformTask extends Component {
                             </form>
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs" style={{ borderTop: "solid", borderWidth: "thin", borderColor: "aliceblue", width: "60%" }}>
-                                    <li className="active"><a href="#actionTask" onClick={() => this.handleChangeContent("actionTask")} data-toggle="tab">Hoạt động</a></li>
-                                    <li><a href="#commentTask" onClick={() => this.handleChangeContent("commentTask")} data-toggle="tab">Trao đổi</a></li>
+                                    <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">Hoạt động</a></li>
+                                    <li><a href="#actionComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">Trao đổi</a></li>
                                     <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">Tài liệu</a></li>
                                     <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">Công việc con</a></li>
                                     <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">Lịch sử bấm giờ</a></li>
                                 </ul>
                                 <div className="tab-content">
-                                    <div className={selected === "actionTask" ? "active tab-pane" : "tab-pane"} id="actionTask">
+                                    <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
                                         {/* Hoạt động của công việc theo mẫu */}
                                         {actions &&
                                             actions.map((item, index) =>
@@ -1151,7 +1153,7 @@ class ModalPerformTask extends Component {
                                                         {showChildComment === item._id &&
                                                             <div className="comment-content-child">
                                                                 {
-                                                                    commentTasks.map(child => {
+                                                                    actionComments.map(child => {
                                                                         if (child.parent === item._id) return <div className="col-sm-12 " key={child._id} style={{ marginBottom: "10px" }}>
                                                                             <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
@@ -1164,8 +1166,8 @@ class ModalPerformTask extends Component {
                                                                                 <span className="description">19:30 19-11-2020</span>
                                                                                 {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
                                                                                     <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                        <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                        <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteComment(child._id)}><i className="material-icons">delete</i></a>
+                                                                                        <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
+                                                                                        <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id)}><i className="material-icons">delete</i></a>
                                                                                     </div>
                                                                                 }
                                                                             </div>
@@ -1178,8 +1180,8 @@ class ModalPerformTask extends Component {
                                                                                     />
                                                                                     <div className="row action-post" style={{ marginLeft: "40px", marginRight: "18px" }}>
                                                                                         <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                        <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditComment(e)}>Hủy bỏ</button>
+                                                                                        <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
                                                                                     </div>
                                                                                 </React.Fragment>
                                                                             }
@@ -1215,9 +1217,9 @@ class ModalPerformTask extends Component {
                                                     </React.Fragment>
                                                 </div>)
                                         }
-                                        {typeof actionTasks !== 'undefined' && actionTasks.length !== 0 ?
+                                        {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                             // Hiển thị hoạt động của công việc không theo mẫu
-                                            actionTasks.map(item => {
+                                            taskActions.map(item => {
                                                 // if (item.parent === null)
                                                 return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "5%", marginLeft: "15px" }} key={item._id}>
                                                     <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
@@ -1225,13 +1227,13 @@ class ModalPerformTask extends Component {
                                                         <span className="username">
                                                             <a href="#abc">{item.creator.name}</a>
                                                         </span>
-                                                        <p style={{ marginBottom: "4px", marginLeft: "60px" }}>&nbsp;{item.name}</p>
+                                                        <p style={{ marginBottom: "4px", marginLeft: "60px" }}>&nbsp;{item.content}</p>
                                                         <span className="description">19:30 19-11-2021</span>
                                                     </div>
                                                     {(item.creator._id === this.state.currentUser && this.props.role === "responsible") &&
                                                         <div className="action-comment " style={{ display: "inline-block" }}>
                                                             <a href="#abc" title="Sửa hành động" className="edit" onClick={() => this.handleEditAction(item._id)}><i className="material-icons">edit</i></a>
-                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteAction(item._id)}><i className="material-icons">delete</i></a>
+                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id)}><i className="material-icons">delete</i></a>
                                                         </div>
                                                     }
                                                     {this.props.role === "accountable" &&
@@ -1246,7 +1248,7 @@ class ModalPerformTask extends Component {
                                                                 {/* Chỉnh sửa nội dung hoạt động của công việc không theo mẫu */}
                                                                 <textarea
                                                                     style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd' }}
-                                                                    defaultValue={item.name}
+                                                                    defaultValue={item.content}
                                                                     ref={input => this.newContentAction[item._id] = input}
                                                                 />
                                                                 <div className="row action-post">
@@ -1263,7 +1265,7 @@ class ModalPerformTask extends Component {
                                                                 <ul className="list-inline">
                                                                     <li className="pull-right">
                                                                         <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
-                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({commentTasks.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
+                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({actionComments.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
                                                                             {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
                                                                         </a>
                                                                     </li>
@@ -1271,7 +1273,7 @@ class ModalPerformTask extends Component {
                                                                 {/* Hiển thị bình luận cho hoạt động không theo mẫu */}
                                                                 {showChildComment === item._id &&
                                                                     <div className="comment-content-child">
-                                                                        {commentTasks.map(child => {
+                                                                        {actionComments.map(child => {
                                                                             if (child.parent === item._id) return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
                                                                                 <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
                                                                                     <img className="img-circle img-bordered-sm"
@@ -1287,8 +1289,8 @@ class ModalPerformTask extends Component {
                                                                                     <span className="description">19:30 19-11-2019</span>
                                                                                     {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
                                                                                         <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteComment(child._id)}><i className="material-icons">delete</i></a>
+                                                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
+                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id)}><i className="material-icons">delete</i></a>
                                                                                         </div>
                                                                                     }
                                                                                     {editComment === child._id &&
@@ -1300,8 +1302,8 @@ class ModalPerformTask extends Component {
                                                                                             />
                                                                                             <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
                                                                                                 <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                                <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditComment(e)}>Hủy bỏ</button>
+                                                                                                <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
                                                                                             </div>
                                                                                         </React.Fragment>
                                                                                     }
@@ -1362,7 +1364,7 @@ class ModalPerformTask extends Component {
                                             </form>}
                                     </div>
                                     {/* Chuyển qua tab trao đổi */}
-                                    <div className={selected === "commentTask" ? "active tab-pane" : "tab-pane"} id="commentTask">
+                                    <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
                                         <div>Tab trao đổi</div>
                                     </div>
                                     {/* Chuyển qua tab tài liệu */}
@@ -1398,20 +1400,21 @@ class ModalPerformTask extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, overviewKpiPersonal } = state;//cho là overviewKpiPersonal
-    return { tasks, performtasks, user, overviewKpiPersonal };
+    const { tasks, performtasks, user, KPIPersonalManager } = state;//cho là overviewKpiPersonal
+    return { tasks, performtasks, user, KPIPersonalManager };
 }
 
 const actionCreators = {
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getCommentTask: performTaskAction.getCommentTask,
-    getActionTask: performTaskAction.getActionTask,
     getTaskById: taskManagementActions.getTaskById,
-    addComment: performTaskAction.addCommentTask,
-    editComment: performTaskAction.editCommentTask,
-    deleteComment: performTaskAction.deleteCommentTask,
-    deleteAction: performTaskAction.deleteActionTask,
-    editAction: performTaskAction.editActionTask,
+    getActionComments: performTaskAction.getActionComments,
+    addActionComment: performTaskAction.addActionComment,
+    editActionComment: performTaskAction.editActionComment,
+    deleteActionComment: performTaskAction.deleteActionComment,
+    getTaskActions: performTaskAction.getTaskActions,
+    addTaskAction: performTaskAction.addTaskAction,
+    editTaskAction: performTaskAction.editTaskAction,
+    deleteTaskAction: performTaskAction.deleteTaskAction,
     startTimer: performTaskAction.startTimerTask,
     pauseTimer: performTaskAction.pauseTimerTask,
     continueTimer: performTaskAction.continueTimerTask,
@@ -1419,7 +1422,6 @@ const actionCreators = {
     getLogTimer: performTaskAction.getLogTimerTask,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    addAction: performTaskAction.addActionTask,
     getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    //kpi member actions ko thì cho vào managerKpiActions (của personal) cũng đc
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);

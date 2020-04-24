@@ -1,34 +1,36 @@
 const mongoose = require("mongoose");
-const HistoryWorkingTime = require('../../../models/task/timesheetLog.model');
-const CommentTask = require('../../../models/task/taskComment.model');
+const TimesheetLog = require('../../../models/task/timesheetLog.model');
 const Task = require('../../../models/task/task.model');
-const ActionTask = require('../../../models/task/taskAction.model');
-const InformationTaskTemplate = require('../../../models/task/taskTemplateInformation.model');
-const TaskFile = require('../../../models/task/taskFile.model');
-const ResultInfoTask = require('../../../models/task/taskResultInformation.model');
-const ResultTask = require('../../../models/task/taskResult.model');
+const TaskAction = require('../../../models/task/taskAction.model');
+const TaskTemplateInformation = require('../../../models/task/taskResultInformation.model');
+//const TaskFile = require('../../../models/taskFile.model');
+const TaskResultInformation = require('../../../models/task/taskResultInformation.model');
+const TaskResult = require('../../../models/task/taskResult.model');
 const User = require('../../../models/auth/user.model')
+
 
 // Bấm giờ công việc
 // Lấy tất cả lịch sử bấm giờ theo công việc
 exports.getLogTimer = (req, res) => {
-    HistoryWorkingTime.find({ task: req.params.task }).populate("user")
+    TimesheetLog.find({ task: req.params.task }).populate("user")
         .then(logTimers => res.status(200).json(logTimers))
         .catch(err => res.status(400).json(err));
+    console.log("Get all log timer");
 }
 
-// Lấy trạng thái bấm giờ hiện tại. Bảng HistoryWorkingTime tìm hàng có endTime là rỗng 
+// Lấy trạng thái bấm giờ hiện tại. Bảng TimesheetLog tìm hàng có endTime là rỗng 
 // Nếu có trả về startTimer: true, và time, startTime. Không có trả ver startTimer: false
 exports.getTimerStatus = (req, res) => {
-    HistoryWorkingTime.findOne({ task: req.params.task, user: req.params.user, stopTimer: null })
+    TimesheetLog.findOne({ task: req.params.task, user: req.params.user, stopTimer: null })
         .then(timerStatus => res.status(200).json(timerStatus))
         .catch(err => res.status(400).json(err));
+    console.log("Get Timer Status current");
 }
 
 // Bắt đầu bấm giờ: Lưu thời gian bắt đầu
 exports.startTimer = async (req, res) => {
     try {
-        var timer = await HistoryWorkingTime.create({
+        var timer = await TimesheetLog.create({
             task: req.body.task,
             user: req.body.user,
             start: req.body.startTimer,
@@ -48,7 +50,7 @@ exports.startTimer = async (req, res) => {
 // Tạm dừng: Lưu thời gian đã bấm (time)
 exports.pauseTimer = async (req, res) => {
     try {
-        var timer = await HistoryWorkingTime.findByIdAndUpdate(
+        var timer = await TimesheetLog.findByIdAndUpdate(
             req.params.id, { time: req.body.time, pause: true }, { new: true }
         );
 
@@ -64,7 +66,7 @@ exports.pauseTimer = async (req, res) => {
 // Tiếp tục bấm giờ: Cập nhật lại trạng thái bắt đầu (time)
 exports.continueTimer = async (req, res) => {
     try {
-        var timer = await HistoryWorkingTime.findByIdAndUpdate(
+        var timer = await TimesheetLog.findByIdAndUpdate(
             req.params.id, { startTimer: req.body.startTimer, pause: false }, { new: true }
         );
 
@@ -80,7 +82,8 @@ exports.continueTimer = async (req, res) => {
 // Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (enndTime và time)
 exports.stopTimer = async (req, res) => {
     try {
-        var timer = await HistoryWorkingTime.findByIdAndUpdate(
+        console.log(req.body);
+        var timer = await TimesheetLog.findByIdAndUpdate(
             req.params.id, { stopTimer: req.body.stopTimer, time: req.body.time }, { new: true }
         );
         var task = await Task.findByIdAndUpdate(
@@ -88,8 +91,8 @@ exports.stopTimer = async (req, res) => {
         );
         task = await task.populate('responsible unit').execPopulate();
         if (task.tasktemplate !== null) {
-            var actionTemplates = await ActionTask.find({ tasktemplate: task.tasktemplate._id });
-            var informationTemplate = await InformationTaskTemplate.find({ tasktemplate: task.tasktemplate._id });
+            var actionTemplates = await TaskAction.find({ tasktemplate: task.tasktemplate._id });
+            var informationTemplate = await TaskTemplateInformation.find({ tasktemplate: task.tasktemplate._id });
             res.status(200).json({
                 "info": task,
                 "actions": actionTemplates,
@@ -103,84 +106,180 @@ exports.stopTimer = async (req, res) => {
     }
 }
 
-// Lấy tất cả bình luận của một công việc
-exports.getCommentTask = (req, res) => {
-    CommentTask.find({ task: req.params.task })
-        .sort({ 'createdAt': 'asc' })
-        .populate({ path: 'creator' })
-        .then(commentTasks => res.status(200).json(commentTasks))
-        .catch(err => res.status(400).json(err));
-}
-exports.getActionTask =async (req,res)=>{
+/**
+ * Lấy tất cả nội dung bình luận của hoạt động
+ */
+exports.getActionComments = async (req, res) => {
     try {
-        //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
-        var actionTasks = await Task.findOne({_id:req.params.task},{actionTask:1,_id:0}).populate('actionTask.creator')
-        var actionTask = actionTasks.actionTask
-        // .sort({'createdAt': 'asc'});
+        var actionComments = await Task.aggregate([
+            {$match:{_id:mongoose.Types.ObjectId(req.params.task) }},
+            {$unwind : "$taskActions"},
+            {$replaceRoot:{newRoot:"$taskActions"}},
+            {$unwind: "$actionComments"},
+            {$replaceRoot:{newRoot:"$actionComments"}},
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "creator",
+                    foreignField: "_id",
+                    as : "creator"
+
+                }
+            }
+        ])
+        
         res.status(200).json({
-            message: 'Get all action task success',
-            actionTask: actionTask
+            success: true,
+            messages:"get comment action sucess",
+            content : actionComments
         })
     } catch (error) {
-        res.status(400).json(error)
+        res.status(400).json({
+            success: false,
+            message: "Loi"
+        })
+    }
+    
+}
+/**
+ * Lấy thông tin tất cả các hoạt động của công việc
+ */
+exports.getTaskActions =async (req,res)=>{
+    try {
+        //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
+        var taskaction = await Task.findOne({_id:req.params.task},{taskActions:1,_id:0}).populate('taskActions.creator')
+        var taskactions = taskaction.taskActions
+        // .sort({'createdAt': 'asc'});
+        res.status(200).json({
+            success:true,
+            messages: 'Get all task actions success',
+            content: taskactions
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: "Lỗi gì đó"
+        })
     }
 };
-// Thêm bình luận: Update nội dung bình luận và file đính kèm
-exports.createCommentTask = async (req, res) => {
+/**
+ * Thêm bình luận của hoạt động
+ */
+exports.createActionComment = async (req, res) => {
     try {
         // var file = await TaskFile.create({
         //     name: req.file.filename,
         //     url: '/uploadfiles/'+req.file.filename
         // })
-        var commenttasks = await CommentTask.create({
-            task: req.body.task,
-            creator: req.body.creator,
-            parent: req.body.parent==="null"?null:req.body.parent,
-            content: req.body.content,
-            //  file: file._id
-        }); 
-        // var task = await Task.findByIdAndUpdate(
-        //     req.body.task, {$push: {commenttasks: commenttasks._id}}, {new: true}
-        // );
+        var commenttasks = await Task.update(
+            { "taskActions._id": req.body.id},
+            { "$push": {"taskActions.$.actionComments": 
+                {
+                parent : req.body.id,
+                creator: req.body.creator,
+                content: req.body.content,
+                //  file: file._id
+                }
+            }
+            }
+        )
+        var commentAction= await Task.aggregate([
+            {
+                $match: {"taskActions._id": mongoose.Types.ObjectId(req.body.id)}
+            },
+            { $unwind: "$taskActions"},
+            { $replaceRoot: { newRoot: "$taskActions" } },
+            { $match: {"_id": mongoose.Types.ObjectId(req.body.id)}},
+            { $unwind: "$actionComments"},
+            { $sort: {"actionComments.createdAt": -1}},
+             {$group: {
+                  _id: null,
+                  first: { $first: "$$ROOT" }
+                }
+            },
+            { $replaceRoot: { newRoot: "$first.actionComments" } },
+            { $lookup: {
+                    from: "users",
+                    localField: "creator",
+                    foreignField: "_id",
+                    as : "creator"
 
-        // commenttasks = await CommentTask.populate('creator')
-        
+                }
+            }
+        ])
+
         res.status(200).json({
-            message: "Thêm bình luận thành công",
-            commentTask: commenttasks
+            success: true,
+            messages: "Thêm bình luận thành công",
+            content : commentAction[0]
         });
     }catch (error) {
         res.status(400).json({ message: "Hello" });
      }
 }
-// Sửa bình luận: Sửa nội dung bình luận và file đính kèm
-exports.editCommentTask = async (req, res) => {
+/**
+ * Sửa nội dung bình luận hoạt động
+ */
+exports.editActionComment = async (req, res) => {
     try {
-        var comment = await CommentTask.findByIdAndUpdate(
-            req.params.id, { content: req.body.content }, { new: true }
-        );
-        comment = await comment.populate('creator file').execPopulate();
+        const now = new Date()
+        var action = await Task.updateOne(
+            { "taskActions.commentAction._id" :req.params.id },
+            { $set: 
+                {   
+                    "taskActions.$[].actionComments.$[elem].content": req.body.content,
+                    "taskActions.$[].actionComments.$[elem].updatedAt": now
+                }
+            },
+            {
+                arrayFilters: [
+                    {
+                        "elem._id": req.params.id
+                    }
+                ]
+            }
+        )      
+        var commentAction = await Task.aggregate([
+            { $match: {"taskActions.actionComments._id":mongoose.Types.ObjectId(req.params.id)}},
+            { $unwind :"$taskActions"},
+            { $replaceRoot: {newRoot : "$taskActions"}},
+            { $unwind :"$actionComments"},
+            { $replaceRoot: {newRoot: "$actionComments"}},
+            { $match : {_id:mongoose.Types.ObjectId(req.params.id)}},
+            { $lookup: {
+                from: "users",
+                localField: "creator",
+                foreignField: "_id",
+                as : "creator"
+            }
+        }
+        ])
         res.json({
-            message: "Chỉnh sửa bình luận",
-            commentTask: comment
+            success: true,
+            message: "Chỉnh sửa bình luận thành công",
+            content: commentAction
         });
     } catch (error) {
-        res.json({ message: error });
+        res.json({ 
+            success: false,
+            message: "error" });
     }
 }
-//Sửa nội dung hoạt động của công việc không theo mẫu
-exports.editActionTask = async (req,res) =>{
+/**
+ * Sửa hoạt động của cộng việc
+ */
+exports.editTaskAction = async (req,res) =>{
     try {
         
         var action = await Task.updateOne(
-            {"actionTask._id" : req.params.id},
+            {"taskActions._id" : req.params.id},
             {$set:{
-                "actionTask.$.name": req.body.content
+                "taskActions.$.name": req.body.content
             }}
             )
         var actionTask = await Task.findOne(
-            {"actionTask._id": req.params.id}, 
-            {_id: 0, actionTask: {$elemMatch: {name:req.body.content}}}).populate("actionTask.creator");
+            {"taskActions._id": req.params.id}, 
+            {_id: 0, taskActions: {$elemMatch: {content:req.body.content}}}).populate("taskActions.creator");
         res.status(200).json({
             success: true,
             message:'Edit thành công',
@@ -193,8 +292,10 @@ exports.editActionTask = async (req,res) =>{
         })
     }
 }
-// Xóa bình luận: Xóa nội dung bình luận và file đính kèm
-exports.deleteCommentTask = async (req, res) => {
+/**
+ * Xóa bình luận hoạt động
+ */
+exports.deleteActionComment = async (req, res) => {
     try {
         var comment = await CommentTask.findByIdAndDelete(req.params.id); // xóa comment theo id
         res.status(200).json("Xóa bình luận thành công");
@@ -202,11 +303,14 @@ exports.deleteCommentTask = async (req, res) => {
         res.json({ message: error });
     }
 }
-exports.deleteActionTask = async (req,res) => {
+/**
+ * Xóa hoạt động của công việc
+ */
+exports.deleteTaskAction = async (req,res) => {
     try {
         var action = await Task.update(
-            { "actionTask._id": req.params.id },
-            { $pull: { actionTask : { _id : req.params.id } } },
+            { "taskActions._id": req.params.id },
+            { $pull: { taskActions : { _id : req.params.id } } },
             { safe: true },)
         res.status(200).json({
             success: true,
@@ -218,11 +322,37 @@ exports.deleteActionTask = async (req,res) => {
         })
     }
 }
+/**
+ * Thêm hoạt động cho công việc
+ */
+exports.createTaskAction = async (req,res) => {
+    try {
+        var actionInformation = {
+            creator : req.body.creator,
+            content : req.body.content
+        }
+        // var actionTaskabc = await Task.findById(req.body.task)
+        var taskAction1 = await Task.findByIdAndUpdate(req.body.task,
+                {$push: {taskActions:actionInformation}},{new: true}
+        )
+        .populate(
+           'taskActions.creator'
+        )
+        var taskAction =taskAction1.taskActions
+        res.status(200).json({
+            success: true,
+            messages: "Thêm hoạt động thành công",
+            content: taskAction
+        });
+    } catch (error) {
+        res.status(400).json({ message: "Lỗi thêm hoạt động" });
+    }
+}
 // Test insert result info task
 exports.createResultInfoTask = async (req, res) => {
     try {
         // Check nếu như là kiểu date thì ...
-        var resultInfoTask1 = await ResultInfoTask.create({
+        var resultInfoTask1 = await TaskResultInformation.create({
             member: req.body.member,
             infotask: req.body.infotask,
             value: req.body.value
@@ -243,7 +373,7 @@ exports.createResultInformationTask = async (req, res) => {
         if (listResultInfoTask !== []) {
             // Lưu thông tin kết quả 
             var listResultInfoTask = await Promise.all(listResultInfoTask.map(async (item) => {
-                var result = await ResultInfoTask.create({
+                var result = await TaskResultInformation.create({
                     member: item.user,
                     infotask: item.infotask,
                     value: item.value
@@ -272,7 +402,7 @@ exports.editResultInformationTask = async (req, res) => {
         if (listResultInfoTask !== []) {
             // Lưu thông tin kết quả 
             var listResultInfoTask = await Promise.all(listResultInfoTask.map(async (item) => {
-                var result = await ResultInfoTask.findByIdAndUpdate(item._id,{
+                var result = await TaskResultInformation.findByIdAndUpdate(item._id,{
                     member: item.user,
                     infotask: item.infotask,
                     value: item.value
@@ -289,6 +419,7 @@ exports.editResultInformationTask = async (req, res) => {
     }
 }
 
+
 // Thêm thông tin kết quả của đánh giá từng nhân viên
 exports.createResultTask = async (result, taskID) => {
     var item = result;
@@ -296,58 +427,57 @@ exports.createResultTask = async (result, taskID) => {
     if (item !== null) {
         // Lưu thông tin kết quả 
         var resultTask = {
-            member: item.member,
-            roleMember: item.roleMember,
-            systempoint: item.systempoint,
-            mypoint: item.mypoint,
-            approverpoint: item.approverpoint
+            employee: item.employee,
+            role: item.role,
+            automaticPoint: item.automaticPoint,
+            employeePoint: item.employeePoint,
+            approvedPoint: item.approvedPoint
         }
         // Cập nhật thông tin công việc
         var task = await Task.findByIdAndUpdate(
             taskID, { $push: { results: resultTask } }, { new: true }
-            // là _id của task muốn đánh giá.
         );
     }
     return task;
     
 }
 
-
 // Sửa thông tin kết quả của nhân viên trong công việc
 exports.editResultTask = async (listResult,taskid) => {
     if (listResult !== []) {
-        // Lưu thông tin kết quả  var listResultTask = await Promise.all
+
+        // Lưu thông tin kết quả 
         listResult.forEach( async (item) => {
-            // var newTask = await Task.findOneAndUpdate({results: {$elemMatch: {_id : item._id} }},
             var newTask = await Task.updateOne({"results._id" : item._id},
-            // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},
                 { $set: {
-                    "results.$.systempoint": item.systempoint,
-                    "results.$.mypoint": item.mypoint,
-                    "results.$.approverpoint": item.approverpoint
+                    "results.$.automaticPoint": item.automaticPoint,
+                    "results.$.employeePoint": item.employeePoint,
+                    "results.$.approvedPoint": item.approvedPoint
                 }}
             );
         })
     }
     return await Task.findOne({_id: taskid});
 }
-exports.createActionTask = async (req,res) => {
+
+exports.createTaskAction = async (req,res) => {
     try {
         var actionInformation = {
             creator : req.body.creator,
-            name : req.body.name
+            content : req.body.content
         }
         // var actionTaskabc = await Task.findById(req.body.task)
-        var actionTask = await Task.findByIdAndUpdate(req.body.task,
-                {$push: {actionTask:actionInformation}},{new: true}
+        var taskAction1 = await Task.findByIdAndUpdate(req.body.task,
+                {$push: {taskActions:actionInformation}},{new: true}
         )
         .populate(
-           'actionTask.creator'
+           'taskActions.creator'
         )
-        var test =actionTask.actionTask
+        var taskAction =taskAction1.taskActions
         res.status(200).json({
-            message: "Thêm hoạt động thành công",
-            actionTask: test
+            success: true,
+            messages: "Thêm hoạt động thành công",
+            contents: taskAction
         });
     } catch (error) {
         res.status(400).json({ message: "Lỗi thêm hoạt động" });

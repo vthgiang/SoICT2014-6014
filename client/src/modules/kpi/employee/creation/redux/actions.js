@@ -1,34 +1,34 @@
-import { createKpiConstants } from "./constants";
-import { createKpiService } from "./services";
-export const createKpiActions = {
-    getCurrentKPIPersonal,
-    editKPIPersonal,
-    editStatusKPIPersonal,
-    deleteKPIPersonal,
-    deleteTarget,
+import { createKpiSetConstants } from "./constants";
+import { createKpiSetService } from "./services";
+export const createKpiSetActions = {
+    getEmployeeKpiSet,
+    editEmployeeKpiSet,
+    updateEmployeeKpiSetStatus,
+    deleteEmployeeKpiSet,
+    deleteEmployeeKpi,
 
-    addNewTargetPersonal,
-    editTargetKPIPersonal,
-    createKPIPersonal,
-    approveKPIPersonal
+    createEmployeeKpi,
+    editEmployeeKpi,
+    createEmployeeKpiSet,
+    approveEmployeeKpiSet
 };
 
 
-// Lấy KPI cá nhân hiện tại
-function getCurrentKPIPersonal() {
+// Lấy tập KPI cá nhân hiện tại
+function getEmployeeKpiSet() {
     return dispatch => {
-        dispatch({ type: createKpiConstants.GETCURRENT_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST });
 
-        createKpiService.getCurrentKPIPersonal()
+        createKpiSetService.getEmployeeKpiSet()
             .then(res => {
                 dispatch({ 
-                    type: createKpiConstants.GETCURRENT_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({ 
-                    type: createKpiConstants.GETCURRENT_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_FAILURE,
                     payload: error
                 })
             })
@@ -36,42 +36,42 @@ function getCurrentKPIPersonal() {
 }
 
 
-// Chỉnh sửa KPI cá nhân
-function editKPIPersonal(id, kpipersonal) {
+// Chỉnh sửa thông tin chung của KPI cá nhân
+function editEmployeeKpiSet(id, kpipersonal) {
     return dispatch => {
-        dispatch({ type: createKpiConstants.EDIT_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_REQUEST });
 
-        createKpiService.editKPIPersonal(id, kpipersonal)
+        createKpiSetService.editEmployeeKpiSet(id, kpipersonal)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.EDIT_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: createKpiConstants.EDIT_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_FAILURE,
                     payload: error
                 })
             }) 
     };
 }
 
-// Chỉnh sửa trạng thái KPI cá nhân
-function editStatusKPIPersonal(id, status) {
+// Chỉnh sửa trạng thái của KPI cá nhân
+function updateEmployeeKpiSetStatus(id, status) {
     return dispatch => {
-        dispatch({ type: createKpiConstants.EDITSTATUS_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.UPDATE_EMPLOYEE_KPI_SET_STATUS_REQUEST });
 
-        createKpiService.editStatusKPIPersonal(id, status)
+        createKpiSetService.updateEmployeeKpiSetStatus(id, status)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.EDITSTATUS_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.UPDATE_EMPLOYEE_KPI_SET_STATUS_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: createKpiConstants.EDITSTATUS_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.UPDATE_EMPLOYEE_KPI_SET_STATUS_FAILURE,
                     payload: error
                 })
             })
@@ -80,20 +80,20 @@ function editStatusKPIPersonal(id, status) {
 
 
 // Xóa KPI cá nhân
-function deleteKPIPersonal(id) {
+function deleteEmployeeKpiSet(id) {
     return dispatch => {
-        dispatch({ type: createKpiConstants.DELETE_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_SET_REQUEST });
 
-        createKpiService.deleteKPIPersonal(id)
+        createKpiSetService.deleteEmployeeKpiSet(id)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.DELETE_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_SET_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: createKpiConstants.DELETE_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_SET_FAILURE,
                     payload: error
                 })
             })
@@ -102,41 +102,41 @@ function deleteKPIPersonal(id) {
 
 
 // Xóa mục tiêu KPI cá nhân
-function deleteTarget(id, kpipersonal) {
+function deleteEmployeeKpi(id, kpipersonal) {
     return dispatch => {
-        dispatch({ type: createKpiConstants.DELETETARGET_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_REQUEST });
 
-        createKpiService.deleteTarget(id, kpipersonal)
+        createKpiSetService.deleteEmployeeKpi(id, kpipersonal)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.DELETETARGET_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: createKpiConstants.DELETETARGET_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.DELETE_EMPLOYEE_KPI_FAILURE,
                     payload: error
                 })
             })
     };
 }
 
-// thêm mục tiêu KPI cá nhân
-function addNewTargetPersonal(newTarget) {
+// Tạo 1 mục tiêu KPI cá nhân mới
+function createEmployeeKpi(newTarget) {
     return dispatch => {
-        dispatch({ type: createKpiConstants.ADDTARGET_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_REQUEST });
 
-        createKpiService.addNewTargetPersonal(newTarget)
+        createKpiSetService.createEmployeeKpi(newTarget)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.ADDTARGET_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: createKpiConstants.ADDTARGET_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_FAILURE,
                     payload: error
                 })
             })
@@ -144,23 +144,23 @@ function addNewTargetPersonal(newTarget) {
 }
 
 // Chỉnh sửa mục tiêu KPI cá nhân
-function editTargetKPIPersonal(id, newTarget) {
+function editEmployeeKpi(id, newTarget) {
     return dispatch => {
         dispatch({ 
-            type: createKpiConstants.EDITTARGET_KPIPERSONAL_REQUEST,
+            type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_REQUEST,
             payload: id
         });
 
-        createKpiService.editTargetKPIPersonal(id, newTarget)
+        createKpiSetService.editEmployeeKpi(id, newTarget)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.EDITTARGET_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: createKpiConstants.EDITTARGET_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_FAILURE,
                     payload: error
                 })
             })
@@ -168,20 +168,20 @@ function editTargetKPIPersonal(id, newTarget) {
 }
 
 // Khởi tạo KPI cá nhân
-function createKPIPersonal(newKPI) {
+function createEmployeeKpiSet(newKPI) {
     return dispatch => {
-        dispatch({ type: createKpiConstants.ADD_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_REQUEST });
 
-        createKpiService.createKPIPersonal(newKPI)
+        createKpiSetService.createEmployeeKpiSet(newKPI)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.ADD_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: createKpiConstants.ADD_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_FAILURE,
                     payload: error
                 })
             })
@@ -189,20 +189,20 @@ function createKPIPersonal(newKPI) {
 }
 
 // Phê duyệt toàn bộ KPI cá nhân
-function approveKPIPersonal(id) {
+function approveEmployeeKpiSet(id) {
     return dispatch => {
-        dispatch({ type: createKpiConstants.APPROVE_KPIPERSONAL_REQUEST });
+        dispatch({ type: createKpiSetConstants.APPROVE_EMPLOYEE_KPI_SET_REQUEST });
 
-        createKpiService.approveKPIPersonal(id)
+        createKpiSetService.approveEmployeeKpiSet(id)
             .then(res => {
                 dispatch({
-                    type: createKpiConstants.APPROVE_KPIPERSONAL_SUCCESS,
+                    type: createKpiSetConstants.APPROVE_EMPLOYEE_KPI_SET_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({ 
-                    type: createKpiConstants.APPROVE_KPIPERSONAL_FAILURE,
+                    type: createKpiSetConstants.APPROVE_KPIPERSONAL_FAILURE,
                     payload: error
                 })
             })

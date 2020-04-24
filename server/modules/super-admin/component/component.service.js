@@ -38,7 +38,7 @@ exports.createComponent = async(data) => {
 }
 
 exports.editComponent = async(id, data) => {
-    var component = await Component
+    const component = await Component
         .findById(id)
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 
@@ -51,11 +51,11 @@ exports.editComponent = async(id, data) => {
 }
 
 exports.deleteComponent = async(id) => {
-    var relationshiopDelete = await Privilege.deleteMany({
+    const relationshiopDelete = await Privilege.deleteMany({
         resourceId: id,
         resourceType: 'Component'
     });
-    var deleteComponent = await Component.deleteOne({ _id: id});
+    const deleteComponent = await Component.deleteOne({ _id: id});
 
     return {relationshiopDelete, deleteComponent};
 }
@@ -65,36 +65,36 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         resourceId: componentId,
         resourceType: 'Component'
     });
-    var data = roleArr.map( role => {
+    const data = roleArr.map( role => {
         return {
             resourceId: componentId,
             resourceType: 'Component',
             roleId: role
         };
     });
-    var privilege = await Privilege.insertMany(data);
+    const privilege = await Privilege.insertMany(data);
 
     return privilege;
 }
 
 exports.getComponentsOfUserInLink = async(roleId, linkId) => {
-    var role = await Role.findById(roleId);
-    var roleArr = [role._id];
+
+    const role = await Role.findById(roleId);
+    let roleArr = [role._id];
     roleArr = roleArr.concat(role.parents);
     
-    var link = await Link.findById(linkId)
+    const link = await Link.findById(linkId)
         .populate([
             { path: 'components', model: Component }
         ]); //lấy được thông tin về link
-
-    var componentArr = link.components; //lấy các component trong page này
-    var data = await Privilege.find({
+        
+    const data = await Privilege.find({
         roleId: {$in: roleArr},
         resourceType: 'Component',
-        resourceId: { $in: componentArr }
-    }).populate({ path: 'resourceId', model: Component });
+        resourceId: { $in: link.components }
+    }).distinct('resourceId');
 
-    var components = data.map(component => component.resourceId);
+    const components = Component.find({_id: {$in: data}});
 
     return components;
 }

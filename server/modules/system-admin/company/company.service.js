@@ -1,51 +1,73 @@
-const { Company, Link, LinkDefault, Component, ComponentDefault, Privilege, Role, RoleDefault, RoleType, User } = require('../../../models').schema;
+const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User, UserRole } = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const Terms = require("../../../seed/terms");
 
+/**
+ * Lấy danh sách tất cả các công ty
+ */
 exports.getAllCompanies = async () => {
     const companies = await Company.find()
         .populate([
             { path: "links", model: Link },
-            { path: "super_admin", model: User, select: '_id name email' }
+            { path: "superAdmin", model: User, select: '_id name email' }
         ]);
 
     return companies;
 }
 
+/**
+ * Lấy thông tin về 1 công ty theo id
+ * @id id của công ty
+ */
 exports.getCompany = async (id) => {
-    return await Company.findOne({_id: id}).populate([
+    return await Company.findById(id).populate([
         { path: "links", model: Link },
-        { path: "super_admin", model: User, select: '_id name email' }
+        { path: "superAdmin", model: User, select: '_id name email' }
     ]);
 }
 
+/**
+ * Lấy danh sách các công ty theo phân trang
+ * @limit giới hạn trên 1 trang
+ * @page trang muốn lấy
+ * @data dữ liệu truy vấn
+ */
 exports.getPaginatedCompanies = async (limit, page, data={}) => {
     const companies = await Company.paginate( data , {page, limit, populate: [
         { path: 'links', model: Link },
-        { path: "super_admin", model: User, select: '_id name email' }
+        { path: "superAdmin", model: User, select: '_id name email' }
     ]});
 
     return companies;
 }
 
+/**
+ * Tạo dữ liệu mới về 1 công ty
+ * @data dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
+ */
 exports.createCompany = async(data) => {
-    const company = await Company.create({
+    
+    return await Company.create({
         name: data.name,
         description: data.description,
-        short_name: data.short_name
+        shortName: data.shortName
     });
-
-    return company;
 }
 
+/**
+ * Chỉnh sửa thông tin 1 công ty
+ * @id id của công ty trong database
+ * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
+ */
 exports.editCompany = async(id, data) => {
-    var company = await Company.findById(id);
+    console.log("edit data: ", data);
+    const company = await Company.findById(id);
     if(company === null) throw ('company_not_found');
     company.name = data.name;
     company.description = data.description;
-    company.short_name = data.short_name;
+    company.shortName = data.shortName;
     company.log = data.log;
     if(data.active !== null) company.active = data.active;
     await company.save();
@@ -53,6 +75,10 @@ exports.editCompany = async(id, data) => {
     return company;
 }
 
+/**
+ * Xóa dữ liệu 1 công ty
+ * @id id của công ty trong database
+ */
 exports.deleteCompany = async(id) => {
 
     return await Company.deleteOne({ _id: id, customer: true });
@@ -60,36 +86,46 @@ exports.deleteCompany = async(id) => {
 
 /**
  * Tạo 5 root roles khi tạo mới 1 company
+ * @SuperAdmin super admin của công ty đó
+ * @Admin admin của công ty
+ * @Dean trưởng đơn vị
+ * @ViceDean phó đơn vị
+ * @Employee nhân viên đơn vị
  */
 exports.createCompanyRootRoles = async(companyId) => {
-    var data = await RoleDefault.find(); //dữ liệu về 5 role abstract có sẵn trong csdl
-    var typeAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
-    var roles = await data.map(role => {
+    const data = await RootRole.find();
+    const rootType = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
+    const roles = await data.map(role => {
         return {
             name: role.name,
             company: companyId,
-            type: typeAbstract._id
+            type: rootType._id
         };
     })
 
-    // 5 role abstract
     return await Role.insertMany(roles);
 }
 
+/**
+ * Tạo tài khoản Superadmin của công ty
+ * @companyId id của công ty
+ * @companyName tên của công ty
+ * @userEmail email của tài khoản được chọn làm super admin của công ty
+ * @roleSuperAdminId Id của role SuperAdmin của công ty dùng để phân quyền cho tài khoản có email ở trên
+ */
 exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail, roleSuperAdminId) => {
-    var checkEmail = await User.findOne({email: userEmail});
+    const checkEmail = await User.findOne({email: userEmail});
     if(checkEmail !== null) throw ('email_exist');
-    // 1.Tạo mật khẩu tự động cho acc Super Admin
-    var salt = await bcrypt.genSaltSync(10);
-    var password = await generator.generate({ length: 10, numbers: true });
-    var hash = await bcrypt.hashSync(password, salt);
 
-    // 2.Thiết lập nội dụng email gửi đến cho Super Admin của công ty
-    var transporter = await nodemailer.createTransport({
+    const salt = await bcrypt.genSaltSync(10);
+    const password = await generator.generate({ length: 10, numbers: true });
+    const hash = await bcrypt.hashSync(password, salt);
+
+    const transporter = await nodemailer.createTransport({
         service: 'Gmail',
         auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
     });
-    var mainOptions = {
+    const mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: userEmail,
         subject: `Tạo tài khoản SUPER ADMIN cho doanh nghiệp/công ty ${companyName}`,
@@ -112,56 +148,59 @@ exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail
         </div>
         `
     }
-    // Tạo tài khoản Super Admin cho doanh nghiệp/công ty
-    var user = await User.create({
+    
+    const user = await User.create({
         name: `Super Admin`,
         email: userEmail,
         password: hash,
         company: companyId
     });
 
-    // Add role Super Admin cho tài khoản trên
-    var ur = await UserRole.create({
+    
+    await UserRole.create({
         userId: user._id,
         roleId: roleSuperAdminId
     });
     
-    // Gửi email xác thực cho người dùng đó
-    var sendMail = await transporter.sendMail(mainOptions);
+    await transporter.sendMail(mainOptions);
     
     return user;
 }
 
+/**
+ * Tạo link cho các trang web mà công ty có thể truy cập
+ * @companyId id của công ty
+ * @linkArr mảng các SystemLink làm chuẩn để tạo link cho công ty
+ * @roleArr mảng các RootRole của công ty đó
+ */
 exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
-    // Lấy dữ liệu về các link mặc định ( url, thông tin, các role được phép truy cập)
-    const linkDefaults = await LinkDefault.find({
-        _id: { $in: linkArr }
-    }).populate({ path: 'roles', model: RoleDefault });
 
-    // Khởi tạo link vào các trang của website cho công ty
-    const dataLinks = linkDefaults.map( link => {
+    const systemLinks = await SystemLink.find({
+        _id: { $in: linkArr }
+    }).populate({ path: 'roles', model: RootRole });
+
+    const dataLinks = systemLinks.map( link => {
         return {
             url: link.url,
             description: link.description,
             company: companyId
         };
     })
-    const links = await Link.insertMany(dataLinks); // mảng các link của 1 cty mới
+    const links = await Link.insertMany(dataLinks);
 
-    var dataPrivilege = []; // Khởi tạo privilege gốc cho việc phân quyền giữa link và các role abstract của cty - ban đầu chưa có gì
-
+    const dataPrivilege = [];
     for (let i = 0; i < links.length; i++) {
-        const link = links[i]; // link đang xét trong vòng lặp
-        for (let j = 0; j < linkDefaults.length; j++) {
-            const linkDefault = linkDefaults[j]; // link default đang xét hiện tại
-            if(link.url === linkDefault.url){ // xác định đúng link đang xét giống vói link default hiện tại để check và gán phân quyền tuong ứng
+        const link = links[i];
+        for (let j = 0; j < systemLinks.length; j++) {
+            const systemLink = systemLinks[j];
+            if(link.url === systemLink.url){
                 
-                for (let x = 0; x < linkDefault.roles.length; x++) {
-                    const roleDefault = linkDefault.roles[x]; //role đnag xét được truy cập vô link này
+                for (let x = 0; x < systemLink.roles.length; x++) {
+                    const rootRole = systemLink.roles[x];
                     
                     for (let y = 0; y < roleArr.length; y++) {
                         const role = roleArr[y];
-                        if(role.name === roleDefault.name){ // xác định role abstract tương ứng với role default được truy cập vô link này
+                        if(role.name === rootRole.name){
                             
                             dataPrivilege.push({
                                 resourceId: link._id,
@@ -174,37 +213,39 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
             }
         }
     }
-    await Privilege.insertMany(dataPrivilege); // thêm vào cơ sở dữ liệu
-    const activeLinks = await LinkDefault.find({_id: { $in: linkArr }}); // lấy thông tin về các link được kích hoạt cho công ty này
-    const data = await activeLinks.map(link => link.url); // mảng chứa url của các trang được kích hoạt
+    await Privilege.insertMany(dataPrivilege);
+    const activeLinks = await SystemLink.find({_id: { $in: linkArr }});
+    const data = await activeLinks.map(link => link.url);
     await Link.updateMany({ url: { $in: data }},{ active: true });
 
     return await Link.find({company: companyId}).populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
 } 
 
-// Tạo các component tương ứng với các trang của công ty
+/**
+ * Tạo các component cho công ty
+ * @companyId id của công ty
+ * @linkArr mảng các system link được kích hoạt để làm chuẩn cho các link của công ty
+ */
 exports.createCompanyComponents = async(companyId, linkArr) => {
-    const linkDefaults = await LinkDefault // lấy các link mặc định tương ứng với các link mà công ty có
-        .find({ _id: { $in: linkArr }})
-        .populate({ path: 'components', model: ComponentDefault, populate:{ path: 'roles', model: RoleDefault}});
+    const systemLinks = await SystemLink.find({ _id: { $in: linkArr }})
+        .populate({ path: 'components', model: SystemComponent, populate:{ path: 'roles', model: RootRole}});
     
-    for (let i = 0; i < linkDefaults.length; i++) {
-        const linkDefault = linkDefaults[i]; // Duyệt với linkDefault thứ i
-        const link = await Link.findOne({ url: linkDefault.url, company: companyId }); // lấy giá trị của link tương ứng với link default này
+    for (let i = 0; i < systemLinks.length; i++) {
+        const systemLink = systemLinks[i];
+        const link = await Link.findOne({ url: systemLink.url, company: companyId });
 
-        // Tạo các component tương ứng với link này
-        for (let j = 0; j < linkDefault.components.length; j++) {
-            const componentDefault = linkDefault.components[j]; // Component default làm mẫu để tạo component cho công ty
-            const component = await Component.create({ // Tạo component này cho công ty
-                name: componentDefault.name,
-                description: componentDefault.description,
+        for (let j = 0; j < systemLink.components.length; j++) {
+            const systemComponent = systemLink.components[j];
+            const component = await Component.create({
+                name: systemComponent.name,
+                description: systemComponent.description,
                 link: link._id,
                 company: companyId
             });
-            for (let k = 0; k < componentDefault.roles.length; k++) { //duyệt các role tương ứng với componentDefault để add các role tương ứng với component của công ty
-                const roleDefault = componentDefault.roles[k]; // Role default mẫu ứng với role của công ty
-                const role = await Role.findOne({name: roleDefault.name, company: companyId}); // Lấy role của công ty tương ứng với role defaut này
-                await Privilege.create({ // gán phân quyền tương ứng component với role
+            for (let k = 0; k < systemComponent.roles.length; k++) {
+                const rootRole = systemComponent.roles[k];
+                const role = await Role.findOne({name: rootRole.name, company: companyId});
+                await Privilege.create({
                     resourceId: component._id,
                     resourceType: 'Component',
                     roleId: role._id
@@ -216,7 +257,10 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
     return await Component.find({company: companyId});
 }
 
-// Lấy tất cả các links của 1 công ty/doanh nghiệp
+/**
+ * Lấy danh sách tất cả các link của 1 công ty
+ * @companyId id của công ty
+ */
 exports.getCompanyLinks = async(companyId) => {
     const check = await Company.findById(companyId);
     if(check === null) throw ('company_not_found');
@@ -226,24 +270,45 @@ exports.getCompanyLinks = async(companyId) => {
     return links;
 }
 
+/**
+ * Chỉnh sửa email của tài khoản super admin của công ty
+ * @companyId id của công ty
+ * @superAdminEmail email dùng để thay thế làm email mới của super admin
+ */
 exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
-    const com = await Company.findById(companyId);
-    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME}); // lay ttin role super admin cua cty do
-    const user = await User.findOne({ company: com._id, email: superAdminEmail }); //tim thong tin ve tai khoan
-    if(user === null){
-        const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
-        com.super_admin = newUser._id;
-        await com.save();
+    
+    const com = await Company.findById(companyId).populate({path: 'superAdmin', model: User});
+    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME});
+    const oldSuperAdmin = await User.findById(com.superAdmin._id);
 
-        return newUser;
-    }else{
-        com.super_admin = user._id; // Cap nhat lai super admin
-        await com.save();
+    if(oldSuperAdmin.email === superAdminEmail)
+        return oldSuperAdmin;
+    else{
+        await UserRole.deleteOne({ userId: oldSuperAdmin._id, roleId: roleSuperAdmin._id });
 
-        return user;
+        const user = await User.findOne({ company: com._id, email: superAdminEmail });
+        if(user === null){
+            const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
+            com.superAdmin = newUser._id;
+            await com.save();
+    
+            return newUser;
+        }else{
+            com.superAdmin = user._id;
+            await com.save();
+            await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
+    
+            return user;
+        }
     }
 }
 
+/**
+ * Thêm link mới cho công ty
+ * @companyId id của công ty
+ * @linkUrl đường dẫn cho link muốn tạo
+ * @linkDescription mô tả về link
+ */
 exports.addCompanyLink = async(companyId, linkUrl, linkDescription) => {
     const check = await Link.findOne({
         company: companyId,
@@ -259,18 +324,30 @@ exports.addCompanyLink = async(companyId, linkUrl, linkDescription) => {
     return newLink;
 }
 
+/**
+ * Xóa 1 link của công ty
+ * @companyId id của công ty
+ * @linkId id của link muốn xóa
+ */
 exports.deleteCompanyLink = async(companyId, linkId) => {
-    // Xóa tắt cả phân quyền liên quan đến link này (role)
+    
     await Privilege.deleteMany({
         resourceId: linkId,
         resourceType: 'Link'
     });
-    // Xóa link này
+    
     await Link.deleteOne({_id: linkId});
 
     return linkId;
 }
 
+/**
+ * Thêm mới 1 component cho công ty
+ * @companyId id của công ty
+ * @componentname tên của component
+ * @componentDescription mô tả về component
+ * @linkId id của link được chứa component này
+ */
 exports.addCompanyComponent = async(companyId, componentName, componentDescription, linkId) => {
     const check = await Component.findOne({
         company: companyId,
@@ -287,8 +364,13 @@ exports.addCompanyComponent = async(companyId, componentName, componentDescripti
     return newComponent;
 }
 
+/**
+ * Xóa một của component của công ty
+ * @companyId id của công ty
+ * @componentId id của component muốn xóa
+ */
 exports.deleteCompanyComponent = async(companyId, componentId) => {
-    // Xóa tắt cả phân quyền liên quan đến component này (role)
+    
     await Privilege.deleteMany({
         resourceId: componentId,
         resourceType: 'Component'
@@ -302,16 +384,26 @@ exports.deleteCompanyComponent = async(companyId, componentId) => {
         await link.save();
     }
 
-    // Xóa component này
     await Component.deleteOne({_id: componentId});
 
     return componentId;
 }
 
+/**
+ * Lấy danh sách tất cả các link của công ty
+ * @companyId id của công ty muốn lấy danh sách các link
+ */
 exports.getCompanyLinks = async(companyId) => {
     return await Link.find({ company: companyId });
 }
 
+/**
+ * Lấy danh sách các link của 1 công ty theo phân trang
+ * @companyId id của công ty
+ * @page trang muốn lấy
+ * @limit giới hạn trên một trang
+ * @data dữ liệu truy vấn
+ */
 exports.getPaginatedCompanyLinks = async (companyId, page, limit, data={}) => {
     const newData = await Object.assign({ company: companyId }, data );
     return await Link
@@ -321,6 +413,10 @@ exports.getPaginatedCompanyLinks = async (companyId, page, limit, data={}) => {
         });
 }
 
+/**
+ * Lấy danh sách các component của công ty
+ * @companyId id của công ty
+ */
 exports.getCompanyComponents = async (companyId) => {
     return await Component.find({ company: companyId })
         .populate([
@@ -328,6 +424,10 @@ exports.getCompanyComponents = async (companyId) => {
         ]);
 }
 
+/**
+ * Lấy component
+ * @componentId id của component
+ */
 exports.getComponentById = async (componentId) => {
     return await Component.findById(componentId)
         .populate([
@@ -335,6 +435,13 @@ exports.getComponentById = async (componentId) => {
         ]);
 }
 
+/**
+ * Lấy danh sách các component của công ty theo phân trang
+ * @companyId id của công ty
+ * @page trang muốn lấy
+ * @limit giới hạn trên một trang
+ * @data dữ liệu truy vấn
+ */
 exports.getPaginatedCompanyComponents = async (companyId, page, limit, data={}) => {
     const newData = await Object.assign({ company: companyId }, data );
     return await Component

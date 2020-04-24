@@ -10,7 +10,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
-class ModalAddTargetKPIUnit extends Component {
+class OrganizationalUnitKpiAddTargetModal extends Component {
     componentDidMount() {
         // get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
@@ -51,7 +51,7 @@ class ModalAddTargetKPIUnit extends Component {
                 parent = null;
             }
             else{    
-                items = parentKPI.listtarget.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+                items = parentKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                 return {value: x._id, text: x.name} });
 
                 parent = items[0].value;
@@ -168,7 +168,7 @@ class ModalAddTargetKPIUnit extends Component {
             items = [];
         }
         else{    
-            items = parentKPI.listtarget.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = parentKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
 
@@ -238,5 +238,5 @@ const actionCreators = {
     getParentTarget: createUnitKpiActions.getKPIParent,
     addTargetKPIUnit: createUnitKpiActions.addTargetKPIUnit
 };
-const connectedModalAddTargetKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalAddTargetKPIUnit));
-export { connectedModalAddTargetKPIUnit as ModalAddTargetKPIUnit };
+const connectedOrganizationalUnitKpiAddTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiAddTargetModal));
+export { connectedOrganizationalUnitKpiAddTargetModal as OrganizationalUnitKpiAddTargetModal };

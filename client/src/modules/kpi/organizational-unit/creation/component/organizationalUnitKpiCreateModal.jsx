@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
 
-class ModalStartKPIUnit extends Component {
+class OrganizationalUnitKpiCreateModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -206,5 +206,5 @@ const actionCreators = {
     addKPIUnit: createUnitKpiActions.addKPIUnit,
     getKPIParent: createUnitKpiActions.getKPIParent
 };
-const connectedModalStartKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalStartKPIUnit));
-export { connectedModalStartKPIUnit as ModalStartKPIUnit };
+const connectedOrganizationalUnitKpiCreateModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreateModal));
+export { connectedOrganizationalUnitKpiCreateModal as OrganizationalUnitKpiCreateModal };

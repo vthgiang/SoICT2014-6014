@@ -12,13 +12,13 @@ const Role = require('../../../models/auth/role.model');
 /**
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
  */
-exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailCompany)=>{
-    let roles = [], departments = [];
-    let user = await User.findOne({email: emailCompany},{ _id:1 })
+exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)=>{
+    let roles = [], organizationalUnit = [];
+    let user = await User.findOne({email: emailInCompany},{ _id:1 })
     if (user !== null) {
         roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
         let newRoles = roles.map(role => role.roleId._id);
-        departments = await OrganizationalUnit.find({
+        organizationalUnit = await OrganizationalUnit.find({
             $or: [
                 {'dean': { $in: newRoles }}, 
                 {'viceDean':{ $in: newRoles }}, 
@@ -29,15 +29,18 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailCompany)=>
     if (roles !== []) {
         roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
     }
-    return { roles, departments }
+    
+    return { roles, organizationalUnit }
     // TODO: Còn có role tự tạo, cần loại bỏ Root roles và Company-Defined roles
 }
 
-// Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(unit, position)=>{
+/**
+ * Lấy danh sách email công ty theo phòng ban và chức vụ
+ */
+exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(organizationalUnits, position)=>{
     let units = [], roles = [];
-    for(let n in unit){
-        let unitInfo = await OrganizationalUnit.findById(unit[n]);  // Lấy thông tin đơn vị
+    for(let n in organizationalUnits){
+        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);  // Lấy thông tin đơn vị
         units = [...units, unitInfo]
     }
     if (position === null) {
@@ -49,14 +52,15 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(unit, positio
         roles = position
     }
 
-    // lấy danh sách người dùng theo phòng ban và chức danh
+    // Lấy danh sách người dùng theo phòng ban và chức danh
     let userRoles = await UserRole.find({roleId: {$in: roles}});
 
-    //lấy userID vào 1 arr
+    // Lấy userID vào 1 arr
     let userId = userRoles.map(userRole => userRole.userId); 
 
     // Lấy email của người dùng theo phòng ban và chức danh
     var emailUsers = await User.find({_id: {$in: userId}}, {email: 1});
+    
     return emailUsers.map(user => user.email)
 }
 

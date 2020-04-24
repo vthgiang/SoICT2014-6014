@@ -3,28 +3,28 @@ const router = express.Router();
 const KPIPersonalController = require("./creation.controller");
 const {auth} = require('../../../../middleware/index');
 
-// lấy kpi cá nhân hiện tại
+// Lấy tập KPI cá nhân hiện tại
 router.get('/current/:id',auth, KPIPersonalController.getEmployeeKpiSet);
 
 // Khởi tạo KPI cá nhân
 router.post('/create',auth, KPIPersonalController.createEmployeeKpiSet);
 
-// edit kpi personal by id
+// Chỉnh sửa thông tin chung của KPI cá nhân
 router.put('/:id',auth, KPIPersonalController.editEmployeeKpiSet);
 
-// edit status of personal by id
+// Chỉnh sửa trạng thái của KPI cá nhân
 router.put('/status/:id/:status',auth, KPIPersonalController.updateEmployeeKpiSetStatus);
 
-// delete kpi personal
+// Xóa KPI cá nhân
 router.delete('/:id',auth, KPIPersonalController.deleteEmployeeKpiSet);
 
-// thêm mục tiêu cho kpi cá nhân
+// Tạo 1 mục tiêu KPI mới
 router.post('/create-target',auth, KPIPersonalController.createEmployeeKpi);
 
-// edit target of personal by id
+// Chỉnh sửa mục tiêu của KPI cá nhân
 router.put('/target/:id',auth, KPIPersonalController.editEmployeeKpi);
 
-// delete target of personal
+// Xóa 1 mục tiêu KPI cá nhân
 router.delete('/target/:kpipersonal/:id',auth, KPIPersonalController.deleteEmployeeKpi);
 
 // // phê duyệt tất cả mục tiêu của kpi cá nhân
