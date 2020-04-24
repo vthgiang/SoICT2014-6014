@@ -50,13 +50,10 @@ exports.createCompany = async (req, res) => {
         const company = await CompanyService.createCompany(req.body);
 
         const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
-        console.log("abstract role: ", abstractRoles)
-        const companySuperAdmin = await CompanyService.createCompanySuperAdminAccount(company._id, company.name, req.body.email);
-        console.log("com super admin: ", companySuperAdmin)
-        const links = await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
-        console.log("com links: ", links)
-        const components = await CompanyService.createCompanyComponents(company._id, req.body.links);
-        console.log("com components: ", components)
+        await CompanyService.createCompanySuperAdminAccount(company._id, company.name, req.body.email);
+        await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
+        await CompanyService.createCompanyComponents(company._id, req.body.links);
+        
         const resCompany = await CompanyService.getCompany(company._id);
         
         LogInfo(req.user.email, 'CREATE_COMPANY');
