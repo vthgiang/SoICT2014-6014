@@ -1,4 +1,4 @@
-const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User } = require('../../../models').schema;
+const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User, UserRole } = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -276,20 +276,30 @@ exports.getCompanyLinks = async(companyId) => {
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
 exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
-    const com = await Company.findById(companyId);
+    
+    const com = await Company.findById(companyId).populate({path: 'superAdmin', model: User});
     const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME});
-    const user = await User.findOne({ company: com._id, email: superAdminEmail });
-    if(user === null){
-        const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
-        com.superAdmin = newUser._id;
-        await com.save();
+    const oldSuperAdmin = await User.findById(com.superAdmin._id);
 
-        return newUser;
-    }else{
-        com.superAdmin = user._id;
-        await com.save();
+    if(oldSuperAdmin.email === superAdminEmail)
+        return oldSuperAdmin;
+    else{
+        await UserRole.deleteOne({ userId: oldSuperAdmin._id, roleId: roleSuperAdmin._id });
 
-        return user;
+        const user = await User.findOne({ company: com._id, email: superAdminEmail });
+        if(user === null){
+            const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
+            com.superAdmin = newUser._id;
+            await com.save();
+    
+            return newUser;
+        }else{
+            com.superAdmin = user._id;
+            await com.save();
+            await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
+    
+            return user;
+        }
     }
 }
 
