@@ -155,6 +155,14 @@ const TaskSchema = new Schema({
         date:{
             type: Date
         },
+        createdAt:{
+            type: Date,
+            default: Date.now
+        },
+        updatedAt:{
+            type: Date,
+            default: Date.now
+        },
         actionComments: [{
             creator: {
                 type: Schema.Types.ObjectId,
