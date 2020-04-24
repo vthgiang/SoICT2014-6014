@@ -196,7 +196,7 @@ class ModalAddRepair extends Component {
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="create_start_date"
+                                        id={`add_create_date${id}`}
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
                                         placeholder="dd-mm-yyyy"
@@ -222,20 +222,18 @@ class ModalAddRepair extends Component {
                                 <div className={`form-group ${errorOnRepairDate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="create_repair_date"
+                                        id={`create_repair_date${id}`}
                                         value={repairDate}
                                         onChange={this.handleRepairDateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                     <ErrorLabel content={errorOnRepairDate} />
                                 </div>
                                 <div className="form-group">
                                     <label>Ngày hoàn thành</label>
                                     <DatePicker
-                                        id="create_complete_date"
+                                        id={`create_complete_date${id}`}
                                         value={completeDate}
                                         onChange={this.handleCompleteDateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                 </div>
                                 <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"}`}>

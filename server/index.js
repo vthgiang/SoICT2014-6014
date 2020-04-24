@@ -55,7 +55,8 @@ const taskPerform = require("./modules/task/task-perform/taskPerform.route");
 const educationProgram = require('./modules/trainning/education-program/educationProgram.route');
 const course = require('./modules/trainning/course/course.route');
 
-
+//asset
+const assetType = require('./modules/assets-manager/asset-type-management/asset-type.route');
 
 
 // APP
@@ -146,7 +147,8 @@ app.use("/tasktemplates", tasktemplate);
 app.use("/educationProgram", educationProgram);
 app.use("/course",course);
 
-
+//asset
+app.use("/assettype",assetType);
 
 // Start server
 const port = process.env.PORT || 5000;

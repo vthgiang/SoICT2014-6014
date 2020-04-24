@@ -222,10 +222,9 @@ class ModalAddDistribute extends Component {
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="create_start_date1"
+                                        id={`add_create_date1${id}`}
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>

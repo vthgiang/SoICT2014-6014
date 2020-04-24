@@ -224,10 +224,9 @@ class ModalEditDistribute extends Component {
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id="edit_start_date1"
+                                        id={`edit_create_date1${id}`}
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>

@@ -243,7 +243,7 @@ class TabRepairContent extends Component {
                                         <td>{x.cost}</td>
                                         <td>{x.status}</td>
                                         <td>
-                                            <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i className="material-icons">edit</i></a>
                                             <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                         </td>
                                     </tr>))

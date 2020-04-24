@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { AssetTypeFromValidator } from './AssetTypeFromValidator';
-
-// import { AssetTypeActions } from '../redux/actions';
+import { AssetTypeActions } from '../redux/actions';
 class AssetTypeCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -107,7 +106,7 @@ class AssetTypeCreateForm extends Component {
      */
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.createNewAssetType(this.state);
+            return this.props.createNewAssetType(this.state);
         }
     }
     render() {
@@ -121,8 +120,8 @@ class AssetTypeCreateForm extends Component {
                     size='50' modalID="modal-create-assettype" isLoading={assetType.isLoading}
                     formID="form-create-assettype"
                     title="Thêm mới loại tài sản"
-                    msg_success={translate('error.create_praise_success')}
-                    msg_faile={translate('error.create_praise_faile')}
+                    msg_success={translate('modal.add_success')}
+                    msg_faile={translate('modal.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -164,7 +163,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // createNewAssetType: AssetTypeActions.createNewAssetType,
+    createNewAssetType: AssetTypeActions.createNewAssetType
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AssetTypeCreateForm));

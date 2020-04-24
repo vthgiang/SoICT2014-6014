@@ -1,7 +1,7 @@
 import { AssetTypeConstants } from './constants';
 const initState = {
     isLoading: false,
-    listAssetType: [],
+    listAssetTypes: [],
     totalList: "",
     error:"",
 }
@@ -19,26 +19,26 @@ export function assetType(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listAssetType: action.payload.listAssetType,
+                listAssetTypes: action.payload.listAssetTypes,
                 totalList: action.payload.totalList,   
             };
         case AssetTypeConstants.CREATE_ASSETTYPE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listAssetType: [...state.listAssetType, action.payload],
+                listAssetTypes: [...state.listAssetTypes, action.payload],
             };
         case AssetTypeConstants.DELETE_ASSETTYPE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listAssetType: state.listAssetType.filter(assetType => (assetType._id !== action.payload._id)),
+                listAssetTypes: state.listAssetTypes.filter(assetType => (assetType._id !== action.payload._id)),
             };
         case AssetTypeConstants.UPDATE_ASSETTYPE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listAssetType: state.listAssetType.map(assetType =>assetType._id === action.payload._id ?action.payload : assetType),
+                listAssetTypes: state.listAssetTypes.map(assetType =>assetType._id === action.payload._id ?action.payload : assetType),
             };
         case AssetTypeConstants.GET_ASSETTYPE_FAILURE:
         case AssetTypeConstants.CREATE_ASSETTYPE_FAILURE:

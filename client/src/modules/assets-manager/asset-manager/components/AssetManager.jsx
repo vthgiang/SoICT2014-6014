@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { ToastContainer } from 'react-toastify';
 import { AssetCreateForm } from './AssetCreateForm';
-// import { AssetEditForm } from './AssetEditForm';
+import { AssetEditForm } from './AssetEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 // import { AssetActions } from '../redux/actions';
 
@@ -23,6 +24,16 @@ class AssetManager extends Component {
     componentDidMount() {
         // this.props.getListAsset(this.state);
     }
+    // Bắt sự kiện click xem thông tin tài sản
+    handleView = async (value) => {
+        await this.setState(state => {
+            return {
+                currentRowView: value
+            }
+        });
+        window.$('#modal-view-asset').modal('show');
+    }
+
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
         await this.setState(state => {
@@ -208,7 +219,7 @@ class AssetManager extends Component {
                                 <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                     <DataTableSetting
-                                        tableId="repairupgrade-table"
+                                        tableId="asset-table"
                                         columnArr={[
                                             "Mã tài sản",
                                             "Tên tài sản",
@@ -239,6 +250,7 @@ class AssetManager extends Component {
                                         <td>{x.location}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin tài sản"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content="Xóa thông tin tài sản"
@@ -259,22 +271,28 @@ class AssetManager extends Component {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                
+                <ToastContainer />
                 {/* {
+                    this.state.currentRowView !== undefined &&
+                    <AssetDetailForm
+                        _id={this.state.currentRowView.asset[0]._id}
+                        asset={this.state.currentRowView.asset}
+                        repairUpgrade={this.state.currentRowView.repairUpgrade}
+                        distributeTransfer={this.state.currentRowView.distributeTransfer}
+
+                    />
+                } */}
+
+                {
                     this.state.currentRow !== undefined &&
                     <AssetEditForm
                         _id={this.state.currentRow._id}
-                        repairNumber={this.state.currentRow.repairNumber}
-                        createDate={this.state.currentRow.createDate}
-                        type={this.state.currentRow.type}
-                        assetNumber={this.state.currentRow.assetNumber}
-                        assetName={this.state.currentRow.assetName}
-                        repairDate={this.state.currentRow.repairDate}
-                        completeDate={this.state.currentRow.completeDate}
-                        cost={this.state.currentRow.cost}
-                        status={this.state.currentRow.status}
+                        asset={this.state.currentRow.asset}
+                        repairUpgrade={this.state.currentRow.repairUpgrade}
+                        distributeTransfer={this.state.currentRow.distributeTransfer}
+                        
                     />
-                } */}
+                }
             </div >
         );
     }

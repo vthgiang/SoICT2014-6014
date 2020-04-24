@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import {
-    ModalAddDistribute, ModalEditDistribute, //ModalAddDiscipline, ModalEditDiscipline
+    ModalAddDistribute, ModalEditDistribute
 } from './CombineContent';
 import {  DatePicker, DataTableSetting, SelectMulti } from '../../../../common-components';
 

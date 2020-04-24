@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AssetTypeCreateForm } from './AssetTypeCreateForm';
 import { AssetTypeEditForm } from './AssetTypeEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { AssetTypeActions } from '../redux/actions';
+import { AssetTypeActions } from '../redux/actions';
 
 class AssetTypeManager extends Component {
     constructor(props) {
@@ -18,7 +18,8 @@ class AssetTypeManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.getListAssetType(this.state);
+        this.props.getListAssetType(this.state);
+        this.props.getListAssetType();
     }
     // Bắt sự kiện click chỉnh sửa thông tin loại tài sản
     handleEdit = async (value) => {
@@ -64,7 +65,7 @@ class AssetTypeManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        // this.props.getListAssetType(this.state);
+        this.props.getListAssetType(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -187,8 +188,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // getListAssetType: AssetTypeActions.getListAssetType,
-    // deleteAssetType: AssetTypeActions.deleteAssetType,
+    getListAssetType: AssetTypeActions.getListAssetType,
+    deleteAssetType: AssetTypeActions.deleteAssetType,
 };
 
 const connectedListAssetType = connect(mapState, actionCreators)(withTranslate(AssetTypeManager));

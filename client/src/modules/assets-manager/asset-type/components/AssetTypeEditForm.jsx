@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { AssetTypeFromValidator } from './AssetTypeFromValidator';
-// import { AssetTypeActions } from '../redux/actions';
+import { AssetTypeActions } from '../redux/actions';
 class AssetTypeEditForm extends Component {
     constructor(props) {
         super(props);
@@ -77,7 +77,7 @@ class AssetTypeEditForm extends Component {
      */
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.updateAssetType(this.state._id, this.state);
+            return this.props.updateAssetType(this.state._id, this.state);
         }
     }
 
@@ -147,7 +147,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // updateAssetType: AssetTypeActions.updateAssetType,
+    updateAssetType: AssetTypeActions.updateAssetType,
 };
 
 const editForm = connect(mapState, actionCreators)(withTranslate(AssetTypeEditForm));

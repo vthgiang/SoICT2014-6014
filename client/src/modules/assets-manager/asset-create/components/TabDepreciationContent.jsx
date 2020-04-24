@@ -112,7 +112,7 @@ class TabDepreciationContent extends Component {
                         <div className="form-group">
                             <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao</label>
                             <DatePicker
-                                id="end_depreciation"
+                                id={`endDepreciation${id}`}
                                 value={endDepreciation}
                             />
                         </div>

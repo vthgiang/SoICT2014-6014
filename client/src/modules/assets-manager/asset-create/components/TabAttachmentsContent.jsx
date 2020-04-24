@@ -25,26 +25,6 @@ class TabAttachmentsContent extends Component {
         const { name, value } = e.target;
         this.props.handleChange(name, value);
     }
-    // // Function thêm tài liệu đính kèm mặc định
-    // defaulteClick = async (e) => {
-    //     var { translate } = this.props;
-    //     e.preventDefault();
-    //     const defaulteFile = [
-    //         { nameFile: translate('manage_employee.diploma'), discFile: translate('manage_employee.disc_diploma'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.curriculum_vitae'), discFile: translate('manage_employee.disc_curriculum_vitae'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.img'), discFile: translate('manage_employee.disc_img'), number: "3", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.copy_id_card'), discFile: translate('manage_employee.disc_copy_id_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.health_certificate'), discFile: translate('manage_employee.disc_health_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.birth_certificate'), discFile: translate('manage_employee.disc_birth_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.job_application'), discFile: translate('manage_employee.disc_job_application'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.commitment'), discFile: translate('manage_employee.disc_commitment'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-    //         { nameFile: translate('manage_employee.temporary_residence_card'), discFile: translate('manage_employee.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " }
-    //     ]
-    //     await this.setState({
-    //         file: defaulteFile
-    //     })
-    //     this.props.handleAddFile(this.state.file)
-    // }
 
     // Function thêm thông tin tài liệu đính kèm
     handleAddFile = async (data) => {
