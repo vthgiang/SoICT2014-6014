@@ -437,6 +437,7 @@ class ModalAddTask extends Component {
                                                 <div>
                                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
                                                     <div className="col-sm-10" style={{ width: '100%' }}>
+                                                    {
                                                     (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) &&
                                                         <select className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskTemplate} ref={input => this.tasktemplate = input}>
                                                             <option value="">--Hãy chọn mẫu công việc--</option>
@@ -446,6 +447,7 @@ class ModalAddTask extends Component {
                                                                 })
                                                             }
                                                         </select>
+                                                    }
                                                     </div>
                                                 </div>: null
                                             
