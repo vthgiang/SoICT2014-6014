@@ -25,9 +25,9 @@ exports.editById = async (timeString, id) => {
     //req.body.time,req.params.id
     var time = timeString.split("-");
         var date = new Date(time[1], time[0], 0)
-        var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { time: date } }, { new: true });
-        kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
-        return kpiunit;
+        var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { time: date } }, { new: true });
+        organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+        return organizationalUnitKpiSet;
 }
 
 // lấy KPI đơn vị cha
@@ -108,19 +108,19 @@ exports.create = async (timeId,unitId,createrId) => {
 }
 
 // Thêm mục tiêu cho KPI đơn vị
-exports.createTarget = async (nameId,parentId,weightId,criteriaId,kpiunitId) => {
-    //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.kpiunit
+exports.createTarget = async (nameId, parentId, weightId, criteriaId, organizationalUnitKpiSetId) => {
+    //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.organizationalUnitKpiSet
     var target = await OrganizationalUnitKpi.create({
         name: nameId,
         parent: parentId,
         weight: weightId,
         criteria: criteriaId
     })
-    var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(
-        kpiunitId, { $push: { kpis: target._id } }, { new: true }
+    var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(
+        organizationalUnitKpiSetId, { $push: { kpis: target._id } }, { new: true }
     );
-    kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
-    return kpiunit;
+    organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+    return organizationalUnitKpiSet;
     
 }
 // Chỉnh sửa mục tiêu của KPI đơn vị
@@ -139,12 +139,12 @@ exports.editTargetById = async (nameId,parentId,weightId,criteriaId,id) => {
 }
 
 // Xóa mục tiêu của KPI đơn vị
-exports.deleteTarget = async (id,kpiunitId) => {
-    //req.params.id,req.params.kpiunit
+exports.deleteTarget = async (id,organizationalUnitKpiSetId) => {
+    //req.params.id,req.params.organizationalUnitKpiSetId
     var target = await OrganizationalUnitKpi.findByIdAndDelete(id);
-        var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(kpiunitId, { $pull: { kpis: id } }, { new: true });
-        kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
-        return kpiunit;
+    var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(organizationalUnitKpiSetId, { $pull: { kpis: id } }, { new: true });
+    organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+    return organizationalUnitKpiSet;
         
 }
 // Kích hoạt KPI đơn vị
