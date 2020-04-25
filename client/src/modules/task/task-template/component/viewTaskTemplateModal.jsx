@@ -71,13 +71,13 @@ class ModalViewTaskTemplate extends Component {
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className='form-group'>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*: {template && template.info.unit.name}</label>
+                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*: {template && template.info.organizationalUnit.name}</label>
                                             </div>
                                             <div className='form-group' style={{ marginTop: "-15px" }}>
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.responsible.map((item, index) => {
+                                                        {template.info.responsibleEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
@@ -86,7 +86,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.accounatable.map((item, index) => {
+                                                        {template.info.accountableEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
@@ -95,7 +95,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.consulted.map((item, index) => {
+                                                        {template.info.consultedEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
@@ -104,7 +104,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.informed.map((item, index) => {
+                                                        {template.info.informedEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
