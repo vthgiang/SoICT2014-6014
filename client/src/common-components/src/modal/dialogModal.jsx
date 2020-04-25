@@ -44,6 +44,9 @@ class DialogModal extends Component {
                 }
                 toast.success(html, {containerId: 'toast-notification'});
             }).catch(err => {
+                if (err.response === undefined || err.response === null){
+                    return;
+                }
                 if(err.response.data.message){
                     let messages;
                     if(Array.isArray(err.response.data.message))
