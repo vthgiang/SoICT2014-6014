@@ -732,17 +732,7 @@ var sampleCompanyData = async () => {
             roleId: roles[1]._id // Dean
         },
         {
-            resourceId: links[32]._id, // Danh sách KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[3]._id // Employee
-        },
-        {
-            resourceId: links[32]._id, // Danh sách KPI đơn vị
-            resourceType: 'Link',
-            roleId: roles[2]._id // ViceDean
-        },
-        {
-            resourceId: links[32]._id, // Danh sách KPI đơn vị
+            resourceId: links[32]._id, // Quản lý KPI đơn vị
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
