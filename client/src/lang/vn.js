@@ -43,6 +43,9 @@ export default {
             delete_user_success: 'Xóa tài khoản người dùng thành công',
 
             // Link - Quản lý trang
+            create_link_success: 'Tạo link thành công',
+            edit_link_success: 'Chỉnh sửa link thành công',
+            delete_link_success: 'Xóa link thành công',
 
             // Component - Quản lý component
         },
@@ -79,7 +82,11 @@ export default {
             email_exist: 'Email đã được sử dụng cho một tài khoản khác',
             user_not_found: 'Không tìm thấy thông tin về tài khoản',
             department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
+
             // Link - Quản lý trang
+            cannot_create_this_url: 'Không thể tạo link này',
+            this_url_cannot_be_use: 'Url này không được phép sử dụng',
+            url_exist: 'Url này đã đươc sử dụng',
 
             // Component - Quản lý component        
 

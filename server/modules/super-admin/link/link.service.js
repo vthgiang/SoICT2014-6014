@@ -1,12 +1,23 @@
 const Link = require('../../../models/super-admin/link.model');
 const Privilege = require('../../../models/auth/privilege.model');
 
+/**
+ * Lấy danh sách tất cả các link của 1 công ty
+ * @company id của công ty
+ */
 exports.getAllLinks = async (company) => {
     return await Link
         .find({ company })
         .populate({ path: 'roles', model: Privilege });
 }
 
+/**
+ * Phân trang danh sách các link
+ * @company id công ty
+ * @limit giới hạn hiển thị trên 1 bảng
+ * @page số thứ tự của trang muốn lấy
+ * @data dữ liệu truy vấn
+ */
 exports.getPaginatedLinks = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await Link
@@ -19,6 +30,10 @@ exports.getPaginatedLinks = async (company, limit, page, data={}) => {
         });
 }
 
+/**
+ * Lấy thông tin link theo id
+ * @id id link
+ */
 exports.getLinkById = async (id) => {
 
     return await Link
@@ -26,6 +41,11 @@ exports.getLinkById = async (id) => {
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
 }
 
+/**
+ * Tạo link mới
+ * @data dữ liệu về link
+ * @companyId id công ty
+ */
 exports.createLink = async(data, companyId) => {
     if(data.url === '/system') throw ['cannot_create_this_url', 'this_url_cannot_be_use'];
     const check = await Link.findOne({company: componentId, url: data.url});
@@ -37,6 +57,11 @@ exports.createLink = async(data, companyId) => {
         company: companyId
     });
 }
+/**
+ * Chỉnh sửa link
+ * @id id link
+ * @data dữ liệu về link
+ */
 
 exports.editLink = async(id, data) => {
     const link = await Link.findById(id);
@@ -49,6 +74,10 @@ exports.editLink = async(id, data) => {
     return link;
 }
 
+/**
+ * Xóa link
+ * @id id link
+ */
 exports.deleteLink = async(id) => {
     var relationshiopDelete = await Privilege.deleteMany({
         resourceId: id,
@@ -59,17 +88,11 @@ exports.deleteLink = async(id) => {
     return {relationshiopDelete, deleteRole};
 }
 
-/*----------------------------------------------------------
------------------Manage links of 1 company -----------------
------------------------------------------------------------*/
-
-exports.getLinksOfCompany = async(id) => {
-
-    return await Link
-        .find({ company: id })
-        .populate({ path: 'roles', model: Privilege });
-} 
-
+/**
+ * Thiếp lập mới quan hệ cho role và link
+ * @linkId id của link
+ * @roleArr mảng id các role
+ */
 exports.relationshipLinkRole = async(linkId, roleArr) => {
     await Privilege.deleteMany({
         resourceId: linkId,
@@ -87,13 +110,17 @@ exports.relationshipLinkRole = async(linkId, roleArr) => {
     return privilege;
 }
 
-
-exports.addComponentOfLink = async(id, componentId) => { //thêm component(button thêm, sửa, xóa,..) trên trang web 
+/**
+ * Thêm component vào 1 trang
+ * @id id link
+ * @componentId id component
+ */
+exports.addComponentOfLink = async(id, componentId) => {
     var link = await Link
         .findById(id)
-        .populate({ path: 'roles', model: Privilege }); //Lấy thông tin trang hiện tại
+        .populate({ path: 'roles', model: Privilege });
 
-    link.components.push(componentId); //thêm id của component vào trong mảng các component của trang này
+    link.components.push(componentId);
     link.save();
 
     return link;
