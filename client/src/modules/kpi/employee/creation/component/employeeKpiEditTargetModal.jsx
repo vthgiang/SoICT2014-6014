@@ -248,7 +248,7 @@ class ModalEditEmployeeKpi extends Component {
                             {(createKpiUnit.currentKPI !== null) &&
                                 (items.length !== 0) && 
                                     <div className="form-group">
-                                        <label>{translate('employee_kpi_set.edit_employee_kpi_modal.parents')}</label>
+                                        <label>{translate('employee_kpi_set.edit_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
                                         <SelectBox
                                             id={`parent-target-edit${_id}`}
                                             className="form-control select2"

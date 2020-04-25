@@ -175,7 +175,7 @@ class CreateEmployeeKpiSet extends Component {
             this.notifysuccess(translate('employee_kpi_set.create_employee_kpi_set.general_information.edit_success'));
         }
         else{
-            this.notifyerror(translate('employee_kpi_set.create_employee_kpi_set.edit_target.general_information.edit_failure'));
+            this.notifyerror(translate('employee_kpi_set.create_employee_kpi_set.general_information.edit_failure'));
         }
     }
 
@@ -535,8 +535,10 @@ class CreateEmployeeKpiSet extends Component {
                                                                                     <td>
                                                                                         <a data-target={`#editEmployeeKpi${item._id}`} style={{ color: "#FFC107", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.edit')} data-toggle="modal" onClick={() => this.handleEditEmployeeKpi(currentKPI.status, item)}><i className="fa fa-edit"></i></a>
                                                                                         {this.state.editingTarget === item._id ? <ModalEditEmployeeKpi target={item}/> : null}
-                                                                                        {item.type !== 0 ? <a href="#abc" style={{ color: "#E34724", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(item.status, currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> :
-                                                                                            <a className="copy" title={translate('employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>}
+                                                                                        {item.type !== 0 ? 
+                                                                                            <a className="copy" title={translate('employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a> 
+                                                                                            : <a href="#abc" style={{ color: "#E34724", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(item.status, currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 
+                                                                                        }
                                                                                     </td>
                                                                                 </tr>
                                                                             ))
@@ -573,32 +575,25 @@ class CreateEmployeeKpiSet extends Component {
                                                 </div>
                                                 : <div className="col-xs-12">
                                                     <div style={{marginLeft: "-10px"}}>
-                                                        
-                                                        {/* {(typeof createKpiUnit.currentKPI !== 'undefined' && createKpiUnit.currentKPI !== null) ?
+                                                        {(typeof createKpiUnit.currentKPI !== 'undefined' && createKpiUnit.currentKPI !== null) ?
                                                             <div>{ createKpiUnit.currentKPI.status !== 1 ?
                                                                 <div>  
-                                                                    <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotActivatedKPIUnit()}}>
+                                                                    <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotActivatedOrganizationalUnitKpi()}}>
                                                                         <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                                                     </a>
                                                                 </div>
                                                                 : <div>
-                                                                    <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false">
-                                                                        <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
-                                                                    </a>
-                                                                    <ModalStartKPIPersonal unit={currentUnit && currentUnit[0]} />
-                                                                </div>
-                                                                }
-                                                            </div>
-                                                            : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotInitializeKPIUnit()}}>
-                                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
-                                                            </a>
-                                                        } */}
-                                                        <div>
                                                                     <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
                                                                         <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                                                     </a>
                                                                     <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0]} />
                                                                 </div>
+                                                                }
+                                                            </div>
+                                                            : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotInitializeOrganizationalUnitKpi()}}>
+                                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                            </a>
+                                                        }
                                                     </div>
                                                     <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(Date.now())}</h3>
                                                     <p>{translate('employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
