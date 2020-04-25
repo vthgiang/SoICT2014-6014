@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class AlertDisplayResponseFromServer extends Component {
+class ServerResponseAlert extends Component {
     
     constructor(props) {
         super(props);
@@ -35,4 +35,4 @@ class AlertDisplayResponseFromServer extends Component {
  
 const mapStateToProps = state => state;
 
-export default connect( mapStateToProps )( withTranslate(AlertDisplayResponseFromServer) );
+export default connect( mapStateToProps )( withTranslate(ServerResponseAlert) );

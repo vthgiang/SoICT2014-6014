@@ -5,7 +5,7 @@ import Footer from './footer/components/footer';
 import Content from './content/components/content';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import Alert from '../modules/alert/components';
+import AuthAlert from '../modules/alert/components/authAlert';
 class Layout extends Component {
     constructor(props) {
         super(props);
@@ -16,7 +16,7 @@ class Layout extends Component {
         
         return ( 
             <React.Fragment>
-                <Alert/>
+                <AuthAlert/>
                 <Header
                     userId={auth.user._id}
                     userName={auth.user.name}

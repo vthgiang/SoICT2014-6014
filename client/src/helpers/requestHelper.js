@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AuthenticateHeader } from '../config';
-import AlertDisplayResponseFromServer from '../modules/alert/components/alertDisplayResponseFromServer';
-import Alert from '../modules/alert/components';
+import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
+import AuthAlert from '../modules/alert/components/authAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
 
@@ -33,7 +33,7 @@ const checkErrorAuth = (code) => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function handleRequest(options, displayAlert=true) {
+export function sendRequest(options, showAlert=true, module, successTitle='success.title', errorTitle='error.title') {
 
     const requestOptions = {
         url: options.url, 
@@ -43,30 +43,30 @@ export function handleRequest(options, displayAlert=true) {
     };
 
     return axios(requestOptions).then(res => {
-        displayAlert && toast.success(
-            <AlertDisplayResponseFromServer
+        showAlert && toast.success(
+            <ServerResponseAlert
                 type='success'
-                title='success.title'
+                title={successTitle}
                 content={res.data.message}
             />, 
             {containerId: 'toast-notification'});
 
         return Promise.resolve(res);
     }).catch(err => {
-        console.log("ERROR: ", err.response.data);
         if(err.response.data.message){
             if(checkErrorAuth(err.response.data.message[0])){
                 window.$(`#alert-error-auth`).modal("show");
                 localStorage.clear();
             }
             else{
-                displayAlert && toast.error(
-                    <AlertDisplayResponseFromServer
+                toast.error(
+                    <ServerResponseAlert
                         type='error'
-                        title='error.title'
+                        title={errorTitle}
                         content={err.response.data.message}
                     />, 
-                    {containerId: 'toast-notification'});
+                    {containerId: 'toast-notification'}
+                );
             }
         }
 
