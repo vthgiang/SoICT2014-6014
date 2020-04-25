@@ -84,29 +84,29 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, organizationalUnit,
 //Tạo mẫu công việc
 exports.create = async (body) => {
         var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc
-            organizationalUnit: body.unit,
+            organizationalUnit: body.organizationalUnit,
             name: body.name,
             creator: body.creator, //id của người tạo
-            readByEmployees: body.read, //id của người có quyền xem
-            responsibleEmployees: body.responsible,
-            accountableEmployees: body.accounatable,
-            consultedEmployees: body.consulted,
-            informedEmployees: body.informed,
+            readByEmployees: body.readByEmployees, //id của người có quyền xem
+            responsibleEmployees: body.responsibleEmployees,
+            accountableEmployees: body.accountableEmployees,
+            consultedEmployees: body.consultedEmployees,
+            informedEmployees: body.informedEmployees,
             description: body.description,
             formula: body.formula,
-            taskActions: body.listAction.map(item => {
+            taskActions: body.taskActions.map(item => {
                 return {
                     name: item.name,
                     description: item.description,
                     mandatory: item.mandatary,
                 }
             }),
-            taskInformations: body.listInfo.map((item, key) => {
+            taskInformations: body.taskInformations.map((item, key) => {
                 return {
                     code: "p"+parseInt(key+1),
                     name: item.name,
                     description: item.description,
-                    filledByAccountableEmployeesOnly: item.mandatary,
+                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
                     type: item.type,
                     extra: item.extra,
                 }
@@ -115,10 +115,10 @@ exports.create = async (body) => {
         // var reader = body.read; //role có quyền đọc
         // var read = await Action.findOne({ name: "READ" }); //lấy quyền đọc
         var privilege = await Privilege.create({
-            roleId: body.read[0], //id của người cấp quyền xem
+            roleId: body.readByEmployees[0], //id của người cấp quyền xem
             resourceId: tasktemplate._id,
             resourceType: "TaskTemplate",
-            action: body.read //quyền READ
+            action: body.readByEmployees //quyền READ
         });
         var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator organizationalUnit' } });
 
