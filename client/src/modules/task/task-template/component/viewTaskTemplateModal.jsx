@@ -51,7 +51,7 @@ class ModalViewTaskTemplate extends Component {
     render() {
         var template;
         const { tasktemplates } = this.props;
-        if (tasktemplates.template) template = tasktemplates.template;
+        if (tasktemplates.template) template = tasktemplates.template.info;
         return (
             <React.Fragment>
                 <div className="modal modal-full fade" id={`viewTaskTemplate${this.props.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -63,7 +63,7 @@ class ModalViewTaskTemplate extends Component {
                                     <span aria-hidden="true">×</span>
                                     <span className="sr-only">Close</span>
                                 </button>
-                                <h3 className="modal-title" id="myModalLabel">{template && template.info.name}</h3>
+                                <h3 className="modal-title" id="myModalLabel">{template && template.name}</h3>
                             </div>
                             {/* Modal Body */}
                             <div className="modal-body" >
@@ -71,13 +71,13 @@ class ModalViewTaskTemplate extends Component {
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className='form-group'>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*: {template && template.info.organizationalUnit.name}</label>
+                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*: {template && template.organizationalUnit.name}</label>
                                             </div>
                                             <div className='form-group' style={{ marginTop: "-15px" }}>
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.responsibleEmployees.map((item, index) => {
+                                                        {template.responsibleEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
@@ -86,7 +86,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.accountableEmployees.map((item, index) => {
+                                                        {template.accountableEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
@@ -95,7 +95,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.consultedEmployees.map((item, index) => {
+                                                        {template.consultedEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
@@ -104,7 +104,7 @@ class ModalViewTaskTemplate extends Component {
                                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát:</label>
                                                 {template &&
                                                     <ul>
-                                                        {template.info.informedEmployees.map((item, index) => {
+                                                        {template.informedEmployees.map((item, index) => {
                                                             return <li key={index}>{item.name}</li>
                                                         })}
                                                     </ul>}
@@ -123,13 +123,13 @@ class ModalViewTaskTemplate extends Component {
                                                         </thead>
                                                         <tbody>
                                                             {
-                                                                (typeof template === 'undefined' || template.actions.length === 0) ? <tr><td colSpan={5}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                    template.actions.map((item, index) =>
+                                                                (typeof template === 'undefined' || template.taskActions.length === 0) ? <tr><td colSpan={5}><center>Chưa có dữ liệu</center></td></tr> :
+                                                                    template.taskActions.map((item, index) =>
                                                                         <tr key={index + 1}>
                                                                             <td style={{ whiteSpace: "normal" }}>{index + 1}</td>
                                                                             <td style={{ whiteSpace: "normal" }}>{item.name}</td>
                                                                             <td style={{ whiteSpace: "normal" }}>{item.description}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.mandatary ? "Có" : "Không"}</td>
+                                                                            <td style={{ whiteSpace: "normal" }}>{item.mandatory ? "Có" : "Không"}</td>
                                                                         </tr>
                                                                     )
                                                             }
@@ -140,10 +140,10 @@ class ModalViewTaskTemplate extends Component {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className='form-group'>
-                                                <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*: {template && template.info.description}</label>
+                                                <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*: {template && template.description}</label>
                                             </div>
                                             <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-4 control-label" htmlFor="inputName3" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc: {template && template.info.formula}</label>
+                                                <label className="col-sm-4 control-label" htmlFor="inputName3" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc: {template && template.formula}</label>
                                             </div>
                                             <div>
                                                 <label className="col-sm-12 control-label" style={{ width: '100%', textAlign: 'left' }}>Chú thích:</label>
@@ -170,14 +170,14 @@ class ModalViewTaskTemplate extends Component {
                                                         </thead>
                                                         <tbody>
                                                             {
-                                                                (typeof template === 'undefined' || template.informations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                    template.informations.map((item, index) =>
+                                                                (typeof template === 'undefined' || template.taskInformations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
+                                                                    template.taskInformations.map((item, index) =>
                                                                         <tr key={index}>
                                                                             <td style={{ whiteSpace: "normal" }}>{index + 1}</td>
                                                                             <td style={{ whiteSpace: "normal" }}>{item.name}</td>
                                                                             <td style={{ whiteSpace: "normal" }}>{item.description}</td>
                                                                             <td style={{ whiteSpace: "normal" }}>{item.type}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.mandatary ? "Có" : "Không"}</td>
+                                                                            <td style={{ whiteSpace: "normal" }}>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
                                                                         </tr>
                                                                     )
                                                             }

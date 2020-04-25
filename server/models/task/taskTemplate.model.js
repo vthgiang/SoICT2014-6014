@@ -20,6 +20,47 @@ const TaskTemplateSchema = new Schema({
         ref: User,
         required: true
     },
+    taskActions: [{
+        name: {
+            type: String,
+            required: true
+        },
+        description: {
+            type: String,
+            required: true
+        },
+        mandatory: { // Hoạt động này bắt buộc hay không?
+            type: Boolean,
+            default: true,
+            required: true
+        }
+    }],
+    taskInformations: [{
+        code: { // Mã thuộc tính công việc dùng trong công thức
+            type: String,
+            required: true
+        },
+        name: { // Tên thuộc tính công việc
+            type: String,
+            required: true
+        },
+        description: {
+            type: String,
+            required: true
+        },
+        extra: { // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
+            type: String
+        },
+        filledByAccountableEmployeesOnly: { // Chỉ người phê duyệt được điền?
+            type: Boolean,
+            default: true,
+            required: true
+        },
+        type: {
+            type: String,
+            required: true
+        }
+    }],
     readByEmployees: [{
         type: Schema.Types.ObjectId,
         ref: User,

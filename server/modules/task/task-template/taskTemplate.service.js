@@ -1,4 +1,4 @@
-const { TaskTemplate, Privilege, Role, UserRole, TaskAction, TaskTemplateInformation } = require('../../../models').schema;
+const { TaskTemplate, Privilege, Role, UserRole } = require('../../../models').schema;
 
 
 //Lấy tất cả các mẫu công việc
@@ -12,12 +12,8 @@ exports.get = (req, res) => {
 exports.getById = async (req, res) => {
     try {
         var tasktemplate = await TaskTemplate.findById(req.params.id).populate("organizationalUnit creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
-        var actionTemplates = await TaskAction.find({ taskTemplate: tasktemplate._id });
-        var informationTemplate = await TaskTemplateInformation.find({ taskTemplate: tasktemplate._id });
         res.status(200).json({
             "info": tasktemplate,
-            "actions": actionTemplates,
-            "informations": informationTemplate
         })
     } catch (error) {
         res.status(400).json({ message: error });
@@ -98,6 +94,23 @@ exports.create = async (body) => {
             informedEmployees: body.informed,
             description: body.description,
             formula: body.formula,
+            taskActions: body.listAction.map(item => {
+                return {
+                    name: item.name,
+                    description: item.description,
+                    mandatory: item.mandatary,
+                }
+            }),
+            taskInformations: body.listInfo.map((item, key) => {
+                return {
+                    code: "p"+parseInt(key+1),
+                    name: item.name,
+                    description: item.description,
+                    filledByAccountableEmployeesOnly: item.mandatary,
+                    type: item.type,
+                    extra: item.extra,
+                }
+            })
         });
         // var reader = body.read; //role có quyền đọc
         // var read = await Action.findOne({ name: "READ" }); //lấy quyền đọc
@@ -106,26 +119,6 @@ exports.create = async (body) => {
             resourceId: tasktemplate._id,
             resourceType: "TaskTemplate",
             action: body.read //quyền READ
-        });
-        var actions = body.listAction.map(item => {
-            TaskAction.create({
-                taskTemplate: tasktemplate._id,
-                name: item.name,
-                description: item.description,
-                mandatary: item.mandatary,
-                type: "TaskTemplate"
-            })
-        });
-        var informations = body.listInfo.map((item, key) => {
-            TaskTemplateInformation.create({
-                taskTemplate: tasktemplate._id,
-                code: "p"+parseInt(key+1),
-                name: item.name,
-                description: item.description,
-                mandatary: item.mandatary,
-                type: item.type,
-                extra: item.extra
-            })
         });
         var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator organizationalUnit' } });
 
