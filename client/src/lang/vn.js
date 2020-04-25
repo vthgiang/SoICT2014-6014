@@ -28,6 +28,9 @@ export default {
             /**SUPER ADMIN */
 
             // Organizational Unit - Quản lý cơ cấu tổ chức
+            create_department_success: 'Tạo đơn vị thành công',
+            edit_department_success: 'Chỉnh sửa đơn vị thành công',
+            delete_department_success: 'Xóa đơn vị thành công',
 
             // Role - Quản lý phân quyền
             create_role_success: 'Tạo role mới thành công',
@@ -62,6 +65,9 @@ export default {
             /**SUPER ADMIN */
 
             // Organizational Unit - Quản lý cơ cấu tổ chức
+            department_name_exist: 'Tên đơn vị này đã được sử dụng',
+            department_not_found: 'Không tìm thấy thông tin về đơn vị',
+            department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
 
             // Role - Quản lý phân quyền
             role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
