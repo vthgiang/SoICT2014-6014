@@ -5,7 +5,7 @@ import { DialogModal } from '../../../../../common-components';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../../salary/redux/actions';
-import { SabbaticalActions } from '../../../annual-leave/redux/actions';
+import { AnnualLeaveActions } from '../../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../../commendation-discipline/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -265,18 +265,18 @@ class EmployeeEditFrom extends Component {
         //         let createSabbatical = this.state.sabbaticalNew.filter(sabbatical => (sabbatical._id === " "));
         //         if (createSabbatical.length !== 0) {
         //             createSabbatical.map(x => {
-        //                 this.props.createNewSabbatical({ ...x, employeeNumber })
+        //                 this.props.createAnnualLeave({ ...x, employeeNumber })
         //             });
         //         }
         //     }
         //     if (this.state.sabbaticalEdit.length !== 0) {
         //         this.state.sabbaticalEdit.map(x => {
-        //             this.props.updateSabbatical(x._id, { ...x, employeeNumber })
+        //             this.props.updateAnnualLeave(x._id, { ...x, employeeNumber })
         //         });
         //     }
         //     if (this.state.sabbaticalDelete.length !== 0) {
         //         this.state.sabbaticalDelete.map(x => {
-        //             this.props.deleteSabbatical(x._id);
+        //             this.props.deleteAnnualLeave(x._id);
         //         })
         //     }
         //     // lưu thông tin khen thưởng
@@ -491,17 +491,17 @@ const actionCreators = {
     updateFile: EmployeeManagerActions.updateFile,
 
     createNewSalary: SalaryActions.createNewSalary,
-    createNewSabbatical: SabbaticalActions.createNewSabbatical,
+    createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
     createNewPraise: DisciplineActions.createNewPraise,
     createNewDiscipline: DisciplineActions.createNewDiscipline,
 
     updateSalary: SalaryActions.updateSalary,
-    updateSabbatical: SabbaticalActions.updateSabbatical,
+    updateAnnualLeave: AnnualLeaveActions.updateAnnualLeave,
     updateDiscipline: DisciplineActions.updateDiscipline,
     updatePraise: DisciplineActions.updatePraise,
 
     deleteSalary: SalaryActions.deleteSalary,
-    deleteSabbatical: SabbaticalActions.deleteSabbatical,
+    deleteAnnualLeave: AnnualLeaveActions.deleteAnnualLeave,
     deleteDiscipline: DisciplineActions.deleteDiscipline,
     deletePraise: DisciplineActions.deletePraise,
 };

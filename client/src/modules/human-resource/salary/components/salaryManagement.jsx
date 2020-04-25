@@ -6,7 +6,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMu
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../redux/actions';
 
-class SalaryManager extends Component {
+class SalaryManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -299,5 +299,5 @@ const actionCreators = {
     deleteSalary: SalaryActions.deleteSalary,
 };
 
-const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryManager));
-export { connectedListSalary as SalaryManager };
+const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryManagement));
+export { connectedListSalary as SalaryManagement };
