@@ -49,6 +49,7 @@ export default {
             delete_link_success: 'Xóa link thành công',
 
             // Component - Quản lý component
+            edit_component_success: 'Chỉnh sửa component thành công',
         },
         error: {
             title: 'Lỗi',
@@ -91,7 +92,7 @@ export default {
             url_exist: 'Url này đã đươc sử dụng',
 
             // Component - Quản lý component        
-
+            component_name_exist: 'Tên của component đã được sử dụng',
 
             email_does_not_exist: 'Email này đã được sử dụng',
             field_invalid: 'Trường nhập vào không hợp lệ',
