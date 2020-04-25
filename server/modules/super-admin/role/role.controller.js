@@ -8,7 +8,7 @@ exports.getAllRoles = async (req, res) => {
         LogInfo(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_roles_success',
+            message: ['get_roles_success'],
             content: roles
         });
     } catch (error) {
@@ -31,7 +31,7 @@ exports.getPaginatedRoles = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_ROLES', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'paginate_roles_success',
+            message: ['paginate_roles_success'],
             content: roles
         });
     } catch (error) {
@@ -46,19 +46,14 @@ exports.getPaginatedRoles = async (req, res) => {
 
 exports.createRole = async (req, res) => {
     try {
-        const checkRole = await RoleService.searchRoles({
-            company: req.user.company._id,
-            name: req.body.name
-        });
-        if(checkRole !== null) throw ['role_name_exist', 'error_code_2'];
         var role = await RoleService.createRole(req.body, req.user.company._id);
         await RoleService.editRelationshipUserRole(role._id, req.body.users);
-        var data = await RoleService.getRoleById(req.user.company._id, role._id);
+        var data = await RoleService.getRoleById(role._id);
         
         LogInfo(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'create_role_success',
+            message: ['create_role_success'],
             content: data
         });
     } catch (error) {
@@ -73,12 +68,12 @@ exports.createRole = async (req, res) => {
 
 exports.getRoleById = async (req, res) => {
     try {
-        var role = await RoleService.getRoleById(req.user.company._id, req.params.id);
+        var role = await RoleService.getRoleById(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'show_role_success',
+            message: ['show_role_success'],
             content: role
         });
     } catch (error) {
@@ -95,12 +90,12 @@ exports.editRole = async (req, res) => {
     try {
         await RoleService.editRelationshipUserRole(req.params.id, req.body.users);
         var role = await RoleService.editRole(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
-        var data = await RoleService.getRoleById(req.user.company._id, role._id);
+        var data = await RoleService.getRoleById(role._id);
         
         LogInfo(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'edit_role_success',
+            message: ['edit_role_success'],
             content: data
         });
     } catch (error) {
@@ -120,7 +115,7 @@ exports.deleteRole = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_ROLE', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'delete_role_success',
+            message: ['delete_role_success'],
             content: role
         });
     } catch (error) {
@@ -140,7 +135,7 @@ exports.getAllRolesInSameOrganizationalUnitWithRole = async (req, res) => {
         LogInfo(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_roles_same_department',
+            message: ['get_roles_same_department'],
             content: roles
         });
     } catch (error) {

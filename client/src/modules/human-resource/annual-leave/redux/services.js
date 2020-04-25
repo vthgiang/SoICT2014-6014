@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
-export const SabbaticalService = {
-    getListSabbatical,
-    createNewSabbatical,
-    deleteSabbatical,
-    updateSabbatical,
+export const AnnualLeaveService = {
+    searchAnnualLeaves,
+    createAnnualLeave,
+    deleteAnnualLeave,
+    updateAnnualLeave,
 }
 
 // Lấy danh sách nghỉ phép
-function getListSabbatical(data) {
+function searchAnnualLeaves(data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/sabbatical/paginate`,
         method: 'POST',
@@ -20,7 +20,7 @@ function getListSabbatical(data) {
 }
 
 // tạo mới thông tin nghỉ phép
-function createNewSabbatical(data) {
+function createAnnualLeave(data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/sabbatical/create`,
         method: 'POST',
@@ -31,7 +31,7 @@ function createNewSabbatical(data) {
 }
 
 // Xoá thông tin nghỉ phép
-function deleteSabbatical(id) {
+function deleteAnnualLeave(id) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'DELETE',
@@ -41,7 +41,7 @@ function deleteSabbatical(id) {
 }
 
 // Cập nhật thông tin nghỉ phép
-function updateSabbatical(id, data) {
+function updateAnnualLeave(id, data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'PUT',

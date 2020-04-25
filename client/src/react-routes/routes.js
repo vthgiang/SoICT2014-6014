@@ -31,7 +31,7 @@ import ManageDepartment from '../modules/super-admin/organizational-unit/compone
 import ManageComponent from '../modules/super-admin/component/components';
 
 
-import ManagerSabbatical from '../modules/human-resource/annual-leave/components';
+import AnnualLeaveManager from '../modules/human-resource/annual-leave/components';
 import { ManagerPraiseDiscipline} from '../modules/human-resource/commendation-discipline/components';
 import { DashBoardEmployees} from '../modules/human-resource/employee-dashboard/components/employeeDashBoard';
 import { DepartmentManage} from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
@@ -39,7 +39,7 @@ import { ManageHoliday } from '../modules/human-resource/holiday/components/holi
 import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
 import { ListEmployee, AddEmployee} from '../modules/human-resource/profile/employee-management/components/combinedContent';
 import {EmployeeCreatePage} from '../modules/human-resource/profile/employee-create/components/employeeCreatePage';
-import ManagerSalary from '../modules/human-resource/salary/components';
+import SalaryManager from '../modules/human-resource/salary/components';
 import { Timekeeping} from '../modules/human-resource/timesheet/components/timesheet';
 
 import { ListEducation} from '../modules/training/education-program/components/educationProgramList';
@@ -365,7 +365,7 @@ class Routes extends Component {
                         path={ '/hr-sabbatical' }
                         pageName={'sabbatical' }
                         layout={ Layout }
-                        component={ ManagerSabbatical }
+                        component={ AnnualLeaveManager }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.holiday.isLoading }
@@ -395,7 +395,7 @@ class Routes extends Component {
                         path={ '/hr-salary-employee' }
                         pageName={'salary_employee' }
                         layout={ Layout }
-                        component={ ManagerSalary }
+                        component={ SalaryManager }
                     />
                     <PrivateRoute 
                         isLoading={ false }

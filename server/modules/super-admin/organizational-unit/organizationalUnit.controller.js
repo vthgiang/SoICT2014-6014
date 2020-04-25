@@ -14,7 +14,7 @@ exports.getAllOrganizationalUnits = async (req, res) => {
         await LogInfo(req.user.email, 'GET_DEPARTMENTS', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_departments_success',
+            message: ['get_departments_success'],
             content: { list, tree }
         });
     } catch (error) {
@@ -39,7 +39,7 @@ exports.createOrganizationalUnit = async (req, res) => {
         await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'create_department_success',
+            message: ['create_department_success'],
             content: { department: organizationalUnit, tree }
         });
     } catch (error) {
@@ -54,12 +54,12 @@ exports.createOrganizationalUnit = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        var department = await OrganizationalUnitService.getById(req, res);
+        var department = await OrganizationalUnitService.getById(req.params.id);
         
         await LogInfo(req.user.email, 'SHOW_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'show_department_success',
+            message: ['show_department_success'],
             content: department
         });
     } catch (error) {
@@ -86,7 +86,7 @@ exports.edit = async (req, res) => {
         await LogInfo(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'edit_department_success',
+            message: ['edit_department_success'],
             content: { department, tree }
         });
     } catch (error) {
@@ -107,7 +107,7 @@ exports.delete = async (req, res) => {
         await LogInfo(req.user.email, 'DELETE_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'delete_department_success',
+            message: ['delete_department_success'],
             content: { role, tree }
         });
     } catch (error) {
@@ -128,7 +128,7 @@ exports.getDepartmentOfUser = async (req, res) => {
         await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_department_of_user_success',
+            message: ['get_department_of_user_success'],
             content: department
         });
     } catch (error) {
@@ -148,7 +148,7 @@ exports.getDepartmentsThatUserIsDean = async (req, res) =>{
         await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_department_that_user_is_dean_success',
+            message: ['get_department_that_user_is_dean_success'],
             content: department
         });
     }

@@ -4,8 +4,6 @@ import { UserActions } from "../../../../super-admin/user/redux/actions"
 import { createKpiSetActions  } from '../redux/actions';
 import { DatePicker, DialogModal } from '../../../../../../src/common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 var translate='';
 class ModalCreateEmployeeKpiSet extends Component {
@@ -13,8 +11,8 @@ class ModalCreateEmployeeKpiSet extends Component {
         super(props);
         translate = this.props.translate;
         this.state = {
-            kpipersonal: {
-                unit: "",
+            employeeKpiSet: {
+                organizationalUnit: "",
                 // creater: this.getCreater(), //localStorage.getItem("id"),
                 approver: "",
                 time: "",
@@ -30,7 +28,6 @@ class ModalCreateEmployeeKpiSet extends Component {
     // }
 
     // function: notification the result of an action
-    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
 
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
@@ -45,7 +42,7 @@ class ModalCreateEmployeeKpiSet extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                kpipersonal: {
+                employeeKpiSet: {
                     ...state.kpiunit,
                     time: value
                 }
@@ -66,11 +63,11 @@ class ModalCreateEmployeeKpiSet extends Component {
             day = '0' + day;
         var defaultTime =  [month, year].join('-');
 
-        if(this.state.kpipersonal.time === ""){
+        if(this.state.employeeKpiSet.time === ""){
             await this.setState(state => {
                 return {
                     ...state,
-                    kpipersonal: {
+                    employeeKpiSet: {
                         ...state.kpiunit,
                         time: defaultTime,
                     }
@@ -81,23 +78,23 @@ class ModalCreateEmployeeKpiSet extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                kpipersonal: {
-                    ...state.kpipersonal,
-                    unit: this.props.unit,
+                employeeKpiSet: {
+                    ...state.employeeKpiSet,
+                    organizationalUnit: this.props.organizationalUnit,
                     approver: this.approver.value,
                 }
             }
         })
-        var {kpipersonal} = this.state;
-        if(kpipersonal.unit  && kpipersonal.time && kpipersonal.approver){//&& kpipersonal.creater
-            this.props.createEmployeeKpiSet(kpipersonal);
+        var { employeeKpiSet } = this.state;
+        if(employeeKpiSet.organizationalUnit  && employeeKpiSet.time && employeeKpiSet.approver){//&& employeeKpiSet.creater
+            this.props.createEmployeeKpiSet(employeeKpiSet);
             window.$("#createEmployeeKpiSet").modal("hide");
         }
     }
     
     render() {
         var userdepartments;
-        const { unit, user, translate } = this.props;
+        const { organizationalUnit, user, translate } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
         var d = new Date(),
@@ -116,20 +113,20 @@ class ModalCreateEmployeeKpiSet extends Component {
                 <DialogModal
                     modalID="createEmployeeKpiSet" isLoading={false}
                     formID="formCreateEmployeeKpiSet"
-                    title={translate('kpi_personal.start.initialize_kpi')}
-                    msg_success={translate('kpi_personal.start.success')}
-                    msg_faile={translate('kpi_unit_create.error')}
+                    title={translate('employee_kpi_set.create_employee_kpi_set_modal.initialize_kpi_set')}
+                    msg_success={translate('employee_kpi_set.create_employee_kpi_set_modal.success')}
+                    msg_faile={translate('employee_kpi_set.create_employee_kpi_set_modal.failure')}
                     func={this.handleCreateEmployeeKpiSet}
                     // disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('kpi_unit_create.init_success'))}>
+                    <form id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('employee_kpi_set.create_employee_kpi_set_modal.success'))}>
                         <div className="form-group">
-                            <label className="col-sm-3">{translate('kpi_unit_create.unit')}</label>
-                            <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
+                            <label className="col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set_modal.organizational_unit')}</label>
+                            <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
                         
                         <div className="form-group">
-                            <label className="col-sm-3">{translate('kpi_unit_create.month')}</label>
+                            <label className="col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
                             <DatePicker
                                 id="month"      
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -140,7 +137,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                         </div>
 
                         <div className="form-group">
-                                <label className="col-sm-3">{translate('kpi_personal.start.approver')}</label>
+                                <label className="col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                 <div className="input-group col-sm-9" style={{ width: "60%" }}>
                                     {userdepartments && 
                                         <select defaultValue={userdepartments[0].userId._id} ref={input => this.approver = input} className="form-control select2">
@@ -156,7 +153,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                             </div>
 
                             <div className="form-group" >
-                                <label className="col-sm-12">{translate('kpi_personal.start.default_target')}</label>
+                                <label className="col-sm-12">{translate('employee_kpi_set.create_employee_kpi_set_modal.default_target')}</label>
                                 <ul>
                                     <li>Hỗ trợ đồng nghiệp các vấn đề chuyên môn (Vai trò C)</li>
                                     <li>Hoàn thành nhiệm vụ phê duyệt (Vai trò A)</li>
@@ -172,19 +169,19 @@ class ModalCreateEmployeeKpiSet extends Component {
             //         <div className="modal-content">
             //             <div className="modal-header">
             //                 <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-            //                 <h3 className="modal-title">{translate('kpi_personal.start.initialize_kpi')}</h3>
+            //                 <h3 className="modal-title">{translate('employee_kpi_set.start.initialize_kpi')}</h3>
             //             </div>
             //             <div className="modal-body">
             //                 <form className="form-horizontal">
 
 
             //                     <div className="form-group">
-            //                         <label className="col-sm-3">{translate('kpi_personal.start.unit')}</label>
+            //                         <label className="col-sm-3">{translate('employee_kpi_set.start.unit')}</label>
             //                         <p className="col-sm-9">{unit && unit.name}</p>
             //                     </div>
 
             //                     <div className="form-group">
-            //                         <label className="col-sm-3">{translate('kpi_personal.start.month')}</label>
+            //                         <label className="col-sm-3">{translate('employee_kpi_set.start.month')}</label>
             //                         <div className="input-group col-sm-9 date has-feedback" style={{ width: "60%" }}>
             //                             <div className="input-group-addon">
             //                                 <i className="fa fa-calendar"/>
@@ -194,7 +191,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             //                     </div>
 
             //                     <div className="form-group">
-            //                         <label className="col-sm-3">{translate('kpi_personal.start.approver')}</label>
+            //                         <label className="col-sm-3">{translate('employee_kpi_set.start.approver')}</label>
             //                         <div className="input-group col-sm-9" style={{ width: "60%" }}>
             //                             {userdepartments && 
             //                                 <select defaultValue={userdepartments[0].userId._id} ref={input => this.approver = input} className="form-control select2">
@@ -221,7 +218,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             //                         </div>
             //                     </div>
             //                     <div className="form-group" >
-            //                         <label className="col-sm-12">{translate('kpi_personal.start.default_target')}</label>
+            //                         <label className="col-sm-12">{translate('employee_kpi_set.start.default_target')}</label>
             //                         <ul>
             //                             <li>Hỗ trợ đồng nghiệp các vấn đề chuyên môn (Vai trò C)</li>
             //                             <li>Hoàn thành nhiệm vụ phê duyệt (Vai trò A)</li>
@@ -230,8 +227,8 @@ class ModalCreateEmployeeKpiSet extends Component {
             //                 </form>
             //             </div>
             //             <div className="modal-footer">
-            //                 <button className="btn btn-success" onClick={(event)=>this.handleCreateKPIPersonal(event, unit&&unit._id)}>{translate('kpi_personal.start.initialize')}</button>
-            //                 <button type="cancel" className="btn btn-primary" data-dismiss="modal">{translate('kpi_personal.start.cancel')}</button>
+            //                 <button className="btn btn-success" onClick={(event)=>this.handleCreateKPIPersonal(event, unit&&unit._id)}>{translate('employee_kpi_set.start.initialize')}</button>
+            //                 <button type="cancel" className="btn btn-primary" data-dismiss="modal">{translate('employee_kpi_set.start.cancel')}</button>
             //             </div>
             //         </div>
             //     </div>

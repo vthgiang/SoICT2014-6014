@@ -73,7 +73,7 @@ function create(role){
                         type: RoleConstants.CREATE_ROLE_SUCCESS,
                         payload: res.data.content
                     });
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({ type: RoleConstants.CREATE_ROLE_FAILE});
@@ -94,7 +94,7 @@ function edit(role){
                     type: RoleConstants.EDIT_ROLE_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res.data.content);
+                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: RoleConstants.EDIT_ROLE_FAILE});

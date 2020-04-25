@@ -210,7 +210,7 @@ class SalaryCreateForm extends Component {
     // Function bắt sự kiện lưu bảng lương
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.createNewSalary(this.state);
+            return this.props.createSalary(this.state);
         }
     }
 
@@ -294,7 +294,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    createNewSalary: SalaryActions.createNewSalary,
+    createSalary: SalaryActions.createSalary,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(SalaryCreateForm));

@@ -115,7 +115,8 @@ function deleteKPIUnit(id) {
 }
 
 // xóa mục tiêu của KPI đơn vị
-function deleteTargetKPIUnit(id, kpiunit) {
+function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
+    let kpiunit = organizationalUnitKpiSetId
     const requestOptions = {
         method: 'DELETE',
         headers: AuthenticateHeader()

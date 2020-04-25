@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { SabbaticalFormValidator } from './annualLeaveFormValidator';
-import { SabbaticalActions } from '../redux/actions';
-class SabbaticalCreateForm extends Component {
+import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
+import { AnnualLeaveActions } from '../redux/actions';
+class AnnualLeaveCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +36,7 @@ class SabbaticalCreateForm extends Component {
         this.validateEmployeeNumber(value, true);
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateEmployeeNumber(value, this.props.translate)
+        let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -53,7 +53,7 @@ class SabbaticalCreateForm extends Component {
         this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateStartDate(value, this.props.translate)
+        let msg = AnnualLeaveFormValidator.validateStartDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -71,7 +71,7 @@ class SabbaticalCreateForm extends Component {
         this.validateEndDate(value, true);
     }
     validateEndDate = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateEndDate(value, this.props.translate)
+        let msg = AnnualLeaveFormValidator.validateEndDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -90,7 +90,7 @@ class SabbaticalCreateForm extends Component {
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateReason(value, this.props.translate)
+        let msg = AnnualLeaveFormValidator.validateReason(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -123,7 +123,7 @@ class SabbaticalCreateForm extends Component {
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.createNewSabbatical(this.state);
+            return this.props.createAnnualLeave(this.state);
         }
     }
 
@@ -195,8 +195,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    createNewSabbatical: SabbaticalActions.createNewSabbatical,
+    createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
 };
 
-const createForm = connect(mapState, actionCreators)(withTranslate(SabbaticalCreateForm));
-export { createForm as SabbaticalCreateForm };
+const createForm = connect(mapState, actionCreators)(withTranslate(AnnualLeaveCreateForm));
+export { createForm as AnnualLeaveCreateForm };
