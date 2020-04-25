@@ -1,7 +1,7 @@
 import { SalaryConstants } from './constants';
 const initState = {
     isLoading: false,
-    listSalary: [],
+    listSalarys: [],
     totalList: "",
     importSalary:"",
     checkSalary: "",
@@ -25,7 +25,7 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listSalary: action.payload.listSalary,
+                listSalarys: action.payload.listSalarys,
                 totalList: action.payload.totalList,
             };
 
@@ -33,8 +33,8 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listSalary: [
-                    ...state.listSalary,
+                listSalarys: [
+                    ...state.listSalarys,
                     action.payload
                 ],  
             };
@@ -42,13 +42,13 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listSalary: state.listSalary.map(salary => salary._id === action.payload._id ? action.payload : salary)   
+                listSalarys: state.listSalarys.map(salary => salary._id === action.payload._id ? action.payload : salary)   
             };
         case SalaryConstants.DELETE_SALARY_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listSalary: state.listSalary.filter(salary => (salary._id !== action.payload._id)),
+                listSalarys: state.listSalarys.filter(salary => (salary._id !== action.payload._id)),
             };
         case SalaryConstants.IMPORT_SALARY_SUCCESS:
             return {
