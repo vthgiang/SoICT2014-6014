@@ -44,7 +44,7 @@ function createNewSabbatical(data) {
                         type: SabbaticalConstants.CREATE_SABBATICAL_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -71,7 +71,7 @@ function deleteSabbatical(id) {
                         type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -98,7 +98,7 @@ function updateSabbatical(id, infoSabbatical) {
                         type: SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({

@@ -2,6 +2,7 @@ export default {
     locale: 'vn',
     messages: {
         success: {
+            title: 'Thành công',
             /**SYSTEM ADMIN */
 
             // Quản lý doanh nghiệp, công ty
@@ -50,6 +51,7 @@ export default {
             // Component - Quản lý component
         },
         error: {
+            title: 'Lỗi',
             /**SYSTEM ADMIN */
 
             // Quản lý doanh nghiệp, công ty

@@ -58,7 +58,7 @@ function edit(id, data){
                     type: UserConstants.EDIT_USER_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res.data.content);
+                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: UserConstants.EDIT_USER_FAILE});
@@ -79,7 +79,7 @@ function create(data){
                         type: UserConstants.CREATE_USER_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({ type: UserConstants.CREATE_USER_FAILE});

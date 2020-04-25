@@ -47,7 +47,7 @@ function createNewSalary(data) {
                         type: SalaryConstants.CREATE_SALARY_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -74,7 +74,7 @@ function deleteSalary(id) {
                         type: SalaryConstants.DELETE_SALARY_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -101,7 +101,7 @@ function updateSalary(id, data) {
                         type: SalaryConstants.UPDATE_SALARY_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -174,7 +174,7 @@ function importSalary(data) {
                         type: SalaryConstants.IMPORT_SALARY_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({

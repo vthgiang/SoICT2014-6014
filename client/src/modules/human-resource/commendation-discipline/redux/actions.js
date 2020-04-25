@@ -54,7 +54,7 @@ function createNewDiscipline(data) {
                         type: DisciplineConstants.CREATE_DISCIPLINE_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -81,7 +81,7 @@ function deleteDiscipline(id) {
                         type: DisciplineConstants.DELETE_DISCIPLINE_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -108,7 +108,7 @@ function updateDiscipline(id, data) {
                         type: DisciplineConstants.UPDATE_DISCIPLINE_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -171,7 +171,7 @@ function createNewPraise(data) {
                         type: DisciplineConstants.CREATE_PRAISE_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -198,7 +198,7 @@ function deletePraise(id) {
                         type: DisciplineConstants.DELETE_PRAISE_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({
@@ -226,7 +226,7 @@ function updatePraise(id, data) {
                         type: DisciplineConstants.UPDATE_PRAISE_SUCCESS,
                         payload: res.data.content
                     })
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({

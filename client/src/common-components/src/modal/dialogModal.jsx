@@ -33,7 +33,7 @@ class DialogModal extends Component {
                 this.closeModal(resetOnSave);
                 let html = () => {
                     return <React.Fragment>
-                        <h2 style={{textAlign: 'center'}}>Success</h2>
+                        <h2 style={{textAlign: 'center'}}>{translate('success.title')}</h2>
                         <ul> {
                             res.data.message.map(message => <li key={message}>{translate(`success.${message}`)}</li>)
                         }</ul>
@@ -49,7 +49,7 @@ class DialogModal extends Component {
                     console.log("ERROR RESPONSE: ", messages);
                     let html = () => {
                         return <React.Fragment>
-                            <h2 style={{textAlign: 'center'}}>Error</h2>
+                            <h2 style={{textAlign: 'center'}}>{translate('error.title')}</h2>
                             <ul> {
                                 messages.map(message => <li key={message}>{translate(`error.${message}`)}</li>)
                             }</ul>

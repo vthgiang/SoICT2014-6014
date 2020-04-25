@@ -44,7 +44,7 @@ function create(data){
                         type: DepartmentConstants.CREATE_DEPARTMENT_SUCCESS,
                         payload: res.data.content
                     });
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_FAILE});
@@ -66,7 +66,7 @@ function edit(data){
                         type: DepartmentConstants.EDIT_DEPARTMENT_SUCCESS,
                         payload: res.data.content
                     });
-                    resolve(res.data.content);
+                    resolve(res);
                 })
                 .catch(err => {
                     dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_FAILE});
