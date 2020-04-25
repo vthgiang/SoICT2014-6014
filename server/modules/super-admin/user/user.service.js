@@ -3,7 +3,10 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 
-// Lấy tất cả các user trong 1 công ty
+/**
+ * Lấy danh sách tất cả user trong 1 công ty
+ * @company id của công ty
+ */
 exports.getAllUsers = async (company) => {
     const users = await User
         .find({ company })
@@ -16,7 +19,13 @@ exports.getAllUsers = async (company) => {
     return users;
 }
 
-//Lay danh sach nguoi dung theo phân trang
+/**
+ * Phân trang danh sách user muốn lấy
+ * @company id công ty
+ * @limit giới hạn hiển thị trên 1 bảng
+ * @page trang muốn lấy
+ * @data dữ liệu truy vấn
+ */
 exports.getPaginatedUsers = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await User
@@ -31,8 +40,11 @@ exports.getPaginatedUsers = async (company, limit, page, data={}) => {
         });
 }
 
-//lay thong tin nguoi dung theo id
-exports.getUserById = async (id) => { //tim user theo id
+/**
+ * Lấy thông tin user theo id
+ * @id id của user
+ */
+exports.getUserById = async (id) => {
     var user = await User
         .findById(id)
         .select('-password -status -deleteSoft -tokens')
@@ -45,14 +57,18 @@ exports.getUserById = async (id) => { //tim user theo id
     return user;
 }
 
-//tao mot tai khoan cho nguoi dung moi trong cong ty
+/**
+ * Tạo tài khoản cho user
+ * @data dữ liệu về user
+ * @company công ty user thuộc về
+ */
 exports.createUser = async (data, company) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({ length: 10, numbers: true });
     var hash = bcrypt.hashSync(password, salt);
 
     var checkUser = await User.findOne({ email: data.email, company});
-    if(checkUser !== null) throw['email_exist']; // Email đã được sử dụng
+    if(checkUser !== null) throw['email_exist'];
     var user = await User.create({
         name: data.name,
         email: data.email,
@@ -64,6 +80,11 @@ exports.createUser = async (data, company) => {
     return user;
 }
 
+/**
+ * Gửi email thông báo đã tạo tài khoản thành công
+ * @email người nhận
+ * @password của tài khoản đó
+ */
 exports.sendMailAboutCreatedAccount = async(email, password) => {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
@@ -92,6 +113,11 @@ exports.sendMailAboutCreatedAccount = async(email, password) => {
     return await transporter.sendMail(mainOptions);
 }
 
+/**
+ * Gửi email thông báo thay đổi email tài khoản hiện tại
+ * @oldEmail email cũ
+ * @newEmail email mới
+ */
 exports.sendMailAboutChangeEmailOfUserAccount = async(oldEmail, newEmail) => {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
@@ -118,6 +144,11 @@ exports.sendMailAboutChangeEmailOfUserAccount = async(oldEmail, newEmail) => {
     return await transporter.sendMail(mainOptions);
 }
 
+/**
+ * Chỉnh sửa thông tin tài khoản người dùng
+ * @id id tài khoản
+ * @data dữ liệu chỉnh sửa
+ */
 exports.editUser = async (id, data) => {
     var user = await User
         .findById(id)
@@ -147,6 +178,10 @@ exports.editUser = async (id, data) => {
     return user;
 }
 
+/**
+ * Xóa tài khoản người dùng
+ * @id id tài khoản người dùng
+ */
 exports.deleteUser = async (id) => {
     var deleteUser = await User.deleteOne({ _id: id });
     await UserRole.deleteOne({ userId: id });
@@ -154,6 +189,11 @@ exports.deleteUser = async (id) => {
     return deleteUser;
 }
 
+/**
+ * Thêm 1 hoặc nhiều role - phân quyền cho user
+ * @userId id của user
+ * @roleIdArr mảng id các role
+ */
 exports.addRolesForUser = async (userId, roleIdArr) => { 
     var data = await roleIdArr.map( roleId => {
         return {
@@ -166,6 +206,11 @@ exports.addRolesForUser = async (userId, roleIdArr) => {
     return relationship;
 }
 
+/**
+ * Chỉnh sửa các role - phân quyền cho 1 user
+ * @userId id user
+ * @roleIdArr mảng id các role
+ */
 exports.editRolesForUser = async (userId, roleIdArr) => { 
     await UserRole.deleteMany({userId});
     var data = await roleIdArr.map( roleId => {

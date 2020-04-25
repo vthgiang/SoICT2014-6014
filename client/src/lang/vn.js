@@ -2,6 +2,8 @@ export default {
     locale: 'vn',
     messages: {
         success: {
+            /**SYSTEM ADMIN */
+
             // Quản lý doanh nghiệp, công ty
             create_company_success: 'Khởi tạo dữ liệu công ty thành công',
             show_company_success: 'Lấy dữ liệu công ty thành công',
@@ -22,8 +24,25 @@ export default {
             show_system_component_success: 'Lấy dữ liệu system component thành công',
             edit_system_component_success: 'Chỉnh sửa system admin thành công',
             delete_system_component_success: 'Xóa system component thành công',
+
+            /**SUPER ADMIN */
+
+            // Oranization Unit - Quản lý cơ cấu tổ chức
+
+            // Role - Quản lý phân quyền
+
+            // User - Quản lý người dùng
+            create_user_success: 'Tạo tài khoản người dùng thành công',
+            edit_user_success: 'Chỉnh sửa thông tin tài khoản người dùng thành công',
+            delete_user_success: 'Xóa tài khoản người dùng thành công',
+
+            // Link - Quản lý trang
+
+            // Component - Quản lý component
         },
         error: {
+            /**SYSTEM ADMIN */
+
             // Quản lý doanh nghiệp, công ty
             email_exist: 'Email này đã được sử dụng',
             company_not_found: 'Không tìm thấy thông tin về công ty',
@@ -36,6 +55,21 @@ export default {
             // Quản lý system component
             system_component_name_invalid: 'Tên không hợp lệ',
             system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
+
+            /**SUPER ADMIN */
+
+            // Oranization Unit - Quản lý cơ cấu tổ chức
+
+            // Role - Quản lý phân quyền
+
+            // User - Quản lý người dùng
+            email_exist: 'Email đã được sử dụng cho một tài khoản khác',
+            user_not_found: 'Không tìm thấy thông tin về tài khoản',
+            department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
+            // Link - Quản lý trang
+
+            // Component - Quản lý component        
+
 
             email_does_not_exist: 'Email này đã được sử dụng',
             field_invalid: 'Trường nhập vào không hợp lệ',

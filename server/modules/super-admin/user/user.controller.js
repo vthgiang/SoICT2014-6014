@@ -8,7 +8,7 @@ exports.getAllUsers = async (req, res) => {
         LogInfo(req.user.email, 'GET_USERS', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_users_success',
+            message: ['get_users_success'],
             content: users
         });
     } catch (error) {
@@ -31,7 +31,7 @@ exports.getPaginatedUsers = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_USERS', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'paginate_users_success',
+            message: ['paginate_users_success'],
             content: users
         });
     } catch (error) {
@@ -53,7 +53,7 @@ exports.createUser = async (req, res) => {
         LogInfo(req.user.email, 'CREATE_USER', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'create_user_success',
+            message: ['create_user_success'],
             content: result
         });
     } catch (error) {
@@ -73,7 +73,7 @@ exports.getUserById = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_USER', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'show_user_success',
+            message: ['show_user_success'],
             content: user
         });
     } catch (error) {
@@ -95,7 +95,7 @@ exports.editUser = async (req, res) => {
         LogInfo(req.user.email, 'EDIT_USER', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'edit_user_success',
+            message: ['edit_user_success'],
             content: result
         });
     } catch (error) {
@@ -115,7 +115,7 @@ exports.deleteUser = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_USER', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'delete_user_success',
+            message: ['delete_user_success'],
             content: deleteUser
         });
     } catch (error) {
@@ -135,7 +135,7 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async (req, res) => {
         LogInfo(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_users_same_department_success',
+            message: ['get_users_same_department_success'],
             content: users
         })
     } catch (error) {
@@ -155,7 +155,7 @@ exports.getAllUsersInOrganizationalUnit = async (req, res) => {
         LogInfo(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_users_of_department_success',
+            message: ['get_users_of_department_success'],
             content: users
         })
     } catch (error) {
