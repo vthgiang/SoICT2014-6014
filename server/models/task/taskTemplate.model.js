@@ -95,7 +95,7 @@ const TaskTemplateSchema = new Schema({
         default: false,
         required: true
     },
-    count: {
+    numberOfUse: {
         type: Number,
         default: 0,
         required: true

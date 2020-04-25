@@ -122,9 +122,9 @@ class TaskTemplate extends Component {
 
 
     //Xoa tasktemplate theo id
-    handleDelete = (id, count) => {
+    handleDelete = (id, numberOfUse) => {
         const { translate } = this.props;
-        if (count == 0) {
+        if (numberOfUse == 0) {
             Swal.fire({
                 title: translate('task_template.confirm_title'),
                 type: 'success',
@@ -267,7 +267,7 @@ class TaskTemplate extends Component {
                                         item.resourceId && <tr key={item.resourceId._id}>
                                             <td title={item.resourceId.name}>{item.resourceId.name}</td>
                                             <td title={item.resourceId.description}>{item.resourceId.description}</td>
-                                            <td title={item.resourceId.count}>{item.resourceId.count}</td>
+                                            <td title={item.resourceId.numberOfUse}>{item.resourceId.numberOfUse}</td>
                                             <td title={item.resourceId.creator.name}>{item.resourceId.creator.name}</td>
                                             <td title={item.resourceId.organizationalUnit.name}>{item.resourceId.organizationalUnit.name}</td>
                                             <td>
@@ -278,7 +278,7 @@ class TaskTemplate extends Component {
                                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                                     <React.Fragment>
                                                         <a onClick={()=>this.handleShowEdit(item.resourceId._id)} data-toggle="modal" className="edit" title="Sửa mẫu công việc này"><i className="material-icons"></i></a>
-                                                        <a onClick={()=>this.handleDelete(item.resourceId._id, item.resourceId.count)} className="delete" title="Xóa mẫu công việc này"><i className="material-icons"></i></a>
+                                                        <a onClick={()=>this.handleDelete(item.resourceId._id, item.resourceId.numberOfUse)} className="delete" title="Xóa mẫu công việc này"><i className="material-icons"></i></a>
                                                     </React.Fragment>}
                                                 {this.state.showEdit===item.resourceId._id&&<ModalEditTaskTemplate id={item.resourceId._id} />}
                                             </td>
