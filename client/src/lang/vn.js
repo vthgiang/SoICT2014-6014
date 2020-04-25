@@ -27,9 +27,12 @@ export default {
 
             /**SUPER ADMIN */
 
-            // Oranization Unit - Quản lý cơ cấu tổ chức
+            // Organizational Unit - Quản lý cơ cấu tổ chức
 
             // Role - Quản lý phân quyền
+            create_role_success: 'Tạo role mới thành công',
+            edit_role_success: 'Chỉnh sửa role thành công',
+            delete_role_success: 'Xóa role thành công',
 
             // User - Quản lý người dùng
             create_user_success: 'Tạo tài khoản người dùng thành công',
@@ -58,9 +61,13 @@ export default {
 
             /**SUPER ADMIN */
 
-            // Oranization Unit - Quản lý cơ cấu tổ chức
+            // Organizational Unit - Quản lý cơ cấu tổ chức
 
             // Role - Quản lý phân quyền
+            role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
+            role_dean_exist: 'Tên cho phân quyền của trưởng đơn vị này đã được sử dụng',
+            role_vice_dean_exist: 'Tên cho phân quyền của phó đơn vị này đã được sử dụng',
+            role_employee_exist: 'Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng',
 
             // User - Quản lý người dùng
             email_exist: 'Email đã được sử dụng cho một tài khoản khác',
