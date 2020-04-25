@@ -2,25 +2,25 @@ import { dashboardKpiConstants } from "./constants";
 
 export function dashboardKPIPersonal(state = {}, action) {
   switch (action.type) {
-    case  dashboardKpiConstants.GETALL_KPIPERSONAL_REQUEST:
+    case  dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_REQUEST:
       return {
         ...state,
         loading: true,
         isLoading: true
       };
-    case dashboardKpiConstants.GETALL_KPIPERSONAL_SUCCESS:
+    case dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_SUCCESS:
       return {
         ...state,
         loading: false,
-        kpipersonals: action.kpipersonals.content,
+        employeeKpiSet: action.payload,
         isLoading: false
       };
-    case dashboardKpiConstants.GETALL_KPIPERSONAL_FAILURE:
+    case dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
-    case  dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_REQUEST:
+    case  dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_OF_TASK_REQUEST:
       return {
         ...state,
         loading: true,
@@ -30,12 +30,12 @@ export function dashboardKPIPersonal(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpipersonals: action.kpipersonals.content,
+        employeeKpiSet: action.payload,
         isLoading: false
       };
     case dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     default:

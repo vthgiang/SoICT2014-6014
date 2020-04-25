@@ -11,14 +11,14 @@ import {
 } from '../../../../../config';
 import jwt from 'jsonwebtoken';
 
-class ModalCopyKPIPersonal extends Component {
+class ModalCopyEmployeeKpiSet extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            kpipersonal: {
-                unit: "",
+            employeeKpiSet: {
+                organizationalUnit: "",
                 time: this.formatDate(Date.now()),
-                creater: "" //localStorage.getItem("id")
+                creator: "" //localStorage.getItem("id")
                 
             },
         };
@@ -43,25 +43,25 @@ class ModalCopyKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
-    handleSubmit = async (event, oldkpipersonal) => {
+    handleSubmit = async (event, oldemployeeKpiSet) => {
         event.preventDefault();
         const token = getStorage();
         const verified = await jwt.verify(token, TOKEN_SECRET);
         var id = verified._id;
-        kpipersonal.creater = id;
+        employeeKpiSet.creator = id;
         await this.setState(state => {
             return {
                 ...state,
-                kpipersonal: {
-                    ...state.kpipersonal,
-                    unit: oldkpipersonal.unit._id,
-                    listtarget: oldkpipersonal.listtarget
+                employeeKpiSet: {
+                    ...state.employeeKpiSet,
+                    organizationalUnit: oldemployeeKpiSet.organizationalUnit._id,
+                    kpis: oldemployeeKpiSet.kpis
                 }
             }
         })
         
-        var { kpipersonal } = this.state;
-        if (kpipersonal.unit && kpipersonal.time ) {//&& kpipersonal.creater
+        var { employeeKpiSet } = this.state;
+        if (employeeKpiSet.organizationalUnit && employeeKpiSet.time ) {//&& employeeKpiSet.creator
             Swal.fire({
                 title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                 type: 'warning',
@@ -69,7 +69,7 @@ class ModalCopyKPIPersonal extends Component {
                 confirmButtonText: 'Xác nhận'
             }).then((res) => {
                 if (res.value) {
-                    this.handleCloseModal(oldkpipersonal._id);
+                    this.handleCloseModal(oldemployeeKpiSet._id);
                 }
             });
         }
@@ -82,19 +82,19 @@ class ModalCopyKPIPersonal extends Component {
         modal.style = "display: none;";
     }
     render() {
-        var {kpipersonal} = this.props;
+        var {employeeKpiSet} = this.props;
         return (
-            <div className="modal fade" id={`copyOldKPIToNewTime${kpipersonal._id}`}>
+            <div className="modal fade" id={`copyOldKPIToNewTime${employeeKpiSet._id}`}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(kpipersonal._id)} aria-hidden="true">×</button>
-                            <h3 className="modal-title">Thiết lập KPI tháng mới từ KPI tháng {this.formatDate(kpipersonal.time)}</h3>
+                            <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(employeeKpiSet._id)} aria-hidden="true">×</button>
+                            <h3 className="modal-title">Thiết lập KPI tháng mới từ KPI tháng {this.formatDate(employeeKpiSet.time)}</h3>
                         </div>
                         <div className="modal-body">
                             <div className="form-group">
                                 <label className="col-sm-5">Đơn vị:</label>
-                                <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpipersonal && kpipersonal.unit.name}</label>
+                                <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{employeeKpiSet && employeeKpiSet.organizationalUnit.name}</label>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2">Tháng:</label>
@@ -108,8 +108,8 @@ class ModalCopyKPIPersonal extends Component {
                             <div className="form-group" >
                                 <label className="col-sm-12">Danh sách mục tiêu:</label>
                                 <ul>
-                                    {typeof kpipersonal !== "undefined" && kpipersonal.listtarget.length !== 0 &&
-                                        kpipersonal.listtarget.map(item => {
+                                    {typeof employeeKpiSet !== "undefined" && employeeKpiSet.kpis.length !== 0 &&
+                                        employeeKpiSet.kpis.map(item => {
                                             return <li key={item._id}>{item.name + " (" + item.weight + ")"}</li>
                                         })
                                     }
@@ -117,8 +117,8 @@ class ModalCopyKPIPersonal extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, kpipersonal)}>Thiết lập</button>
-                            <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(kpipersonal._id)}>Hủy bỏ</button>
+                            <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, employeeKpiSet)}>Thiết lập</button>
+                            <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(employeeKpiSet._id)}>Hủy bỏ</button>
                         </div>
                     </div>
                 </div>
@@ -129,12 +129,12 @@ class ModalCopyKPIPersonal extends Component {
 
 
 function mapState(state) {
-    const { overviewKpiPersonal } = state;
-    return { overviewKpiPersonal };
+    const { overviewEmployeeKpiSet } = state;
+    return { overviewEmployeeKpiSet };
 }
 
 const actionCreators = {
-    addkpipersonal: dashboardKpiActions.addkpipersonal
+    addemployeeKpiSet: dashboardKpiActions.addemployeeKpiSet
 };
-const connectedModalCopyKPIPersonal = connect(mapState, actionCreators)(ModalCopyKPIPersonal);
-export { connectedModalCopyKPIPersonal as ModalCopyKPIPersonal };
+const connectedModalCopyEmployeeKpiSet = connect(mapState, actionCreators)(ModalCopyEmployeeKpiSet);
+export { connectedModalCopyEmployeeKpiSet as ModalCopyEmployeeKpiSet };

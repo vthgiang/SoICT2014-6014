@@ -52,7 +52,7 @@ import {KPIUnitEvaluate} from "../modules/kpi/organizational-unit/evaluation/com
 
 import {CreateEmployeeKpiSet} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
 import {KPIPersonalManager} from "../modules/kpi/employee/management/component/employeeKpiManagement";
-import {DashBoardKPIPersonal} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
+import {DashBoardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
 
 import {KPIMember} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
@@ -547,7 +547,7 @@ class Routes extends Component {
                         path={ '/kpi-personals/dashboard' }
                         pageName={ 'kpi_personal_dashboard' }
                         layout={ Layout }
-                        component={DashBoardKPIPersonal }
+                        component={DashBoardEmployeeKpiSet }
                     />
                     <PrivateRoute 
                         isLoading={ false }
