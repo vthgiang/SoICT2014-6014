@@ -269,7 +269,7 @@ class TaskTemplate extends Component {
                                             <td title={item.resourceId.description}>{item.resourceId.description}</td>
                                             <td title={item.resourceId.count}>{item.resourceId.count}</td>
                                             <td title={item.resourceId.creator.name}>{item.resourceId.creator.name}</td>
-                                            <td title={item.resourceId.unit.name}>{item.resourceId.unit.name}</td>
+                                            <td title={item.resourceId.organizationalUnit.name}>{item.resourceId.organizationalUnit.name}</td>
                                             <td>
                                                 <a href="#abc" onClick={()=>this.handleShowView(item.resourceId._id)} data-toggle="modal" title="Xem chi tiết mẫu công việc này">
                                                     <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].dean) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>

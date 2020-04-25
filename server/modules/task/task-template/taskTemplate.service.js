@@ -95,14 +95,14 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
 //Tạo mẫu công việc
 exports.create = async (body) => {
         var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc
-            unit: body.unit,
+            organizationalUnit: body.unit,
             name: body.name,
             creator: body.creator, //id của người tạo
-            read: body.read, //id của người có quyền xem
-            responsible: body.responsible,
-            accounatable: body.accounatable,
-            consulted: body.consulted,
-            informed: body.informed,
+            readByEmployees: body.read, //id của người có quyền xem
+            responsibleEmployees: body.responsible,
+            accountableEmployees: body.accounatable,
+            consultedEmployees: body.consulted,
+            informedEmployees: body.informed,
             description: body.description,
             formula: body.formula,
         });
@@ -114,10 +114,9 @@ exports.create = async (body) => {
             resourceType: "TaskTemplate",
             action: body.read //quyền READ
         });
-       
         var actions = body.listAction.map(item => {
             ActionTask.create({
-                tasktemplate: tasktemplate._id,
+                taskTemplate: tasktemplate._id,
                 name: item.name,
                 description: item.description,
                 mandatary: item.mandatary,
@@ -126,7 +125,7 @@ exports.create = async (body) => {
         });
         var informations = body.listInfo.map((item, key) => {
             InformationTaskTemplate.create({
-                tasktemplate: tasktemplate._id,
+                taskTemplate: tasktemplate._id,
                 code: "p"+parseInt(key+1),
                 name: item.name,
                 description: item.description,
