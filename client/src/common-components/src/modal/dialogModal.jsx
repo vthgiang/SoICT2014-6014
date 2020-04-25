@@ -31,6 +31,9 @@ class DialogModal extends Component {
         if(func !== undefined){
             func.then(res => {
                 this.closeModal(resetOnSave);
+                if (res === undefined || res === null){
+                    return;
+                }
                 let html = () => {
                     return <React.Fragment>
                         <h2 style={{textAlign: 'center'}}>{translate('success.title')}</h2>
