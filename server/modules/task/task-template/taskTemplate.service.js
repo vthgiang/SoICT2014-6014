@@ -1,11 +1,4 @@
-const TaskTemplate = require('../../../models/task/taskTemplate.model');
-const Privilege = require('../../../models/auth/privilege.model');
-const Role = require('../../../models/auth/role.model');
-const UserRole = require('../../../models/auth/userRole.model');
-const Action = require('../../../models/super-admin/action.model');
-const ActionTask = require('../../../models/task/taskAction.model');
-const InformationTaskTemplate = require('../../../models/task/taskTemplateInformation.model');
-
+const { TaskTemplate, Privilege, Role, UserRole, TaskAction, TaskTemplateInformation } = require('../../../models').schema;
 
 
 //Lấy tất cả các mẫu công việc
@@ -19,8 +12,8 @@ exports.get = (req, res) => {
 exports.getById = async (req, res) => {
     try {
         var tasktemplate = await TaskTemplate.findById(req.params.id).populate("organizationalUnit creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
-        var actionTemplates = await ActionTask.find({ taskTemplate: tasktemplate._id });
-        var informationTemplate = await InformationTaskTemplate.find({ taskTemplate: tasktemplate._id });
+        var actionTemplates = await TaskAction.find({ taskTemplate: tasktemplate._id });
+        var informationTemplate = await TaskTemplateInformation.find({ taskTemplate: tasktemplate._id });
         res.status(200).json({
             "info": tasktemplate,
             "actions": actionTemplates,
@@ -46,7 +39,7 @@ exports.getByRole = async (id) => {
 }
 
 // lấy tất cả mẫu công việc theo id user
-exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
+exports.getByUser = async (id, pageNumber, noResultsPerPage, organizationalUnit, name="") => {
         // Lấy tất cả các role người dùng có
         var roles = await UserRole.find({ userId: id }).populate({path: "roleId"});
         var newRoles = roles.map(role => role.roleId);
@@ -57,7 +50,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             allRole = allRole.concat(item.parents); //thêm các role children vào mảng
         })
         var tasktemplates;
-        if ((unit === "[]")||(JSON.stringify(unit)==JSON.stringify([]))){
+        if ((organizationalUnit === "[]")||(JSON.stringify(organizationalUnit)==JSON.stringify([]))){
             tasktemplates = await Privilege.find({
                 roleId: { $in: allRole },
                 resourceType: 'TaskTemplate'
@@ -68,7 +61,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
                 path: 'resourceId', 
                 model: TaskTemplate, 
                 match: {name : { "$regex": name, "$options": "i" }},
-                populate: { path: 'creator unit' } 
+                populate: { path: 'creator organizationalUnit' } 
             });
         } else {
             tasktemplates = await Privilege.find({
@@ -80,8 +73,8 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, unit, name="") => {
             .populate({ 
                 path: 'resourceId', 
                 model: TaskTemplate, 
-                match: { $and : [{name: { "$regex": name, "$options": "i" }},{unit : { $in: unit}}]} ,
-                populate: { path: 'creator unit' } 
+                match: { $and : [{name: { "$regex": name, "$options": "i" }},{organizationalUnit : { $in: organizationalUnit}}]} ,
+                populate: { path: 'creator organizationalUnit' } 
             }); 
         }
         var totalCount = await Privilege.count({
@@ -115,7 +108,7 @@ exports.create = async (body) => {
             action: body.read //quyền READ
         });
         var actions = body.listAction.map(item => {
-            ActionTask.create({
+            TaskAction.create({
                 taskTemplate: tasktemplate._id,
                 name: item.name,
                 description: item.description,
@@ -124,7 +117,7 @@ exports.create = async (body) => {
             })
         });
         var informations = body.listInfo.map((item, key) => {
-            InformationTaskTemplate.create({
+            TaskTemplateInformation.create({
                 taskTemplate: tasktemplate._id,
                 code: "p"+parseInt(key+1),
                 name: item.name,
@@ -134,7 +127,7 @@ exports.create = async (body) => {
                 extra: item.extra
             })
         });
-        var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator unit' } });
+        var newTask = await Privilege.findById(privilege._id).populate({ path: 'resourceId', model: TaskTemplate, populate: { path: 'creator organizationalUnit' } });
 
         return ({
             message: "Create Task Template Successfully!",
