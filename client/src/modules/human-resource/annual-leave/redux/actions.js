@@ -1,28 +1,28 @@
-import { SabbaticalConstants } from "./constants";
-import { SabbaticalService } from "./services";
-export const SabbaticalActions = {
-    getListSabbatical,
-    createNewSabbatical,
-    deleteSabbatical,
-    updateSabbatical,
+import { AnnualLeaveConstants } from "./constants";
+import { AnnualLeaveService } from "./services";
+export const AnnualLeaveActions = {
+    searchAnnualLeaves,
+    createAnnualLeave,
+    deleteAnnualLeave,
+    updateAnnualLeave,
 };
 
 // Lấy danh sách nghỉ phép
-function getListSabbatical(data) {
+function searchAnnualLeaves(data) {
     return dispatch => {
         dispatch({
-            type: SabbaticalConstants.GET_SABBATICAL_REQUEST
+            type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_REQUEST
         });
-        SabbaticalService.getListSabbatical(data)
+        AnnualLeaveService.searchAnnualLeaves(data)
             .then(res => {
                 dispatch({
-                    type: SabbaticalConstants.GET_SABBATICAL_SUCCESS,
+                    type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: SabbaticalConstants.GET_SABBATICAL_FAILURE,
+                    type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE,
                     error: err.response.data
                 });
             })
@@ -30,21 +30,21 @@ function getListSabbatical(data) {
 }
 
 // Tạo mới thông tin nghỉ phép
-function createNewSabbatical(data) {
+function createAnnualLeave(data) {
     return dispatch => {
         dispatch({
-            type: SabbaticalConstants.CREATE_SABBATICAL_REQUEST
+            type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_REQUEST
         });
-        SabbaticalService.createNewSabbatical(data)
+        AnnualLeaveService.createAnnualLeave(data)
             .then(res => {
                 dispatch({
-                    type: SabbaticalConstants.CREATE_SABBATICAL_SUCCESS,
+                    type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: SabbaticalConstants.CREATE_SABBATICAL_FAILURE,
+                    type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE,
                     error: err.response.data
                 });
             })
@@ -52,21 +52,21 @@ function createNewSabbatical(data) {
 }
 
 // Xoá thông tin nghỉ phép của nhân viên
-function deleteSabbatical(id) {
+function deleteAnnualLeave(id) {
     return dispatch => {
         dispatch({
-            type: SabbaticalConstants.DELETE_SABBATICAL_REQUEST,
+            type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_REQUEST,
         });
-        SabbaticalService.deleteSabbatical(id)
+        AnnualLeaveService.deleteAnnualLeave(id)
             .then(res => {
                 dispatch({
-                    type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
+                    type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
+                    type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS,
                     error: err.response.data
                 });
             })
@@ -74,23 +74,23 @@ function deleteSabbatical(id) {
 }
 
 // cập nhật thông tin nghỉ phép của nhân viên
-function updateSabbatical(id, infoSabbatical) {
+function updateAnnualLeave(id, infoSabbatical) {
     return dispatch => {
         dispatch({
-            type: SabbaticalConstants.UPDATE_SABBATICAL_REQUEST
+            type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_REQUEST
         });
-        SabbaticalService.updateSabbatical(id, infoSabbatical)
+        AnnualLeaveService.updateAnnualLeave(id, infoSabbatical)
             .then(res => {
                 dispatch({
-                    type: SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS,
+                    type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: SabbaticalConstants.UPDATE_SABBATICAL_FAILURE,
+                    type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_FAILURE,
                     error: err.response.data
                 });
-            });
+            })
     }
 }

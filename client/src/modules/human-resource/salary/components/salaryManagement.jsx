@@ -6,7 +6,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMu
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../redux/actions';
 
-class SalaryManager extends Component {
+class SalaryManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,7 +19,7 @@ class SalaryManager extends Component {
         }
     }
     componentDidMount() {
-        this.props.getListSalary(this.state);
+        this.props.searchSalary(this.state);
         this.props.getDepartment();
     }
 
@@ -84,7 +84,7 @@ class SalaryManager extends Component {
                 month: this.formatDate(Date.now())
             })
         }
-        this.props.getListSalary(this.state);
+        this.props.searchSalary(this.state);
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -105,7 +105,7 @@ class SalaryManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        this.props.getListSalary(this.state);
+        this.props.searchSalary(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -114,13 +114,13 @@ class SalaryManager extends Component {
         await this.setState({
             page: parseInt(page),
         });
-        this.props.getListSalary(this.state);
+        this.props.searchSalary(this.state);
     }
     render() {
         const { list } = this.props.department;
         const { translate, salary } = this.props;
         var formater = new Intl.NumberFormat();
-        var listSalary = "", listPosition = [];
+        var listSalarys = "", listPosition = [];
         if (this.state.organizationalUnit !== null) {
             let organizationalUnit = this.state.organizationalUnit;
             organizationalUnit.forEach(u => {
@@ -137,7 +137,7 @@ class SalaryManager extends Component {
             })
         }
         if (salary.isLoading === false) {
-            listSalary = salary.listSalary;
+            listSalarys = salary.listSalarys;
         }
         var pageTotal = (salary.totalList % this.state.limit === 0) ?
             parseInt(salary.totalList / this.state.limit) :
@@ -218,8 +218,8 @@ class SalaryManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listSalary !== 'undefined' && listSalary.length !== 0) &&
-                                listSalary.map((x, index) => {
+                            {(typeof listSalarys !== 'undefined' && listSalarys.length !== 0) &&
+                                listSalarys.map((x, index) => {
                                     if (x.bonus.length !== 0) {
                                         var total = 0;
                                         for (let count in x.bonus) {
@@ -266,7 +266,7 @@ class SalaryManager extends Component {
                     </table>
                     {salary.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listSalary === 'undefined' || listSalary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listSalarys === 'undefined' || listSalarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -295,9 +295,9 @@ function mapState(state) {
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
-    getListSalary: SalaryActions.getListSalary,
+    searchSalary: SalaryActions.searchSalary,
     deleteSalary: SalaryActions.deleteSalary,
 };
 
-const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryManager));
-export { connectedListSalary as SalaryManager };
+const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryManagement));
+export { connectedListSalary as SalaryManagement };

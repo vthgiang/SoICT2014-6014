@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 import { SalaryActions } from '../../../salary/redux/actions';
-import { SabbaticalActions } from '../../../annual-leave/redux/actions';
+import { AnnualLeaveActions } from '../../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../../commendation-discipline/redux/actions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -278,7 +278,7 @@ class EmployeeCreatePage extends Component {
             if (this.state.sabbaticalNew.length !== 0) {
                 let employeeNumber = this.state.employeeNew.employeeNumber;
                 this.state.sabbaticalNew.map(x => {
-                    this.props.createNewSabbatical({ ...x, employeeNumber })
+                    this.props.createAnnualLeave({ ...x, employeeNumber })
                 })
             }
             // lưu thông tin khen thưởng
@@ -419,7 +419,7 @@ const actionCreators = {
     checkMSNV: EmployeeManagerActions.checkMSNV,
     checkEmail: EmployeeManagerActions.checkEmail,
     createNewSalary: SalaryActions.createNewSalary,
-    createNewSabbatical: SabbaticalActions.createNewSabbatical,
+    createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
     createNewPraise: DisciplineActions.createNewPraise,
     createNewDiscipline: DisciplineActions.createNewDiscipline,
     updateContract: EmployeeManagerActions.updateContract,

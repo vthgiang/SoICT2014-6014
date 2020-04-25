@@ -1,8 +1,8 @@
 import { SalaryConstants } from "./constants";
 import { SalaryService } from "./services";
 export const SalaryActions = {
-    getListSalary,
-    createNewSalary,
+    searchSalary,
+    createSalary,
     deleteSalary,
     updateSalary,
     checkSalary,
@@ -11,12 +11,12 @@ export const SalaryActions = {
 };
 
 // lấy danh sách bảng lương
-function getListSalary(data) {
+function searchSalary(data) {
     return dispatch => {
         dispatch({
             type: SalaryConstants.GET_SALARY_REQUEST
         });
-        SalaryService.getListSalary(data)
+        SalaryService.searchSalary(data)
             .then(res => {
                 dispatch({
                     type: SalaryConstants.GET_SALARY_SUCCESS,
@@ -33,7 +33,7 @@ function getListSalary(data) {
 }
 
 // tạo mới bảng lương
-function createNewSalary(data) {
+function createSalary(data) {
     return dispatch => {
         dispatch({
             type: SalaryConstants.CREATE_SALARY_REQUEST

@@ -1,59 +1,70 @@
 import { dashboardKpiConstants } from "./constants";
 import { dashboardKPIPerService } from "./services";
 export const dashboardKpiActions = {
-    getAllKPIPersonalByMember,
-    getAllKPIPersonalOfResponsible,
-    getAllKPIPersonalByUserID
+    getEmployeeKpiSetByMember,
+    getEmployeeKpiSetOfResponsible,
+    getEmployeeKpiSetByUserID
 };
 
 // Lấy tất cả KPI cá nhân
-function getAllKPIPersonalByMember() {
+function getEmployeeKpiSetByMember() {
     return dispatch => {
-        dispatch(request());//member
+        dispatch({ type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_REQUEST });//member
 
-        dashboardKPIPerService.getAllKPIPersonalByMember()
-            .then(
-                kpipersonals => dispatch(success(kpipersonals)),
-                error => dispatch(failure(error.toString()))
-            );
+        dashboardKPIPerService.getEmployeeKpiSetByMember()
+            .then(res => {
+                dispatch({
+                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_FAILURE,
+                    payload: error
+                })
+            })
     };
-
-    function request() { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_REQUEST } }
-    function success(kpipersonals) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_SUCCESS, kpipersonals } }
-    function failure(error) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_FAILURE, error } }
 }
 
 // Lấy tất cả KPI cá nhân
-function getAllKPIPersonalByUserID(member) {
+function getEmployeeKpiSetByUserID(member) {
     return dispatch => {
-        dispatch(request(member));
+        dispatch({ type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_ID_REQUEST });
 
-        dashboardKPIPerService.getAllKPIPersonalByUserID(member)
-            .then(
-                kpipersonals => dispatch(success(kpipersonals)),
-                error => dispatch(failure(error.toString()))
-            );
+        dashboardKPIPerService.getEmployeeKpiSetByUserID(member)
+            .then(res => {
+                dispatch({
+                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_ID_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_ID_FAILURE,
+                    payload: error
+                })
+            })
     };
-
-    function request(member) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_REQUEST, member } }
-    function success(kpipersonals) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_SUCCESS, kpipersonals } }
-    function failure(error) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_FAILURE, error } }
-
 }
 
 // Lấy tất cả KPI cá nhân
-function getAllKPIPersonalOfResponsible(member) {
+function getEmployeeKpiSetOfResponsible(member) {
     return dispatch => {
-        dispatch(request(member));
+        dispatch({ type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_OF_TASK_REQUEST });
 
-        dashboardKPIPerService.getAllKPIPersonalOfTask(member)
-            .then(
-                kpipersonals => dispatch(success(kpipersonals)),
-                error => dispatch(failure(error.toString()))
-            );
+        dashboardKPIPerService.getEmployeeKpiSetOfTask(member)
+            .then(res => {
+                dispatch({
+                    type: dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE,
+                    payload: error
+                })
+            })
     };
-
-    function request(member) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_REQUEST, member } }
-    function success(kpipersonals) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS, kpipersonals } }
-    function failure(error) { return { type: dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE, error } }
 }

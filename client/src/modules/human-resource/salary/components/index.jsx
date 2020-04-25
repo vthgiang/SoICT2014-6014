@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SalaryManager } from './salaryManager';
+import { SalaryManagement } from './combinedContent';
 
-class ManagerSalary extends Component {
+class SalaryManager extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -11,10 +11,10 @@ class ManagerSalary extends Component {
     render() {
         return (
             <React.Fragment>
-                <SalaryManager />
+                <SalaryManagement />
             </React.Fragment>
         );
     }
 }
 
-export default connect(null, null)(withTranslate(ManagerSalary)); 
+export default connect(null, null)(withTranslate(SalaryManager)); 
