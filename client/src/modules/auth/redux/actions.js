@@ -1,7 +1,6 @@
 import { AuthService } from "./services";
 import { AuthConstants } from "./constants";
 import { setStorage } from '../../../config';
-import { AlertActions } from "../../alert/redux/actions";
 
 export const AuthActions = {
     login,
@@ -25,7 +24,6 @@ function login(user){
                 setStorage('jwt', res.data.content.token);
                 if(res.data.content.user.roles.length > 0) 
                     setStorage('currentRole', res.data.content.user.roles[0].roleId._id);
-
                 dispatch({
                     type: AuthConstants.LOGIN_SUCCESS,
                     payload: res.data.content.user
@@ -61,7 +59,6 @@ function logoutAllAccount(){
             })
             .catch(err => {
                 dispatch({type: AuthConstants.LOGOUT_ALL_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -69,83 +66,63 @@ function logoutAllAccount(){
 function editProfile(data){
     return dispatch => {
         dispatch({type: AuthConstants.EDIT_PROFILE_REQUEST});
-        return new Promise((resolve, reject) => {
-            AuthService.editProfile(data)
+        AuthService.editProfile(data)
             .then(res => {
                 dispatch({
                     type: AuthConstants.EDIT_PROFILE_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({type: AuthConstants.EDIT_PROFILE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        });
     }
 }
 
 function changeInformation(data){
     return dispatch => {
         dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_REQUEST});
-        return new Promise((resolve, reject) => {
-            AuthService.changeInformation(data)
+        AuthService.changeInformation(data)
             .then(res => {
                 dispatch({
                     type: AuthConstants.CHANGE_USER_INFORMATION_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_FAILE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        });
     }
 }
 
 function changePassword(data){
     return dispatch => {
         dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_REQUEST });
-        return new Promise((resolve, reject) => {
-            AuthService.changePassword(data)
-            .then(res => {
-                dispatch({
-                    type: AuthConstants.CHANGE_USER_PASSWORD_SUCCESS,
-                    payload: res.data.content
-                });
-                resolve(res);
-            })
-            .catch(err => {
-                dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_FAILE });
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
-            })
-        });
+        AuthService.changePassword(data)
+        .then(res => {
+            dispatch({
+                type: AuthConstants.CHANGE_USER_PASSWORD_SUCCESS,
+                payload: res.data.content
+            });
+        })
+        .catch(err => {
+            dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_FAILE });
+        })
     }
 }
 
 function getLinksOfRole(idRole){
     return dispatch => {
-        return new Promise((resolve, reject) => {
-            AuthService.getLinksOfRole(idRole)
+        AuthService.getLinksOfRole(idRole)
             .then(res => {
                 dispatch({
                     type: AuthConstants.GET_LINKS_OF_ROLE_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({type: AuthConstants.GET_LINKS_OF_ROLE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        });
     }
 }
 
@@ -161,7 +138,6 @@ function refresh(){
             })
             .catch(err => {
                 dispatch({type: AuthConstants.REFRESH_DATA_USER_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -169,40 +145,32 @@ function refresh(){
 function forgotPassword(email){
     return dispatch => {
         dispatch({type: AuthConstants.FORGOT_PASSWORD_REQUEST});
-        return new Promise((resolve, reject) => {
-            AuthService.forgotPassword(email)
+        AuthService.forgotPassword(email)
             .then(res => {
                 dispatch({
                     type: AuthConstants.FORGOT_PASSWORD_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({type: AuthConstants.FORGOT_PASSWORD_FAILE});
-                reject(err);
             })
-        });
     }
 }
 
 function resetPassword(otp, email, password){
     return dispatch => {
         dispatch({type: AuthConstants.RESET_PASSWORD_REQUEST});
-        return new Promise((resolve, reject) => {
-            AuthService.resetPassword(otp, email, password)
-                .then(res => {
-                    dispatch({
-                        type: AuthConstants.RESET_PASSWORD_SUCCESS,
-                        payload: res.data.content
-                    });
-                    resolve(res);
-                })
-                .catch(err => {
-                    dispatch({type: AuthConstants.RESET_PASSWORD_FAILE});
-                    reject(err);
-                })
-        });
+        AuthService.resetPassword(otp, email, password)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.RESET_PASSWORD_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({type: AuthConstants.RESET_PASSWORD_FAILE});
+            })
         
     }
 }
@@ -219,7 +187,6 @@ function getComponentOfUserInLink(curentRole, linkId){
             })
             .catch(err => {
                 dispatch({type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

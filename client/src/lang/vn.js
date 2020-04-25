@@ -1,6 +1,11 @@
 export default {
     locale: 'vn',
     messages: {
+
+        /******************************************************************************************************************************
+         * PHẦN CHUYỂN ĐỔI NGÔN NGỮ CHO CÁC THÔNG ĐIỆP TỪ SERVER
+         * Bao gồm 2 phần thông báo thành công - success và lỗi - error
+         * ****************************************************************************************************************************/
         success: {
             title: 'Thành công',
             /**SYSTEM ADMIN */
@@ -173,6 +178,85 @@ export default {
              * Chức năng quản lý nhân sự
              */
         },
+
+
+
+
+
+        /******************************************************************************************************************************
+         * PHẦN CHUYỂN NGỮ CHO NỘI DUNG HIỂN THỊ CỦA WEBSITE BÊN PHÍA CLIENT
+         * Phân chia theo từng module
+         ******************************************************************************************************************************/
+        general: {
+            table: 'Bảng',
+            name: 'Tên',
+            description: 'Mô tả',
+            search: 'Tìm kiếm',
+            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
+            yes: 'Có',  no: 'Không',
+            loading: 'Đang tải dữ liệu',
+            no_data: 'Không có dữ liệu'
+        },
+        system_admin: {
+            company: {
+                table: {
+                    name: 'Tên doanh nghiệp/công ty',
+                    short_name: 'Tên ngắn',
+                    description: 'Mô tả về doanh nghiệp/công ty',
+                    log: 'Ghi log',
+                    service: 'Dịch vụ',
+                    super_admin: 'Tài khoản super admin',
+                },
+                on: 'Bật', off: 'Tắt',
+                add: 'Thêm doanh nghiệp/công ty',
+                edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
+                service: 'Dịch vụ cho doanh nghiệp/công ty',
+                validator: {
+                    name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_special: 'Tên không được chứa kí tự đặc biệt'
+                    },
+                    short_name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_space: 'Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau'
+                    },
+                    short_name: {
+                        no_blank: 'Mô tả không được để trống',
+                        no_less4: 'Mô tả không được ít hơn 4 kí tự',
+                        no_more255: 'Mô tả không quá 255 kí tự',
+                        no_special: 'Mô tả không được chứa kí tự đặc biệt'
+                    },
+                    super_admin: {
+                        no_blank: 'Email không được để trống',
+                        email_invalid: 'Email không hợp lệ',
+                    }
+                }
+            },
+            log: {
+
+            },
+            root_role: {
+
+            },
+            system_link: {
+                table: {
+                    url: 'Đường dẫn',
+                    description: 'Mô tả về trang',
+                }
+            },
+            system_component: {
+
+            }
+        },
+        super_admin: {
+
+        },
+
+        
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
             content: 'Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm',

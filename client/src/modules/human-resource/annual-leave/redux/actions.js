@@ -1,6 +1,5 @@
 import { SabbaticalConstants } from "./constants";
 import { SabbaticalService } from "./services";
-import { AlertActions } from "../../../alert/redux/actions";
 export const SabbaticalActions = {
     getListSabbatical,
     createNewSabbatical,
@@ -26,7 +25,6 @@ function getListSabbatical(data) {
                     type: SabbaticalConstants.GET_SABBATICAL_FAILURE,
                     error: err.response.data
                 });
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -37,24 +35,19 @@ function createNewSabbatical(data) {
         dispatch({
             type: SabbaticalConstants.CREATE_SABBATICAL_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            SabbaticalService.createNewSabbatical(data)
-                .then(res => {
-                    dispatch({
-                        type: SabbaticalConstants.CREATE_SABBATICAL_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        SabbaticalService.createNewSabbatical(data)
+            .then(res => {
+                dispatch({
+                    type: SabbaticalConstants.CREATE_SABBATICAL_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: SabbaticalConstants.CREATE_SABBATICAL_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SabbaticalConstants.CREATE_SABBATICAL_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -64,24 +57,19 @@ function deleteSabbatical(id) {
         dispatch({
             type: SabbaticalConstants.DELETE_SABBATICAL_REQUEST,
         });
-        return new Promise((resolve, reject) => {
-            SabbaticalService.deleteSabbatical(id)
-                .then(res => {
-                    dispatch({
-                        type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        SabbaticalService.deleteSabbatical(id)
+            .then(res => {
+                dispatch({
+                    type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SabbaticalConstants.DELETE_SABBATICAL_SUCCESS,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -91,23 +79,18 @@ function updateSabbatical(id, infoSabbatical) {
         dispatch({
             type: SabbaticalConstants.UPDATE_SABBATICAL_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            SabbaticalService.updateSabbatical(id, infoSabbatical)
-                .then(res => {
-                    dispatch({
-                        type: SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        SabbaticalService.updateSabbatical(id, infoSabbatical)
+            .then(res => {
+                dispatch({
+                    type: SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: SabbaticalConstants.UPDATE_SABBATICAL_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SabbaticalConstants.UPDATE_SABBATICAL_FAILURE,
+                    error: err.response.data
+                });
+            });
     }
 }

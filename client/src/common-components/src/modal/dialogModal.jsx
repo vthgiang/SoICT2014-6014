@@ -23,43 +23,8 @@ class DialogModal extends Component {
         window.$(`#${this.props.modalID}`).modal("hide");
     }
 
-    save = (translate) => {
-        const func = this.props.func();
-        const {resetOnSave = false} = this.props;
-        
-
-        if(func !== undefined){
-            func.then(res => {
-                this.closeModal(resetOnSave);
-                let html = () => {
-                    return <React.Fragment>
-                        <h2 style={{textAlign: 'center'}}>{translate('success.title')}</h2>
-                        <ul> {
-                            res.data.message.map(message => <li key={message}>{translate(`success.${message}`)}</li>)
-                        }</ul>
-                    </React.Fragment>
-                }
-                toast.success(html, {containerId: 'toast-notification'});
-            }).catch(err => {
-                if(err.response.data.message){
-                    let messages;
-                    if(Array.isArray(err.response.data.message))
-                        messages = err.response.data.message;
-                    else messages = [err.response.data.message];
-                    console.log("ERROR RESPONSE: ", messages);
-                    let html = () => {
-                        return <React.Fragment>
-                            <h2 style={{textAlign: 'center'}}>{translate('error.title')}</h2>
-                            <ul> {
-                                messages.map(message => <li key={message}>{translate(`error.${message}`)}</li>)
-                            }</ul>
-                        </React.Fragment>
-                    }
-                    toast.error(html, {containerId: 'toast-notification'});
-                }else
-                    toast.error(this.props.msg_faile, {containerId: 'toast-notification'});
-            });
-        }
+    save = () => {
+        this.props.func();
     }
 
     componentDidUpdate(){
@@ -93,7 +58,7 @@ class DialogModal extends Component {
                                     </div>
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                         {
-                                            hasSaveButton && <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={() => this.save(translate)}>{translate('form.save')}</button>
+                                            hasSaveButton && <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }
                                         <button type="button" className="btn btn-default" onClick={()=>this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>

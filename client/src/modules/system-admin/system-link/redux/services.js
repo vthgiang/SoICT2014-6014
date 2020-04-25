@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import { handleRequest } from '../../../../helpers/handleRequest';
 
 export const LinkDefaultServices = {
     get,
@@ -13,74 +12,53 @@ export const LinkDefaultServices = {
 };
 
 function get() {
-    const requestOptions = {
+    return handleRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'GET'
+    }, false)
 }
 
 function getCategories() {
-    const requestOptions = {
+    return handleRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'GET'
+    }, false);
 }
 
 function getPaginate(data) {  
-    const requestOptions = {
+    return handleRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/paginate`,
         method: 'POST',
-        data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data
+    }, false);
 }
 
 function show(id) {
-    const requestOptions = {
+    return handleRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'GET'
+    });
 }
 
 function create(data) {
-    const requestOptions = {
+    return handleRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'POST',
-        data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data
+    });
 }
 
 function edit(id, data) {
-    const requestOptions = {
+    return handleRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'PATCH',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data
+    });
 }
 
 function destroy(id) {
-    const requestOptions = {
+    return handleRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
-        method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'DELETE'
+    });
 }

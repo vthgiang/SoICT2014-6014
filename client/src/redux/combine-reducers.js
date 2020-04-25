@@ -1,7 +1,6 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
-import { alert } from '../modules/alert/redux/reducers';
 import { log } from '../modules/system-admin/log/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
@@ -39,8 +38,6 @@ import { rolesDefault } from "../modules/system-admin/root-role/redux/reducers";
 import { componentsDefault } from "../modules/system-admin/system-component/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
-    alert,
-
     //system
     log,
     company,

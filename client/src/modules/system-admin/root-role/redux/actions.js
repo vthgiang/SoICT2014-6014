@@ -1,6 +1,5 @@
 import { RoleDefaultServices } from "./services";
 import { RoleDefaultConstants } from "./constants";
-import { AlertActions } from "../../../alert/redux/actions";
 
 export const RoleDefaultActions = {
     get
@@ -18,7 +17,6 @@ function get(){
             })
             .catch(err => {
                 dispatch({ type: RoleDefaultConstants.GET_ROLES_DEFAULT_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

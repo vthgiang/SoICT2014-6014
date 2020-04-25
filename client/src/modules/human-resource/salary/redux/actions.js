@@ -1,6 +1,5 @@
 import { SalaryConstants } from "./constants";
 import { SalaryService } from "./services";
-import { AlertActions } from "../../../alert/redux/actions";
 export const SalaryActions = {
     getListSalary,
     createNewSalary,
@@ -29,7 +28,6 @@ function getListSalary(data) {
                     type: SalaryConstants.GET_SALARY_FAILURE,
                     error: err.response.data
                 });
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -40,24 +38,19 @@ function createNewSalary(data) {
         dispatch({
             type: SalaryConstants.CREATE_SALARY_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            SalaryService.createNewSalary(data)
-                .then(res => {
-                    dispatch({
-                        type: SalaryConstants.CREATE_SALARY_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        SalaryService.createNewSalary(data)
+            .then(res => {
+                dispatch({
+                    type: SalaryConstants.CREATE_SALARY_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: SalaryConstants.CREATE_SALARY_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SalaryConstants.CREATE_SALARY_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -67,24 +60,19 @@ function deleteSalary(id) {
         dispatch({
             type: SalaryConstants.DELETE_SALARY_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            SalaryService.deleteSalary(id)
-                .then(res => {
-                    dispatch({
-                        type: SalaryConstants.DELETE_SALARY_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        SalaryService.deleteSalary(id)
+            .then(res => {
+                dispatch({
+                    type: SalaryConstants.DELETE_SALARY_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: SalaryConstants.DELETE_SALARY_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SalaryConstants.DELETE_SALARY_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -94,24 +82,19 @@ function updateSalary(id, data) {
         dispatch({
             type: SalaryConstants.UPDATE_SALARY_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            SalaryService.updateSalary(id, data)
-                .then(res => {
-                    dispatch({
-                        type: SalaryConstants.UPDATE_SALARY_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        SalaryService.updateSalary(id, data)
+            .then(res => {
+                dispatch({
+                    type: SalaryConstants.UPDATE_SALARY_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: SalaryConstants.UPDATE_SALARY_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SalaryConstants.UPDATE_SALARY_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -133,7 +116,6 @@ function checkSalary(employeeNumber, month) {
                     type: SalaryConstants.CHECK_SALARY_FAILURE,
                     error: err.response.data
                 });
-                AlertActions.handleAlert(dispatch, err);
             })
     };
 }
@@ -156,7 +138,6 @@ function checkArraySalary(data) {
                     type: SalaryConstants.CHECK_ARRAY_SALARY_FAILURE,
                     error: err.response.data
                 });
-                AlertActions.handleAlert(dispatch, err);
             })
     };
 }
@@ -167,23 +148,18 @@ function importSalary(data) {
         dispatch({
             type: SalaryConstants.IMPORT_SALARY_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            SalaryService.importSalary(data)
-                .then(res => {
-                    dispatch({
-                        type: SalaryConstants.IMPORT_SALARY_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        SalaryService.importSalary(data)
+            .then(res => {
+                dispatch({
+                    type: SalaryConstants.IMPORT_SALARY_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: SalaryConstants.IMPORT_SALARY_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: SalaryConstants.IMPORT_SALARY_FAILURE,
+                    error: err.response.data
+                });
+            })
     };
 }

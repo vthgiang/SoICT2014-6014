@@ -30,50 +30,48 @@ class CompanyCreateForm extends Component {
 
         return ( 
             <React.Fragment>
-                <ButtonModal modalID="modal-create-company" button_name={translate('manage_company.add')} title={translate('manage_company.add_title')}/>
+                <ButtonModal modalID="modal-create-company" button_name={translate('general.add')} title={translate('system_admin.company.add')}/>
                 <DialogModal
                     modalID="modal-create-company" size="75"
                     formID="form-create-company" isLoading={this.props.company.isLoading}
-                    title={translate('manage_company.add_title')}
-                    msg_success={translate('manage_company.add_success')}
-                    msg_faile={translate('manage_company.add_faile')}
+                    title={translate('system_admin.company.add')}
                     func={this.save}
                 >
                     <form id="form-create-company">
                         <div className="row" style={{padding: '20px'}}>
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <div className={`form-group ${nameError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('manage_company.name') }<span className="text-red"> * </span></label>
+                                    <label>{ translate('system_admin.company.table.name') }<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" onChange={ this.handleChangeName }/>
                                     <ErrorLabel content={nameError}/>
                                 </div>
                                 <div className={`form-group ${shortNameError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('manage_company.short_name') }<span className="text-red"> * </span></label>
+                                    <label>{ translate('system_admin.company.table.short_name') }<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" onChange={ this.handleChangeShortName }/>
                                     <ErrorLabel content={shortNameError}/>
                                 </div>
                                 <div className={`form-group ${emailError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('manage_company.super_admin') }<span className="text-red"> * </span></label>
+                                    <label>{ translate('system_admin.company.table.super_admin') }<span className="text-red"> * </span></label>
                                     <input type="email" className="form-control" onChange={ this.handleChangeEmail }/>
                                     <ErrorLabel content={emailError}/>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <div className={`form-group ${descriptionError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('manage_company.description') }<span className="text-red"> * </span></label>
+                                    <label>{ translate('system_admin.company.table.description') }<span className="text-red"> * </span></label>
                                     <textarea style={{ height: '182px' }}  type="text" className="form-control" onChange={ this.handleChangeDescription }/>
                                     <ErrorLabel content={descriptionError}/>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border" style={{minHeight: '300px'}}>
-                                    <legend className="scheduler-border">Các trang được truy cập</legend>
+                                    <legend className="scheduler-border">{ translate('system_admin.company.service') }</legend>
                                     <table className="table table-hover table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th></th>
-                                                <th>{ translate('manage_link.url') }</th>
-                                                <th>{ translate('manage_link.description') }</th>
+                                                <th>{ translate('system_admin.system_link.table.url') }</th>
+                                                <th>{ translate('system_admin.system_link.table.description') }</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -92,8 +90,8 @@ class CompanyCreateForm extends Component {
                                                         <td>{ link.description }</td>
                                                     </tr> 
                                                 ): linksDefault.isLoading ?
-                                                <tr><td colSpan={4}>Loading...</td></tr>:
-                                                <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                                                <tr><td colSpan={4}>{translate('general.loading')}</td></tr>:
+                                                <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
                                             }
                                         </tbody>
                                     </table>
@@ -181,11 +179,12 @@ class CompanyCreateForm extends Component {
 
     validateName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateName(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    nameError: msg,
+                    nameError: translate(msg),
                     companyName: value,
                 }
             });

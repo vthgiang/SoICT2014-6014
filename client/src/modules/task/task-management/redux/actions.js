@@ -1,7 +1,5 @@
 import { taskManagementConstants } from "./constants";
-// import { alertActions } from "./AlertActions";
 import { taskManagementService } from "./services";
-import { AlertActions } from "../../../alert/redux/actions";
 export const taskManagementActions = {
     getAll,
     getAllTaskByRole,
@@ -220,22 +218,15 @@ function _delete(id) {
 function editStatusOfTask(id, status) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
-
-        return new Promise((resolve, reject) => {
-            taskManagementService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
-                .then(res => {
-                    dispatch({
-                        type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
-                        task: res.data
-                    });
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, err });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                });
+        taskManagementService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
+        .then(res => {
+            dispatch({
+                type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
+                task: res.data
+            });
         })
-
+        .catch(err => {
+            dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, err });
+        });
     };
 }

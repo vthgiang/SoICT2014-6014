@@ -2,9 +2,6 @@ import {
     EmployeeConstants
 } from "./constants";
 import {
-    AlertActions
-} from "../../../../alert/redux/actions";
-import {
     EmployeeService
 } from "./services";
 export const EmployeeManagerActions = {
@@ -202,24 +199,19 @@ function uploadAvatar(employeeNumber, fileUpload) {
         dispatch({
             type: EmployeeConstants.UPLOAD_AVATAR_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            EmployeeService.uploadAvatar(employeeNumber, fileUpload)
-                .then(res => {
-                    dispatch({
-                        type: EmployeeConstants.UPLOAD_AVATAR_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data);
+        EmployeeService.uploadAvatar(employeeNumber, fileUpload)
+            .then(res => {
+                dispatch({
+                    type: EmployeeConstants.UPLOAD_AVATAR_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: EmployeeConstants.UPLOAD_AVATAR_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EmployeeConstants.UPLOAD_AVATAR_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 

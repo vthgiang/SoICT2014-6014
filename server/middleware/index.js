@@ -24,7 +24,7 @@ exports.auth = async (req, res, next) => {
         /**
          * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
          */
-        if(!token) throw ('access_denied');
+        if(!token) throw ['access_denied'];
 
         /**
          * Giải mã token gửi lên để check dữ liệu trong token
@@ -38,17 +38,17 @@ exports.auth = async (req, res, next) => {
             const fingerprint = req.header('fingerprint'); //chữ ký của trình duyệt người dùng - fingerprint
             const currentRole = req.header('current-role');
             if(!ObjectId.isValid(currentRole)){
-                throw  ("role_invalid"); //trả về lỗi nếu current role là một giá trị không xác định
+                throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
             }
 
             const role = await Role.findById(currentRole); //current role của người dùng
-            if(role === null) throw ("role_invalid");
+            if(role === null) throw ["role_invalid"];
             /**
              * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
              * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
              * Nếu hai fingerprint này khác nhau -> token đã bị lấy cắp và gửi từ một trình duyệt trên thiết bị khác
              */
-            if(verified.fingerprint !== fingerprint) throw ('fingerprint_invalid'); // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
+            if(verified.fingerprint !== fingerprint) throw ['fingerprint_invalid']; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
             /**
              * Kiểm tra xem token có còn hoạt động hay không ?
@@ -57,14 +57,14 @@ exports.auth = async (req, res, next) => {
              * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
              */
             const userToken = await User.findOne({ _id: req.user._id,  tokens: token });
-            if(userToken === null) throw ('acc_log_out');
+            if(userToken === null) throw ['acc_log_out'];
 
             /**
              * Kiểm tra xem current role có đúng với người dùng hay không?
              */
             const userId = req.user._id;
             const userrole = await UserRole.findOne({userId, roleId: role._id});
-            if(userrole === null) throw ('user_role_invalid');
+            if(userrole === null) throw ['user_role_invalid'];
             /**
              * Riêng đối với system admin của hệ thống thì bỏ qua bước này
              */
@@ -77,7 +77,7 @@ exports.auth = async (req, res, next) => {
                     const resetUser = await User.findById(req.user._id);
                     resetUser.tokens = []; //đăng xuất tất cả các phiên đăng nhập của người dùng khỏi hệ thống
                     await resetUser.save();
-                    throw ('service_off');
+                    throw ['service_off'];
                 };
             }
 
@@ -100,7 +100,7 @@ exports.auth = async (req, res, next) => {
                     url,
                     company: undefined
                 });
-            if(link === null) throw ('url_invalid');
+            if(link === null) throw ['url_invalid'];
             // const roleArr = [role._id].concat(role.parents);
             // const privilege = await Privilege.findOne({
             //     resourceId: link._id,
@@ -114,7 +114,7 @@ exports.auth = async (req, res, next) => {
              */
             const path = req.route.path !== '/' ? req.baseUrl + req.route.path : req.baseUrl;
             const checkSP = await checkServicePermission(data, path, req.method, currentRole);
-            if(!checkSP) throw ('service_permission_invalid');
+            if(!checkSP) throw ['service_permission_invalid'];
 
         }
 
