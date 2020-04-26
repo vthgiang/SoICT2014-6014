@@ -9,7 +9,6 @@ var {
     User,
     UserRole,
     Employee,
-    EmployeeContact,
     AnnualLeave,
     Discipline,
     Commendation,
@@ -822,9 +821,9 @@ var sampleCompanyData = async () => {
         TẠO DỮ LIỆU NHÂN VIÊN
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
-    var listEmployee = await Employee.insertMany([{
+    await Employee.insertMany([{
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Vũ Thị C",
+        fullName: "Vũ Thị Cúc",
         employeeNumber: "MS2015122",
         status:"active",
         company:vnist._id,
@@ -836,13 +835,37 @@ var sampleCompanyData = async () => {
         identityCardDate: "20-10-2015",
         identityCardAddress: "Nam Định",
         emailInCompany: "vtc.vnist@gmail.com",
-        taxNumber: "12658974",
-        taxRepresentative: "Nguyễn Văn Hưng",
-        taxDateOfIssue: "12-08-2019",
-        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
+        nationality: "Việt Nam",
         atmNumber: "102298653",
         bankName: "ViettinBank",
         bankAddress: "Hai Bà Trưng",
+        ethnic: "Kinh",
+        religion: "Không",
+        maritalStatus: "single",
+        phoneNumber: 962586290,
+        personalEmail: "tranhungcuong703@gmail.com",
+        phoneNumber2: 9625845,
+        personalEmail2: "hungkaratedo03101998@gmail.com",
+        homePhone: 978590338,
+        emergencyContactPerson: "Nguyễn Văn Thái",
+        relationWithEmergencyContactPerson: "Em trai",
+        emergencyContactPersonPhoneNumber: 962586278,
+        emergencyContactPersonEmail: "cuong@gmail.com",
+        emergencyContactPersonHomePhone: 962586789,
+        emergencyContactPersonAddress: "Hải Phương - Hải Hậu - Nam Định",
+        permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
+        permanentResidenceCountry: "Việt Nam",
+        permanentResidenceCity: "Nam Định",
+        permanentResidenceDistrict: "Hải Hậu",
+        permanentResidenceWard: "Hải Phương",
+        temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+        temporaryResidenceCountry: "Việt Nam",
+        temporaryResidenceCity: "Hà Nội",
+        temporaryResidenceDistrict: "Hai Bà Trưng",
+        temporaryResidenceWard: "Bạch Mai",
+        educationalLevel: "12/12",
+        foreignLanguage: "500 Toeic",
+        professionalSkill:'',
         healthInsuranceNumber: "N1236589",
         healthInsuranceStartDate: "09-02-2020",
         healthInsuranceEndDate: "16-02-2020",
@@ -852,18 +875,11 @@ var sampleCompanyData = async () => {
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
-        }],
-        ethnic: "Kinh",
-        religion: "Không",
-        maritalStatus: "single",
-        educationalLevel: "12/12",
-        foreignLanguage: "500 Toeic",
-        experiences: [{
-            unit: "Vnist",
-            startDate: "06-2019",
-            endDate: "02-2020",
-            position: "Nhân viên"
-        }],
+        }],   
+        taxNumber: "12658974",
+        taxRepresentative: "Nguyễn Văn Hưng",
+        taxDateOfIssue: "12-08-2019",
+        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
         degrees: [{
             name: "Bằng tốt nghiệp",
             issuedBy: "Đại học Bách Khoa",
@@ -880,6 +896,12 @@ var sampleCompanyData = async () => {
             file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
+        experiences: [{
+            startDate: "06-2019",
+            endDate: "02-2020",
+            company: "Vnist",
+            position: "Nhân viên"
+        }],
         contracts: [{
             name: "Thực tập",
             contractType: "Phụ thuộc",
@@ -889,12 +911,11 @@ var sampleCompanyData = async () => {
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
-        nationality: "Việt Nam",
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }, {
         avatar: "lib/adminLTE/dist/img/avatar5.png",
-        fullName: "Trần Văn B",
+        fullName: "Trần Văn Bình",
         employeeNumber: "MS2015124",
         status:"active",
         company:vnist._id,
@@ -906,13 +927,37 @@ var sampleCompanyData = async () => {
         identityCardDate: "20-10-2015",
         identityCardAddress: "Nam Định",
         emailInCompany: "tvb.vnist@gmail.com",
-        taxNumber: "12658974",
-        taxRepresentative: "Nguyễn Văn Hưng",
-        taxDateOfIssue: "12-08-2019",
-        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
+        nationality: "Việt Nam",
         atmNumber: "102298653",
         bankName: "ViettinBank",
         bankAddress: "Hai Bà Trưng",
+        ethnic: "Kinh",
+        religion: "Không",
+        maritalStatus: "single",
+        phoneNumber: 962586290,
+        personalEmail: "tranhungcuong703@gmail.com",
+        phoneNumber2: 9625845,
+        personalEmail2: "hungkaratedo03101998@gmail.com",
+        homePhone: 978590338,
+        emergencyContactPerson: "Nguyễn Văn Thái",
+        relationWithEmergencyContactPerson: "Em trai",
+        emergencyContactPersonPhoneNumber: 962586278,
+        emergencyContactPersonEmail: "cuong@gmail.com",
+        emergencyContactPersonHomePhone: 962586789,
+        emergencyContactPersonAddress: "Hải Phương - Hải Hậu - Nam Định",
+        permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
+        permanentResidenceCountry: "Việt Nam",
+        permanentResidenceCity: "Nam Định",
+        permanentResidenceDistrict: "Hải Hậu",
+        permanentResidenceWard: "Hải Phương",
+        temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+        temporaryResidenceCountry: "Việt Nam",
+        temporaryResidenceCity: "Hà Nội",
+        temporaryResidenceDistrict: "Hai Bà Trưng",
+        temporaryResidenceWard: "Bạch Mai",
+        educationalLevel: "12/12",
+        foreignLanguage: "500 Toeic",
+        professionalSkill:'',
         healthInsuranceNumber: "N1236589",
         healthInsuranceStartDate: "09-02-2020",
         healthInsuranceEndDate: "16-02-2020",
@@ -922,22 +967,14 @@ var sampleCompanyData = async () => {
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
-        }],
-        ethnic: "Kinh",
-        religion: "Không",
-        maritalStatus: "single",
-        educationalLevel: "12/12",
-        foreignLanguage: "500 Toeic",
-        educational: "intermediate_degree",
-        experiences: [{
-            unit: "Vnist",
-            startDate: "06-2019",
-            endDate: "02-2020",
-            position: "Nhân viên"
-        }],
+        }],   
+        taxNumber: "12658974",
+        taxRepresentative: "Nguyễn Văn Hưng",
+        taxDateOfIssue: "12-08-2019",
+        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
         degrees: [{
             name: "Bằng tốt nghiệp",
-            issuedBy: "Đại học Bách Khoá",
+            issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
@@ -951,66 +988,23 @@ var sampleCompanyData = async () => {
             file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
+        experiences: [{
+            startDate: "06-2019",
+            endDate: "02-2020",
+            company: "Vnist",
+            position: "Nhân viên"
+        }],
         contracts: [{
             name: "Thực tập",
             contractType: "Phụ thuộc",
-            startDate : "28-01-2020",
-            endDate : "28-01-2020",
+            startDate: "28-01-2020",
+            endDate: "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
-        nationality: "Việt Nam",
-        archivedRecordNumber: "T3 - 123698",
+        archivedRecordNumber: "T2 - 123698",
         files: [],
-    }])
-
-    await EmployeeContact.insertMany([{
-        employee: listEmployee[0]._id,
-        phoneNumber: 962586290,
-        emailPersonal: "tranhungcuong703@gmail.com",
-        phoneNumber2: 9625845,
-        emailPersonal2: "hungkaratedo03101998@gmail.com",
-        phoneNumberAddress: 978590338,
-        friendName: "Nguyễn Văn Thái",
-        relation: "Em trai",
-        friendPhone: 962586278,
-        friendEmail: "cuong@gmail.com",
-        friendPhoneAddress: 962586789,
-        friendAddress: "Hải Phương - Hải Hậu - Nam Định",
-        temporaryResidence: "Hải Phương - Hải Hậu - Nam Định",
-        localNational: "Việt Nam",
-        localCity: "Nam Định",
-        localDistrict: "Hải Hậu",
-        localCommune: "Hải Phương",
-        nowAddress: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
-        nowNational: "Việt Nam",
-        nowCity: "Hà Nội",
-        nowDistrict: "Hai Bà Trưng",
-        nowCommune: "Bạch Mai",
-    }, {
-        employee: listEmployee[1]._id,
-        phoneNumber: 962586290,
-        emailPersonal: "tranhungcuong703@gmail.com",
-        phoneNumber2: 9625845,
-        emailPersonal2: "hungkaratedo03101998@gmail.com",
-        phoneNumberAddress: 978590338,
-        friendName: "Nguyễn Văn Thái",
-        relation: "Em trai",
-        friendPhone: 962586278,
-        friendEmail: "cuong@gmail.com",
-        friendPhoneAddress: 962586789,
-        friendAddress: "Hải Phương - Hải Hậu - Nam Định",
-        temporaryResidence: "Hải Phương - Hải Hậu - Nam Định",
-        localNational: "Việt Nam",
-        localCity: "Nam Định",
-        localDistrict: "Hải Hậu",
-        localCommune: "Hải Phương",
-        nowAddress: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
-        nowNational: "Việt Nam",
-        nowCity: "Hà Nội",
-        nowDistrict: "Hai Bà Trưng",
-        nowCommune: "Bạch Mai",
     }])
     console.log("Khởi tạo dữ liệu nhân viên!");
     var employee = await Employee.create({
@@ -1027,13 +1021,37 @@ var sampleCompanyData = async () => {
         identityCardDate: "20-10-2015",
         identityCardAddress: "Nam Định",
         emailInCompany: "nva.vnist@gmail.com",
-        taxNumber: "12658974",
-        taxRepresentative: "Nguyễn Văn Hưng",
-        taxDateOfIssue: "12-08-2019",
-        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
+        nationality: "Việt Nam",
         atmNumber: "102298653",
         bankName: "ViettinBank",
         bankAddress: "Hai Bà Trưng",
+        ethnic: "Kinh",
+        religion: "Không",
+        maritalStatus: "single",
+        phoneNumber: 962586290,
+        personalEmail: "tranhungcuong703@gmail.com",
+        phoneNumber2: 9625845,
+        personalEmail2: "hungkaratedo03101998@gmail.com",
+        homePhone: 978590338,
+        emergencyContactPerson: "Nguyễn Văn Thái",
+        relationWithEmergencyContactPerson: "Em trai",
+        emergencyContactPersonPhoneNumber: 962586278,
+        emergencyContactPersonEmail: "cuong@gmail.com",
+        emergencyContactPersonHomePhone: 962586789,
+        emergencyContactPersonAddress: "Hải Phương - Hải Hậu - Nam Định",
+        permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
+        permanentResidenceCountry: "Việt Nam",
+        permanentResidenceCity: "Nam Định",
+        permanentResidenceDistrict: "Hải Hậu",
+        permanentResidenceWard: "Hải Phương",
+        temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+        temporaryResidenceCountry: "Việt Nam",
+        temporaryResidenceCity: "Hà Nội",
+        temporaryResidenceDistrict: "Hai Bà Trưng",
+        temporaryResidenceWard: "Bạch Mai",
+        educationalLevel: "12/12",
+        foreignLanguage: "500 Toeic",
+        professionalSkill:'',
         healthInsuranceNumber: "N1236589",
         healthInsuranceStartDate: "09-02-2020",
         healthInsuranceEndDate: "16-02-2020",
@@ -1043,22 +1061,14 @@ var sampleCompanyData = async () => {
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
-        }],
-        ethnic: "Kinh",
-        religion: "Không",
-        maritalStatus: "single",
-        educationalLevel: "12/12",
-        foreignLanguage: "500 Toeic",
-        educational: "intermediate_degree",
-        experiences: [{
-            unit: "Vnist",
-            startDate: "06-2019",
-            endDate: "02-2020",
-            position: "Nhân viên"
-        }],
+        }],   
+        taxNumber: "12658974",
+        taxRepresentative: "Nguyễn Văn Hưng",
+        taxDateOfIssue: "12-08-2019",
+        taxAuthority: "Chi cục thuế Huyện Hải Hậu",
         degrees: [{
             name: "Bằng tốt nghiệp",
-            issuedBy: "Đại học Bách Khoá",
+            issuedBy: "Đại học Bách Khoa",
             year: "2020",
             degreeType: "good",
             file: "Quản trị Hành chính Việt Anh.xlsm",
@@ -1072,17 +1082,22 @@ var sampleCompanyData = async () => {
             file: "ViaVet Khoi San Xuat.xlsm",
             urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm"
         }],
+        experiences: [{
+            startDate: "06-2019",
+            endDate: "02-2020",
+            company: "Vnist",
+            position: "Nhân viên"
+        }],
         contracts: [{
             name: "Thực tập",
             contractType: "Phụ thuộc",
-            startDate : "28-01-2019",
-            endDate : "28-02-2020",
+            startDate: "28-01-2020",
+            endDate: "28-01-2020",
             file: "Quản trị Hành chính Việt Anh.xlsm",
             urlFile: "lib/fileEmployee/1582031878139-quản-trị-hành-chính-việt-anh.xlsm"
         }],
         courses: [],
-        nationality: "Việt Nam",
-        archivedRecordNumber: "T3 - 123698",
+        archivedRecordNumber: "T4 - 123698",
         files: [{
             name: "Ảnh",
             description : "Ảnh 3x4",
@@ -1092,31 +1107,6 @@ var sampleCompanyData = async () => {
             urlFile : "lib/fileEmployee/1582212624054-3.5.1.png"
         }],
     });
-
-    var employeeContact = await EmployeeContact.create({
-        employee: employee._id,
-        phoneNumber: 962586290,
-        emailPersonal: "tranhungcuong703@gmail.com",
-        phoneNumber2: 9625845,
-        emailPersonal2: "hungkaratedo03101998@gmail.com",
-        phoneNumberAddress: 978590338,
-        friendName: "Nguyễn Văn Thái",
-        relation: "Em trai",
-        friendPhone: 962586278,
-        friendEmail: "cuong@gmail.com",
-        friendPhoneAddress: 962586789,
-        friendAddress: "Hải Phương - Hải Hậu - Nam Định",
-        temporaryResidence: "Hải Phương - Hải Hậu - Nam Định",
-        localNational: "Việt Nam",
-        localCity: "Nam Định",
-        localDistrict: "Hải Hậu",
-        localCommune: "Hải Phương",
-        nowAddress: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
-        nowNational: "Việt Nam",
-        nowCity: "Hà Nội",
-        nowDistrict: "Hai Bà Trưng",
-        nowCommune: "Bạch Mai",
-    })
     console.log(`Xong! Thông tin nhân viên đã được tạo`);
     //END
 
@@ -1126,7 +1116,7 @@ var sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
-    var annualLeave = await AnnualLeave.insertMany([{
+    await AnnualLeave.insertMany([{
         employee: employee._id,
         company:vnist._id,
         startDate: "04-02-2020",
@@ -1149,7 +1139,7 @@ var sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu lương nhân viên!");
-    var salary = await Salary.insertMany([{
+    await Salary.insertMany([{
         employee: employee._id,
         company:vnist._id,
         month: "02-2020",
@@ -1178,7 +1168,7 @@ var sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
-    var praise = await Commendation.insertMany([{
+    await Commendation.insertMany([{
         employee: employee._id,
         company:vnist._id,
         decisionNumber: "123",
@@ -1203,7 +1193,7 @@ var sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu kỷ luật!");
-    var discipline = await Discipline.insertMany([{
+    await Discipline.insertMany([{
         employee: employee._id,
         company:vnist._id,
         decisionNumber: "1456",
@@ -1261,7 +1251,7 @@ var sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
-    var course= await Course.insertMany([{
+    await Course.insertMany([{
         company:vnist._id,
         name: "An toàn lao động 1",
         courseId : "LD1233",
