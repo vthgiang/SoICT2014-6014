@@ -3,9 +3,9 @@ import { DisciplineConstants } from './constants';
 const initState = {
     isLoading: false,
     totalListDiscipline: "",
-    listDiscipline: [],
+    listDisciplines: [],
     totalListPraise: "",
-    listPraise: [],
+    listCommendations: [],
     error: ""
 }
 
@@ -27,26 +27,26 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listDiscipline: action.payload.listDiscipline,
+                listDisciplines: action.payload.listDisciplines,
                 totalListDiscipline: action.payload.totalList,
             };
         case DisciplineConstants.CREATE_DISCIPLINE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDiscipline: [...state.listDiscipline, action.payload]
+                listDisciplines: [...state.listDisciplines, action.payload]
             };
         case DisciplineConstants.DELETE_DISCIPLINE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDiscipline: state.listDiscipline.filter(discipline => (discipline._id !== action.payload._id))
+                listDisciplines: state.listDisciplines.filter(discipline => (discipline._id !== action.payload._id))
             };
         case DisciplineConstants.UPDATE_DISCIPLINE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDiscipline: state.listDiscipline.map(discipline =>(discipline._id === action.payload._id) ? action.payload : discipline)
+                listDisciplines: state.listDisciplines.map(discipline =>(discipline._id === action.payload._id) ? action.payload : discipline)
             };
         case DisciplineConstants.GET_DISCIPLINE_FAILURE:
         case DisciplineConstants.CREATE_DISCIPLINE_FAILURE:
@@ -78,26 +78,26 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listPraise: action.payload.listPraise,
-                totalListPraise: action.payload.totalList,
+                listCommendations: action.payload.listCommendations,
+                totalListCommendation: action.payload.totalList,
             };
         case DisciplineConstants.CREATE_PRAISE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listPraise: [...state.listPraise, action.payload],
+                listCommendations: [...state.listCommendations, action.payload],
             };
         case DisciplineConstants.DELETE_PRAISE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listPraise: state.listPraise.filter(praise => (praise._id !== action.payload._id))
+                listCommendations: state.listCommendations.filter(commendation => (commendation._id !== action.payload._id))
             };
         case DisciplineConstants.UPDATE_PRAISE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listPraise: state.listPraise.map(praise =>(praise._id === action.payload._id) ? action.payload : praise),
+                listCommendations: state.listCommendations.map(commendation =>(commendation._id === action.payload._id) ? action.payload : commendation),
             };
         case DisciplineConstants.GET_PRAISE_FAILURE:
         case DisciplineConstants.CREATE_PRAISE_FAILURE:

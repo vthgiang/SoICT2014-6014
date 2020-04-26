@@ -5,36 +5,27 @@ import { ToastContainer } from 'react-toastify';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom } from './combinedContent';
-import { DataTableSetting, DeleteNotification, PaginateBar } from '../../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../../common-components';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
-class ListEmployee extends Component {
+class EmployeeManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "All",
-            gender: "All",
+            position: null,
+            gender: null,
             employeeNumber: "",
-            department: "All",
-            status: "All",
+            organizationalUnit: null,
+            status: null,
             page: 0,
             limit: 5,
-            hideColumn: []
-
         }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
-        let script1 = document.createElement('script');
-        script1.src = 'lib/main/js/GridSelect.js';
-        script1.async = true;
-        script1.defer = true;
-        document.body.appendChild(script1);
-
     }
+
     // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
     handleView = async (value) => {
         await this.setState(state => {
@@ -54,78 +45,54 @@ class ListEmployee extends Component {
         });
         window.$('#modal-edit-employee').modal('show');
     }
-    componentDidUpdate() {
-        this.hideColumn();
-    }
 
-    hideColumn = () => {
-        if (this.state.hideColumn.length !== 0) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#employee-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
-    }
-
-    displayTreeSelect = (data, i) => {
-        i = i + 1;
-        if (data !== undefined) {
-            if (typeof (data.children) === 'undefined') {
-                return (
-                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
-                )
-            } else {
-                return (
-                    <React.Fragment key={data.id}>
-                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
-                        {
-                            data.children.map(tag => this.displayTreeSelect(tag, i))
-                        }
-                    </React.Fragment>
-                )
-            }
-
-        }
-        else return null
-    }
-    setLimit = async (number, hideColumn) => {
-        await this.setState({
-            limit: parseInt(number),
-            hideColumn: hideColumn
-        });
-        this.props.getAllEmployee(this.state);
-    }
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
-        await this.setState({
-            page: parseInt(page),
-
-        });
-        this.props.getAllEmployee(this.state);
-    }
-    handleChange(event) {
-        const { name, value } = event.target;
+    handleChange = (e) => {
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         });
     }
-    handleSunmitSearch(event) {
-        event.preventDefault();
+    // Function bắt sự kiện tìm kiếm 
+    handleSunmitSearch = async () => {
+        this.props.getAllEmployee(this.state);
+    }
+
+    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    setLimit = async (number) => {
+        await this.setState({
+            limit: parseInt(number),
+        });
+        this.props.getAllEmployee(this.state);
+    }
+
+    // Bắt sự kiện chuyển trang
+    setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * (this.state.limit);
+        await this.setState({
+            page: parseInt(page),
+        });
         this.props.getAllEmployee(this.state);
     }
     render() {
-        const { tree, list } = this.props.department;
-        var lists, listDepartment = list, listPosition;
-        for (let n in listDepartment) {
-            if (listDepartment[n]._id === this.state.department) {
-                listPosition = [
-                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
-                    { _id: listDepartment[n].viceDean._id, name: listDepartment[n].viceDean.name },
-                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
-                ]
-            }
-        }
+        const { list } = this.props.department;
         var { employeesManager, translate } = this.props;
+        var lists, listPosition = [];
+        if (this.state.organizationalUnit !== null) {
+            let organizationalUnit = this.state.organizationalUnit;
+            organizationalUnit.forEach(u => {
+                list.forEach(x => {
+                    if (x._id === u) {
+                        let position = [
+                            { _id: x.dean._id, name: x.dean.name },
+                            { _id: x.viceDean._id, name: x.viceDean.name },
+                            { _id: x.employee._id, name: x.employee.name }
+                        ]
+                        listPosition = listPosition.concat(position)
+                    }
+                })
+            })
+        }
+
         if (employeesManager.allEmployee) {
             lists = employeesManager.allEmployee;
         }
@@ -136,32 +103,24 @@ class ListEmployee extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <EmployeeCreateForm />
+                    {/* <EmployeeCreateForm /> */}
                     <div className="form-group">
                         <h4 className="box-title">Danh sách nhân viên:</h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}:</label>
-                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
-                                <option value="All" level={1}>--Tất cả---</option>
-                                {
-                                    tree !== null &&
-                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                }
-                            </select>
+                            <label className="form-control-static">{translate('page.unit')}</label>
+                            <SelectMulti id={`multiSelectUnit`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}:</label>
-                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                {
-                                    listPosition !== undefined &&
-                                    listPosition.map((position, index) => (
-                                        <option key={index} value={position._id}>{position.name}</option>
-                                    ))
-                                }
-                            </select>
+                            <label className="form-control-static">{translate('page.position')}</label>
+                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
+                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
+                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                            </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline">
@@ -224,14 +183,14 @@ class ListEmployee extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><th colSpan={8 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
+                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.map(y => y.employeeNumber)}</td>
                                         <td>{x.employee.map(y => y.fullName)}</td>
                                         <td>{x.employee.map(y => y.gender)}</td>
-                                        <td>{x.employee.map(y => y.brithday)}</td>
-                                        <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                        <td>{x.employee.map(y => y.birthdate)}</td>
+                                        <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
                                             </React.Fragment>
@@ -260,6 +219,11 @@ class ListEmployee extends Component {
                         </tbody>
 
                     </table>
+                    {employeesManager.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 <ToastContainer />
@@ -302,6 +266,6 @@ const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
 };
-const connectedEmplyee = connect(mapState, actionCreators)(withTranslate(ListEmployee));
+const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));
 
-export { connectedEmplyee as ListEmployee };
+export { employeeManagement as EmployeeManagement };

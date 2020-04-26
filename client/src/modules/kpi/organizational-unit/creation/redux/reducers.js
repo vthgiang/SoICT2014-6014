@@ -48,7 +48,7 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             adding: false,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.newKPI.organizationalUnitKpi,
             isLoading: false
           };
         case createUnitKpiConstants.ADD_KPIUNIT_FAILURE:
@@ -66,7 +66,7 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             editing: false,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.newKPI.organizationalUnitKpiSet,
             isLoading: false
           };
         case createUnitKpiConstants.EDIT_KPIUNIT_FAILURE:
@@ -120,7 +120,7 @@ export function createKpiUnit (state = {}, action){
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_SUCCESS:
           return {
             ...state,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.newKPI.organizationalUnitKpiSet,
             isLoading: false
           };
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_FAILURE:
@@ -171,7 +171,7 @@ export function createKpiUnit (state = {}, action){
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_SUCCESS:
           return {
             ...state,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.newKPI.organizationalUnitKpiSet,
             isLoading: false
           };
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_FAILURE:

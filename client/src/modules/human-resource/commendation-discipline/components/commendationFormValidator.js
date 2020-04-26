@@ -2,11 +2,11 @@ import {
     VALIDATOR
 } from '../../../../helpers/validator';
 
-export const PraiseFromValidator = {
+export const CommendationFromValidator = {
     validateEmployeeNumber,
     validateReason,
-    validateNumber,
-    validateUnit,
+    validateDecisionNumber,
+    validateOrganizationalUnit,
     validateType,
     validateStartDate
 }
@@ -22,7 +22,7 @@ function validateEmployeeNumber(value, translate) {
 }
 
 // Kiểm tra số ra quyết định nhập vào
-function validateNumber(value, translate) {
+function validateDecisionNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('error.number_decisions_required');
@@ -30,7 +30,7 @@ function validateNumber(value, translate) {
     return msg;
 }
 // Kiểm tra cấp ra quyết định
-function validateUnit(value, translate) {
+function validateOrganizationalUnit(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('error.unit_decisions_required');
@@ -41,7 +41,7 @@ function validateUnit(value, translate) {
 function validateType(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.type_praise_required');
+        msg = translate('error.type_commendations_required');
     }
     return msg;
 }
@@ -49,7 +49,7 @@ function validateType(value, translate) {
 function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.reason_praise_required');
+        msg = translate('error.reason_commendations_required');
     }
     return msg;
 }

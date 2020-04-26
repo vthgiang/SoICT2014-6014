@@ -2,7 +2,7 @@ import {
     VALIDATOR
 } from '../../../../helpers/validator';
 
-export const SabbaticalFormValidator = {
+export const AnnualLeaveFormValidator = {
     validateEmployeeNumber,
     validateReason,
     validateStartDate,

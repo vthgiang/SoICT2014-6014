@@ -1,4 +1,4 @@
-const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User } = require('../../../models').schema;
+const { Company, Link, SystemLink, Component, SystemComponent, Privilege, Role, RootRole, RoleType, User, UserRole } = require('../../../models').schema;
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -62,8 +62,9 @@ exports.createCompany = async(data) => {
  * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
  */
 exports.editCompany = async(id, data) => {
+    
     const company = await Company.findById(id);
-    if(company === null) throw ('company_not_found');
+    if(company === null) throw ['company_not_found'];
     company.name = data.name;
     company.description = data.description;
     company.shortName = data.shortName;
@@ -92,13 +93,13 @@ exports.deleteCompany = async(id) => {
  * @Employee nhân viên đơn vị
  */
 exports.createCompanyRootRoles = async(companyId) => {
-    const data = await RoleDefault.find();
-    const typeAbstract = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
+    const data = await RootRole.find();
+    const rootType = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
     const roles = await data.map(role => {
         return {
             name: role.name,
             company: companyId,
-            type: typeAbstract._id
+            type: rootType._id
         };
     })
 
@@ -112,10 +113,12 @@ exports.createCompanyRootRoles = async(companyId) => {
  * @userEmail email của tài khoản được chọn làm super admin của công ty
  * @roleSuperAdminId Id của role SuperAdmin của công ty dùng để phân quyền cho tài khoản có email ở trên
  */
-exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail, roleSuperAdminId) => {
+exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail) => {
+    console.log("dữ liệu nhận được: ", companyId, companyName, userEmail)
     const checkEmail = await User.findOne({email: userEmail});
-    if(checkEmail !== null) throw ('email_exist');
-
+    if(checkEmail !== null) throw ['email_exist'];
+    const roleSuperAdmin = await Role.findOne({ company: companyId, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME});
+    console.log("role Super admin cong ty: ", roleSuperAdmin)
     const salt = await bcrypt.genSaltSync(10);
     const password = await generator.generate({ length: 10, numbers: true });
     const hash = await bcrypt.hashSync(password, salt);
@@ -154,11 +157,13 @@ exports.createCompanySuperAdminAccount = async(companyId, companyName, userEmail
         password: hash,
         company: companyId
     });
+    const companyUpdate = await Company.findById(companyId);
+    companyUpdate.superAdmin = user._id;
+    await companyUpdate.save();
 
-    
     await UserRole.create({
         userId: user._id,
-        roleId: roleSuperAdminId
+        roleId: roleSuperAdmin._id
     });
     
     await transporter.sendMail(mainOptions);
@@ -176,7 +181,7 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
 
     const systemLinks = await SystemLink.find({
         _id: { $in: linkArr }
-    }).populate({ path: 'roles', model: RoleDefault });
+    }).populate({ path: 'roles', model: RootRole });
 
     const dataLinks = systemLinks.map( link => {
         return {
@@ -262,7 +267,7 @@ exports.createCompanyComponents = async(companyId, linkArr) => {
  */
 exports.getCompanyLinks = async(companyId) => {
     const check = await Company.findById(companyId);
-    if(check === null) throw ('company_not_found');
+    if(check === null) throw ['company_not_found'];
     const links = await Link.find({company: companyId})
         .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role} });
 
@@ -275,20 +280,28 @@ exports.getCompanyLinks = async(companyId) => {
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
 exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
-    const com = await Company.findById(companyId);
-    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.superAdmin.NAME});
-    const user = await User.findOne({ company: com._id, email: superAdminEmail });
-    if(user === null){
-        const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail, roleSuperAdmin._id);
-        com.superAdmin = newUser._id;
-        await com.save();
+    
+    const com = await Company.findById(companyId).populate({path: 'superAdmin', model: User});
+    const roleSuperAdmin = await Role.findOne({ company: com._id, name: Terms.ROOT_ROLES.SUPER_ADMIN.NAME});
+    const oldSuperAdmin = await User.findById(com.superAdmin._id);
 
-        return newUser;
-    }else{
-        com.superAdmin = user._id;
-        await com.save();
+    if(oldSuperAdmin.email === superAdminEmail)
+        return oldSuperAdmin;
+    else{
+        await UserRole.deleteOne({ userId: oldSuperAdmin._id, roleId: roleSuperAdmin._id });
 
-        return user;
+        const user = await User.findOne({ company: com._id, email: superAdminEmail });
+        if(user === null){
+            const newUser = await this.createCompanySuperAdminAccount(com._id, com.name, superAdminEmail);
+    
+            return newUser;
+        }else{
+            com.superAdmin = user._id;
+            await com.save();
+            await UserRole.create({ userId: user._id, roleId: roleSuperAdmin._id })
+    
+            return user;
+        }
     }
 }
 
@@ -303,7 +316,7 @@ exports.addCompanyLink = async(companyId, linkUrl, linkDescription) => {
         company: companyId,
         url: linkUrl
     });
-    if(check !== null) throw('url_exist');
+    if(check !== null) throw['url_exist'];
     const newLink = await Link.create({
         url: linkUrl,
         description: linkDescription,
@@ -342,7 +355,7 @@ exports.addCompanyComponent = async(companyId, componentName, componentDescripti
         company: companyId,
         name: componentName
     });
-    if(check !== null) throw('component_exist');
+    if(check !== null) throw['component_exist'];
     const newComponent = await Component.create({
         name: componentName,
         description: componentDescription,

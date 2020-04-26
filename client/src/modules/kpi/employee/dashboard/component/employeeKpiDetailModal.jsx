@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { managerServices } from '../../../organizational-unit/management/redux/services';
 
 
-class ModalDetailKPIPersonal extends Component {
+class ModalDetailEmployeeKpiSet extends Component {
     // componentDidMount() {
     //     this.props.getAllTarget(this.state.unit);
     // }
@@ -11,7 +11,7 @@ class ModalDetailKPIPersonal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: '5dcadf02f0343012f09c1193',
+            organizationalUnit: '5dcadf02f0343012f09c1193',
             content: ""
         };
     }
@@ -69,10 +69,10 @@ class ModalDetailKPIPersonal extends Component {
     }
     render() {
         var list;
-        const { kpipersonal } = this.props;
-        if (kpipersonal.listtarget) list = kpipersonal.listtarget;
+        const { employeeKpiSet } = this.props;
+        if (employeeKpiSet.kpis) list = employeeKpiSet.kpis;
         return (
-            <div className="modal modal-full fade" id={"detailKPIPersonal" + kpipersonal._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div className="modal modal-full fade" id={"detailKPIPersonal" + employeeKpiSet._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
                     <div className="modal-content">
                         {/* Modal Header */}
@@ -81,7 +81,7 @@ class ModalDetailKPIPersonal extends Component {
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>
                             </button>
-                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi cá nhân tháng {this.formatDate(kpipersonal.time)}</h3>
+                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi cá nhân tháng {this.formatDate(employeeKpiSet.time)}</h3>
                         </div>
                         {/* Modal Body */}
                         <div className="modal-body modal-body-perform-task" >
@@ -126,7 +126,7 @@ class ModalDetailKPIPersonal extends Component {
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Cá nhân tự đánh giá:</label>
                                                     {
-                                                        kpipersonal.status !== 3 ?
+                                                        employeeKpiSet.status !== 3 ?
                                                             <React.Fragment>
                                                                 <input type="number" min="0" max={item.weight} className="col-sm-4" defaultValue="0" name="value" />
                                                                 <button className="col-sm-2 col-sm-offset-4 btn btn-success">Lưu</button>
@@ -280,5 +280,5 @@ function mapState(state) {
 const actionCreators = {
     getAllTarget: managerServices.getAllTargetByUnitId,
 };
-const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(ModalDetailKPIPersonal);
-export { connectedModalDetailKPIPersonal as ModalDetailKPIPersonal };
+const connectedModalDetailEmployeeKpiSet = connect(mapState, actionCreators)(ModalDetailEmployeeKpiSet);
+export { connectedModalDetailEmployeeKpiSet as ModalDetailEmployeeKpiSet };

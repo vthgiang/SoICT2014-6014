@@ -43,17 +43,17 @@ export default {
             edit_salary_success: 'Chỉnh sửa bảng lương thành công',
             edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
             // Quản lý khen thưởng
-            type_praise_required: 'Hình thức khen thưởng không được để trống',
-            reason_praise_required: 'Thành tích (lý do) khen thưởng không được để trống',
+            type_commendations_required: 'Hình thức khen thưởng không được để trống',
+            reason_commendations_required: 'Thành tích (lý do) khen thưởng không được để trống',
             decisions_date_required: 'Ngày ra quyết định không được để trống',
-            get_praise_success: 'Lấy danh sách khen thưởng thành công',
-            get_praise_faile: 'Lấy danh sách khen thưởng thất bại',
-            create_praise_success: 'Thêm mới khen thưởng thành công',
-            create_praise_faile: 'Thêm mới khen thưởng thất bại',
-            delete_praise_success: 'Xoá khen thưởng thành công',
-            delete_praise_faile: 'Xoá khen thưởng thất bại',
-            edit_praise_success: 'Chỉnh sửa khen thưởng thành công',
-            edit_praise_faile: 'Chỉnh sửa khen thưởng thất bại',
+            get_commendations_success: 'Lấy danh sách khen thưởng thành công',
+            get_commendations_faile: 'Lấy danh sách khen thưởng thất bại',
+            create_commendations_success: 'Thêm mới khen thưởng thành công',
+            create_commendations_faile: 'Thêm mới khen thưởng thất bại',
+            delete_commendations_success: 'Xoá khen thưởng thành công',
+            delete_commendations_faile: 'Xoá khen thưởng thất bại',
+            edit_commendations_success: 'Chỉnh sửa khen thưởng thành công',
+            edit_commendations_faile: 'Chỉnh sửa khen thưởng thất bại',
             // Quản lý kỷ luật
             type_discipline_required: 'Hình thức kỷ luật không được để trống',
             reason_discipline_required: 'Lý do kỷ luật không được để trống',
@@ -81,6 +81,216 @@ export default {
              * Chức năng quản lý nhân sự
              */
         },
+        
+        /*******************************************************
+         * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
+         * @general những phần ngôn ngữ dùng chung cho mọi module
+         * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
+         *******************************************************/
+        general: {
+            table: 'Bảng',
+            name: 'Tên',
+            description: 'Mô tả',
+            search: 'Tìm kiếm',
+            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
+            yes: 'Có',  no: 'Không',
+            loading: 'Đang tải dữ liệu',
+            no_data: 'Không có dữ liệu',
+            success: 'Thành công',
+            error: 'Lỗi',
+            auth_alert: {
+                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
+                reason: 'Nguyên nhân có thể là do:',
+                content: [
+                    'Phiên làm việc đã hết hạn',
+                    'Truy cập không hợp lệ',
+                    'Phân quyền của bạn không hợp lệ',
+                    'Phân quyền của bạn đã được quản lý thay đổi',
+                    'Token của bạn không hợp lệ',
+                    'Dịch vụ cho công ty không còn hoạt động',
+                ]
+            }
+        },
+
+        system_admin: {
+            company: {
+                table: {
+                    name: 'Tên doanh nghiệp/công ty',
+                    short_name: 'Tên ngắn',
+                    description: 'Mô tả về doanh nghiệp/công ty',
+                    log: 'Ghi log',
+                    service: 'Dịch vụ',
+                    super_admin: 'Tài khoản super admin',
+                },
+                on: 'Bật', off: 'Tắt',
+                add: 'Thêm doanh nghiệp/công ty',
+                edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
+                service: 'Dịch vụ cho doanh nghiệp/công ty',
+                validator: {
+                    name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_special: 'Tên không được chứa kí tự đặc biệt'
+                    },
+                    short_name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less3: 'Tên không được ít hơn 3 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_space: 'Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau'
+                    },
+                    description: {
+                        no_blank: 'Mô tả không được để trống',
+                        no_less4: 'Mô tả không được ít hơn 4 kí tự',
+                        no_more255: 'Mô tả không quá 255 kí tự',
+                        no_special: 'Mô tả không được chứa kí tự đặc biệt'
+                    },
+                    super_admin: {
+                        no_blank: 'Email không được để trống',
+                        email_invalid: 'Email không hợp lệ',
+                    }
+                },
+
+                // Thông điệp trả về từ server
+                create_company_success: 'Khởi tạo dữ liệu công ty thành công',
+                show_company_success: 'Lấy dữ liệu công ty thành công',
+                edit_company_success: 'Chỉnh sửa thông tin công ty thành công',
+                delete_company_success: 'Xóa dữ liệu công ty thành công',
+                add_new_link_for_company_success: 'Thêm mới link cho công ty thành công',
+                delete_link_for_company_success: 'Xóa link thành công',
+                add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
+                delete_component_for_company_success: 'Xóa component thành công',
+
+                email_exist: 'Email này đã được sử dụng',
+                company_not_found: 'Không tìm thấy thông tin về công ty',
+                link_exist: 'Url cho link đã tồn tại',
+                component_exist: 'Component này đã tồn tại',
+            },
+
+            log: {
+
+            },
+
+            root_role: {
+                table: {
+                    name: 'Tên phân quyền',
+                    description: 'Mô tả về phân quyền'
+                },
+
+                //Thông điệp trả về từ server
+                get_root_roles_success: 'Lấy thông tin về các root role thành công'
+            },
+
+            system_link: {
+                table: {
+                    url: 'Đường dẫn',
+                    category: 'Danh mục',
+                    description: 'Mô tả về trang',
+                    roles: 'Những role có quyền',
+                },
+                add: 'Thêm system link mới',
+                edit: 'Chỉnh sửa thông tin system link',
+                delete: 'Xóa system link',
+                validator: {
+                    url: {
+                        no_blank: 'Url không được để trống',
+                        start_with_slash: 'Url không hợp lệ. Url phải bắt đầu bằng dấu /',
+                    },
+                    description: {
+                        no_blank: 'Mô tả không được để trống',
+                        no_special: 'Mô tả không được chứa ký tự đặc biệt',
+                    }
+                },
+
+                // Thông điệp từ server
+                create_system_link_success: 'Tạo system link thành công',
+                edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
+
+                system_link_url_exist: 'Url này đã được sử dụng',
+            },
+
+            system_component: {
+                table: {
+                    name: 'Tên component',
+                    description: 'Mô tả về component',
+                    link: 'Thuộc về trang',
+                    roles: 'Những role có quyền'
+                },
+                add: 'Thêm system component mới',
+                edit: 'Chỉnh sửa thông tin system component',
+                delete: 'Xóa system component',
+                validator: {
+                    name: {
+                        no_space: 'Tên component không được để trống',
+                        no_special: 'Tên không được chứa ký tự đặc biệt',
+                    },
+                    description: {
+                        no_space: 'Mô tả component không được để trống',
+                        no_special: 'Mô tả không được chứa ký tự đặc biệt',
+                    },
+                },
+
+                //Thông điệp trả về từ server
+                create_system_component_success: 'Tạo system component thành công',
+                show_system_component_success: 'Lấy dữ liệu system component thành công',
+                edit_system_component_success: 'Chỉnh sửa system admin thành công',
+                delete_system_component_success: 'Xóa system component thành công',
+
+                system_component_name_invalid: 'Tên không hợp lệ',
+                system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
+            }
+        },
+        super_admin: {
+            organization_unit: {
+                //Thông điệp trả về từ server
+                create_department_success: 'Tạo đơn vị thành công',
+                edit_department_success: 'Chỉnh sửa đơn vị thành công',
+                delete_department_success: 'Xóa đơn vị thành công',
+
+                department_name_exist: 'Tên đơn vị này đã được sử dụng',
+                department_not_found: 'Không tìm thấy thông tin về đơn vị',
+                department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
+            },
+            user: {
+                // Thông điệp trả về từ server
+                create_user_success: 'Tạo tài khoản người dùng thành công',
+                edit_user_success: 'Chỉnh sửa thông tin tài khoản người dùng thành công',
+                delete_user_success: 'Xóa tài khoản người dùng thành công',
+                
+                email_exist: 'Email đã được sử dụng cho một tài khoản khác',
+                user_not_found: 'Không tìm thấy thông tin về tài khoản',
+                department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
+            },
+            role: {
+                // Thông điệp trả về từ server
+                create_role_success: 'Tạo role mới thành công',
+                edit_role_success: 'Chỉnh sửa role thành công',
+                delete_role_success: 'Xóa role thành công',
+                
+                role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
+                role_dean_exist: 'Tên cho phân quyền của trưởng đơn vị này đã được sử dụng',
+                role_vice_dean_exist: 'Tên cho phân quyền của phó đơn vị này đã được sử dụng',
+                role_employee_exist: 'Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng',
+            },
+            link: {
+                // Thông điệp trả về từ server
+                create_link_success: 'Tạo link thành công',
+                edit_link_success: 'Chỉnh sửa link thành công',
+                delete_link_success: 'Xóa link thành công',
+    
+                cannot_create_this_url: 'Không thể tạo link này',
+                this_url_cannot_be_use: 'Url này không được phép sử dụng',
+                url_exist: 'Url này đã đươc sử dụng',
+            },
+            component: {
+                // Thông điệp trả về từ server
+                edit_component_success: 'Chỉnh sửa component thành công',
+            
+                component_name_exist: 'Tên của component đã được sử dụng',
+            },
+        },
+
+        
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
             content: 'Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm',
@@ -235,7 +445,7 @@ export default {
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'DashBoard quản lý nhân sự',
             discipline: 'Quản lý khen thưởng - kỷ luật',
-            sabbatical: 'Quản lý nghỉ phép',
+            annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
             time_keeping: 'Chấm công nhân viên',
             list_education: 'Chương trình đào tạo bắt buộc',
@@ -723,8 +933,9 @@ export default {
 
         },
 
-        kpi_personal: {
-            kpi_personal_create: {
+        employee_kpi_set: {
+            create_employee_kpi_set: { // Module chính
+                // Nhóm dành cho các thông tin chung
                 general_information: {
                     general_information: 'KPI cá nhân tháng',
                     save: 'Lưu chỉnh sửa',
@@ -735,11 +946,18 @@ export default {
                     edit_failure: 'Chỉnh sửa không thành công',
                     delete_success: 'Xóa KPI thành công'
                 },
-
-                unit: 'Đơn vị',
                 time: 'Thời gian',
                 approver: 'Người phê duyệt',
+                weight: {
+                    weight_total: 'Tổng trọng số',
+                    not_satisfied: 'Chưa thỏa mãn',
+                    satisfied: 'Thỏa mãn'
+                },
+                initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
+                request_approval: 'Yêu cầu phê duyệt',
+                cancel_request_approval: 'Hủy yêu cầu phê duyệt',
 
+                // Nhóm dành cho các trạng thái tập KPI
                 kpi_status: {
                     status: 'Trạng thái KPI',
                     setting_up: 'Đang thiết lập',
@@ -748,15 +966,17 @@ export default {
                     finished: 'Đã kết thúc'
                 },
 
-                weight: {
-                    weight_total: 'Tổng trọng số',
-                    not_satisfied: 'Chưa thỏa mãn',
-                    satisfied: 'Thỏa mãn'
+                // Nhóm dành cho các trạng thái mục tiêu KPI
+                check_status_target: {
+                    not_approved: 'Chưa phê duyệt',
+                    edit_request: 'Yêu cầu chỉnh sửa',
+                    activated: 'Đã kích hoạt',
+                    finished: 'Đã kết thúc'
                 },
-
+                
+                // Nhóm dành cho table
                 target_list: 'Danh sách mục tiêu',
                 add_target: 'Thêm mục tiêu',
-                initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                 no_: 'Stt',
                 target_name: 'Tên mục tiêu',
                 parents_target: 'Mục tiêu cha',
@@ -766,25 +986,35 @@ export default {
                 action: 'Hành động',
                 not_initialize: 'Chưa khởi tạo KPI tháng ',
 
+                // Nhóm dành cho phản hồi
+                submit: {
+                    feedback: 'Phản hồi',
+                    send_feedback: 'Gửi phản hồi',
+                    cancel_feedback: 'Hủy',
+                },
+
+                // Nhóm dành cho các handle
+                handle_edit_kpi: {
+                    approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
+                    activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                },
+                request_approval_kpi: {
+                    approve: 'Bạn chắc chắn muốn quản lý phê quyệt KPI này?',
+                    not_enough_weight: 'Tổng trọng số phải bằng 100'
+                },
+                cancel_approve: {
+                    cancel: 'Bạn chắc chắn muốn hủy yêu cầu phê duyệt KPI này?',
+                    activated: 'KPI đã được kích hoạt bạn không thể hủy bỏ yêu cầu phê duyệt, nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
+                },
                 action_title: {
                     edit: 'Chỉnh sửa',
                     content: 'Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)',
                     delete: 'Xóa'
                 },
-
-                submit: {
-                    feedback: 'Phản hồi',
-                    send_feedback: 'Gửi phản hồi',
-                    cancel_feedback: 'Hủy',
-                    request_approval: 'Yêu cầu phê duyệt',
-                    cancel_request_approval: 'Hủy yêu cầu phê duyệt'
+                edit_target: {
+                    approving: 'KPI đang được phê duyệt, Bạn không thể chỉnh sửa!',
+                    activated: 'KPI đã được kích hoạt, Bạn không thể chỉnh sửa!'
                 },
-
-                handle_edit_kpi: {
-                    approving: 'KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!',
-                    activated: 'KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
-                },
-
                 delete_kpi: {
                     kpi: 'Bạn chắc chắn muốn xóa KPI này?',
                     kpi_target: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
@@ -792,42 +1022,34 @@ export default {
                     activated: 'KPI đã được kích hoạt, bạn không thể xóa!',
                     delete_success: 'Xóa mục tiêu KPI thành công'
                 },
-
-                edit_target: {
-                    approving: 'KPI đang được phê duyệt, Bạn không thể chỉnh sửa!',
-                    activated: 'KPI đã được kích hoạt, Bạn không thể chỉnh sửa!'
-                },
-
-                check_status_target: {
-                    not_approved: 'Chưa phê duyệt',
-                    edit_request: 'Yêu cầu chỉnh sửa',
-                    activated: 'Đã kích hoạt',
-                    finished: 'Đã kết thúc'
-                },
-
-                request_approval_kpi: {
-                    approve: 'Bạn chắc chắn muốn quản lý phê quyệt KPI này?',
-                    not_enough_weight: 'Tổng trọng số phải bằng 100'
-                },
-
-                cancel_approve: {
-                    cancel: 'Bạn chắc chắn muốn hủy yêu cầu phê duyệt KPI này?',
-                    activated: 'KPI đã được kích hoạt bạn không thể hủy bỏ yêu cầu phê duyệt, nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!'
-                },
-
-                not_initialize: 'Chưa khởi tạo'
             },
-            add_target_kpi: {
-                add_target_personal: 'Thêm mục tiêu KPI cá nhân',
-                add_target: 'Thêm mục tiêu',
-                parents_target: 'Mục tiêu cha',
-                evaluation_criteria_description: 'Mô tả tiêu chí đánh giá',
-                placeholder_description: 'Đánh giá mức độ hoàn thành dựa trên tiêu chí nào?',
+
+            create_employee_kpi_modal: { // Module con
+                // Nhóm dành cho modal
+                create_employee_kpi: 'Thêm mục tiêu KPI cá nhân',
+                name: 'Tên mục tiêu',
+                parents: 'Mục tiêu cha',
+                evaluation_criteria: 'Tiêu chí đánh giá',
                 weight: 'Trọng số',
-                placeholder_weight: 'Trọng số của mục tiêu',
-                cancel: 'Hủy bỏ',
-                add_success: 'Thêm mục tiêu KPI thành công'
+                success: 'Thêm mục tiêu KPI thành công',
+                failure: 'Bạn chưa nhập đủ thông tin',
+
+                // Nhóm dành cho validate
+                validate_name: {
+                    empty: 'Tên mục tiêu không được bỏ trống',
+                    less_than_4: 'Tên mục tiêu không được ít hơn 4 ký tự',
+                    more_than_50: 'Tên mục tiêu không được nhiều hơn 50 ký tự',
+                    special_character: 'Tên mục tiêu không được chưa ký tự đặc biệt'
+
+                },
+                validate_criteria: 'Tiêu chí không được để trống',
+                validate_weight: {
+                    empty: 'Trọng số không được để trống',
+                    less_than_0: 'Trọng số không được nhỏ hơn 0',
+                    greater_than_100: 'Trọng số không được lớn hơn 100'
+                }
             },
+
             kpi_member_manager:{
                 index:'STT',
                 time:'Thời gian',
@@ -838,28 +1060,27 @@ export default {
                 approve:'Phê duyệt',
                 evaluate:'Đánh giá'
             },
-            start: {
-                initialize_kpi: 'Khởi tạo KPI cá nhân',
-                unit: 'Đơn vị',
+
+            create_employee_kpi_set_modal: {// Module con
+                // Nhóm dành cho modal
+                initialize_kpi_set: 'Khởi tạo KPI cá nhân',
+                organizational_unit: 'Đơn vị',
                 month: 'Tháng',
                 approver: 'Người phê duyệt',
                 default_target: 'Mục tiêu mặc định',
-                initialize: 'Khởi tạo',
-                cancel: 'Hủy bỏ',
-                success: 'Khởi tạo KPI thành công'
+                success: 'Khởi tạo KPI thành công',
+                failure: 'Bạn chưa nhập đủ thông tin'
             },
 
-            edit_target_kpi: {
-                edit_personal: 'Chỉnh sửa mục tiêu KPI cá nhân',
-                target_name: 'Tên mục tiêu',
-                parents_target: 'Mục tiêu cha',
-                evaluation_criteria_description: 'Mô tả tiêu chí đánh giá',
-                placeholder_description: 'Đánh giá mức độ hoàn thành dựa trên tiêu chí nào?',
+            edit_target_kpi_modal: { // Mudule con
+                // Nhóm dành cho modal
+                edit_employee_kpi: 'Chỉnh sửa mục tiêu KPI cá nhân',
+                name: 'Tên mục tiêu',
+                parents: 'Mục tiêu cha',
+                evaluation_criteria: 'Mô tả tiêu chí đánh giá',
                 weight: 'Trọng số',
-                placeholder_weight: 'Trọng số của mục tiêu',
-                save: 'Lưu thay đổi',
-                cancel: 'Hủy bỏ',
-                edit_success: 'Chỉnh sửa mục tiêu KPI thành công'
+                success: 'Chỉnh sửa mục tiêu KPI thành công',
+                failure: 'Bạn chưa nhập đủ thông tin'
             }
         },
 

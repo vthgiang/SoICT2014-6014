@@ -115,9 +115,9 @@ class CompanyTable extends Component {
                 }
                 <SearchBar 
                     columns={[
-                        { title: translate('manage_company.name'), value: 'name' },
-                        { title: translate('manage_company.short_name'), value: 'shortName' },
-                        { title: translate('manage_company.description'), value: 'description' },
+                        { title: translate('system_admin.company.table.name'), value: 'name' },
+                        { title: translate('system_admin.company.table.short_name'), value: 'shortName' },
+                        { title: translate('system_admin.company.table.description'), value: 'description' },
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -127,11 +127,11 @@ class CompanyTable extends Component {
                 <table className="table table-hover table-striped table-bordered" id="company-table">
                     <thead>
                         <tr>
-                            <th>{translate('manage_company.name')}</th>
-                            <th>{translate('manage_company.short_name')}</th>
-                            <th>{translate('manage_company.description')}</th>
-                            <th style={{ width: "130px"}}>{translate('manage_company.log')}</th>
-                            <th style={{ width: "130px"}}>{translate('manage_company.service')}</th>
+                            <th>{translate('system_admin.company.table.name')}</th>
+                            <th>{translate('system_admin.company.table.short_name')}</th>
+                            <th>{translate('system_admin.company.table.description')}</th>
+                            <th style={{ width: "130px"}}>{translate('system_admin.company.table.log')}</th>
+                            <th style={{ width: "130px"}}>{translate('system_admin.company.table.service')}</th>
                             <th style={{ width: "120px", textAlign: 'center' }}>
                                 {translate('table.action')}
                                 <DataTableSetting 
@@ -156,18 +156,18 @@ class CompanyTable extends Component {
                                             <td>{ com.name }</td>
                                             <td>{ com.shortName }</td>
                                             <td>{ com.description }</td>
-                                            <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
-                                            <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('manage_company.off')} </p>}</td>
+                                            <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
+                                            <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
                                             <td style={{ textAlign: 'center'}}>
-                                            <a onClick={() => this.handleEdit(com)} className="text-yellow" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">edit</i></a>
-                                            <a onClick={() => this.handleService(com)} className="text-green" style={{width: '5px'}} title={translate('manage_company.edit')}><i className="material-icons">dvr</i></a>
+                                            <a onClick={() => this.handleEdit(com)} className="text-yellow" style={{width: '5px'}} title={translate('system_admin.company.edit')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleService(com)} className="text-green" style={{width: '5px'}} title={translate('system_admin.company.service')}><i className="material-icons">dvr</i></a>
                                             </td>
                                         </tr>    
                                     )
                                 }
                             </React.Fragment> : company.isLoading ?
-                            <tr><td colSpan='6'>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan='6'>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan='6'>{translate('general.loading')}</td></tr>:
+                            <tr><td colSpan='6'>{translate('general.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

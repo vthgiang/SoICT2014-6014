@@ -27,20 +27,18 @@ class NotFound extends Component {
          );
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         var currentRole = getStorage('currentRole');
-        this.props.getLinksOfRole(currentRole)
-            .then(res => {
-                var {links} = this.props.auth; 
-                var path = window.location.pathname;
-                for (let index = 0; index < links.length; index++) {
-                    const element = links[index];
-                    if(element.url === path){
-                        this.props.getComponentsOfUserInLink(currentRole, element._id);
-                        break;
-                    }
-                }
-            });
+        await this.props.getLinksOfRole(currentRole);
+        var {links} = this.props.auth; 
+        var path = window.location.pathname;
+        for (let index = 0; index < links.length; index++) {
+            const element = links[index];
+            if(element.url === path){
+                await this.props.getComponentsOfUserInLink(currentRole, element._id);
+                break;
+            }
+        }
     }
 }
  

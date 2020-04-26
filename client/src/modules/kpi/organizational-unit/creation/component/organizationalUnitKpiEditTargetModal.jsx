@@ -12,7 +12,7 @@ import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 
-class ModalEditTargetKPIUnit extends Component {
+class OrganizationalUnitKpiEditTargetModal extends Component {
     componentDidMount() {
         // get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
@@ -25,7 +25,6 @@ class ModalEditTargetKPIUnit extends Component {
             parent: undefined,
             weight: "",
             criteria: "",
-            kpiunit: "",
 
             errorOnName: undefined,
             errorOnCriteria: undefined,
@@ -53,6 +52,8 @@ class ModalEditTargetKPIUnit extends Component {
         
         if (this.isFormValidated()){
             return this.props.editTargetKPIUnit(id, newTarget);
+
+            //window.$(`#editTargetKPIUnit${this.props.target._id}`).modal("hide");
         }
        
     }
@@ -165,7 +166,7 @@ class ModalEditTargetKPIUnit extends Component {
 
 
     render() {
-        const { createKpiUnit, target, unit } = this.props;
+        const { createKpiUnit, target, organizationalUnit } = this.props;
         const {editing, newTarget} = this.state;
         var parentKPI;
         if (createKpiUnit.parent) parentKPI = createKpiUnit.parent;
@@ -202,7 +203,7 @@ class ModalEditTargetKPIUnit extends Component {
                             <ErrorLabel content={errorOnName}/>
                         </div>
                         
-                        {(typeof unit !== "undefined" && unit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
+                        {(typeof organizationalUnit !== "undefined" && organizationalUnit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                             <div className="form-group">
                                 <label>{translate('kpi_unit_create.on_target')}</label>
                                 {items.length !== 0 &&
@@ -299,5 +300,5 @@ const actionCreators = {
     getParentTarget: createUnitKpiActions.getKPIParent,
     editTargetKPIUnit: createUnitKpiActions.editTargetKPIUnit
 };
-const connectedModalEditTargetKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalEditTargetKPIUnit));
-export { connectedModalEditTargetKPIUnit as ModalEditTargetKPIUnit };
+const connectedOrganizationalUnitKpiEditTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiEditTargetModal));
+export { connectedOrganizationalUnitKpiEditTargetModal as OrganizationalUnitKpiEditTargetModal };

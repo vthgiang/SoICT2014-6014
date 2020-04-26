@@ -2,6 +2,10 @@ const { OrganizationalUnit, UserRole, Role } = require('../../../models').schema
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
 
+/**
+ * Lấy danh sách các đơn vị trong công ty
+ * @id id công ty
+ */
 exports.getAllOrganizationalUnits = async (id) => {
     return await OrganizationalUnit
         .find({ company: id })
@@ -12,6 +16,10 @@ exports.getAllOrganizationalUnits = async (id) => {
         ]);
 }
 
+/**
+ * Lấy thông tin các đơn vị của công ty theo dạng CÂY 
+ * @id id công ty
+ */
 exports.getAllOrganizationalUnitsAsTree = async (id) => {
     const data = await OrganizationalUnit.find({ company: id }).populate([
         { path: 'dean', model: Role },
@@ -34,14 +42,26 @@ exports.getAllOrganizationalUnitsAsTree = async (id) => {
     return tree;
 }
 
-exports.getById = async (req, res) => {
+/**
+ * Lấy thông tin đơn vị theo id
+ * @id đơn vị
+ */
+exports.getById = async (id) => {
 
-    return await OrganizationalUnit.findById(req.params.id);
+    return await OrganizationalUnit.findById(id);
 }
 
+/**
+ * Tạo đơn vị 
+ * @data thông tin về đơn vị
+ * @deanId id của trưởng đơn vị
+ * @viceDeanId id phó đơn vị
+ * @employeeId id nhân viên đơn vị
+ * @companyID id công ty
+ */
 exports.createOrganizationalUnit = async(data, deanId, viceDeanId, employeeId, companyID) => {
     const check = await OrganizationalUnit.findOne({name: data.name, company: companyID});
-    if(check !== null) throw('department_name_exist');
+    if(check !== null) throw['department_name_exist'];
     const department = await OrganizationalUnit.create({
         name: data.name,
         description: data.description,
@@ -55,9 +75,14 @@ exports.createOrganizationalUnit = async(data, deanId, viceDeanId, employeeId, c
     return department;
 }
 
+/**
+ * Chỉnh sửa thông tin đơn vị
+ * @id id đơn vị
+ * @data dữ liệu sửa
+ */
 exports.edit = async(id, data) => {
     const department = await OrganizationalUnit.findById(id);
-    if(department === null) throw('department_not_found');
+    if(department === null) throw['department_not_found'];
     department.name = data.name;
     department.description = data.description;
     department.parent = ObjectId.isValid(data.parent) ? data.parent : null
@@ -66,25 +91,27 @@ exports.edit = async(id, data) => {
     return department;
 }
 
+/**
+ * Xóa đơn vị
+ * @departmentId id của đơn vị
+ */
 exports.delete = async(departmentId) => {
-    const department = await OrganizationalUnit.findById(departmentId); //tìm phòng ban hiện tại
-    // Tìm các role chức danh của phòng ban hiện tại
+    const department = await OrganizationalUnit.findById(departmentId);
+
     const roles = await Role.find({
         _id: { $in: [department.dean, department.viceDean, department.employee]}
     });
-    // Kiểm tra xem đã user nào trong phòng ban này hay chưa?
+
     const userroles = await UserRole.find({
         roleId: { $in: roles.map(role=>role._id)}
     });
     
     if(userroles.length === 0){
-        // Thực hiện xóa phòng ban nếu như không có ràng buộc nào với các user không? - phòng ban trống
 
-        // Xóa tất cả các role chức danh của đơn vị phòng ban này
         await Role.deleteMany({
             _id: { $in: roles.map(role=>role._id)}
         });
-        // Đổi đơn vị phòng cha cho phòng ban con của đơn vị được xóa
+
         if(department.parent !== undefined || department.parent !== null){
             await OrganizationalUnit.updateMany({ 
                 parent: department._id
@@ -92,13 +119,17 @@ exports.delete = async(departmentId) => {
                 $set :{ parent: department.parent }
             }); 
 
-            // Xóa đơn vị phòng ban này
             return await OrganizationalUnit.deleteOne({ _id: departmentId });
         }
     }else{
-        throw ('department_has_user');
+        throw ['department_has_user'];
     }
 }
+
+/**
+ * Lấy thông tin phòng ban của user
+ * @userId id của user
+ */
 exports.getDepartmentOfUser = async (userId) => {
     const roles = await UserRole.find({ userId });
     const newRoles = roles.map( role => role.roleId);
@@ -141,6 +172,10 @@ exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
     return department;
 }
 
+/**
+ * Lấy thông tin đơn vị mà user làm trưởng
+ * @userId id của user
+ */
 exports.getDepartmentsThatUserIsDean = async (userId) => {
     const roles = await UserRole.find({ 'userId': userId });
     const newRoles = roles.map( role => role.roleId);

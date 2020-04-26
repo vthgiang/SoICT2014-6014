@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const Company = require('../system-admin/company.model');
 
-// Create Schema
+// Tạo bảng datatable thông tin nhân viên
 const EmployeeSchema = new Schema({
     avatar: {
         type: String
@@ -75,6 +75,79 @@ const EmployeeSchema = new Schema({
     maritalStatus: { // Tình trạng hôn nhân
         type: String
     },
+    /**
+     * Start
+     * Thông tin liên hệ
+     */
+    phoneNumber: {
+        type: Number,
+        required: true
+    },
+    phoneNumber2: {
+        type: Number,
+    },
+    personalEmail: {
+        type: String,
+    },
+    personalEmail2: {
+        type: String,
+    },
+    homePhone: { // SĐT nhà riêng
+        type: Number,
+    },
+    emergencyContactPerson: { // Người liên hệ khẩn cấp
+        type: String,
+    },
+    relationWithEmergencyContactPerson: { // Quan hệ với người liên hệ khẩn cấp
+        type: String,
+    },
+    emergencyContactPersonPhoneNumber: {
+        type: Number,
+    },
+    emergencyContactPersonEmail: {
+        type: String,
+    },
+    emergencyContactPersonHomePhone: {
+        type: Number,
+    },
+    emergencyContactPersonAddress: {
+        type: String,
+    },
+    permanentResidence: {  // Địa chỉ hộ khẩu thường trú
+        type: String
+    },
+    permanentResidenceCountry: { // Quốc gia trong hộ khẩu thường trú
+        type: String,
+    },
+    permanentResidenceCity: {
+        type: String,
+    },
+    permanentResidenceDistrict: {
+        type: String,
+    },
+    permanentResidenceWard: { // Phường trong hộ khẩu thường trú
+        type: String,
+    },
+    temporaryResidence: {
+        type: String,
+        required: true
+    },
+    temporaryResidenceCountry: {
+        type: String,
+    },
+    temporaryResidenceCity: {
+        type: String,
+    },
+    temporaryResidenceDistrict: {
+        type: String,
+    },
+    temporaryResidenceWard: {
+        type: String,
+    },
+    /**
+     * End
+     * Thông tin liên hệ
+     */
     educationalLevel: { // trình độ văn hóa
         type: String,
         required: true
@@ -101,7 +174,7 @@ const EmployeeSchema = new Schema({
         startDate: String,
         endDate: String,
         position: String,
-        unit: String
+        company: String
     }],
     taxNumber: { // Mã số thuế thu nhập cá nhân
         type: String,
@@ -164,14 +237,8 @@ const EmployeeSchema = new Schema({
         file: String,
         urlFile: String
     }],
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
+}, {
+    timestamps: true,
 });
 
 module.exports = Employee = mongoose.model("employees", EmployeeSchema);

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SabbaticalCreateForm, SabbaticalEditForm } from './combinedContent';
+import { AnnualLeaveCreateForm, AnnualLeaveEditForm } from './combinedContent';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { SabbaticalActions } from '../redux/actions';
+import { AnnualLeaveActions } from '../redux/actions';
 
-class SabbaticalManager extends Component {
+class AnnualLeaveManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +22,7 @@ class SabbaticalManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        this.props.getListSabbatical(this.state);
+        this.props.searchAnnualLeaves(this.state);
         this.props.getDepartment();
     }
     // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
@@ -108,7 +108,7 @@ class SabbaticalManager extends Component {
                 month: this.formatDate(Date.now())
             })
         }
-        this.props.getListSabbatical(this.state);
+        this.props.searchAnnualLeaves(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -116,7 +116,7 @@ class SabbaticalManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        this.props.getListSabbatical(this.state);
+        this.props.searchAnnualLeaves(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -126,7 +126,7 @@ class SabbaticalManager extends Component {
             page: parseInt(page),
 
         });
-        this.props.getListSabbatical(this.state);
+        this.props.searchAnnualLeaves(this.state);
     }
 
     render() {
@@ -158,7 +158,7 @@ class SabbaticalManager extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    <SabbaticalCreateForm />
+                    <AnnualLeaveCreateForm />
                     <div className="form-group">
                         <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
                     </div>
@@ -253,7 +253,7 @@ class SabbaticalManager extends Component {
                                         <td>{x.startDate}</td>
                                         <td>{x.endDate}</td>
                                         <td>{x.reason}</td>
-                                        <td>{x.organizationalUnit.length !== 0 ? x.organizationalUnit.map(unit => (
+                                        <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
                                             </React.Fragment>
@@ -272,7 +272,7 @@ class SabbaticalManager extends Component {
                                                     id: x._id,
                                                     info: x.startDate.replace(/-/gi, "/") + " - " + x.endDate.replace(/-/gi, "/")
                                                 }}
-                                                func={this.props.deleteSabbatical}
+                                                func={this.props.deleteAnnualLeave}
                                             />
                                         </td>
                                     </tr>))
@@ -287,7 +287,7 @@ class SabbaticalManager extends Component {
                 </div>
                 {
                     this.state.currentRow !== undefined &&
-                    <SabbaticalEditForm
+                    <AnnualLeaveEditForm
                         _id={this.state.currentRow._id}
                         employeeNumber={this.state.currentRow.employee.employeeNumber}
                         endDate={this.state.currentRow.endDate}
@@ -308,9 +308,9 @@ function mapState(state) {
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
-    getListSabbatical: SabbaticalActions.getListSabbatical,
-    deleteSabbatical: SabbaticalActions.deleteSabbatical,
+    searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
+    deleteAnnualLeave: AnnualLeaveActions.deleteAnnualLeave,
 };
 
-const connectedListSabbatical = connect(mapState, actionCreators)(withTranslate(SabbaticalManager));
-export { connectedListSabbatical as SabbaticalManager };
+const connectedListSabbatical = connect(mapState, actionCreators)(withTranslate(AnnualLeaveManagement));
+export { connectedListSabbatical as AnnualLeaveManagement };

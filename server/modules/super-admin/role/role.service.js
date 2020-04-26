@@ -1,7 +1,10 @@
 const Terms = require('../../../seed/terms');
 const {OrganizationalUnit, Company, Role, RoleType, User, UserRole} = require('../../../models').schema
 
-//lay tat ca role cua 1 cong ty
+/**
+ * Lấy danh sách tất cả các role của 1 công ty
+ * @company id công ty
+ */
 exports.getAllRoles = async (company) => {
     return await Role
         .find({company})
@@ -12,6 +15,13 @@ exports.getAllRoles = async (company) => {
         ]);
 }
 
+/**
+ * Phân trang danh sách các role 
+ * @company id công ty
+ * @limit giới hạn hiển thị trên 1 bảng
+ * @page trang muốn lấy
+ * @data dữ liệu truy vấn
+ */
 exports.getPaginatedRoles = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await Role
@@ -27,13 +37,14 @@ exports.getPaginatedRoles = async (company, limit, page, data={}) => {
 }
 
 
-exports.getRoleById = async (company, roleId) => {
+/**
+ * Lấy thông tin của 1 role
+ * @roleId id role
+ */
+exports.getRoleById = async (roleId) => {
 
     return await Role
-        .findOne({
-            company,
-            _id: roleId
-        })
+        .findById(roleId)
         .populate([
             { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
             { path: 'parents', model: Role },
@@ -42,24 +53,18 @@ exports.getRoleById = async (company, roleId) => {
         ]);
 }
 
-// Tìm kiếm role theo cấu trúc dữ liệu cụ thể nào đó
-exports.searchRoles = async (data) => {
-
-    return await Role
-        .findOne(data)
-        .populate([
-            { path: 'users', model: UserRole, populate:{ path: 'userId', model: User }},
-            { path: 'parents', model: Role },
-            { path: 'company', model: Company },
-            { path: 'type', model: RoleType }
-        ]);
-}
-
-exports.createRole = async(data, companyID) => {
+/**
+ * Tạo role do công ty tự định nghĩa
+ * @data dữ liệu tạo
+ * @companyId id công ty
+ */
+exports.createRole = async(data, companyId) => {
+    const checkRoleCreated = await Role.findOne({name: data.name, company: companyId});
+    if(checkRoleCreated !== null) throw ['role_name_exist'];
     const roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
     const role = await Role.create({
         name: data.name,
-        company: companyID,
+        company: companyId,
         parents: data.parents,
         type: roleTuTao._id
     });
@@ -67,6 +72,11 @@ exports.createRole = async(data, companyID) => {
     return role;
 }
 
+/**
+ * Tạo root role cho công ty
+ * @data dữ liệu tạo
+ * @companyID id công ty
+ */
 exports.createRootRole = async(data, companyID) => {
     const rootRole = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
     const check = await Role.findOne({name: data.name, company: companyID}); 
@@ -81,15 +91,20 @@ exports.createRootRole = async(data, companyID) => {
     return role;
 }
 
+/**
+ * Tạo các role chức danh của đơn vị
+ * @companyID id công ty
+ * @data dữ liệu tạo
+ */
 exports.createRolesForOrganizationalUnit = async(data, companyID) => {
-    const checkDean = await Role.findOne({name: data.dean, company: companyID }); if(checkDean !== null) throw ({message: 'role_dean_exist'});
-    const checkViceDean = await Role.findOne({name: data.dean, company: companyID}); if(checkViceDean !== null) throw ({message: 'role_vice_dean_exist'});
-    const checkEmployee = await Role.findOne({name: data.dean, company: companyID }); if(checkEmployee !== null) throw ({message: 'role_employee_exist'});
+    const checkDean = await Role.findOne({name: data.dean, company: companyID }); if(checkDean !== null) throw ['role_dean_exist'];
+    const checkViceDean = await Role.findOne({name: data.dean, company: companyID}); if(checkViceDean !== null) throw ['role_vice_dean_exist'];
+    const checkEmployee = await Role.findOne({name: data.dean, company: companyID }); if(checkEmployee !== null) throw ['role_employee_exist'];
 
     const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
-    const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.NAME }); //lấy role dean abstract
-    const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.NAME }); //lấy role vice dean abstract
-    const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.NAME }); //lấy role employee abstract
+    const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.NAME });
+    const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.NAME });
+    const employeeAb = await Role.findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.NAME });
 
     const employee = await Role.create({
         name: data.employee,
@@ -115,12 +130,16 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
     }
 }
 
+/**
+ * Chỉnh sửa thông tin role
+ * @id id role
+ * @data dữ liệu chỉnh sửa, mặc định không truyền vào thì là {}
+ */
 exports.editRole = async(id, data={}) => {
     const role = await Role.findById(id)
         .populate([
             { path: 'users', model: UserRole },
-            { path: 'company', model: Company },
-            // { path: 'parents', model: Role }
+            { path: 'company', model: Company }
         ]);
     if(data.name !== undefined || data.name !== null || data.name !== '')
         role.name = data.name;
@@ -131,6 +150,10 @@ exports.editRole = async(id, data={}) => {
     return role;
 }
 
+/**
+ * Xóa role theo id
+ * @id id role
+ */
 exports.deleteRole = async(id) => {
     const deleteRole = await Role.deleteOne({ _id: id });
     const deleteRelationship = await UserRole.deleteMany({
@@ -141,6 +164,11 @@ exports.deleteRole = async(id) => {
     }
 }
 
+/**
+ * Tạo mối quan hệ cho user và role
+ * @userId id user
+ * @roleId id role
+ */
 exports.createRelationshipUserRole = async (userId, roleId) => { 
     const relationship = await UserRole.create({
         userId,
@@ -150,8 +178,12 @@ exports.createRelationshipUserRole = async (userId, roleId) => {
     return relationship;
 }
 
+/**
+ * Chỉnh sửa mối quan hệ giữa user và role
+ * @roleId id role
+ * @userArr mảng id các user
+ */
 exports.editRelationshipUserRole = async( roleId, userArr ) => {
-    //Nhận đầu vào là id của role cần edit và mảng các user mới sẽ có role đó
     await UserRole.deleteMany({
         roleId: roleId
     });
@@ -170,6 +202,11 @@ exports.editRelationshipUserRole = async( roleId, userArr ) => {
         relationshipUpdated
     };
 }
+
+/**
+ * Lấy danh sách tất cả các role cùng phòng ban với role hiện tại
+ * @id id role hiện tại
+ */
 exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
     const roles = await OrganizationalUnit.findOne({ 
         $or:[

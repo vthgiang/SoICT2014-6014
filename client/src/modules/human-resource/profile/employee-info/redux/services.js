@@ -4,12 +4,14 @@ import { AuthenticateHeader, getStorage } from '../../../../../config';
 import jwt from 'jsonwebtoken';
 
 export const EmployeeService = {
-    getInformationPersonal,
-    updateInformationPersonal,
+    getEmployeeProfile,
+    updatePersonalInformation,
 }
 
-// Lấy thông tin cá nhân
-async function getInformationPersonal() {
+/**
+ * Lấy thông tin cá nhân
+ */ 
+async function getEmployeeProfile() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var email = verified.email;
@@ -21,8 +23,10 @@ async function getInformationPersonal() {
     return axios(requestOptions);
 }
 
-// Cập nhật thông tin cá nhân
-async function updateInformationPersonal(data) {
+/**
+ * Cập nhật thông tin cá nhân
+ */
+async function updatePersonalInformation(data) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var email = verified.email;

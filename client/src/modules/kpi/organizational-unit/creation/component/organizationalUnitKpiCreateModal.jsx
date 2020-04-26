@@ -9,12 +9,12 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
 
-class ModalStartKPIUnit extends Component {
+class OrganizationalUnitKpiCreateModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            kpiunit: {
-                unit: "",
+            organizationalUnitKpi: {
+                organizationalUnit: "",
                 time: "",
                 // creater: localStorage.getItem("id")
             }
@@ -40,8 +40,8 @@ class ModalStartKPIUnit extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                kpiunit: {
-                    ...state.kpiunit,
+                organizationalUnitKpi: {
+                    ...state.organizationalUnitKpi,
                     time: value
                 }
             }
@@ -61,12 +61,12 @@ class ModalStartKPIUnit extends Component {
             day = '0' + day;
         var defaultTime =  [month, year].join('-');
 
-        if(this.state.kpiunit.time === ""){
+        if(this.state.organizationalUnitKpi.time === ""){
             await this.setState(state => {
                 return {
                     ...state,
-                    kpiunit: {
-                        ...state.kpiunit,
+                    organizationalUnitKpi: {
+                        ...state.organizationalUnitKpi,
                         time: defaultTime,
                     }
                 }
@@ -76,16 +76,16 @@ class ModalStartKPIUnit extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                kpiunit: {
-                    ...state.kpiunit,
-                    unit: this.props.unit,
+                organizationalUnitKpi: {
+                    ...state.organizationalUnitKpi,
+                    organizationalUnit: this.props.organizationalUnit,
                 }
             }
         })
-        var { kpiunit } = this.state;
+        var { organizationalUnitKpi } = this.state;
         
-        if (kpiunit.unit && kpiunit.time) {
-            this.props.addKPIUnit(kpiunit);
+        if (organizationalUnitKpi.organizationalUnit && organizationalUnitKpi.time) {            
+            this.props.addKPIUnit(organizationalUnitKpi);
 
             window.$("#startKPIUnit").modal("hide");
         }
@@ -95,8 +95,8 @@ class ModalStartKPIUnit extends Component {
     }
     
     render() {
-        const { unit } = this.props;
-
+        const { organizationalUnit } = this.props;
+        
         // hàm để chuyển sang song ngữ
         const { translate } = this.props;
 
@@ -126,7 +126,7 @@ class ModalStartKPIUnit extends Component {
                     <form id="formStartKPIUnit" onSubmit={() => this.handleSubmit(translate('kpi_unit_create.init_success'))}>
                         <div className="form-group">
                             <label className="col-sm-2">{translate('kpi_unit_create.unit')}</label>
-                            <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
+                            <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
                         
                         <div className="form-group">
@@ -206,5 +206,5 @@ const actionCreators = {
     addKPIUnit: createUnitKpiActions.addKPIUnit,
     getKPIParent: createUnitKpiActions.getKPIParent
 };
-const connectedModalStartKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalStartKPIUnit));
-export { connectedModalStartKPIUnit as ModalStartKPIUnit };
+const connectedOrganizationalUnitKpiCreateModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreateModal));
+export { connectedOrganizationalUnitKpiCreateModal as OrganizationalUnitKpiCreateModal };

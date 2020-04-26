@@ -7,6 +7,7 @@ class NotificationMenu extends Component {
         super(props);
         this.state = {  }
     }
+
     render() { 
         const { translate, notifications } = this.props;
         return ( 
@@ -26,6 +27,7 @@ class NotificationMenu extends Component {
                                     </span>
                                 </a>
                             </li>
+                            { this.checkHasComponent('create-notification') &&
                             <li>
                                 <a 
                                     href="#notification-sent" 
@@ -37,7 +39,7 @@ class NotificationMenu extends Component {
                                         {notifications.listSent.length}
                                     </span>
                                 </a>
-                            </li>
+                            </li> }
                         </ul>
                     </div>  
                 </div>
@@ -56,6 +58,16 @@ class NotificationMenu extends Component {
                 </div>
             </React.Fragment>
          );
+    }
+
+    checkHasComponent = (name) => {
+        var {auth} = this.props;
+        var result = false;
+        auth.components.forEach(component => {
+            if(component.name === name) result=true;
+        });
+
+        return result;
     }
 }
  

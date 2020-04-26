@@ -29,7 +29,7 @@ class Notifications extends Component {
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                         {
-                            // this.checkHasComponent('create-notification') &&
+                            this.checkHasComponent('create-notification') &&
                             <NotificationCreate/>
                         }
                         <NotificationMenu />

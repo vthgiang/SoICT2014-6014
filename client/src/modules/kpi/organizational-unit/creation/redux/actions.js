@@ -72,11 +72,11 @@ function deleteKPIUnit(id) {
 }
 
 // Xóa mục tiêu KPI đơn vị
-function deleteTargetKPIUnit(id, kpiunit) {
+function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
     return dispatch => {
         dispatch(request(id));
 
-        createUnitKpiServices.deleteTargetKPIUnit(id, kpiunit)
+        createUnitKpiServices.deleteTargetKPIUnit(id, organizationalUnitKpiSetId)
             .then(
                 newKPI => dispatch(success(newKPI)),
                 error => dispatch(failure(id, error.toString()))

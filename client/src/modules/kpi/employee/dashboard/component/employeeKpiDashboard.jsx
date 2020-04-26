@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { ModalDetailKPIPersonal } from './employeeKpiDetailModal';
+import { ModalDetailEmployeeKpiSet } from './employeeKpiDetailModal';
 import { connect } from 'react-redux';
-import { dashboardKpiActions } from '../redux/actions';
+import { dashboardEmployeeKpiSetActions } from '../redux/actions';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
-import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
+import { ModalCopyEmployeeKpiSet } from './employeeKpiCopyModal';
 
-class DashBoardKPIPersonal extends Component {
+class DashBoardEmployeeKpiSet extends Component {
     UNSAFE_componentWillMount() {
-        this.props.getAllKPIPersonal();//localStorage.getItem("id")
+        this.props.getEmployeeKpiSetByMember();//localStorage.getItem("id")
     }
     componentDidMount() {
         let script = document.createElement('script');
@@ -58,13 +58,13 @@ class DashBoardKPIPersonal extends Component {
     render() {
         var listkpi;
         var currentKPI, currentTargets, kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
-        const { dashboardKPIPersonal } = this.props;
-        if (dashboardKPIPersonal.kpipersonals) {
-            listkpi = dashboardKPIPersonal.kpipersonals;
+        const { dashboardEmployeeKpiSet } = this.props;
+        if (dashboardEmployeeKpiSet.employeeKpiSet) {
+            listkpi = dashboardEmployeeKpiSet.employeeKpiSet;
             if(typeof listkpi !== "undefined" && listkpi.length !== 0){//listkpi.content
                 kpiApproved = listkpi.filter(item => item.status === 3);
                 currentKPI = listkpi.filter(item => item.status !== 3);
-                currentTargets = currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
+                currentTargets = currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 systempoint = kpiApproved.map(item => {
                     return { label: this.formatDate(item.time), y: item.systempoint }
                 }).reverse();
@@ -75,13 +75,13 @@ class DashBoardKPIPersonal extends Component {
                     return { label: this.formatDate(item.time), y: item.approverpoint }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[0].approverpoint }
+                    return { label: this.formatDate(item.time), y: item.kpis[0].approverpoint }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[1].approverpoint }
+                    return { label: this.formatDate(item.time), y: item.kpis[1].approverpoint }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.approverpoint - item.listtarget[0].approverpoint - item.listtarget[1].approverpoint) }
+                    return { label: this.formatDate(item.time), y: (item.approverpoint - item.kpis[0].approverpoint - item.kpis[1].approverpoint) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
                     return { label: this.formatDate(item.time), y: (100 - item.approverpoint) }
@@ -225,12 +225,12 @@ class DashBoardKPIPersonal extends Component {
 }
 
 function mapState(state) {
-    const { dashboardKPIPersonal } = state;
-    return { dashboardKPIPersonal };
+    const { dashboardEmployeeKpiSet } = state;
+    return { dashboardEmployeeKpiSet };
 }
 
 const actionCreators = {
-    getAllKPIPersonal: dashboardKpiActions.getAllKPIPersonalByMember
+    getEmployeeKpiSetByMember: dashboardEmployeeKpiSetActions.getEmployeeKpiSetByMember
 };
-const connectedDashBoardKPIPersonal = connect(mapState, actionCreators)(DashBoardKPIPersonal);
-export { connectedDashBoardKPIPersonal as DashBoardKPIPersonal };
+const connectedDashBoardEmployeeKpiSet = connect(mapState, actionCreators)(DashBoardEmployeeKpiSet);
+export { connectedDashBoardEmployeeKpiSet as DashBoardEmployeeKpiSet };

@@ -9,14 +9,14 @@ exports.getAllCompanies = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(200).json({
             success: true,
-            message: 'get_companies_success',
+            messages: ['get_companies_success'],
             content: companies
         });
     } catch (error) {
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -32,7 +32,7 @@ exports.getPaginatedCompanies = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_COMPANIES');
         res.status(200).json({
             success: true,
-            message: 'paginate_companies_success',
+            messages: ['paginate_companies_success'],
             content: companies
         });
     } catch (error) {
@@ -40,41 +40,33 @@ exports.getPaginatedCompanies = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_COMPANIES');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
 
 exports.createCompany = async (req, res) => {
     try {
-        console.log("create new company")
-        //Tạo thông tin công ty mới(tên, tên ngắn, mô tả)
         const company = await CompanyService.createCompany(req.body);
 
-        //Tạo 5 role abstract cho công ty mới
         const abstractRoles = await CompanyService.createCompanyRootRoles(company._id);
+        await CompanyService.createCompanySuperAdminAccount(company._id, company.name, req.body.email);
+        await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
+        await CompanyService.createCompanyComponents(company._id, req.body.links);
         
-        //Super admin cho công ty mới
-        const superadmin = await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
-
-        //Tạo link và các component tương ứng cho các trang mà công ty được phép truy cập
-        const links = await CompanyService.createCompanyLinks(company._id, req.body.links, abstractRoles);
-
-        const components = await CompanyService.createCompanyComponents(company._id, req.body.links);
-
         const resCompany = await CompanyService.getCompany(company._id);
         
         LogInfo(req.user.email, 'CREATE_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'create_company_success',
+            messages: ['create_company_success'],
             content: resCompany
         });
     } catch (error) {
         LogError(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -86,7 +78,7 @@ exports.getCompany = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(200).json({
             success: true,
-            message: 'show_company_success',
+            messages: ['show_company_success'],
             content: company
         });
     } catch (error) {
@@ -94,7 +86,7 @@ exports.getCompany = async (req, res) => {
         LogError(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -104,17 +96,18 @@ exports.editCompany = async (req, res) => {
         const company = await CompanyService.editCompany(req.params.id, req.body);
         await CompanyService.editCompanySuperAdmin(company._id, req.body.email);
         const resCompany = await CompanyService.getCompany(company._id);
+
         LogInfo(req.user.email, 'EDIT_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'edit_company_success',
+            messages: ['edit_company_success'],
             content: resCompany
         });
     } catch (error) {
         LogError(req.user.email, 'EDIT_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -126,7 +119,7 @@ exports.deleteCompany = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'delete_company_success',
+            messages: ['delete_company_success'],
             content: company
         });
     } catch (error) {
@@ -134,7 +127,7 @@ exports.deleteCompany = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -146,7 +139,7 @@ exports.getCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_links_of_company_success',
+            messages: ['get_links_of_company_success'],
             content: links
         });
     } catch (error) {
@@ -154,7 +147,7 @@ exports.getCompanyLinks = async (req, res) => {
         LogError(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -166,7 +159,7 @@ exports.addCompanyLink = async (req, res) => {
         LogInfo(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'add_new_link_for_company_success',
+            messages: ['add_new_link_for_company_success'],
             content: link
         });
     } catch (error) {
@@ -174,7 +167,7 @@ exports.addCompanyLink = async (req, res) => {
         LogError(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -186,7 +179,7 @@ exports.deleteCompanyLink = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'delete_link_for_company_success',
+            messages: ['delete_link_for_company_success'],
             content: link
         });
     } catch (error) {
@@ -194,7 +187,7 @@ exports.deleteCompanyLink = async (req, res) => {
         LogError(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -207,7 +200,7 @@ exports.addCompanyComponent = async (req, res) => {
         LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'add_new_component_for_company_success',
+            messages: ['add_new_component_for_company_success'],
             content: resComponent
         });
     } catch (error) {
@@ -215,7 +208,7 @@ exports.addCompanyComponent = async (req, res) => {
         LogError(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -227,7 +220,7 @@ exports.deleteCompanyComponent = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'delete_component_for_company_success',
+            messages: ['delete_component_for_company_success'],
             content: component
         });
     } catch (error) {
@@ -235,7 +228,7 @@ exports.deleteCompanyComponent = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -247,14 +240,14 @@ exports.getCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_links_list_of_company_success',
+            messages: ['get_links_list_of_company_success'],
             content: links
         });
     } catch (error) {
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -271,14 +264,14 @@ exports.getPaginatedCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'LINKS_PAGINATE_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_links_paginate_of_company_success',
+            messages: ['get_links_paginate_of_company_success'],
             content: links
         });
     } catch (error) {
         LogInfo(req.user.email, 'LINKS_PAGINATE_OF_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -290,14 +283,14 @@ exports.getCompanyComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(200).json({
             success: true,
-            message: 'get_components_list_of_company',
+            messages: ['get_components_list_of_company'],
             content: components
         });
     } catch (error) {
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -314,14 +307,14 @@ exports.getPaginatedCompanyComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENTS_PAGINATE_OF_COMPANY');
         res.status(200).json({
             success: true,
-            message: 'get_components_paginate_of_company_success',
+            messages: ['get_components_paginate_of_company_success'],
             content: components
         });
     } catch (error) {
         LogInfo(req.user.email, 'GET_COMPONENTS_PAGINATE_OF_COMPANY');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

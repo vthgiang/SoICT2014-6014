@@ -43,13 +43,13 @@ class ModalAddTaskTemplate extends Component {
             description: '',
             type: INFO_TYPE.TEXT,
             extra: '',
-            mandatary: false
+            filledByAccountableEmployeesOnly: false
         };
 
         let EMPTY_ACTION = {
             name: '',
             description: '',
-            mandatary: true,
+            mandatory: true,
         };
 
         this.state = {
@@ -59,18 +59,18 @@ class ModalAddTaskTemplate extends Component {
             EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
             action:  Object.assign({}, EMPTY_ACTION),
             newTemplate: {
-                unit: '',
+                organizationalUnit: '',
                 name: '',
-                read: [],
-                responsible: [],
-                accounatable: [],
-                consulted: [],
-                informed: [],
+                readByEmployees: [],
+                responsibleEmployees: [],
+                accountableEmployees: [],
+                consultedEmployees: [],
+                informedEmployees: [],
                 description: '',
                 creator: '',
                 formula: '',
-                listAction: [],
-                listInfo: []
+                taskActions: [],
+                taskInformations: []
             },
             editAction: false,
             editInfo: false,
@@ -92,10 +92,10 @@ class ModalAddTaskTemplate extends Component {
                 });
             },
             onEnd: async(evt) => {
-                let listAction = this.state.newTemplate.listAction;
-                const item = listAction[evt.oldIndex];
-                listAction.splice(evt.oldIndex, 1);
-                listAction.splice(evt.newIndex, 0, item);
+                let taskActions = this.state.newTemplate.taskActions;
+                const item = taskActions[evt.oldIndex];
+                taskActions.splice(evt.oldIndex, 1);
+                taskActions.splice(evt.newIndex, 0, item);
             }, store:{
                 /**
                  * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
@@ -123,10 +123,10 @@ class ModalAddTaskTemplate extends Component {
                 });
             },
             onEnd: async(evt) => {
-                let listInfo = this.state.newTemplate.listInfo;
-                const item = listInfo[evt.oldIndex];
-                listInfo.splice(evt.oldIndex, 1);
-                listInfo.splice(evt.newIndex, 0, item);
+                let taskInformations = this.state.newTemplate.taskInformations;
+                const item = taskInformations[evt.oldIndex];
+                taskInformations.splice(evt.oldIndex, 1);
+                taskInformations.splice(evt.newIndex, 0, item);
             }, store:{
                 /**
                  * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
@@ -155,8 +155,8 @@ class ModalAddTaskTemplate extends Component {
      */
     isTaskTemplateFormValidated = () => {
         let result = 
-            this.validateTaskTemplateUnit(this.state.newTemplate.unit, false) &&
-            this.validateTaskTemplateRead(this.state.newTemplate.read, false) &&
+            this.validateTaskTemplateUnit(this.state.newTemplate.organizationalUnit, false) &&
+            this.validateTaskTemplateRead(this.state.newTemplate.readByEmployees, false) &&
             this.validateTaskTemplateName(this.state.newTemplate.name, false) &&
             this.validateTaskTemplateDesc(this.state.newTemplate.description, false) &&
             this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
@@ -263,7 +263,7 @@ class ModalAddTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState){
-            this.state.newTemplate.read = value;
+            this.state.newTemplate.readByEmployees = value;
             this.state.newTemplate.errorOnRead = msg;
             this.setState(state =>{
                 return{
@@ -275,7 +275,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        this.state.newTemplate.responsible = value;
+        this.state.newTemplate.responsibleEmployees = value;
         this.setState(state =>{
             return{
                 ...state,
@@ -283,7 +283,7 @@ class ModalAddTaskTemplate extends Component {
         });
     }
     handleTaskTemplateAccountable = (value) => {
-        this.state.newTemplate.accounatable = value;
+        this.state.newTemplate.accountableEmployees = value;
         this.setState(state =>{
             return{
                 ...state,
@@ -291,7 +291,7 @@ class ModalAddTaskTemplate extends Component {
         });
     }
     handleTaskTemplateConsult = (value) => {
-        this.state.newTemplate.consulted = value;
+        this.state.newTemplate.consultedEmployees = value;
         this.setState(state =>{
             return{
                 ...state,
@@ -299,7 +299,7 @@ class ModalAddTaskTemplate extends Component {
         });
     }
     handleTaskTemplateInform = (value) => {
-        this.state.newTemplate.informed = value;
+        this.state.newTemplate.informedEmployees = value;
         this.setState(state =>{
             return{
                 ...state,
@@ -353,12 +353,12 @@ class ModalAddTaskTemplate extends Component {
         event.preventDefault(); // Ngăn không submit
         let { newTemplate } = this.state;
         this.setState(state => {
-            const listAction = [...newTemplate.listAction, state.action]
+            const taskActions = [...newTemplate.taskActions, state.action]
             return {
                 ...state,
                 newTemplate: {
                     ...newTemplate,
-                    listAction
+                    taskActions: taskActions
                 },
                 action: Object.assign({}, state.EMPTY_ACTION),
             }
@@ -382,10 +382,10 @@ class ModalAddTaskTemplate extends Component {
         event.preventDefault(); // Ngăn không submit
         
         const { indexAction } = this.state;
-        let { listAction } = this.state.newTemplate;
-        var newList;
-        if (listAction) {
-            newList = listAction.map((item, index) => {
+        let { taskActions } = this.state.newTemplate;
+        var newTaskActions;
+        if (taskActions) {
+            newTaskActions = taskActions.map((item, index) => {
                 return (index === indexAction) ? this.state.action : item;
             })
         }
@@ -394,7 +394,7 @@ class ModalAddTaskTemplate extends Component {
                 ...state,
                 newTemplate: {
                     ...(this.state.newTemplate),
-                    listAction: newList
+                    taskActions: newTaskActions
                 },
                 editAction: false,
                 action: Object.assign({}, state.EMPTY_ACTION),
@@ -404,17 +404,17 @@ class ModalAddTaskTemplate extends Component {
 
     // delete action in action table
     handleDeleteAction = (index) => {
-        let { listAction } = this.state.newTemplate;
-        var newList;
-        if (listAction) {
-            newList = listAction.filter((item, x) => index !== x);
+        let { taskActions } = this.state.newTemplate;
+        var newTaskInformations;
+        if (taskActions) {
+            newTaskInformations = taskActions.filter((item, x) => index !== x);
         }
         this.setState(state => {
             return {
                 ...state,
                 newTemplate: {
                     ...(this.state.newTemplate),
-                    listAction: newList
+                    taskActions: newTaskInformations
                 },
             }
         })
@@ -438,10 +438,10 @@ class ModalAddTaskTemplate extends Component {
 
         const { indexInfo } = this.state;
         
-        let { listInfo } = this.state.newTemplate;
-        var newListInfo;
-        if (listInfo) {
-            newListInfo = listInfo.map((item, index) => {
+        let { taskInformations } = this.state.newTemplate;
+        var newTaskInformations;
+        if (taskInformations) {
+            newTaskInformations = taskInformations.map((item, index) => {
                 return (index === indexInfo) ? this.state.information : item;
             })
         }
@@ -450,7 +450,7 @@ class ModalAddTaskTemplate extends Component {
                 ...state,
                 newTemplate: {
                     ...(this.state.newTemplate),
-                    listInfo: newListInfo
+                    taskInformations: newTaskInformations
                 },
                 editInfo: false,
                 information: Object.assign({}, state.EMPTY_INFORMATION),
@@ -484,17 +484,17 @@ class ModalAddTaskTemplate extends Component {
 
     // delete item in information table
     handleDeleteInformation = (index) => {
-        let { listInfo } = this.state.newTemplate;
-        var newListInfo;
-        if (listInfo) {
-            newListInfo = listInfo.filter((item, x) => index !== x);
+        let { taskInformations } = this.state.newTemplate;
+        var newTaskInformations;
+        if (taskInformations) {
+            newTaskInformations = taskInformations.filter((item, x) => index !== x);
         }
         this.setState(state => {
             return {
                 ...state,
                 newTemplate: {
                     ...(this.state.newTemplate),
-                    listInfo: newListInfo
+                    taskInformations: newTaskInformations
                 }
             }
         })
@@ -506,11 +506,11 @@ class ModalAddTaskTemplate extends Component {
 
         let { newTemplate } = this.state;
         this.setState(state => {
-            const listInfo = [...(newTemplate.listInfo), state.information];
+            const taskInformations = [...(newTemplate.taskInformations), state.information];
             return {
                 newTemplate: {
                     ...newTemplate,
-                    listInfo
+                    taskInformations: taskInformations
                 },
                 information: Object.assign({}, state.EMPTY_INFORMATION),
             }
@@ -574,7 +574,7 @@ class ModalAddTaskTemplate extends Component {
 
     handleChangeActionMandatory= (event) => {
         let value = event.target.checked;
-        this.state.action.mandatary = value;
+        this.state.action.mandatory = value;
         this.setState(state =>{
             return{
                 ...state
@@ -668,9 +668,9 @@ class ModalAddTaskTemplate extends Component {
         return msg == undefined;
     }
 
-    handleChangeInfoMandatory = (event) => {
+    handleChangeInfoFilledByAccountableEmployeesOnly = (event) => {
         let value = event.target.checked;
-        this.state.information.mandatary = value;
+        this.state.information.filledByAccountableEmployeesOnly = value;
         this.setState(state =>{
             return{
                 ...state
@@ -681,11 +681,11 @@ class ModalAddTaskTemplate extends Component {
 
 
     render() {
-        var units, currentUnit, listAction, listInfo, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
+        var units, currentUnit, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
         const { newTemplate, submitted, action, information } = this.state;
         const { department, user } = this.props;
-        if (newTemplate.listAction) listAction = newTemplate.listAction;
-        if (newTemplate.listInfo) listInfo = newTemplate.listInfo;
+        if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
+        if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
         
 
         if (department.unitofuser) {
@@ -695,8 +695,8 @@ class ModalAddTaskTemplate extends Component {
                 || item.viceDean === this.state.currentRole
                 || item.employee === this.state.currentRole);
 
-            if (newTemplate.unit === ""){
-                newTemplate.unit = currentUnit._id; // Khởi tạo state lưu giá trị Unit Select Box
+            if (newTemplate.organizationalUnit === ""){
+                newTemplate.organizationalUnit = currentUnit._id; // Khởi tạo state lưu giá trị Unit Select Box
             }
         }
         if (department.departmentsThatUserIsDean){
@@ -722,7 +722,7 @@ class ModalAddTaskTemplate extends Component {
                             <form className="form-horizontal">
                                 <div className="row">
                                     <div className="col-sm-6">
-                                        <div className={'form-group has-feedback' + (submitted && newTemplate.unit==="" ? ' has-error' : '')}>
+                                        <div className={'form-group has-feedback' + (submitted && newTemplate.organizationalUnit==="" ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
                                             <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                                 {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
@@ -742,7 +742,7 @@ class ModalAddTaskTemplate extends Component {
                                                 }
                                                 <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>
                                             </div>
-                                            {submitted && newTemplate.unit === "" &&
+                                            {submitted && newTemplate.organizationalUnit === "" &&
                                                 <div className="col-sm-4 help-block">Hãy chọn đơn vị quản lý mẫu</div>
                                             }
                                         </div>
@@ -753,7 +753,7 @@ class ModalAddTaskTemplate extends Component {
                                                 <ErrorLabel content={this.state.newTemplate.errorOnName}/>
                                             </div>
                                         </div>
-                                        <div className={'form-group has-feedback' + (submitted && newTemplate.read === [] ? ' has-error' : '')}>
+                                        <div className={'form-group has-feedback' + (submitted && newTemplate.readByEmployees === [] ? ' has-error' : '')}>
                                             <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
                                             <div className={`col-sm-10 form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                                 {listRole &&
@@ -773,7 +773,7 @@ class ModalAddTaskTemplate extends Component {
                                                 }
                                                 <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
                                             </div>
-                                            {submitted && newTemplate.read === "" &&
+                                            {submitted && newTemplate.readByEmployees === "" &&
                                                 <div className="col-sm-4 help-block">Hãy phân quyền những người được xem mẫu này</div>
                                             }
                                         </div>
@@ -887,7 +887,7 @@ class ModalAddTaskTemplate extends Component {
                                                 <div className="form-group">
                                                     <label className="col-sm-2 control-label">
                                                         Bắt buộc &nbsp;
-                                                        <input type="checkbox" className="" checked={action.mandatary} onChange={this.handleChangeActionMandatory} />
+                                                        <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
                                                     </label>
                                                 </div>
                                                 <div className="pull-right" style={{ marginBottom: '10px' }}>
@@ -912,13 +912,13 @@ class ModalAddTaskTemplate extends Component {
                                                     </thead>
                                                     <tbody id="actions">
                                                         {
-                                                            (typeof listAction === 'undefined' || listAction.length === 0) ? <tr><td colSpan={5}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                listAction.map((item, index) =>
+                                                            (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>Chưa có dữ liệu</center></td></tr> :
+                                                                taskActions.map((item, index) =>
                                                                     <tr key={`${this.state.keyPrefix}_${index}`}>
                                                                         <td>{index + 1}</td>
                                                                         <td>{item.name}</td>
                                                                         <td>{item.description}</td>
-                                                                        <td>{item.mandatary ? "Có" : "Không"}</td>
+                                                                        <td>{item.mandatory ? "Có" : "Không"}</td>
                                                                         <td>
                                                                             <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => this.handleEditAction(item, index)}><i className="material-icons"></i></a>
                                                                             <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAction(index)}><i className="material-icons"></i></a>
@@ -999,7 +999,7 @@ class ModalAddTaskTemplate extends Component {
                                                 <div className="form-group">
                                                     <label className="col-sm-2 control-label">
                                                         Chỉ quản lý được điền? &nbsp;
-                                                        <input type="checkbox" className="" checked={information.mandatary} onChange={this.handleChangeInfoMandatory} />
+                                                        <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
                                                     </label>
                                                 </div>
                                                 <div className="pull-right" style={{marginBottom: "10px"}}>
@@ -1025,14 +1025,14 @@ class ModalAddTaskTemplate extends Component {
                                                     </thead>
                                                     <tbody id="informations">
                                                         {
-                                                            (typeof listInfo === 'undefined' || listInfo.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                listInfo.map((item, index) =>
+                                                            (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
+                                                                taskInformations.map((item, index) =>
                                                                     <tr key={`${this.state.keyPrefix}_${index}`}>
                                                                         <td>{index + 1}</td>
                                                                         <td>{item.name}</td>
                                                                         <td>{item.description}</td>
                                                                         <td>{item.type}</td>
-                                                                        <td>{item.mandatary ? "Có" : "Không"}</td>
+                                                                        <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
                                                                         <td>
                                                                             <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
                                                                             <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>

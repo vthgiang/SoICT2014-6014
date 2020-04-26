@@ -31,28 +31,28 @@ import ManageDepartment from '../modules/super-admin/organizational-unit/compone
 import ManageComponent from '../modules/super-admin/component/components';
 
 
-import ManagerSabbatical from '../modules/human-resource/annual-leave/components';
+import AnnualLeaveManager from '../modules/human-resource/annual-leave/components';
 import { ManagerPraiseDiscipline} from '../modules/human-resource/commendation-discipline/components';
 import { DashBoardEmployees} from '../modules/human-resource/employee-dashboard/components/employeeDashBoard';
 import { DepartmentManage} from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
 import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
 import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
-import { ListEmployee, AddEmployee} from '../modules/human-resource/profile/employee-management/components/combinedContent';
+import EmpoyeeManager from '../modules/human-resource/profile/employee-management/components';
 import {EmployeeCreatePage} from '../modules/human-resource/profile/employee-create/components/employeeCreatePage';
-import ManagerSalary from '../modules/human-resource/salary/components';
+import SalaryManager from '../modules/human-resource/salary/components';
 import { Timekeeping} from '../modules/human-resource/timesheet/components/timesheet';
 
 import { ListEducation} from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan} from '../modules/training/course/components/course';
 
-import {KPIUnitCreate} from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
-import {KPIUnitDashboard} from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
+import {OrganizationalUnitKpiCreate} from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
+import {OrganizationalUnitKpiDashboard} from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import {KPIUnitManager} from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
 import {KPIUnitEvaluate} from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
 
-import {KPIPersonalCreate} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
+import {CreateEmployeeKpiSet} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
 import {KPIPersonalManager} from "../modules/kpi/employee/management/component/employeeKpiManagement";
-import {DashBoardKPIPersonal} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
+import {DashBoardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
 
 import {KPIMember} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
@@ -303,7 +303,7 @@ class Routes extends Component {
                         path={ '/hr-list-employee' }
                         pageName={'list_employee' }
                         layout={ Layout }
-                        component={ ListEmployee }
+                        component={ EmpoyeeManager }
                     />
 
                     <PrivateRoute 
@@ -354,18 +354,18 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ this.props.annualLeave.isLoading }
-                        key={ 'sabbatical' }
+                        key={ 'annual_leave' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/hr-sabbatical', name: 'sabbatical', icon:'fa fa-calendar-times-o' }
+                            { link: '/hr-annual-leave', name: 'annual_leave', icon:'fa fa-calendar-times-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/hr-sabbatical' }
-                        path={ '/hr-sabbatical' }
-                        pageName={'sabbatical' }
+                        link={ '/hr-annual-leave' }
+                        path={ '/hr-annual-leave' }
+                        pageName={'annual_leave' }
                         layout={ Layout }
-                        component={ ManagerSabbatical }
+                        component={ AnnualLeaveManager }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.holiday.isLoading }
@@ -395,7 +395,7 @@ class Routes extends Component {
                         path={ '/hr-salary-employee' }
                         pageName={'salary_employee' }
                         layout={ Layout }
-                        component={ ManagerSalary }
+                        component={ SalaryManager }
                     />
                     <PrivateRoute 
                         isLoading={ false }
@@ -457,7 +457,7 @@ class Routes extends Component {
                         path={ '/kpi-units/create' }
                         pageName={ 'kpi_unit_create' }
                         layout={ Layout }
-                        component={ KPIUnitCreate }
+                        component={ OrganizationalUnitKpiCreate }
                     />
                     <PrivateRoute 
                         isLoading={ false }
@@ -487,7 +487,7 @@ class Routes extends Component {
                         path={ '/kpi-units/dashboard' }
                         pageName={ 'kpi_unit_dashboard' }
                         layout={ Layout }
-                        component={ KPIUnitDashboard }
+                        component={ OrganizationalUnitKpiDashboard }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.managerKpiUnit.isLoading }
@@ -505,7 +505,7 @@ class Routes extends Component {
                         component={ KPIUnitManager }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.createKpiPersonal.isLoading }
+                        isLoading={ this.props.createEmployeeKpiSet.isLoading }
                         key={ 'kpi-personal-create' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -517,7 +517,7 @@ class Routes extends Component {
                         path={ '/kpi-personals/create' }
                         pageName={ 'kpi_personal_create' }
                         layout={ Layout }
-                        component={ KPIPersonalCreate }
+                        component={ CreateEmployeeKpiSet }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.KPIPersonalManager.isLoading }
@@ -535,7 +535,7 @@ class Routes extends Component {
                         component={ KPIPersonalManager }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.dashboardKPIPersonal.isLoading }
+                        isLoading={ this.props.dashboardEmployeeKpiSet.isLoading }
                         key={ 'kpi-personal-dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -547,7 +547,7 @@ class Routes extends Component {
                         path={ '/kpi-personals/dashboard' }
                         pageName={ 'kpi_personal_dashboard' }
                         layout={ Layout }
-                        component={DashBoardKPIPersonal }
+                        component={DashBoardEmployeeKpiSet }
                     />
                     <PrivateRoute 
                         isLoading={ false }

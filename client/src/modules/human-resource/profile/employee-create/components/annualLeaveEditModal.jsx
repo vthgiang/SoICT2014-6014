@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../../common-components';
-import { SabbaticalFormValidator } from '../../../annual-leave/components/combinedContent';
+import { AnnualLeaveFormValidator } from '../../../annual-leave/components/combinedContent';
 class ModalEditSabbatical extends Component {
     constructor(props) {
         super(props);
@@ -13,7 +13,7 @@ class ModalEditSabbatical extends Component {
         this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateStartDate(value, this.props.translate)
+        let msg = AnnualLeaveFormValidator.validateStartDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -31,7 +31,7 @@ class ModalEditSabbatical extends Component {
         this.validateEndDate(value, true);
     }
     validateEndDate = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateEndDate(value, this.props.translate)
+        let msg = AnnualLeaveFormValidator.validateEndDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -50,7 +50,7 @@ class ModalEditSabbatical extends Component {
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = SabbaticalFormValidator.validateReason(value, this.props.translate)
+        let msg = AnnualLeaveFormValidator.validateReason(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
