@@ -354,16 +354,16 @@ class Routes extends Component {
                     />
                     <PrivateRoute 
                         isLoading={ this.props.annualLeave.isLoading }
-                        key={ 'sabbatical' }
+                        key={ 'annual_leave' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
-                            { link: '/hr-sabbatical', name: 'sabbatical', icon:'fa fa-calendar-times-o' }
+                            { link: '/hr-annual-leave', name: 'annual_leave', icon:'fa fa-calendar-times-o' }
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/hr-sabbatical' }
-                        path={ '/hr-sabbatical' }
-                        pageName={'sabbatical' }
+                        link={ '/hr-annual-leave' }
+                        path={ '/hr-annual-leave' }
+                        pageName={'annual_leave' }
                         layout={ Layout }
                         component={ AnnualLeaveManager }
                     />

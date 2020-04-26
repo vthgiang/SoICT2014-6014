@@ -34,7 +34,7 @@ class SideBar extends Component {
             path4: "/hr-salary-employee",
             path5: "/hr-time-keeping",
             path6: "/hr-discipline",
-            path7: "/hr-sabbatical",
+            path7: "/hr-annual-leave",
             path8: "/hr-detail-employee",
             path9: "/hr-update-employee",
             path10: "/hr-list-education",

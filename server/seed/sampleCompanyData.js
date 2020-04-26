@@ -370,7 +370,7 @@ var sampleCompanyData = async () => {
             company: vnist._id
         },
         { // 13
-            url: '/hr-sabbatical',
+            url: '/hr-annual-leave',
             description: 'Quản lý nghỉ phép của nhân viên',
             company: vnist._id
         },
