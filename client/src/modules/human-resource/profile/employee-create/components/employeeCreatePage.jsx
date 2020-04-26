@@ -8,8 +8,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
+    ExperienceTab, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
 } from './combinedContent';
 class EmployeeCreatePage extends Component {
     constructor(props) {
@@ -317,19 +317,19 @@ class EmployeeCreatePage extends Component {
                         <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#pageAttachments">{translate('manage_employee.menu_attachments')}</a></li>
                     </ul>
                     < div className="tab-content">
-                        <TabGeneralContent
+                        <GeneralTab
                             id="thongtinchung"
                             img={this.state.img}
                             handleChange={this.handleChange}
                             handleUpload={this.handleUpload}
                             employee={this.state.employeeNew}
                         />
-                        <TabContactContent
+                        <ContactTab
                             id="thongtinlienhe"
                             handleChange={this.handleChange}
-                            employeeContact={this.state.employeeNew}
+                            employee={this.state.employeeNew}
                         />
-                        <TabExperienceContent
+                        <ExperienceTab
                             id="kinhnghiem"
                             employee={this.state.employeeNew}
                             handleAddExperience={this.handleChangeExperience}
