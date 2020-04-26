@@ -3,19 +3,23 @@ const { LogInfo, LogError } = require('../../../../logs');
 // Điều phối đến các hàm dịch vụ cơ sở dữ liệu của module quản lý kpi đơn vị
 // get all target of unit kpi
 exports.get =async (req, res) => {
-    try {
+   //try {
+       console.log(req.params.id);
         var kpiunits = await managerService.get(req.params.id);
-        LogInfo(req.user.email, ' get kpi unit ',req.user.company);
+      //  LogInfo(req.user.email, ' get kpi unit ',req.user.company);
         res.status(200).json({
-            message: "Lấy tất cả kpi của đơn vị",
-            content: kpiunits
+            success: true,
+            messages: ['Lấy tất cả kpi của đơn vị'],
+            content: {kpiunits}
         })
-    } catch (error) {
-        LogError(req.user.email, ' get kpi unit ',req.user.company);
-        res.status(400).json({
-            message: error
-        })
-    }
+    // } catch (error) {
+    //     LogError(req.user.email, ' get kpi unit ',req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['Lấy thông tin thất bại'],
+    //         content: {error}
+    //     })
+    // }
 
 };
 
@@ -26,13 +30,16 @@ exports.getByRole =async (req, res) => {
         
         LogInfo(req.user.email, ' get kpi unit by role ',req.user.company);
         res.status(200).json({
-            message: "Lấy kpi đơn vị hiện tại",
-            content: kpiunit
+            success: true,
+            messages: ['Lấy kpi đơn vị hiện tại'],
+            content: {kpiunit}
         });
     } catch (error) {
         LogError(req.user.email, ' get kpi unit by role ',req.user.company)
         res.status(400).json({
-            message: error
+            success: false,
+            messages: ['Lấy thông tin thất bại'],
+            content: {error}
         })
     }
 
@@ -44,13 +51,16 @@ exports.getChildTargetByParentId =async (req, res) => {
         var childTarget = await managerService.getChildTargetByParentId(id);
         LogInfo(req.user.email, ' get child target by parent id ',req.user.company)
         res.status(200).json({
-            message: "Lấy mục tiêu con theo id của mục tiêu cha thành công",
-            content: childTarget
+            success: true,
+            messages: ['Lấy mục tiêu con theo id của mục tiêu cha thành công'],
+            content: {childTarget}
         });
     } catch (error) {
         LogError(req.user.email, ' get child target by parent id ',req.user.company)
         res.status(400).json({
-            message: error
+            success: false,
+            messages: ['Lấy thông tin thất bại'],
+            content: {error}
         })
     }
 
@@ -61,12 +71,15 @@ exports.create =async (req, res) => {
     try {
         var kpiunit = await managerService.create(req.body.time,req.body.unit,req.body.creater);
         res.status(200).json({
-            message: "Khởi tạo thành công KPI đơn vị",
-            kpiunit: kpiunit
+            success: true,
+            messages: ['Khởi tạo thành công KPI đơn vị'],
+            kpiunit: {kpiunit}
         })
     } catch (error) {
         res.status(400).json({
-            message: error
+            success: false,
+            messages: ['Khởi tạo thất bại'],
+            content: {error}
         })
     }
 
@@ -78,13 +91,16 @@ exports.evaluateKPI =async (req, res) => {
         var kpiunit = await managerService.evaluateKPI(req.params.id);
         LogInfo(req.user.email, ' evaluate kpi unit ',req.user.company)
         res.status(200).json({
-            message: "Cập nhật dữ liệu thành công",
-            kpiunit: kpiunit
+            success: true,
+            messages: ['Cập nhật dữ liệu thành công'],
+            kpiunit: {kpiunit}
         });
     } catch (error) {
         LogError(req.user.email, ' evaluate kpi unit ',req.user.company)
         res.status(400).json({
-            message: error
+            success: false,
+            messages: ['Cập nhật thông tin thất bại'],
+            content: {error}
         })
     }
 }

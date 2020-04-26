@@ -1,10 +1,12 @@
 import {handleResponse} from '../../../../../helpers/handleResponse';
 import {
-    LOCAL_SERVER_API
+    TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../../env';
 import {
     getStorage, AuthenticateHeader
 } from '../../../../../config';
+import jwt from 'jsonwebtoken';
+import axios from 'axios';
 export const managerServices = {
     getAllKPIUnit,
     getCurrentKPIUnit,
@@ -14,53 +16,62 @@ export const managerServices = {
 }
 
 // Lấy tất cả KPI đơn vị
-function getAllKPIUnit(id) {
+async function getAllKPIUnit(id) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpiunits/unit/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/unit/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Lấy KPI đơn vị hiện tại
-function getCurrentKPIUnit(id) {
+async function getCurrentKPIUnit(id) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Lấy tất cả KPI đơn vị
-function getChildTargetOfCurrentTarget(id) {
+async function getChildTargetOfCurrentTarget(id) {
+    const token= getStorage();
+    const verified= await jwt.verify(token, TOKEN_SECRET);
+    var id= verified._id;
+
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}`,
         method: 'GET',
         headers: AuthenticateHeader()
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/child-target/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 // Khởi tạo KPI đơn vị 
-function addKPIUnit(newKPI) {
+async function addKPIUnit(newKPI) {
     const requestOptions = {
+        url: '${LOCAL_SERVER_API}/kpiunits/create',
         method: 'POST',
         headers: AuthenticateHeader(),
         body: JSON.stringify(newKPI)
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/create`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
 
 
 // Cập nhật dữ liệu cho KPI đơn vị
 function evaluateKPIUnit(id) {
     const requestOptions = {
+        url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
         method: 'PUT',
         headers: AuthenticateHeader(),
     };
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`, requestOptions).then(handleResponse);
+    return axios(requestOptions);
 }
