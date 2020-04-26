@@ -43,7 +43,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             return {
                 ...state,
                 employeeKpiSet: {
-                    ...state.kpiunit,
+                    ...state.employeeKpiSet,
                     time: value
                 }
             }
@@ -68,7 +68,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 return {
                     ...state,
                     employeeKpiSet: {
-                        ...state.kpiunit,
+                        ...state.employeeKpiSet,
                         time: defaultTime,
                     }
                 }
@@ -119,15 +119,15 @@ class ModalCreateEmployeeKpiSet extends Component {
                     func={this.handleCreateEmployeeKpiSet}
                     // disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('employee_kpi_set.create_employee_kpi_set_modal.success'))}>
-                        <div className="form-group">
+                    <form className="form-horizontal" id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('employee_kpi_set.create_employee_kpi_set_modal.success'))}>
+                        <div className="form-group form-inline">
                             <label className="col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set_modal.organizational_unit')}</label>
                             <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
                         
-                        <div className="form-group">
+                        <div className="form-group form-inline">
                             <label className="col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
-                            <DatePicker
+                            <DatePicker 
                                 id="month"      
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                 value={defaultTime}                 // giá trị mặc định cho datePicker    
@@ -136,7 +136,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group form-inline">
                                 <label className="col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                 <div className="input-group col-sm-9" style={{ width: "60%" }}>
                                     {userdepartments && 

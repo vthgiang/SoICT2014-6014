@@ -43,17 +43,17 @@ export default {
             edit_salary_success: 'Edit salary success',
             edit_salary_faile: 'Edit salary faile',
             // Quản lý khen thưởng
-            type_praise_required: 'Reward forms required',
-            reason_praise_required: 'Reason required',
+            type_commendations_required: 'Reward forms required',
+            reason_commendations_required: 'Reason required',
             decisions_date_required: 'Decis day required',
-            get_praise_success: 'Get Reward success',
-            get_praise_faile: 'Get Reward faile',
-            create_praise_success: 'Create Reward success',
-            create_praise_faile: 'Create Reward faile',
-            delete_praise_success: 'Delete Reward success',
-            delete_praise_faile: 'Delete Reward faile',
-            edit_praise_success: 'Edit Reward success',
-            edit_praise_faile: 'Edit Reward faile',
+            get_commendations_success: 'Get Reward success',
+            get_commendations_faile: 'Get Reward faile',
+            create_commendations_success: 'Create Reward success',
+            create_commendations_faile: 'Create Reward faile',
+            delete_commendations_success: 'Delete Reward success',
+            delete_commendations_faile: 'Delete Reward faile',
+            edit_commendations_success: 'Edit Reward success',
+            edit_commendations_faile: 'Edit Reward faile',
             // Quản lý kỷ luật
             type_discipline_required: 'Discipline forms required',
             reason_discipline_required: 'Reason required',
@@ -80,6 +80,178 @@ export default {
              * Chức năng quản lý nhân sự
              */
         },
+
+        /*******************************************************
+         * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
+         * @general những phần ngôn ngữ dùng chung cho mọi module
+         * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
+         *******************************************************/
+        general: {
+            table: 'Bảng',
+            name: 'Tên',
+            description: 'Mô tả',
+            search: 'Tìm kiếm',
+            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
+            yes: 'Có',  no: 'Không',
+            loading: 'Đang tải dữ liệu',
+            no_data: 'Không có dữ liệu',
+            success: 'Thành công',
+            error: 'Lỗi',
+            auth_alert: {
+                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
+                reason: 'Nguyên nhân có thể là do:',
+                content: [
+                    'Phiên làm việc đã hết hạn',
+                    'Truy cập không hợp lệ',
+                    'Phân quyền của bạn không hợp lệ',
+                    'Phân quyền của bạn đã được quản lý thay đổi',
+                    'Token của bạn không hợp lệ',
+                    'Dịch vụ cho công ty không còn hoạt động',
+                ]
+            }
+        },
+
+        system_admin: {
+            company: {
+                table: {
+                    name: 'Tên doanh nghiệp/công ty',
+                    short_name: 'Tên ngắn',
+                    description: 'Mô tả về doanh nghiệp/công ty',
+                    log: 'Ghi log',
+                    service: 'Dịch vụ',
+                    super_admin: 'Tài khoản super admin',
+                },
+                on: 'Bật', off: 'Tắt',
+                add: 'Thêm doanh nghiệp/công ty',
+                edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
+                service: 'Dịch vụ cho doanh nghiệp/công ty',
+                validator: {
+                    name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_special: 'Tên không được chứa kí tự đặc biệt'
+                    },
+                    short_name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_space: 'Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau'
+                    },
+                    short_name: {
+                        no_blank: 'Mô tả không được để trống',
+                        no_less4: 'Mô tả không được ít hơn 4 kí tự',
+                        no_more255: 'Mô tả không quá 255 kí tự',
+                        no_special: 'Mô tả không được chứa kí tự đặc biệt'
+                    },
+                    super_admin: {
+                        no_blank: 'Email không được để trống',
+                        email_invalid: 'Email không hợp lệ',
+                    }
+                },
+
+                // Thông điệp trả về từ server
+                create_company_success: 'Khởi tạo dữ liệu công ty thành công',
+                show_company_success: 'Lấy dữ liệu công ty thành công',
+                edit_company_success: 'Chỉnh sửa thông tin công ty thành công',
+                delete_company_success: 'Xóa dữ liệu công ty thành công',
+                add_new_link_for_company_success: 'Thêm mới link cho công ty thành công',
+                delete_link_for_company_success: 'Xóa link thành công',
+                add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
+                delete_component_for_company_success: 'Xóa component thành công',
+
+                email_exist: 'Email này đã được sử dụng',
+                company_not_found: 'Không tìm thấy thông tin về công ty',
+                link_exist: 'Url cho link đã tồn tại',
+                component_exist: 'Component này đã tồn tại',
+            },
+
+            log: {
+
+            },
+
+            root_role: {
+
+            },
+
+            system_link: {
+                table: {
+                    url: 'Đường dẫn',
+                    description: 'Mô tả về trang',
+                },
+
+                // Thông điệp từ server
+                create_system_link_success: 'Tạo system link thành công',
+                edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
+
+                system_link_url_exist: 'Url này đã được sử dụng',
+            },
+
+            system_component: {
+                table: {
+
+                },
+
+                //Thông điệp trả về từ server
+                create_system_component_success: 'Tạo system component thành công',
+                show_system_component_success: 'Lấy dữ liệu system component thành công',
+                edit_system_component_success: 'Chỉnh sửa system admin thành công',
+                delete_system_component_success: 'Xóa system component thành công',
+
+                system_component_name_invalid: 'Tên không hợp lệ',
+                system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
+            }
+        },
+        super_admin: {
+            organization_unit: {
+                //Thông điệp trả về từ server
+                create_department_success: 'Tạo đơn vị thành công',
+                edit_department_success: 'Chỉnh sửa đơn vị thành công',
+                delete_department_success: 'Xóa đơn vị thành công',
+
+                department_name_exist: 'Tên đơn vị này đã được sử dụng',
+                department_not_found: 'Không tìm thấy thông tin về đơn vị',
+                department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
+            },
+            user: {
+                // Thông điệp trả về từ server
+                create_user_success: 'Tạo tài khoản người dùng thành công',
+                edit_user_success: 'Chỉnh sửa thông tin tài khoản người dùng thành công',
+                delete_user_success: 'Xóa tài khoản người dùng thành công',
+                
+                email_exist: 'Email đã được sử dụng cho một tài khoản khác',
+                user_not_found: 'Không tìm thấy thông tin về tài khoản',
+                department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
+            },
+            role: {
+                // Thông điệp trả về từ server
+                create_role_success: 'Tạo role mới thành công',
+                edit_role_success: 'Chỉnh sửa role thành công',
+                delete_role_success: 'Xóa role thành công',
+                
+                role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
+                role_dean_exist: 'Tên cho phân quyền của trưởng đơn vị này đã được sử dụng',
+                role_vice_dean_exist: 'Tên cho phân quyền của phó đơn vị này đã được sử dụng',
+                role_employee_exist: 'Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng',
+            },
+            link: {
+                // Thông điệp trả về từ server
+                create_link_success: 'Tạo link thành công',
+                edit_link_success: 'Chỉnh sửa link thành công',
+                delete_link_success: 'Xóa link thành công',
+    
+                cannot_create_this_url: 'Không thể tạo link này',
+                this_url_cannot_be_use: 'Url này không được phép sử dụng',
+                url_exist: 'Url này đã đươc sử dụng',
+            },
+            component: {
+                // Thông điệp trả về từ server
+                edit_component_success: 'Chỉnh sửa component thành công',
+            
+                component_name_exist: 'Tên của component đã được sử dụng',
+            },
+        },
+
         not_found: {
             title: 'Qpps! Page not found',
             content: 'We could not find the page you were looking for',
@@ -222,7 +394,7 @@ export default {
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
             discipline: 'Manage Reward And Discipline',
-            sabbatical: 'Manage Leave',
+            annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
             list_education: 'Training Programs',

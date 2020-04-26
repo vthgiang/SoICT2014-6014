@@ -76,7 +76,7 @@ function deleteSalary(id) {
     }
 }
 
-// cập nhật thông tin của chương trình đào tạo
+// Cập nhật thông tin của chương trình đào tạo
 function updateSalary(id, data) {
     return dispatch => {
         dispatch({

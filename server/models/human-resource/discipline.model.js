@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
 
-// toạ bảng datatable kỷ luật
+// Tạo bảng datatable kỷ luật
 const DisciplineSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,
@@ -34,15 +34,9 @@ const DisciplineSchema = new Schema({
     },
     reason: {
         type: String
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-})
+}, {
+    timestamps: true,
+});
 
 module.exports = Discipline = mongoose.model("disciplines", DisciplineSchema);

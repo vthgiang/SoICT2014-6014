@@ -49,9 +49,9 @@ class ManageLink extends Component {
                         }
                         <SearchBar 
                             columns={[
-                                { title: translate('manage_link.url'), value:'url' },
-                                { title: translate('manage_link.category'), value:'category' },
-                                { title: translate('manage_link.description'), value:'description' },
+                                { title: translate('system_admin.system_link.table.url'), value:'url' },
+                                { title: translate('system_admin.system_link.table.category'), value:'category' },
+                                { title: translate('system_admin.system_link.table.description'), value:'description' },
                             ]}
                             option={this.state.option}
                             setOption={this.setOption}
@@ -61,19 +61,19 @@ class ManageLink extends Component {
                         <table className="table table-hover table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>{ translate('manage_link.url') }</th>
-                                    <th>{ translate('manage_link.category') }</th>
-                                    <th>{ translate('manage_link.description') }</th>
-                                    <th>{ translate('manage_link.roles') }</th>
+                                    <th>{ translate('system_admin.system_link.table.url') }</th>
+                                    <th>{ translate('system_admin.system_link.table.category') }</th>
+                                    <th>{ translate('system_admin.system_link.table.description') }</th>
+                                    <th>{ translate('system_admin.system_link.table.roles') }</th>
                                     <th style={{width: "120px"}}>
                                         { translate('table.action') }
                                         <DataTableSetting 
                                             columnName={translate('table.action')} 
                                             columnArr={[
-                                                translate('manage_link.url'),
-                                                translate('manage_link.category'),
-                                                translate('manage_link.description'),
-                                                translate('manage_link.roles')
+                                                translate('system_admin.system_link.table.url'),
+                                                translate('system_admin.system_link.table.category'),
+                                                translate('system_admin.system_link.table.description'),
+                                                translate('system_admin.system_link.table.roles')
                                             ]}
                                             setLimit={this.setLimit}
                                         /> 
@@ -94,9 +94,9 @@ class ManageLink extends Component {
                                                     return <span key={role._id}>{role.name}</span>
                                             }) }</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <a onClick={() => this.handleEdit(link)} className="edit" title={translate('manage_link.edit')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(link)} className="edit" title={translate('system_admin.system_link.edit')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification 
-                                                    content={translate('manage_link.delete')}
+                                                    content={translate('system_admin.system_link.delete')}
                                                     data={{
                                                         id: link._id,
                                                         info: link.url
@@ -106,8 +106,8 @@ class ManageLink extends Component {
                                             </td>
                                         </tr> 
                                     ): linksDefault.isLoading ?
-                                    <tr><td colSpan={5}>{translate('confirm.loading')}</td></tr>:
-                                    <tr><td colSpan={5}>{translate('confirm.no_data')}</td></tr>
+                                    <tr><td colSpan={5}>{translate('general.loading')}</td></tr>:
+                                    <tr><td colSpan={5}>{translate('general.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>

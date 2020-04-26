@@ -18,6 +18,7 @@ exports.createEmployeeKpiSet = async (creatorId,approverId,organizationalUnitId,
         var defaultOrganizationalUnitKpi;
         if (organizationalUnitKpiSet.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.default !== 0);
         if (defaultOrganizationalUnitKpi !== []) {
+            
             var time = timeId.split("-");
             var date = new Date(time[1], time[0], 0);
         
@@ -41,12 +42,11 @@ exports.createEmployeeKpiSet = async (creatorId,approverId,organizationalUnitId,
                 return defaultT._id;
             }));
             employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(
-                employeeKpiSet, { kpis: defaultEmployeeKpi }, { timestamps: true }
-            );
-        
-            employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+                employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
+            );            
+            employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();            
             return employeeKpiSet;
-        } else {
+        } else { 
             return null;
         }
 }
@@ -63,7 +63,7 @@ exports.createEmployeeKpi = async (nameId,parentId,weightId,criteriaId,employeeK
     })
 
     var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(
-        employeeKpiSetId, { $push: { kpis: employeeKpi._id } }, { timestamps: true }
+        employeeKpiSetId, { $push: { kpis: employeeKpi._id } }, { new: true }
     );
     employeeKpiSet = await employeeKpiSet.populate('creator approver organizationalUnit').populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return employeeKpiSet;
@@ -78,7 +78,7 @@ exports.editEmployeeKpi = async (nameId,parentId,weightId,criteriaId,id) => {
         weight: weightId,
         criteria: criteriaId
     }
-    var employeeKpi = await EmployeeKpi.findByIdAndUpdate(id, { $set: objUpdate }, { timestamps: true }).populate("parent");
+    var employeeKpi = await EmployeeKpi.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
     return employeeKpi;
 }
 
@@ -95,7 +95,7 @@ exports.deleteEmployeeKpi = async (id,employeeKpiSetId) => {
 exports.updateEmployeeKpiSetStatus = async (id,statusId) => {
     //req.params.id,req.params.status
     
-    var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { status: statusId } }, { timestamps: true });
+    var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
         employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
         
         return employeeKpiSet;
@@ -106,7 +106,7 @@ exports.editEmployeeKpiSet = async (timeId,id) => {
     //req.body.time,req.params.id
     var time = timeId.split("-");
         var date = new Date(time[1], time[0], 0)
-        var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { time: date } }, { timestamps: true });
+        var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { time: date } }, { new: true });
         employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return employeeKpiSet;
 }

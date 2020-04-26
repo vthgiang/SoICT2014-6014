@@ -10,7 +10,7 @@ import React from 'react';
  * @error_auth mảng các mã lỗi
  */
 const checkErrorAuth = (code) => {
-    console.log("CODE : ", code)
+    
     const error_auth = [
         'access_denied',
         'role_invalid',
@@ -26,6 +26,11 @@ const checkErrorAuth = (code) => {
     return false;
 }
 
+const showAuthResponseAlertAndRedirectToLoginPage = async () => {
+    await window.$(`#alert-error-auth`).modal("show");
+    await localStorage.clear();
+}
+
 /**
  * Hàm gọi request đến server
  * @param {*} data Cấu trúc của data bao gồm (url method, data)
@@ -33,7 +38,7 @@ const checkErrorAuth = (code) => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function sendRequest(options, showAlert=true, module, successTitle='success.title', errorTitle='error.title') {
+export function sendRequest(options, showAlert=false, module, successTitle='general.success', errorTitle='general.error') {
 
     const requestOptions = {
         url: options.url, 
@@ -43,27 +48,30 @@ export function sendRequest(options, showAlert=true, module, successTitle='succe
     };
 
     return axios(requestOptions).then(res => {
+        const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
+
         showAlert && toast.success(
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
-                content={res.data.message}
+                content={messages.map(message => `${module}.${message}`)}
             />, 
             {containerId: 'toast-notification'});
 
         return Promise.resolve(res);
     }).catch(err => {
-        if(err.response.data.message){
-            if(checkErrorAuth(err.response.data.message[0])){
-                window.$(`#alert-error-auth`).modal("show");
-                localStorage.clear();
+        const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+
+        if(messages){
+            if(checkErrorAuth(messages[0])){
+                showAuthResponseAlertAndRedirectToLoginPage();
             }
             else{
                 toast.error(
                     <ServerResponseAlert
                         type='error'
                         title={errorTitle}
-                        content={err.response.data.message}
+                        content={messages.map(message => `${module}.${message}`)}
                     />, 
                     {containerId: 'toast-notification'}
                 );

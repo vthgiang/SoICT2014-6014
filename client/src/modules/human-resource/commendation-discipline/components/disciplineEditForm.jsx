@@ -15,18 +15,18 @@ class DisciplineEditForm extends Component {
     /**
      * Bắt sự kiện thay đổi cấp ra quyết định
      */
-    handleUnitChange = (e) => {
+    handleOrganizationalUnitChange = (e) => {
         let value = e.target.value;
-        this.validateUnit(value, true);
+        this.validateOrganizationalUnit(value, true);
     }
-    validateUnit = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateUnit(value, this.props.translate)
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let msg = DisciplineFromValidator.validateOrganizationalUnit(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
-                    unit: value,
+                    errorOnOrganizationalUnit: msg,
+                    organizationalUnit: value,
                 }
             });
         }
@@ -118,7 +118,7 @@ class DisciplineEditForm extends Component {
      */
     isFormValidated = () => {
         let result =
-            this.validateUnit(this.state.unit, false) && this.validateType(this.state.reason, false) &&
+            this.validateOrganizationalUnit(this.state.organizationalUnit, false) && this.validateType(this.state.reason, false) &&
             this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
             this.validateReason(this.state.reason, false);
         return result;
@@ -138,13 +138,14 @@ class DisciplineEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 employeeNumber: nextProps.employeeNumber,
-                number: nextProps.number,
-                unit: nextProps.unit,
+                decisionNumber: nextProps.decisionNumber,
+                organizationalUnit: nextProps.organizationalUnit,
                 startDate: nextProps.startDate,
                 endDate: nextProps.endDate,
                 type: nextProps.type,
                 reason: nextProps.reason,
-                errorOnUnit: undefined,
+
+                errorOnOrganizationalUnit: undefined,
                 errorOnType: undefined,
                 errorOnReason: undefined,
                 errorOnStartDate: undefined,
@@ -158,8 +159,8 @@ class DisciplineEditForm extends Component {
 
     render() {
         const { translate, discipline } = this.props;
-        const { employeeNumber, startDate, endDate, reason, number, unit, type,
-            errorOnEndDate, errorOnStartDate, errorOnUnit, errorOnType, errorOnReason } = this.state;
+        const { employeeNumber, startDate, endDate, reason, decisionNumber, organizationalUnit, type,
+            errorOnEndDate, errorOnStartDate, errorOnOrganizationalUnit, errorOnType, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -179,12 +180,12 @@ class DisciplineEditForm extends Component {
                         <div className="row qlcv-from">
                             <div className="left col-sm-6 col-xs-12 form-group">
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" disabled />
+                                <input type="text" className="form-control" name="number" value={decisionNumber} onChange={this.handleNumberChange} autoComplete="off" disabled />
                             </div>
-                            <div className={`right col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
+                            <div className={`right col-sm-6 col-xs-12 form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
-                                <ErrorLabel content={errorOnUnit} />
+                                <input type="text" className="form-control" name="unit" value={organizationalUnit} onChange={this.handleOrganizationalUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
+                                <ErrorLabel content={errorOnOrganizationalUnit} />
                             </div>
                         </div>
                         <div className="row qlcv-from">

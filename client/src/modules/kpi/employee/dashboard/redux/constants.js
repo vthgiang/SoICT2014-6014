@@ -1,4 +1,4 @@
-export const dashboardKpiConstants = {
+export const dashboardEmployeeKpiSetConstants = {
     
     GET_EMPLOYEE_KPI_SET_BY_MEMBER_REQUEST: 'GET_EMPLOYEE_KPI_SET_BY_MEMBER_REQUEST',
     GET_EMPLOYEE_KPI_SET_BY_MEMBER_SUCCESS: 'GET_EMPLOYEE_KPI_SET_BY_MEMBER_SUCCESS',

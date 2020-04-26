@@ -43,10 +43,17 @@ class Login extends Component {
         this.props.forgotPassword(emailForgot);
     }
 
+    // displayAuthAlert = () => {
+    //     window.$(`#alert-error-auth`).modal("show");
+    // }
+
     render() { 
         const { auth, translate } = this.props;
         return ( 
             <div className="hold-transition login-page" style={{ minHeight: '100vh' }}>
+                
+                {/* <button type="button" class="btn btn-default" onClick={this.displayAuthAlert}>display</button> */}
+                
                 <div className="login-box" style={{ marginTop: 0, marginBottom: 0, paddingTop: '7vh' }}>
                     <div className="login-logo">
                         <a href="/index2.html"><b>VNIST</b>-QLCV</a>

@@ -1,6 +1,6 @@
-import { dashboardKpiConstants } from "./constants";
-import { dashboardKPIPerService } from "./services";
-export const dashboardKpiActions = {
+import { dashboardEmployeeKpiSetConstants } from "./constants";
+import { dashboardEmployeeKpiSetService } from "./services";
+export const dashboardEmployeeKpiSetActions = {
     getEmployeeKpiSetByMember,
     getEmployeeKpiSetOfResponsible,
     getEmployeeKpiSetByUserID
@@ -9,18 +9,18 @@ export const dashboardKpiActions = {
 // Lấy tất cả KPI cá nhân
 function getEmployeeKpiSetByMember() {
     return dispatch => {
-        dispatch({ type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_REQUEST });//member
+        dispatch({ type: dashboardEmployeeKpiSetConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_REQUEST });//member
 
-        dashboardKPIPerService.getEmployeeKpiSetByMember()
+        dashboardEmployeeKpiSetService.getEmployeeKpiSetByMember()
             .then(res => {
                 dispatch({
-                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_SUCCESS,
+                    type: dashboardEmployeeKpiSetConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_FAILURE,
+                    type: dashboardEmployeeKpiSetConstants.GET_EMPLOYEE_KPI_SET_BY_MEMBER_FAILURE,
                     payload: error
                 })
             })
@@ -30,18 +30,18 @@ function getEmployeeKpiSetByMember() {
 // Lấy tất cả KPI cá nhân
 function getEmployeeKpiSetByUserID(member) {
     return dispatch => {
-        dispatch({ type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_ID_REQUEST });
+        dispatch({ type: dashboardEmployeeKpiSetConstants.GET_EMPLOYEE_KPI_SET_BY_ID_REQUEST });
 
-        dashboardKPIPerService.getEmployeeKpiSetByUserID(member)
+        dashboardEmployeeKpiSetService.getEmployeeKpiSetByUserID(member)
             .then(res => {
                 dispatch({
-                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_ID_SUCCESS,
+                    type: dashboardEmployeeKpiSetConstants.GET_EMPLOYEE_KPI_SET_BY_ID_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_BY_ID_FAILURE,
+                    type: dashboardEmployeeKpiSetConstants.GET_EMPLOYEE_KPI_SET_BY_ID_FAILURE,
                     payload: error
                 })
             })
@@ -51,18 +51,18 @@ function getEmployeeKpiSetByUserID(member) {
 // Lấy tất cả KPI cá nhân
 function getEmployeeKpiSetOfResponsible(member) {
     return dispatch => {
-        dispatch({ type: dashboardKpiConstants.GET_EMPLOYEE_KPI_SET_OF_TASK_REQUEST });
+        dispatch({ type: dashboardEmployeeKpiSetConstants.GET_EMPLOYEE_KPI_SET_OF_TASK_REQUEST });
 
-        dashboardKPIPerService.getEmployeeKpiSetOfTask(member)
+        dashboardEmployeeKpiSetService.getEmployeeKpiSetOfTask(member)
             .then(res => {
                 dispatch({
-                    type: dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS,
+                    type: dashboardEmployeeKpiSetConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardKpiConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE,
+                    type: dashboardEmployeeKpiSetConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE,
                     payload: error
                 })
             })

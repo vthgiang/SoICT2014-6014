@@ -5,6 +5,7 @@ import Routes from './react-routes/routes';
 import { ToastContainer, toast } from 'react-toastify';
 import { IntlActions } from 'react-redux-multilingual';
 import store from './redux/store';
+import AuthAlert from './modules/alert/components/authAlert';
 
 const history = createBrowserHistory();
 
@@ -27,6 +28,7 @@ function App() {
     }
     return (
         <React.Fragment>
+            <AuthAlert />
             <ToastContainer enableMultiContainer containerId={'toast-notification'} position={toast.POSITION.TOP_RIGHT} />
             <Router history={history}>
                 <Routes/>

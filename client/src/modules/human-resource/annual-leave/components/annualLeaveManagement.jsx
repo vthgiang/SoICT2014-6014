@@ -253,7 +253,7 @@ class AnnualLeaveManagement extends Component {
                                         <td>{x.startDate}</td>
                                         <td>{x.endDate}</td>
                                         <td>{x.reason}</td>
-                                        <td>{x.organizationalUnit.length !== 0 ? x.organizationalUnit.map(unit => (
+                                        <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
                                             </React.Fragment>

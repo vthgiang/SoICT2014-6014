@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
-import { PraiseFromValidator } from '../../../commendation-discipline/components/combinedContent';
+import { CommendationFromValidator } from '../../../commendation-discipline/components/combinedContent';
 class ModalEditPraise extends Component {
     constructor(props) {
         super(props);
@@ -16,7 +16,7 @@ class ModalEditPraise extends Component {
         this.validateNumber(value, true);
     }
     validateNumber = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateNumber(value, this.props.translate)
+        let msg = CommendationFromValidator.validateNumber(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -37,7 +37,7 @@ class ModalEditPraise extends Component {
         this.validateUnit(value, true);
     }
     validateUnit = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateUnit(value, this.props.translate)
+        let msg = CommendationFromValidator.validateUnit(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -56,7 +56,7 @@ class ModalEditPraise extends Component {
         this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateStartDate(value, this.props.translate)
+        let msg = CommendationFromValidator.validateStartDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -77,7 +77,7 @@ class ModalEditPraise extends Component {
         this.validateType(value, true);
     }
     validateType = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateType(value, this.props.translate)
+        let msg = CommendationFromValidator.validateType(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -98,7 +98,7 @@ class ModalEditPraise extends Component {
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateReason(value, this.props.translate)
+        let msg = CommendationFromValidator.validateReason(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
