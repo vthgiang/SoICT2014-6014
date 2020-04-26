@@ -184,7 +184,7 @@ class CompanyCreateForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    nameError: translate(msg),
+                    nameError: msg !== undefined ? translate(msg) : msg,
                     companyName: value,
                 }
             });
@@ -200,11 +200,12 @@ class CompanyCreateForm extends Component {
 
     validateShortName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateShortName(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    shortNameError: msg,
+                    shortNameError: msg !== undefined ? translate(msg) : msg,
                     companyShortName: value,
                 }
             });
@@ -220,11 +221,12 @@ class CompanyCreateForm extends Component {
 
     validateDescription = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateDescription(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    descriptionError: msg,
+                    descriptionError: msg !== undefined ? translate(msg) : msg,
                     companyDescription: value,
                 }
             });
@@ -240,11 +242,12 @@ class CompanyCreateForm extends Component {
 
     validateEmail = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateEmailSuperAdmin(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    emailError: msg,
+                    emailError: msg !== undefined ? translate(msg) : msg,
                     companyEmail: value,
                 }
             });

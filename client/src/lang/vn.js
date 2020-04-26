@@ -98,6 +98,18 @@ export default {
             no_data: 'Không có dữ liệu',
             success: 'Thành công',
             error: 'Lỗi',
+            auth_alert: {
+                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
+                reason: 'Nguyên nhân có thể là do:',
+                content: [
+                    'Phiên làm việc đã hết hạn',
+                    'Truy cập không hợp lệ',
+                    'Phân quyền của bạn không hợp lệ',
+                    'Phân quyền của bạn đã được quản lý thay đổi',
+                    'Token của bạn không hợp lệ',
+                    'Dịch vụ cho công ty không còn hoạt động',
+                ]
+            }
         },
 
         system_admin: {
@@ -123,11 +135,11 @@ export default {
                     },
                     short_name: {
                         no_blank: 'Tên không được để trống',
-                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_less3: 'Tên không được ít hơn 3 kí tự',
                         no_more255: 'Tên không quá 255 kí tự',
                         no_space: 'Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau'
                     },
-                    short_name: {
+                    description: {
                         no_blank: 'Mô tả không được để trống',
                         no_less4: 'Mô tả không được ít hơn 4 kí tự',
                         no_more255: 'Mô tả không quá 255 kí tự',
@@ -160,13 +172,34 @@ export default {
             },
 
             root_role: {
+                table: {
+                    name: 'Tên phân quyền',
+                    description: 'Mô tả về phân quyền'
+                },
 
+                //Thông điệp trả về từ server
+                get_root_roles_success: 'Lấy thông tin về các root role thành công'
             },
 
             system_link: {
                 table: {
                     url: 'Đường dẫn',
+                    category: 'Danh mục',
                     description: 'Mô tả về trang',
+                    roles: 'Những role có quyền',
+                },
+                add: 'Thêm system link mới',
+                edit: 'Chỉnh sửa thông tin system link',
+                delete: 'Xóa system link',
+                validator: {
+                    url: {
+                        no_blank: 'Url không được để trống',
+                        start_with_slash: 'Url không hợp lệ. Url phải bắt đầu bằng dấu /',
+                    },
+                    description: {
+                        no_blank: 'Mô tả không được để trống',
+                        no_special: 'Mô tả không được chứa ký tự đặc biệt',
+                    }
                 },
 
                 // Thông điệp từ server
@@ -178,7 +211,23 @@ export default {
 
             system_component: {
                 table: {
-
+                    name: 'Tên component',
+                    description: 'Mô tả về component',
+                    link: 'Thuộc về trang',
+                    roles: 'Những role có quyền'
+                },
+                add: 'Thêm system component mới',
+                edit: 'Chỉnh sửa thông tin system component',
+                delete: 'Xóa system component',
+                validator: {
+                    name: {
+                        no_space: 'Tên component không được để trống',
+                        no_special: 'Tên không được chứa ký tự đặc biệt',
+                    },
+                    description: {
+                        no_space: 'Mô tả component không được để trống',
+                        no_special: 'Mô tả không được chứa ký tự đặc biệt',
+                    },
                 },
 
                 //Thông điệp trả về từ server

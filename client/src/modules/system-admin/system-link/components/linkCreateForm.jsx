@@ -21,28 +21,26 @@ class CreateLinkForm extends Component {
         const {linkUrl, linkCategory, linkDescription, linkRoles, linkUrlError, linkDescriptionError} = this.state;
         return ( 
             <React.Fragment>
-                <ButtonModal modalID="modal-create-page" button_name={translate('manage_link.add')} title={translate('manage_link.add_title')}/>
+                <ButtonModal modalID="modal-create-page" button_name={translate('general.add')} title={translate('system_admin.system_link.add')}/>
                 <DialogModal
                     modalID="modal-create-page"
                     formID="form-create-page"
-                    title={translate('manage_link.add_title')}
-                    msg_success={translate('manage_link.add_success')}
-                    msg_faile={translate('manage_link.add_faile')}
+                    title={translate('system_admin.system_link.add')}
                     func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-page">
                         <div className={`form-group ${linkUrlError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_link.url') }<span className="text-red"> * </span></label>
+                            <label>{ translate('system_admin.system_link.table.url') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" onChange={this.handleUrl}/>
                             <ErrorLabel content={linkUrlError}/>
                         </div>
                         <div className={`form-group ${linkDescriptionError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_link.description') }<span className="text-red"> * </span></label>
+                            <label>{ translate('system_admin.system_link.table.description') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" onChange={this.handleDescription}/>
                             <ErrorLabel content={linkDescriptionError}/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_link.category') }<span className="text-red"> * </span></label>
+                            <label>{ translate('system_admin.system_link.table.category') }<span className="text-red"> * </span></label>
                             <SelectBox
                                 id={`select-link-default-category`}
                                 className="form-control select2"
@@ -55,7 +53,7 @@ class CreateLinkForm extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label>{ translate('manage_link.roles') }</label>
+                            <label>{ translate('system_admin.system_link.table.roles') }</label>
                             <SelectBox
                                 id={`select-link-default-roles`}
                                 className="form-control select2"
