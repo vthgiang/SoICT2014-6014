@@ -535,7 +535,7 @@ class Routes extends Component {
                         component={ KPIPersonalManager }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.dashboardKPIPersonal.isLoading }
+                        isLoading={ this.props.dashboardEmployeeKpiSet.isLoading }
                         key={ 'kpi-personal-dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

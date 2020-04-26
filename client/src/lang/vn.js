@@ -1072,7 +1072,7 @@ export default {
                 failure: 'Bạn chưa nhập đủ thông tin'
             },
 
-            edit_target_kpi_modal: { // Mudule con
+            edit_employee_kpi_modal: { // Mudule con
                 // Nhóm dành cho modal
                 edit_employee_kpi: 'Chỉnh sửa mục tiêu KPI cá nhân',
                 name: 'Tên mục tiêu',

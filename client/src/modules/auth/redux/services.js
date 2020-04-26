@@ -34,14 +34,14 @@ function logout() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/logout`,
         method: 'GET',
-    }, false);
+    }, false, 'auth');
 }
 
 function logoutAllAccount() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/logout-all-account`,
         method: 'GET',
-    }, false);
+    }, false, 'auth');
 }
 
 function editProfile(data) {
@@ -53,7 +53,7 @@ function editProfile(data) {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
         data: data,
-    }, false);
+    }, false, 'auth');
 }
 
 function changeInformation(data) {
@@ -65,7 +65,7 @@ function changeInformation(data) {
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
         method: 'PATCH',
         data: data,
-    }, false);
+    }, false, 'auth');
 }
 
 function changePassword(data) {
@@ -77,14 +77,14 @@ function changePassword(data) {
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
         method: 'PATCH',
         data: data,
-    }, false);
+    }, false, 'auth');
 }
 
 async function getLinksOfRole(idRole) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/get-links-of-role/${idRole}`,
         method: 'GET',
-    }, false);
+    }, false, 'auth');
 }
 
 async function refresh() {
@@ -95,7 +95,7 @@ async function refresh() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
         method: 'GET',
-    }, false);
+    }, false, 'auth');
 }
 
 function forgotPassword(email) {
@@ -105,7 +105,7 @@ function forgotPassword(email) {
         data: {
             email
         }
-    }, false);
+    }, false, 'auth');
 }
 
 function resetPassword(otp, email, password) {
@@ -117,12 +117,12 @@ function resetPassword(otp, email, password) {
             email,
             password
         }
-    }, false);
+    }, false, 'auth');
 }
 
 function getComponentOfUserInLink(currentRole, linkId) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
         method: 'GET',
-    }, false);
+    }, false, 'auth');
 }

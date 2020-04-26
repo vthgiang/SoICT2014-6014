@@ -74,7 +74,7 @@ class ModalEditEmployeeKpi extends Component {
     //     if (newTarget.parent && newTarget.name && newTarget.weight && newTarget.criteria) {
     //         this.props.editTargetPersonal(id, newTarget);
     //         this.handleCloseModal(id);
-    //         this.notifysuccess(translate('kpi_personal.edit_target_kpi.edit_success'));
+    //         this.notifysuccess(translate('kpi_personal.edit_employee_kpi.edit_success'));
     //     }
     // }
 
@@ -87,9 +87,16 @@ class ModalEditEmployeeKpi extends Component {
             weight: this.state.weight,
             criteria: this.state.criteria,
         } 
-
+        
         if (this.isFormValidated()) {
-            return this.props.editEmployeeKpi(id, newTarget);
+            let res = await this.props.editEmployeeKpi(id, newTarget);
+
+            window.$(`#editEmployeeKpi${this.props.target._id}`).modal("hide");
+            window.$(".modal-backdrop").remove();
+            window.$('body').removeClass('modal-open');
+            window.$('body').css('padding-right',"0px");
+
+            return res;
         }
     }
     
@@ -148,7 +155,7 @@ class ModalEditEmployeeKpi extends Component {
         this.setState(state => {
             return {
                 ...state,
-                parent: value[0]
+                parent: value,
             }
         });
     }
@@ -217,15 +224,15 @@ class ModalEditEmployeeKpi extends Component {
         const { editing, newTarget } = this.state;
         const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
         if (createKpiUnit.currentKPI) currentOrganizationalUnitKPI = createKpiUnit.currentKPI;
-
-        if(currentOrganizationalUnitKPI === null){
+        
+        if(currentOrganizationalUnitKPI === undefined){
             items = [];
         }
         else{    
             items = currentOrganizationalUnitKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
-
+        
         return (
             <React.Fragment>
                 <DialogModal
@@ -256,6 +263,7 @@ class ModalEditEmployeeKpi extends Component {
                                             items={items}
                                             onChange={this.handleParentChange}
                                             multiple={false}
+                                            value={items[0]}
                                         />
                                     </div>
                             }

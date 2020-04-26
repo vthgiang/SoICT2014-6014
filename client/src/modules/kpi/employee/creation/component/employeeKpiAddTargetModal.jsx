@@ -36,17 +36,17 @@ class ModalCreateEmployeeKpi extends Component {
 
     // function: create new target of personal kpi
     handleCreateEmployeeKpi = async () => {
-        let currentKPI = null;
+        let currentOrganizationalKpiSet = null;
         let items;
         let parent = null;
         const { createKpiUnit } = this.props;
-        if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
+        if (createKpiUnit.currentKPI) currentOrganizationalKpiSet = createKpiUnit.currentKPI;
         if(this.state.parent === null){
-            if(currentKPI === null){
+            if(currentOrganizationalKpiSet === null){
                 parent = null;
             }
             else{    
-                items = currentKPI.kpis.filter(item => item.type !== 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+                items = currentOrganizationalKpiSet.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                     return {value: x._id, text: x.name} });
 
                 parent = items[0].value;
@@ -57,14 +57,14 @@ class ModalCreateEmployeeKpi extends Component {
         }
 
         if (this.isFormValidated()){
-            let res = await this.props.createEmployeeKpi({
+            let employeeKpi = {
                 name: this.state.name,
                 parent: parent,
                 weight: this.state.weight,
                 criteria: this.state.criteria,
                 employeeKpiSet: this.props.employeeKpiSet, 
-            });
-
+            }
+            let res = await this.props.createEmployeeKpi(employeeKpi);            
             window.$("#createEmployeeKpi").modal("hide");
             window.$(".modal-backdrop").remove();
             window.$('body').removeClass('modal-open');
@@ -96,7 +96,7 @@ class ModalCreateEmployeeKpi extends Component {
         this.setState(state => {
             return {
                 ...state,
-                parent: value[0]
+                parent: value,
             }
         });
     }
@@ -161,10 +161,10 @@ class ModalCreateEmployeeKpi extends Component {
         var currentOrganizationalUnitKpiSet;
         const { newTarget, adding } = this.state;
         const { createKpiUnit, translate } = this.props;
-        if (createKpiUnit.currentKPI) currentOrganizationalUnitKpiSet = createKpiUnit.currentKPI;
-
+        if (createKpiUnit.currentKPI) currentOrganizationalUnitKpiSet = createKpiUnit.currentKPI;        
         var items;
-        if(createKpiUnit.currentKPI === null){
+        
+        if(currentOrganizationalUnitKpiSet === undefined){
             items = [];
         } else {    
             items = currentOrganizationalUnitKpiSet.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
@@ -202,6 +202,7 @@ class ModalCreateEmployeeKpi extends Component {
                                         items = {items}
                                         onChange={this.handleParentChange}
                                         multiple={false}
+                                        value={items[0]}
                                     />
                                 
                             </div>}
