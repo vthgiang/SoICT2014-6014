@@ -35,6 +35,7 @@ class EmployeeDetailForm extends Component {
                     size='100' modalID="modal-view-employee" isLoading={employeesManager}
                     formID="form-view-employee"
                     title={translate('manage_employee.edit_diploma')}
+                    hasSaveButton={false}
                 // disableSubmit={false}
                 >
                     <form className="form-group" id="form-view-employee" style={{ marginTop: "-15px" }}>

@@ -161,11 +161,13 @@ exports.searchEmployeeProfiles = async (data, company) => {
 
     // Bắt sựu kiện MSNV tìm kiếm khác "Null"
     if (data.gender !== null) {
-        keySearch = {...keySearch, gender: {$regex: data.gender, $options: "i"}}
+        keySearch = {...keySearch, gender: {$in: data.gender}};
     };
 
     // Thêm key tìm kiếm nhân viên theo trạng thái hoạt động vào keySearch
-    if (data.status !== null) {keySearch = {...keySearch, status: data.status}};
+    if (data.status !== null) {
+        keySearch = {...keySearch, status: {$in: data.status}};
+    };
     
     // Lấy danh sách nhân viên
     var totalList = await Employee.count(keySearch);

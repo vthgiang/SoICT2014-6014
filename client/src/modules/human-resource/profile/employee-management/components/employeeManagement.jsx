@@ -46,6 +46,48 @@ class EmployeeManagement extends Component {
         window.$('#modal-edit-employee').modal('show');
     }
 
+    // Function lưu giá trị unit vào state khi thay đổi
+    handleUnitChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            organizationalUnit: value
+        })
+    }
+
+    // Function lưu giá trị chức vụ vào state khi thay đổi
+    handlePositionChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            position: value
+        })
+    }
+    // Function lưu giá trị giới tính vào state khi thay đổi
+    handleGenderChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            gender: value
+        })
+    }
+    // Function lưu giá trị trạng thái vào state khi thay đổi
+    handleStatusChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            status: value
+        })
+    }
+
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
@@ -103,7 +145,7 @@ class EmployeeManagement extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    {/* <EmployeeCreateForm /> */}
+                    <EmployeeCreateForm />
                     <div className="form-group">
                         <h4 className="box-title">Danh sách nhân viên:</h4>
                     </div>
@@ -125,28 +167,24 @@ class EmployeeManagement extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label htmlFor="employeeNumber" className="form-control-static">{translate('page.staff_number')}:</label>
+                            <label className="form-control-static">{translate('page.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="gender" className="form-control-static">Giới tính:</label>
-                            <select className="form-control" defaultValue="All" name="gender" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                <option value="male">Nam</option>
-                                <option value="female">Nữ</option>
-                            </select>
-
+                            <label className="form-control-static">Giới tính</label>
+                            <SelectMulti id={`multiSelectGender`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn giới tính", allSelectedText: "Chọn tất cả giới tính" }}
+                                items={[{ value: "male", text: "Nam" }, { value: "female", text: "Nữ" }]} onChange={this.handleGenderChange}>
+                            </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}:</label>
-                            <select className="form-control" defaultValue="All" name="status" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                <option value="active">Đang làm việc</option>
-                                <option value="leave">Đã nghỉ làm</option>
-                            </select>
-
+                            <label className="form-control-static">{translate('page.status')}</label>
+                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Chọn tất cả trạng thái" }}
+                                items={[{ value: "active", text: "Đang làm việc" }, { value: "leave", text: "Đã nghỉ làm" }]} onChange={this.handleStatusChange}>
+                            </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label></label>
