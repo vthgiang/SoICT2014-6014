@@ -9,51 +9,64 @@ export const managerKpiActions = {
 // Lấy tất cả KPI cá nhân
 function getAllKPIPersonalByMember() {
     return dispatch => {
-        dispatch(request());//member
+        dispatch({type: managerKPIConstants.GETALL_KPIPERSONAL_REQUEST});//member
 
         managerKPIPerService.getAllKPIPersonalByMember()
-            .then(
-                kpipersonals => dispatch(success(kpipersonals)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
-
-    function request() { return { type: managerKPIConstants.GETALL_KPIPERSONAL_REQUEST } }
-    function success(kpipersonals) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_SUCCESS, kpipersonals } }
-    function failure(error) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_FAILURE, error } }
+            .then(res =>{
+                dispatch({
+                    type: managerKPIConstants.GETALL_KPIPERSONAL_SUCCESS,
+                    payload: res.data.content.kpipersonals
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type:  managerKPIConstants.GETALL_KPIPERSONAL_FAILURE,
+                    payload:error,
+                })
+            })
+    }
 }
 
 // Lấy tất cả KPI cá nhân
 function getAllKPIPersonalByUserID(member) {
     return dispatch => {
-        dispatch(request(member));
+        dispatch({type: managerKPIConstants.GETALL_KPIPERSONAL_REQUEST});
 
         managerKPIPerService.getAllKPIPersonalByUserID(member)
-            .then(
-                kpipersonals => dispatch(success(kpipersonals)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res =>{
+                dispatch({
+                    type: managerKPIConstants.GETALL_KPIPERSONAL_SUCCESS,
+                    payload: res.data.content.kpipersonals
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type: managerKPIConstants.GETALL_KPIPERSONAL_FAILURE,
+                    payload: error
+                })
+            })
     };
-
-    function request(member) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_REQUEST, member } }
-    function success(kpipersonals) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_SUCCESS, kpipersonals } }
-    function failure(error) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_FAILURE, error } }
 
 }
 
 // Lấy tất cả KPI cá nhân
 function getAllKPIPersonalOfResponsible(member) {
     return dispatch => {
-        dispatch(request(member));
+        dispatch({ type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_REQUEST});
 
         managerKPIPerService.getAllKPIPersonalOfTask(member)
-            .then(
-                kpipersonals => dispatch(success(kpipersonals)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res=>{
+                dispatch({
+                    type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS,
+                    payload: res.data.content.kpipersonals
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE,
+                    payload: error
+                })
+            })
     };
 
-    function request(member) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_REQUEST, member } }
-    function success(kpipersonals) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS, kpipersonals } }
-    function failure(error) { return { type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE, error } }
 }
