@@ -37,7 +37,7 @@ import { DashBoardEmployees} from '../modules/human-resource/employee-dashboard/
 import { DepartmentManage} from '../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit';
 import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
 import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
-import { ListEmployee, AddEmployee} from '../modules/human-resource/profile/employee-management/components/combinedContent';
+import EmpoyeeManager from '../modules/human-resource/profile/employee-management/components';
 import {EmployeeCreatePage} from '../modules/human-resource/profile/employee-create/components/employeeCreatePage';
 import SalaryManager from '../modules/human-resource/salary/components';
 import { Timekeeping} from '../modules/human-resource/timesheet/components/timesheet';
@@ -303,7 +303,7 @@ class Routes extends Component {
                         path={ '/hr-list-employee' }
                         pageName={'list_employee' }
                         layout={ Layout }
-                        component={ ListEmployee }
+                        component={ EmpoyeeManager }
                     />
 
                     <PrivateRoute 

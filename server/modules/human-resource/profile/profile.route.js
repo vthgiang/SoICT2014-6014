@@ -10,8 +10,10 @@ router.get('/:email', auth, EmployeeController.getEmployeeProfile);
 router.put('/:email', auth, EmployeeController.updateInforPersonal);
 
 
-// Lấy danh sách nhân viên
-router.post('/paginate', auth, EmployeeController.get);
+/**
+ * Lấy danh sách nhân viên
+ */ 
+router.post('/paginate', auth, EmployeeController.searchEmployeeProfiles);
 
 // Kiểm tra sự tồn tại của MSNV
 router.get('/checkMSNV/:employeeNumber', auth, EmployeeController.checkMSNV);
