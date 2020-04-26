@@ -65,6 +65,7 @@ import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate
 
 //asset
 import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
+import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure-management/components";
 import ManagerAssetType from "../modules/assets-manager/asset-type/components";
 import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
@@ -778,6 +779,22 @@ class Routes extends Component {
                         pageName={ 'manage_depreciation_asset' }
                         layout={ Layout }
                         component={ ManagerDepreciation }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.recommendProcure.isLoading }
+                        key={ 'manage-recommend-procure' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-recommend-procure', name: 'manage_recommend_procure', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-recommend-procure' }
+                        path={ '/manage-recommend-procure' }
+                        pageName={ 'manage_recommend_procure' } //manage_recommend_procure
+                        layout={ Layout }
+                        component={ ManagerRecommendProcure }
                     />
 
 

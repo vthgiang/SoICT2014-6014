@@ -530,7 +530,7 @@ const sampleCompanyData = async () => {
         },
         { //41
             url: '/manage-distribute-asset',
-            description: 'Quản lý cấp phát, điều chuyển, thu hồi tài sản',
+            description: 'Quản lý cấp phát - điều chuyển - thu hồi tài sản',
             company: vnist._id
         },
         { //42
@@ -963,13 +963,14 @@ const sampleCompanyData = async () => {
             resourceType: 'Link',
             roleId: roles[1]._id // Dean
         },
-
-        // gán quyền quản lý tài sản cho nhân viên
         {
             resourceId: links[45]._id,
             resourceType: 'Link',
-            roleId: roles[3]._id // Employee
+            roleId: roles[1]._id // Dean
         },
+
+        // gán quyền quản lý tài sản cho nhân viên
+        
         {
             resourceId: links[46]._id,
             resourceType: 'Link',
@@ -977,6 +978,11 @@ const sampleCompanyData = async () => {
         },
         {
             resourceId: links[47]._id,
+            resourceType: 'Link',
+            roleId: roles[3]._id // Employee
+        },
+        {
+            resourceId: links[48]._id,
             resourceType: 'Link',
             roleId: roles[3]._id // Employee
         },
