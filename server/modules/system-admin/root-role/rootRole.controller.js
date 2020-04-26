@@ -7,7 +7,7 @@ exports.getAllRootRoles = async (req, res) => {
         LogInfo(req.user.email, 'GET_ROLES_DEFAULT');
         res.status(200).json({
             success: true,
-            messages: ['get_roles_default_success'],
+            messages: ['get_root_roles_success'],
             content: roleDefaults
         });
     } catch (error) {

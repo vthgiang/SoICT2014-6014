@@ -94,7 +94,21 @@ export default {
             add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
             yes: 'Có',  no: 'Không',
             loading: 'Đang tải dữ liệu',
-            no_data: 'Không có dữ liệu'
+            no_data: 'Không có dữ liệu',
+            success: 'Thành công',
+            error: 'Lỗi',
+            auth_alert: {
+                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
+                reason: 'Nguyên nhân có thể là do:',
+                content: [
+                    'Phiên làm việc đã hết hạn',
+                    'Truy cập không hợp lệ',
+                    'Phân quyền của bạn không hợp lệ',
+                    'Phân quyền của bạn đã được quản lý thay đổi',
+                    'Token của bạn không hợp lệ',
+                    'Dịch vụ cho công ty không còn hoạt động',
+                ]
+            }
         },
 
         system_admin: {

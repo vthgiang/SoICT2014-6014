@@ -11,7 +11,7 @@ router.get('/:email', auth, EmployeeController.getEmployeeProfile);
 /**
  * Cập nhật thông tin cá nhân
  */
-router.put('/:email', auth, EmployeeController.updateInforPersonal);
+router.put('/:email', auth, EmployeeController.updatePersonalInfor);
 
 /**
  * Lấy danh sách nhân viên
