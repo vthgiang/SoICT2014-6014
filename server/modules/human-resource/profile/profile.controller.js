@@ -116,9 +116,9 @@ exports.getEmployeeProfile = async (req, res) => {
 /**
  * Cập nhật thông tin cá nhân
  */
-exports.updateInforPersonal = async (req, res) => {
+exports.updatePersonalInfor = async (req, res) => {
     try {
-        var data = await EmployeeService.updateInforPersonal(req.params.email, req.body);
+        var data = await EmployeeService.updatePersonalInfor(req.params.email, req.body);
         await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(200).json({ success: true, messages: ["edit_infor_personal_success"], content: data });
     } catch (error) {

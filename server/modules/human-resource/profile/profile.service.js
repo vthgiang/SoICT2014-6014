@@ -98,6 +98,47 @@ exports.getEmployeeProfile = async (email) => {
     }
     
 }
+/**
+ * Cập nhật thông tin cá nhân của nhân viên
+ * @eamil: email công ty của nhân viên 
+ * @data: dữ liệu chỉnh sửa thông tin của nhân viên
+ */
+exports.updatePersonalInfor = async (email, data) => {
+    var employeeInfo = await Employee.findOne({emailInCompany: email}, { _id: 1});
+    // Thông tin cần cập nhật 
+    var employeeUpdate = {
+        gender: data.gender,
+        ethnic: data.ethnic,
+        religion: data.religion,
+        nationality: data.nationality,
+        maritalStatus: data.maritalStatus,
+        phoneNumber: data.phoneNumber,
+        phoneNumber2: data.phoneNumber2,
+        personalEmail: data.personalEmail,
+        personalEmail2: data.personalEmail2,
+        homePhone: data.homePhone,
+        emergencyContactPerson: data.emergencyContactPerson,
+        relationWithEmergencyContactPerson: data.relationWithEmergencyContactPerson,
+        emergencyContactPersonPhoneNumber: data.emergencyContactPersonPhoneNumber,
+        emergencyContactPersonEmail: data.emergencyContactPersonEmail,
+        emergencyContactPersonHomePhone: data.emergencyContactPersonHomePhone,
+        emergencyContactPersonAddress: data.emergencyContactPersonAddress,
+        permanentResidence: data.permanentResidence,
+        permanentResidenceCountry: data.permanentResidenceCountry,
+        permanentResidenceCity: data.permanentResidenceCity,
+        permanentResidenceDistrict: data.permanentResidenceDistrict,
+        permanentResidenceWard: data.permanentResidenceWard,
+        temporaryResidence: data.temporaryResidence,
+        temporaryResidenceCountry: data.temporaryResidenceCountry,
+        temporaryResidenceCity: data.temporaryResidenceCity,
+        temporaryResidenceDistrict: data.temporaryResidenceDistrict,
+        temporaryResidenceWard: data.temporaryResidenceWard,
+    }
+    // cập nhật thông tin cơ bản vào database
+    await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
+    
+    return await Employee.find({_id: employeeInfo._id});
+}
 
 /**
  * Lấy danh sách nhân viên
@@ -227,51 +268,7 @@ exports.create = async (data, company) => {
     // return content;
 }
 
-// Cập nhật thông tin cá nhân
-exports.updateInforPersonal = async (email, data) => {
-    // var employeeInfo = await Employee.findOne({emailCompany: email}, { _id: 1});
-    // // Thông tin cần cập nhật của thông tin liên hệ 
-    // var employeeContactUpdate = {
-    //     phoneNumber: data.phoneNumber,
-    //     phoneNumber2: data.phoneNumber2,
-    //     emailPersonal: data.emailPersonal,
-    //     emailPersonal2: data.emailPersonal2,
-    //     phoneNumberAddress: data.phoneNumberAddress,
-    //     friendName: data.friendName,
-    //     relation: data.relation,
-    //     friendPhone: data.friendPhone,
-    //     friendEmail: data.friendEmail,
-    //     friendPhoneAddress: data.friendPhoneAddress,
-    //     friendAddress: data.friendAddress,
-    //     localAddress: data.localAddress,
-    //     localNational: data.localNational,
-    //     localCity: data.localCity,
-    //     localDistrict: data.localDistrict,
-    //     localCommune: data.localCommune,
-    //     nowAddress: data.nowAddress,
-    //     nowNational: data.nowNational,
-    //     nowCity: data.nowCity,
-    //     nowDistrict: data.nowDistrict,
-    //     nowCommune: data.nowCommune,
-    //     updateDate: data.updateDate
-    // }
-    // // Thông tin cần cập nhật trong thông tin cơ bản của nhân viên
-    // var employeeUpdate = {
-    //     gender: data.gender,
-    //     national: data.national,
-    //     nation: data.nation,
-    //     religion: data.religion,
-    //     relationship: data.relationship,
-    //     updateDate: data.updateDate
-    // }
-    // // cập nhật thông tin liên hệ vào database
-    // await EmployeeContact.findOneAndUpdate({employee: employeeInfo._id}, {$set: employeeContactUpdate});
-    // // cập nhật thông tin cơ bản vào database
-    // await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
-    // var infoPersonal = await Employee.find({_id: employeeInfo._id});
-    // var infoEmployeeContact = await EmployeeContact.find({employee: employeeInfo._id});
-    // return { employee: infoPersonal, employeeContact: infoEmployeeContact};
-}
+
 
 // Cập nhât thông tin nhân viên theo id
 exports.updateInfoEmployee = async (id, data) => {
