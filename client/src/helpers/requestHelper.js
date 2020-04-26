@@ -48,19 +48,22 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
     };
 
     return axios(requestOptions).then(res => {
+        const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
+
         showAlert && toast.success(
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
-                content={res.data.messages.map(message => `${module}.${message}`)}
+                content={messages.map(message => `${module}.${message}`)}
             />, 
             {containerId: 'toast-notification'});
 
         return Promise.resolve(res);
     }).catch(err => {
-        console.log("ERROR: ", err.response)
-        if(err.response.data.messages){
-            if(checkErrorAuth(err.response.data.messages[0])){
+        const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+
+        if(messages){
+            if(checkErrorAuth(messages[0])){
                 showAuthResponseAlertAndRedirectToLoginPage();
             }
             else{
@@ -68,7 +71,7 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
                     <ServerResponseAlert
                         type='error'
                         title={errorTitle}
-                        content={err.response.data.messages.map(message => `${module}.${message}`)}
+                        content={messages.map(message => `${module}.${message}`)}
                     />, 
                     {containerId: 'toast-notification'}
                 );
