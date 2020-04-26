@@ -45,7 +45,7 @@ async function addKPIUnit(newKPI) {
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
     
-    newKPI = {...newKPI, creater: id};
+    newKPI = {...newKPI, creator: id};
     const requestOptions = {
         method: 'POST',
         headers: AuthenticateHeader(),

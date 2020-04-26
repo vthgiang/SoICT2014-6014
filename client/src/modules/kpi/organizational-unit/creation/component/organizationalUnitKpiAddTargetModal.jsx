@@ -69,6 +69,8 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                 criteria: this.state.criteria,
                 organizationalUnitKpiSetId: this.props.organizationalUnitKpiSetId, 
             });
+
+            //window.$("#modal-add-target").modal("hide");
         }
     }
 

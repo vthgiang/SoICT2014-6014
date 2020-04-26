@@ -47,23 +47,23 @@ exports.getParentByUnit = async (id) => {
     
 }
 // Khởi tạo KPI đơn vị
-exports.create = async (timeId,unitId,createrId) => {
+exports.create = async (timeId,organizationalUnitId,creatorId) => {
     //req.body.time,req.body.unit,req.body.creater
     var time = timeId.split("-");
         var date = new Date(time[1], time[0], 0)
         // Tạo thông tin chung cho KPI đơn vị
-        var kpiunit = await OrganizationalUnitKpiSet.create({
-            organizationalUnit: unitId,
-            creator: createrId,
+        var organizationalUnitKpi = await OrganizationalUnitKpiSet.create({
+            organizationalUnit: organizationalUnitId,
+            creator: creatorId,
             time: date,
             kpis: []
         });
         // Tìm kiếm phòng ban hiện tại và kiểm tra xem nó có phòng ban cha hay không
-        var department = await OrganizationalUnit.findById(unitId);
-        if (department.parent !== null) {
-            var kpiunitparent = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: department.parent, status: 1 }).populate("kpis");
+        var organizationalUnit = await OrganizationalUnit.findById(organizationalUnitId);
+        if (organizationalUnit.parent !== null) {
+            var organizationalUnitParent = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: organizationalUnit.parent, status: 1 }).populate("kpis");
             var defaultTarget;
-            if (kpiunitparent.kpis) defaultTarget = kpiunitparent.kpis.filter(item => item.default !== 0);//default Target là nhưng mục tiêu có default !== 0
+            if (organizationalUnitParent.kpis) defaultTarget = organizationalUnitParent.kpis.filter(item => item.default !== 0);//default Target là nhưng mục tiêu có default !== 0
             if (defaultTarget !== []) {
                 var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
                     var defaultT = await OrganizationalUnitKpi.create({
@@ -75,8 +75,8 @@ exports.create = async (timeId,unitId,createrId) => {
                     })
                     return defaultT._id;
                 }))
-                kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(
-                    kpiunit, { kpis: defaultTarget }, { new: true }
+                organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
+                    organizationalUnitKpi, { kpis: defaultTarget }, { new: true }
                 );
             }
         } else {
@@ -87,8 +87,8 @@ exports.create = async (timeId,unitId,createrId) => {
                 criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
                 default: 1
             })
-            kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(
-                kpiunit, { $push: { kpis: targetA._id } }, { new: true }
+            organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
+                organizationalUnitKpi, { $push: { kpis: targetA._id } }, { new: true }
             );
             var targetC = await OrganizationalUnitKpi.create({
                 name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
@@ -97,13 +97,13 @@ exports.create = async (timeId,unitId,createrId) => {
                 criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
                 default: 2
             })
-            kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(
-                kpiunit, { $push: { kpis: targetC._id } }, { new: true }
+            organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
+                organizationalUnitKpi, { $push: { kpis: targetC._id } }, { new: true }
             );
         }
-        kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
+        organizationalUnitKpi = await organizationalUnitKpi.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
         
-        return kpiunit;
+        return organizationalUnitKpi;
         
 }
 

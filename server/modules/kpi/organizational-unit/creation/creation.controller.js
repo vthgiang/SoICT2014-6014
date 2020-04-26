@@ -144,11 +144,11 @@ exports.editTargetById = async (req, res) => {
 // Khởi tạo KPI đơn vị
 exports.create =async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.create(req.body.time,req.body.unit,req.body.creater);
+        var organizationalUnitKpi = await KPIUnitService.create(req.body.time,req.body.organizationalUnit,req.body.creator);
         LogInfo(req.user.email, 'create kpi unit',req.user.company)
         res.status(200).json({
             message: "Khởi tạo thành công KPI đơn vị",
-            kpiunit: kpiunit
+            organizationalUnitKpi: organizationalUnitKpi
         });
     } catch (error) {
         LogError(req.user.email, 'create kpi unit',req.user.company)

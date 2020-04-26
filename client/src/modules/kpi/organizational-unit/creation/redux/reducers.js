@@ -48,7 +48,7 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             adding: false,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.newKPI.organizationalUnitKpi,
             isLoading: false
           };
         case createUnitKpiConstants.ADD_KPIUNIT_FAILURE:

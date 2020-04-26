@@ -360,7 +360,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                                         <td>
                                                             <a href="#abc" className="edit" title="Edit" data-toggle="modal" data-target={`#editTargetKPIUnit${item._id}`} data-backdrop="static" data-keyboard="false"><i className="material-icons"></i></a>
-                                                            <OrganizationalUnitKpiEditTargetModal target={item} unit={currentUnit && currentUnit[0]} />
+                                                            <OrganizationalUnitKpiEditTargetModal target={item} organizationalUnit={currentUnit && currentUnit[0]} />
                                                             {item.default === 0 ?
                                                                 <a href="#abc" className="delete" title="Delete" onClick={() => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id)}>
                                                                     <i className="material-icons"></i>
@@ -394,7 +394,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
                                                     <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.start_kpi')}
                                                 </a>
-                                                <OrganizationalUnitKpiCreateModal unit={currentUnit && currentUnit[0]} />
+                                                <OrganizationalUnitKpiCreateModal organizationalUnit={currentUnit && currentUnit[0]} />
                                             </React.Fragment>
                                             :
                                             <React.Fragment>
