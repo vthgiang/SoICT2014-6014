@@ -17,10 +17,9 @@ class EmployeeDetailForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 employee: nextProps.employee,
-                employeeContact: nextProps.employeeContact,
                 salary: nextProps.salary,
-                sabbatical: nextProps.sabbatical,
-                praise: nextProps.praise,
+                annualLeave: nextProps.annualLeave,
+                commendation: nextProps.commendation,
                 discipline: nextProps.discipline,
             }
         } else {
@@ -29,7 +28,7 @@ class EmployeeDetailForm extends Component {
     }
     render() {
         const { employeesManager, translate } = this.props;
-        var { _id, employee, employeeContact, salary, sabbatical, praise, discipline } = this.state;
+        var { _id, employee, salary, annualLeave, commendation, discipline } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -59,14 +58,10 @@ class EmployeeDetailForm extends Component {
                                             id={`view_general${_id}`}
                                             employee={x}
                                         />
-                                        {
-                                            employeeContact && employeeContact.map((y, indexs) => (
-                                                <ContactTab key={indexs}
-                                                    id={`view_contact${_id}`}
-                                                    employeeContact={y}
-                                                />
-                                            ))
-                                        }
+                                        <ContactTab
+                                            id={`view_contact${_id}`}
+                                            employee={x}
+                                        />
                                         <ExperiencTab
                                             id={`view_experience${_id}`}
                                             employee={x}
@@ -77,33 +72,33 @@ class EmployeeDetailForm extends Component {
                                         />
                                         <CertificateTab
                                             id={`view_diploma${_id}`}
-                                            certificate={x.certificate}
-                                            certificateShort={x.certificateShort}
+                                            degrees={x.degrees}
+                                            certificates={x.certificates}
                                         />
                                         <InsurranceTab
                                             id={`view_insurrance${_id}`}
                                             employee={x}
-                                            BHXH={x.BHXH}
+                                            socialInsuranceDetails={x.socialInsuranceDetails}
                                         />
                                         <ContractTab
                                             id={`view_contract${_id}`}
-                                            course={x.course}
-                                            contract={x.contract}
+                                            courses={x.courses}
+                                            contracts={x.contracts}
                                         />
                                         <DisciplineTab
                                             id={`view_reward${_id}`}
-                                            praise={praise}
+                                            commendation={commendation}
                                             discipline={discipline}
                                         />
                                         <SalaryTab
                                             id={`view_salary${_id}`}
-                                            sabbatical={sabbatical}
+                                            annualLeave={annualLeave}
                                             salary={salary}
                                         />
                                         <AttachmentTab
                                             id={`view_attachments${_id}`}
                                             employee={x}
-                                            file={x.file}
+                                            files={x.files}
                                         />
                                     </div>
                                 </div>

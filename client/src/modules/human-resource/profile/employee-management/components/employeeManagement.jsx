@@ -232,10 +232,9 @@ class EmployeeManagement extends Component {
                     <EmployeeDetailForm
                         _id={this.state.currentRowView.employee[0]._id}
                         employee={this.state.currentRowView.employee}
-                        employeeContact={this.state.currentRowView.employeeContact}
                         salary={this.state.currentRowView.salary}
-                        sabbatical={this.state.currentRowView.sabbatical}
-                        praise={this.state.currentRowView.praise}
+                        annualLeave={this.state.currentRowView.annualLeave}
+                        commendation={this.state.currentRowView.commendation}
                         discipline={this.state.currentRowView.discipline}
                     />
                 }
