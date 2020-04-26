@@ -89,7 +89,14 @@ class ModalEditEmployeeKpi extends Component {
         } 
         
         if (this.isFormValidated()) {
-            return this.props.editEmployeeKpi(id, newTarget);
+            let res = await this.props.editEmployeeKpi(id, newTarget);
+
+            window.$(`#editEmployeeKpi${this.props.target._id}`).modal("hide");
+            window.$(".modal-backdrop").remove();
+            window.$('body').removeClass('modal-open');
+            window.$('body').css('padding-right',"0px");
+
+            return res;
         }
     }
     
@@ -148,7 +155,7 @@ class ModalEditEmployeeKpi extends Component {
         this.setState(state => {
             return {
                 ...state,
-                parent: value[0]
+                parent: value,
             }
         });
     }
@@ -256,6 +263,7 @@ class ModalEditEmployeeKpi extends Component {
                                             items={items}
                                             onChange={this.handleParentChange}
                                             multiple={false}
+                                            value={items[0]}
                                         />
                                     </div>
                             }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
-import { dashboardKpiActions } from '../redux/actions';
+import { dashboardEmployeeKpiSetActions } from '../redux/actions';
 
 import {
     TOKEN_SECRET
@@ -134,7 +134,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addemployeeKpiSet: dashboardKpiActions.addemployeeKpiSet
+    addemployeeKpiSet: dashboardEmployeeKpiSetActions.addemployeeKpiSet
 };
 const connectedModalCopyEmployeeKpiSet = connect(mapState, actionCreators)(ModalCopyEmployeeKpiSet);
 export { connectedModalCopyEmployeeKpiSet as ModalCopyEmployeeKpiSet };
