@@ -95,7 +95,9 @@ export default {
             add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
             yes: 'Có',  no: 'Không',
             loading: 'Đang tải dữ liệu',
-            no_data: 'Không có dữ liệu'
+            no_data: 'Không có dữ liệu',
+            success: 'Thành công',
+            error: 'Lỗi',
         },
 
         system_admin: {

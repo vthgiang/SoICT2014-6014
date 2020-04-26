@@ -15,18 +15,18 @@ class AuthAlert extends Component {
 
         return ( 
             <React.Fragment>
-                <div class="modal fade" id="alert-error-auth">
-                    <div class="modal-dialog">
-                        <div class="modal-content" style={{borderRadius: '10px', border: 'gray solid 5px'}}>
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <div className="modal fade" id="alert-error-auth">
+                    <div className="modal-dialog">
+                        <div className="modal-content" style={{borderRadius: '10px', border: 'gray solid 5px'}}>
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                 <h4 className="modal-title text-center text-red">{translate('alert.title')}</h4>
                             </div>
-                            <div class="modal-body">
+                            <div className="modal-body">
                                 Nội dung thông báo người dùng phải đăng nhập lại
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">{translate('general.close')}</button>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-default" data-dismiss="modal">{translate('general.close')}</button>
                             </div>
                         </div>
                     </div>
