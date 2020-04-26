@@ -25,7 +25,7 @@ class ModalAddTask extends Component {
     componentDidMount() {
         // get id current role
         // this.props.getTaskTemplateByUser("1", "[]");
-        this.props.getTaskTemplateByUser("1", "0", "[]");//fix--localStorage.getItem('id'),---------------------------------------------------
+        this.props.getTaskTemplateByUser("1", "0", "[]");//fix--localStorage.getItem('id'),
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // load js for form
@@ -35,7 +35,7 @@ class ModalAddTask extends Component {
     // Load js for form
     handleLoadjs = () => {
         let script = document.createElement('script');
-        script.src = '../lib/main/js/CoCauToChuc.js';//fix---------------------------------------------------------------
+        script.src = '../lib/main/js/CoCauToChuc.js';
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -48,7 +48,7 @@ class ModalAddTask extends Component {
                 accounatable: [],
                 consulted: [],
                 informed: [],
-                creator: "",//fix-----------localStorage.getItem('id')----------------bên service của addTask() line 114---------------------------------------
+                creator: "",
                 tasktemplate: null,
                 role: localStorage.getItem('currentRole'),
                 parent: null,
@@ -437,6 +437,7 @@ class ModalAddTask extends Component {
                                                 <div>
                                                     <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
                                                     <div className="col-sm-10" style={{ width: '100%' }}>
+                                                    {
                                                     (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) &&
                                                         <select className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskTemplate} ref={input => this.tasktemplate = input}>
                                                             <option value="">--Hãy chọn mẫu công việc--</option>
@@ -446,6 +447,7 @@ class ModalAddTask extends Component {
                                                                 })
                                                             }
                                                         </select>
+                                                    }
                                                     </div>
                                                 </div>: null
                                             

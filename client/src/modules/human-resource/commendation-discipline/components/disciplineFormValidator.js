@@ -5,8 +5,8 @@ import {
 export const DisciplineFromValidator = {
     validateEmployeeNumber,
     validateReason,
-    validateNumber,
-    validateUnit,
+    validateDecisionNumber,
+    validateOrganizationalUnit,
     validateType,
     validateStartDate,
     validateEndDate
@@ -23,7 +23,7 @@ function validateEmployeeNumber(value, translate) {
     return msg;
 }
 // Kiểm tra số ra quyết định nhập vào
-function validateNumber(value, translate) {
+function validateDecisionNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('error.number_decisions_required');
@@ -31,7 +31,7 @@ function validateNumber(value, translate) {
     return msg;
 }
 // Kiểm tra cấp ra quyết định
-function validateUnit(value, translate) {
+function validateOrganizationalUnit(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('error.unit_decisions_required');

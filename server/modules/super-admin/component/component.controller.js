@@ -13,7 +13,7 @@ exports.getAllComponents = async (req, res) => {
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_components_success',
+            messages: ['get_components_success'],
             content: components
         });
     } catch (error) {
@@ -21,7 +21,7 @@ exports.getAllComponents = async (req, res) => {
         await LogError(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -36,7 +36,7 @@ exports.getPaginatedComponents = async (req, res) => {
         await LogInfo(req.user.email, 'PAGINATE_COMPONENTS', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'paginate_components_success',
+            messages: ['paginate_components_success'],
             content: components
         });
     } catch (error) {
@@ -44,7 +44,7 @@ exports.getPaginatedComponents = async (req, res) => {
         await LogError(req.user.email, 'PAGINATE_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -60,7 +60,7 @@ exports.createComponent = async (req, res) => {
         await LogInfo(req.user.email, 'CREATE_COMPONENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'create_component_success',
+            messages: ['create_component_success'],
             content: component
         });
     } catch (error) {
@@ -68,7 +68,7 @@ exports.createComponent = async (req, res) => {
         await LogError(req.user.email, 'CREATE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -80,7 +80,7 @@ exports.getComponentById = async (req, res) => {
         await LogInfo(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'show_component_success',
+            messages: ['show_component_success'],
             content: component
         });
     } catch (error) {
@@ -88,7 +88,7 @@ exports.getComponentById = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -101,7 +101,7 @@ exports.editComponent = async (req, res) => {
         await LogInfo(req.user.email, 'EDIT_COMPONENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'edit_component_success',
+            messages: ['edit_component_success'],
             content: component
         });
     } catch (error) {
@@ -109,7 +109,7 @@ exports.editComponent = async (req, res) => {
         await LogError(req.user.email, 'EDIT_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -121,7 +121,7 @@ exports.deleteComponent = async (req, res) => {
         await LogInfo(req.user.email, 'DELETE_COMPONENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'delete_component_success',
+            messages: ['delete_component_success'],
             content: component
         });
     } catch (error) {
@@ -129,7 +129,7 @@ exports.deleteComponent = async (req, res) => {
         await LogError(req.user.email, 'DELETE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -142,7 +142,7 @@ exports.getComponentsOfUserInLink = async (req, res) => {
         await LogInfo(req.user.email, 'GET_COMPONENTS_OF_USER_IN_LINK', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_components_of_user_in_link_success',
+            messages: ['get_components_of_user_in_link_success'],
             content: components
         });
     } catch (error) {
@@ -150,7 +150,7 @@ exports.getComponentsOfUserInLink = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENTS_OF_USER_IN_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

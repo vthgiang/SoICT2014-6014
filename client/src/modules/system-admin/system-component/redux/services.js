@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const ComponentDefaultServices = {
     get,
@@ -12,64 +13,46 @@ export const ComponentDefaultServices = {
 };
 
 function get() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'system_admin.system_component');
 }
 
 function getPaginate(data) {  
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management/paginate`,
         method: 'POST',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'system_admin.system_component');
 }
 
 function show(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'system_admin.system_component');
 }
 
 function create(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'POST',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'system_admin.system_component');
 }
 
 function edit(id, data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'PATCH',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'system_admin.system_component');
 }
 
 function destroy(id, component) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'system_admin.system_component');
 }

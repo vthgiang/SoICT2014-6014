@@ -10,7 +10,4 @@ router.get("/:id", auth, LinkController.getLinkById);
 router.patch("/:id", auth, LinkController.editLink);
 router.delete("/:id", auth, LinkController.deleteLink);
 
-//manage link of 1 company
-router.get("/company/:idCompany", auth, LinkController.getLinksOfCompany);
-
 module.exports = router;

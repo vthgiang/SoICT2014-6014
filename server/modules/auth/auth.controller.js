@@ -8,7 +8,7 @@ exports.login = async (req, res) => {
         await LogInfo(loginUser.user.email, 'LOGIN', loginUser.user.company);
         res.status(200).json({
             success: true,
-            message: 'login_success',
+            messages: ['login_success'],
             content: loginUser
         });
     } catch (error) {
@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
         await LogError(req.body.email, 'LOGIN');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -28,7 +28,7 @@ exports.logout = async (req, res) => {
         await LogInfo(req.user.email, 'LOG_OUT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'logout_success',
+            messages: ['logout_success'],
             content: logout
         });
     } catch (error) {
@@ -36,7 +36,7 @@ exports.logout = async (req, res) => {
         await LogError(req.user.email, 'LOG_OUT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -48,7 +48,7 @@ exports.logoutAllAccount = async (req, res) => {
         await LogInfo(req.user.email, 'LOG_OUT_ALL_ACCOUNT', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'logout_all_success',
+            messages: ['logout_all_success'],
             content: logout
         });
     } catch (error) {
@@ -56,7 +56,7 @@ exports.logoutAllAccount = async (req, res) => {
         await LogError(req.user.email, 'LOG_OUT_ALL_ACCOUNT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -68,7 +68,7 @@ exports.forgetPassword = async (req, res) => {
         await LogInfo(req.body.email, 'FORGET_PASSWORD');
         res.status(200).json({
             success: true,
-            message: 'request_forgot_password_success',
+            messages: ['request_forgot_password_success'],
             content: forgetPassword
         });
     } catch (error) {
@@ -76,7 +76,7 @@ exports.forgetPassword = async (req, res) => {
         await LogError(req.body.email, 'FORGET_PASSWORD');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -88,7 +88,7 @@ exports.resetPassword = async (req, res) => {
         await LogInfo(req.body.email, 'RESET_PASSWORD');
         res.status(200).json({
             success: true,
-            message: 'reset_password_success',
+            messages: ['reset_password_success'],
             content: resetPassword
         });
     } catch (error) {
@@ -96,21 +96,20 @@ exports.resetPassword = async (req, res) => {
         await LogError(req.body.email, 'RESET_PASSWORD');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
 
 exports.changeInformation = async (req, res) => {
     try {
-        console.log("data change: ", req.body);
         const avatar = `/${req.file.path}`;
         const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
 
         await LogInfo(req.user.email, 'CHANGE_USER_INFORMATION', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'change_user_information_success',
+            messages: ['change_user_information_success'],
             content: profile
         });
     } catch (error) {
@@ -118,7 +117,7 @@ exports.changeInformation = async (req, res) => {
         await LogError(req.user.email,'CHANGE_USER_INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -130,7 +129,7 @@ exports.changePassword = async (req, res) => {
         await LogInfo(req.user.email, 'CHANGE_USER_PASSWORD', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'change_user_password',
+            messages: ['change_user_password'],
             content: user
         });
     } catch (error) {
@@ -138,7 +137,7 @@ exports.changePassword = async (req, res) => {
         await LogError(req.user.email,'CHANGE_USER_PASSWORD', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -150,7 +149,7 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
         await LogInfo(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'get_links_of_role_success',
+            messages: ['get_links_of_role_success'],
             content: data
         });
     } catch (error) {
@@ -158,7 +157,7 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
         await LogError(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -170,7 +169,7 @@ exports.getProfile = async (req, res) => {
         await LogInfo(req.user.email, 'GET_PROFILE', req.user.company);
         res.status(200).json({
             success: true,
-            message: 'show_profile_success',
+            messages: ['show_profile_success'],
             content: profile
         });
     } catch (error) {
@@ -178,7 +177,7 @@ exports.getProfile = async (req, res) => {
         await LogError(req.user.email, 'GET_PROFILE');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

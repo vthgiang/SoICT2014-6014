@@ -43,6 +43,17 @@ export function componentsDefault (state = initState, action) {
                 isLoading: true
             };
 
+        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_FAILE:
+        case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_PAGINATE_FAILE:
+        case ComponentDefaultConstants.SHOW_COMPONENT_DEFAULT_FAILE:
+        case ComponentDefaultConstants.CREATE_COMPONENT_DEFAULT_FAILE:
+        case ComponentDefaultConstants.EDIT_COMPONENT_DEFAULT_FAILE:
+        case ComponentDefaultConstants.DELETE_COMPONENT_DEFAULT_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            };
+
         case ComponentDefaultConstants.GET_COMPONENTS_DEFAULT_SUCCESS:
             return {
                 ...state,

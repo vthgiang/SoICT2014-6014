@@ -168,15 +168,12 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
+            console.log(action.newAction.content)
              return {
                 ...state,
                 taskactions:[
                     ...state.taskactions,
-                    //action.newAction là respone sv trả về.
-                    //action.newAction.actionTask.actionTask
-                    // actionstasks
-                    //casi nafy can fix
-                    action.newAction.actionTask[action.newAction.actionTask.length-1]
+                    action.newAction.content
                 ]
             }
         case performTaskConstants.ADDNEW_TASKACTION_FAILURE:
@@ -204,7 +201,6 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-            //đây này
         case performTaskConstants.EDIT_TASKACTION_REQUEST:
             return {
                 ...state,
@@ -225,7 +221,7 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.DELETE_COMMENTTASK_REQUEST:
+        case performTaskConstants.DELETE_ACTIONCOMMENT_REQUEST:
             return {
                 ...state,
                 actioncomments: state.actioncomments.map(comment =>
@@ -239,7 +235,7 @@ export function performtasks(state = {}, action) {
                 ...state,
                 actioncomments: state.actioncomments.filter(comment => comment._id !== action.id)
             };
-        case performTaskConstants.DELETE_ACTIONTASK_REQUEST:
+        case performTaskConstants.DELETE_TASKACTION_REQUEST:
             return {
                 ...state,
                 taskactions: state.taskactions.map(action1=>

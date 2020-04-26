@@ -1,5 +1,6 @@
 const ComponentDefaultServices = require('./systemComponent.service');
 const {LogInfo, LogError} = require('../../../logs');
+
 exports.getAllSystemComponents = async (req, res) => {
     try {
         const components = await ComponentDefaultServices.getAllSystemComponents();
@@ -7,7 +8,7 @@ exports.getAllSystemComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'get_components_default_success',
+            messages: ['get_components_default_success'],
             content: components
         });
     } catch (error) {
@@ -15,7 +16,7 @@ exports.getAllSystemComponents = async (req, res) => {
         LogError(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -30,7 +31,7 @@ exports.getPaginatedSystemComponents = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'paginate_components_default_success',
+            messages: ['paginate_components_default_success'],
             content: components
         });
     } catch (error) {
@@ -38,7 +39,7 @@ exports.getPaginatedSystemComponents = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -53,7 +54,7 @@ exports.createSystemComponent = async (req, res) => {
         LogInfo(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'create_component_default_success',
+            messages: ['create_system_component_success'],
             content: data
         });
     } catch (error) {
@@ -61,7 +62,7 @@ exports.createSystemComponent = async (req, res) => {
         LogError(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -73,7 +74,7 @@ exports.getSystemComponent = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'show_component_default_success',
+            messages: ['show_system_component_success'],
             content: component
         });
     } catch (error) {
@@ -81,7 +82,7 @@ exports.getSystemComponent = async (req, res) => {
         LogError(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -95,7 +96,7 @@ exports.editSystemComponent = async (req, res) => {
         LogInfo(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'edit_component_default_success',
+            messages: ['edit_system_component_success'],
             content: resComponent
         });
     } catch (error) {
@@ -103,7 +104,7 @@ exports.editSystemComponent = async (req, res) => {
         LogError(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: errorr
+            messages: error
         });
     }
 };
@@ -116,7 +117,7 @@ exports.deleteSystemComponent = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'delete_component_default_success',
+            messages: ['delete_system_component_success'],
             content: component
         });
     } catch (error) {
@@ -124,7 +125,7 @@ exports.deleteSystemComponent = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

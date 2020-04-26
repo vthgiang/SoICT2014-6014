@@ -2,7 +2,6 @@
 import { performTaskConstants } from "./constants";
 import { taskManagementConstants } from "../../task-management/redux/constants";
 // import { alertActions } from "../../../../redux-actions/AlertActions";
-import { AlertActions } from "../../../alert/redux/actions";
 import { performTaskService } from "./services";
 
 export const performTaskAction = {
@@ -28,43 +27,32 @@ export const performTaskAction = {
 function createResultTask(result) {
     return dispatch => {
         dispatch({ type: performTaskConstants.CREATE_RESULT_TASK_REQUEST, result });
-        return new Promise((resolve, reject) => {
-            performTaskService.createResultTask(result)
-                .then(res => {
-                    dispatch({
-                        type: performTaskConstants.CREATE_RESULT_TASK_SUCCESS,
-                        task: res.data
-                    });
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    dispatch({ type: performTaskConstants.CREATE_RESULT_TASK_FAILURE, err });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
+        performTaskService.createResultTask(result)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.CREATE_RESULT_TASK_SUCCESS,
+                    task: res.data
                 });
-        });
-
+            })
+            .catch(err => {
+                dispatch({ type: performTaskConstants.CREATE_RESULT_TASK_FAILURE, err });
+            });
     };
 }
 // edit result task
 function editResultTask(result, taskid) {
     return dispatch => {
         dispatch({ type: performTaskConstants.EDIT_RESULT_TASK_REQUEST, result });
-        return new Promise((resolve, reject) => {
-            performTaskService.editResultTask(result, taskid)
-                .then(res => {
-                    dispatch({
-                        type: performTaskConstants.EDIT_RESULT_TASK_SUCCESS,
-                        resultTask: res.data
-                    });
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    dispatch({ type: performTaskConstants.EDIT_RESULT_TASK_FAILURE, err });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
+        performTaskService.editResultTask(result, taskid)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EDIT_RESULT_TASK_SUCCESS,
+                    resultTask: res.data
                 });
-        });
+            })
+            .catch(err => {
+                dispatch({ type: performTaskConstants.EDIT_RESULT_TASK_FAILURE, err });
+            });
     };
 }
 
@@ -191,7 +179,7 @@ function getTaskActions(task) {
     return dispatch => {
         dispatch(request(task));
 
-        performTaskService.getTaskActions(task)
+        performTaskService.getTaskAction(task)
             .then(
                 taskActions => dispatch(success(taskActions)),
                 error => dispatch(failure(error.toString()))
@@ -206,7 +194,7 @@ function getActionComments(task) {
     return dispatch => {
         dispatch(request(task));
 
-        performTaskService.getActionComments(task)
+        performTaskService.getActionComment(task)
             .then(
                 actionComments => dispatch(success(actionComments)),
                 error => dispatch(failure(error.toString()))

@@ -10,7 +10,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
-class ModalAddTargetKPIUnit extends Component {
+class OrganizationalUnitKpiAddTargetModal extends Component {
     componentDidMount() {
         // get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
@@ -22,7 +22,7 @@ class ModalAddTargetKPIUnit extends Component {
             parent: null,
             weight: "",
             criteria: "",
-            kpiunit: "",
+            organizationalUnitKpiSetId: "",
 
             errorOnName: undefined,
             errorOnCriteria: undefined,
@@ -67,8 +67,10 @@ class ModalAddTargetKPIUnit extends Component {
                 parent: parent,
                 weight: this.state.weight,
                 criteria: this.state.criteria,
-                kpiunit: this.props.kpiunit, 
+                organizationalUnitKpiSetId: this.props.organizationalUnitKpiSetId, 
             });
+
+            //window.$("#modal-add-target").modal("hide");
         }
     }
 
@@ -158,7 +160,7 @@ class ModalAddTargetKPIUnit extends Component {
     render() {
         var parentKPI;
         const { adding } = this.state;
-        const { createKpiUnit, unit } = this.props;
+        const { createKpiUnit, organizationalUnit } = this.props;
         if (createKpiUnit.parent) parentKPI = createKpiUnit.parent;
 
         const{ name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight} = this.state;
@@ -195,7 +197,7 @@ class ModalAddTargetKPIUnit extends Component {
                             <ErrorLabel content={errorOnName}/>
                         </div>
                         
-                        {(typeof unit !== "undefined" && unit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
+                        {(typeof organizationalUnit !== "undefined" && organizationalUnit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                                 (items.length !== 0) &&
                                     <div className="form-group">
                                     <label>{ translate('kpi_unit_create.on_target') }</label>
@@ -238,5 +240,5 @@ const actionCreators = {
     getParentTarget: createUnitKpiActions.getKPIParent,
     addTargetKPIUnit: createUnitKpiActions.addTargetKPIUnit
 };
-const connectedModalAddTargetKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalAddTargetKPIUnit));
-export { connectedModalAddTargetKPIUnit as ModalAddTargetKPIUnit };
+const connectedOrganizationalUnitKpiAddTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiAddTargetModal));
+export { connectedOrganizationalUnitKpiAddTargetModal as OrganizationalUnitKpiAddTargetModal };

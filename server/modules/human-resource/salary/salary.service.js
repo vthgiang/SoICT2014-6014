@@ -33,15 +33,15 @@ exports.searchSalary = async (data, company) => {
 
     // Lấy danh sách bảng lương
     var totalList = await Salary.count(keySearch);
-    var listSalary = await Salary.find(keySearch).populate({ path: 'employee', model: Employee})
+    var listSalarys = await Salary.find(keySearch).populate({ path: 'employee', model: Employee})
         .sort({ 'createDate': 'desc' }).skip(data.page).limit(data.limit);
 
-    for (let n in listSalary) {
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listSalary[n].employee.emailInCompany);
-        listSalary[n] = {...listSalary[n]._doc, ...value}
+    for (let n in listSalarys) {
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listSalarys[n].employee.emailInCompany);
+        listSalarys[n] = {...listSalarys[n]._doc, ...value}
     }
 
-    return {totalList, listSalary}
+    return {totalList, listSalarys}
 }
 
 /**

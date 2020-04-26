@@ -1,6 +1,5 @@
 import { DepartmentServices } from "./services";
 import { DepartmentConstants } from "./constants";
-import { AlertActions } from "../../../alert/redux/actions";
 
 export const DepartmentActions = {
     get,
@@ -15,73 +14,57 @@ export const DepartmentActions = {
 function get(){
     return dispatch => {
         dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_REQUEST});
-        return new Promise((resolve, reject) => {
-            DepartmentServices.get()
-                .then(res => {
-                    dispatch({
-                        type: DepartmentConstants.GET_DEPARTMENTS_SUCCESS,
-                        payload: res.data.content
-                    });
-                    resolve(res);
-                })
-                .catch(err => {
-                    dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_FAILE});
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+        DepartmentServices.get()
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.GET_DEPARTMENTS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_FAILE});
+            })
     }
 }
 
 function create(data){
     return dispatch => {
         dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_REQUEST});
-        return new Promise((resolve, reject) => {
-            DepartmentServices
-                .create(data)
-                .then(res => {
-                    dispatch({
-                        type: DepartmentConstants.CREATE_DEPARTMENT_SUCCESS,
-                        payload: res.data.content
-                    });
-                    resolve(res.data.content);
-                })
-                .catch(err => {
-                    dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_FAILE});
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+        DepartmentServices
+            .create(data)
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.CREATE_DEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_FAILE});
+            })
     }
 }
 
 function edit(data){
     return dispatch => {
         dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_REQUEST});
-        return new Promise((resolve, reject) => {
-            DepartmentServices
-                .edit(data)
-                .then(res => {
-                    dispatch({
-                        type: DepartmentConstants.EDIT_DEPARTMENT_SUCCESS,
-                        payload: res.data.content
-                    });
-                    resolve(res.data.content);
-                })
-                .catch(err => {
-                    dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_FAILE});
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+        DepartmentServices
+            .edit(data)
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.EDIT_DEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_FAILE});
+            })
     }
 }
 
 function destroy(departmentId){
     return dispatch => {
         dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_REQUEST});
-        return new Promise((resolve, reject) => {
-            DepartmentServices.destroy(departmentId)
+        DepartmentServices.destroy(departmentId)
             .then(res => {
                 dispatch({
                     type: DepartmentConstants.DELETE_DEPARTMENT_SUCCESS,
@@ -90,14 +73,10 @@ function destroy(departmentId){
                         id: departmentId
                     }
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_FAILE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        });
     }
 }
 
@@ -135,8 +114,7 @@ function getDepartmentOfUser() {
 function getDepartmentsThatUserIsDean(){
     return dispatch => {
         dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST});
-        return new Promise((resolve, reject) => {
-            DepartmentServices.getDepartmentsThatUserIsDean()
+        DepartmentServices.getDepartmentsThatUserIsDean()
             .then(res => {
                 dispatch({
                     type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS,
@@ -144,14 +122,10 @@ function getDepartmentsThatUserIsDean(){
                         data: res.data.content
                     }
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        });
     }
     function request(currentRole) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST, currentRole } }
     function success(Department) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS, Department } }

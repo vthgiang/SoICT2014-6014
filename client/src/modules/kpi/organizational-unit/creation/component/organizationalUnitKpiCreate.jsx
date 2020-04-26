@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUnitKpiActions } from '../redux/actions.js';
 import { DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
-import { ModalAddTargetKPIUnit } from './organizationalUnitKpiAddTargetModal';
-import { ModalStartKPIUnit } from './organizationalUnitKpiCreateModal';
+import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddTargetModal';
+import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateModal';
 import Swal from 'sweetalert2';
-import { ModalEditTargetKPIUnit } from './organizationalUnitKpiEditTargetModal';
-
-//
+import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
@@ -15,7 +13,7 @@ import { withTranslate } from 'react-redux-multilingual';
 // hàm để chuyển sang song ngữ
 var translate = '';
 
-class KPIUnitCreate extends Component {
+class OrganizationalUnitKpiCreate extends Component {
     componentDidMount() {
         // get department list of company
         
@@ -42,10 +40,10 @@ class KPIUnitCreate extends Component {
     constructor(props) {
         super(props);   translate = this.props.translate;
         this.state = {
-            kpiunit: {
-                unit: "",
+            organizationalUnitKpiSet: {
+                organizationalUnit: "",
                 time: this.formatDate(Date.now()),
-                creater: ""     //localStorage.getItem("id")
+                creator: ""     //localStorage.getItem("id")
             },
             adding: false,
             editing: false,
@@ -68,21 +66,21 @@ class KPIUnitCreate extends Component {
             }
         })
     }
-    saveEdit = async (id, unit) => {
+    saveEdit = async (id, organizationalUnit) => {
         await this.setState(state => {
             return {
                 ...state,
                 editing: !state.editing,
-                kpiunit: {
-                    ...state.kpiunit,
-                    unit: unit,
+                organizationalUnitKpiSet: {
+                    ...state.organizationalUnitKpiSet,
+                    organizationalUnit: organizationalUnit,
                     time: this.time.value,
                 }
             }
         })
-        var { kpiunit } = this.state;
-        if (kpiunit.unit && kpiunit.time ) {//&& kpiunit.creater
-            this.props.editKPIUnit(id, kpiunit);
+        var { organizationalUnitKpiSet } = this.state;
+        if (organizationalUnitKpiSet.organizationalUnit && organizationalUnitKpiSet.time ) {//&& kpiunit.creater
+            this.props.editKPIUnit(id, organizationalUnitKpiSet);
 
             this.notifysuccess(translate('kpi_unit_create.edit_success'));
         }
@@ -176,7 +174,7 @@ class KPIUnitCreate extends Component {
             });
         }
     }
-    deleteTargetKPIUnit = (status ,id, kpiunit) => {
+    deleteTargetKPIUnit = (status ,id, organizationalUnitKpiSetId) => {
         if (status === 1) {
             Swal.fire({
                 title: translate('kpi_unit_create.confirm_delete_target_error'),
@@ -194,7 +192,7 @@ class KPIUnitCreate extends Component {
                 confirmButtonText: translate('kpi_unit_create.confirm'),
             }).then((res) => {
                 if (res.value) {
-                    this.props.deleteTargetKPIUnit(id, kpiunit);
+                    this.props.deleteTargetKPIUnit(id, organizationalUnitKpiSetId);
 
                     this.notifysuccess(translate('kpi_unit_create.delete_target_success'));
                 }
@@ -310,7 +308,7 @@ class KPIUnitCreate extends Component {
                                     <a className="btn btn-app" data-toggle="modal" data-target="#modal-add-target" data-backdrop="static" data-keyboard="false">
                                         <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.add_target')}
                                     </a>
-                                    <ModalAddTargetKPIUnit kpiunit={currentKPI._id} unit={currentKPI.organizationalUnit._id} />
+                                    <OrganizationalUnitKpiAddTargetModal organizationalUnitKpiSetId={currentKPI._id} organizationalUnit={currentKPI.organizationalUnit} />
                                 </div>
                             }
                             <div className="">
@@ -362,7 +360,7 @@ class KPIUnitCreate extends Component {
                                                     {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                                         <td>
                                                             <a href="#abc" className="edit" title="Edit" data-toggle="modal" data-target={`#editTargetKPIUnit${item._id}`} data-backdrop="static" data-keyboard="false"><i className="material-icons"></i></a>
-                                                            <ModalEditTargetKPIUnit target={item} unit={currentUnit && currentUnit[0]} />
+                                                            <OrganizationalUnitKpiEditTargetModal target={item} organizationalUnit={currentUnit && currentUnit[0]} />
                                                             {item.default === 0 ?
                                                                 <a href="#abc" className="delete" title="Delete" onClick={() => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id)}>
                                                                     <i className="material-icons"></i>
@@ -396,7 +394,7 @@ class KPIUnitCreate extends Component {
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
                                                     <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi_unit_create.start_kpi')}
                                                 </a>
-                                                <ModalStartKPIUnit unit={currentUnit && currentUnit[0]} />
+                                                <OrganizationalUnitKpiCreateModal organizationalUnit={currentUnit && currentUnit[0]} />
                                             </React.Fragment>
                                             :
                                             <React.Fragment>
@@ -432,5 +430,5 @@ const actionCreators = {
     editStatusKPIUnit: createUnitKpiActions.editStatusKPIUnit,
     getKPIParent: createUnitKpiActions.getKPIParent
 };
-const connectedKPIUnitCreate = connect(mapState, actionCreators)(withTranslate(KPIUnitCreate));
-export { connectedKPIUnitCreate as KPIUnitCreate };
+const connectedOrganizationalUnitKpiCreate = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreate));
+export { connectedOrganizationalUnitKpiCreate as OrganizationalUnitKpiCreate };

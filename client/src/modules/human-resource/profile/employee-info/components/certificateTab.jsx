@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-class TabCertificateViewContent extends Component {
+class CertificateTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -11,8 +11,8 @@ class TabCertificateViewContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                certificate: nextProps.certificate,
-                certificateShort: nextProps.certificateShort,
+                degrees: nextProps.degrees,
+                certificates: nextProps.certificates,
             }
         } else {
             return null;
@@ -20,7 +20,7 @@ class TabCertificateViewContent extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { certificate, certificateShort } = this.state;
+        const { degrees, certificates } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -38,13 +38,13 @@ class TabCertificateViewContent extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    (typeof certificate !== 'undefined' && certificate.length !== 0) &&
-                                    certificate.map((x, index) => (
+                                    (typeof degrees !== 'undefined' && degrees.length !== 0) &&
+                                    degrees.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameCertificate}</td>
-                                            <td>{x.addressCertificate}</td>
-                                            <td>{x.yearCertificate}</td>
-                                            <td>{translate(`manage_employee.${x.typeCertificate}`)}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.issuedBy}</td>
+                                            <td>{x.year}</td>
+                                            <td>{translate(`manage_employee.${x.degreeType}`)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}
                                             </td>
@@ -54,7 +54,7 @@ class TabCertificateViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof certificate === 'undefined' || certificate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof degrees === 'undefined' || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -71,11 +71,11 @@ class TabCertificateViewContent extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    (typeof certificateShort === 'undefined' || certificateShort.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
-                                        certificateShort.map((x, index) => (
+                                    (typeof certificates === 'undefined' || certificates.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
+                                    certificates.map((x, index) => (
                                             <tr key={index}>
-                                                <td>{x.nameCertificateShort}</td>
-                                                <td>{x.unit}</td>
+                                                <td>{x.name}</td>
+                                                <td>{x.issuedBy}</td>
                                                 <td>{x.startDate}</td>
                                                 <td>{x.endDate}</td>
                                                 <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
@@ -87,7 +87,7 @@ class TabCertificateViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof certificateShort === 'undefined' || this.state.certificateShort.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof certificates === 'undefined' || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -96,5 +96,5 @@ class TabCertificateViewContent extends Component {
         );
     }
 };
-const tabCertificate = connect(null, null)(withTranslate(TabCertificateViewContent));
-export { tabCertificate as TabCertificateViewContent };
+const tabCertificate = connect(null, null)(withTranslate(CertificateTab));
+export { tabCertificate as CertificateTab };

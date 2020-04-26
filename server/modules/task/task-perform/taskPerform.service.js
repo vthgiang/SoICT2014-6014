@@ -427,16 +427,15 @@ exports.createResultTask = async (result, taskID) => {
     if (item !== null) {
         // Lưu thông tin kết quả 
         var resultTask = {
-            employee: item.member,
-            role: item.roleMember,
-            automaticPoint: item.systempoint,
-            employeePoint: item.mypoint,
-            approvedPoint: item.approverpoint
+            employee: item.employee,
+            role: item.role,
+            automaticPoint: item.automaticPoint,
+            employeePoint: item.employeePoint,
+            approvedPoint: item.approvedPoint
         }
         // Cập nhật thông tin công việc
         var task = await Task.findByIdAndUpdate(
             taskID, { $push: { results: resultTask } }, { new: true }
-            // là _id của task muốn đánh giá.
         );
     }
     return task;
@@ -446,15 +445,14 @@ exports.createResultTask = async (result, taskID) => {
 // Sửa thông tin kết quả của nhân viên trong công việc
 exports.editResultTask = async (listResult,taskid) => {
     if (listResult !== []) {
-        // Lưu thông tin kết quả  var listResultTask = await Promise.all
+
+        // Lưu thông tin kết quả 
         listResult.forEach( async (item) => {
-            // var newTask = await Task.findOneAndUpdate({results: {$elemMatch: {_id : item._id} }},
             var newTask = await Task.updateOne({"results._id" : item._id},
-            // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},
                 { $set: {
-                    "results.$.automaticPoint": item.systempoint,
-                    "results.$.employeePoint": item.mypoint,
-                    "results.$.approvedPoint": item.approverpoint
+                    "results.$.automaticPoint": item.automaticPoint,
+                    "results.$.employeePoint": item.employeePoint,
+                    "results.$.approvedPoint": item.approvedPoint
                 }}
             );
         })

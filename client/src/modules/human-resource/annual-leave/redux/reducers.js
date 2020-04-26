@@ -1,4 +1,4 @@
-import { SabbaticalConstants } from './constants';
+import { AnnualLeaveConstants } from './constants';
 const initState = {
     isLoading: false,
     listAnnualLeaves: [],
@@ -7,43 +7,43 @@ const initState = {
 }
 export function annualLeave(state =initState, action) {
     switch (action.type) {
-        case SabbaticalConstants.GET_SABBATICAL_REQUEST:
-        case SabbaticalConstants.CREATE_SABBATICAL_REQUEST:
-        case SabbaticalConstants.DELETE_SABBATICAL_REQUEST:
-        case SabbaticalConstants.UPDATE_SABBATICAL_REQUEST:
+        case AnnualLeaveConstants.GET_ANNUAL_LEAVE_REQUEST:
+        case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_REQUEST:
+        case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_REQUEST:
+        case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             };
-        case SabbaticalConstants.GET_SABBATICAL_SUCCESS:
+        case AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listAnnualLeaves: action.payload.listAnnualLeaves,
                 totalList: action.payload.totalList,   
             };
-        case SabbaticalConstants.CREATE_SABBATICAL_SUCCESS:
+        case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listAnnualLeaves: [...state.listAnnualLeaves, action.payload],
             };
-        case SabbaticalConstants.DELETE_SABBATICAL_SUCCESS:
+        case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listAnnualLeaves: state.listAnnualLeaves.filter(sabbatical => (sabbatical._id !== action.payload._id)),
             };
-        case SabbaticalConstants.UPDATE_SABBATICAL_SUCCESS:
+        case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listAnnualLeaves: state.listAnnualLeaves.map(sabbatical =>sabbatical._id === action.payload._id ?action.payload : sabbatical),
             };
-        case SabbaticalConstants.GET_SABBATICAL_FAILURE:
-        case SabbaticalConstants.CREATE_SABBATICAL_FAILURE:
-        case SabbaticalConstants.DELETE_SABBATICAL_FAILURE:
-        case SabbaticalConstants.UPDATE_SABBATICAL_FAILURE:
+        case AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE:
+        case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE:
+        case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_FAILURE:
+        case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_FAILURE:
             return {
                 ...state,
                 isLoading: false,

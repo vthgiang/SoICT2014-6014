@@ -99,46 +99,45 @@ const uploadAvatar = multer({
 });
 exports.uploadAvatar = uploadAvatar.single("fileUpload");
 
-// Lấy thông tin cá nhân theo emailCompany
+/**
+ * Lấy thông tin cá nhân theo emailCompany
+ */ 
 exports.getEmployeeProfile = async (req, res) => {
     try {
         var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.email);
         await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
-        res.status(200).json({ success: true, message: ["get_infor_personal_success"], content: inforEmployee });
+        res.status(200).json({ success: true, messages: ["get_infor_personal_success"], content: inforEmployee });
     } catch (error) {
         await LogError(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
-        res.status(400).json({ success: false, message: ["get_infor_personal_false"], content: {error: error} });
+        res.status(400).json({ success: false, messages: ["get_infor_personal_false"], content: {error: error} });
     }
 }
 
-// Cập nhật thông tin cá nhân
-exports.updateInforPersonal = async (req, res) => {
+/**
+ * Cập nhật thông tin cá nhân
+ */
+exports.updatePersonalInfor = async (req, res) => {
     try {
-        var data = await EmployeeService.updateInforPersonal(req.params.email, req.body);
+        var data = await EmployeeService.updatePersonalInfor(req.params.email, req.body);
         await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
-        res.status(200).json({ success: true, message: ["edit_infor_personal_success"], content: data });
+        res.status(200).json({ success: true, messages: ["edit_infor_personal_success"], content: data });
     } catch (error) {
         await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
-        res.status(400).json({ success: false, message: ["edit_infor_personal_false"], content: {error: error} });
+        res.status(400).json({ success: false, messages: ["edit_infor_personal_false"], content: {error: error} });
     }
 }
 
-
-
-
-
-// Lấy danh sách nhân viên
-exports.get = async (req, res) => {
+/**
+ * Lấy danh sách nhân viên
+ */ 
+exports.searchEmployeeProfiles = async (req, res) => {
     try {
-        var allEmployee = await EmployeeService.searchEmployeeProfiles(req.body, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: allEmployee
-        });
+        var allEmployees = await EmployeeService.searchEmployeeProfiles(req.body, req.user.company._id);
+        await LogInfo(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        res.status(200).json({ success: true, messages: ["get_employee_success"], content: allEmployees });
     } catch (error) {
-        res.status(400).json({
-            message: error
-        });
+        await LogError(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        res.status(400).json({ success: false, messages: ["get_employee_false"], content: {error: error} });
     }
 }
 

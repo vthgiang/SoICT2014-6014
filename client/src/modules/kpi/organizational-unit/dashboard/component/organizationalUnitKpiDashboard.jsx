@@ -6,7 +6,7 @@ import { dashboardActions } from '../redux/actions';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 // import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
 
-class KPIUnitDashboard extends Component {
+class OrganizationalUnitKpiDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -324,5 +324,5 @@ const actionCreators = {
     getAllKPIUnit: dashboardActions.getAllKPIUnit,
     refreshData: dashboardActions.evaluateKPIUnit
 };
-const connectedKPIUnitDashboard = connect(mapState, actionCreators)(KPIUnitDashboard);
-export { connectedKPIUnitDashboard as KPIUnitDashboard };
+const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(OrganizationalUnitKpiDashboard);
+export { connectedOrganizationalUnitKpiDashboard as OrganizationalUnitKpiDashboard };

@@ -1,7 +1,6 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
-import { alert } from '../modules/alert/redux/reducers';
 import { log } from '../modules/system-admin/log/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
@@ -26,9 +25,9 @@ import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux
 import { dashboardKpiUnit } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
 
-import {createKpiPersonal} from "../modules/kpi/employee/creation/redux/reducers"
+import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
 import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
-import {dashboardKPIPersonal} from "../modules/kpi/employee/dashboard/redux/reducers"
+import {dashboardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/redux/reducers"
 
 import {tasktemplates} from '../modules/task/task-template/redux/reducers';
 import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/reducers';
@@ -39,8 +38,6 @@ import { rolesDefault } from "../modules/system-admin/root-role/redux/reducers";
 import { componentsDefault } from "../modules/system-admin/system-component/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
-    alert,
-
     //system
     log,
     company,
@@ -72,9 +69,9 @@ const appReducer = combineReducers(Object.assign({
     managerKpiUnit,
 
     //kpi-personal
-    createKpiPersonal,
+    createEmployeeKpiSet,
     KPIPersonalManager,
-    dashboardKPIPersonal,
+    dashboardEmployeeKpiSet,
 
     //tasktemplates
     tasktemplates,

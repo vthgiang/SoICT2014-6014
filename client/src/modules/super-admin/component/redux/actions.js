@@ -1,6 +1,5 @@
 import { ComponentServices } from "./services";
 import { ComponentConstants } from "./constants";
-import { AlertActions } from '../../../alert/redux/actions';
 
 export const ComponentActions = {
     get,
@@ -23,7 +22,7 @@ function get(){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -39,7 +38,7 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -55,7 +54,7 @@ function show(id){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -63,20 +62,15 @@ function show(id){
 function create(component){
     return dispatch => {
         dispatch({ type: ComponentConstants.CREATE_COMPONENT_REQUEST});
-        return new Promise((resolve, reject) => {
-            ComponentServices.create(component)
+        ComponentServices.create(component)
             .then(res => {
                 dispatch({
                     type: ComponentConstants.CREATE_COMPONENT_SUCCESS,
                     payload: res.data.content
                 })
-                resolve(res);
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        })
         
     }
 }
@@ -84,20 +78,15 @@ function create(component){
 function edit(id, component){
     return dispatch => {
         dispatch({ type: ComponentConstants.EDIT_COMPONENT_REQUEST});
-        return new Promise((resolve, reject) => {
-            ComponentServices.edit(id, component)
+        ComponentServices.edit(id, component)
             .then(res => {
                 dispatch({
                     type: ComponentConstants.EDIT_COMPONENT_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        })
     }
 }
 
@@ -112,7 +101,6 @@ function destroy(id, component){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

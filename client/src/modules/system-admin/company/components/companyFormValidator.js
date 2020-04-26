@@ -11,13 +11,13 @@ export const CompanyFormValidator = {
 function validateName(value) {
     let msg = undefined;
     if (value.trim() === ""){
-        msg = "Tên không được để trống";
+        msg = "system_admin.company.validator.name.no_blank";
     } else if(value.length < 4){
-        msg = "Tên không ít hơn 4 ký tự";
+        msg = "system_admin.company.validator.name.no_less4";
     } else if(value.length > 255){
-        msg = "Tên không nhiều hơn 255 ký tự";
+        msg = "system_admin.company.validator.name.no_more255";
     } else if (!VALIDATOR.isValidName(value)){
-        msg = "Tên không chứa ký tự đặc biệt";
+        msg = "system_admin.company.validator.name.no_special";
     }
     return msg;
 }
@@ -25,13 +25,13 @@ function validateName(value) {
 function validateShortName(value) {
     let msg = undefined;
     if (value.trim() === ""){
-        msg = "Tên không được để trống";
+        msg = "system_admin.company.validator.short_name.no_blank";
     } else if(value.length < 3){
-        msg = "Tên không ít hơn 3 ký tự";
+        msg = "system_admin.company.validator.short_name.no_less3";
     } else if(value.length > 255){
-        msg = "Tên không nhiều hơn 255 ký tự";
+        msg = "system_admin.company.validator.short_name.no_more255";
     } else if (!VALIDATOR.isStringNotSpace(value)){
-        msg = "Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau";
+        msg = "system_admin.company.validator.short_name.no_space";
     }
     return msg;
 }
@@ -39,13 +39,13 @@ function validateShortName(value) {
 function validateDescription(value) {
     let msg = undefined;
     if (value.trim() === ""){
-        msg = "Tên không được để trống";
+        msg = "system_admin.company.validator.description.no_blank";
     } else if(value.length < 3){
-        msg = "Tên không ít hơn 3 ký tự";
+        msg = "system_admin.company.validator.description.no_less4";
     } else if(value.length > 255){
-        msg = "Tên không nhiều hơn 255 ký tự";
+        msg = "system_admin.company.validator.description.no_more255";
     } else if (!VALIDATOR.isValidName(value)){
-        msg = "Tên không chứa ký tự đặc biệt";
+        msg = "system_admin.company.validator.description.no_special";
     }
     return msg;
 }
@@ -53,9 +53,9 @@ function validateDescription(value) {
 function validateEmailSuperAdmin(value){
     let msg = undefined;
     if (value.trim() === ""){
-        msg = "Email không được để trống";
+        msg = "system_admin.company.validator.super_admin.no_blank";
     } else if(!VALIDATOR.isValidEmail(value))
-        msg = "Email không hợp lệ";
+        msg = "system_admin.company.validator.super_admin.email_invalid";
     return msg;
 }
 

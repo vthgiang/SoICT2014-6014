@@ -1,31 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const KPIPersonalController = require("./creation.controller");
+const EmployeeKpiSetController = require("./creation.controller");
 const {auth} = require('../../../../middleware/index');
 
-// lấy kpi cá nhân hiện tại
-router.get('/current/:id',auth, KPIPersonalController.getEmployeeKpiSet);
+// Lấy tập KPI cá nhân hiện tại
+router.get('/current/:id',auth, EmployeeKpiSetController.getEmployeeKpiSet);
 
 // Khởi tạo KPI cá nhân
-router.post('/create',auth, KPIPersonalController.createEmployeeKpiSet);
+router.post('/create',auth, EmployeeKpiSetController.createEmployeeKpiSet);
 
-// edit kpi personal by id
-router.put('/:id',auth, KPIPersonalController.editEmployeeKpiSet);
+// Chỉnh sửa thông tin chung của KPI cá nhân
+router.put('/:id',auth, EmployeeKpiSetController.editEmployeeKpiSet);
 
-// edit status of personal by id
-router.put('/status/:id/:status',auth, KPIPersonalController.updateEmployeeKpiSetStatus);
+// Chỉnh sửa trạng thái của KPI cá nhân
+router.put('/status/:id/:status',auth, EmployeeKpiSetController.updateEmployeeKpiSetStatus);
 
-// delete kpi personal
-router.delete('/:id',auth, KPIPersonalController.deleteEmployeeKpiSet);
+// Xóa KPI cá nhân
+router.delete('/:id',auth, EmployeeKpiSetController.deleteEmployeeKpiSet);
 
-// thêm mục tiêu cho kpi cá nhân
-router.post('/create-target',auth, KPIPersonalController.createEmployeeKpi);
+// Tạo 1 mục tiêu KPI mới
+router.post('/create-target',auth, EmployeeKpiSetController.createEmployeeKpi);
 
-// edit target of personal by id
-router.put('/target/:id',auth, KPIPersonalController.editEmployeeKpi);
+// Chỉnh sửa mục tiêu của KPI cá nhân
+router.put('/target/:id',auth, EmployeeKpiSetController.editEmployeeKpi);
 
-// delete target of personal
-router.delete('/target/:kpipersonal/:id',auth, KPIPersonalController.deleteEmployeeKpi);
+// Xóa 1 mục tiêu KPI cá nhân
+router.delete('/target/:kpipersonal/:id',auth, EmployeeKpiSetController.deleteEmployeeKpi);
 
 // // phê duyệt tất cả mục tiêu của kpi cá nhân
 // router.put('/approve/:id',auth, KPIPersonalController.approveAllTarget);

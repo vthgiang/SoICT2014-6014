@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
 import {
-    TabGeneralViewContent, TabContactViewContent, TabTaxViewContent,
-    TabInsurranceViewContent, TabSalaryViewContent, TabRearDisciplineViewContent, AttachmentTab,
-    TabExperiencViewContent, TabCertificateViewContent, TabContractViewContent
+    GeneralTab, ContactTab, TaxTab, InsurranceTab, SalaryTab,
+    DisciplineTab, AttachmentTab, ExperiencTab, CertificateTab, ContractTab
 } from '../../employee-info/components/combinedContent';
 class EmployeeDetailForm extends Component {
     constructor(props) {
@@ -56,47 +55,47 @@ class EmployeeDetailForm extends Component {
                                         <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href={`#view_attachments${_id}`}>{translate('manage_employee.menu_attachments')}</a></li>
                                     </ul>
                                     <div className="tab-content">
-                                        <TabGeneralViewContent
+                                        <GeneralTab
                                             id={`view_general${_id}`}
                                             employee={x}
                                         />
                                         {
                                             employeeContact && employeeContact.map((y, indexs) => (
-                                                <TabContactViewContent key={indexs}
+                                                <ContactTab key={indexs}
                                                     id={`view_contact${_id}`}
                                                     employeeContact={y}
                                                 />
                                             ))
                                         }
-                                        <TabExperiencViewContent
+                                        <ExperiencTab
                                             id={`view_experience${_id}`}
                                             employee={x}
                                         />
-                                        <TabTaxViewContent
+                                        <TaxTab
                                             id={`view_account${_id}`}
                                             employee={x}
                                         />
-                                        <TabCertificateViewContent
+                                        <CertificateTab
                                             id={`view_diploma${_id}`}
                                             certificate={x.certificate}
                                             certificateShort={x.certificateShort}
                                         />
-                                        <TabInsurranceViewContent
+                                        <InsurranceTab
                                             id={`view_insurrance${_id}`}
                                             employee={x}
                                             BHXH={x.BHXH}
                                         />
-                                        <TabContractViewContent
+                                        <ContractTab
                                             id={`view_contract${_id}`}
                                             course={x.course}
                                             contract={x.contract}
                                         />
-                                        <TabRearDisciplineViewContent
+                                        <DisciplineTab
                                             id={`view_reward${_id}`}
                                             praise={praise}
                                             discipline={discipline}
                                         />
-                                        <TabSalaryViewContent
+                                        <SalaryTab
                                             id={`view_salary${_id}`}
                                             sabbatical={sabbatical}
                                             salary={salary}

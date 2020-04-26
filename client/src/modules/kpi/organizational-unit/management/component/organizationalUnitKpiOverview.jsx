@@ -105,7 +105,7 @@ class KPIUnitManager extends Component {
             {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
-                currentTargets =currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
+                currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 datachat1 = kpiApproved.map(item => {
                     return { label: this.formatDate(item.time), y: item.result }
                 }).reverse();
@@ -155,9 +155,9 @@ class KPIUnitManager extends Component {
                             listkpi.map((item, index) =>
                             <tr key={index+1}>
                                 <td title={index+1}>{index + 1}</td>
-                                <td>{item.creater.name}</td>
+                                <td>{item.creator.name}</td>
                                 <td>{this.formatDate(item.time)}</td>
-                                <td>{item.listtarget.length}</td>
+                                <td>{item.kpis.length}</td>
                                 <td>{item.result}</td>
                                 <td>
                                     <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static"

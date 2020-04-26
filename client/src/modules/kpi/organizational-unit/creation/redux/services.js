@@ -45,7 +45,7 @@ async function addKPIUnit(newKPI) {
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
     
-    newKPI = {...newKPI, creater: id};
+    newKPI = {...newKPI, creator: id};
     const requestOptions = {
         method: 'POST',
         headers: AuthenticateHeader(),
@@ -115,7 +115,8 @@ function deleteKPIUnit(id) {
 }
 
 // xóa mục tiêu của KPI đơn vị
-function deleteTargetKPIUnit(id, kpiunit) {
+function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
+    let kpiunit = organizationalUnitKpiSetId
     const requestOptions = {
         method: 'DELETE',
         headers: AuthenticateHeader()

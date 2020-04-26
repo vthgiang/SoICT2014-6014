@@ -48,7 +48,7 @@ class ModalDetailKPI extends Component {
                                 </div>
                                 <div className="content-left-modal" id="style-1" style={{ width: "24.5%" }}>
                                     <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
-                                        {typeof kpiunit !== 'undefined' && kpiunit !== null && kpiunit.listtarget.map((item, index) =>
+                                        {typeof kpiunit !== 'undefined' && kpiunit !== null && kpiunit.kpis.map((item, index) =>
                                             <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id)} className="list-group-item" key={index}>
                                                 {item.name}
                                                 <span className="badge">{15 + index}</span>
@@ -58,7 +58,7 @@ class ModalDetailKPI extends Component {
                             </div>
                             <div className="right-modal">
                                 {
-                                    currentKPI && currentKPI.listtarget.map(item => {
+                                    currentKPI && currentKPI.kpis.map(item => {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                             <div className="header-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>

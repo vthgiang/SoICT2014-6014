@@ -53,8 +53,8 @@ class TableComponent extends Component {
                 }
                 <SearchBar 
                     columns={[
-                        { title: translate('manage_component.name'), value:'name' },
-                        { title: translate('manage_component.description'), value:'description' },
+                        { title: translate('system_admin.system_component.table.name'), value:'name' },
+                        { title: translate('system_admin.system_component.table.description'), value:'description' },
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
@@ -64,10 +64,10 @@ class TableComponent extends Component {
                 <table className="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>{ translate('manage_component.name') }</th>
-                            <th>{ translate('manage_component.description') }</th>
-                            <th>{ translate('manage_component.link') }</th>
-                            <th>{ translate('manage_component.roles') }</th>
+                            <th>{ translate('system_admin.system_component.table.name') }</th>
+                            <th>{ translate('system_admin.system_component.table.description') }</th>
+                            <th>{ translate('system_admin.system_component.table.link') }</th>
+                            <th>{ translate('system_admin.system_component.table.roles') }</th>
                             <th style={{width: "120px"}}>
                                 { translate('table.action') }
                                 <DataTableSetting 
@@ -93,9 +93,9 @@ class TableComponent extends Component {
                                             return <span key={role._id}>{role.name}</span> 
                                     }) }</td>
                                     <td style={{ textAlign: 'center'}}>
-                                        <a onClick={() => this.handleEdit(component)} className="edit" title={translate('manage_component.edit')}><i className="material-icons">edit</i></a>
+                                        <a onClick={() => this.handleEdit(component)} className="edit" title={translate('system_admin.system_component.edit')}><i className="material-icons">edit</i></a>
                                         <DeleteNotification 
-                                            content={translate('manage_component.delete')}
+                                            content={translate('system_admin.system_component.delete')}
                                             data={{
                                                 id: component._id,
                                                 info: component.name
@@ -105,8 +105,8 @@ class TableComponent extends Component {
                                     </td>
                                 </tr>
                             ): componentsDefault.isLoading ?
-                            <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr> : 
-                            <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={"5"}>{translate('general.loading')}</td></tr> : 
+                            <tr><td colSpan={"5"}>{translate('general.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

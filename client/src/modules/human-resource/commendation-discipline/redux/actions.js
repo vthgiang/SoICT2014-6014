@@ -1,6 +1,5 @@
 import { DisciplineConstants } from "./constants";
 import { DisciplineService } from "./services";
-import { AlertActions } from "../../../alert/redux/actions";
 export const DisciplineActions = {
     getListDiscipline,
     createNewDiscipline,
@@ -36,7 +35,6 @@ function getListDiscipline(data) {
                     type: DisciplineConstants.GET_DISCIPLINE_FAILURE,
                     error: err.response.data
                 });
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -47,24 +45,19 @@ function createNewDiscipline(data) {
         dispatch({
             type: DisciplineConstants.CREATE_DISCIPLINE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            DisciplineService.createNewDiscipline(data)
-                .then(res => {
-                    dispatch({
-                        type: DisciplineConstants.CREATE_DISCIPLINE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data.content);
+        DisciplineService.createNewDiscipline(data)
+            .then(res => {
+                dispatch({
+                    type: DisciplineConstants.CREATE_DISCIPLINE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: DisciplineConstants.CREATE_DISCIPLINE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DisciplineConstants.CREATE_DISCIPLINE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -74,24 +67,19 @@ function deleteDiscipline(id) {
         dispatch({
             type: DisciplineConstants.DELETE_DISCIPLINE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            DisciplineService.deleteDiscipline(id)
-                .then(res => {
-                    dispatch({
-                        type: DisciplineConstants.DELETE_DISCIPLINE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data.content);
+        DisciplineService.deleteDiscipline(id)
+            .then(res => {
+                dispatch({
+                    type: DisciplineConstants.DELETE_DISCIPLINE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: DisciplineConstants.DELETE_DISCIPLINE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DisciplineConstants.DELETE_DISCIPLINE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -101,24 +89,19 @@ function updateDiscipline(id, data) {
         dispatch({
             type: DisciplineConstants.UPDATE_DISCIPLINE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            DisciplineService.updateDiscipline(id, data)
-                .then(res => {
-                    dispatch({
-                        type: DisciplineConstants.UPDATE_DISCIPLINE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data.content);
+        DisciplineService.updateDiscipline(id, data)
+            .then(res => {
+                dispatch({
+                    type: DisciplineConstants.UPDATE_DISCIPLINE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: DisciplineConstants.UPDATE_DISCIPLINE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DisciplineConstants.UPDATE_DISCIPLINE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 /**
@@ -153,7 +136,6 @@ function getListPraise(data) {
                     type: DisciplineConstants.GET_PRAISE_FAILURE,
                     error: err.response.data
                 });
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -164,24 +146,19 @@ function createNewPraise(data) {
         dispatch({
             type: DisciplineConstants.CREATE_PRAISE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            DisciplineService.createNewPraise(data)
-                .then(res => {
-                    dispatch({
-                        type: DisciplineConstants.CREATE_PRAISE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data.content);
+        DisciplineService.createNewPraise(data)
+            .then(res => {
+                dispatch({
+                    type: DisciplineConstants.CREATE_PRAISE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: DisciplineConstants.CREATE_PRAISE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DisciplineConstants.CREATE_PRAISE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -191,24 +168,19 @@ function deletePraise(id) {
         dispatch({
             type: DisciplineConstants.DELETE_PRAISE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            DisciplineService.deletePraise(id)
-                .then(res => {
-                    dispatch({
-                        type: DisciplineConstants.DELETE_PRAISE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data.content);
+        DisciplineService.deletePraise(id)
+            .then(res => {
+                dispatch({
+                    type: DisciplineConstants.DELETE_PRAISE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: DisciplineConstants.DELETE_PRAISE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DisciplineConstants.DELETE_PRAISE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -218,25 +190,19 @@ function updatePraise(id, data) {
         dispatch({
             type: DisciplineConstants.UPDATE_PRAISE_REQUEST
         });
-
-        return new Promise((resolve, reject) => {
-            DisciplineService.updatePraise(id, data)
-                .then(res => {
-                    dispatch({
-                        type: DisciplineConstants.UPDATE_PRAISE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data.content);
+        DisciplineService.updatePraise(id, data)
+            .then(res => {
+                dispatch({
+                    type: DisciplineConstants.UPDATE_PRAISE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: DisciplineConstants.UPDATE_PRAISE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DisciplineConstants.UPDATE_PRAISE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 /**
