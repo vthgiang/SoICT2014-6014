@@ -9,7 +9,10 @@ import { LinkDefaultValidator } from './systemLinkValidator';
 class CreateLinkForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            linkUrl: '',
+            linkDescription: ''
+        }
         this.save = this.save.bind(this);
     }
 
@@ -25,7 +28,7 @@ class CreateLinkForm extends Component {
                     title={translate('manage_link.add_title')}
                     msg_success={translate('manage_link.add_success')}
                     msg_faile={translate('manage_link.add_faile')}
-                    func={this.save}
+                    func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-page">
                         <div className={`form-group ${linkUrlError===undefined?"":"has-error"}`}>

@@ -36,14 +36,12 @@ class ServerResponseAlert extends Component {
 
         return ( 
             <React.Fragment>
-                <h3 className="text-center">
-                    {translate(title)}
-                </h3>
+                <h3>{translate(title)}</h3>
                     {
-                        content.map(message => {
+                        content.map((message, i) => {
                             return this.checkTranslateExist(message) ?
-                                <p key={message}>{translate(message)}</p>:
-                                <p key={message}>{message}</p>;
+                                <p key={message}>{content.length > 1 ? `${i+1}. ` : null}{translate(message)}</p>:
+                                <p key={message}>{content.length > 1 ? `${i+1}. ` : null}{message}</p>;
                         })
                     }
             </React.Fragment>

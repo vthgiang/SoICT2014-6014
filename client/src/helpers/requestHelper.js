@@ -58,7 +58,6 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
 
         return Promise.resolve(res);
     }).catch(err => {
-        console.log("ERROR: ", err.response)
         if(err.response.data.messages){
             if(checkErrorAuth(err.response.data.messages[0])){
                 showAuthResponseAlertAndRedirectToLoginPage();
