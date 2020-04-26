@@ -31,15 +31,9 @@ const CommendationSchema = new Schema({
     },
     reason: {
         type: String
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-})
+}, {
+    timestamps: true,
+});
 
 module.exports = Commendation = mongoose.model("commendations", CommendationSchema);

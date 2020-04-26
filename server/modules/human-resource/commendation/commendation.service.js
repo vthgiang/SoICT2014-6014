@@ -104,7 +104,6 @@ exports.updateCommendation = async (id, data, company) => {
             startDate: data.startDate,
             type: data.type,
             reason: data.reason,
-            updateDate: Date.now()
         };
         
         // Cập nhật thông tin khen thưởng vào database

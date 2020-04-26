@@ -192,7 +192,7 @@ class PraiseManager extends Component {
                                                 content={translate('discipline.delete_praise')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.number
+                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.decisionNumber
                                                 }}
                                                 func={this.props.deletePraise}
                                             />

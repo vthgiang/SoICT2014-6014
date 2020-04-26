@@ -1206,8 +1206,8 @@ var sampleCompanyData = async () => {
     var discipline = await Discipline.insertMany([{
         employee: employee._id,
         company:vnist._id,
-        number: "1456",
-        unit: "Phòng nhân sự",
+        decisionNumber: "1456",
+        organizationalUnit: "Phòng nhân sự",
         startDate: "02-02-2020",
         endDate: "06-02-2020",
         type: "Phạt tiền",
@@ -1215,8 +1215,8 @@ var sampleCompanyData = async () => {
     }, {
         employee: employee._id,
         company:vnist._id,
-        number: "1457",
-        unit: "Phòng kinh doanh",
+        decisionNumber: "1457",
+        organizationalUnit: "Phòng kinh doanh",
         startDate: "02-02-2020",
         endDate: "06-02-2020",
         type: "Phạt tiền",

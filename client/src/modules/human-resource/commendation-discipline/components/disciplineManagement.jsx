@@ -86,7 +86,7 @@ class DisciplineManager extends Component {
     render() {
         const { list } = this.props.department;
         const { translate, discipline } = this.props;
-        var listDiscipline = "", listPosition = [];
+        var listDisciplines = "", listPosition = [];
         if (this.state.organizationalUnit !== null) {
             let organizationalUnit = this.state.organizationalUnit;
             organizationalUnit.forEach(u => {
@@ -103,7 +103,7 @@ class DisciplineManager extends Component {
             })
         }
         if (this.props.discipline.isLoading === false) {
-            listDiscipline = this.props.discipline.listDiscipline;
+            listDisciplines = this.props.discipline.listDisciplines;
         }
         var pageTotal = (this.props.discipline.totalListDiscipline % this.state.limit === 0) ?
             parseInt(this.props.discipline.totalListDiscipline / this.state.limit) :
@@ -170,14 +170,14 @@ class DisciplineManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDiscipline !== 'undefined' && listDiscipline.length !== 0) &&
-                                listDiscipline.map((x, index) => (
+                            {(typeof listDisciplines !== 'undefined' && listDisciplines.length !== 0) &&
+                                listDisciplines.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
                                         <td>{x.employee.fullName}</td>
                                         <td>{x.startDate}</td>
                                         <td>{x.endDate}</td>
-                                        <td>{x.number}</td>
+                                        <td>{x.decisionNumber}</td>
                                         <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
@@ -194,7 +194,7 @@ class DisciplineManager extends Component {
                                                 content={translate('discipline.delete_discipline')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.number
+                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.decisionNumber
                                                 }}
                                                 func={this.props.deleteDiscipline}
                                             />
@@ -206,7 +206,7 @@ class DisciplineManager extends Component {
                     </table>
                     {discipline.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listDiscipline === 'undefined' || listDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listDisciplines === 'undefined' || listDisciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                     {
@@ -214,8 +214,8 @@ class DisciplineManager extends Component {
                         <DisciplineEditForm
                             _id={this.state.currentRow._id}
                             employeeNumber={this.state.currentRow.employee.employeeNumber}
-                            number={this.state.currentRow.number}
-                            unit={this.state.currentRow.unit}
+                            decisionNumber={this.state.currentRow.decisionNumber}
+                            organizationalUnit={this.state.currentRow.organizationalUnit}
                             startDate={this.state.currentRow.startDate}
                             endDate={this.state.currentRow.endDate}
                             type={this.state.currentRow.type}
