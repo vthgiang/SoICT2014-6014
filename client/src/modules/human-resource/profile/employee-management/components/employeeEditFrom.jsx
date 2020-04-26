@@ -10,8 +10,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
+    ExperienceTab, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
 } from '../../employee-create/components/combinedContent';
 
 class EmployeeEditFrom extends Component {
@@ -330,7 +330,6 @@ class EmployeeEditFrom extends Component {
                 img: nextProps.employee[0].avatar,
                 avatar: "",
                 employee: nextProps.employee[0],
-                employeeContact: nextProps.employeeContact[0] !== undefined ? nextProps.employeeContact[0] : "",
                 praise: nextProps.praise,
                 salary: nextProps.salary,
                 sabbatical: nextProps.sabbatical,
@@ -363,7 +362,7 @@ class EmployeeEditFrom extends Component {
                 <DialogModal
                     size='100' modalID="modal-edit-employee" isLoading={false}
                     formID="form-edit-employee"
-                    title="Chỉnh sửa thông tin nhân viên"
+                    title={translate('manage_employee.edit_diploma')}
                     func={this.save}
                     disableSubmit={false}
                 >
@@ -382,19 +381,19 @@ class EmployeeEditFrom extends Component {
                             <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('manage_employee.menu_attachments')}</a></li>
                         </ul>
                         < div className="tab-content">
-                            <TabGeneralContent
+                            <GeneralTab
                                 id={`edit_general${_id}`}
                                 img={this.state.img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
                                 employee={this.state.employee}
                             />
-                            <TabContactContent
+                            <ContactTab
                                 id={`edit_contact${_id}`}
                                 handleChange={this.handleChange}
-                                employeeContact={this.state.employeeContact}
+                                employee={this.state.employee}
                             />
-                            <TabExperienceContent
+                            <ExperienceTab
                                 id={`edit_experience${_id}`}
                                 employee={this.state.employee}
                                 handleAddExperience={this.handleChangeExperience}

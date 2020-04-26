@@ -34,7 +34,7 @@ class EmployeeDetailForm extends Component {
                 <DialogModal
                     size='100' modalID="modal-view-employee" isLoading={employeesManager}
                     formID="form-view-employee"
-                    title={translate('manage_employee.edit_diploma')}
+                    title="Thông tin nhân viên"
                     hasSaveButton={false}
                 // disableSubmit={false}
                 >

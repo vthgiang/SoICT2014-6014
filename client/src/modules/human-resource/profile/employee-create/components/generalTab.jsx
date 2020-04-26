@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, ErrorLabel } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './employeeCreateValidator';
 import "./addEmployee.css";
-class TabGeneralContent extends Component {
+class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -61,10 +61,10 @@ class TabGeneralContent extends Component {
                 return {
                     ...state,
                     errorOnMSCC: msg,
-                    MSCC: value,
+                    employeeTimesheetId: value,
                 }
             });
-            this.props.handleChange("MSCC", value);
+            this.props.handleChange("employeeTimesheetId", value);
         }
         return msg === undefined;
     }
@@ -101,10 +101,10 @@ class TabGeneralContent extends Component {
                 return {
                     ...state,
                     errorOnEmailCompany: msg,
-                    emailCompany: value,
+                    emailInCompany: value,
                 }
             });
-            this.props.handleChange("emailCompany", value);
+            this.props.handleChange("emailInCompany", value);
         }
         return msg === undefined;
     }
@@ -121,10 +121,10 @@ class TabGeneralContent extends Component {
                 return {
                     ...state,
                     errorOnCMND: msg,
-                    CMND: value,
+                    identityCardNumber: value,
                 }
             });
-            this.props.handleChange("CMND", value);
+            this.props.handleChange("identityCardNumber", value);
         }
         return msg === undefined;
     }
@@ -141,10 +141,10 @@ class TabGeneralContent extends Component {
                 return {
                     ...state,
                     errorOnAddressCMND: msg,
-                    addressCMND: value,
+                    identityCardAddress: value,
                 }
             });
-            this.props.handleChange("addressCMND", value);
+            this.props.handleChange("identityCardAddress", value);
         }
         return msg === undefined;
     }
@@ -161,11 +161,11 @@ class TabGeneralContent extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnBrithday: msg,
-                    brithday: value,
+                    errorOnBrithdate: msg,
+                    birthdate: value,
                 }
             });
-            this.props.handleChange("brithday", value);
+            this.props.handleChange("birthdate", value);
         }
         return msg === undefined;
     }
@@ -182,10 +182,10 @@ class TabGeneralContent extends Component {
                 return {
                     ...state,
                     errorOnDateCMND: msg,
-                    dateCMND: value,
+                    identityCardDate: value,
                 }
             });
-            this.props.handleChange("dateCMND", value);
+            this.props.handleChange("identityCardDate", value);
         }
         return msg === undefined;
     }
@@ -196,21 +196,21 @@ class TabGeneralContent extends Component {
                 id: nextProps.id,
                 img: nextProps.img,
                 employeeNumber: nextProps.employee.employeeNumber,
-                MSCC: nextProps.employee.MSCC,
+                employeeTimesheetId: nextProps.employee.employeeTimesheetId,
                 fullName: nextProps.employee.fullName,
                 gender: nextProps.employee.gender,
-                brithday: nextProps.employee.brithday,
+                birthdate: nextProps.employee.birthdate,
                 birthplace: nextProps.employee.birthplace,
-                emailCompany: nextProps.employee.emailCompany,
-                relationship: nextProps.employee.relationship,
-                CMND: nextProps.employee.CMND,
-                dateCMND: nextProps.employee.dateCMND,
-                addressCMND: nextProps.employee.addressCMND,
-                national: nextProps.employee.national,
+                emailInCompany: nextProps.employee.emailInCompany,
+                maritalStatus: nextProps.employee.maritalStatus,
+                identityCardNumber: nextProps.employee.identityCardNumber,
+                identityCardDate: nextProps.employee.identityCardDate,
+                identityCardAddress: nextProps.employee.identityCardAddress,
+                ethnic: nextProps.employee.ethnic,
                 religion: nextProps.employee.religion,
-                nation: nextProps.employee.nation,
+                nationality: nextProps.employee.nationality,
 
-                errorOnBrithday: undefined,
+                errorOnBrithdate: undefined,
                 errorOnDateCMND: undefined,
                 errorOnEmployeeNumber: undefined,
                 errorOnMSCC: undefined,
@@ -226,9 +226,9 @@ class TabGeneralContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { brithday, dateCMND, img, employeeNumber, MSCC, fullName, gender, birthplace,
-            emailCompany, relationship, CMND, addressCMND, national, religion, nation,
-            errorOnBrithday, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany,
+        const { birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace,
+            emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
+            errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany,
             errorOnCMND, errorOnAddressCMND } = this.state;
         return (
             <div id={id} className="tab-pane active">
@@ -254,7 +254,7 @@ class TabGeneralContent extends Component {
                             </div>
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnMSCC === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="MSCC">{translate('manage_employee.attendance_code')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" placeholder={translate('manage_employee.attendance_code')} name="MSCC" value={MSCC} onChange={this.handleMSCCChange} autoComplete="off" />
+                                <input type="text" className="form-control" placeholder={translate('manage_employee.attendance_code')} name="employeeTimesheetId" value={employeeTimesheetId} onChange={this.handleMSCCChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnMSCC} />
                             </div>
                         </div>
@@ -279,14 +279,14 @@ class TabGeneralContent extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnBrithday === undefined ? "" : "has-error"}`}>
+                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnBrithdate === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="brithday">{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`brithday${id}`}
-                                    value={brithday}
+                                    value={birthdate}
                                     onChange={this.handleBrithdayChange}
                                 />
-                                <ErrorLabel content={errorOnBrithday} />
+                                <ErrorLabel content={errorOnBrithdate} />
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                 <label htmlFor="birthplace">{translate('manage_employee.place_birth')}</label>
@@ -296,7 +296,7 @@ class TabGeneralContent extends Component {
                         <div className="row">
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="emailCompany">{translate('manage_employee.email')}<span className="text-red">*</span></label>
-                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailCompany" value={emailCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
+                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnEmailCompany} />
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
@@ -304,11 +304,11 @@ class TabGeneralContent extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="relationship" value="single" onChange={this.handleChange} checked={relationship === "single" ? true : false} />{translate('manage_employee.single')}</label>
+                                            <input type="radio" name="relationship" value="single" onChange={this.handleChange} checked={maritalStatus === "single" ? true : false} />{translate('manage_employee.single')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name="relationship" value="married" onChange={this.handleChange} checked={relationship === "married" ? true : false} />{translate('manage_employee.married')}</label>
+                                            <input type="radio" name="relationship" value="married" onChange={this.handleChange} checked={maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
                                     </div>
                                 </div>
                             </div>
@@ -318,28 +318,28 @@ class TabGeneralContent extends Component {
                         <div className="row">
                             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnCMND === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="CMND">{translate('manage_employee.id_card')}<span className="text-red">*</span></label>
-                                <input type="number" className="form-control" name="CMND" value={CMND} onChange={this.handleCMNDChange} placeholder={translate('manage_employee.id_card')} autoComplete="off" />
+                                <input type="number" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={this.handleCMNDChange} placeholder={translate('manage_employee.id_card')} autoComplete="off" />
                                 <ErrorLabel content={errorOnCMND} />
                             </div>
                             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnDateCMND === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="dateCMND">{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`dateCMND${id}`}
-                                    value={dateCMND}
+                                    value={identityCardDate}
                                     onChange={this.handleDateCMNDChange}
                                 />
                                 <ErrorLabel content={errorOnDateCMND} />
                             </div>
                             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnAddressCMND === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="addressCMND">{translate('manage_employee.issued_by')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="addressCMND" value={addressCMND} onChange={this.handleAddressCMNDChange} placeholder={translate('manage_employee.issued_by')} autoComplete="off" />
+                                <input type="text" className="form-control" name="identityCardAddress" value={identityCardAddress} onChange={this.handleAddressCMNDChange} placeholder={translate('manage_employee.issued_by')} autoComplete="off" />
                                 <ErrorLabel content={errorOnAddressCMND} />
                             </div>
                         </div>
                         <div className="row">
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
                                 <label htmlFor="national">{translate('manage_employee.ethnic')}</label>
-                                <input type="text" className="form-control" name="national" value={national} onChange={this.handleChange} placeholder={translate('manage_employee.ethnic')} autoComplete="off" />
+                                <input type="text" className="form-control" name="ethnic" value={ethnic} onChange={this.handleChange} placeholder={translate('manage_employee.ethnic')} autoComplete="off" />
                             </div>
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
                                 <label htmlFor="religion">{translate('manage_employee.religion')}</label>
@@ -347,7 +347,7 @@ class TabGeneralContent extends Component {
                             </div>
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
                                 <label htmlFor="nation">{translate('manage_employee.nationality')}</label>
-                                <input type="text" className="form-control" name="nation" value={nation} onChange={this.handleChange} placeholder={translate('manage_employee.nationality')} autoComplete="off" />
+                                <input type="text" className="form-control" name="nationality" value={nationality} onChange={this.handleChange} placeholder={translate('manage_employee.nationality')} autoComplete="off" />
                             </div>
                         </div>
                     </div>
@@ -356,5 +356,5 @@ class TabGeneralContent extends Component {
         );
     }
 };
-const tabGeneral = connect(null, null)(withTranslate(TabGeneralContent));
-export { tabGeneral as TabGeneralContent };
+const generalTab = connect(null, null)(withTranslate(GeneralTab));
+export { generalTab as GeneralTab };
