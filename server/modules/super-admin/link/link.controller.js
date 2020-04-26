@@ -12,7 +12,7 @@ exports.getAllLinks = async (req, res) => {
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['get_links_success'],
+            messages: ['get_links_success'],
             content: links
         });
     } catch (error) {
@@ -20,7 +20,7 @@ exports.getAllLinks = async (req, res) => {
         await LogError(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -35,7 +35,7 @@ exports.getPaginatedLinks = async (req, res) => {
         await LogInfo(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['paginate_links_success'],
+            messages: ['paginate_links_success'],
             content: links
         });
     } catch (error) {
@@ -43,7 +43,7 @@ exports.getPaginatedLinks = async (req, res) => {
         await LogError(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -57,7 +57,7 @@ exports.createLink = async (req, res) => {
         await LogInfo(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['create_link_success'],
+            messages: ['create_link_success'],
             content: link
         });
     } catch (error) {
@@ -65,7 +65,7 @@ exports.createLink = async (req, res) => {
         await LogError(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -77,7 +77,7 @@ exports.getLinkById = async (req, res) => {
         await LogInfo(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['show_link_success'],
+            messages: ['show_link_success'],
             content: link
         });
     } catch (error) {
@@ -85,7 +85,7 @@ exports.getLinkById = async (req, res) => {
         await LogError(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -99,7 +99,7 @@ exports.editLink = async (req, res) => {
         await LogInfo(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['edit_link_success'],
+            messages: ['edit_link_success'],
             content: data
         });
     } catch (error) {
@@ -107,7 +107,7 @@ exports.editLink = async (req, res) => {
         await LogError(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -119,7 +119,7 @@ exports.deleteLink = async (req, res) => {
         await LogInfo(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['delete_link_success'],
+            messages: ['delete_link_success'],
             content: link
         });
     } catch (error) {
@@ -127,7 +127,7 @@ exports.deleteLink = async (req, res) => {
         await LogError(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

@@ -25,7 +25,6 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
             parent: undefined,
             weight: "",
             criteria: "",
-            kpiunit: "",
 
             errorOnName: undefined,
             errorOnCriteria: undefined,
@@ -53,6 +52,8 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         
         if (this.isFormValidated()){
             return this.props.editTargetKPIUnit(id, newTarget);
+
+            //window.$(`#editTargetKPIUnit${this.props.target._id}`).modal("hide");
         }
        
     }
@@ -165,7 +166,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
 
     render() {
-        const { createKpiUnit, target, unit } = this.props;
+        const { createKpiUnit, target, organizationalUnit } = this.props;
         const {editing, newTarget} = this.state;
         var parentKPI;
         if (createKpiUnit.parent) parentKPI = createKpiUnit.parent;
@@ -202,7 +203,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                             <ErrorLabel content={errorOnName}/>
                         </div>
                         
-                        {(typeof unit !== "undefined" && unit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
+                        {(typeof organizationalUnit !== "undefined" && organizationalUnit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                             <div className="form-group">
                                 <label>{translate('kpi_unit_create.on_target')}</label>
                                 {items.length !== 0 &&
