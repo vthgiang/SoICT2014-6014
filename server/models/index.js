@@ -11,7 +11,6 @@ const AnnualLeave = require('./human-resource/annualLeave.model');
 const Commendation = require('./human-resource/commendation.model');
 const Discipline = require('./human-resource/discipline.model');
 const Employee = require('./human-resource/employee.model');
-const EmployeeContact = require('./human-resource/employeeContact.model');
 const Holiday = require('./human-resource/holiday.model');
 const Salary = require('./human-resource/salary.model');
 
@@ -71,7 +70,6 @@ exports.schema = {
     Commendation,
     Discipline,
     Employee,
-    EmployeeContact,
     Holiday,
     Salary,
 

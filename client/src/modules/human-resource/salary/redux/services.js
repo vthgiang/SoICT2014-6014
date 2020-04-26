@@ -2,8 +2,8 @@ import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
 export const SalaryService = {
-    getListSalary,
-    createNewSalary,
+    searchSalary,
+    createSalary,
     deleteSalary,
     updateSalary,
     checkSalary,
@@ -12,7 +12,7 @@ export const SalaryService = {
 }
 
 // Lấy danh sách bảng lương
-function getListSalary(data) {
+function searchSalary(data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/salary/paginate`,
         method: 'POST',
@@ -23,7 +23,7 @@ function getListSalary(data) {
 }
 
 // tạo mới một bảng lương
-function createNewSalary(data) {
+function createSalary(data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/salary/create`,
         method: 'POST',

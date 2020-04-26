@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const UserServices = {
     get,
@@ -17,119 +16,86 @@ export const UserServices = {
 };
 
 function get() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/user`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }
 
 function getPaginate(data) {  
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/paginate`,
         method: 'POST',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }
 
 function edit(id, data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data,
+    }, true, 'super_admin.user');
 }
 
 function create(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/user`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data,
+    }, true, 'super_admin.user');
 }
 
 function destroy(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'super_admin.user');
 }
 
 function getRoles() {
     const id = localStorage.getItem('id');
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/roles/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }
 
 function getLinkOfRole() {
     const currentRole = localStorage.getItem('currentRole');
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/links/role/${currentRole}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }
 // Lấy tất cả các vai trò cùng phòng ban với người dùng
 function getRoleSameDepartmentOfUser(currentRole) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/role/same-department/${currentRole}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }
 
 // Lấy tất cả nhân viên của công ty
 function getAllUserOfCompany() {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/user`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }
 
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
 function getAllUserOfDepartment(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/user/users-of-department/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }
 
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
 function getAllUserSameDepartment(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/user/same-department/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.user');
 }

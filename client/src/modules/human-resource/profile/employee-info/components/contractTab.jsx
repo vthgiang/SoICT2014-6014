@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class TabContractViewContent extends Component {
+class ContractTab extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,8 +14,8 @@ class TabContractViewContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                contract: nextProps.contract,
-                course: nextProps.course,
+                contracts: nextProps.contracts,
+                courses: nextProps.courses,
             }
         } else {
             return null;
@@ -25,7 +25,7 @@ class TabContractViewContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { contract, course } = this.state;
+        const { contracts, courses } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -42,11 +42,11 @@ class TabContractViewContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof contract !== 'undefined' && contract.length !== 0) &&
-                                    contract.map((x, index) => (
+                                {(typeof contracts !== 'undefined' && contracts.length !== 0) &&
+                                    contracts.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameContract}</td>
-                                            <td>{x.typeContract}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.contractType}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? "Chưa có file" :
@@ -58,7 +58,7 @@ class TabContractViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof contract === 'undefined' || contract.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof contracts === 'undefined' || contracts.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -77,14 +77,14 @@ class TabContractViewContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof course !== 'undefined' || course.length !== 0) &&
-                                    course.map((x, index) => (
+                                {(typeof courses !== 'undefined' && courses.length !== 0) &&
+                                    courses.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameCourse}</td>
+                                            <td>{x.name}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{x.typeCourse}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.courseType}</td>
+                                            <td>{x.offeredBy}</td>
                                             <td>{x.status}</td>
                                         </tr>
                                     ))
@@ -92,7 +92,7 @@ class TabContractViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof course === 'undefined' || course.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof courses === 'undefined' || courses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -101,5 +101,5 @@ class TabContractViewContent extends Component {
     }
 };
 
-const tabContract = connect(null, null)(withTranslate(TabContractViewContent));
-export { tabContract as TabContractViewContent };
+const tabContract = connect(null, null)(withTranslate(ContractTab));
+export { tabContract as ContractTab };

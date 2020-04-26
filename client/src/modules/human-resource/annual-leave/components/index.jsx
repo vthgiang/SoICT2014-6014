@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SabbaticalManager } from './annualLeaveManagement';
+import { AnnualLeaveManagement } from './annualLeaveManagement';
 
-class ManagerSabbatical extends Component {
+class AnnualLeaveManager extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -11,10 +11,10 @@ class ManagerSabbatical extends Component {
     render() {
         return (
             <React.Fragment>
-                <SabbaticalManager />
+                <AnnualLeaveManagement />
             </React.Fragment>
         );
     }
 }
 
-export default connect(null, null)(withTranslate(ManagerSabbatical)); 
+export default connect(null, null)(withTranslate(AnnualLeaveManager)); 

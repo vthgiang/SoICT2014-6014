@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Redirect} from 'react-router-dom';
 import { getStorage } from  '../config';
+import {NotFound} from '../modules/not-found/components';
 
 const checkURL = (urlName, linkArr) => {
     var result = false;

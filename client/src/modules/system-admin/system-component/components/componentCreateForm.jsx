@@ -10,7 +10,10 @@ import { ComponentDefaultValidator } from './systemComponentValidator';
 class ComponentCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            componentName: '',
+            componentDescription: ''
+        }
         this.save = this.save.bind(this);
     }
 
@@ -27,7 +30,7 @@ class ComponentCreateForm extends Component {
                     title={translate('manage_component.add_title')}
                     msg_success={translate('manage_component.add_success')}
                     msg_faile={translate('manage_component.add_faile')}
-                    func={this.save}
+                    func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-component">
                     <div className={`form-group ${componentNameError===undefined?"":"has-error"}`}>

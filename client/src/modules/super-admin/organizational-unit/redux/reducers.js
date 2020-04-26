@@ -97,7 +97,7 @@ export function department(state = initState, action) {
 
             return {
                 ...state,
-                items: action.departments.content,
+                items: action.departments.data.content,
                 isLoading: false
             };
 
@@ -116,10 +116,9 @@ export function department(state = initState, action) {
             };
 
         case DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS:
-
             return {
                 ...state,
-                unitofuser: action.departments.content,
+                unitofuser: action.departments.data.content,
                 isLoading: false
             };
 

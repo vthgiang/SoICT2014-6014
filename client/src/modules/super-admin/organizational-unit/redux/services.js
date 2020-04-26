@@ -1,15 +1,8 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
-import {
-    TOKEN_SECRET
-} from '../../../../env';
-import {
-    getStorage
-} from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
+import { TOKEN_SECRET } from '../../../../env';
+import { getStorage } from '../../../../config';
 import jwt from 'jsonwebtoken';
-
-import {handleResponse} from '../../../../helpers/handleResponse';
 
 export const DepartmentServices = {
     get,
@@ -22,76 +15,61 @@ export const DepartmentServices = {
 };
 
 function get() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/department`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.organization_unit');
 }
 
 function create(department) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/department`,
         method: 'POST',
         data: department,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'super_admin.organization_unit');
 }
 
 function edit(department) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/department/${department._id}`,
         method: 'PATCH',
         data: department,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'super_admin.organization_unit');
 }
 
 function destroy(departmentId) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/department/${departmentId}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'super_admin.organization_unit');
 }
 
 function getAll() {
-    const requestOptions = {
-        method: 'GET',
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/departments`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/departments`,
+        method: 'GET'
+    }, false, 'super_admin.organization_unit');
 }
+
 async function getDepartmentOfUser() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    const requestOptions = {
+    
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/department/department-of-user/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/department/department-of-user/${id}`, requestOptions).then(handleResponse);
+    }, false, 'super_admin.organization_unit');
 }
+
 async function getDepartmentsThatUserIsDean(currentRole) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
 
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/department/departments-that-user-is-dean/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.organization_unit');
 }
 

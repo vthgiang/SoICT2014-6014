@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { createKpiSetActions } from "../redux/actions";
+
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
@@ -23,7 +23,7 @@ class ModalCreateEmployeeKpi extends Component {
             parent: null,
             weight: "",
             criteria: "",
-            kpipersonal: "",
+            employeeKpiSet: "",
 
             errorOnName: undefined,
             errorOnCriteria: undefined,
@@ -32,27 +32,21 @@ class ModalCreateEmployeeKpi extends Component {
             adding: false,
             submitted: false
         };
-
-        this.handleCreateEmployeeKpi = this.handleCreateEmployeeKpi.bind(this);
-
     }
-
-    // function: notification the result of an action
-    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
 
     // function: create new target of personal kpi
     handleCreateEmployeeKpi = async () => {
-        let currentKPI = null;
+        let currentOrganizationalKpiSet = null;
         let items;
         let parent = null;
         const { createKpiUnit } = this.props;
-        if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
+        if (createKpiUnit.currentKPI) currentOrganizationalKpiSet = createKpiUnit.currentKPI;
         if(this.state.parent === null){
-            if(currentKPI === null){
+            if(currentOrganizationalKpiSet === null){
                 parent = null;
             }
             else{    
-                items = currentKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+                items = currentOrganizationalKpiSet.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
                     return {value: x._id, text: x.name} });
 
                 parent = items[0].value;
@@ -63,14 +57,14 @@ class ModalCreateEmployeeKpi extends Component {
         }
 
         if (this.isFormValidated()){
-            let res = await this.props.createEmployeeKpi({
+            let employeeKpi = {
                 name: this.state.name,
                 parent: parent,
                 weight: this.state.weight,
                 criteria: this.state.criteria,
-                kpipersonal: this.props.kpipersonal, 
-            });
-
+                employeeKpiSet: this.props.employeeKpiSet, 
+            }
+            let res = await this.props.createEmployeeKpi(employeeKpi);            
             window.$("#createEmployeeKpi").modal("hide");
             window.$(".modal-backdrop").remove();
             window.$('body').removeClass('modal-open');
@@ -78,17 +72,6 @@ class ModalCreateEmployeeKpi extends Component {
 
             return res;
         }
-
-        
-        
-        // if (newTarget.parent && newTarget.name && newTarget.weight && newTarget.criteria) {
-        //     this.props.addNewTargetPersonal(newTarget);
-        //     window.$("#CreateEmployeeKpi").modal("hide");
-        //     window.$(".modal-backdrop").remove();
-        //     window.$('body').removeClass('modal-open');
-        //     window.$('body').css('padding-right',"0px");
-        //     this.notifysuccess(translate('kpi_personal.add_target_kpi.add_success'));
-        // }
     }
 
     handleNameChange = (e) => {
@@ -113,7 +96,7 @@ class ModalCreateEmployeeKpi extends Component {
         this.setState(state => {
             return {
                 ...state,
-                parent: value[0]
+                parent: value,
             }
         });
     }
@@ -125,7 +108,7 @@ class ModalCreateEmployeeKpi extends Component {
     validateCriteria = (value, willUpdateState=true) => {
         let msg = undefined;
         if (value.trim() === ""){
-            msg = "Tiêu chí không được để trống";
+            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_criteria');
         }
 
         if (willUpdateState){
@@ -147,11 +130,11 @@ class ModalCreateEmployeeKpi extends Component {
     validateWeight = (value, willUpdateState=true) => {
         let msg = undefined;
         if (value.trim() === ""){
-            msg = "Trọng số không được để trống";
+            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_weight.empty');
         } else if(value < 0){
-            msg = "Trọng số không được nhỏ hơn 0";
+            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0');
         } else if(value > 100){
-            msg = "Trọng số không được lớn hơn 100";
+            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100');
         } 
         
         if (willUpdateState){
@@ -175,16 +158,16 @@ class ModalCreateEmployeeKpi extends Component {
     }
     
     render() {
-        var currentUnitKPI;
+        var currentOrganizationalUnitKpiSet;
         const { newTarget, adding } = this.state;
         const { createKpiUnit, translate } = this.props;
-        if (createKpiUnit.currentKPI) currentUnitKPI = createKpiUnit.currentKPI;
-
+        if (createKpiUnit.currentKPI) currentOrganizationalUnitKpiSet = createKpiUnit.currentKPI;        
         var items;
-        if(createKpiUnit.currentKPI === null){
+        
+        if(currentOrganizationalUnitKpiSet === undefined){
             items = [];
         } else {    
-            items = currentUnitKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = currentOrganizationalUnitKpiSet.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
 
@@ -195,15 +178,15 @@ class ModalCreateEmployeeKpi extends Component {
                 <DialogModal
                     modalID="createEmployeeKpi" isLoading={adding}
                     formID="formCreateEmployeeKpi"
-                    title={translate('kpi_personal.add_target_kpi.add_target_personal')}
-                    msg_success={translate('kpi_personal.add_target_kpi.add_success')}
-                    msg_faile={translate('kpi_unit_create.error')}
+                    title={translate('employee_kpi_set.create_employee_kpi_modal.create_employee_kpi')}
+                    msg_success={translate('employee_kpi_set.create_employee_kpi_modal.success')}
+                    msg_faile={translate('employee_kpi_set.create_employee_kpi_modal.failure')}
                     func={this.handleCreateEmployeeKpi}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formCreateEmployeeKpi" onSubmit={() => this.handleCreateEmployeeKpi(translate('kpi_unit_create.add_target_success'))}>
+                    <form id="formCreateEmployeeKpi" onSubmit={() => this.handleCreateEmployeeKpi(translate('employee_kpi_set.create_employee_kpi_modal.success'))}>
                         <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
-                            <label>{translate('kpi_unit_create.target_name')}<span className="text-red">*</span></label>
+                            <label>{translate('employee_kpi_set.create_employee_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>
                         </div>
@@ -211,7 +194,7 @@ class ModalCreateEmployeeKpi extends Component {
                         {(createKpiUnit.currentKPI !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                                 (items.length !== 0) &&
                                     <div className="form-group">
-                                    <label>{ translate('kpi_unit_create.on_target') }</label>
+                                    <label>{ translate('employee_kpi_set.create_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
                                     <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                         id={`parent-target-add`}
                                         className="form-control select2"
@@ -219,18 +202,19 @@ class ModalCreateEmployeeKpi extends Component {
                                         items = {items}
                                         onChange={this.handleParentChange}
                                         multiple={false}
+                                        value={items[0]}
                                     />
                                 
                             </div>}
 
                         <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
-                            <label>{translate('kpi_unit_create.criteria')}<span className="text-red">*</span></label>
+                            <label>{translate('employee_kpi_set.create_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                             <ErrorLabel content={errorOnCriteria}/>
                         </div>
 
                         <div className={`form-group ${errorOnWeight===undefined?"":"has-error"}`}>
-                            <label>{translate('kpi_unit_create.weight')}<span className="text-red">*</span></label>
+                            <label>{translate('employee_kpi_set.create_employee_kpi_modal.weight')}<span className="text-red">*</span></label>
                             <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                             <ErrorLabel content={errorOnWeight}/>
                         </div>

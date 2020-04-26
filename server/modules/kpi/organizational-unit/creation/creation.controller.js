@@ -22,11 +22,11 @@ exports.edit = async (req, res) => {
     try {
         let timeString = req.body.time;
         let id = req.params.id;
-        var kpiunit = await KPIUnitService.editById(timeString,id);
+        var organizationalUnitKpiSet = await KPIUnitService.editById(timeString,id);
         LogInfo(req.user.email, ' Edit kpi unit ',req.user.company);
         res.status(200).json({
             message: "Chỉnh sửa thành công KPI của đơn vị",
-            kpiunit: kpiunit
+            organizationalUnitKpiSet: organizationalUnitKpiSet
         });
     } catch (error) {
         LogError(req.user.email, ' Edit kpi unit ',req.user.company);
@@ -59,11 +59,11 @@ exports.delete = async (req, res) => {
 // delete target of unit kpi
 exports.deleteTarget = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.deleteTarget(req.params.id,req.params.kpiunit);
-        LogInfo(req.user.email, 'delete target kpi unit',req.user.company)
+        var organizationalUnitKpiSet = await KPIUnitService.deleteTarget(req.params.id,req.params.kpiunit);
+        LogInfo(req.user.email, 'delete target kpi unit',req.user.company);
         res.status(200).json({
             message: "Xóa thành công một mục tiêu của đơn vị",
-            kpiunit: kpiunit,
+            organizationalUnitKpiSet: organizationalUnitKpiSet,
         });
     } catch (error) {
         LogError(req.user.email, 'delete target kpi unit',req.user.company)
@@ -109,11 +109,11 @@ exports.getParentByUnit =async (req, res) => {
 // create new target of unit kpi
 exports.createTarget =async (req, res) => {
     try {
-        var kpiunit = await  KPIUnitService.createTarget(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.kpiunit);
+        var organizationalUnitKpiSet = await  KPIUnitService.createTarget(req.body.name, req.body.parent, req.body.weight, req.body.criteria, req.body.organizationalUnitKpiSetId);
         LogInfo(req.user.email, 'create target kpi unit',req.user.company)
         res.status(200).json({
             message: "Thêm mới thành công một mục tiêu của đơn vị",
-            kpiunit: kpiunit
+            organizationalUnitKpiSet: organizationalUnitKpiSet
         });
     } catch (error) {
         LogError(req.user.email, 'create target kpi unit',req.user.company)
@@ -144,11 +144,11 @@ exports.editTargetById = async (req, res) => {
 // Khởi tạo KPI đơn vị
 exports.create =async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.create(req.body.time,req.body.unit,req.body.creater);
+        var organizationalUnitKpi = await KPIUnitService.create(req.body.time,req.body.organizationalUnit,req.body.creator);
         LogInfo(req.user.email, 'create kpi unit',req.user.company)
         res.status(200).json({
             message: "Khởi tạo thành công KPI đơn vị",
-            kpiunit: kpiunit
+            organizationalUnitKpi: organizationalUnitKpi
         });
     } catch (error) {
         LogError(req.user.email, 'create kpi unit',req.user.company)

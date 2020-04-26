@@ -5,13 +5,13 @@ import { DialogModal, ButtonModal } from '../../../../../common-components';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../../salary/redux/actions';
-import { SabbaticalActions } from '../../../annual-leave/redux/actions';
+import { AnnualLeaveActions } from '../../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../../commendation-discipline/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, TabInsurranceContent, TabRearDisciplineContent,
+    ExperienceTab, CertificateTab, TabContractContent, TabSalaryContent, TabAttachmentsContent
 } from '../../employee-create/components/combinedContent';
 class EmployeeCreateForm extends Component {
     constructor(props) {
@@ -32,8 +32,8 @@ class EmployeeCreateForm extends Component {
                 BHXH: [],
                 course: []
             },
-            certificate: [],
-            certificateShort: [],
+            degrees: [],
+            certificates: [],
             contract: [],
             file: [],
             disciplineNew: [],
@@ -289,7 +289,7 @@ class EmployeeCreateForm extends Component {
             if (this.state.sabbaticalNew.length !== 0) {
                 let employeeNumber = this.state.employeeNew.employeeNumber;
                 this.state.sabbaticalNew.map(x => {
-                    this.props.createNewSabbatical({ ...x, employeeNumber })
+                    this.props.createAnnualLeave({ ...x, employeeNumber })
                 })
             }
             // lưu thông tin khen thưởng
@@ -336,29 +336,29 @@ class EmployeeCreateForm extends Component {
                                 <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('manage_employee.menu_attachments')}</a></li>
                             </ul>
                             < div className="tab-content">
-                                <TabGeneralContent
+                                <GeneralTab
                                     id="general"
                                     img={this.state.img}
                                     handleChange={this.handleChange}
                                     handleUpload={this.handleUpload}
                                     employee={this.state.employeeNew}
                                 />
-                                <TabContactContent
+                                <ContactTab
                                     id="contact"
                                     handleChange={this.handleChange}
-                                    employeeContact={this.state.employeeNew}
+                                    employee={this.state.employeeNew}
                                 />
-                                <TabExperienceContent
+                                <ExperienceTab
                                     id="experience"
                                     employee={this.state.employeeNew}
                                     handleAddExperience={this.handleChangeExperience}
                                     handleEditExperience={this.handleChangeExperience}
                                     handleDeleteExperience={this.handleChangeExperience}
                                 />
-                                <TabCertificateContent
+                                <CertificateTab
                                     id="diploma"
-                                    certificate={this.state.certificate}
-                                    certificateShort={this.state.certificateShort}
+                                    degrees={this.state.degrees}
+                                    certificates={this.state.certificates}
                                     handleAddCertificate={this.handleChangeCertificate}
                                     handleEditCertificate={this.handleChangeCertificate}
                                     handleDeleteCertificate={this.handleChangeCertificate}
@@ -366,7 +366,7 @@ class EmployeeCreateForm extends Component {
                                     handleEditCertificateShort={this.handleChangeCertificateShort}
                                     handleDeleteCertificateShort={this.handleChangeCertificateShort}
                                 />
-                                <TabTaxContent
+                                <TaxTab
                                     id="account"
                                     employee={this.state.employeeNew}
                                     handleChange={this.handleChange} />
@@ -439,7 +439,7 @@ const actionCreators = {
     checkMSNV: EmployeeManagerActions.checkMSNV,
     checkEmail: EmployeeManagerActions.checkEmail,
     createNewSalary: SalaryActions.createNewSalary,
-    createNewSabbatical: SabbaticalActions.createNewSabbatical,
+    createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
     createNewPraise: DisciplineActions.createNewPraise,
     createNewDiscipline: DisciplineActions.createNewDiscipline,
     updateContract: EmployeeManagerActions.updateContract,

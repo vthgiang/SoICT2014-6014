@@ -26,7 +26,7 @@ class TabTaskContent extends Component {
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null);
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
+            this.props.getAccountableTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         } else if (content === "consulted") {
             this.props.getConsultedTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         } else if (content === "creator") {
@@ -504,7 +504,7 @@ function mapState(state) {
 
 const actionCreators = {
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getAccounatableTaskByUser: taskManagementActions.getAccounatableTaskByUser,
+    getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,

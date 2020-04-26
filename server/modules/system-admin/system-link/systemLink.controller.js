@@ -8,7 +8,7 @@ exports.getAllSystemLinks = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'get_links_default_success',
+            messages: ['get_links_default_success'],
             content: links
         });
     } catch (error) {
@@ -16,7 +16,7 @@ exports.getAllSystemLinks = async (req, res) => {
         LogError(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -28,7 +28,7 @@ exports.getAllSystemLinkCategories = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
         res.status(200).json({
             success: true,
-            message: 'get_links_default_categories_success',
+            messages: ['get_links_default_categories_success'],
             content: categories
         });
     } catch (error) {
@@ -36,7 +36,7 @@ exports.getAllSystemLinkCategories = async (req, res) => {
         LogError(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -51,7 +51,7 @@ exports.getPaginatedSystemLinks = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_LINKS_DEFAULT')
         res.status(200).json({
             success: true,
-            message: 'paginate_links_default_success',
+            messages: ['paginate_links_default_success'],
             content: links
         });
     } catch (error) {
@@ -59,7 +59,7 @@ exports.getPaginatedSystemLinks = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -73,7 +73,7 @@ exports.createSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'create_link_default_success',
+            messages: ['create_system_link_success'],
             content: data
         });
     } catch (error) {
@@ -81,7 +81,7 @@ exports.createSystemLink = async (req, res) => {
         LogError(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -93,7 +93,7 @@ exports.getSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'show_link_default_success',
+            messages: ['show_link_default_success'],
             content: link
         });
     } catch (error) {
@@ -101,7 +101,7 @@ exports.getSystemLink = async (req, res) => {
         LogError(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -115,7 +115,7 @@ exports.editSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'edit_link_default_success',
+            messages: 'edit_system_link_success',
             content: data
         });
     } catch (error) {
@@ -123,7 +123,7 @@ exports.editSystemLink = async (req, res) => {
         LogError(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -135,7 +135,7 @@ exports.deleteSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            message: 'delete_link_default_success',
+            messages: 'delete_link_default_success',
             content: link
         });
     } catch (error) {
@@ -143,7 +143,7 @@ exports.deleteSystemLink = async (req, res) => {
         LogError(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

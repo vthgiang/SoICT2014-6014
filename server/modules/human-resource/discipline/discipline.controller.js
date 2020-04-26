@@ -1,28 +1,31 @@
 const DisciplineService = require('./discipline.service');
 const { LogInfo, LogError } = require('../../../logs');
-
-// Lấy danh sách kỷ luật
+/**
+ * Lấy danh sách kỷ luật
+ */
 exports.searchDisciplines = async (req, res) => {
     try {
-        var listDiscipline = await DisciplineService.searchDisciplines(req.body, req.user.company._id);
+        var listDisciplines = await DisciplineService.searchDisciplines(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_DISCIPLINE', req.user.company);
-        res.status(200).json({ success: true, message:["get_discipline_success"], content: listDiscipline});
+        res.status(200).json({ success: true, message:["get_discipline_success"], content: listDisciplines});
     } catch (error) {
         await LogError(req.user.email, 'GET_DISCIPLINE', req.user.company);
         res.status(400).json({success: false, message:["get_discipline_faile"], content: {error: error} });
     }
 }
 
-// Tạo mới kỷ luật của nhân viên
+/**
+ * Tạo mới kỷ luật của nhân viên
+ */
 exports.createDiscipline = async (req, res) => {
     try {
         if (req.body.employeeNumber.trim()===""){
             await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
             res.status(400).json({ success: false, message: ["employee_number_required"], content:{ inputData: req.body } });
-        } else if(req.body.number.trim()===""){
+        } else if(req.body.decisionNumber.trim()===""){
             await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
             res.status(400).json({ success: false, message: ["number_decisions_required"], content:{ inputData: req.body } });
-        } else if(req.body.unit.trim()===""){
+        } else if(req.body.organizationalUnit.trim()===""){
             await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
             res.status(400).json({ success: false, message: ["unit_decisions_required"], content:{ inputData: req.body } });
         } else if(req.body.startDate.trim()===""){
@@ -60,7 +63,9 @@ exports.createDiscipline = async (req, res) => {
     }
 }
 
-// Xoá thông tin kỷ luật
+/**
+ * Xoá thông tin kỷ luật
+ */
 exports.deleteDiscipline = async (req, res) => {
     try {
         var disciplineDelete = await DisciplineService.deleteDiscipline(req.params.id);
@@ -72,16 +77,18 @@ exports.deleteDiscipline = async (req, res) => {
     }
 }
 
-// Chỉnh sửa thông tin kỷ luật
+/**
+ * Chỉnh sửa thông tin kỷ luật
+ */
 exports.updateDiscipline = async (req, res) => {
     try {
         if (req.body.employeeNumber.trim()===""){
             await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
             res.status(400).json({ success: false, message: ["employee_number_required"], content:{ inputData: req.body } });
-        } else if(req.body.number.trim()===""){
+        } else if(req.body.decisionNumber.trim()===""){
             await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
             res.status(400).json({ success: false, message: ["number_decisions_required"], content:{ inputData: req.body } });
-        } else if(req.body.unit.trim()===""){
+        } else if(req.body.organizationalUnit.trim()===""){
             await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
             res.status(400).json({ success: false, message: ["unit_decisions_required"], content:{ inputData: req.body } });
         } else if(req.body.startDate.trim()===""){

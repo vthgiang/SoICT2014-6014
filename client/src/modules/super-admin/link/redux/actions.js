@@ -1,6 +1,5 @@
 import { LinkServices } from "./services";
 import { LinkConstants } from "./constants";
-import { AlertActions } from "../../../alert/redux/actions";
 
 export const LinkActions = {
     get,
@@ -22,7 +21,7 @@ function get(){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -38,7 +37,7 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -54,7 +53,7 @@ function show(id){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -62,41 +61,31 @@ function show(id){
 function create(link){
     return dispatch => {
         dispatch({ type: LinkConstants.CREATE_LINK_REQUEST});
-        return new Promise((resolve, reject) => {
-            LinkServices
+        LinkServices
                 .create(link)
                 .then(res => {
                     dispatch({
                         type: LinkConstants.CREATE_LINK_SUCCESS,
                         payload: res.data.content
                     });
-                    resolve(res);
                 })
                 .catch(err => {
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
                 })
-        })
     }
 }
 
 function edit(id, link){
     return dispatch => {
         dispatch({ type: LinkConstants.EDIT_LINK_REQUEST});
-        return new Promise((resolve, reject) => {
-            LinkServices.edit(id, link)
+        LinkServices.edit(id, link)
             .then(res => {
                 dispatch({
                     type: LinkConstants.EDIT_LINK_SUCCESS,
                     payload: res.data.content
                 })
-                resolve(res);
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        })
     }
 }
 
@@ -111,7 +100,6 @@ function destroy(id, link){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

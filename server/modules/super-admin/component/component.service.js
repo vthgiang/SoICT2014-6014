@@ -1,5 +1,9 @@
 const { Privilege, Role, Link, Component } = require('../../../models').schema;
 
+/**
+ * Lấy danh sách các component của công ty
+ * @id id của công ty
+ */
 exports.getAllComponents = async (id) => {
 
     return await Component
@@ -7,6 +11,13 @@ exports.getAllComponents = async (id) => {
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
+/**
+ * Phân trang danh sách các component
+ * @company id công ty
+ * @limit giới hạn
+ * @page số thứ tự trang muốn lấy
+ * @data dữ liệu truy vấn
+ */
 exports.getPaginatedComponents = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await Component
@@ -19,6 +30,10 @@ exports.getPaginatedComponents = async (company, limit, page, data={}) => {
         });
 }
 
+/**
+ * Lấy component theo id
+ * @id id component
+ */
 exports.getComponentById = async (id) => {
 
     return await Component
@@ -26,9 +41,13 @@ exports.getComponentById = async (id) => {
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 }
 
+/**
+ * Tạo component
+ * @data dữ liệu component
+ */
 exports.createComponent = async(data) => {
     const check = await Component.findOne({name: data.name});
-    if(check !== null) throw ('component_name_exist');
+    if(check !== null) throw ['component_name_exist'];
 
     return await Component.create({
         name: data.name,
@@ -37,6 +56,11 @@ exports.createComponent = async(data) => {
     });
 }
 
+/**
+ * Sửa component
+ * @id id component
+ * @data dữ liệu
+ */
 exports.editComponent = async(id, data) => {
     const component = await Component
         .findById(id)
@@ -50,6 +74,10 @@ exports.editComponent = async(id, data) => {
     return component;
 }
 
+/**
+ * Xóa component
+ * @id id component
+ */
 exports.deleteComponent = async(id) => {
     const relationshiopDelete = await Privilege.deleteMany({
         resourceId: id,
@@ -60,6 +88,11 @@ exports.deleteComponent = async(id) => {
     return {relationshiopDelete, deleteComponent};
 }
 
+/**
+ * Thiết lập mối quan hệ component - role
+ * @componentId id component
+ * @roleArr mảng id các role
+ */
 exports.relationshipComponentRole = async(componentId, roleArr) => {
     await Privilege.deleteMany({
         resourceId: componentId,
@@ -77,6 +110,11 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
     return privilege;
 }
 
+/**
+ * Lấy các component trên 1 trang mà user này có quyền
+ * @roleId id role của user
+ * @linkId id của trang user muốn lấy
+ */
 exports.getComponentsOfUserInLink = async(roleId, linkId) => {
 
     const role = await Role.findById(roleId);
@@ -86,7 +124,7 @@ exports.getComponentsOfUserInLink = async(roleId, linkId) => {
     const link = await Link.findById(linkId)
         .populate([
             { path: 'components', model: Component }
-        ]); //lấy được thông tin về link
+        ]);
         
     const data = await Privilege.find({
         roleId: {$in: roleArr},

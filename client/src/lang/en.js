@@ -43,17 +43,17 @@ export default {
             edit_salary_success: 'Edit salary success',
             edit_salary_faile: 'Edit salary faile',
             // Quản lý khen thưởng
-            type_praise_required: 'Reward forms required',
-            reason_praise_required: 'Reason required',
+            type_commendations_required: 'Reward forms required',
+            reason_commendations_required: 'Reason required',
             decisions_date_required: 'Decis day required',
-            get_praise_success: 'Get Reward success',
-            get_praise_faile: 'Get Reward faile',
-            create_praise_success: 'Create Reward success',
-            create_praise_faile: 'Create Reward faile',
-            delete_praise_success: 'Delete Reward success',
-            delete_praise_faile: 'Delete Reward faile',
-            edit_praise_success: 'Edit Reward success',
-            edit_praise_faile: 'Edit Reward faile',
+            get_commendations_success: 'Get Reward success',
+            get_commendations_faile: 'Get Reward faile',
+            create_commendations_success: 'Create Reward success',
+            create_commendations_faile: 'Create Reward faile',
+            delete_commendations_success: 'Delete Reward success',
+            delete_commendations_faile: 'Delete Reward faile',
+            edit_commendations_success: 'Edit Reward success',
+            edit_commendations_faile: 'Edit Reward faile',
             // Quản lý kỷ luật
             type_discipline_required: 'Discipline forms required',
             reason_discipline_required: 'Reason required',
@@ -80,6 +80,178 @@ export default {
              * Chức năng quản lý nhân sự
              */
         },
+
+        /*******************************************************
+         * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
+         * @general những phần ngôn ngữ dùng chung cho mọi module
+         * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
+         *******************************************************/
+        general: {
+            table: 'Bảng',
+            name: 'Tên',
+            description: 'Mô tả',
+            search: 'Tìm kiếm',
+            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
+            yes: 'Có',  no: 'Không',
+            loading: 'Đang tải dữ liệu',
+            no_data: 'Không có dữ liệu',
+            success: 'Thành công',
+            error: 'Lỗi',
+            auth_alert: {
+                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
+                reason: 'Nguyên nhân có thể là do:',
+                content: [
+                    'Phiên làm việc đã hết hạn',
+                    'Truy cập không hợp lệ',
+                    'Phân quyền của bạn không hợp lệ',
+                    'Phân quyền của bạn đã được quản lý thay đổi',
+                    'Token của bạn không hợp lệ',
+                    'Dịch vụ cho công ty không còn hoạt động',
+                ]
+            }
+        },
+
+        system_admin: {
+            company: {
+                table: {
+                    name: 'Tên doanh nghiệp/công ty',
+                    short_name: 'Tên ngắn',
+                    description: 'Mô tả về doanh nghiệp/công ty',
+                    log: 'Ghi log',
+                    service: 'Dịch vụ',
+                    super_admin: 'Tài khoản super admin',
+                },
+                on: 'Bật', off: 'Tắt',
+                add: 'Thêm doanh nghiệp/công ty',
+                edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
+                service: 'Dịch vụ cho doanh nghiệp/công ty',
+                validator: {
+                    name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_special: 'Tên không được chứa kí tự đặc biệt'
+                    },
+                    short_name: {
+                        no_blank: 'Tên không được để trống',
+                        no_less4: 'Tên không được ít hơn 4 kí tự',
+                        no_more255: 'Tên không quá 255 kí tự',
+                        no_space: 'Tên ngắn của công ty không hợp lê. Các chữ không được cách nhau'
+                    },
+                    short_name: {
+                        no_blank: 'Mô tả không được để trống',
+                        no_less4: 'Mô tả không được ít hơn 4 kí tự',
+                        no_more255: 'Mô tả không quá 255 kí tự',
+                        no_special: 'Mô tả không được chứa kí tự đặc biệt'
+                    },
+                    super_admin: {
+                        no_blank: 'Email không được để trống',
+                        email_invalid: 'Email không hợp lệ',
+                    }
+                },
+
+                // Thông điệp trả về từ server
+                create_company_success: 'Khởi tạo dữ liệu công ty thành công',
+                show_company_success: 'Lấy dữ liệu công ty thành công',
+                edit_company_success: 'Chỉnh sửa thông tin công ty thành công',
+                delete_company_success: 'Xóa dữ liệu công ty thành công',
+                add_new_link_for_company_success: 'Thêm mới link cho công ty thành công',
+                delete_link_for_company_success: 'Xóa link thành công',
+                add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
+                delete_component_for_company_success: 'Xóa component thành công',
+
+                email_exist: 'Email này đã được sử dụng',
+                company_not_found: 'Không tìm thấy thông tin về công ty',
+                link_exist: 'Url cho link đã tồn tại',
+                component_exist: 'Component này đã tồn tại',
+            },
+
+            log: {
+
+            },
+
+            root_role: {
+
+            },
+
+            system_link: {
+                table: {
+                    url: 'Đường dẫn',
+                    description: 'Mô tả về trang',
+                },
+
+                // Thông điệp từ server
+                create_system_link_success: 'Tạo system link thành công',
+                edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
+
+                system_link_url_exist: 'Url này đã được sử dụng',
+            },
+
+            system_component: {
+                table: {
+
+                },
+
+                //Thông điệp trả về từ server
+                create_system_component_success: 'Tạo system component thành công',
+                show_system_component_success: 'Lấy dữ liệu system component thành công',
+                edit_system_component_success: 'Chỉnh sửa system admin thành công',
+                delete_system_component_success: 'Xóa system component thành công',
+
+                system_component_name_invalid: 'Tên không hợp lệ',
+                system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
+            }
+        },
+        super_admin: {
+            organization_unit: {
+                //Thông điệp trả về từ server
+                create_department_success: 'Tạo đơn vị thành công',
+                edit_department_success: 'Chỉnh sửa đơn vị thành công',
+                delete_department_success: 'Xóa đơn vị thành công',
+
+                department_name_exist: 'Tên đơn vị này đã được sử dụng',
+                department_not_found: 'Không tìm thấy thông tin về đơn vị',
+                department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
+            },
+            user: {
+                // Thông điệp trả về từ server
+                create_user_success: 'Tạo tài khoản người dùng thành công',
+                edit_user_success: 'Chỉnh sửa thông tin tài khoản người dùng thành công',
+                delete_user_success: 'Xóa tài khoản người dùng thành công',
+                
+                email_exist: 'Email đã được sử dụng cho một tài khoản khác',
+                user_not_found: 'Không tìm thấy thông tin về tài khoản',
+                department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
+            },
+            role: {
+                // Thông điệp trả về từ server
+                create_role_success: 'Tạo role mới thành công',
+                edit_role_success: 'Chỉnh sửa role thành công',
+                delete_role_success: 'Xóa role thành công',
+                
+                role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
+                role_dean_exist: 'Tên cho phân quyền của trưởng đơn vị này đã được sử dụng',
+                role_vice_dean_exist: 'Tên cho phân quyền của phó đơn vị này đã được sử dụng',
+                role_employee_exist: 'Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng',
+            },
+            link: {
+                // Thông điệp trả về từ server
+                create_link_success: 'Tạo link thành công',
+                edit_link_success: 'Chỉnh sửa link thành công',
+                delete_link_success: 'Xóa link thành công',
+    
+                cannot_create_this_url: 'Không thể tạo link này',
+                this_url_cannot_be_use: 'Url này không được phép sử dụng',
+                url_exist: 'Url này đã đươc sử dụng',
+            },
+            component: {
+                // Thông điệp trả về từ server
+                edit_component_success: 'Chỉnh sửa component thành công',
+            
+                component_name_exist: 'Tên của component đã được sử dụng',
+            },
+        },
+
         not_found: {
             title: 'Qpps! Page not found',
             content: 'We could not find the page you were looking for',
@@ -222,7 +394,7 @@ export default {
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
             discipline: 'Manage Reward And Discipline',
-            sabbatical: 'Manage Leave',
+            annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
             list_education: 'Training Programs',
@@ -681,9 +853,10 @@ export default {
 
         },
 
-        kpi_personal: {
-            kpi_personal_create: {
-                general_information: {
+        employee_kpi_set: {
+            create_employee_kpi_set: {// Module chính
+                // Nhóm dành cho các thông tin chung
+                general_information: { 
                     general_information: 'Personal KPI in',
                     save: 'Save the edit',
                     edit: 'Edit',
@@ -693,11 +866,18 @@ export default {
                     edit_failure: 'Editing falied',
                     delete_success: 'Delete KPI successful'
                 },
-
-                unit: 'Unit',
                 time: 'Time',
                 approver: 'Approver',
+                weight: {
+                    weight_total: 'Weight total',
+                    not_satisfied: 'Not satisfied',
+                    satisfied: 'Satisfied'
+                },
+                initialize_kpi_newmonth: 'Initialize KPI new month',
+                request_approval: 'Request for approval',
+                cancel_request_approval: 'Cancel request for approval',
 
+                // Nhóm dành cho các trạng thái tập KPI
                 kpi_status: {
                     status: 'KPI status',
                     setting_up: 'Setting-up',
@@ -706,15 +886,17 @@ export default {
                     finished: 'Finished'
                 },
 
-                weight: {
-                    weight_total: 'Weight total',
-                    not_satisfied: 'Not satisfied',
-                    satisfied: 'Satisfied'
+                // Nhóm dành cho các trạng thái mục tiêu KPI
+                check_status_target: {
+                    not_approved: 'Not approved',
+                    edit_request: 'Edit request',
+                    activated: 'Activated',
+                    finished: 'Finished'
                 },
 
+                // Nhóm dành cho table
                 target_list: 'Target list',
                 add_target: 'Add target',
-                initialize_kpi_newmonth: 'Initialize KPI new month',
                 no_: 'No.',
                 target_name: 'Target name',
                 parents_target: 'Parents target',
@@ -724,25 +906,18 @@ export default {
                 action: 'Action',
                 not_initialize: 'No KPI have been initialized in ',
 
-                action_title: {
-                    edit: 'Edit',
-                    content: 'This is the default target (if necessary, weights can be corrected)',
-                    delete: 'Delete'
-                },
-
+                // Nhóm dành cho phản hồi
                 submit: {
                     feedback: 'Feedback',
                     send_feedback: 'Send feedback',
                     cancel_feedback: 'Cancel',
-                    request_approval: 'Request for approval',
-                    cancel_request_approval: 'Cancel request for approval'
                 },
 
+                // Nhóm dành cho các handle
                 handle_edit_kpi: {
                     approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
                     activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
                 },
-
                 delete_kpi: {
                     kpi: 'Are you sure you want to delete this KPI?',
                     kpi_target: 'Are you sure you want to delete this KPI target?',
@@ -750,44 +925,51 @@ export default {
                     activated: 'KPI has been activated, you can not delete!',
                     delete_success: 'Delete KPI target successful'
                 },
-
                 edit_target: {
                     approving: 'KPI is being approved, you can not edit!',
                     activated: 'KPI is being activated, you can not edit!'
                 },
-
-                check_status_target: {
-                    not_approved: 'Not approved',
-                    edit_request: 'Edit request',
-                    activated: 'Activated',
-                    finished: 'Finished'
-                },
-
                 request_approval_kpi: {
                     approve: 'Are you sure you want to be approved this KPI?',
                     not_enough_weight: 'The total weight must be 100'
                 },
-
                 cancel_approve: {
                     cancel: 'Are you sure you want to cancel this KPI?',
                     activated: 'KPI has been activated, you can not cancel the request for approval. If you want to modify, please contact your manager!'
                 },
-
-                not_initialize: 'Not yet initialized'
+                action_title: {
+                    edit: 'Edit',
+                    content: 'This is the default target (if necessary, weights can be corrected)',
+                    delete: 'Delete'
+                },
             },
 
-            add_target_kpi: {
-                add_target_personal: 'Add personal KPI target',
-                add_target: 'Add target',
-                parents_target: 'Parents target',
-                evaluation_criteria_description: 'Evaluation criteria description',
-                placeholder_description: 'Evaluation the level of completion based on what criteria?',
+            create_employee_kpi_modal: { // Module con
+                // Nhóm dành cho modal
+                create_employee_kpi: 'Add personal KPI target',
+                name: 'Target name',
+                parents: 'Parents target',
+                evaluation_criteria: 'Evaluation criteria',
                 weight: 'Weight',
-                placeholder_weight: 'Weight of target',
-                cancel: 'Cancel',
-                add_success: 'Add KPI target successful'
+                success: 'Add KPI target successful',
+                failure: 'You have not entered enough information',
+
+                // Nhóm dành cho validate
+                validate_name: {
+                    empty: 'Target name cannot be empty',
+                    less_than_4: 'Target name cannot be less than 4 characters',
+                    more_than_50: 'Target name cannot be more than 50 characters',
+                    special_character: 'Target name cannot contain special characters'
+                },
+                validate_criteria: 'Criteria cannot be empty',
+                validate_weight: {
+                    empty: 'Weight cannot be empty',
+                    less_than_0: 'Weight cannot be less than 0',
+                    greater_than_100: 'Weight cannot be greater than 100'
+                }
             },
-            kpi_member:{
+
+            kpi_member_manager:{ // Module con
                 index:'Index',
                 time:'Date',
                 employee_name:'Employee Name',
@@ -797,28 +979,27 @@ export default {
                 approve:'Approve',
                 evaluate:'Evaluate'
             },
-            start: {
-                initialize_kpi: 'Initialize personal KPI',
-                unit: 'Unit',
+
+            create_employee_kpi_set_modal: { // Module con
+                // Nhóm dành cho modal
+                initialize_kpi_set: 'Initialize personal KPI',
+                organizational_unit: 'Organizational Unit',
                 month: 'Month',
                 approver: 'Approver',
                 default_target: 'Default target',
-                initialize: 'Initialize',
-                cancel: 'Cancel',
-                success: 'Initialize KPI successful'
+                success: 'Initialize KPI successful',
+                failure: 'You have not entered enough information'
             },
 
-            edit_target_kpi: {
-                edit_personal: 'Edit personal KPI targets',
-                target_name: 'Target name',
-                parents_target: 'Parents target',
-                evaluation_criteria_description: 'Evaluation criteria description',
-                placeholder_description: 'Evaluation the level of completion based on what criteria?',
+            edit_employee_kpi_modal: { // Module con
+                // Nhóm dành cho modal
+                edit_employee_kpi: 'Edit personal KPI targets',
+                name: 'Target name',
+                parents: 'Parents target',
+                evaluation_criteria: 'Evaluation criteria',
                 weight: 'Weight',
-                placeholder_weight: 'Weigt of target',
-                save: 'Save',
-                cancel: 'Cancel',
-                edit_success: 'Edit KPI target successful'
+                success: 'Edit KPI target successful',
+                failure: 'You have not entered enough information'
             }
         },
 

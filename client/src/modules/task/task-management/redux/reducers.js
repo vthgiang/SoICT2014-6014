@@ -11,7 +11,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETALL_TASK_SUCCESS:
             return {
                 ...state,
-                items: action.tasks,
+                items: action.payload,
                 isLoading: false
             };
         case taskManagementConstants.GETALL_TASK_FAILURE:
@@ -29,7 +29,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_BYID_SUCCESS:
             return {
                 ...state,
-                task: action.task,
+                task: action.payload,
                 isLoading: false
             };
         case taskManagementConstants.GETTASK_BYID_FAILURE:
@@ -48,8 +48,8 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS:
             return {
                 ...state,
-                tasks: action.taskResponsibles.tasks,
-                pages: action.taskResponsibles.totalpage,
+                tasks: action.payload.tasks,
+                pages: action.payload.totalPage,
                 isLoading: false
             };
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_FAILURE:
@@ -57,7 +57,7 @@ export function tasks(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
-        case taskManagementConstants.GETTASK_ACCOUNATABLE_BYUSER_REQUEST:
+        case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_REQUEST:
             return {
                 ...state,
                 tasks: null,
@@ -65,15 +65,15 @@ export function tasks(state = {}, action) {
                 loadingAccountable: true,
                 isLoading: true
             };
-        case taskManagementConstants.GETTASK_ACCOUNATABLE_BYUSER_SUCCESS:
+        case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS:
             return {
                 ...state,
-                tasks: action.taskAccounatables.tasks,
-                pages: action.taskAccounatables.totalpage,
+                tasks: action.payload.tasks,
+                pages: action.payload.totalPage,
                 loadingAccountable: false,
                 isLoading: false
             };
-        case taskManagementConstants.GETTASK_ACCOUNATABLE_BYUSER_FAILURE:
+        case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_FAILURE:
             return {
                 error: action.error,
                 isLoading: false
@@ -89,8 +89,8 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS:
             return {
                 ...state,
-                tasks: action.taskConsulteds.tasks,
-                pages: action.taskConsulteds.totalpage,
+                tasks: action.payload.tasks,
+                pages: action.payload.totalPage,
                 isLoading: false
             };
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_FAILURE:
@@ -109,8 +109,8 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS:
             return {
                 ...state,
-                tasks: action.taskInformeds.tasks,
-                pages: action.taskInformeds.totalpage,
+                tasks: action.payload.tasks,
+                pages: action.payload.totalPage,
                 isLoading: false
             };
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_FAILURE:
@@ -129,8 +129,8 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS:
             return {
                 ...state,
-                tasks: action.taskCreators.tasks,
-                pages: action.taskCreators.totalpage,
+                tasks: action.payload.tasks,
+                pages: action.payload.totalPage,
                 isLoading: false
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE:
@@ -149,7 +149,7 @@ export function tasks(state = {}, action) {
                 ...state,
                 tasks: [
                     ...state.tasks,
-                    action.task.data
+                    action.payload
                 ],
                 isLoading: false
             };
@@ -172,10 +172,10 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 tasks: state.tasks.map(task =>
-                    task._id === action.newTask.info._id
-                        ? action.newTask.info : task
+                    task._id === action.payload.info._id
+                        ? action.payload.info : task
                 ),
-                task: action.newTask,
+                task: action.payload,
                 isLoading: false
             };
         case taskManagementConstants.EDIT_TASK_FAILURE:
@@ -193,7 +193,7 @@ export function tasks(state = {}, action) {
                 ...state,
                 isLoading: false,
                 task: {
-                    info : action.task.content
+                    info : action.payload
                 }
             };
         case taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE:

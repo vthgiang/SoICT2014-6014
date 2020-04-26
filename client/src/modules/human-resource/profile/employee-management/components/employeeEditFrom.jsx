@@ -5,13 +5,13 @@ import { DialogModal } from '../../../../../common-components';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { SalaryActions } from '../../../salary/redux/actions';
-import { SabbaticalActions } from '../../../annual-leave/redux/actions';
+import { AnnualLeaveActions } from '../../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../../commendation-discipline/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, TabInsurranceContent, TabRearDisciplineContent,
+    ExperienceTab, CertificateTab, TabContractContent, TabSalaryContent, TabAttachmentsContent
 } from '../../employee-create/components/combinedContent';
 
 class EmployeeEditFrom extends Component {
@@ -265,18 +265,18 @@ class EmployeeEditFrom extends Component {
         //         let createSabbatical = this.state.sabbaticalNew.filter(sabbatical => (sabbatical._id === " "));
         //         if (createSabbatical.length !== 0) {
         //             createSabbatical.map(x => {
-        //                 this.props.createNewSabbatical({ ...x, employeeNumber })
+        //                 this.props.createAnnualLeave({ ...x, employeeNumber })
         //             });
         //         }
         //     }
         //     if (this.state.sabbaticalEdit.length !== 0) {
         //         this.state.sabbaticalEdit.map(x => {
-        //             this.props.updateSabbatical(x._id, { ...x, employeeNumber })
+        //             this.props.updateAnnualLeave(x._id, { ...x, employeeNumber })
         //         });
         //     }
         //     if (this.state.sabbaticalDelete.length !== 0) {
         //         this.state.sabbaticalDelete.map(x => {
-        //             this.props.deleteSabbatical(x._id);
+        //             this.props.deleteAnnualLeave(x._id);
         //         })
         //     }
         //     // lưu thông tin khen thưởng
@@ -330,14 +330,13 @@ class EmployeeEditFrom extends Component {
                 img: nextProps.employee[0].avatar,
                 avatar: "",
                 employee: nextProps.employee[0],
-                employeeContact: nextProps.employeeContact[0] !== undefined ? nextProps.employeeContact[0] : "",
                 praise: nextProps.praise,
                 salary: nextProps.salary,
                 sabbatical: nextProps.sabbatical,
                 discipline: nextProps.discipline,
                 file: nextProps.employee[0].file,
-                certificate: nextProps.employee[0].certificate,
-                certificateShort: nextProps.employee[0].certificateShort,
+                degrees: nextProps.employee[0].degrees,
+                certificates: nextProps.employee[0].certificates,
                 contract: nextProps.employee[0].contract,
                 BHXH: nextProps.employee[0].BHXH,
                 course: nextProps.employee[0].course,
@@ -363,7 +362,7 @@ class EmployeeEditFrom extends Component {
                 <DialogModal
                     size='100' modalID="modal-edit-employee" isLoading={false}
                     formID="form-edit-employee"
-                    title="Chỉnh sửa thông tin nhân viên"
+                    title={translate('manage_employee.edit_diploma')}
                     func={this.save}
                     disableSubmit={false}
                 >
@@ -382,29 +381,29 @@ class EmployeeEditFrom extends Component {
                             <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('manage_employee.menu_attachments')}</a></li>
                         </ul>
                         < div className="tab-content">
-                            <TabGeneralContent
+                            <GeneralTab
                                 id={`edit_general${_id}`}
                                 img={this.state.img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
                                 employee={this.state.employee}
                             />
-                            <TabContactContent
+                            <ContactTab
                                 id={`edit_contact${_id}`}
                                 handleChange={this.handleChange}
-                                employeeContact={this.state.employeeContact}
+                                employee={this.state.employee}
                             />
-                            <TabExperienceContent
+                            <ExperienceTab
                                 id={`edit_experience${_id}`}
                                 employee={this.state.employee}
                                 handleAddExperience={this.handleChangeExperience}
                                 handleEditExperience={this.handleChangeExperience}
                                 handleDeleteExperience={this.handleChangeExperience}
                             />
-                            <TabCertificateContent
+                            <CertificateTab
                                 id={`edit_diploma${_id}`}
-                                certificate={this.state.certificate}
-                                certificateShort={this.state.certificateShort}
+                                degrees={this.state.degrees}
+                                certificates={this.state.certificates}
                                 handleAddCertificate={this.handleChangeCertificate}
                                 handleEditCertificate={this.handleChangeCertificate}
                                 handleDeleteCertificate={this.handleChangeCertificate}
@@ -412,7 +411,7 @@ class EmployeeEditFrom extends Component {
                                 handleEditCertificateShort={this.handleChangeCertificateShort}
                                 handleDeleteCertificateShort={this.handleChangeCertificateShort}
                             />
-                            <TabTaxContent
+                            <TaxTab
                                 id={`edit_account${_id}`}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange} />
@@ -491,17 +490,17 @@ const actionCreators = {
     updateFile: EmployeeManagerActions.updateFile,
 
     createNewSalary: SalaryActions.createNewSalary,
-    createNewSabbatical: SabbaticalActions.createNewSabbatical,
+    createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
     createNewPraise: DisciplineActions.createNewPraise,
     createNewDiscipline: DisciplineActions.createNewDiscipline,
 
     updateSalary: SalaryActions.updateSalary,
-    updateSabbatical: SabbaticalActions.updateSabbatical,
+    updateAnnualLeave: AnnualLeaveActions.updateAnnualLeave,
     updateDiscipline: DisciplineActions.updateDiscipline,
     updatePraise: DisciplineActions.updatePraise,
 
     deleteSalary: SalaryActions.deleteSalary,
-    deleteSabbatical: SabbaticalActions.deleteSabbatical,
+    deleteAnnualLeave: AnnualLeaveActions.deleteAnnualLeave,
     deleteDiscipline: DisciplineActions.deleteDiscipline,
     deletePraise: DisciplineActions.deletePraise,
 };

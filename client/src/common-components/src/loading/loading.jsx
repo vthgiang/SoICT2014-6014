@@ -12,7 +12,7 @@ class Loading extends Component {
                 <span>
                     <div className="loader"></div>
                 </span>
-                <div className="modal bg-loader" id="loading-data" style={{display: "block"}}></div>
+                <div className="bg-loader" id="loading-data" style={{display: "block"}}></div>
             </React.Fragment>
          );
     }

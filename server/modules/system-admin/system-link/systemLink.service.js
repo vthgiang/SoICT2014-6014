@@ -53,7 +53,7 @@ exports.getSystemLink = async (id) => {
  */
 exports.createSystemLink = async(url, description, roles, category) => {
     const link = await SystemLink.findOne({ url });
-    if(link !== null) throw ('link_default_exist');
+    if(link !== null) throw ['system_link_url_exist'];
 
     return await SystemLink.create({ url, description, category, roles });
 }

@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const multer = require('multer');
-const {auth} = require('../../../middleware/index');
+const {auth} = require('../../../middleware');
 // const {role} = require('../../../middleware/auth.middleware');
-const DIR = '../../../../client/public/uploadfiles/';
+const DIR = '../../../../client/public/fileupload/';
 const PerformTaskController = require("./taskPerform.controller");
 
 const storage = multer.diskStorage({

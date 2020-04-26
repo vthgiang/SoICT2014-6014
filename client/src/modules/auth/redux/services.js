@@ -2,6 +2,7 @@ import axios from 'axios';
 import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
 import { AuthenticateHeader, FingerPrint, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
+import { sendRequest } from '../../../helpers/requestHelper';
 
 export const AuthService = {
     login,
@@ -30,76 +31,60 @@ async function login(user) {
 }
 
 function logout() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/logout`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 function logoutAllAccount() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/logout-all-account`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 function editProfile(data) {
-    // const token = localStorage.getItem('token');
     const token = getStorage();
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    const requestOptions = {
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
         data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 function changeInformation(data) {
     const token = getStorage();
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    const requestOptions = {
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
         method: 'PATCH',
         data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 function changePassword(data) {
     const token = getStorage();
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    const requestOptions = {
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
         method: 'PATCH',
         data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 async function getLinksOfRole(idRole) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/get-links-of-role/${idRole}`,
         method: 'GET',
-        headers: await AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 async function refresh() {
@@ -107,29 +92,24 @@ async function refresh() {
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
     
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
         method: 'GET',
-        headers: await AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 function forgotPassword(email) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/forgot-password`,
         method: 'POST',
         data: {
             email
         }
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 function resetPassword(otp, email, password) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/reset-password`,
         method: 'POST',
         data: {
@@ -137,18 +117,12 @@ function resetPassword(otp, email, password) {
             email,
             password
         }
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }
 
 function getComponentOfUserInLink(currentRole, linkId) {
-    const requestOptions = {
-        // url: `${ LOCAL_SERVER_API }/auth/role/${currentRole}/link/${linkId}`,
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'auth');
 }

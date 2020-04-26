@@ -1,7 +1,6 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
-import { alert } from '../modules/alert/redux/reducers';
 import { log } from '../modules/system-admin/log/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
@@ -28,7 +27,7 @@ import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/re
 
 import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
 import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
-import {dashboardKPIPersonal} from "../modules/kpi/employee/dashboard/redux/reducers"
+import {dashboardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/redux/reducers"
 
 import {tasktemplates} from '../modules/task/task-template/redux/reducers';
 import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/reducers';
@@ -46,8 +45,6 @@ import { repairUpgrade } from "../modules/assets-manager/repair-upgrade/redux/re
 import { distributeTransfer } from "../modules/assets-manager/distribute-transfer/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
-    alert,
-
     //system
     log,
     company,
@@ -81,7 +78,7 @@ const appReducer = combineReducers(Object.assign({
     //kpi-personal
     createEmployeeKpiSet,
     KPIPersonalManager,
-    dashboardKPIPersonal,
+    dashboardEmployeeKpiSet,
 
     //tasktemplates
     tasktemplates,
