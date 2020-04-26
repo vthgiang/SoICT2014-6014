@@ -51,14 +51,15 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
             infoRoleDean, infoRoleViceDean, infoRoleEmployee } = this.state;
         userRoleEmployee = userRoleEmployee.concat(addUserEmployee);
 
-        let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: userRoleDean }
+        let roleDean = { id: infoRoleDean._id, name: infoRoleDean.name, parents: infoRoleDean.parents, users: [userRoleDean] }
         let roleViceDean = { id: infoRoleViceDean._id, name: infoRoleViceDean.name, parents: infoRoleViceDean.parents, users: userRoleViceDean }
         let roleEmployee = { id: infoRoleEmployee._id, name: infoRoleEmployee.name, parents: infoRoleEmployee.parents, users: userRoleEmployee }
-        
+        console.log(roleDean);
+        console.log(roleViceDean);
         // Lưu chỉnh sửa các role của đơn vị
         this.props.edit(roleDean);
         this.props.edit(roleViceDean);
-        return this.props.edit(roleEmployee);
+        this.props.edit(roleEmployee);
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {

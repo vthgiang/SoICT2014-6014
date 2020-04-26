@@ -10,8 +10,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    GeneralTab, ContactTab, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    ExperienceTab, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, TabInsurranceContent, TabRearDisciplineContent,
+    ExperienceTab, CertificateTab, TabContractContent, TabSalaryContent, TabAttachmentsContent
 } from '../../employee-create/components/combinedContent';
 
 class EmployeeEditFrom extends Component {
@@ -335,8 +335,8 @@ class EmployeeEditFrom extends Component {
                 sabbatical: nextProps.sabbatical,
                 discipline: nextProps.discipline,
                 file: nextProps.employee[0].file,
-                certificate: nextProps.employee[0].certificate,
-                certificateShort: nextProps.employee[0].certificateShort,
+                degrees: nextProps.employee[0].degrees,
+                certificates: nextProps.employee[0].certificates,
                 contract: nextProps.employee[0].contract,
                 BHXH: nextProps.employee[0].BHXH,
                 course: nextProps.employee[0].course,
@@ -400,10 +400,10 @@ class EmployeeEditFrom extends Component {
                                 handleEditExperience={this.handleChangeExperience}
                                 handleDeleteExperience={this.handleChangeExperience}
                             />
-                            <TabCertificateContent
+                            <CertificateTab
                                 id={`edit_diploma${_id}`}
-                                certificate={this.state.certificate}
-                                certificateShort={this.state.certificateShort}
+                                degrees={this.state.degrees}
+                                certificates={this.state.certificates}
                                 handleAddCertificate={this.handleChangeCertificate}
                                 handleEditCertificate={this.handleChangeCertificate}
                                 handleDeleteCertificate={this.handleChangeCertificate}
@@ -411,7 +411,7 @@ class EmployeeEditFrom extends Component {
                                 handleEditCertificateShort={this.handleChangeCertificateShort}
                                 handleDeleteCertificateShort={this.handleChangeCertificateShort}
                             />
-                            <TabTaxContent
+                            <TaxTab
                                 id={`edit_account${_id}`}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange} />

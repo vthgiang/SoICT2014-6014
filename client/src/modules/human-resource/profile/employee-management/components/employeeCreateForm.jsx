@@ -10,8 +10,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    GeneralTab, ContactTab, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    ExperienceTab, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, TabInsurranceContent, TabRearDisciplineContent,
+    ExperienceTab, CertificateTab, TabContractContent, TabSalaryContent, TabAttachmentsContent
 } from '../../employee-create/components/combinedContent';
 class EmployeeCreateForm extends Component {
     constructor(props) {
@@ -32,8 +32,8 @@ class EmployeeCreateForm extends Component {
                 BHXH: [],
                 course: []
             },
-            certificate: [],
-            certificateShort: [],
+            degrees: [],
+            certificates: [],
             contract: [],
             file: [],
             disciplineNew: [],
@@ -355,10 +355,10 @@ class EmployeeCreateForm extends Component {
                                     handleEditExperience={this.handleChangeExperience}
                                     handleDeleteExperience={this.handleChangeExperience}
                                 />
-                                <TabCertificateContent
+                                <CertificateTab
                                     id="diploma"
-                                    certificate={this.state.certificate}
-                                    certificateShort={this.state.certificateShort}
+                                    degrees={this.state.degrees}
+                                    certificates={this.state.certificates}
                                     handleAddCertificate={this.handleChangeCertificate}
                                     handleEditCertificate={this.handleChangeCertificate}
                                     handleDeleteCertificate={this.handleChangeCertificate}
@@ -366,7 +366,7 @@ class EmployeeCreateForm extends Component {
                                     handleEditCertificateShort={this.handleChangeCertificateShort}
                                     handleDeleteCertificateShort={this.handleChangeCertificateShort}
                                 />
-                                <TabTaxContent
+                                <TaxTab
                                     id="account"
                                     employee={this.state.employeeNew}
                                     handleChange={this.handleChange} />
