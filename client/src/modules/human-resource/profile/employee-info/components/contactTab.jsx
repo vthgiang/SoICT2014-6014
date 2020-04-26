@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class TabContactViewContent extends Component {
+class ContactTab extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -13,27 +13,27 @@ class TabContactViewContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                phoneNumber: nextProps.employeeContact.phoneNumber,
-                phoneNumber2: nextProps.employeeContact.phoneNumber2,
-                emailPersonal: nextProps.employeeContact.emailPersonal,
-                emailPersonal2: nextProps.employeeContact.emailPersonal2,
-                phoneNumberAddress: nextProps.employeeContact.phoneNumberAddress,
-                friendName: nextProps.employeeContact.friendName,
-                relation: nextProps.employeeContact.relation,
-                friendAddress: nextProps.employeeContact.friendAddress,
-                friendPhone: nextProps.employeeContact.friendPhone,
-                friendPhoneAddress: nextProps.employeeContact.friendPhoneAddress,
-                friendEmail: nextProps.employeeContact.friendEmail,
-                localAddress: nextProps.employeeContact.localAddress,
-                localCommune: nextProps.employeeContact.localCommune,
-                localDistrict: nextProps.employeeContact.localDistrict,
-                localCity: nextProps.employeeContact.localCity,
-                localNational: nextProps.employeeContact.localNational,
-                nowAddress: nextProps.employeeContact.nowAddress,
-                nowCommune: nextProps.employeeContact.nowCommune,
-                nowDistrict: nextProps.employeeContact.nowDistrict,
-                nowCity: nextProps.employeeContact.nowCity,
-                nowNational: nextProps.employeeContact.nowNational,
+                phoneNumber: nextProps.employee.phoneNumber,
+                phoneNumber2: nextProps.employee.phoneNumber2,
+                personalEmail: nextProps.employee.personalEmail,
+                personalEmail2: nextProps.employee.personalEmail2,
+                homePhone: nextProps.employee.homePhone,
+                emergencyContactPerson: nextProps.employee.emergencyContactPerson,
+                relationWithEmergencyContactPerson: nextProps.employee.relationWithEmergencyContactPerson,
+                emergencyContactPersonAddress: nextProps.employee.emergencyContactPersonAddress,
+                emergencyContactPersonPhoneNumber: nextProps.employee.emergencyContactPersonPhoneNumber,
+                emergencyContactPersonHomePhone: nextProps.employee.emergencyContactPersonHomePhone,
+                emergencyContactPersonEmail: nextProps.employee.emergencyContactPersonEmail,
+                permanentResidence: nextProps.employee.permanentResidence,
+                permanentResidenceCountry: nextProps.employee.permanentResidenceCountry,
+                permanentResidenceCity: nextProps.employee.permanentResidenceCity,
+                permanentResidenceDistrict: nextProps.employee.permanentResidenceDistrict,
+                permanentResidenceWard: nextProps.employee.permanentResidenceWard,
+                temporaryResidence: nextProps.employee.temporaryResidence,
+                temporaryResidenceCountry: nextProps.employee.temporaryResidenceCountry,
+                temporaryResidenceCity: nextProps.employee.temporaryResidenceCity,
+                temporaryResidenceDistrict: nextProps.employee.temporaryResidenceDistrict,
+                temporaryResidenceWard: nextProps.employee.temporaryResidenceWard,
             }
         } else {
             return null;
@@ -42,10 +42,12 @@ class TabContactViewContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { phoneNumber2, phoneNumber, emailPersonal, emailPersonal2, phoneNumberAddress, friendName,
-            relation, friendAddress, friendPhone, friendPhoneAddress, friendEmail, localAddress,
-            localCommune, localDistrict, localCity, localNational, nowAddress, nowCommune,
-            nowDistrict, nowCity, nowNational} = this.state;
+        const { phoneNumber2, phoneNumber, personalEmail, personalEmail2, homePhone, emergencyContactPerson,
+            relationWithEmergencyContactPerson, emergencyContactPersonAddress, emergencyContactPersonPhoneNumber,
+            emergencyContactPersonHomePhone, emergencyContactPersonEmail, permanentResidence,
+            permanentResidenceWard, permanentResidenceDistrict, permanentResidenceCity, permanentResidenceCountry,
+            temporaryResidence, temporaryResidenceWard, temporaryResidenceDistrict,
+            temporaryResidenceCity, temporaryResidenceCountry } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -62,15 +64,15 @@ class TabContactViewContent extends Component {
                     <div className="row">
                         <div className="form-group col-md-4">
                             <strong>{translate('manage_employee.personal_email_1')}&emsp; </strong>
-                            {emailPersonal}
+                            {personalEmail}
                         </div>
                         <div className="form-group col-md-4">
                             <strong>{translate('manage_employee.personal_email_2')}&emsp; </strong>
-                            {emailPersonal2}
+                            {personalEmail2}
                         </div>
                         <div className="form-group col-md-4">
                             <strong>{translate('manage_employee.home_phone')}&emsp; </strong>
-                            {phoneNumberAddress ? "0" + phoneNumberAddress : ""}
+                            {homePhone ? "0" + homePhone : ""}
                         </div>
                     </div>
                     <fieldset className="scheduler-border">
@@ -78,29 +80,29 @@ class TabContactViewContent extends Component {
                         <div className="row">
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.full_name')}&emsp; </strong>
-                                {friendName}
+                                {emergencyContactPerson}
                             </div>
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.nexus')}&emsp; </strong>
-                                {relation}
+                                {relationWithEmergencyContactPerson}
                             </div>
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.address')}&emsp; </strong>
-                                {friendAddress}
+                                {emergencyContactPersonAddress}
                             </div>
                         </div>
                         <div className="row">
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.mobile_phone')}&emsp; </strong>
-                                {friendPhone ? "0" + friendPhone : ""}
+                                {emergencyContactPersonPhoneNumber ? "0" + emergencyContactPersonPhoneNumber : ""}
                             </div>
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.home_phone')}&emsp; </strong>
-                                {friendPhoneAddress ? "0" + phoneNumberAddress : ""}
+                                {emergencyContactPersonHomePhone ? "0" + homePhone : ""}
                             </div>
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.email')}&emsp; </strong>
-                                {friendEmail}
+                                {emergencyContactPersonEmail}
                             </div>
                         </div>
                     </fieldset>
@@ -110,23 +112,23 @@ class TabContactViewContent extends Component {
                                 <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.permanent_address')}</h4></legend>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.address')}&emsp; </strong>
-                                    {localAddress}
+                                    {permanentResidence}
                                 </div>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.nation')}&emsp; </strong>
-                                    {localNational}
+                                    {permanentResidenceCountry}
+                                </div>
+                                <div className="form-group" >
+                                    <strong>{translate('manage_employee.province')}&emsp; </strong>
+                                    {permanentResidenceCity}
                                 </div>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.district')}&emsp; </strong>
-                                    {localCity}
-                                </div>
-                                <div className="form-group" >
-                                    <strong>{translate('manage_employee.district')}&emsp; </strong>
-                                    {localDistrict}
+                                    {permanentResidenceDistrict}
                                 </div>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.wards')}&emsp; </strong>
-                                    {localCommune}
+                                    {permanentResidenceWard}
                                 </div>
                             </fieldset>
                         </div>
@@ -135,23 +137,23 @@ class TabContactViewContent extends Component {
                                 <legend className="scheduler-border"><h4 className="box-title">Chỗ ở hiện tại</h4></legend>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.address')}&emsp; </strong>
-                                    {nowAddress}
+                                    {temporaryResidence}
                                 </div>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.nation')}&emsp; </strong>
-                                    {nowNational}
+                                    {temporaryResidenceCountry}
+                                </div>
+                                <div className="form-group" >
+                                    <strong>{translate('manage_employee.province')}&emsp; </strong>
+                                    {temporaryResidenceCity}
                                 </div>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.district')}&emsp; </strong>
-                                    {nowCity}
-                                </div>
-                                <div className="form-group" >
-                                    <strong>{translate('manage_employee.district')}&emsp; </strong>
-                                    {nowDistrict}
+                                    {temporaryResidenceDistrict}
                                 </div>
                                 <div className="form-group" >
                                     <strong>{translate('manage_employee.wards')}&emsp; </strong>
-                                    {nowCommune}
+                                    {temporaryResidenceWard}
                                 </div>
                             </fieldset>
                         </div>
@@ -161,5 +163,5 @@ class TabContactViewContent extends Component {
         );
     }
 };
-const tabContact = connect(null, null)(withTranslate(TabContactViewContent));
-export { tabContact as TabContactViewContent };
+const tabContact = connect(null, null)(withTranslate(ContactTab));
+export { tabContact as ContactTab };

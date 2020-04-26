@@ -12,8 +12,8 @@ const {
 
 /**
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
+ * @emailInCompany: email công ty của nhân viên
  */
-
 exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)=>{
     let roles = [], organizationalUnits = [];
     let user = await User.findOne({email: emailInCompany},{ _id:1 })
@@ -38,16 +38,19 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
 
 /**
  * Lấy danh sách email công ty theo phòng ban và chức vụ
+ * @organizationalUnits: mảng id phòng ban
+ * @position: mảng id chức vụ(role)
  */
 exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(organizationalUnits, position)=>{
     let units = [], roles = [];
     for(let n in organizationalUnits){
-        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);  // Lấy thông tin đơn vị
+        // Lấy thông tin đơn vị
+        let unitInfo = await OrganizationalUnit.findById(organizationalUnits[n]);  
         units = [...units, unitInfo]
     }
     if (position === null) {
         units.forEach(u => {
-            let role = [u.dean, u.viceDean, u.employee];        // Lấy 3 role của đơn vị vào 1 arr
+            let role = [u.dean, u.viceDean, u.employee]; 
             roles = roles.concat(role); 
         })
     } else {
@@ -66,6 +69,35 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(organizationa
     return emailUsers.map(user => user.email)
 }
 
+/**
+ * Lấy thông tin cá nhân của nhân viên
+ * @email: email công ty của nhân viên
+ */ 
+exports.getEmployeeProfile = async (email) => {
+    
+    let employee = await Employee.find({
+        emailInCompany: email
+    });
+    if(employee.length === 0){
+        return { employee: employee}
+    } else {
+        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(email);
+        let salary = await Salary.find({
+            employee: employee[0]._id
+        })
+        let annualLeave = await AnnualLeave.find({
+            employee: employee[0]._id
+        })
+        let commendation = await Commendation.find({
+            employee: employee[0]._id
+        })
+        let discipline = await Discipline.find({
+            employee: employee[0]._id
+        })
+        return { employee: employee, salary, annualLeave, commendation, discipline, ...value}
+    }
+    
+}
 
 /**
  * Lấy danh sách nhân viên
@@ -112,93 +144,7 @@ exports.searchEmployeeProfiles = async (data, company) => {
     return { data, totalList}
 }
 
-// Kiểm tra sự tồn tại của MSNV
-exports.checkEmployeeExisted = async (employeeNumber, company) => {
-    var idEmployee = await Employee.find({
-        employeeNumber: employeeNumber,
-        company: company
-    }, {
-        field1: 1
-    })
-    var checkMSNV = false;
-    if (idEmployee.length !== 0) {
-        checkMSNV = true
-    }
-    return checkMSNV;
-}
-// Kiểm tra sự tồn tại của email công ty
-exports.checkEmployeeCompanyEmailExisted = async (email) => {
-    var idEmployee = await Employee.find({
-        emailCompany: email
-    }, {
-        field1: 1
-    })
-    var checkEmail = false;
-    if (idEmployee.length !== 0) {
-        checkEmail = true
-    }
-    return checkEmail;
-}
 
-// Lấy thông tin cá nhân
-exports.getEmployeeProfile = async (email) => {
-    var roles = [];
-    var departments = [];
-    let user = await User.findOne({
-        email: email
-    })
-    if (user !== null) {
-        roles = await UserRole.find({
-            userId: user._id
-        }).populate([{
-            path: 'roleId',
-            model: Role
-        }]);
-        let newRoles = roles.map(role => role.roleId._id);
-        departments = await OrganizationalUnit.find({
-            $or: [
-                {'dean': { $in: newRoles }}, 
-                {'viceDean':{ $in: newRoles }}, 
-                {'employee':{ $in: newRoles }}
-            ] 
-        });
-    }
-    if (roles !== []) {
-        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
-    }
-    var employeeinfo = await Employee.findOne({
-        emailCompany: email
-    });
-    var infoPersonal = await Employee.find({
-        _id: employeeinfo._id
-    });
-    var infoEmployeeContact = await EmployeeContact.find({
-        employee: employeeinfo._id
-    });
-    var salary = await Salary.find({
-        employee: employeeinfo._id
-    })
-    var sabbatical = await Sabbatical.find({
-        employee: employeeinfo._id
-    })
-    var praise = await Praise.find({
-        employee: employeeinfo._id
-    })
-    var discipline = await Discipline.find({
-        employee: employeeinfo._id
-    })
-    var employee = {
-        roles: roles,
-        departments: departments,
-        salary: salary,
-        employee: infoPersonal,
-        employeeContact: infoEmployeeContact,
-        sabbatical: sabbatical,
-        praise: praise,
-        discipline: discipline
-    }
-    return employee
-}
 
 // Thêm mới nhân viên
 exports.create = async (data, company) => {
@@ -613,7 +559,33 @@ exports.delete = async (id) => {
     // }
     // return content;
 }
-
+// Kiểm tra sự tồn tại của MSNV
+exports.checkEmployeeExisted = async (employeeNumber, company) => {
+    var idEmployee = await Employee.find({
+        employeeNumber: employeeNumber,
+        company: company
+    }, {
+        field1: 1
+    })
+    var checkMSNV = false;
+    if (idEmployee.length !== 0) {
+        checkMSNV = true
+    }
+    return checkMSNV;
+}
+// Kiểm tra sự tồn tại của email công ty
+exports.checkEmployeeCompanyEmailExisted = async (email) => {
+    var idEmployee = await Employee.find({
+        emailCompany: email
+    }, {
+        field1: 1
+    })
+    var checkEmail = false;
+    if (idEmployee.length !== 0) {
+        checkEmail = true
+    }
+    return checkEmail;
+}
 // Kiểm tra sự tồn tại của MSNV trong array 
 exports.checkEmployeesExisted = async (data, company) => {
     // var list=[];

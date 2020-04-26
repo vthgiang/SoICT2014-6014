@@ -1,48 +1,52 @@
 import { Constants } from "./constants";
 import { EmployeeService } from "./services";
 export const EmployeeInfoActions = {
-    getInformationPersonal,
-    updateInformationPersonal,
+    getEmployeeProfile,
+    updatePersonalInformation,
 };
 
-// Lấy thông tin nhân viên theo mã nhân viên
-function getInformationPersonal() {
+/**
+ * Lấy thông tin nhân viên theo mã nhân viên
+ */
+function getEmployeeProfile() {
     return dispatch => {
         dispatch({
-            type: Constants.GET_INFOR_PERSONAL_REQUEST
+            type: Constants.GET_PERSONAL_INFOR_REQUEST
         });
-        EmployeeService.getInformationPersonal()
+        EmployeeService.getEmployeeProfile()
             .then(res => {
                 dispatch({
-                    type: Constants.GET_INFOR_PERSONAL_SUCCESS,
+                    type: Constants.GET_PERSONAL_INFOR_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: Constants.GET_INFOR_PERSONAL_FAILURE,
+                    type: Constants.GET_PERSONAL_INFOR_FAILURE,
                     error: err.response.data
                 });
             })
     }
 }
 
-// Cập nhật thông tin cá nhân
-function updateInformationPersonal(data) {
+/**
+ * Cập nhật thông tin cá nhân
+ */
+function updatePersonalInformation(data) {
     return dispatch => {
         dispatch({
-            type: Constants.UPDATE_INFOR_PERSONAL_REQUEST
+            type: Constants.UPDATE_PERSONAL_INFOR_REQUEST
         });
-        EmployeeService.updateInformationPersonal(data)
+        EmployeeService.updatePersonalInformation(data)
             .then(res => {
                 dispatch({
-                    type: Constants.UPDATE_INFOR_PERSONAL_SUCCESS,
+                    type: Constants.UPDATE_PERSONAL_INFOR_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: Constants.UPDATE_INFOR_PERSONAL_FAILURE,
+                    type: Constants.UPDATE_PERSONAL_INFOR_FAILURE,
                     error: err.response.data
                 });
             })

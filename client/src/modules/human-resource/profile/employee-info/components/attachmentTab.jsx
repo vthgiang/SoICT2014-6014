@@ -12,8 +12,8 @@ class AttachmentTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                file: nextProps.file,
-                numberFile: nextProps.employee.numberFile,
+                files: nextProps.files,
+                archivedRecordNumber: nextProps.employee.archivedRecordNumber,
             }
         } else {
             return null;
@@ -22,14 +22,14 @@ class AttachmentTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { file, numberFile } = this.state;
+        const { files, archivedRecordNumber } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="row box-body">
                     <div className="col-md-4">
                         <div className="form-group">
                             <strong>{translate('manage_employee.attachments_code')}&emsp;</strong>
-                            {numberFile}
+                            {archivedRecordNumber}
                         </div>
                     </div>
                     <div className="col-md-12">
@@ -45,11 +45,11 @@ class AttachmentTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof file !== 'undefined' && file.length !== 0) &&
-                                    file.map((x, index) => (
+                                {(typeof files !== 'undefined' && files.length !== 0) &&
+                                    files.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameFile}</td>
-                                            <td>{x.discFile}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.description}</td>
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
@@ -59,7 +59,7 @@ class AttachmentTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof file === 'undefined' || file.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof files === 'undefined' || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </div>

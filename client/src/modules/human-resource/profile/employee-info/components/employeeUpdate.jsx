@@ -19,7 +19,7 @@ class UpdateEmployee extends Component {
     }
 
     componentDidMount() {
-        this.props.getInformationPersonal();
+        this.props.getEmployeeProfile();
     }
     // Bắt sự kiện thay đổi avatar
     handleUpload(event) {
@@ -119,7 +119,7 @@ class UpdateEmployee extends Component {
                     updateAvater = true
                 }
                 if (informationEmployee !== null && updateAvater === true) {
-                    this.props.updateInformationPersonal(informationEmployee)
+                    this.props.updatePersonalInformation(informationEmployee)
                         .then(res => {
                             toast.success(translate('error.edit_infor_personal_success'), { containerId: 'toast-notification' });
                         }).catch(err => {
@@ -382,8 +382,8 @@ function mapState(state) {
 };
 
 const actionCreator = {
-    getInformationPersonal: EmployeeInfoActions.getInformationPersonal,
-    updateInformationPersonal: EmployeeInfoActions.updateInformationPersonal,
+    getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    updatePersonalInformation: EmployeeInfoActions.updatePersonalInformation,
     uploadAvatar: EmployeeManagerActions.uploadAvatar,
 };
 const updateEmployee = connect(mapState, actionCreator)(withTranslate(UpdateEmployee));
