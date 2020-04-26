@@ -1,104 +1,7 @@
 export default {
     locale: 'vn',
     messages: {
-
-        /******************************************************************************************************************************
-         * PHẦN CHUYỂN ĐỔI NGÔN NGỮ CHO CÁC THÔNG ĐIỆP TỪ SERVER
-         * Bao gồm 2 phần thông báo thành công - success và lỗi - error
-         * ****************************************************************************************************************************/
-        success: {
-            title: 'Thành công',
-            /**SYSTEM ADMIN */
-
-            // Quản lý doanh nghiệp, công ty
-            create_company_success: 'Khởi tạo dữ liệu công ty thành công',
-            show_company_success: 'Lấy dữ liệu công ty thành công',
-            edit_company_success: 'Chỉnh sửa thông tin công ty thành công',
-            delete_company_success: 'Xóa dữ liệu công ty thành công',
-            add_new_link_for_company_success: 'Thêm mới link cho công ty thành công',
-            delete_link_for_company_success: 'Xóa link thành công',
-            add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
-            delete_component_for_company_success: 'Xóa component thành công',
-            
-
-            // Quản lý system link
-            create_system_link_success: 'Tạo system link thành công',
-            edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
-
-            // Quản lý system component
-            create_system_component_success: 'Tạo system component thành công',
-            show_system_component_success: 'Lấy dữ liệu system component thành công',
-            edit_system_component_success: 'Chỉnh sửa system admin thành công',
-            delete_system_component_success: 'Xóa system component thành công',
-
-            /**SUPER ADMIN */
-
-            // Organizational Unit - Quản lý cơ cấu tổ chức
-            create_department_success: 'Tạo đơn vị thành công',
-            edit_department_success: 'Chỉnh sửa đơn vị thành công',
-            delete_department_success: 'Xóa đơn vị thành công',
-
-            // Role - Quản lý phân quyền
-            create_role_success: 'Tạo role mới thành công',
-            edit_role_success: 'Chỉnh sửa role thành công',
-            delete_role_success: 'Xóa role thành công',
-
-            // User - Quản lý người dùng
-            create_user_success: 'Tạo tài khoản người dùng thành công',
-            edit_user_success: 'Chỉnh sửa thông tin tài khoản người dùng thành công',
-            delete_user_success: 'Xóa tài khoản người dùng thành công',
-
-            // Link - Quản lý trang
-            create_link_success: 'Tạo link thành công',
-            edit_link_success: 'Chỉnh sửa link thành công',
-            delete_link_success: 'Xóa link thành công',
-
-            // Component - Quản lý component
-            edit_component_success: 'Chỉnh sửa component thành công',
-        },
         error: {
-            title: 'Lỗi',
-            /**SYSTEM ADMIN */
-
-            // Quản lý doanh nghiệp, công ty
-            email_exist: 'Email này đã được sử dụng',
-            company_not_found: 'Không tìm thấy thông tin về công ty',
-            link_exist: 'Url cho link đã tồn tại',
-            component_exist: 'Component này đã tồn tại',
-            
-            // Quản lý system link
-            system_link_url_exist: 'Url này đã được sử dụng',
-
-            // Quản lý system component
-            system_component_name_invalid: 'Tên không hợp lệ',
-            system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
-
-            /**SUPER ADMIN */
-
-            // Organizational Unit - Quản lý cơ cấu tổ chức
-            department_name_exist: 'Tên đơn vị này đã được sử dụng',
-            department_not_found: 'Không tìm thấy thông tin về đơn vị',
-            department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
-
-            // Role - Quản lý phân quyền
-            role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
-            role_dean_exist: 'Tên cho phân quyền của trưởng đơn vị này đã được sử dụng',
-            role_vice_dean_exist: 'Tên cho phân quyền của phó đơn vị này đã được sử dụng',
-            role_employee_exist: 'Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng',
-
-            // User - Quản lý người dùng
-            email_exist: 'Email đã được sử dụng cho một tài khoản khác',
-            user_not_found: 'Không tìm thấy thông tin về tài khoản',
-            department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
-
-            // Link - Quản lý trang
-            cannot_create_this_url: 'Không thể tạo link này',
-            this_url_cannot_be_use: 'Url này không được phép sử dụng',
-            url_exist: 'Url này đã đươc sử dụng',
-
-            // Component - Quản lý component        
-            component_name_exist: 'Tên của component đã được sử dụng',
-
             email_does_not_exist: 'Email này đã được sử dụng',
             field_invalid: 'Trường nhập vào không hợp lệ',
 
@@ -178,15 +81,12 @@ export default {
              * Chức năng quản lý nhân sự
              */
         },
-
-
-
-
-
-        /******************************************************************************************************************************
-         * PHẦN CHUYỂN NGỮ CHO NỘI DUNG HIỂN THỊ CỦA WEBSITE BÊN PHÍA CLIENT
-         * Phân chia theo từng module
-         ******************************************************************************************************************************/
+        
+        /*******************************************************
+         * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
+         * @general những phần ngôn ngữ dùng chung cho mọi module
+         * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
+         *******************************************************/
         general: {
             table: 'Bảng',
             name: 'Tên',
@@ -197,6 +97,7 @@ export default {
             loading: 'Đang tải dữ liệu',
             no_data: 'Không có dữ liệu'
         },
+
         system_admin: {
             company: {
                 table: {
@@ -234,26 +135,108 @@ export default {
                         no_blank: 'Email không được để trống',
                         email_invalid: 'Email không hợp lệ',
                     }
-                }
+                },
+
+                // Thông điệp trả về từ server
+                create_company_success: 'Khởi tạo dữ liệu công ty thành công',
+                show_company_success: 'Lấy dữ liệu công ty thành công',
+                edit_company_success: 'Chỉnh sửa thông tin công ty thành công',
+                delete_company_success: 'Xóa dữ liệu công ty thành công',
+                add_new_link_for_company_success: 'Thêm mới link cho công ty thành công',
+                delete_link_for_company_success: 'Xóa link thành công',
+                add_new_component_for_company_success: 'Thêm mới component cho công ty thành công',
+                delete_component_for_company_success: 'Xóa component thành công',
+
+                email_exist: 'Email này đã được sử dụng',
+                company_not_found: 'Không tìm thấy thông tin về công ty',
+                link_exist: 'Url cho link đã tồn tại',
+                component_exist: 'Component này đã tồn tại',
             },
+
             log: {
 
             },
+
             root_role: {
 
             },
+
             system_link: {
                 table: {
                     url: 'Đường dẫn',
                     description: 'Mô tả về trang',
-                }
-            },
-            system_component: {
+                },
 
+                // Thông điệp từ server
+                create_system_link_success: 'Tạo system link thành công',
+                edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
+
+                system_link_url_exist: 'Url này đã được sử dụng',
+            },
+
+            system_component: {
+                table: {
+
+                },
+
+                //Thông điệp trả về từ server
+                create_system_component_success: 'Tạo system component thành công',
+                show_system_component_success: 'Lấy dữ liệu system component thành công',
+                edit_system_component_success: 'Chỉnh sửa system admin thành công',
+                delete_system_component_success: 'Xóa system component thành công',
+
+                system_component_name_invalid: 'Tên không hợp lệ',
+                system_component_name_exist: 'Tên này đã được sử dụng cho 1 system component khác',
             }
         },
         super_admin: {
+            organization_unit: {
+                //Thông điệp trả về từ server
+                create_department_success: 'Tạo đơn vị thành công',
+                edit_department_success: 'Chỉnh sửa đơn vị thành công',
+                delete_department_success: 'Xóa đơn vị thành công',
 
+                department_name_exist: 'Tên đơn vị này đã được sử dụng',
+                department_not_found: 'Không tìm thấy thông tin về đơn vị',
+                department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
+            },
+            user: {
+                // Thông điệp trả về từ server
+                create_user_success: 'Tạo tài khoản người dùng thành công',
+                edit_user_success: 'Chỉnh sửa thông tin tài khoản người dùng thành công',
+                delete_user_success: 'Xóa tài khoản người dùng thành công',
+                
+                email_exist: 'Email đã được sử dụng cho một tài khoản khác',
+                user_not_found: 'Không tìm thấy thông tin về tài khoản',
+                department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
+            },
+            role: {
+                // Thông điệp trả về từ server
+                create_role_success: 'Tạo role mới thành công',
+                edit_role_success: 'Chỉnh sửa role thành công',
+                delete_role_success: 'Xóa role thành công',
+                
+                role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
+                role_dean_exist: 'Tên cho phân quyền của trưởng đơn vị này đã được sử dụng',
+                role_vice_dean_exist: 'Tên cho phân quyền của phó đơn vị này đã được sử dụng',
+                role_employee_exist: 'Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng',
+            },
+            link: {
+                // Thông điệp trả về từ server
+                create_link_success: 'Tạo link thành công',
+                edit_link_success: 'Chỉnh sửa link thành công',
+                delete_link_success: 'Xóa link thành công',
+    
+                cannot_create_this_url: 'Không thể tạo link này',
+                this_url_cannot_be_use: 'Url này không được phép sử dụng',
+                url_exist: 'Url này đã đươc sử dụng',
+            },
+            component: {
+                // Thông điệp trả về từ server
+                edit_component_success: 'Chỉnh sửa component thành công',
+            
+                component_name_exist: 'Tên của component đã được sử dụng',
+            },
         },
 
         

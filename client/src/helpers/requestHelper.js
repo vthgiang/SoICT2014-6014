@@ -10,7 +10,7 @@ import React from 'react';
  * @error_auth mảng các mã lỗi
  */
 const checkErrorAuth = (code) => {
-    console.log("CODE : ", code)
+    
     const error_auth = [
         'access_denied',
         'role_invalid',
@@ -24,6 +24,11 @@ const checkErrorAuth = (code) => {
 
     if(error_auth.indexOf(code) !== -1) return true;
     return false;
+}
+
+const showAuthResponseAlertAndRedirectToLoginPage = async () => {
+    await window.$(`#alert-error-auth`).modal("show");
+    await localStorage.clear();
 }
 
 /**
@@ -47,23 +52,22 @@ export function sendRequest(options, showAlert=true, module, successTitle='succe
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
-                content={res.data.message}
+                content={res.data.messages.map(message => `${module}.${message}`)}
             />, 
             {containerId: 'toast-notification'});
 
         return Promise.resolve(res);
     }).catch(err => {
-        if(err.response.data.message){
-            if(checkErrorAuth(err.response.data.message[0])){
-                window.$(`#alert-error-auth`).modal("show");
-                localStorage.clear();
+        if(err.response.data.messages){
+            if(checkErrorAuth(err.response.data.messages[0])){
+                showAuthResponseAlertAndRedirectToLoginPage();
             }
             else{
                 toast.error(
                     <ServerResponseAlert
                         type='error'
                         title={errorTitle}
-                        content={err.response.data.message}
+                        content={err.response.data.messages.map(message => `${module}.${message}`)}
                     />, 
                     {containerId: 'toast-notification'}
                 );
