@@ -83,11 +83,11 @@ const EmployeeSchema = new Schema({
         type: Number,
         required: true
     },
-    personalEmail: {
-        type: String,
-    },
     phoneNumber2: {
         type: Number,
+    },
+    personalEmail: {
+        type: String,
     },
     personalEmail2: {
         type: String,
@@ -174,7 +174,7 @@ const EmployeeSchema = new Schema({
         startDate: String,
         endDate: String,
         position: String,
-        unit: String
+        company: String
     }],
     taxNumber: { // Mã số thuế thu nhập cá nhân
         type: String,

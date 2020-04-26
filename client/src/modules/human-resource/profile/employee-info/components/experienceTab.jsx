@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class TabExperiencViewContent extends Component {
+class ExperiencTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -13,10 +13,10 @@ class TabExperiencViewContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                experience: nextProps.employee.experience,
-                cultural: nextProps.employee.cultural,
+                experiences: nextProps.employee.experiences,
+                educationalLevel: nextProps.employee.educationalLevel,
                 foreignLanguage: nextProps.employee.foreignLanguage,
-                educational: nextProps.employee.educational,
+                professionalSkill: nextProps.employee.professionalSkill,
             }
         } else {
             return null;
@@ -26,7 +26,7 @@ class TabExperiencViewContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { cultural, foreignLanguage, educational, experience } = this.state;
+        const { educationalLevel, foreignLanguage, professionalSkill, experiences } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -34,7 +34,7 @@ class TabExperiencViewContent extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.academic_level')}</h4></legend>
                         <div className="form-group">
                             <strong>{translate('manage_employee.educational_level')}&emsp; </strong>
-                            {cultural}
+                            {educationalLevel}
                         </div>
                         <div className="form-group" >
                             <strong>{translate('manage_employee.language_level')}&emsp; </strong>
@@ -42,7 +42,7 @@ class TabExperiencViewContent extends Component {
                         </div>
                         <div className="form-group">
                             <strong>{translate('manage_employee.qualification')}&emsp; </strong>
-                            {translate(`manage_employee.${educational}`)}
+                            {translate(`manage_employee.${professionalSkill}`)}
                         </div>
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -58,12 +58,12 @@ class TabExperiencViewContent extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    (typeof experience !== 'undefined' && experience.length !== 0) &&
-                                    experience.map((x, index) => (
+                                    (typeof experiences !== 'undefined' && experiences.length !== 0) &&
+                                    experiences.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.company}</td>
                                             <td>{x.position}</td>
                                         </tr>
 
@@ -73,7 +73,7 @@ class TabExperiencViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof experience === 'undefined' || experience.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof experiences === 'undefined' || experiences.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -81,5 +81,5 @@ class TabExperiencViewContent extends Component {
         );
     }
 };
-const tabExperience = connect(null, null)(withTranslate(TabExperiencViewContent));
-export { tabExperience as TabExperiencViewContent };
+const tabExperience = connect(null, null)(withTranslate(ExperiencTab));
+export { tabExperience as ExperiencTab };

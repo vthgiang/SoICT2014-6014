@@ -871,7 +871,7 @@ var sampleCompanyData = async () => {
         healthInsuranceEndDate: "16-02-2020",
         socialInsuranceNumber: "XH1569874",
         socialInsuranceDetails: [{
-            unit: "Vnist",
+            company: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
@@ -963,7 +963,7 @@ var sampleCompanyData = async () => {
         healthInsuranceEndDate: "16-02-2020",
         socialInsuranceNumber: "XH1569874",
         socialInsuranceDetails: [{
-            unit: "Vnist",
+            company: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
@@ -1057,7 +1057,7 @@ var sampleCompanyData = async () => {
         healthInsuranceEndDate: "16-02-2020",
         socialInsuranceNumber: "XH1569874",
         socialInsuranceDetails: [{
-            unit: "Vnist",
+            company: "Vnist",
             position: "Nhân viên",
             startDate: "01-2020",
             endDate: "05-2020"
