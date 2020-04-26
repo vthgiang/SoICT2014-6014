@@ -38,7 +38,7 @@ const showAuthResponseAlertAndRedirectToLoginPage = async () => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function sendRequest(options, showAlert=true, module, successTitle='general.title', errorTitle='general.title') {
+export function sendRequest(options, showAlert=false, module, successTitle='general.success', errorTitle='general.error') {
 
     const requestOptions = {
         url: options.url, 

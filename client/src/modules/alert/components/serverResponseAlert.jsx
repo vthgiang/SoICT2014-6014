@@ -9,18 +9,21 @@ class ServerResponseAlert extends Component {
         this.state = {};
     }
 
-    checkTranslateExist = (translate, code) => {
+    checkTranslateExist = (code) => {
+        const {translate} = this.props;
         const subCode = code.split('.');
+        
         if(subCode.length === 1 ){
-
             return translate(code) !== undefined ? true : false;
-        }else if(subCode.length >= 2){
-
-            const codeData = subCode[0];
-            if(translate(codeData) === undefined) return false;
-            for (let i = 1; i < subCode.length; i++) {
-                codeData = codeData.concat(codeData, `.${subCode[i]}`);
-                if(translate(codeData) === undefined) return false;
+        }else if(subCode.length > 1){
+            let codeData = subCode[0];
+            if(translate(codeData) === undefined){
+                return false;
+            }else{
+                for (let i = 1; i < subCode.length; i++) {
+                    codeData = codeData +'.'+subCode[i];
+                    if(translate(codeData) === undefined) return false;
+                }
             }
 
             return true;
@@ -36,15 +39,13 @@ class ServerResponseAlert extends Component {
                 <h3 className="text-center">
                     {translate(title)}
                 </h3>
-                <ul>
                     {
                         content.map(message => {
-                            return this.checkTranslateExist(translate, message) ?
-                                <li key={message}>{translate(message)}</li>:
-                                <li key={message}>{message}</li>;
+                            return this.checkTranslateExist(message) ?
+                                <p key={message}>{translate(message)}</p>:
+                                <p key={message}>{message}</p>;
                         })
                     }
-                </ul>
             </React.Fragment>
         );
     }

@@ -15,14 +15,14 @@ function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'GET'
-    }, false)
+    })
 }
 
 function getCategories() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
         method: 'GET'
-    }, false);
+    });
 }
 
 function getPaginate(data) {  
@@ -30,7 +30,7 @@ function getPaginate(data) {
         url: `${ LOCAL_SERVER_API }/links-default-management/paginate`,
         method: 'POST',
         data
-    }, false);
+    });
 }
 
 function show(id) {
@@ -45,7 +45,7 @@ function create(data) {
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'POST',
         data
-    });
+    }, true, 'system_admin.system_link');
 }
 
 function edit(id, data) {
@@ -53,12 +53,12 @@ function edit(id, data) {
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'PATCH',
         data
-    });
+    }, true, 'system_admin.system_link');
 }
 
 function destroy(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'DELETE'
-    });
+    }, true, 'system_admin.system_link');
 }
