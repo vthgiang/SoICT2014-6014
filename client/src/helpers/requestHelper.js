@@ -38,7 +38,7 @@ const showAuthResponseAlertAndRedirectToLoginPage = async () => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function sendRequest(options, showAlert=true, module, successTitle='success.title', errorTitle='error.title') {
+export function sendRequest(options, showAlert=false, module, successTitle='general.success', errorTitle='general.error') {
 
     const requestOptions = {
         url: options.url, 
@@ -58,6 +58,7 @@ export function sendRequest(options, showAlert=true, module, successTitle='succe
 
         return Promise.resolve(res);
     }).catch(err => {
+        console.log("ERROR: ", err.response)
         if(err.response.data.messages){
             if(checkErrorAuth(err.response.data.messages[0])){
                 showAuthResponseAlertAndRedirectToLoginPage();
