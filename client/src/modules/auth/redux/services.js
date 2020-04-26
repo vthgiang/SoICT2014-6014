@@ -2,7 +2,7 @@ import axios from 'axios';
 import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
 import { AuthenticateHeader, FingerPrint, getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
-import { handleRequest } from '../../../helpers/handleRequest';
+import { sendRequest } from '../../../helpers/requestHelper';
 
 export const AuthService = {
     login,
@@ -31,14 +31,14 @@ async function login(user) {
 }
 
 function logout() {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/logout`,
         method: 'GET',
     }, false);
 }
 
 function logoutAllAccount() {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/logout-all-account`,
         method: 'GET',
     }, false);
@@ -49,7 +49,7 @@ function editProfile(data) {
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
 
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
         data: data,
@@ -61,7 +61,7 @@ function changeInformation(data) {
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
 
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
         method: 'PATCH',
         data: data,
@@ -73,7 +73,7 @@ function changePassword(data) {
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
 
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
         method: 'PATCH',
         data: data,
@@ -81,7 +81,7 @@ function changePassword(data) {
 }
 
 async function getLinksOfRole(idRole) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/get-links-of-role/${idRole}`,
         method: 'GET',
     }, false);
@@ -92,14 +92,14 @@ async function refresh() {
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
     
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
         method: 'GET',
     }, false);
 }
 
 function forgotPassword(email) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/forgot-password`,
         method: 'POST',
         data: {
@@ -109,7 +109,7 @@ function forgotPassword(email) {
 }
 
 function resetPassword(otp, email, password) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/reset-password`,
         method: 'POST',
         data: {
@@ -121,7 +121,7 @@ function resetPassword(otp, email, password) {
 }
 
 function getComponentOfUserInLink(currentRole, linkId) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
         method: 'GET',
     }, false);

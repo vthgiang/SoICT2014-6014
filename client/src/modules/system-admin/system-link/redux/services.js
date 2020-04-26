@@ -1,5 +1,5 @@
 import { LOCAL_SERVER_API } from '../../../../env';
-import { handleRequest } from '../../../../helpers/handleRequest';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const LinkDefaultServices = {
     get,
@@ -12,21 +12,21 @@ export const LinkDefaultServices = {
 };
 
 function get() {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'GET'
     }, false)
 }
 
 function getCategories() {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
         method: 'GET'
     }, false);
 }
 
 function getPaginate(data) {  
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/paginate`,
         method: 'POST',
         data
@@ -34,14 +34,14 @@ function getPaginate(data) {
 }
 
 function show(id) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'GET'
     });
 }
 
 function create(data) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'POST',
         data
@@ -49,7 +49,7 @@ function create(data) {
 }
 
 function edit(id, data) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'PATCH',
         data
@@ -57,7 +57,7 @@ function edit(id, data) {
 }
 
 function destroy(id) {
-    return handleRequest({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'DELETE'
     });

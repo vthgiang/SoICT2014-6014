@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import './alert.css';
 
-class Alert extends Component {
+class AuthAlert extends Component {
     
     constructor(props) {
         super(props);
@@ -66,4 +66,4 @@ const mapStateToProps = state => {
     return state;
 }
 
-export default connect( mapStateToProps )( withTranslate(Alert) );
+export default connect( mapStateToProps )( withTranslate(AuthAlert) );
