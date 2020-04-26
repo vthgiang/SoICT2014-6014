@@ -57,14 +57,14 @@ class ModalCreateEmployeeKpi extends Component {
         }
 
         if (this.isFormValidated()){
-            let res = await this.props.createEmployeeKpi({
+            let employeeKpi = {
                 name: this.state.name,
                 parent: parent,
                 weight: this.state.weight,
                 criteria: this.state.criteria,
                 employeeKpiSet: this.props.employeeKpiSet, 
-            });
-
+            }
+            let res = await this.props.createEmployeeKpi(employeeKpi);            
             window.$("#createEmployeeKpi").modal("hide");
             window.$(".modal-backdrop").remove();
             window.$('body').removeClass('modal-open');
@@ -161,10 +161,10 @@ class ModalCreateEmployeeKpi extends Component {
         var currentOrganizationalUnitKpiSet;
         const { newTarget, adding } = this.state;
         const { createKpiUnit, translate } = this.props;
-        if (createKpiUnit.currentKPI) currentOrganizationalUnitKpiSet = createKpiUnit.currentKPI;
-
+        if (createKpiUnit.currentKPI) currentOrganizationalUnitKpiSet = createKpiUnit.currentKPI;        
         var items;
-        if(createKpiUnit.currentKPI === null){
+        
+        if(currentOrganizationalUnitKpiSet === undefined){
             items = [];
         } else {    
             items = currentOrganizationalUnitKpiSet.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?

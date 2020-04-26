@@ -87,7 +87,7 @@ class ModalEditEmployeeKpi extends Component {
             weight: this.state.weight,
             criteria: this.state.criteria,
         } 
-
+        
         if (this.isFormValidated()) {
             return this.props.editEmployeeKpi(id, newTarget);
         }
@@ -217,30 +217,30 @@ class ModalEditEmployeeKpi extends Component {
         const { editing, newTarget } = this.state;
         const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
         if (createKpiUnit.currentKPI) currentOrganizationalUnitKPI = createKpiUnit.currentKPI;
-
-        if(currentOrganizationalUnitKPI === null){
+        
+        if(currentOrganizationalUnitKPI === undefined){
             items = [];
         }
         else{    
             items = currentOrganizationalUnitKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
-
+        
         return (
             <React.Fragment>
                 <DialogModal
                     modalID={`editEmployeeKpi${target._id}`} isLoading={editing}
                     formID="formeditEmployeeKpi"
-                    title={translate('employee_kpi_set.edit_employee_kpi_modal.edit_employee_kpi')}
-                    msg_success={translate('employee_kpi_set.edit_employee_kpi_modal.success')}
-                    msg_faile={translate('employee_kpi_set.edit_employee_kpi_modal.failure')}
+                    title={translate('employee_kpi_set.edit_target_kpi_modal.edit_employee_kpi')}
+                    msg_success={translate('employee_kpi_set.edit_target_kpi_modal.success')}
+                    msg_faile={translate('employee_kpi_set.edit_target_kpi_modal.failure')}
                     func={this.handleEditEmployeeKpi}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formeditEmployeeKpi" onSubmit={() => this.handleEditEmployeeKpi(translate('employee_kpi_set.edit_employee_kpi_modal.success'))}>
+                    <form id="formeditEmployeeKpi" onSubmit={() => this.handleEditEmployeeKpi(translate('employee_kpi_set.edit_target_kpi_modal.success'))}>
                         
                             <div className={`form-group ${errorOnName === undefined ? "" : "has-error"}`}>
-                                <label>{translate('employee_kpi_set.edit_employee_kpi_modal.name')}<span className="text-red">*</span></label>
+                                <label>{translate('employee_kpi_set.edit_target_kpi_modal.name')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                                 <ErrorLabel content={errorOnName}/>
                             </div>
@@ -248,7 +248,7 @@ class ModalEditEmployeeKpi extends Component {
                             {(createKpiUnit.currentKPI !== null) &&
                                 (items.length !== 0) && 
                                     <div className="form-group">
-                                        <label>{translate('employee_kpi_set.edit_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
+                                        <label>{translate('employee_kpi_set.edit_target_kpi_modal.parents')}<span className="text-red">*</span></label>
                                         <SelectBox
                                             id={`parent-target-edit${_id}`}
                                             className="form-control select2"
@@ -261,13 +261,13 @@ class ModalEditEmployeeKpi extends Component {
                             }
 
                             <div className={`form-group ${errorOnCriteria === undefined ? "" : "has-error"}`}>
-                                <label>{translate('employee_kpi_set.edit_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
+                                <label>{translate('employee_kpi_set.edit_target_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                                 <ErrorLabel content={errorOnCriteria}/>
                             </div>
 
                             <div className={`form-group ${errorOnWeight === undefined ? "" : "has-error"}`}>
-                            <label>{translate('employee_kpi_set.edit_employee_kpi_modal.weight')}<span className="text-red">*</span></label>
+                            <label>{translate('employee_kpi_set.edit_target_kpi_modal.weight')}<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                                 <ErrorLabel content={errorOnWeight}/>
                             </div>    

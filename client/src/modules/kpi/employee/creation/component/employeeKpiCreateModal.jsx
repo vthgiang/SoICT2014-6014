@@ -43,7 +43,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             return {
                 ...state,
                 employeeKpiSet: {
-                    ...state.kpiunit,
+                    ...state.employeeKpiSet,
                     time: value
                 }
             }
@@ -68,7 +68,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 return {
                     ...state,
                     employeeKpiSet: {
-                        ...state.kpiunit,
+                        ...state.employeeKpiSet,
                         time: defaultTime,
                     }
                 }

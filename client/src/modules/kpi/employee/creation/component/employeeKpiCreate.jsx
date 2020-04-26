@@ -272,7 +272,8 @@ class CreateEmployeeKpiSet extends Component {
                     ...state,
                     editingTarget: target._id
                 }
-            })
+            });
+            window.$(`#editEmployeeKpi${target._id}`).modal("show");
         } else if (employeeKpiStatus === 1) {
             Swal.fire({
                 title: translate('employee_kpi_set.create_employee_kpi_set.edit_target.approving'),
@@ -534,7 +535,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                                     <td title={this.handleCheckEmployeeKpiStatus(item.status)}>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
                                                                                     <td>
                                                                                         <a data-target={`#editEmployeeKpi${item._id}`} style={{ color: "#FFC107", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.edit')} data-toggle="modal" onClick={() => this.handleEditEmployeeKpi(currentKPI.status, item)}><i className="fa fa-edit"></i></a>
-                                                                                        {this.state.editingTarget === item._id ? <ModalEditEmployeeKpi target={item}/> : null}
+                                                                                        <ModalEditEmployeeKpi target={item}/>
                                                                                         {item.type !== 0 ? 
                                                                                             <a className="copy" title={translate('employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a> 
                                                                                             : <a href="#abc" style={{ color: "#E34724", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(item.status, currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 

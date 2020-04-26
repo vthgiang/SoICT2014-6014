@@ -46,7 +46,7 @@ exports.createEmployeeKpiSet =async (req, res) => {
 /** Tạo 1 mục tiêu KPI mới */ 
 exports.createEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpi= await EmployeeKpiSetService.createEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.kpipersonal);
+        var employeeKpi= await EmployeeKpiSetService.createEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.employeeKpiSet);
         await LogInfo(req.user.email, ` create employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
