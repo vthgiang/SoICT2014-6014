@@ -8,9 +8,9 @@ export const ComponentDefaultValidator = {
 function validateName(url) {
     let msg = undefined;
     if (url.trim() === ""){
-        msg = "Tên không được để trống";
+        msg = "system_admin.system_component.validator.name.no_space";
     } else if(!VALIDATOR.isValidName(url)){
-        msg = "Tên không hợp lệ. Tên không được chứa kí tự đặc biệt";
+        msg = "system_admin.system_component.validator.name.no_special";
     }
     return msg;
 }
@@ -18,9 +18,9 @@ function validateName(url) {
 function validateDescription(url) {
     let msg = undefined;
     if (url.trim() === ""){
-        msg = "Mô tả không được để trống";
+        msg = "system_admin.system_component.validator.description.no_space";
     } else if(!VALIDATOR.isValidName(url)){
-        msg = "Mô tả không được chứa kí tự đặc biệt";
+        msg = "system_admin.system_component.validator.description.no_special";
     }
     return msg;
 }

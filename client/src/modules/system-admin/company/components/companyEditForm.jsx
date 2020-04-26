@@ -49,8 +49,8 @@ class CompanyEditForm extends Component {
                             <div className="form-group col-sm-3">
                                 <label>{ translate('system_admin.company.table.service') }<span className="text-red"> * </span></label>
                                 <select className="form-control" onChange={ this.handleActive } value={companyActive}>
-                                    <option key='1' value={true}>{ translate('system_admin.company.table.on') }</option>
-                                    <option key='2' value={false}>{ translate('system_admin.company.table.off') }</option>
+                                    <option key='1' value={true}>{ translate('system_admin.company.on') }</option>
+                                    <option key='2' value={false}>{ translate('system_admin.company.off') }</option>
                                 </select>
                             </div>
                             <div className={`form-group col-sm-9 ${shortNameError===undefined?"":"has-error"}`}>
@@ -61,8 +61,8 @@ class CompanyEditForm extends Component {
                             <div className="form-group col-sm-3">
                                 <label>{ translate('system_admin.company.table.log') }<span className="text-red"> * </span></label>
                                 <select className="form-control" onChange={ this.handleLog } value={companyLog}>
-                                    <option key='1' value={true}>{ translate('system_admin.company.table.on') }</option>
-                                    <option key='2' value={false}>{ translate('system_admin.company.table.off') }</option>
+                                    <option key='1' value={true}>{ translate('system_admin.company.on') }</option>
+                                    <option key='2' value={false}>{ translate('system_admin.company.off') }</option>
                                 </select>
                             </div>
                         </div>
@@ -124,11 +124,12 @@ class CompanyEditForm extends Component {
 
     validateName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateName(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    nameError: msg,
+                    nameError: msg !== undefined ? translate(msg) : msg,
                     companyName: value,
                 }
             });
@@ -144,11 +145,12 @@ class CompanyEditForm extends Component {
 
     validateShortName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateShortName(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    shortNameError: msg,
+                    shortNameError: msg !== undefined ? translate(msg) : msg,
                     companyShortName: value,
                 }
             });
@@ -164,11 +166,12 @@ class CompanyEditForm extends Component {
 
     validateDescription = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateDescription(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    descriptionError: msg,
+                    descriptionError: msg !== undefined ? translate(msg) : msg,
                     companyDescription: value,
                 }
             });
@@ -184,11 +187,12 @@ class CompanyEditForm extends Component {
 
     validateEmail = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateEmailSuperAdmin(value);
+        const {translate} = this.props;
         if (willUpdateState){
             this.setState(state => {
                 return {
                     ...state,
-                    emailError: msg,
+                    emailError: msg !== undefined ? translate(msg) : msg,
                     companyEmail: value,
                 }
             });

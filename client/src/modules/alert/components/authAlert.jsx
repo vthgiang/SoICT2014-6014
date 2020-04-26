@@ -23,7 +23,13 @@ class AuthAlert extends Component {
                                 <h4 className="modal-title text-center text-red">{translate('alert.title')}</h4>
                             </div>
                             <div className="modal-body">
-                                Nội dung thông báo người dùng phải đăng nhập lại
+                                <p><b>{translate('general.auth_alert.title')}</b></p>
+                                <p>{translate('general.auth_alert.reason')}</p>
+                                <ul>
+                                    {
+                                        translate('general.auth_alert.content').map(content => <li key={content}>{content}</li>)
+                                    }
+                                </ul>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">{translate('general.close')}</button>
