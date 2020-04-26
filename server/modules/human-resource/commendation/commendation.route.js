@@ -2,18 +2,26 @@ const express = require("express");
 const router = express.Router();
 const { auth } = require('../../../middleware');
 
-const PraiseController = require("./commendation.controller");
+const CommendationController = require("./commendation.controller");
 
-// Lấy danh sách khen thưởng
-router.post('/paginate',auth, PraiseController.searchCommendations);
+/**
+ * Lấy danh sách khen thưởng
+ */
+router.post('/paginate',auth, CommendationController.searchCommendations);
 
-// Thêm mới khen thưởng
-router.post('/create',auth, PraiseController.createCommendation);
+/**
+ * Thêm mới khen thưởng
+ */
+router.post('/create',auth, CommendationController.createCommendation);
 
-// Xoá bẳng thông tin khen thưởng
-router.delete('/:id',auth, PraiseController.deleteCommendation);
+/**
+ * Xoá bẳng thông tin khen thưởng
+ */
+router.delete('/:id',auth, CommendationController.deleteCommendation);
 
-// Chỉnh sửa thông tin khen thưởng
-router.put('/:id',auth, PraiseController.updateCommendation);
+/**
+ * Chỉnh sửa thông tin khen thưởng
+ */
+router.put('/:id',auth, CommendationController.updateCommendation);
 
 module.exports = router;

@@ -24,7 +24,6 @@ export const EmployeeManagerActions = {
 function getAllEmployee(data) {
     return dispatch => {
         dispatch(request());
-
         EmployeeService.getAll(data)
             .then(
                 employees => dispatch(success(employees)),

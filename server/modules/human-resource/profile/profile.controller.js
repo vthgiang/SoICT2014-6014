@@ -127,18 +127,17 @@ exports.updateInforPersonal = async (req, res) => {
 
 
 
-// Lấy danh sách nhân viên
-exports.get = async (req, res) => {
+/**
+ * Lấy danh sách nhân viên
+ */ 
+exports.searchEmployeeProfiles = async (req, res) => {
     try {
-        var allEmployee = await EmployeeService.searchEmployeeProfiles(req.body, req.user.company._id);
-        res.status(200).json({
-            message: "success",
-            content: allEmployee
-        });
+        var allEmployees = await EmployeeService.searchEmployeeProfiles(req.body, req.user.company._id);
+        await LogInfo(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        res.status(200).json({ success: true, message: ["get_employee_success"], content: allEmployees });
     } catch (error) {
-        res.status(400).json({
-            message: error
-        });
+        await LogError(req.user.email, 'GET_EMPLOYEE', req.user.company);
+        res.status(400).json({ success: false, message: ["get_employee_false"], content: {error: req.body} });
     }
 }
 
