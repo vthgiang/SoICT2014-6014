@@ -15,14 +15,14 @@ function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'GET'
-    })
+    }, false, 'system_admin.system_link')
 }
 
 function getCategories() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
         method: 'GET'
-    });
+    }, false, 'system_admin.system_link');
 }
 
 function getPaginate(data) {  
@@ -30,14 +30,14 @@ function getPaginate(data) {
         url: `${ LOCAL_SERVER_API }/links-default-management/paginate`,
         method: 'POST',
         data
-    });
+    }, false, 'system_admin.system_link');
 }
 
 function show(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'GET'
-    });
+    }, false, 'system_admin.system_link');
 }
 
 function create(data) {

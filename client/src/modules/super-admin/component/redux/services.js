@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const ComponentServices = {
     get,
@@ -12,64 +11,46 @@ export const ComponentServices = {
 };
 
 function get() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.component');
 }
 
 function getPaginate(data) {  
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/paginate`,
         method: 'POST',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.component');
 }
 
 function show(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.component');
 }
 
-function create(component) {
-    const requestOptions = {
+function create(data) {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component`,
         method: 'POST',
-        data: component,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data,
+    }, true, 'super_admin.component');
 }
 
-function edit(id, component) {
-    const requestOptions = {
+function edit(id, data) {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'PATCH',
-        data: component,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data,
+    }, true, 'super_admin.component');
 }
 
 function destroy(id, component) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'super_admin.component');
 }
