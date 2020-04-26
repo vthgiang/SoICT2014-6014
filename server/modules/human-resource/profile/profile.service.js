@@ -13,12 +13,12 @@ const Role = require('../../../models/auth/role.model');
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
  */
 exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)=>{
-    let roles = [], organizationalUnit = [];
+    let roles = [], organizationalUnits = [];
     let user = await User.findOne({email: emailInCompany},{ _id:1 })
     if (user !== null) {
         roles = await UserRole.find({ userId: user._id }).populate([{ path: 'roleId', model: Role }]);
         let newRoles = roles.map(role => role.roleId._id);
-        organizationalUnit = await OrganizationalUnit.find({
+        organizationalUnits = await OrganizationalUnit.find({
             $or: [
                 {'dean': { $in: newRoles }}, 
                 {'viceDean':{ $in: newRoles }}, 
@@ -30,7 +30,7 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
         roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
     }
     
-    return { roles, organizationalUnit }
+    return { roles, organizationalUnits }
     // TODO: Còn có role tự tạo, cần loại bỏ Root roles và Company-Defined roles
 }
 

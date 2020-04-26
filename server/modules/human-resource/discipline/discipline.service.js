@@ -5,11 +5,13 @@ const EmployeeService = require('../profile/profile.service');
 // Lấy danh sách kỷ luật của nhân viên
 exports.searchDisciplines = async (data, company) => {
     var keySearchEmployee, keySearch = { company: company};
+    
     // Bắt sựu kiện đơn vị tìm kiếm khác null 
-    if (data.unit !== null) {
-        let emailCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.unit, data.position);
-        keySearchEmployee = {...keySearchEmployee, emailCompany: {$in: emailCompany}}
+    if (data.organizationalUnit !== null) {
+        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.organizationalUnit, data.position);
+        keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
+    
     // Bắt sựu kiện MSNV tìm kiếm khác ""
     if (data.employeeNumber !== "") {
         keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: data.employeeNumber, $options: "i"}}
@@ -19,19 +21,22 @@ exports.searchDisciplines = async (data, company) => {
         var employee = employeeinfo.map(employeeinfo => employeeinfo._id); 
             keySearch = {...keySearch, employee: { $in: employee}}
     }
+    
     // Bắt sựu kiện số quyết định tìm kiếm khác ""
-    if (data.number !== "") {
-        keySearch = {...keySearch, number: {$regex: data.number, $options: "i"}}
+    if (data.decisionNumber !== "") {
+        keySearch = {...keySearch, decisionNumber: {$regex: data.decisionNumber, $options: "i"}}
     };
+    
     // Lấy danh sách kỷ luật
     var totalList = await Discipline.count(keySearch);
-    var listDiscipline = await Discipline.find(keySearch).populate({path: 'employee', model: Employee})
+    var listDisciplines = await Discipline.find(keySearch).populate({path: 'employee', model: Employee})
         .sort({'createDate': 'desc'}).skip(data.page).limit(data.limit);
-    for (let n in listDiscipline) {
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listDiscipline[n].employee.emailCompany);
-        listDiscipline[n] = {...listDiscipline[n]._doc, ...value}
+    for (let n in listDisciplines) {
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listDisciplines[n].employee.emailInCompany);
+        listDisciplines[n] = {...listDisciplines[n]._doc, ...value}
     }
-    return {totalList, listDiscipline}
+    
+    return {totalList, listDisciplines}
 }
 
 // Thêm mới kỷ luật

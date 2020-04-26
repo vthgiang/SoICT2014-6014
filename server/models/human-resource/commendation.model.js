@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const Employee = require('./employee.model');
 
-// tạo bảng datatable khen thưởng
+// Tạo bảng datatable khen thưởng
 const CommendationSchema = new Schema({
     employee: {
         type: Schema.Types.ObjectId,

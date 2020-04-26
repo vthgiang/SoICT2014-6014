@@ -10,9 +10,9 @@ class DisciplineManager extends Component {
         super(props);
         this.state = {
             position: null,
-            number: "",
+            decisionNumber: "",
             employeeNumber: "",
-            unit: null,
+            organizationalUnit: null,
             page: 0,
             limit: 5,
         }
@@ -39,7 +39,7 @@ class DisciplineManager extends Component {
         };
         this.setState({
             ...this.state,
-            unit: value
+            organizationalUnit: value
         })
     }
 
@@ -87,9 +87,9 @@ class DisciplineManager extends Component {
         const { list } = this.props.department;
         const { translate, discipline } = this.props;
         var listDiscipline = "", listPosition = [];
-        if (this.state.unit !== null) {
-            let unit = this.state.unit;
-            unit.forEach(u => {
+        if (this.state.organizationalUnit !== null) {
+            let organizationalUnit = this.state.organizationalUnit;
+            organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [
@@ -135,8 +135,8 @@ class DisciplineManager extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="number" className="form-control-static">{translate('page.number_decisions')}</label>
-                            <input type="text" className="form-control" name="number" onChange={this.handleChange} placeholder={translate('page.number_decisions')} autoComplete="off" />
+                            <label className="form-control-static">{translate('page.number_decisions')}</label>
+                            <input type="text" className="form-control" name="decisionNumber" onChange={this.handleChange} placeholder={translate('page.number_decisions')} autoComplete="off" />
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
@@ -178,7 +178,7 @@ class DisciplineManager extends Component {
                                         <td>{x.startDate}</td>
                                         <td>{x.endDate}</td>
                                         <td>{x.number}</td>
-                                        <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                        <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
                                             </React.Fragment>

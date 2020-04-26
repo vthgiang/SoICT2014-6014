@@ -258,7 +258,7 @@ class SideBar extends Component {
                                             <li className={window.location.pathname === url.path7 ? "active" : ""}>
                                                 <Link to={url.path7}>
                                                     <i className="fa fa-calendar-times-o" />
-                                                    {translate(`menu.sabbatical`)}
+                                                    {translate(`menu.annual_leave`)}
                                                 </Link>
                                             </li>
                                         }

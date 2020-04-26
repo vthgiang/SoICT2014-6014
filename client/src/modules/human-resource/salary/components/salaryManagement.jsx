@@ -238,7 +238,7 @@ class SalaryManagement extends Component {
                                                         formater.format(total + parseInt(x.mainSalary))
                                                 } {x.unit}
                                             </td>
-                                            <td>{x.organizationalUnit.length !== 0 ? x.organizationalUnit.map(unit => (
+                                            <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                                 <React.Fragment key={unit._id}>
                                                     {unit.name}<br />
                                                 </React.Fragment>
