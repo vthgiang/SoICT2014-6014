@@ -26,7 +26,7 @@ function getAllKPIMemberOfUnit(infosearch) {
         headers: AuthenticateHeader()
     };
  
-    return (requestOptions);
+    return axios(requestOptions);
 }
 // Lấy tất cả kpi cá nhân
 async function getAllKPIMemberByMember() {
