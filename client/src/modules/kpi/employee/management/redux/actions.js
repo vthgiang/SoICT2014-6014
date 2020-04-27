@@ -15,7 +15,7 @@ function getAllKPIPersonalByMember() {
             .then(res =>{
                 dispatch({
                     type: managerKPIConstants.GETALL_KPIPERSONAL_SUCCESS,
-                    payload: res.data.content.kpipersonals
+                    payload: res.data.content
                 })
             })
             .catch(error =>{
@@ -36,7 +36,7 @@ function getAllKPIPersonalByUserID(member) {
             .then(res =>{
                 dispatch({
                     type: managerKPIConstants.GETALL_KPIPERSONAL_SUCCESS,
-                    payload: res.data.content.kpipersonals
+                    payload: res.data.content
                 })
             })
             .catch(error =>{
@@ -58,7 +58,7 @@ function getAllKPIPersonalOfResponsible(member) {
             .then(res=>{
                 dispatch({
                     type: managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_SUCCESS,
-                    payload: res.data.content.kpipersonals
+                    payload: res.data.content
                 })
             })
             .catch(error =>{
