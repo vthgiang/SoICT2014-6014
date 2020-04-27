@@ -38,7 +38,7 @@ import { DepartmentManage} from '../modules/human-resource/employee-in-organizat
 import { ManageHoliday } from '../modules/human-resource/holiday/components/holidayManagement';
 import { EmployeeDetail, UpdateEmployee} from '../modules/human-resource/profile/employee-info/components/combinedContent';
 import EmpoyeeManager from '../modules/human-resource/profile/employee-management/components';
-import {EmployeeCreatePage} from '../modules/human-resource/profile/employee-create/components/employeeCreatePage';
+import EmployeeCreate from '../modules/human-resource/profile/employee-create/components';
 import SalaryManager from '../modules/human-resource/salary/components';
 import { Timekeeping} from '../modules/human-resource/timesheet/components/timesheet';
 
@@ -258,7 +258,7 @@ class Routes extends Component {
                         path={ '/hr-add-employee' }
                         pageName={'add_employee' }
                         layout={ Layout }
-                        component={ EmployeeCreatePage }
+                        component={ EmployeeCreate }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.employeesInfo.isLoading }

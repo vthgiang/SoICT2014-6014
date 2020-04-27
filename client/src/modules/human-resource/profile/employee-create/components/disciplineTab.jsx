@@ -192,9 +192,9 @@ class TabRearDisciplineContent extends Component {
                     <ModalEditPraise
                         id={`editPraise${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
-                        number={this.state.currentRow.number}
+                        decisionNumber={this.state.currentRow.decisionNumber}
+                        organizationalUnit={this.state.currentRow.organizationalUnit}
                         startDate={this.state.currentRow.startDate}
-                        unit={this.state.currentRow.unit}
                         type={this.state.currentRow.type}
                         reason={this.state.currentRow.reason}
                         handleChange={this.handleEditPraise}
@@ -205,13 +205,12 @@ class TabRearDisciplineContent extends Component {
                     <ModalEditDiscipline
                         id={`editDiscipline${this.state.currentRowDiscipline.index}`}
                         index={this.state.currentRowDiscipline.index}
-                        number={this.state.currentRowDiscipline.number}
-                        unit={this.state.currentRowDiscipline.unit}
+                        decisionNumber={this.state.currentRowDiscipline.decisionNumber}
+                        organizationalUnit={this.state.currentRowDiscipline.organizationalUnit}
                         startDate={this.state.currentRowDiscipline.startDate}
-                        unit={this.state.currentRowDiscipline.unit}
+                        endDate={this.state.currentRowDiscipline.endDate}
                         type={this.state.currentRowDiscipline.type}
                         reason={this.state.currentRowDiscipline.reason}
-                        endDate={this.state.currentRowDiscipline.endDate}
                         handleChange={this.handleEditDiscipline}
                     />
                 }

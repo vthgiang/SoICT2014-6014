@@ -127,7 +127,7 @@ class TabContractContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof course !== 'undefined' || course.length !== 0) &&
+                                {(typeof course !== 'undefined' && course.length !== 0) &&
                                     course.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.nameCourse}</td>

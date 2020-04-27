@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ModalAddExperience, ModalEditExperience } from './combinedContent';
 
-class TabExperienceContent extends Component {
+class ExperienceTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -59,10 +59,10 @@ class TabExperienceContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                experience: nextProps.employee.experience,
-                cultural: nextProps.employee.cultural,
+                experiences: nextProps.employee.experiences,
+                professionalSkill: nextProps.employee.professionalSkill,
                 foreignLanguage: nextProps.employee.foreignLanguage,
-                educational: nextProps.employee.educational,
+                educationalLevel: nextProps.employee.educationalLevel,
             }
         } else {
             return null;
@@ -72,7 +72,7 @@ class TabExperienceContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { cultural, foreignLanguage, educational, experience } = this.state;
+        const { educationalLevel, foreignLanguage, professionalSkill, experiences } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -80,7 +80,7 @@ class TabExperienceContent extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.academic_level')}</h4></legend>
                         <div className="form-group">
                             <label>{translate('manage_employee.educational_level')}<span className="text-red">&#42;</span></label>
-                            <select className="form-control" name="cultural" value={cultural} onChange={this.handleChange}>
+                            <select className="form-control" name="cultural" value={educationalLevel} onChange={this.handleChange}>
                                 <option value="12/12">12/12</option>
                                 <option value="11/12">11/12</option>
                                 <option value="10/12">10/12</option>
@@ -93,7 +93,7 @@ class TabExperienceContent extends Component {
                         </div>
                         <div className="form-group">
                             <label htmlFor="educational ">{translate('manage_employee.qualification')}</label>
-                            <select className="form-control" name="educational" value={educational} onChange={this.handleChange}>
+                            <select className="form-control" name="educational" value={professionalSkill} onChange={this.handleChange}>
                                 <option value="intermediate_degree">{translate('manage_employee.intermediate_degree')}</option>
                                 <option value="colleges">{translate('manage_employee.colleges')}</option>
                                 <option value="university">{translate('manage_employee.university')}</option>
@@ -117,12 +117,12 @@ class TabExperienceContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof experience !== 'undefined' && experience.length !== 0) &&
-                                    experience.map((x, index) => (
+                                {(typeof experiences !== 'undefined' && experiences.length !== 0) &&
+                                    experiences.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.company}</td>
                                             <td>{x.position}</td>
                                             <td >
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_experience')} edit_experience><i className="material-icons">edit</i></a>
@@ -133,7 +133,7 @@ class TabExperienceContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof experience === 'undefined' || experience.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof experiences === 'undefined' || experiences.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
 
                     </fieldset>
@@ -154,5 +154,5 @@ class TabExperienceContent extends Component {
         );
     }
 };
-const tabExperience = connect(null, null)(withTranslate(TabExperienceContent));
-export { tabExperience as TabExperienceContent };
+const experienceTab = connect(null, null)(withTranslate(ExperienceTab));
+export { experienceTab as ExperienceTab };

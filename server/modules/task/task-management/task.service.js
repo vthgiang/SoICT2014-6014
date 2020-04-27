@@ -2,36 +2,35 @@ const mongoose = require("mongoose");
 const { Task, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit } = require('../../../models/index').schema;
 
 //Lấy tất cả các công việc
-exports.get = (req, res) => {
-    Task.find()
-        .then(tasks => res.status(200).json(tasks))
-        .catch(err => res.status(400).json({ message: err }));
+exports.getAllTask = (req, res) => {
+    var tasks = Task.find();
+    return tasks;  
 }
 
 //Lấy mẫu công việc theo Id
-exports.getById = async (id) => {
+exports.getTaskById = async (id) => {
     //req.params.id
     var task = await Task.findById(id)
-            .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees parent taskTemplate comments " });// results.member
-            // .populate({path: "results", populate : {path: "member"}});
-            // .populate('results.member')
-        if (task.taskTemplate !== null) {
-            var actionTemplates = await TaskAction.find({ taskTemplate: task.taskTemplate._id });
-            var informationTemplate = await TaskTemplateInformation.find({ taskTemplate: task.taskTemplate._id });
-            return {
-                "info": task,
-                "actions": actionTemplates,
-                "informations": informationTemplate
-            };
-        } else {
-            return {
-                "info": task
-            };
-        }
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees parent taskTemplate comments " });// results.member
+        // .populate({path: "results", populate : {path: "member"}});
+        // .populate('results.member')
+    if (task.taskTemplate !== null) {
+        var actionTemplates = await TaskAction.find({ taskTemplate: task.taskTemplate._id });
+        var informationTemplate = await TaskTemplateInformation.find({ taskTemplate: task.taskTemplate._id });
+        return {
+            "info": task,
+            "actions": actionTemplates,
+            "informations": informationTemplate
+        };
+    } else {
+        return {
+            "info": task
+        };
+    }
 }
 
 //Lấy mẫu công việc theo chức danh và người dùng
-exports.getByRole = async (roleId,id) => {
+exports.getTaskByRole = async (roleId,id) => {
     //req.params.role,req.params.id
     var tasks = await Task.find({
         role: roleId,
@@ -41,16 +40,16 @@ exports.getByRole = async (roleId,id) => {
 }
 
 //Lấy công việc thực hiện chính theo id người dùng
-exports.getTaskResponsibleByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getResponsibleTaskByUser = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
-    var taskResponsibles;
+    var responsibleTasks;
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskResponsibles = await Task.find({ responsibleEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+            responsibleTasks = await Task.find({ responsibleEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
-            taskResponsibles = await Task.find({
+            responsibleTasks = await Task.find({
                 responsibleEmployees: { $in: [userId] },
                 $or: [
                     { organizationalUnit: { $in: unitId.split(",") } },
@@ -62,22 +61,22 @@ exports.getTaskResponsibleByUser = async (perpageId,numberId,unitId,userId,statu
         var totalCount = await Task.count({ responsibleEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
-            "tasks": taskResponsibles,
-            "totalpage": totalPages
+            "tasks": responsibleTasks,
+            "totalPage": totalPages
         };
 }
 
 //Lấy công việc phê duyệt theo id người dùng
-exports.getTaskAccounatableByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+exports.getAccountableTaskByUser = async (perpageId,numberId,unitId,statusId,userId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
-    var taskAccounatables;
+    var accountableTasks;
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskAccounatables = await Task.find({ accountableEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+            accountableTasks = await Task.find({ accountableEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
-            taskAccounatables = await Task.find({
+            accountableTasks = await Task.find({
                 accountableEmployees: { $in: [userId] },
                 $or: [
                     { organizationalUnit: { $in: unitId.split(",") } },
@@ -89,22 +88,22 @@ exports.getTaskAccounatableByUser = async (perpageId,numberId,unitId,statusId,us
         var totalCount = await Task.count({ accountableEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
-            "tasks": taskAccounatables,
-            "totalpage": totalPages
+            "tasks": accountableTasks,
+            "totalPage": totalPages
         };
 }
 
 //Lấy công việc hỗ trợ theo id người dùng
-exports.getTaskConsultedByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getConsultedTaskByUser = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
-    var taskConsulteds;
+    var consultedTasks;
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskConsulteds = await Task.find({ consultedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+            consultedTasks = await Task.find({ consultedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
-            taskConsulteds = await Task.find({
+            consultedTasks = await Task.find({
                 consultedEmployees: { $in: [userId] },
                 $or: [
                     { organizationalUnit: { $in: unitId.split(",") } },
@@ -116,22 +115,22 @@ exports.getTaskConsultedByUser = async (perpageId,numberId,unitId,userId,statusI
         var totalCount = await Task.count({ consultedEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
-            "tasks": taskConsulteds,
-            "totalpage": totalPages
+            "tasks": consultedTasks,
+            "totalPage": totalPages
         };
 }
 
 //Lấy công việc thiết lập theo id người dùng
-exports.getTaskCreatorByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+exports.getCreatorTaskByUser = async (perpageId,numberId,unitId,statusId,userId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
-    var taskCreators;
+    var creatorTasks;
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskCreators = await Task.find({ creator: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+            creatorTasks = await Task.find({ creator: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
         } else {
-            taskCreators = await Task.find({
+            creatorTasks = await Task.find({
                 creator: { $in: [userId] },
                 $or: [
                     { organizationalUnit: { $in: unitId.split(",") } },
@@ -143,23 +142,23 @@ exports.getTaskCreatorByUser = async (perpageId,numberId,unitId,statusId,userId)
         var totalCount = await Task.count({ creator: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
-            "tasks": taskCreators,
-            "totalpage": totalPages 
+            "tasks": creatorTasks,
+            "totalPage": totalPages 
         };
 }
 
 //Lấy công việc quan sát theo id người dùng
-exports.getTaskInformedByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getInformedTaskByUser = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
-    var taskInformeds;
+    var informedTasks;
         var perPage = Number(perpageId);
         var page = Number(numberId);
         if (unitId === "[]" && statusId === "[]") {
-            taskInformeds = await Task.find({ informedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
+            informedTasks = await Task.find({ informedEmployees: { $in: [userId] } }).sort({ 'createdAt': 'asc' })
                 .skip(perPage * (page - 1)).limit(perPage)
                 .populate({ path: "organizationalUnit creator parent" });
         } else {
-            taskInformeds = await Task.find({
+            informedTasks = await Task.find({
                 informedEmployees: { $in: [userId] },
                 $or: [
                     { organizationalUnit: { $in: unitId.split(",") } },
@@ -171,14 +170,13 @@ exports.getTaskInformedByUser = async (perpageId,numberId,unitId,userId,statusId
         var totalCount = await Task.count({ informedEmployees: { $in: [userId] } });
         var totalPages = Math.ceil(totalCount / perPage);
         return {
-            "tasks": taskInformeds,
-            "totalpage": totalPages
+            "tasks": informedTasks,
+            "totalPage": totalPages
         };
 }
 
 //Tạo công việc mới
-exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,descriptionId,priorityId,tasktemplateId,roleId,kpiId,responsibleId,accounatableId,consultedId,informedId) => {
-    console.log('--------create task---------');    
+exports.create = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,descriptionId,priorityId,taskTemplateId,roleId,kpiId,responsibleId,accountableId,consultedId,informedId) => {
     // Lấy thông tin công việc cha
         var level = 1;
         if (mongoose.Types.ObjectId.isValid(parentId)) {
@@ -187,36 +185,36 @@ exports.create = async (parentId,startdateId,enddateId,unitId,creatorId,nameId,d
         }
         
         // convert thời gian từ string sang date
-        var starttime = startdateId.split("-");
-        var startdate = new Date(starttime[2], starttime[1]-1, starttime[0]);
-        var endtime = enddateId.split("-");
-        var enddate = new Date(endtime[2], endtime[1]-1, endtime[0]);
+        var startTime = startDateId.split("-");
+        var startDate = new Date(startTime[2], startTime[1]-1, startTime[0]);
+        var endTime = endDateId.split("-");
+        var endDate = new Date(endTime[2], endTime[1]-1, endTime[0]);
         
         var task = await Task.create({ //Tạo dữ liệu mẫu công việc
             organizationalUnit: unitId,
             creator: creatorId, //id của người tạo
             name: nameId,
             description: descriptionId,
-            startDate: startdate,
-            endDate: enddate,
+            startDate: startDate,
+            endDate: endDate,
             priority: priorityId,
-            taskTemplate: tasktemplateId,
+            taskTemplate: taskTemplateId,
             role: roleId,
             parent: parentId,
             level: level,
             kpis: kpiId,
             responsibleEmployees: responsibleId,
-            accountableEmployees: accounatableId,
+            accountableEmployees: accountableId,
             consultedEmployees: consultedId,
             informedEmployees: informedId,
         });
         console.log('task--->', task);
-        if(tasktemplateId !== null){
-            var tasktemplate = await TaskTemplate.findByIdAndUpdate(
-                tasktemplateId, { $inc: { 'count': 1} }, { new: true }
+        if(taskTemplateId !== null){
+            var taskTemplate = await TaskTemplate.findByIdAndUpdate(
+                taskTemplateId, { $inc: { 'count': 1} }, { new: true }
             );
         }
-        task = await task.populate({path: "unit creator parent"}).execPopulate();
+        task = await task.populate({path: "organizationalUnit creator parent"}).execPopulate();
         return task;
 }
 
@@ -233,6 +231,9 @@ exports.delete = async (id) => {
 // edit task status
 // có 6 trạng thái công việc: Đang chờ, Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Bị hủy, Tạm hoãn
 exports.editStatusOfTask = async (taskID, status) => {
-    var task = await Task.findByIdAndUpdate(taskID, { $set: {status: status }}, { new: true } );
+    var task = await Task.findByIdAndUpdate(taskID, 
+        { $set: {status: status }},
+        { new: true } 
+    );
     return task;
 }
