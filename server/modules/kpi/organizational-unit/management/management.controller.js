@@ -3,23 +3,23 @@ const { LogInfo, LogError } = require('../../../../logs');
 // Điều phối đến các hàm dịch vụ cơ sở dữ liệu của module quản lý kpi đơn vị
 // get all target of unit kpi
 exports.get =async (req, res) => {
-   //try {
+   try {
        console.log(req.params.id);
         var kpiunits = await managerService.get(req.params.id);
-      //  LogInfo(req.user.email, ' get kpi unit ',req.user.company);
+        LogInfo(req.user.email, ' get kpi unit ',req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['Lấy tất cả kpi của đơn vị'],
-            content: {kpiunits}
+            messages: ['get_kpi_unit_success'],
+            content: kpiunits
         })
-    // } catch (error) {
-    //     LogError(req.user.email, ' get kpi unit ',req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['Lấy thông tin thất bại'],
-    //         content: {error}
-    //     })
-    // }
+    } catch (error) {
+        LogError(req.user.email, ' get kpi unit ',req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_kpi_unit_fail'],
+            content: error
+        })
+    }
 
 };
 
@@ -31,15 +31,15 @@ exports.getByRole =async (req, res) => {
         LogInfo(req.user.email, ' get kpi unit by role ',req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['Lấy kpi đơn vị hiện tại'],
-            content: {kpiunit}
+            messages: ['get_kpiunit_by_role_success'],
+            content: kpiunit
         });
     } catch (error) {
         LogError(req.user.email, ' get kpi unit by role ',req.user.company)
         res.status(400).json({
             success: false,
-            messages: ['Lấy thông tin thất bại'],
-            content: {error}
+            messages: ['get_kpiunit_by_role_fail'],
+            content: error
         })
     }
 
@@ -52,15 +52,15 @@ exports.getChildTargetByParentId =async (req, res) => {
         LogInfo(req.user.email, ' get child target by parent id ',req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Lấy mục tiêu con theo id của mục tiêu cha thành công'],
-            content: {childTarget}
+            messages: ['get_child_target_by_parent_id_success'],
+            content: childTarget
         });
     } catch (error) {
         LogError(req.user.email, ' get child target by parent id ',req.user.company)
         res.status(400).json({
             success: false,
-            messages: ['Lấy thông tin thất bại'],
-            content: {error}
+            messages: ['get_child_target_by_parent_id_fail'],
+            content: error
         })
     }
 
@@ -72,14 +72,14 @@ exports.create =async (req, res) => {
         var kpiunit = await managerService.create(req.body.time,req.body.unit,req.body.creater);
         res.status(200).json({
             success: true,
-            messages: ['Khởi tạo thành công KPI đơn vị'],
-            kpiunit: {kpiunit}
+            messages: ['create_kpi_unit_success'],
+            kpiunit: kpiunit
         })
     } catch (error) {
         res.status(400).json({
             success: false,
-            messages: ['Khởi tạo thất bại'],
-            content: {error}
+            messages: ['create_kpi_unit_fail'],
+            content: error
         })
     }
 
@@ -92,15 +92,15 @@ exports.evaluateKPI =async (req, res) => {
         LogInfo(req.user.email, ' evaluate kpi unit ',req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Cập nhật dữ liệu thành công'],
-            kpiunit: {kpiunit}
+            messages: ['update_evaluate_kpi_unit_success'],
+            kpiunit: kpiunit
         });
     } catch (error) {
         LogError(req.user.email, ' evaluate kpi unit ',req.user.company)
         res.status(400).json({
             success: false,
-            messages: ['Cập nhật thông tin thất bại'],
-            content: {error}
+            messages: ['update_evaluate_kpi_unit_fail'],
+            content: error
         })
     }
 }

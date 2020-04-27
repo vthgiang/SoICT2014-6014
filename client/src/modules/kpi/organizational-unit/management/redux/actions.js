@@ -18,7 +18,7 @@ function getAllKPIUnit(id) {
             .then(res =>{
                 dispatch({
                     type: managerConstants.GETALL_KPIUNIT_SUCCESS,
-                    payload: res.data.content.kpiunits
+                    payload: res.data.content
                 })
             })
             .catch(error =>{
