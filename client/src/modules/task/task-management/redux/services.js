@@ -1,4 +1,4 @@
-import {handleResponse} from '../../../../helpers/handleResponse';
+import { handleResponse } from '../../../../helpers/handleResponse';
 import axios from 'axios';
 import { AuthenticateHeader } from '../../../../config';//authHeader-cũ
 import {
@@ -8,6 +8,8 @@ import {
     getStorage
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
+import { sendRequest } from '../../../../helpers/requestHelper';
+
 export const taskManagementService = {
     getAll,
     getById,
@@ -24,39 +26,26 @@ export const taskManagementService = {
 };
 // get all task
 function getAll() {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }
 
 // get a task by id 
 function getById(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }
 
 // get all task by Role
 function getAllTaskByRole(id, role) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/role/${id}/${role}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/role/${id}/${role}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
-
+    }, false, 'task.task_management');
 }
 // get all task by Role
 async function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name) {//param -- user,
@@ -64,119 +53,82 @@ async function getResponsibleTaskByUser(unit, number, perPage, status, priority,
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
 
-    const requestOptions = {//user = localStorage.getItem('id')
+    return sendRequest({//user = localStorage.getItem('id')
         url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }
 // get all task by Role
 async function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-accountable/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/user/task-accountable/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }
 // get all task by Role
 async function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }
 // get all task by Role
-async function getInformedTaskByUser( unit, number, perPage, status, priority, special, name) {
+async function getInformedTaskByUser(unit, number, perPage, status, priority, special, name) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }
 // get all task by Role
-async function getCreatorTaskByUser( unit, number, perPage, status, priority, special, name) {
+async function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name) {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }
 
 // add new task
 function addNewTask(newTask) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/create`,
         method: 'POST',
-        headers: AuthenticateHeader(),
         data: newTask
-        // body: JSON.stringify(newTask)
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/create`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, true, 'task.task_management');
 }
 
 // edit a task
 function editTask(id, newTask) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
         data: newTask
-        // body: JSON.stringify(newTask)
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, true, 'task.task_management');
 }
 
 // delete a task
 function deleteTaskById(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    // return fetch(`${LOCAL_SERVER_API}/tasks/${id}`, requestOptions).then(handleResponse);
-    return axios(requestOptions);
+    }, true, 'task.task_management');
 }
 
-function editStatusOfTask(id, status){
-    const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/tasks/${id}`,
+function editStatusOfTask(id, status) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'PATCH',
         data: status,
-        headers: AuthenticateHeader()
-    }
-
-    return axios(requestOptions);
+    }, false, 'task.task_management');
 }

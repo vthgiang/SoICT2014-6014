@@ -8,15 +8,15 @@ exports.getAllTask = async (req, res) => {
         await LogInfo(req.user.email, ` get all tasks `,req.user.company);
         res.status(200).json({
             success: true, 
-            messages: ['get all task success'], 
-            content: {tasks}
+            messages: ['get_all_task_success'], 
+            content: tasks
         });
     } catch (error) {
         await LogError(req.user.email, ` get task by id `,req.user.company);
         res.status(400).json({
             success: false, 
-            messages: ['get all task fail'], 
-            content: {error}
+            messages: ['get_all_task_fail'], 
+            content: error
         });
     }
 }
@@ -28,15 +28,15 @@ exports.getTaskById = async (req, res) => {
         await LogInfo(req.user.email, ` get task by id `,req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['Get task by id success'],
-            content: {task}
+            messages: ['get_task_by_id_success'],
+            content: task
         });
     } catch (error) {
         await LogError(req.user.email, ` get task by id `,req.user.company);
         res.status(400).json({
             success: false,
-            messages: ['Get task by id fail'],
-            content: {error}
+            messages: ['get_task_by_id_fail'],
+            content: error
         });
     };
 };
@@ -48,15 +48,15 @@ exports.getTaskByRole = async (req, res) => {
         await LogInfo(req.user.email, ` get task by role `,req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Get tasks by role success'],
-            content: {tasks}
+            messages: ['get_tasks_by_role_success'],
+            content: tasks
         });
     } catch (error) {
         await LogError(req.user.email, ` get task by role  `,req.user.company)
         res.status(400).json({
             success: false,
-            messages: ['Get tasks by role fail'],
-            content: {error}
+            messages: ['get_tasks_by_role_fail'],
+            content: error
         })
     }
 
@@ -69,15 +69,15 @@ exports.getResponsibleTaskByUser = async (req, res) => {
         await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(200).json({
             success:true,
-            messages: ['get task of responsible employee success'],
-            content: {responsibleTasks}
+            messages: ['get_task_of_responsible_employee_success'],
+            content: responsibleTasks
         })
     } catch (error) {
         await await LogError(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(400).json({
             success:false,
-            messages: ['get task of responsible employee fail'],
-            content: {error}
+            messages: ['get_task_of_responsible_employee_fail'],
+            content: error
         })
     }
 }
@@ -90,15 +90,15 @@ exports.getAccountableTaskByUser = async (req, res) => {
         // res.status(200).json(accountableTasks);
         res.status(200).json({
             success:true,
-            messages: ['get task of accountable employee success'],
-            content: {accountableTasks}
+            messages: ['get_task_of_accountable_employee_success'],
+            content: accountableTasks
         });
     } catch (error) {
         await LogError(req.user.email, ` get task accountable by user `,req.user.company)
         res.status(400).json({
             success:false,
-            messages: ['get task of accountable employee fail'],
-            content: {error}
+            messages: ['get_task_of_accountable_employee_fail'],
+            content: error
         })
     }
 }
@@ -110,15 +110,15 @@ exports.getConsultedTaskByUser = async (req, res) => {
         await LogInfo(req.user.email, ` get task consulted by user `,req.user.company)
         res.status(200).json({
             success:true,
-            messages: ['get task of consulted employee success'],
-            content: {consultedTasks}
+            messages: ['get_task_of_consulted_employee_success'],
+            content: consultedTasks
         })
     } catch (error) {
         await LogError(req.user.email, ` get task consulted by user `,req.user.company)
         res.status(400).json({
             success:false,
-            messages: ['get task of consulted employee fail'],
-            content: {error}
+            messages: ['get_task_of_consulted_employee_fail'],
+            content: error
         })
     }
 }
@@ -130,15 +130,15 @@ exports.getCreatorTaskByUser = async (req, res) => {
         await LogInfo(req.user.email, ` get task creator by user `,req.user.company)
         res.status(200).json({
             success:true,
-            messages: ['get task of creator success'],
-            content: {creatorTasks}
+            messages: ['get_task_of_creator_success'],
+            content: creatorTasks
         })
     } catch (error) {
         await LogError(req.user.email, ` get task creator by user `,req.user.company)
         res.status(400).json({
             success:false,
-            messages: ['get task of creator fail'],
-            content: {error}
+            messages: ['get_task_of_creator_fail'],
+            content: error
         })
     }
 }
@@ -150,15 +150,15 @@ exports.getInformedTaskByUser = async (req, res) => {
         await LogInfo(req.user.email, ` get task informed by user `,req.user.company)
         res.status(200).json({
             success:true,
-            messages: ['get task of informed employee success'],
-            content: {informedTasks}
+            messages: ['get_task_of_informed_employee_success'],
+            content: informedTasks
         })
     } catch (error) {
         await LogError(req.user.email, ` get task informed by user  `,req.user.company)
         res.status(400).json({
             success:false,
-            messages: ['get task of informed employee fail'],
-            content: {error}
+            messages: ['get_task_of_informed_employee_fail'],
+            content: error
         })
     }
 }
@@ -170,15 +170,15 @@ exports.create = async (req, res) => {
         await LogInfo(req.user.email, ` create task `,req.user.company)
         res.status(200).json({
             success:true,
-            messages: ['create task success'],
-            content: {task}
+            messages: ['create_task_success'],
+            content: task
         });
     } catch (error) {
         await LogError(req.user.email, ` create task  `,req.user.company)
         res.status(400).json({
             success:false,
-            messages: ['create task fail'],
-            content: {error}
+            messages: ['create_task_fail'],
+            content: error
         })
     }
 }
@@ -189,13 +189,13 @@ exports.delete = async (req, res) => {
         await LogInfo(req.user.email, ` delete task  `,req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['delete success']
+            messages: ['delete_success']
         });
     } catch (error) {
         await LogError(req.user.email, ` delete task `,req.user.company)
         res.status(400).json({
             success: false,
-            messages: ['delete fail']
+            messages: ['delete_fail']
         })
     }
 }
@@ -207,15 +207,15 @@ exports.editStatusOfTask = async (req, res) => {
         // await LogInfo(req.user.email, ` edit status of task  `,req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['edit status of task success'],
-            content: {task}
+            messages: ['edit_status_of_task_success'],
+            content: task
         })
     } catch (error) {
         // await LogError(req.user.email, ` edit status of task `,req.user.company);
         res.status(400).json({
             success: false,
-            messages: ['edit status of task fail'],
-            content: {error}
+            messages: ['edit_status_of_task_fail'],
+            content: error
         });
     }
 }

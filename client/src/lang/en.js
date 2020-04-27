@@ -1012,6 +1012,73 @@ export default {
             edit_faile: 'Chỉnh sửa thông báo thất bại'
         },
 
+        task: {
+            task_management: {
+                create_task_success: 'Create new task succesfully',
+                delete_success: 'Delete task successfully',
+                edit_status_of_task_success: 'Edit status of task successfully ',
+
+                create_task_fail: "Can't create new task",
+                delete_fail: "Can't delete task successfully",
+                edit_status_of_task_fail: "Can't edit status of task",
+            },
+            task_perform: {
+                // TODO: code_mesage_task_perform
+                create_result_task_success: 'Evaluate task successfully',
+                edit_result_task_success: 'Edit result task successfully',
+
+                create_result_task_fail: "Can't evaluate task",
+                edit_result_task_fail: "Can't edit result task",
+                
+            },
+            task_template: {
+                // TODO: code_mesage_task_template
+            }
+        },
+
+        kpi:{
+            employee:{
+                get_kpi_by_member_success:'Get KPI by member successfully',
+                get_kpi_by_member_fail:'Get KPI by member fail',
+                get_kpi_responsible_success:'Get all KPI responsible successfully',
+                get_kpi_responsible_fail:'Get all KPI responsible fail',
+            },
+            evaluation:{
+                get_all_kpi_member_success: 'Get all KPI member successfully',
+                get_all_kpi_member_fail: 'Get all KPI member fail',
+                get_kpi_targets_success: 'Get KPI targets successfully',
+                get_kpi_targets_fail: 'Get KPI targets fail',
+                get_all_kpi_member_by_id_success: 'Get all KPI member by Id successfully',
+                get_all_kpi_member_by_id_fail: 'Get all KPI member by Id fail',
+                get_all_kpi_member_by_month_success:'Get all KPI member by month successfully',
+                get_all_kpi_member_by_month_fail:'Get all KPI member by month fail',               
+                approve_all_kpi_target_success: 'Approve all KPI target successfully',
+                approve_all_kpi_target_fail: 'Approve all KPI target fail',
+                edit_kpi_target_member_success: 'Edit KPI member target successfully',
+                edit_kpi_target_member_fail: 'Edit KPI member target fail',
+                edit_status_target_success: 'Edit status target successfully',
+                edit_status_target_fail: 'Edit status target fail',
+                get_task_by_id_success:'Get all tasks by Id successfully',
+                get_task_by_id_fail:'Get all tasks by Id fail',
+                get_system_point_success:'Get system point successfully',
+                get_system_point_fail:'Get system point fail',
+                set_point_kpi_success:'Get point KPI successfully',
+                set_point_kpi_fail:'Get point KPI fail',
+            
+            },
+            organizational_unit:{
+                get_kpi_unit_success: 'Get all KPI unit successfully',
+                get_kpi_unit_fail: 'Get all KPI unit fail',
+                get_kpiunit_by_role_success: 'Get KPI unit by role successfully',
+                get_kpiunit_by_role_fail: 'Get KPI unit by role fail',
+                get_child_target_by_parent_id_success: 'Get child targets by parent Id successfully',
+                get_child_target_by_parent_id_fail: 'Get child targets by parent Id fail',
+                create_kpi_unit_success: 'Create KPI unit successfully',
+                create_kpi_unit_fail: 'Create KPI unit fail',
+                update_evaluate_kpi_unit_success: 'Update kpi unit evaluation successfully',
+                update_evaluate_kpi_unit_fail: 'Update kpi unit evaluation fail',
+            }
+        },
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

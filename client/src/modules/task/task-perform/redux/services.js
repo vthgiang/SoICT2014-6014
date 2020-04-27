@@ -8,7 +8,8 @@ import {
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
-// import { LOCAL_SERVER_API } from '../redux-constants/config';
+import { sendRequest } from '../../../../helpers/requestHelper';
+
 export const performTaskService = {
     getLogTimerTask,
     getTimerStatusTask,
@@ -44,24 +45,20 @@ export const performTaskService = {
 
 // Create result task
 function createResultTask(result) { 
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/result-task/create`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        data: result // result { result, _idtask}
-    };
-    return axios(requestOptions);
+        data: result
+    }, true, 'task.task_perform'); // them vao dong 1098 trong file language vn nhe Thanh
 }
 
 // Create result task
 function editResultTask(listResult, taskid) { 
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/result-task/${taskid}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        data: listResult // listResult = [...] (= task.results)
-    };
-    return axios(requestOptions);
+        data: listResult
+    }, false, 'task.task_perform');
 }
 
 // get all log timer task

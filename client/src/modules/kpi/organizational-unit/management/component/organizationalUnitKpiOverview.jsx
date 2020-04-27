@@ -92,6 +92,7 @@ class KPIUnitManager extends Component {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
         const { department, managerKpiUnit } = this.props;
+        
         if (department.unitofuser) {
             unitList = department.unitofuser;
             currentUnit = unitList.filter(item =>
@@ -124,7 +125,6 @@ class KPIUnitManager extends Component {
             };
             
         }
-        
         return (
             <React.Fragment>
             <div className="box">
