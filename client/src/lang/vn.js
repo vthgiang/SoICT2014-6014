@@ -1108,6 +1108,49 @@ export default {
             }
         },
 
+        kpi:{
+            employee:{
+                get_kpi_by_member_success:'Lấy KPI thành viên theo người thiết lập thành công',
+                get_kpi_by_member_fail:'Lấy KPI thành theo người thiết lập viên lỗi',
+                get_kpi_responsible_success:'Lấy tất cả KPI cá nhân của người thực hiện trong công việc thành công',
+                get_kpi_responsible_fail:'Lấy tất cả KPI cá nhân của người thực hiện trong công việc lỗi',
+            },
+            evaluation:{
+                get_all_kpi_member_success: 'Lấy tất cả KPI member thành công',
+                get_all_kpi_member_fail: 'Lấy tất cả KPI nhân viên lỗi',
+                get_kpi_targets_success: 'Lấy mục tiêu KPI nhân viên thành công',
+                get_kpi_targets_fail: 'Lấy mục tiêu KPI nhân viên lỗi',
+                get_all_kpi_member_by_id_success: 'Lấy tất cả KPI nhân viên theo Id thành công',
+                get_all_kpi_member_by_id_fail: 'Lấy tất cả KPI nhân viên theo Id lỗi',
+                get_all_kpi_member_by_month_success:'Lấy tất cả KPI nhân viên theo tháng thành công',
+                get_all_kpi_member_by_month_fail:'Lấy tất cả KPI nhân viên theo tháng lỗi',                
+                approve_all_kpi_target_success: 'Phê duyệt KPI nhân viên thành công',
+                approve_all_kpi_target_fail: 'Phê duyệt KPI nhân viên lỗi',
+                edit_kpi_target_member_success: 'Chỉnh sửa mục tiêu KPI nhân viên thành công',
+                edit_kpi_target_member_fail: 'Chỉnh sửa mục tiêu KPI nhân viên lỗi',
+                edit_status_target_success:'Chỉnh sửa trạng thái mục tiêu thành công',
+                edit_status_target_fail:'Chỉnh sửa trạng thái mục tiêu lỗi',
+                get_task_by_id_success:'Lấy danh sách công việc theo Id thành công',
+                get_task_by_id_fail:'Lấy danh sách công việc theo Id lỗi',
+                get_system_point_success:'Lấy điểm hệ thống cho KPI thành công',
+                get_system_point_fail:'Lấy điểm hệ thống cho KPI lỗi',
+                set_point_kpi_success:'Chấm điểm KPI nhân viên thành công',
+                set_point_kpi_fail:'Chấm điểm KPI nhân viên lỗi',
+            
+            },
+            organizational_unit:{
+                get_kpi_unit_success:'Lấy danh sách KPI đơn vị thành công',
+                get_kpi_unit_fail:'Lấy danh sách KPI đơn vị lỗi',
+                get_kpiunit_by_role_success:'Lấy danh sách KPI đơn vị theo vai trò thành công',
+                get_kpiunit_by_role_fail:'Lấy danh sách KPI đơn vị theo vai trò lỗi',
+                get_child_target_by_parent_id_success:'Lấy mục tiêu con theo Id của mục tiêu cha thành công',
+                get_child_target_by_parent_id_fail:'Lấy mục tiêu con theo Id của mục tiêu cha lỗi',
+                create_kpi_unit_success:'Khởi tạo KPI đơn vị thành công',
+                create_kpi_unit_fail:'Khởi tạo KPI đơn vị lỗi',
+                update_evaluate_kpi_unit_success:'Cập nhật điểm đánh giá KPI đơn vị thành công',
+                update_evaluate_kpi_unit_fail:'Cập nhật điểm đánh giá KPI đơn vị lỗi',
+            }
+        },
         footer: {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

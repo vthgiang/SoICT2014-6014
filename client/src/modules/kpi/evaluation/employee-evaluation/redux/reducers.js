@@ -11,12 +11,12 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpimembers: action.kpimembers.content,
+        kpimembers: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  kpiMemberConstants.GETALL_KPIMEMBER_REQUEST:
@@ -29,12 +29,12 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpimembers: action.kpimembers.content,
+        kpimembers: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
  
@@ -48,12 +48,12 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        currentKPI: action.kpimember.content,
+        currentKPI: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYID_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST:
@@ -66,12 +66,12 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpimember: action.kpimember.content,
+        kpimember: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYMONTH_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
  
@@ -84,14 +84,14 @@ export function kpimembers(state = {}, action) {
     case kpiMemberConstants.APPROVE_KPIMEMBER_SUCCESS:
       return {
         ...state,
-        currentKPI: action.newKPI.kpimember,
+        currentKPI: action.payload.kpimember,
         kpimembers: state.kpimembers.map(item=>
-          item._id===action.newKPI.kpimember._id?action.newKPI.kpimember:item),
+          item._id===action.payload.kpimember._id?action.payload.kpimember:item),
         isLoading: false
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
@@ -112,14 +112,14 @@ export function kpimembers(state = {}, action) {
           currentKPI: {
             ...state.currentKPI,
             listtarget: state.currentKPI.listtarget.map(target =>
-              target._id === action.newTarget.target._id
-                ? action.newTarget.target : target)
+              target._id === action.payload.target._id
+                ? action.payload.target : target)
           },
           isLoading: false
       };
     case kpiMemberConstants.EDITTARGET_KPIMEMBER_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST:
@@ -132,19 +132,19 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         editing: false,
-        currentKPI: action.newKPI.newKPI,
+        currentKPI: action.payload.newKPI,
         kpimembers: state.kpimembers.map(item=>
-          item._id===action.newKPI.newKPI._id?action.newKPI.newKPI:item),
+          item._id===action.payload.newKPI._id?action.payload.newKPI:item),
         isLoading: false
       };
     case kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GET_TASK_BYID_FAILURE:
       return { 
-        error: action.error
+        error: action.payload
         };
     case  kpiMemberConstants.GET_TASK_BYID_REQUEST: // đợi tí xem lại :))
       return {
@@ -155,7 +155,7 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        tasks: action.tasks.content, 
+        tasks: action.payload.content, 
       };
 
     //----------------------------------------------
@@ -167,11 +167,11 @@ export function kpimembers(state = {}, action) {
       case kpiMemberConstants.SET_POINTKPI_SUCCESS:
         return {
             ...state,
-            currentKPI : action.newPoint.content,
+            currentKPI : action.payload.content,
         };
       case kpiMemberConstants.SET_POINTKPI_FAILURE:
         return { 
-          error: action.error
+          error: action.payload
         };
     //----------------------------------------------------------------
 

@@ -4,23 +4,37 @@ const { LogInfo, LogError } = require('../../../../logs');
 exports.getKPIAllMember = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.getKPIAllMember(req.params);
-        LogInfo(req.user.emai, `Get kpi all member`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.emai, `Get kpi all member`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_kpi_member_success'],
+            content: kpimembers
+        });
     } catch (error) {
-        LogError(req.user.emai, `Get kpi all  member`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
+        res.status(400).json({
+            messages: ['get_all_kpi_member_fail'],
+            message: error
+        });
     }
 };
 // get all target of member kpi
 exports.getByMember = async (req, res) => {
     try {
-        console.log("id member", req.params.member)
+        // console.log("id member", req.params.member)
         const kpimembers = await KPIMemberService.getByMember(req.params.member);
-        LogInfo(req.user.email, `Get kpi member by creater`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Get kpi member by creater`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_kpi_targets_success'],
+            content: kpimembers
+        });
     } catch (error) {
-        LogError(req.user.email, `Get kpi member by creater`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Get kpi member by creater`, req.user.company);
+        res.status(400).json({
+            messages: ['get_kpi_targets_fail'],
+            message: error
+        });
     }
 };
 
@@ -28,11 +42,18 @@ exports.getByMember = async (req, res) => {
 exports.getById = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.getById(req.params.id);
-        LogInfo(req.user.email, `Get kpi member by id`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Get kpi member by id`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_kpi_member_by_id_success'],
+            content: kpimembers
+        });
     } catch (error) {
-        LogError(req.user.email, `Get kpi member by id`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Get kpi member by id`, req.user.company);
+        res.status(400).json({
+            messages: ['get_all_kpi_member_by_id_fail'],
+            message: error
+        });
     }
 }
 
@@ -40,11 +61,18 @@ exports.getById = async (req, res) => {
 exports.getByMonth = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.getByMonth(req.params);
-        LogInfo(req.user.email, `Get kpi member by month`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Get kpi member by month`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_kpi_member_by_month_success'],
+            content: kpimembers
+        });
     } catch (error) {
-        LogError(req.user.email, `Get kpi member by month`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Get kpi member by month`, req.user.company);
+        res.status(400).json({
+            messages: ['get_all_kpi_member_by_month_fail'],
+            message: error
+        });
     }
 };
 
@@ -52,11 +80,18 @@ exports.getByMonth = async (req, res) => {
 exports.approveAllTarget = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.approveAllTarget(req.params.id);
-        LogInfo(req.user.email, `Approve all target`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Approve all target`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['approve_all_kpi_target_success'],
+            content: kpimembers
+        });
     } catch (error) {
-        LogError(req.user.email, `Approve all target`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Approve all target`, req.user.company);
+        res.status(400).json({
+            messages: ['approve_all_kpi_target_fail'],
+            message: error
+        });
     }
 }
 
@@ -64,11 +99,18 @@ exports.approveAllTarget = async (req, res) => {
 exports.editTarget = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.editTarget(req.params.id, req.body);
-        LogInfo(req.user.email, `Edit target member`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Edit target member`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_kpi_target_member_success'],
+            content: kpimembers
+        });
     } catch (error) {
-        LogError(req.user.email, `Edit target member`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Edit target member`, req.user.company);
+        res.status(400).json({
+            messages: ['edit_kpi_target_member_fail'],
+            message: error
+        });
     }
 }
 
@@ -76,32 +118,53 @@ exports.editTarget = async (req, res) => {
 exports.editStatusTarget = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.editStatusTarget(req.params.id);
-        LogInfo(req.user.email, `Edit status target`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Edit status target`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_status_target_success'],
+            content: kpimembers
+        });
     } catch (error) {
-        LogError(req.user.email, `Edit status target`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Edit status target`, req.user.company);
+        res.status(400).json({
+            messages: ['edit_status_target_fail'],
+            message: error
+        });
     }
 }
 
 exports.getTaskById= async(req, res) => {
     try {
         const kpimembers = await KPIMemberService.getTaskById(req.params.id);
-       // LogInfo(req.user.email, `Edit status target`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Get task by Id`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_by_id_success'],
+            content: kpimembers
+        });
     } catch (error) {
-      //  LogError(req.user.email, `Edit status target`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Get task by Id`, req.user.company);
+        res.status(400).json({
+            messages: ['get_task_by_id_fail'],
+            message: error
+        });
     } 
 }
 exports.getSystemPoint= async(req, res) => {
     try {
         const kpimembers = await KPIMemberService.getSystemPoint(req.params.id);
-       // LogInfo(req.user.email, `Edit status target`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Get system point`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_system_point_success'],
+            content: kpimembers
+        });
     } catch (error) {
-      //  LogError(req.user.email, `Edit status target`, req.user.company);
-        res.status(400).json(error);
+        await LogError(req.user.email, `Get system point`, req.user.company);
+        res.status(400).json({
+            messages: ['get_system_point_fail'],
+            message: error
+        });
     }
 }
 
@@ -109,10 +172,17 @@ exports.getSystemPoint= async(req, res) => {
 exports.setPointKPI = async (req, res) =>{
     try {
         const kpimembers = await KPIMemberService.setPointKPI(req.params.id_kpi, req.params.id_target, req.body);
-      //LogInfo(req.user.email, `Set point for kpi`, req.user.company);
-        res.status(200).json(kpimembers);
+        await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['set_point_kpi_success'],
+            content: kpimembers
+        });
     } catch (error) {
-      //  LogInfo(req.user.email, `Set point for kpi`, req.user.company);
-        res.status(400).json(error);
+        await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
+        res.status(400).json({
+            messages: ['set_point_kpi_fail'],
+            message: error
+        });
     }
 }
