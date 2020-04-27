@@ -7,6 +7,7 @@ import {
 } from '../../../../../config';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
+import { sendRequest } from '../../../../../helpers/requestHelper';
 export const kpiMemberServices = {
     getAllKPIMemberOfUnit,
     getAllKPIMemberByMember,
@@ -20,100 +21,74 @@ export const kpiMemberServices = {
 };
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.starttime}/${infosearch.endtime}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
- 
-    return (requestOptions);
+    },false,'kpi.evaluation.employee-evaluation');
 }
 // Lấy tất cả kpi cá nhân
 async function getAllKPIMemberByMember() {
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var member = verified._id;
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/user/${member}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
- 
-    return axios(requestOptions);
+    },false,'kpi.evaluation.employee-evaluation');
 }
  
 // Lấy KPI cá nhân của nhân vien theo id
 function getKPIMemberById(id) {
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
- 
-    return axios(requestOptions);
+    },false,'kpi.evaluation.employee-evaluation');
 }
 // Lấy KPI cá nhân của nhân vien theo tháng
 function getKPIMemberByMonth(id, time) {
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/member/${id}/${time}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
- 
-    return axios(requestOptions);
+    },false,'kpi.evaluation.employee-evaluation')
 }
  
 // Phê duyệt kpi cá nhân
 function approveKPIMember(id) {
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/approve/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader()
-    };
- 
-    return fetch(requestOptions);
+    },true,'kpi.evaluation.employee-evaluation');
 }
  
 // Chỉnh sửa mục tiêu KPI cá nhân
 function editTargetKPIMember(id, newTarget) {
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/target/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTarget)
-    };
- 
-    return axios(requestOptions);
+        data: newTarget
+    },true,'kpi.evaluation.employee-evaluation')
 }
 // chỉnh sửa trạng thái của kpi cá nhân
 function editStatusTarget(id, status) {
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/status-target/${id}/${status}`,
         method: 'PUT',
-        headers: AuthenticateHeader()
-    };
- 
-    return axios(requestOptions);
+    },true,'kpi.evaluation.employee-evaluation');
 }
 
 function getTaskById(id) {
-    const requestOptions = {
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/task/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
- 
-    return axios(requestOptions);
+    },false,'kpi.evaluation.employee-evaluation')
 }
 
 // chỉnh sửa approvepoint
 
 function setPointKPI(id_kpi, id_target, newPoint){
-    const requestOptions ={
+    return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/appovepoint/${id_kpi}/${id_target}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newPoint)
-    };
-    return axios(requestOptions);
+        data: newPoint
+    },true,'kpi.evaluation.employee-evaluation')
 }

@@ -8,14 +8,14 @@ exports.getByMember = async (req, res) => {
         LogInfo(req.user.email, ` get all target of personal kpi `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Lấy tất cả kpi thành công'],
+            messages: ['get_kpi_by_member_success'],
             content: kpipersonals
         })
     } catch (error) {
         LogError(req.user.email, ` get all target of personal kpi `, req.user.company)
         res.status(400).json({
             success: false,
-            messages : ['Lấy thông tin thất bại'],
+            messages : ['get_kpi_by_member_fail'],
             content: error
         })
     }
@@ -28,14 +28,14 @@ exports.getKPIResponsible = async (req, res) => {
         LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
         res.status(200).json({
             success: true,
-            messages: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
+            messages: ['get_kpi_responsible_success'],
             content: kpipersonals
         });
     } catch (error) {
         LogError(req.user.email, ` get all kpi personal `, req.user.company);
         res.status(400).json({
             success : false,
-            messages: ['Lấy thông tin thất bại'],
+            messages: ['get_kpi_responsible_fail'],
             content: error
         })
     }
