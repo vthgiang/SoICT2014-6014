@@ -2,14 +2,14 @@ import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { AuthenticateHeader } from '../../../../config';
 export const AssetTypeService = {
-    getListAssetType,
-    createNewAssetType,
+    searchAssetTypes,
+    createAssetType,
     deleteAssetType,
     updateAssetType,
 }
 
 // Lấy danh sách nghỉ phép
-function getListAssetType(data) {
+function searchAssetTypes(data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/assettype/paginate`,
         method: 'POST',
@@ -20,7 +20,7 @@ function getListAssetType(data) {
 }
 
 // tạo mới thông tin nghỉ phép
-function createNewAssetType(data) {
+function createAssetType(data) {
     const requestOptions = {
         url: `${ LOCAL_SERVER_API }/assettype/create`,
         method: 'POST',

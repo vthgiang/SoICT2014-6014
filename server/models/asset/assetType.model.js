@@ -18,7 +18,7 @@ const AssetTypeSchema = new Schema({
     },
     timeDepreciation: { //thời gian trính khấu hao
         type: Number,
-        required: true
+        // required: true
     },
     parent: { // loại tài sản cha
         type: Schema.Types.ObjectId,

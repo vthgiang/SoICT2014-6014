@@ -1,139 +1,98 @@
-import {
-    AssetTypeConstants
-} from "./constants";
-import {
-    AssetTypeService
-} from "./services";
-import { AlertActions } from "../../../alert/redux/actions";
+import {AssetTypeConstants} from "./constants";
+import {AssetTypeService} from "./services";
+
 export const AssetTypeActions = {
-    getListAssetType,
-    createNewAssetType,
+    searchAssetTypes,
+    createAssetType,
     deleteAssetType,
     updateAssetType,
 };
 
 // lấy danh sách loại tài sản
-function getListAssetType(data) {
-    return dispatch => {
-        dispatch(request());
+function searchAssetTypes(data) {
 
-        AssetTypeService.getListAssetType(data)
-            .then(
-                listAssetType => dispatch(success(listAssetType)),
-                error => dispatch(failure(error.toString()))
-            );
-    }
-
-    function request() {
-        return {
-            type: AssetTypeConstants.GET_ASSETTYPE_REQUEST,
-        };
-    };
-
-    function success(listAssetType) {
-        return {
-            type: AssetTypeConstants.GET_ASSETTYPE_SUCCESS,
-            listAssetType
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: AssetTypeConstants.GET_ASSETTYPE_FAILURE,
-            error
-        };
-    };
-}
-
-// Tạo mới thông tin nghỉ phép
-function createNewAssetType(data) {
     return dispatch => {
         dispatch({
-            type: AssetTypeConstants.CREATE_ASSETTYPE_REQUEST
+            type: AssetTypeConstants.GET_ASSET_TYPE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            AssetTypeService.createNewAssetType(data)
-                .then(res => {
-                    dispatch({
-                        type: AssetTypeConstants.CREATE_ASSETTYPE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res.data.content);
+        AssetTypeService.searchAssetTypes(data)
+            .then(res => {
+                dispatch({
+                    type: AssetTypeConstants.GET_ASSET_TYPE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: AssetTypeConstants.CREATE_ASSETTYPE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AssetTypeConstants.GET_ASSET_TYPE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
-// Xoá thông tin loại tài sản
+// Tạo mới thông tin loại tài sản
+function createAssetType(data) {
+    return dispatch => {
+        dispatch({
+            type: AssetTypeConstants.CREATE_ASSET_TYPE_REQUEST
+        });
+        AssetTypeService.createAssetType(data)
+            .then(res => {
+                dispatch({
+                    type: AssetTypeConstants.CREATE_ASSET_TYPE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AssetTypeConstants.CREATE_ASSET_TYPE_FAILURE,
+                    error: err.response.data
+                });
+            })
+    }
+}
+
+// Xoá thông tin thông tin loại tài sản
 function deleteAssetType(id) {
     return dispatch => {
-        dispatch(request());
-
+        dispatch({
+            type: AssetTypeConstants.DELETE_ASSET_TYPE_REQUEST,
+        });
         AssetTypeService.deleteAssetType(id)
-            .then(
-                assetTypeDelete => dispatch(success(assetTypeDelete)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: AssetTypeConstants.DELETE_ASSET_TYPE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AssetTypeConstants.DELETE_ASSET_TYPE_SUCCESS,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: AssetTypeConstants.DELETE_ASSETTYPE_REQUEST,
-        };
-    };
-
-    function success(assetTypeDelete) {
-        return {
-            type: AssetTypeConstants.DELETE_ASSETTYPE_SUCCESS,
-            assetTypeDelete
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: AssetTypeConstants.DELETE_ASSETTYPE_FAILURE,
-            error
-        };
-    };
 }
 
 // cập nhật thông tin loại tài sản
 function updateAssetType(id, infoAssetType) {
     return dispatch => {
-        dispatch(request());
-
+        dispatch({
+            type: AssetTypeConstants.UPDATE_ASSET_TYPE_REQUEST
+        });
         AssetTypeService.updateAssetType(id, infoAssetType)
-            .then(
-                infoAssetType => dispatch(success(infoAssetType)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: AssetTypeConstants.UPDATE_ASSET_TYPE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AssetTypeConstants.UPDATE_ASSET_TYPE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: AssetTypeConstants.UPDATE_ASSETTYPE_REQUEST,
-        };
-    };
-
-    function success(infoAssetType) {
-        return {
-            type: AssetTypeConstants.UPDATE_ASSETTYPE_SUCCESS,
-            infoAssetType
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: AssetTypeConstants.UPDATE_ASSETTYPE_FAILURE,
-            error
-        };
-    };
 }

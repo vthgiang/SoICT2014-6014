@@ -106,7 +106,7 @@ class AssetTypeCreateForm extends Component {
      */
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.createNewAssetType(this.state);
+            return this.props.createAssetType(this.state);
         }
     }
     render() {
@@ -163,7 +163,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    createNewAssetType: AssetTypeActions.createNewAssetType
+    createAssetType: AssetTypeActions.createAssetType
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AssetTypeCreateForm));

@@ -18,8 +18,7 @@ class AssetTypeManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        this.props.getListAssetType(this.state);
-        this.props.getListAssetType();
+        this.props.searchAssetTypes(this.state);
     }
     // Bắt sự kiện click chỉnh sửa thông tin loại tài sản
     handleEdit = async (value) => {
@@ -41,7 +40,7 @@ class AssetTypeManager extends Component {
 
     }
 
-    // Function lưu giá trị tên loại tài sản vào state khi thay đổi
+    //Function lưu giá trị tên loại tài sản vào state khi thay đổi
     handleTypeNameChange = (event) => {
         const { name, value } = event.target;
         this.setState({
@@ -50,14 +49,14 @@ class AssetTypeManager extends Component {
 
     }
 
-    // Function bắt sự kiện tìm kiếm 
+    // Function bắt sự kiện tìm kiếm
     handleSunmitSearch = async () => {
-        if (this.state.month === "") {
+        // if (this.state.month === "") {
             await this.setState({
-
+                ...this.state,
             })
-        }
-        // this.props.getListAssetType(this.state);
+        // }
+        this.props.searchAssetTypes(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -65,7 +64,7 @@ class AssetTypeManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        this.props.getListAssetType(this.state);
+        this.props.searchAssetTypes(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -75,15 +74,18 @@ class AssetTypeManager extends Component {
             page: parseInt(page),
 
         });
-        this.props.getListAssetType(this.state);
+        this.props.searchAssetTypes(this.state);
     }
 
     render() {
+
         // const { list } = this.props.department;
+        console.log(this.props.assetType.listAssetTypes);
+
         const { translate, assetType } = this.props;
-        var listAssetType = "";
+        var listAssetTypes = "";
         if (this.props.assetType.isLoading === false) {
-            listAssetType = this.props.assetType.listAssetType;
+            listAssetTypes = this.props.assetType.listAssetTypes;
         }
         var pageTotal = ((this.props.assetType.totalList % this.state.limit) === 0) ?
             parseInt(this.props.assetType.totalList / this.state.limit) :
@@ -105,7 +107,7 @@ class AssetTypeManager extends Component {
                             <label className="form-control-static">Tên loại tài sản</label>
                             <input type="text" className="form-control" name="typeName" onChange={this.handleTypeNameChange} placeholder="Mã loại tài sản" autoComplete="off" />
                         </div>
-                        
+
                         <div className="form-group">
                             {/* <label></label> */}
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
@@ -137,8 +139,8 @@ class AssetTypeManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listAssetType !== 'undefined' && listAssetType.length !== 0) &&
-                                listAssetType.map((x, index) => (
+                            {(typeof listAssetTypes !== 'undefined' && listAssetTypes.length !== 0) &&
+                                listAssetTypes.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.typeNumber}</td>
                                         <td>{x.typeName}</td>
@@ -162,7 +164,7 @@ class AssetTypeManager extends Component {
                     </table>
                     {assetType.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listAssetType === 'undefined' || listAssetType.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listAssetTypes === 'undefined' || listAssetTypes.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -188,7 +190,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    getListAssetType: AssetTypeActions.getListAssetType,
+    searchAssetTypes: AssetTypeActions.searchAssetTypes,
     deleteAssetType: AssetTypeActions.deleteAssetType,
 };
 

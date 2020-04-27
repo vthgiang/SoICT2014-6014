@@ -8,7 +8,7 @@ class AssetTypeEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.save = this.save.bind(this);
+        // this.save = this.save.bind(this);
     }
 
     /**
@@ -107,8 +107,8 @@ class AssetTypeEditForm extends Component {
                     size='50' modalID="modal-edit-assettype" isLoading={assetType.isLoading}
                     formID="form-edit-assettype"
                     title="Chỉnh sửa thông tin loại tài sản"
-                    msg_success={translate('error.edit_praise_success')}
-                    msg_faile={translate('error.edit_praise_faile')}
+                    msg_success="Chỉnh sửa loại tài sản thành công"
+                    msg_faile="Chỉnh sửa loại tài sản thất bại"
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -117,7 +117,7 @@ class AssetTypeEditForm extends Component {
                             <label>Mã loại tài sản<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="typeNumber" value={typeNumber} disabled />
                         </div>
-                        <div className={`col-sm-6 col-xs-12 form-group ${errorOnTypeName === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnTypeName === undefined ? "" : "has-error"}`}>
                             <label>Tên loại tài sản<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} />
                             <ErrorLabel content={errorOnTypeName} />
@@ -150,5 +150,5 @@ const actionCreators = {
     updateAssetType: AssetTypeActions.updateAssetType,
 };
 
-const editForm = connect(mapState, actionCreators)(withTranslate(AssetTypeEditForm));
-export { editForm as AssetTypeEditForm };
+const editAssetType = connect(mapState, actionCreators)(withTranslate(AssetTypeEditForm));
+export { editAssetType as AssetTypeEditForm };
