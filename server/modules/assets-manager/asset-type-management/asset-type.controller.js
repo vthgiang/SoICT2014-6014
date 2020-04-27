@@ -3,10 +3,12 @@ const {LogInfo, LogError} = require('../../../logs');
 
 /**
  *  Lấy danh sách loại tài sản
+ * để tôi thử
  */
 exports.searchAssetTypes = async (req, res) => {
+    // console.log('req.body',req.body);
     try {
-        var listAssetType = await AssetTypeService.searchAssetTypes(req.body, req.user.company._id);
+        var listAssetType = await AssetTypeService.searchAssetTypes(req.user.company._id);
         await LogInfo(req.user.email, 'GET_ASSETTYPE', req.user.company);
         res.status(200).json({ success: true, message: ["get_asset_type_success"], content: listAssetType });
     } catch (error) {
@@ -17,7 +19,7 @@ exports.searchAssetTypes = async (req, res) => {
 
 /**
  * Tạo mới thông tin loại tài sản
- */ 
+ */
 exports.createAssetType = async (req, res) => {
     try {
         if(req.body.typeNumber.trim()===""){
@@ -32,7 +34,7 @@ exports.createAssetType = async (req, res) => {
             res.status(200).json({
                 success: true,
                 message: ["create_asset_type_success"],
-                content: newAssetType 
+                content: newAssetType
             });
         }
     } catch (error) {
@@ -48,10 +50,10 @@ exports.deleteAssetType = async (req, res) => {
     try {
         var assettypeDelete = await AssetTypeService.deleteAssetType(req.params.id);
         await LogInfo(req.user.email, 'DELETE_ASSETTYPE', req.user.company);
-        res.status(200).json({ 
-            success: true, 
-            message: ["delete_asset_type_success"], 
-            content: assettypeDelete 
+        res.status(200).json({
+            success: true,
+            message: ["delete_asset_type_success"],
+            content: assettypeDelete
         });
     } catch (error) {
         await LogError(req.user.email, 'DELETE_ASSETTYPE', req.user.company);
@@ -61,7 +63,7 @@ exports.deleteAssetType = async (req, res) => {
 
 /**
  * Cập nhật thông tin loại tài sản
- */ 
+ */
 exports.updateAssetType = async (req, res) => {
     try {
         if(req.body.typeNumber.trim()===""){
@@ -73,10 +75,10 @@ exports.updateAssetType = async (req, res) => {
         } else {
             var assettypeUpdate = await AssetTypeService.updateAssetType(req.params.id, req.body);
             await LogInfo(req.user.email, 'EDIT_ASSETTYPE', req.user.company);
-            res.status(200).json({ 
-                success: true, 
-                message: ["edit_asset_type_success"], 
-                content: assettypeUpdate 
+            res.status(200).json({
+                success: true,
+                message: ["edit_asset_type_success"],
+                content: assettypeUpdate
             });
         }
     } catch (error) {

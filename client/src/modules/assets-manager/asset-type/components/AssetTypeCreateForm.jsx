@@ -120,7 +120,7 @@ class AssetTypeCreateForm extends Component {
                     size='50' modalID="modal-create-assettype" isLoading={assetType.isLoading}
                     formID="form-create-assettype"
                     title="Thêm mới loại tài sản"
-                    msg_success={translate('modal.add_success')}
+                    msg_success="{translate('modal.add_success')}"
                     msg_faile={translate('modal.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
@@ -138,7 +138,6 @@ class AssetTypeCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>Thời gian khấu hao</label>
-                            {/* <input type="number" className="form-control" name="timeDepreciation" value={timeDepreciation} onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao" /> */}
                             <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="timeDepreciation" value={ timeDepreciation } onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao" />
                             <label style={{ height: 34, display: "inline", width: "5%"}}> &nbsp; Năm</label>
                         </div>

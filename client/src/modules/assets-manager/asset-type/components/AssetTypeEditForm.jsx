@@ -8,7 +8,6 @@ class AssetTypeEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        // this.save = this.save.bind(this);
     }
 
     /**
