@@ -1084,6 +1084,30 @@ export default {
             }
         },
 
+        task: {
+            task_management: {
+                create_task_success: 'Tạo công việc mới thành công',
+                delete_success: 'Xóa công việc thành công',
+                edit_status_of_task_success: 'Chỉnh sửa trạng thái công việc thành công',
+
+                create_task_fail: 'không thể tạo công việc mới',
+                delete_fail: 'Không thể xóa công việc này',
+                edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
+            },
+            task_perform: {
+                // TODO: code_mesage_task_perform
+                create_result_task_success: 'Đánh giá xong kết quả thực hiện công việc',
+                edit_redult_task_success: 'Chỉnh sửa thành công kết quả đánh giá',
+
+                create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
+                edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
+                
+            },
+            task_template: {
+                // TODO: code_mesage_task_template
+            }
+        },
+
         footer: {
             copyright: 'Bản quyền thuộc về ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',

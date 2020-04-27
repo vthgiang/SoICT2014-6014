@@ -1012,6 +1012,30 @@ export default {
             edit_faile: 'Chỉnh sửa thông báo thất bại'
         },
 
+        task: {
+            task_management: {
+                create_task_success: 'Create new task succesfully',
+                delete_success: 'Delete task successfully',
+                edit_status_of_task_success: 'Edit status of task successfully ',
+
+                create_task_fail: "Can't create new task",
+                delete_fail: "Can't delete task successfully",
+                edit_status_of_task_fail: "Can't edit status of task",
+            },
+            task_perform: {
+                // TODO: code_mesage_task_perform
+                create_result_task_success: 'Evaluate task successfully',
+                edit_result_task_success: 'Edit result task successfully',
+
+                create_result_task_fail: "Can't evaluate task",
+                edit_result_task_fail: "Can't edit result task",
+                
+            },
+            task_template: {
+                // TODO: code_mesage_task_template
+            }
+        },
+
         footer: {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
