@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const LinkServices = {
     get,
@@ -12,64 +11,46 @@ export const LinkServices = {
 };
 
 function get() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/link`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.link');
 }
 
 function getPaginate(data) {  
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/link/paginate`,
         method: 'POST',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.link');
 }
 
 function show(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/link/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.link');
 }
 
-function create(link) {
-    const requestOptions = {
+function create(data) {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/link`,
         method: 'POST',
-        data: link,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data,
+    }, true, 'super_admin.link');
 }
 
 function edit(id, data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/link/${id}`,
         method: 'PATCH',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data,
+    }, true, 'super_admin.link');
 }
 
 function destroy(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/link/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'super_admin.link');
 }

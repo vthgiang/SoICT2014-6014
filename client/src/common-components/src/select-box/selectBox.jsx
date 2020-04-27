@@ -23,10 +23,7 @@ class SelectBox extends Component {
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
-            let value;
-            if(this.props.multiple) value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
-            else value = this.refs.select.value;
-            
+            let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
             this.setState(state => {
                 return {
                     ...state,
