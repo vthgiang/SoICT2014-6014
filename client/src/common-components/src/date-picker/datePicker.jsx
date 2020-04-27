@@ -15,16 +15,25 @@ class DatePicker extends Component {
             document.body.appendChild(script);
         }
     }
-
-
     componentDidMount() {
         const { id, dateFormat, onChange } = this.props;
-        dateFormat !== "month-year" ? window.$("#" + id).datepicker({ autoclose: true }) :
+        dateFormat !== "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+            }):
+            window.$("#" + id).datepicker({
+                autoclose: true,
+                format: "mm-yyyy",
                 startView: 1,
-                minViewMode: "months"
+                minViewMode: "months",
             });
+        window.$("#" + id).keyup(function (e) {
+            if (e.keyCode == 8 || e.keyCode == 46) {
+                window.$("#" + id).datepicker('update', "");
+            }
+        });
         window.$("#" + id).on("change", () => {
             let value = this.refs.datePicker.value;
             this.setState({
@@ -36,12 +45,18 @@ class DatePicker extends Component {
 
     componentDidUpdate() {
         const { id, dateFormat } = this.props;
-        dateFormat !== "month-year" ? window.$("#" + id).datepicker({ autoclose: true }) :
+        dateFormat !== "month-year" ?
             window.$("#" + id).datepicker({
                 autoclose: true,
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+            }) :
+            window.$("#" + id).datepicker({
+                autoclose: true,
+                format: "mm-yyyy",
                 startView: 1,
-                minViewMode: "months"
-            });
+                minViewMode: "months",
+            })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -65,11 +80,11 @@ class DatePicker extends Component {
         const { id, dateFormat, disabled = false } = this.props;
         return (
             <React.Fragment>
-                <div className={'input-group date has-feedback'} id={id} data-date-format={dateFormat === "month-year" ? "mm-yyyy" : "dd-mm-yyyy"}>
+                <div className={'input-group date has-feedback'} id={id}>
                     <div className="input-group-addon">
                         <i className="fa fa-calendar" />
                     </div>
-                    <input type="text" className="form-control" defaultValue={this.state.value} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" className="form-control" value={this.state.value} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );
