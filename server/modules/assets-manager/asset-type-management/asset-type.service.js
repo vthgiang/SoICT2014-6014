@@ -1,6 +1,8 @@
 const AssetType = require('../../../models/asset/assetType.model');
 
-//lấy danh sách loại tài sản
+/**
+ * Lấy danh sách loại tài sản
+ */ 
 exports.searchAssetTypes = async (company) => {
     var listAssetTypes = await AssetType.find({
         company: company 
@@ -38,7 +40,10 @@ exports.deleteAssetType = async (id) => {
     });
 }
 
-// Update thông tin loại tài sản
+/**
+ * Update thông tin loại tài sản
+ * @id: id loại tài sản muốn update
+ */
 exports.updateAssetType = async (id, data) => {
     var assetTypeChange = {
         typeNumber: data.typeNumber,
@@ -56,4 +61,19 @@ exports.updateAssetType = async (id, data) => {
     return await AssetType.findOne({
         _id: id
     })
+}
+
+// Kiểm tra sự tồn tại của typeNumber
+exports.checkAssetTypeExisted = async (typeNumber, company) => {
+    var idTypeNumber = await AssetType.find({
+        typeNumber: typeNumber,
+        company: company
+    }, {
+        field1: 1
+    })
+    var checkTypeNumber = false;
+    if (idTypeNumber.length !== 0) {
+        checkTypeNumber = true
+    }
+    return checkTypeNumber;
 }

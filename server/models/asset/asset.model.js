@@ -27,12 +27,15 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Company = require('../system-admin/company.model');
+const AssetType = require('./assetType.model');
+const User = require('../auth/user.model');
 
 // Create Schema
 const AssetSchema = new Schema({
-    company: { //1.công ty
+    company: {// công ty
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: Company,
     },
     avatar: { //2.ảnh
         type: String
@@ -47,7 +50,7 @@ const AssetSchema = new Schema({
     },
     assetType: { //5.loại tài sản
         type: Schema.Types.ObjectId,
-        ref: 'asset_type',
+        ref: AssetType,
     },
     datePurchase: { //6.ngày nhập, ngày mua
         type: String,
@@ -56,7 +59,7 @@ const AssetSchema = new Schema({
     },
     manager: {//7.Người quản lý
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: User,
         required: true
     },
     location: { //8.vị trí
@@ -67,7 +70,7 @@ const AssetSchema = new Schema({
         type: String,
         required: true
     },
-    status: { //10.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || 
+    status: { //10.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
     },
     description: { //11.mô tả

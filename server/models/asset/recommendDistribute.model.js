@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Company = require('../system-admin/company.model');
+const Asset = require('./asset.model');
+const User = require('../auth/user.model');
 
 // tạo bảng csdl Đề nghị cấp phát thiết bị
 const RecommendDistributeSchema = new Schema({
     company: { //công ty
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: Company
     },
     recommendNumber: { //mã phiếu
         type: String,
@@ -17,18 +20,18 @@ const RecommendDistributeSchema = new Schema({
     },
     proponent: { //người đề nghị
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: User
     },
     reqContent: { //nội dung đề nghị cấp phát
         type: String,
     },
     asset: { //asset
         type: Schema.Types.ObjectId,
-        ref: 'assets'
+        ref: Asset
     },
     approver: { //người phê duyệt
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: User
     },
     status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String

@@ -1,16 +1,19 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Company = require('../system-admin/company.model');
+const Asset = require('./asset.model');
+const User = require('../auth/user.model');
 
 // toạ bảng datatable cấp phát - điều chuyển - thu hồi
 const DistributeTransferSchema = new Schema({
     asset: {
         type: Schema.Types.ObjectId,
-        ref: 'assets',
+        ref: Asset,
         require: true,
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: Company
     },
     distributeNumber: {//số phiếu
         type: String,
@@ -27,17 +30,17 @@ const DistributeTransferSchema = new Schema({
     place : {// vị trí bàn giao
         type: String
     },
-    handoverMan : {//người ban giao là người đang quản lý tài sản
+    handoverMan : {//người ban giao là người đang quản lý tài sản, lấy id từ model asset: manager
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: User
     },
     receiver : {//người tiếp nhận: chọn từ danh sách user
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: User
     },
 
     firstLocation :{//vị trí ban đầu của tài sản là vị trí hiện tại lúc chưa cấp phát - điều chuyển - thu hồi
-        type: String,
+        type: String, // vị trí hiện tại của tài sản, lấy từ model asset
     },
     
     secondLocation :{//vị trí tiếp theo của tài sản

@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Asset = require('./asset.model');
+const Company = require('../system-admin/company.model');
 
 // toạ bảng datatable sửa chữa - thay thế - nâng cấp
 const RepairUpgradeSchema = new Schema({
     asset: {
         type: Schema.Types.ObjectId,
-        ref: 'assets',
-        required: true
+        ref: Asset
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: Company
     },
     repairNumber: {//số phiếu
         type: String,

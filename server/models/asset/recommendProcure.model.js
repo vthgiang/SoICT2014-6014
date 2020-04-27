@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Company = require('../system-admin/company.model');
+const User = require('../auth/user.model');
 
 // Bảng đề nghị mua sắm thiết bị
 const RecommendProcureSchema = new Schema({
     company: { //công ty
         type: Schema.Types.ObjectId,
-        ref: 'companies'
+        ref: Company
     },
     recommendNumber: { //mã phiếu
         type: String,
@@ -17,7 +19,7 @@ const RecommendProcureSchema = new Schema({
     },
     proponent: { //người đề nghị
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: User
     },
     equipment: { //Tên thiết bị đề nghị mua sắm
         type: String,
@@ -39,7 +41,7 @@ const RecommendProcureSchema = new Schema({
     },
     approver: { //người phê duyệt
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: User
     },
     status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String

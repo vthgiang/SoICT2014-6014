@@ -17,6 +17,21 @@ exports.searchAssetTypes = async (req, res) => {
     }
 }
 
+// Kiểm tra sự tồn tại của mã loại tài sản 
+exports.checkTypeNumber = async (req, res) => {
+    try {
+        var checkTypeNumber = await AssetTypeService.checkAssetTypeExisted(req.params.typeNumber, req.user.company._id);
+        res.status(200).json({
+            message: "success",
+            content: checkTypeNumber
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error,
+        });
+    }
+}
+
 /**
  * Tạo mới thông tin loại tài sản
  */
