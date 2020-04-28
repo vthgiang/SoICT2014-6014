@@ -965,9 +965,10 @@ export default {
                     edit: 'Edit',
                     delete: 'Delete this KPI',
                     cancel: 'Cancel',
-                    edit_success: 'Editing successful',
-                    edit_failure: 'Editing falied',
-                    delete_success: 'Delete KPI successful'
+                    edit_success: 'Edit employee KPI set successfully',
+                    edit_failure: 'Edit employee KPI set unsuccessfully',
+                    delete_success: 'Delete employee KPI set successfully',
+                    delete_failure: 'Delete employee KPI set unsuccessfully'
                 },
                 time: 'Time',
                 approver: 'Approver',
@@ -979,6 +980,8 @@ export default {
                 initialize_kpi_newmonth: 'Initialize KPI new month',
                 request_approval: 'Request for approval',
                 cancel_request_approval: 'Cancel request for approval',
+                approve_success: 'Confirm request approval successfully',
+                approve_failure: 'Confirm request approval unsuccessfully',
 
                 // Nhóm dành cho các trạng thái tập KPI
                 kpi_status: {
@@ -1026,7 +1029,8 @@ export default {
                     kpi_target: 'Are you sure you want to delete this KPI target?',
                     approving: 'KPI is being approved, you can not delete!',
                     activated: 'KPI has been activated, you can not delete!',
-                    delete_success: 'Delete KPI target successful'
+                    delete_success: 'Delete KPI target successfully',
+                    delete_failure: 'Delete KPI target unsuccessfully'
                 },
                 edit_target: {
                     approving: 'KPI is being approved, you can not edit!',
@@ -1054,8 +1058,8 @@ export default {
                 parents: 'Parents target',
                 evaluation_criteria: 'Evaluation criteria',
                 weight: 'Weight',
-                success: 'Add KPI target successful',
-                failure: 'You have not entered enough information',
+                success: 'Add KPI target successfully',
+                failure: 'Add KPI target unsuccessfully',
 
                 // Nhóm dành cho validate
                 validate_name: {
@@ -1090,8 +1094,8 @@ export default {
                 month: 'Month',
                 approver: 'Approver',
                 default_target: 'Default target',
-                success: 'Initialize KPI successful',
-                failure: 'You have not entered enough information'
+                success: 'Initialize employee KPI set successfully',
+                failure: 'Initialize employee KPI set unsuccessfully'
             },
 
             edit_employee_kpi_modal: { // Module con
@@ -1101,9 +1105,9 @@ export default {
                 parents: 'Parents target',
                 evaluation_criteria: 'Evaluation criteria',
                 weight: 'Weight',
-                success: 'Edit KPI target successful',
-                failure: 'You have not entered enough information'
-            }
+                success: 'Edit KPI target successfully',
+                failure: 'Edit KPI target unsuccessfully'
+            },
         },
 
         notification: {

@@ -1044,9 +1044,10 @@ export default {
                     edit: 'Chỉnh sửa',
                     delete: 'Xóa KPI này',
                     cancel: 'Hủy',
-                    edit_success: 'Chỉnh sửa thành công',
-                    edit_failure: 'Chỉnh sửa không thành công',
-                    delete_success: 'Xóa KPI thành công'
+                    edit_success: 'Chỉnh sửa tập KPI nhân viên thành công',
+                    edit_failure: 'Chỉnh sửa tập KPI nhân viên thất bại',
+                    delete_success: 'Xóa KPI tập KPI nhân viên thành công',
+                    delete_failure: 'Xóa KPI tập KPI nhân viên thất bại'
                 },
                 time: 'Thời gian',
                 approver: 'Người phê duyệt',
@@ -1058,6 +1059,8 @@ export default {
                 initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                 request_approval: 'Yêu cầu phê duyệt',
                 cancel_request_approval: 'Hủy yêu cầu phê duyệt',
+                approve_success: 'Xác nhận yêu cầu phê duyệt thành công',
+                approve_failure: 'Xác nhận yêu cầu phê duyệt thất bại',
 
                 // Nhóm dành cho các trạng thái tập KPI
                 kpi_status: {
@@ -1122,7 +1125,8 @@ export default {
                     kpi_target: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
                     approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
                     activated: 'KPI đã được kích hoạt, bạn không thể xóa!',
-                    delete_success: 'Xóa mục tiêu KPI thành công'
+                    delete_success: 'Xóa mục tiêu KPI thành công',
+                    delete_failure: 'Xóa mục tiêu KPI thất bại'
                 },
             },
 
@@ -1134,7 +1138,7 @@ export default {
                 evaluation_criteria: 'Tiêu chí đánh giá',
                 weight: 'Trọng số',
                 success: 'Thêm mục tiêu KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin',
+                failure: 'Thêm mục tiêu KPI thất bại',
 
                 // Nhóm dành cho validate
                 validate_name: {
@@ -1170,8 +1174,8 @@ export default {
                 month: 'Tháng',
                 approver: 'Người phê duyệt',
                 default_target: 'Mục tiêu mặc định',
-                success: 'Khởi tạo KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin'
+                success: 'Khởi tạo tập KPI nhân viên thành công',
+                failure: 'Khởi tạo tập KPI nhân viên thất bại'
             },
 
             edit_employee_kpi_modal: { // Mudule con
@@ -1182,8 +1186,8 @@ export default {
                 evaluation_criteria: 'Mô tả tiêu chí đánh giá',
                 weight: 'Trọng số',
                 success: 'Chỉnh sửa mục tiêu KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin'
-            }
+                failure: 'Chỉnh sửa mục tiêu KPI thất bại'
+            },
         },
 
         task: {
