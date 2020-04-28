@@ -103,8 +103,8 @@ exports.getActionComments = async (params) => {
         { $match: { _id: mongoose.Types.ObjectId(params.task) } },
         { $unwind: "$taskActions" },
         { $replaceRoot: { newRoot: "$taskActions" } },
-        { $unwind: "$actionComments" },
-        { $replaceRoot: { newRoot: "$actionComments" } },
+        { $unwind: "$comments" },
+        { $replaceRoot: { newRoot: "$comments" } },
         {
             $lookup: {
                 from: "users",
@@ -130,7 +130,7 @@ exports.createActionComment = async (body) => {
             { "taskActions._id": body.taskActionId },
             {
                 "$push": {
-                    "taskActions.$.actionComments":
+                    "taskActions.$.comments":
                     {
                         parent: body.parent,
                         creator: body.creator,
@@ -147,15 +147,15 @@ exports.createActionComment = async (body) => {
             { $unwind: "$taskActions" },
             { $replaceRoot: { newRoot: "$taskActions" } },
             { $match: { "_id": mongoose.Types.ObjectId(body.taskActionId) } },
-            { $unwind: "$actionComments" },
-            { $sort: { "actionComments.createdAt": -1 } },
+            { $unwind: "$comments" },
+            { $sort: { "comments.createdAt": -1 } },
             {
                 $group: {
                     _id: null,
                     first: { $first: "$$ROOT" }
                 }
             },
-            { $replaceRoot: { newRoot: "$first.actionComments" } },
+            { $replaceRoot: { newRoot: "$first.comments" } },
             {
                 $lookup: {
                     from: "users",
@@ -179,8 +179,8 @@ exports.editActionComment = async (params,body) => {
         {
             $set:
             {
-                "taskActions.$[].actionComments.$[elem].content": body.content,
-                "taskActions.$[].actionComments.$[elem].updatedAt": now
+                "taskActions.$[].comments.$[elem].content": body.content,
+                "taskActions.$[].comments.$[elem].updatedAt": now
             }
         },
         {
@@ -192,11 +192,11 @@ exports.editActionComment = async (params,body) => {
         }
     )
     var commentAction = await Task.aggregate([
-        { $match: { "taskActions.actionComments._id": mongoose.Types.ObjectId(params.id) } },
+        { $match: { "taskActions.comments._id": mongoose.Types.ObjectId(params.id) } },
         { $unwind: "$taskActions" },
         { $replaceRoot: { newRoot: "$taskActions" } },
-        { $unwind: "$actionComments" },
-        { $replaceRoot: { newRoot: "$actionComments" } },
+        { $unwind: "$comments" },
+        { $replaceRoot: { newRoot: "$comments" } },
         { $match: { _id: mongoose.Types.ObjectId(params.id) } },
         {
             $lookup: {
@@ -215,7 +215,10 @@ exports.editActionComment = async (params,body) => {
  * Xóa bình luận hoạt động
  */
 exports.deleteActionComment = async (params) => {
-    var comment = await CommentTask.findByIdAndDelete(params.id); // xóa comment theo id
+    var action = await Task.update(
+        { "taskActions.comments._id": params.id },
+        { $pull: { "taskActions.$.comments" : {_id : params.id} } },
+        { safe: true })
 }
 /**
  * Lấy thông tin tất cả các hoạt động không theo mẫu của công việc
