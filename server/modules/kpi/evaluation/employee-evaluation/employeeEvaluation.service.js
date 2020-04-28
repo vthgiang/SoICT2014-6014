@@ -22,43 +22,43 @@ exports.getKPIAllMember = async (data) => {
     if (data.user === "all") {
         if (status === 5) {
             kpipersonals = await KPIPersonal.find({
-                unit: department._id,
+                organizationalUnit: department._id,
                 time: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } });
+            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else if (status === 4) {
             kpipersonals = await KPIPersonal.find({
-                unit: department._id,
+                organizationalUnit: department._id,
                 status: { $ne: 3 },
                 time: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } });
+            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else {
             kpipersonals = await KPIPersonal.find({
-                unit: department._id,
+                organizationalUnit: department._id,
                 status: status,
                 time: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } });
+            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         }
     } else {
         if (status === 5) {
             kpipersonals = await KPIPersonal.find({
-                unit: department._id,
-                creater: data.user,
+                organizationalUnit: department._id,
+                creator: data.user,
                 time: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } });
+            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else if (status === 4) {
             kpipersonals = await KPIPersonal.find({
-                unit: department._id,
-                creater: data.user,
+                organizationalUnit: department._id,
+                creator: data.user,
                 status: { $ne: 3 },
                 time: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } });
+            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else {
             kpipersonals = await KPIPersonal.find({
-                unit: department._id,
-                creater: data.user,
+                organizationalUnit: department._id,
+                creator: data.user,
                 status: status,
                 time: { "$gte": startdate, "$lt": enddate }
-            }).skip(0).limit(12).populate("unit creater approver").populate({ path: "listtarget", populate: { path: 'parent' } });
+            }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         }
     }
     return {
@@ -68,12 +68,12 @@ exports.getKPIAllMember = async (data) => {
 }
 
 // Lấy tất cả KPI cá nhân theo người thiết lập
-exports.getByMember = async (createrID) => {
+exports.getByMember = async (creatorID) => {
 
-    var kpipersonals = await KPIPersonal.find({ creater: { $in: createrID.split(",") } })
+    var kpipersonals = await KPIPersonal.find({ creator: { $in: creatorID.split(",") } })
         .sort({ 'time': 'desc' })
-        .populate("unit creater approver")
-        .populate({ path: "listtarget" });
+        .populate("organizationalUnit creator approver")
+        .populate({ path: "kpis" });
     return {
         message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
         content: kpipersonals
@@ -84,9 +84,9 @@ exports.getByMember = async (createrID) => {
 exports.getByMonth = async (data) => {
     var time = data.time.split("-");
     var month = new Date(time[1], time[0], 0);
-    var kpipersonals = await KPIPersonal.findOne({ creater: data.id, time: month })
-        .populate("unit creater approver")
-        .populate({ path: "listtarget", populate: { path: 'parent' } });
+    var kpipersonals = await KPIPersonal.findOne({ creator: data.id, time: month })
+        .populate("organizationalUnit creator approver")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return {
         message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
         content: kpipersonals
@@ -97,20 +97,20 @@ exports.getByMonth = async (data) => {
 exports.approveAllTarget = async (id) => {
     var kpipersonal = await KPIPersonal.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
     var targets;
-    if (kpipersonal.listtarget) targets = kpipersonal.listtarget;
+    if (kpipersonal.kpis) targets = kpipersonal.kpis;
     if (targets !== []) {
         var targets = await Promise.all(targets.map(async (item) => {
             var defaultT = await DetailKPIPersonal.findByIdAndUpdate(item._id, { $set: { status: 1 } }, { new: true })
             return defaultT;
         }))
     }
-    kpipersonal = await kpipersonal.populate("unit creater approver")
-        .populate({ path: "listtarget", populate: { path: 'parent' } })
+    kpipersonal = await kpipersonal.populate("organizationalUnit creator approver")
+        .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
     return {
         message: "Xác nhận yêu cầu phê duyệt thành công",
         kpimember: kpipersonal,
-        listtarget: targets
+        kpis: targets
     }
 }
 
@@ -118,10 +118,10 @@ exports.approveAllTarget = async (id) => {
 exports.editStatusTarget = async (data) => {
 
     var target = await DetailKPIPersonal.findByIdAndUpdate(data.id, { $set: { status: data.status } }, { new: true });
-    var kpipersonal = await KPIPersonal.findOne({ listtarget: { $in: data.id } }).populate("listtarget");
-    var listtarget = kpipersonal.listtarget;
+    var kpipersonal = await KPIPersonal.findOne({ kpis: { $in: data.id } }).populate("kpis");
+    var kpis = kpipersonal.kpis;
     var checkFullApprove = 2;
-    await listtarget.map(item => {
+    await kpis.map(item => {
         if (item.status === null || item.status === 0) {
             if (parseInt(data.status) === 1) {
                 checkFullApprove = 1;
@@ -132,8 +132,8 @@ exports.editStatusTarget = async (data) => {
         return true;
     })
     kpipersonal = await KPIPersonal.findByIdAndUpdate(kpipersonal._id, { $set: { status: checkFullApprove } }, { new: true })
-        .populate("unit creater approver")
-        .populate({ path: "listtarget", populate: { path: 'parent' } });
+        .populate("organizationalUnit creator approver")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return {
         message: "Phê duyệt mục tiêu thành công",
         newKPI: kpipersonal
@@ -157,8 +157,8 @@ exports.editTarget = async (id, data) => {
 // Lấy kpi cá nhân theo id
 exports.getById = async (id) => {
     var kpipersonal = await KPIPersonal.findById(id)
-        .populate("unit creater approver")
-        .populate({ path: "listtarget", populate: { path: 'parent' } });
+        .populate("organizationalUnit creator approver")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return {
         message: "Lấy kpi cá nhân theo id thành công",
         content: kpipersonal
@@ -167,7 +167,7 @@ exports.getById = async (id) => {
 
 exports.getTaskById= async (id) =>{
     var task = await Task.find({kpi: id}) 
-    .populate({ path: "unit responsible accounatable consulted informed results parent tasktemplate comments" });
+    .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
     
     return {
         message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
@@ -177,7 +177,7 @@ exports.getTaskById= async (id) =>{
 
 exports.getSystemPoint= async(id)=>{
     var task = await Task.find({ kpi: id })
-        .populate({ path: "unit responsible accounatable consulted informed results parent tasktemplate comments" });
+    .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
     var kpi= await DetailKPIPersonal.findById(id);
     
     var sum = 0,i=0;
@@ -197,8 +197,8 @@ exports.getSystemPoint= async(id)=>{
 exports.setPointKPI = async(id_kpi, id_target, data) =>{
     var kpi = await DetailKPIPersonal.findByIdAndUpdate(id_target, {$set: {approverpoint: data.point}}, {new: true} );
     var kpipersonal = await KPIPersonal.findById(id_kpi)
-    .populate("unit creater approver")
-    .populate({ path: "listtarget", populate: { path: 'parent' } });
+    .populate("organizationalUnit creator approver")
+    .populate({ path: "kpis", populate: { path: 'parent' } });
     return {
             message : "Cập nhật thành công điểm quản lí đánh giá",
             content : kpipersonal

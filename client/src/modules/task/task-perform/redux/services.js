@@ -8,7 +8,8 @@ import {
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
-// import { LOCAL_SERVER_API } from '../redux-constants/config';
+import { sendRequest } from '../../../../helpers/requestHelper';
+
 export const performTaskService = {
     getLogTimerTask,
     getTimerStatusTask,
@@ -44,165 +45,133 @@ export const performTaskService = {
 
 // Create result task
 function createResultTask(result) { 
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/result-task/create`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        data: result // result { result, _idtask}
-    };
-    return axios(requestOptions);
+        data: result
+    }, true, 'task.task_perform'); // them vao dong 1098 trong file language vn nhe Thanh
 }
 
 // Create result task
 function editResultTask(listResult, taskid) { 
-    const requestOptions = {
+    return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/result-task/${taskid}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        data: listResult // listResult = [...] (= task.results)
-    };
-    return axios(requestOptions);
+        data: listResult
+    }, false, 'task.task_perform');
 }
 
 // get all log timer task
 function getLogTimerTask(task) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/${task}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/${task}`, requestOptions).then(handleResponse);
-}
+    },false);
+};
 
 // get current status task
 async function getTimerStatusTask(task) { //function getTimerStatusTask(task, user)
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var user = verified._id;
-    const requestOptions = {
+    return  sendRequest =({
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`, requestOptions).then(handleResponse);
-}
-
+    },false);
+};
 // start timer task
 function startTimerTask(newTimer) {
-    const requestOptions = {
-        method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTimer),
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/start-timer`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
+        method : 'POST',
+        data : newTimer,
+    },false);
 }
+
 // stop timer task
 function stopTimerTask(id, newTimer) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTimer),
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/stop-timer/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer/${id}`,
+        method : 'PUT',
+        data : newTimer
+    },false);
 }
 
 // pause timer task
 function pauseTimerTask(id, newTimer) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTimer)
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/pause-timer/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/log-timer/pause-timer/${id}`,
+        method :'PUT',
+        data : newTimer
+    },false);
 }
 
 // continue timer task
 function continueTimerTask(id, newTimer) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newTimer)
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/log-timer/continue-timer/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url : `${LOCAL_SERVER_API}/performtask/log-timer/continue-timer/${id}`,
+        method : 'PUT',
+        data : newTimer
+    },false)
 }
+
 //getall Action task
 function getTaskAction(task) {
-    const requestOptions = {
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/${task}`, requestOptions).then(handleResponse);
-    
-}
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action/${task}`,
+        method : 'GET'
+    },false);  
+};
 // get all comment task
 function getActionComment(task) {
-    const requestOptions = {
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/${task}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url : `${LOCAL_SERVER_API}/performtask/action-comment/${task}`,
+        method : 'GET'
+    },false);
 }
 // add comment task
 function addActionComment(newComment) {
-    const requestOptions = {
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/action-comment/create`,
         method: 'POST',
-        body: JSON.stringify(newComment),
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/create`, requestOptions).then(handleResponse);
+        data : newComment
+    },false);
 }
 function addTaskAction(newAction){
-    const requestOptions = {
-        method :'POST',
-        body: JSON.stringify(newAction),
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/create`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action/create`,
+        method : 'POST',
+        data : newAction
+    },false);
 }
 
 // edit comment task
 function editActionComment(id, newComment) {
-    const requestOptions = {
-        method: 'PUT',
-        body: JSON.stringify(newComment),
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/action-comment/${id}`,
+        method:'PUT',
+        data : newComment
+    },false);
 }
 function editTaskAction(id,newAction) {
-    const requestOptions = {
-        method: 'PUT',
-        body: JSON.stringify(newAction),
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action/${id}`,
+        method:'PUT',
+        data : newAction
+    },false)
 }
 
 // delete comment task
 function deleteActionComment(id) {
-    const requestOptions = {
-        method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/action-comment/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/action-comment/${id}`,
+        method: 'DELETE'
+    },false)
 }
 
 function deleteTaskAction(id){
-    const requestOptions = {
-        method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/performtask/task-action/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-action/${id}`,
+        method:'DELETE'
+    },false);
 }

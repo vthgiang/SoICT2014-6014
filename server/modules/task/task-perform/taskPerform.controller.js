@@ -1,14 +1,41 @@
 const PerformTaskService = require('./taskPerform.service');
+const {  LogInfo,  LogError } = require('../../../logs');
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 // Lấy tất tả lịch sử bấm giờ của một công việc
-exports.getLogTimer = (req, res) => {
-    return PerformTaskService.getLogTimer(req, res);
+exports.getLogTimer = async (req, res) => {
+    try {
+        var logTimer = await PerformTaskService.getLogTimer(req.params);
+        res.status(200).json({
+            success: true,
+            messages : "",
+            content : logTimer
+        })
+    } catch (error) {
+        res.status(200).json({
+            success: false,
+            messages :"",
+            content : error
+        })
+    }
 }
 
 // Lấy trạng thái bấm giờ hiện tai (chưa kết thúc)
-exports.getTimerStatus = (req, res) => {
-    return PerformTaskService.getTimerStatus(req, res);
+exports.getTimerStatus = async (req, res) => {
+    try {
+        var timerStatus = await PerformTaskService.getTimerStatus(req.params);
+        res.status(200).json({
+            success: true,
+            messages : "",
+            content : timerStatus
+        })
+    } catch (error) {
+        res.status(200).json({
+            success: false,
+            messages :"",
+            content : error
+        })
+    }
 }
 
 // Bắt đầu bấm giờ
@@ -147,38 +174,38 @@ exports.editResultInformationTask = async (req, res) => {
 exports.createResultTask = async (req, res) => {
     try {
         var task = await PerformTaskService.createResultTask(req.body.result,req.body.task);
+        await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
         res.json({
             success : true,
-            message: "Lưu thành công kết quả đánh giá",
+            messages: ["create_result_task_success"],
             content: task
         });
     } catch (error) {
+        await LogError(req.user.email, ` edit result of task  `,req.user.company);
         res.json({ 
             success: false,
-            message: "Lưu thất bại kết quả đánh giá",
+            messages: ['create_result_task_fail'],
             content: error 
         });
     }
-    // return PerformTaskService.createResultTask(req, res);
 }
 
 // Chỉnh sửa kết quả đánh giá công việc cho từng người tham gia listResult, taskID
 exports.editResultTask = async (req, res) => {
     try {
         var listResultTask = await PerformTaskService.editResultTask(req.body, req.params.id);
-        // await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
+        await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
         res.json({
             success: true,
-            message: "Chỉnh sửa thành công kết quả đánh giá",
+            message: ['edit_result_task_success'],
             content: listResultTask
         });
     } catch (error) {
-        // await LogError(req.user.email, ` edit result of task  `,req.user.company);
+        await LogError(req.user.email, ` edit result of task  `,req.user.company);
         res.json({
             success: false,
-            message: "Chỉnh sửa thất bại kết quả đánh giá",
+            message: ['edit_result_task_fail'],
             content: error
-            
         });
     }
 }
