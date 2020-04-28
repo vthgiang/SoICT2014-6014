@@ -534,7 +534,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                                     <td title={item.weight}>{item.weight}</td>
                                                                                     <td title={this.handleCheckEmployeeKpiStatus(item.status)}>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
                                                                                     <td>
-                                                                                        <a data-target={`#editEmployeeKpi${item._id}`} style={{ color: "#FFC107", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.edit')} data-toggle="modal" onClick={() => this.handleEditEmployeeKpi(currentKPI.status, item)}><i className="fa fa-edit"></i></a>
+                                                                                        <a style={{ color: "#FFC107", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.edit')} data-toggle="modal" onClick={() => this.handleEditEmployeeKpi(currentKPI.status, item)}><i className="fa fa-edit"></i></a>
                                                                                         <ModalEditEmployeeKpi target={item}/>
                                                                                         {item.type !== 0 ? 
                                                                                             <a className="copy" title={translate('employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a> 

@@ -29,7 +29,7 @@ export function managerKpiUnit (state = {}, action){
           return {
             ...state,
             loading: false,
-            currentKPI: action.currentKPI.content,
+            currentKPI: action.payload,
             isLoading: false
           };
         case managerConstants.GETCURRENT_KPIUNIT_FAILURE:
@@ -66,7 +66,7 @@ export function managerKpiUnit (state = {}, action){
           return {
             ...state,
             adding: false,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.payload,
             isLoading: false
           };
         case managerConstants.ADD_KPIUNIT_FAILURE:
