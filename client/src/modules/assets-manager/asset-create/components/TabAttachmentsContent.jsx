@@ -46,7 +46,7 @@ class TabAttachmentsContent extends Component {
         })
         this.props.handleEditFile(this.state.file)
     }
-    // Function tài liệu đính kèm
+    // Function xóa tài liệu đính kèm
     delete = async (index) => {
         var { file } = this.state;
         file.splice(index, 1);
@@ -118,7 +118,7 @@ class TabAttachmentsContent extends Component {
                     </div>
                 </div>
                 {
-                    id === "tailieu" &&
+                    id === "pagetailieu" &&
                     <div className=" box-footer">
                         <button type="reset" title="Thêm tài sản mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.props.handleSubmit()}>Thêm tài sản mới</button>
                     </div>

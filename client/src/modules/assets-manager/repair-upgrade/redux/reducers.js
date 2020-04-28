@@ -1,49 +1,49 @@
 import { RepairUpgradeConstants } from './constants';
 const initState = {
     isLoading: false,
-    listRepairUpgrade: [],
+    listRepairUpgrades: [],
     totalList: "",
     error:"",
 }
 export function repairUpgrade(state =initState, action) {
     switch (action.type) {
-        case RepairUpgradeConstants.GET_REPAIRUPGRADE_REQUEST:
-        case RepairUpgradeConstants.CREATE_REPAIRUPGRADE_REQUEST:
-        case RepairUpgradeConstants.DELETE_REPAIRUPGRADE_REQUEST:
-        case RepairUpgradeConstants.UPDATE_REPAIRUPGRADE_REQUEST:
+        case RepairUpgradeConstants.GET_REPAIR_UPGRADE_REQUEST:
+        case RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_REQUEST:
+        case RepairUpgradeConstants.DELETE_REPAIR_UPGRADE_REQUEST:
+        case RepairUpgradeConstants.UPDATE_REPAIR_UPGRADE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             };
-        case RepairUpgradeConstants.GET_REPAIRUPGRADE_SUCCESS:
+        case RepairUpgradeConstants.GET_REPAIR_UPGRADE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listRepairUpgrade: action.payload.listRepairUpgrade,
+                listRepairUpgrades: action.payload.listRepairUpgrades,
                 totalList: action.payload.totalList,   
             };
-        case RepairUpgradeConstants.CREATE_REPAIRUPGRADE_SUCCESS:
+        case RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listRepairUpgrade: [...state.listRepairUpgrade, action.payload],
+                listRepairUpgrades: [...state.listRepairUpgrades, action.payload],
             };
-        case RepairUpgradeConstants.DELETE_REPAIRUPGRADE_SUCCESS:
+        case RepairUpgradeConstants.DELETE_REPAIR_UPGRADE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listRepairUpgrade: state.listRepairUpgrade.filter(repairUpgrade => (repairUpgrade._id !== action.payload._id)),
+                listRepairUpgrades: state.listRepairUpgrades.filter(repairUpgrade => (repairUpgrade._id !== action.payload._id)),
             };
-        case RepairUpgradeConstants.UPDATE_REPAIRUPGRADE_SUCCESS:
+        case RepairUpgradeConstants.UPDATE_REPAIR_UPGRADE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listRepairUpgrade: state.listRepairUpgrade.map(repairUpgrade =>repairUpgrade._id === action.payload._id ?action.payload : repairUpgrade),
+                listRepairUpgrades: state.listRepairUpgrades.map(repairUpgrade =>repairUpgrade._id === action.payload._id ?action.payload : repairUpgrade),
             };
-        case RepairUpgradeConstants.GET_REPAIRUPGRADE_FAILURE:
-        case RepairUpgradeConstants.CREATE_REPAIRUPGRADE_FAILURE:
-        case RepairUpgradeConstants.DELETE_REPAIRUPGRADE_FAILURE:
-        case RepairUpgradeConstants.UPDATE_REPAIRUPGRADE_FAILURE:
+        case RepairUpgradeConstants.GET_REPAIR_UPGRADE_FAILURE:
+        case RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_FAILURE:
+        case RepairUpgradeConstants.DELETE_REPAIR_UPGRADE_FAILURE:
+        case RepairUpgradeConstants.UPDATE_REPAIR_UPGRADE_FAILURE:
             return {
                 ...state,
                 isLoading: false,

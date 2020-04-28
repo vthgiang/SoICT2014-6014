@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
-
+import { RepairUpgradeActions } from '../../repair-upgrade/redux/actions';
+import { DistributeTransferActions } from '../../distribute-transfer/redux/actions';
+import { AssetManagerActions } from '../../asset-manager/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -67,6 +69,12 @@ handleChangeFile = (data) => {
             return {
                 ...prevState,
                 _id: nextProps._id,
+                img: nextProps.asset[0].avatar,
+                avatar: "",
+                asset: nextProps.asset[0],
+                repairUpgrade: nextProps.repairUpgrade,
+                distributeTransfer: nextProps.distributeTransfer,
+                file: nextProps.asset[0].file,
                 
             }
         } else {
@@ -74,7 +82,7 @@ handleChangeFile = (data) => {
         }
     }
     render() {
-        // const { translate, asset } = this.props;
+        const { translate, assetsManager } = this.props;
         const { _id } = this.state;
         return (
             <React.Fragment>
@@ -144,12 +152,26 @@ handleChangeFile = (data) => {
     }
 };
 function mapState(state) {
-    const { assetsInfo, asset } = state;
-    return { assetsInfo, asset };
+    const { assetsInfo, assetsManager } = state;
+    return { assetsInfo, assetsManager };
 };
 
 const actionCreators = {
-    
+    // updateInformationAsset: AssetManagerActions.updateInformationAsset,
+    // getAllAsset: AssetManagerActions.getAllAsset,
+    // uploadAvatar: AssetManagerActions.uploadAvatar,
+    // checkAssetNumber: AssetManagerActions.checkAssetNumber,
+
+    // updateFile: AssetManagerActions.updateFile,
+
+    // createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
+    // createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
+
+    // updateRepairUpgrade: RepairUpgradeActions.updateRepairUpgrade,
+    // updateDistributeTransfer: DistributeTransferActions.updateDistributeTransfer,
+
+    // deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
+    // deleteDistributeTransfer: DistributeTransferActions.deleteDistributeTransfer,
 };
 const editForm = connect(mapState, actionCreators)(withTranslate(AssetEditForm));
 export { editForm as AssetEditForm };

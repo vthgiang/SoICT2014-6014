@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { DistributeTransferFromValidator } from './DistributeTransferFromValidator';
-// import { DistributeTransferActions } from '../redux/actions';
+import { DistributeTransferActions } from '../redux/actions';
 class DistributeTransferCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -12,11 +12,12 @@ class DistributeTransferCreateForm extends Component {
             dateCreate: this.formatDate(Date.now()),
             type: "",
             place: "",
-            handoverMan: "",
-            receiver: "",
-            assetNumber: "",
+            handoverMan: "", // người bàn giao
+            receiver: "", // người tiếp nhận
+            assetNumber: "", // mã tài sản
             reason: "",
-            location: "",
+            nowLocation: "",
+            nextLocation: "", 
         };
     }
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -157,18 +158,18 @@ class DistributeTransferCreateForm extends Component {
     }
 
     //8. Bắt sự kiện thay đổi "Vị trí tiếp theo của tài sản"
-    handleLocationChange = (e) => {
+    handleNextLocationChange = (e) => {
         let value = e.target.value;
-        this.validateLocation(value, true);
+        this.validateNextLocation(value, true);
     }
-    validateLocation = (value, willUpdateState = true) => {
-        let msg = DistributeTransferFromValidator.validateLocation(value, this.props.translate)
+    validateNextLocation = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateNextLocation(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnLocation: msg,
-                    location: value,
+                    errorOnNextLocation: msg,
+                    nextLocation: value,
                 }
             });
         }
@@ -204,7 +205,7 @@ class DistributeTransferCreateForm extends Component {
             this.validatePlace(this.state.place, false) &&
             this.validateHandoverMan(this.state.handoverMan, false) &&
             this.validateReceiver(this.state.receiver, false) &&
-            this.validateLocation(this.state.location, false) &&
+            this.validateNextLocation(this.state.nextLocation, false) &&
             this.validateReason(this.state.reason, false)
         return result;
     }
@@ -212,14 +213,14 @@ class DistributeTransferCreateForm extends Component {
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.createNewDistributeTransfer(this.state);
+            return this.props.createNewDistributeTransfer(this.state);
         }
     }
 
     render() {
         const { translate, distributeTransfer } = this.props;
-        const { distributeNumber, dateCreate, type, place, assetNumber, handoverMan, receiver, reason, location,
-            errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnAssetNumber, errorOnHandoverMan, errorOnReceiver, errorOnLocation, errorOnReason } = this.state;
+        const { distributeNumber, dateCreate, type, place, assetNumber, handoverMan, receiver, reason, nowLocation, nextLocation,
+            errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnAssetNumber, errorOnHandoverMan, errorOnReceiver, errorOnNextLocation, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-distributetransfer" button_name="Thêm mới phiếu" title="Thêm mới phiếu cấp phát - điều chuyển - thu hồi" />
@@ -246,7 +247,6 @@ class DistributeTransferCreateForm extends Component {
                                         id="create_start_date"
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>
@@ -303,12 +303,12 @@ class DistributeTransferCreateForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Vị trí ban đầu của tài sản</label>
-                                    <input type="text" className="form-control" name="firstLocation" autoComplete="off" placeholder="Vị trí ban đầu của tài sản" />
+                                    <input type="text" className="form-control" name="nowLocation" value={nowLocation} autoComplete="off" placeholder="Vị trí ban đầu của tài sản" />
                                 </div>
-                                <div className={`form-group ${errorOnLocation === undefined ? "" : "has-error"}`}>
+                                <div className={`form-group ${errorOnNextLocation === undefined ? "" : "has-error"}`}>
                                     <label>Vị trí tiếp theo của tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} autoComplete="off" placeholder="Vị trí tiếp theo của tài sản" />
-                                    <ErrorLabel content={errorOnLocation} />
+                                    <input type="text" className="form-control" name="nextLocation" value={nextLocation} onChange={this.handleNextLocationChange} autoComplete="off" placeholder="Vị trí tiếp theo của tài sản" />
+                                    <ErrorLabel content={errorOnNextLocation} />
                                 </div>
                             </div>
                             <div className={`form-group col-sm-12 ${errorOnReason === undefined ? "" : "has-error"}`}>
@@ -330,7 +330,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
+    createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(DistributeTransferCreateForm));

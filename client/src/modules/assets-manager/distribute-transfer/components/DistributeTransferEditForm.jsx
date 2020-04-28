@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { DistributeTransferFromValidator } from './DistributeTransferFromValidator';
-// import { DistributeTransferActions } from '../redux/actions';
+import { DistributeTransferActions } from '../redux/actions';
 class DistributeTransferEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.save = this.save.bind(this);
     }
     
     //1. Bắt sự kiện thay đổi "Ngày lập"
@@ -115,18 +114,18 @@ class DistributeTransferEditForm extends Component {
     }
 
     //7. Bắt sự kiện thay đổi "Vị trí tiếp theo của tài sản"
-    handleLocationChange = (e) => {
+    handleNextLocationChange = (e) => {
         let value = e.target.value;
-        this.validateLocation(value, true);
+        this.validateNextLocation(value, true);
     }
-    validateLocation = (value, willUpdateState = true) => {
-        let msg = DistributeTransferFromValidator.validateLocation(value, this.props.translate)
+    validateNextLocation = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateNextLocation(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnLocation: msg,
-                    location: value,
+                    errorOnNextLocation: msg,
+                    nextLocation: value,
                 }
             });
         }
@@ -161,14 +160,14 @@ class DistributeTransferEditForm extends Component {
             this.validatePlace(this.state.place, false) &&
             this.validateHandoverMan(this.state.handoverMan, false) &&
             this.validateReceiver(this.state.receiver, false) &&
-            this.validateLocation(this.state.location, false) &&
+            this.validateNextLocation(this.state.nextLocation, false) &&
             this.validateReason(this.state.reason, false)
         return result;
     }
 
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.updateDistributeTransfer(this.state._id, this.state);
+            return this.props.updateDistributeTransfer(this.state._id, this.state);
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -184,14 +183,15 @@ class DistributeTransferEditForm extends Component {
                 receiver: nextProps.receiver,
                 assetNumber: nextProps.assetNumber,
                 assetName: nextProps.assetName,
-                location: nextProps.location,
+                nowLocation: nextProps.nowLocation,
+                nextLocation: nextProps.nextLocation,
                 reason: nextProps.reason,
                 errorOnDateCreate: undefined,
                 errorOnPlace: undefined,
                 errorOnHandoverMan: undefined,
                 errorOnReceiver: undefined,
                 errorOnAssetNumber: undefined,
-                errorOnLocation: undefined,
+                errorOnNextLocation: undefined,
                 errorOnReason: undefined,
             }
         } else {
@@ -201,8 +201,8 @@ class DistributeTransferEditForm extends Component {
 
     render() {
         const { translate, distributeTransfer } = this.props;
-        const { distributeNumber, dateCreate, type, place, handoverMan, receiver, assetNumber, assetName, location, reason,
-                errorOnDateCreate, errorOnPlace, errorOnHandoverMan, errorOnReceiver, errorOnAssetNumber, errorOnLocation, errorOnReason } = this.state;
+        const { distributeNumber, dateCreate, type, place, handoverMan, receiver, assetNumber, assetName, nowLocation, nextLocation, reason,
+                errorOnDateCreate, errorOnPlace, errorOnHandoverMan, errorOnReceiver, errorOnAssetNumber, errorOnNextLocation, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -284,12 +284,12 @@ class DistributeTransferEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Vị trí ban đầu của tài sản</label>
-                                    <input type="text" className="form-control" name="firstLocation" autoComplete="off" placeholder="Vị trí ban đầu của tài sản" />
+                                    <input type="text" className="form-control" name="nowLocation" value = {nowLocation} autoComplete="off" placeholder="Vị trí ban đầu của tài sản" />
                                 </div>
-                                <div className={`form-group ${errorOnLocation === undefined ? "" : "has-error"}`}>
+                                <div className={`form-group ${errorOnNextLocation === undefined ? "" : "has-error"}`}>
                                     <label>Vị trí tiếp theo của tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} autoComplete="off" placeholder="Vị trí tiếp theo của tài sản" />
-                                    <ErrorLabel content={errorOnLocation} />
+                                    <input type="text" className="form-control" name="nextLocation" value={nextLocation} onChange={this.handleNextLocationChange} autoComplete="off" placeholder="Vị trí tiếp theo của tài sản" />
+                                    <ErrorLabel content={errorOnNextLocation} />
                                 </div>
                             </div>
                             <div className={`form-group col-sm-12 ${errorOnReason === undefined ? "" : "has-error"}`}>
@@ -311,7 +311,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // updateDistributeTransfer: DistributeTransferActions.updateDistributeTransfer,
+    updateDistributeTransfer: DistributeTransferActions.updateDistributeTransfer,
 };
 
 const editDistributeTransfer = connect(mapState, actionCreators)(withTranslate(DistributeTransferEditForm));

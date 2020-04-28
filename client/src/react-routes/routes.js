@@ -702,7 +702,7 @@ class Routes extends Component {
                     /> 
 
                     <PrivateRoute 
-                        isLoading={ this.props.asset.isLoading }
+                        isLoading={ this.props.assetsManager.isLoading }
                         key={ 'add-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -718,7 +718,7 @@ class Routes extends Component {
                     /> 
 
                     <PrivateRoute 
-                        isLoading={ this.props.asset.isLoading }
+                        isLoading={ this.props.assetsManager.isLoading }
                         key={ 'manage-info-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},
@@ -744,7 +744,7 @@ class Routes extends Component {
                         exact={ true }
                         link={ '/manage-repair-asset' }
                         path={ '/manage-repair-asset' }
-                        pageName={ 'manage_repair_asset' } //manage_distribute_asset
+                        pageName={ 'manage_repair_asset' }
                         layout={ Layout }
                         component={ ManagerRepairUpgrade }
                     /> 
@@ -774,7 +774,7 @@ class Routes extends Component {
                         ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/manage-depreciation-asset' } //manage_depreciation_asset
+                        link={ '/manage-depreciation-asset' } 
                         path={ '/manage-depreciation-asset' }
                         pageName={ 'manage_depreciation_asset' }
                         layout={ Layout }
@@ -792,7 +792,7 @@ class Routes extends Component {
                         exact={ true }
                         link={ '/manage-recommend-procure' }
                         path={ '/manage-recommend-procure' }
-                        pageName={ 'manage_recommend_procure' } //manage_recommend_procure
+                        pageName={ 'manage_recommend_procure' }
                         layout={ Layout }
                         component={ ManagerRecommendProcure }
                     />

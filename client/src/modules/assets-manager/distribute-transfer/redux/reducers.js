@@ -1,49 +1,49 @@
 import { DistributeTransferConstants } from './constants';
 const initState = {
     isLoading: false,
-    listDistributeTransfer: [],
+    listDistributeTransfers: [],
     totalList: "",
     error:"",
 }
 export function distributeTransfer(state =initState, action) {
     switch (action.type) {
-        case DistributeTransferConstants.GET_REPAIRUPGRADE_REQUEST:
-        case DistributeTransferConstants.CREATE_REPAIRUPGRADE_REQUEST:
-        case DistributeTransferConstants.DELETE_REPAIRUPGRADE_REQUEST:
-        case DistributeTransferConstants.UPDATE_REPAIRUPGRADE_REQUEST:
+        case DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_REQUEST:
+        case DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_REQUEST:
+        case DistributeTransferConstants.DELETE_DISTRIBUTE_TRANSFER_REQUEST:
+        case DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             };
-        case DistributeTransferConstants.GET_REPAIRUPGRADE_SUCCESS:
+        case DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDistributeTransfer: action.payload.listDistributeTransfer,
+                listDistributeTransfers: action.payload.listDistributeTransfers,
                 totalList: action.payload.totalList,   
             };
-        case DistributeTransferConstants.CREATE_REPAIRUPGRADE_SUCCESS:
+        case DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDistributeTransfer: [...state.listDistributeTransfer, action.payload],
+                listDistributeTransfers: [...state.listDistributeTransfers, action.payload],
             };
-        case DistributeTransferConstants.DELETE_REPAIRUPGRADE_SUCCESS:
+        case DistributeTransferConstants.DELETE_DISTRIBUTE_TRANSFER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDistributeTransfer: state.listDistributeTransfer.filter(repairUpgrade => (repairUpgrade._id !== action.payload._id)),
+                listDistributeTransfers: state.listDistributeTransfers.filter(distributeTransfer => (distributeTransfer._id !== action.payload._id)),
             };
-        case DistributeTransferConstants.UPDATE_REPAIRUPGRADE_SUCCESS:
+        case DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDistributeTransfer: state.listDistributeTransfer.map(repairUpgrade =>repairUpgrade._id === action.payload._id ?action.payload : repairUpgrade),
+                listDistributeTransfers: state.listDistributeTransfers.map(distributeTransfer =>distributeTransfer._id === action.payload._id ?action.payload : distributeTransfer),
             };
-        case DistributeTransferConstants.GET_REPAIRUPGRADE_FAILURE:
-        case DistributeTransferConstants.CREATE_REPAIRUPGRADE_FAILURE:
-        case DistributeTransferConstants.DELETE_REPAIRUPGRADE_FAILURE:
-        case DistributeTransferConstants.UPDATE_REPAIRUPGRADE_FAILURE:
+        case DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_FAILURE:
+        case DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_FAILURE:
+        case DistributeTransferConstants.DELETE_DISTRIBUTE_TRANSFER_FAILURE:
+        case DistributeTransferConstants.UPDATE_DISTRIBUTE_TRANSFER_FAILURE:
             return {
                 ...state,
                 isLoading: false,

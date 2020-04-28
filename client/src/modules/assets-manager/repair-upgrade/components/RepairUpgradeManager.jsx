@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RepairUpgradeCreateForm } from './RepairUpgradeCreateForm';
 import { RepairUpgradeEditForm } from './RepairUpgradeEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { RepairUpgradeActions } from '../redux/actions';
+import { RepairUpgradeActions } from '../redux/actions';
 
 class RepairUpgradeManager extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class RepairUpgradeManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.getListRepairUpgrade(this.state);
+        this.props.searchRepairUpgrades(this.state);
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -104,7 +104,7 @@ class RepairUpgradeManager extends Component {
                 month: this.formatDate(Date.now())
             })
         }
-        // this.props.getListRepairUpgrade(this.state);
+        this.props.searchRepairUpgrades(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -112,7 +112,7 @@ class RepairUpgradeManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        // this.props.getListRepairUpgrade(this.state);
+        this.props.searchRepairUpgrades(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -122,15 +122,15 @@ class RepairUpgradeManager extends Component {
             page: parseInt(page),
 
         });
-        this.props.getListRepairUpgrade(this.state);
+        this.props.searchRepairUpgrades(this.state);
     }
 
     render() {
         const { translate, repairUpgrade } = this.props;
-        var listRepairUpgrade = "";
+        var listRepairUpgrades = "";
 
         if (this.props.repairUpgrade.isLoading === false) {
-            listRepairUpgrade = this.props.repairUpgrade.listRepairUpgrade;
+            listRepairUpgrades = this.props.repairUpgrade.listRepairUpgrades;
         }
         var pageTotal = ((this.props.repairUpgrade.totalList % this.state.limit) === 0) ?
             parseInt(this.props.repairUpgrade.totalList / this.state.limit) :
@@ -193,7 +193,7 @@ class RepairUpgradeManager extends Component {
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSunmitSearch()} >Tìm kiếm</button>
                         </div>
                     </div>
                     <table id="repairupgrade-table" className="table table-striped table-bordered table-hover">
@@ -230,11 +230,11 @@ class RepairUpgradeManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listRepairUpgrade !== 'undefined' && listRepairUpgrade.length !== 0) &&
-                                listRepairUpgrade.map((x, index) => (
+                            {(typeof listRepairUpgrades !== 'undefined' && listRepairUpgrades.length !== 0) &&
+                                listRepairUpgrades.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.assetNumber}</td>
-                                        <td>{x.assetName}</td>
+                                        <td>{x.asset.assetNumber}</td>
+                                        <td>{x.asset.assetName}</td>
                                         <td>{x.repairNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.type}</td>
@@ -259,7 +259,7 @@ class RepairUpgradeManager extends Component {
                     </table>
                     {repairUpgrade.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listRepairUpgrade === 'undefined' || listRepairUpgrade.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listRepairUpgrades === 'undefined' || listRepairUpgrades.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -290,8 +290,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // getListRepairUpgrade: RepairUpgradeActions.getListRepairUpgrade,
-    // deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
+    searchRepairUpgrades: RepairUpgradeActions.searchRepairUpgrades,
+    deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
 };
 
 const connectedListRepairUpgrade = connect(mapState, actionCreators)(withTranslate(RepairUpgradeManager));

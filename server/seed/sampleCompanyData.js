@@ -1495,8 +1495,8 @@ const sampleCompanyData = async () => {
             estimatePrice: "60000000",
             note: "qwerty",
             approver: users[2]._id,
-            status: "chờ phê duyệt"
-        },{
+            status: "pass" // Đã chấp nhận
+        },{ 
             company: vnist._id,
             recommendNumber: "MP0002",
             dateCreate: "20-02-2020",
@@ -1508,7 +1508,7 @@ const sampleCompanyData = async () => {
             estimatePrice: "30000000", // giá trị dự tính
             note: "qwerty",
             approver: users[2]._id, // người phê duyệt
-            status: "không chấp nhận"
+            status: "faile" //không chấp nhận
         }])
         console.log(`Xong! Thông tin phiếu đề nghị mua sắm thiết bị đã được tạo`);
 
@@ -1528,16 +1528,14 @@ const sampleCompanyData = async () => {
         manager: users[2]._id,
         location: "P104",
         initialPrice: 50000000,
-        status: "sẵn sàng sử dụng",
+        status: "available", //sẵn sàng sử dụng
         description: "Laptop ver 2016",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
             value: "500GB",
         }],
-        depreciationInfo: [{
-            startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-            timeDeprecition: "5" // thời gian trích khấu hao
-        }],
+        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+        timeDeprecition: "5", // thời gian trích khấu hao
         numberFile: "T3 - 123698",
         file: [],
     }, {
@@ -1550,16 +1548,14 @@ const sampleCompanyData = async () => {
         manager: users[2]._id,
         location: "Nhà xe 1",
         initialPrice: 500000000,
-        status: "sẵn sàng sử dụng",
+        status: "available", // sẵn sàng sử dụng
         description: "Xe ô tô camry",
         detailInfo: [{
             nameField: "",
             value: "",
         }],
-        depreciationInfo: [{
-            startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-            timeDeprecition: "5" // thời gian trích khấu hao
-        }],
+        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+        timeDeprecition: "5", // thời gian trích khấu hao
         numberFile: "T4 - 123698",
         file: [],
     }])
@@ -1574,16 +1570,14 @@ const sampleCompanyData = async () => {
         manager: users[7]._id,
         location: "P104",
         initialPrice: 50000000,
-        status: "sẵn sàng sử dụng",
+        status: "available", // sẵn sàng sử dụng
         description: "Laptop ver 2016",
         detailInfo: [{
             nameField: "Bộ nhớ ổ cứng",
             value: "500GB",
         }],
-        depreciationInfo: [{
-            startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
-            timeDeprecition: "5" // thời gian trích khấu hao
-        }],
+        startDepreciation: "20-02-2020", // thời gian bắt đầu trích khấu hao
+        timeDeprecition: "5", // thời gian trích khấu hao
         numberFile: "T3 - 123698",
         file: [],
     });
@@ -1600,24 +1594,24 @@ const sampleCompanyData = async () => {
         asset: asset._id,
         company:vnist._id,
         repairNumber: "SC0001",
-        type: "Sửa chữa",
+        type: "repair", // sửa chữa
         dateCreate: "20-02-2020",
         reason: "Sửa chữa hỏng hóc thiết bị",
         repairDate: "20-02-2020",
         completeDate: "22-02-2020",
         cost: "10000000",
-        status: "đã thực hiện"
+        status: "complete" // đã thực hiện
     }, {
         asset: asset._id,
         company:vnist._id,
         repairNumber: "SC0002",
-        type: "Nâng cấp",
+        type: "upgrade", // nâng cấp
         dateCreate: "20-02-2020",
         reason: "Nâng cấp thiết bị",
         repairDate: "20-02-2020",
         completeDate: "22-02-2020",
         cost: "10000000",
-        status: "đã thực hiện"
+        status: "complete" // đã thực hiện
     }])
     console.log(`Xong! Thông tin sửa chữa - thay thế - nâng cấp đã được tạo`);
 
@@ -1631,13 +1625,13 @@ const sampleCompanyData = async () => {
         asset: asset._id,
         company:vnist._id,
         distributeNumber: "CP0001",
-        type: "Cấp phát",
+        type: "distribute", // cấp phát
         dateCreate: "20-02-2020",
         place: "Phòng 104",
         handoverMan : users[2]._id,
         receiver : users[7]._id,
-        firstLocation : "P104",
-        secondLocation : "P105",
+        nowLocation : "P104",
+        nextLocation : "P105",
         reason: "Cấp phát abcd",
     }])
     console.log(`Xong! Thông tin cấp phát - điều chuyển - thu hồi đã được tạo`);

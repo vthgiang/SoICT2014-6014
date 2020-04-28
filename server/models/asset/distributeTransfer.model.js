@@ -39,11 +39,11 @@ const DistributeTransferSchema = new Schema({
         ref: User
     },
 
-    firstLocation :{//vị trí ban đầu của tài sản là vị trí hiện tại lúc chưa cấp phát - điều chuyển - thu hồi
+    nowLocation :{//vị trí ban đầu của tài sản là vị trí hiện tại lúc chưa cấp phát - điều chuyển - thu hồi
         type: String, // vị trí hiện tại của tài sản, lấy từ model asset
     },
     
-    secondLocation :{//vị trí tiếp theo của tài sản
+    nextLocation :{//vị trí tiếp theo của tài sản
         type: String,
         required: true
     },

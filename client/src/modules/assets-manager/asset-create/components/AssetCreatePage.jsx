@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { RepairUpgradeActions } from '../../repair-upgrade/redux/actions';
+import { DistributeTransferActions } from '../../distribute-transfer/redux/actions';
+import { AssetManagerActions } from '../../asset-manager/redux/actions';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
     TabGeneralContent, TabRepairContent, TabDistributeContent, TabAttachmentsContent, TabDepreciationContent// TabMaintenanceContent,
 } from './CombineContent';
+
+
 
 class AssetCreatePage extends Component {
     constructor(props) {
@@ -17,7 +23,6 @@ class AssetCreatePage extends Component {
                 avatar: 'lib/adminLTE/dist/img/avatar5.png',
                 datePurchase: this.formatDate(Date.now()),
                 detailInfo: [],
-                depreciationInfo: [],
             },
             file: [],
             repairUpgradeNew: [],
@@ -87,7 +92,7 @@ class AssetCreatePage extends Component {
     // function thêm mới thông tin tài sản
     handleSubmit = async () => {
         let newAsset = this.state.assetNew;
-        let { file, contract, certificate, certificateShort } = this.state;
+        let { file } = this.state;
         // cập nhật lại state trước khi add asset
         await this.setState({
             assetNew: {
@@ -102,36 +107,42 @@ class AssetCreatePage extends Component {
             this.notifyerror("Bạn chưa nhập mã tài sản");
         } else if (!assetNew.assetName) {
             this.notifyerror("Bạn chưa nhập tên tài sản");
-        } 
-        // else if (!assetNew.MSCC) {
-        //     this.notifyerror("Bạn chưa nhập mã chấm công");
-        // } else if (!assetNew.brithday) {
-        //     this.notifyerror("Bạn chưa nhập ngày sinh");
-        // } else if (!assetNew.emailCompany) {
-        //     this.notifyerror("Bạn chưa nhập email công ty");
-        // } else if (this.props.employeesManager.checkEmail === true) {
-        //     this.notifyerror("Email công ty đã được sử dụng");
-        // } else if (!assetNew.CMND) {
-        //     this.notifyerror("Bạn chưa nhập số CMND/ Hộ chiếu");
-        // } else if (!assetNew.dateCMND) {
-        //     this.notifyerror("Bạn chưa nhập ngày cấp CMND/ Hộ chiếu");
-        // } else if (!assetNew.addressCMND) {
-        //     this.notifyerror("Bạn chưa nhập nơi cấp CMND/ Hộ chiếu");
-        // } else if (!assetNew.phoneNumber) {
-        //     this.notifyerror("Bạn chưa nhập số điện thoại");
-        // } else if (!assetNew.nowAddress) {
-        //     this.notifyerror("Bạn chưa nhập nơi ở hiện tại");
-        // } else if (!assetNew.numberTax || !assetNew.userTax || !assetNew.startTax || !assetNew.unitTax) {
-        //     this.notifyerror("Bạn chưa nhập đủ thông tin thuế");
-        // } 
-        else {
+        } else if (!assetNew.assetType) {
+            this.notifyerror("Bạn chưa nhập loại tài sản");
+        } else if (!assetNew.location) {
+            this.notifyerror("Bạn chưa nhập vị trí tài sản");
+        } else if (!assetNew.datePurchase) {
+            this.notifyerror("Bạn chưa nhập ngày nhập");
+        } else if (!assetNew.manager) {
+            this.notifyerror("Bạn chưa nhập người quản lý");
+        } else if (!assetNew.initialPrice) {
+            this.notifyerror("Bạn chưa nhập giá trị ban đầu");
+        } else {
             await this.props.addNewAsset(assetNew);
+
             // lưu avatar
             if (this.state.avatar !== "") {
                 let formData = new FormData();
                 formData.append('fileUpload', this.state.avatar);
                 this.props.uploadAvatar(this.state.assetNew.assetNumber, formData);
-            };
+            }
+
+            // lưu lịch sử sửa chữa - thay thế - nâng cấp
+            if (this.state.repairUpgradeNew.length !== 0) {
+                let assetNumber = this.state.assetNew.assetNumber;
+                this.state.repairUpgradeNew.map(x => {
+                    this.props.createNewRepairUpgrade({ ...x, assetNumber })
+                })
+            }
+
+            // lưu thông tin cấp phát - điều chuyển - thay thế
+            if (this.state.distributeTransferNew.length !== 0) {
+                let assetNumber = this.state.assetNew.assetNumber;
+                this.state.distributeTransferNew.map(x => {
+                    this.props.createNewDistributeTransfer({ ...x, assetNumber })
+                })
+            }
+
             // lưu thông tin tài liệu đính kèm
             if (this.state.file.length !== 0) {
                 let listFile = this.state.file;
@@ -162,9 +173,9 @@ class AssetCreatePage extends Component {
                         <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#thongtinchung">Thông tin chung</a></li>
                         <li><a title="Sửa chữa - thay thế - nâng cấp" data-toggle="tab" href="#suachua">Sửa chữa - Thay thế - Nâng cấp</a></li>
                         <li><a title="Cấp phát - điều chuyển - thu hồi" data-toggle="tab" href="#capphat">Cấp phát - Điều chuyển - Thu hồi</a></li>
-                        <li><a title="Bảo hành - bảo trì" data-toggle="tab" href="#baohanh">Bảo hành - Bảo trì</a></li>
+                        {/* <li><a title="Bảo hành - bảo trì" data-toggle="tab" href="#baohanh">Bảo hành - Bảo trì</a></li> */}
                         <li><a title="Thông tin khấu hao" data-toggle="tab" href="#khauhao">Thông tin khấu hao</a></li>
-                        <li><a title="Tài liệu đính kèm" data-toggle="tab" href="#tailieu">Tài liệu đính kèm</a></li>
+                        <li><a title="Tài liệu đính kèm" data-toggle="tab" href="#pagetailieu">Tài liệu đính kèm</a></li>
                     </ul>
                     < div className="tab-content">
                         <TabGeneralContent
@@ -198,7 +209,7 @@ class AssetCreatePage extends Component {
                         />
 
                         <TabAttachmentsContent
-                            id="tailieu"
+                            id="pagetailieu"
                             file={this.state.file}
                             asset={this.state.assetNew}
                             handleChange={this.handleChange}
@@ -216,8 +227,8 @@ class AssetCreatePage extends Component {
 }
 
 function mapState(state) {
-    const { asset, RepairUpgrade, DistributeTransfer } = state;
-    return { asset, RepairUpgrade, DistributeTransfer };
+    const { assetsManager, RepairUpgrade, DistributeTransfer } = state;
+    return { assetsManager, RepairUpgrade, DistributeTransfer };
 };
 
 const actionCreators = {

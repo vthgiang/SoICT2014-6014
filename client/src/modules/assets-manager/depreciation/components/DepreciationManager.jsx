@@ -127,12 +127,12 @@ class DepreciationManager extends Component {
         const { translate, asset } = this.props;
         var listDepreciation = "";
 
-        if (this.props.asset.isLoading === false) {
-            listDepreciation = this.props.asset.listDepreciaton;
+        if (this.props.assetsManager.isLoading === false) {
+            listDepreciation = this.props.assetsManager.listDepreciaton;
         }
-        var pageTotal = ((this.props.asset.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.asset.totalList / this.state.limit) :
-            parseInt((this.props.asset.totalList / this.state.limit) + 1);
+        var pageTotal = ((this.props.assetsManager.totalList % this.state.limit) === 0) ?
+            parseInt(this.props.assetsManager.totalList / this.state.limit) :
+            parseInt((this.props.assetsManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box" >
@@ -191,7 +191,7 @@ class DepreciationManager extends Component {
                                 <th style={{ width: "10%" }}>Thời gian kết thúc trích khấu hao</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
                                     <DataTableSetting
-                                        tableId="repairupgrade-table"
+                                        tableId="depreciation-table"
                                         columnArr={[
                                             "Mã tài sản",
                                             "Tên tài sản",
@@ -268,8 +268,8 @@ class DepreciationManager extends Component {
 };
 
 function mapState(state) {
-    const { asset } = state;
-    return { asset };
+    const { assetsManager } = state;
+    return { assetsManager };
 };
 
 const actionCreators = {

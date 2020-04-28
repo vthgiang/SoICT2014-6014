@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal } from '../../../../common-components';
-
+import { RepairUpgradeActions } from '../../repair-upgrade/redux/actions';
+import { DistributeTransferActions } from '../../distribute-transfer/redux/actions';
+import { AssetManagerActions } from '../../asset-manager/redux/actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -18,11 +20,10 @@ class AssetCreateForm extends Component {
                 avatar: 'lib/adminLTE/dist/img/avatar5.png',
                 datePurchase: this.formatDate(Date.now()),
                 detailInfo: [],
-                depreciationInfo: [],
             },
             file: [],
-            repairNew: [],
-            distributeNew: [],
+            repairUpgradeNew: [],
+            distributeTransferNew: [],
         };
 
     }
@@ -94,29 +95,57 @@ handleChangeFile = (data) => {
     // function thêm mới thông tin tài sản
     save = async () => {
         let newAsset = this.state.assetNew;
-
+        let { file } = this.state;
         // cập nhật lại state trước khi add asset
         await this.setState({
             assetNew: {
                 ...newAsset,
 
-
+                file: file.filter(file => (file.fileUpload === " "))
             }
         })
         const { assetNew } = this.state;
         // kiểm tra việc nhập các trường bắt buộc
         if (!assetNew.assetNumber) {
             this.notifyerror("Bạn chưa nhập mã tài sản");
-        } 
-        else {
+        } else if (!assetNew.assetName) {
+            this.notifyerror("Bạn chưa nhập tên tài sản");
+        } else if (!assetNew.assetType) {
+            this.notifyerror("Bạn chưa nhập loại tài sản");
+        } else if (!assetNew.location) {
+            this.notifyerror("Bạn chưa nhập vị trí tài sản");
+        } else if (!assetNew.datePurchase) {
+            this.notifyerror("Bạn chưa nhập ngày nhập");
+        } else if (!assetNew.manager) {
+            this.notifyerror("Bạn chưa nhập người quản lý");
+        } else if (!assetNew.initialPrice) {
+            this.notifyerror("Bạn chưa nhập giá trị ban đầu");
+        } else {
             await this.props.addNewAsset(assetNew);
+
             // lưu avatar
             if (this.state.avatar !== "") {
                 let formData = new FormData();
                 formData.append('fileUpload', this.state.avatar);
                 this.props.uploadAvatar(this.state.assetNew.assetNumber, formData);
-            };
-            
+            }
+
+            // lưu lịch sử sửa chữa - thay thế - nâng cấp
+            if (this.state.repairUpgradeNew.length !== 0) {
+                let assetNumber = this.state.assetNew.assetNumber;
+                this.state.repairUpgradeNew.map(x => {
+                    this.props.createNewRepairUpgrade({ ...x, assetNumber })
+                })
+            }
+
+            // lưu thông tin cấp phát - điều chuyển - thay thế
+            if (this.state.distributeTransferNew.length !== 0) {
+                let assetNumber = this.state.assetNew.assetNumber;
+                this.state.distributeTransferNew.map(x => {
+                    this.props.createNewDistributeTransfer({ ...x, assetNumber })
+                })
+            }
+
             // lưu thông tin tài liệu đính kèm
             if (this.state.file.length !== 0) {
                 let listFile = this.state.file;
@@ -139,7 +168,7 @@ handleChangeFile = (data) => {
 
 
     render() {
-        // const { translate, asset } = this.props;
+        const { translate, assetsManager } = this.props;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-add-asset" button_name="Thêm mới tài sản" title="Thêm mới tài sản" />
@@ -210,12 +239,18 @@ handleChangeFile = (data) => {
     }
 };
 function mapState(state) {
-    const { asset,  } = state;
-    return { asset, };
+    const { assetsManager, RepairUpgrade, DistributeTransfer } = state;
+    return { assetsManager, RepairUpgrade, DistributeTransfer };
 };
 
 const actionCreators = {
-    
+    // getAllAsset: AssetManagerActions.getAllAsset,
+    // addNewAsset: AssetManagerActions.addNewAsset,
+    // uploadAvatar: AssetManagerActions.uploadAvatar,
+    // checkAssetNumber: AssetManagerActions.checkAssetNumber,
+    // createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
+    // createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
+    // updateFile: AssetManagerActions.updateFile,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AssetCreateForm));

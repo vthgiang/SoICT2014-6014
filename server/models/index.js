@@ -53,6 +53,7 @@ const EmployeeCourse = require('./training/employeeCourse.model');
 const Asset = require('./asset/asset.model'); //tài sản
 const AssetType = require('./asset/assetType.model'); //loại tài sản
 const RecommendProcure = require('./asset/recommendProcure.model'); //đề nghị mua sắm thiết bị
+const RecommendDistribute = require('./asset/recommendDistribute.model'); //đề nghị cấp phát thiết bị
 const RepairUpgrade = require('./asset/repairUpgrade.model'); //Sửa chữa - thay thế - nâng cấp
 const DistributeTransfer = require('./asset/distributeTransfer.model'); // cấp phát - điều chuyển - thu hồi
 
@@ -112,5 +113,6 @@ exports.schema = {
     AssetType,
     RecommendProcure,
     RepairUpgrade,
-    DistributeTransfer
+    DistributeTransfer,
+    RecommendDistribute
 } 

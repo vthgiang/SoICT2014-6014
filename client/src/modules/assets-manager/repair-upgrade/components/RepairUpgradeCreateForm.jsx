@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { RepairUpgradeFromValidator } from './RepairUpgradeFromValidator';
-// import { RepairUpgradeActions } from '../redux/actions';
+import { RepairUpgradeActions } from '../redux/actions';
 class RepairUpgradeCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -188,7 +188,7 @@ class RepairUpgradeCreateForm extends Component {
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.createNewRepairUpgrade(this.state);
+            return this.props.createNewRepairUpgrade(this.state);
         }
     }
 
@@ -222,7 +222,6 @@ class RepairUpgradeCreateForm extends Component {
                                         id="create_start_date"
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>
@@ -257,7 +256,6 @@ class RepairUpgradeCreateForm extends Component {
                                         id="create_repair_date"
                                         value={repairDate}
                                         onChange={this.handleRepairDateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                     <ErrorLabel content={errorOnRepairDate} />
                                 </div>
@@ -267,7 +265,6 @@ class RepairUpgradeCreateForm extends Component {
                                         id="create_complete_date"
                                         value={completeDate}
                                         onChange={this.handleCompleteDateChange}
-                                        placeholder="dd-mm-yyyy"
                                     />
                                 </div>
                                 <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"}`}>
@@ -299,7 +296,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
+    createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(RepairUpgradeCreateForm));

@@ -109,7 +109,7 @@ class ModalAddFile extends Component {
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
+                <ButtonModal modalID={`modal-create-file-${id}`} button_name="Thêm mới" title="Thêm tài liệu đính kèm" />
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}

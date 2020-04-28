@@ -9,7 +9,7 @@ export const DistributeTransferFromValidator = {
     validateHandoverMan,
     validateReceiver,
     validateAssetNumber,
-    validateLocation,
+    validateNextLocation,
     validateReason
 }
 
@@ -70,7 +70,7 @@ function validateAssetNumber(value, translate) {
 }
 
 //7. Kiểm tra "Vị trí tiếp theo của tài sản" nhập vào
-function validateLocation(value, translate) {
+function validateNextLocation(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Vị trí tiếp theo của tài sản không được để trống";

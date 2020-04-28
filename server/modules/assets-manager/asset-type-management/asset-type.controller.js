@@ -2,8 +2,7 @@ const AssetTypeService = require('./asset-type.service');
 const {LogInfo, LogError} = require('../../../logs');
 
 /**
- *  Lấy danh sách loại tài sản
- * để tôi thử
+ * Lấy danh sách loại tài sản
  */
 exports.searchAssetTypes = async (req, res) => {
     // console.log('req.body',req.body);

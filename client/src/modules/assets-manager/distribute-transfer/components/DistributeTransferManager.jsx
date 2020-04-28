@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DistributeTransferCreateForm } from './DistributeTransferCreateForm';
 import { DistributeTransferEditForm } from './DistributeTransferEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { DistributeTransferActions } from '../redux/actions';
+import { DistributeTransferActions } from '../redux/actions';
 
 class DistributeTransferManager extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class DistributeTransferManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.getListDistributeTransfer(this.state);
+        this.props.searchDistributeTransfers(this.state);
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -49,8 +49,8 @@ class DistributeTransferManager extends Component {
     }
 
     // Function lưu giá trị mã phiếu vào state khi thay đổi
-    handleDistributeNumberChange = (event) => {
-        const { name, value } = event.target;
+    handleDistributeNumberChange = (e) => {
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         });
@@ -58,8 +58,8 @@ class DistributeTransferManager extends Component {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-    handleAssetNumberChange = (event) => {
-        const { name, value } = event.target;
+    handleAssetNumberChange = (e) => {
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         });
@@ -92,7 +92,7 @@ class DistributeTransferManager extends Component {
                 month: this.formatDate(Date.now())
             })
         }
-        // this.props.getListDistributeTransfer(this.state);
+        this.props.searchDistributeTransfers(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -100,7 +100,7 @@ class DistributeTransferManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        // this.props.getListDistributeTransfer(this.state);
+        this.props.searchDistributeTransfers(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -110,15 +110,15 @@ class DistributeTransferManager extends Component {
             page: parseInt(page),
 
         });
-        this.props.getListDistributeTransfer(this.state);
+        this.props.searchDistributeTransfers(this.state);
     }
 
     render() {
         const { translate, distributeTransfer } = this.props;
-        var listDistributeTransfer = "";
+        var listDistributeTransfers = "";
 
         if (this.props.distributeTransfer.isLoading === false) {
-            listDistributeTransfer = this.props.distributeTransfer.listDistributeTransfer;
+            listDistributeTransfers = this.props.distributeTransfer.listDistributeTransfers;
         }
         var pageTotal = ((this.props.distributeTransfer.totalList % this.state.limit) === 0) ?
             parseInt(this.props.distributeTransfer.totalList / this.state.limit) :
@@ -166,7 +166,7 @@ class DistributeTransferManager extends Component {
                         </div>
                         <div className="form-group">
                             {/* <label></label> */}
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSunmitSearch()} >Tìm kiếm</button>
                         </div>
                     </div>
                     <table id="distributetransfer-table" className="table table-striped table-bordered table-hover">
@@ -201,11 +201,11 @@ class DistributeTransferManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDistributeTransfer !== 'undefined' && listDistributeTransfer.length !== 0) &&
-                                listDistributeTransfer.map((x, index) => (
+                            {(typeof listDistributeTransfers !== 'undefined' && listDistributeTransfers.length !== 0) &&
+                                listDistributeTransfers.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.assetNumber}</td>
-                                        <td>{x.assetName}</td>
+                                        <td>{x.asset.assetNumber}</td>
+                                        <td>{x.asset.assetName}</td>
                                         <td>{x.distributeNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.type}</td>
@@ -229,7 +229,7 @@ class DistributeTransferManager extends Component {
                     </table>
                     {distributeTransfer.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listDistributeTransfer === 'undefined' || listDistributeTransfer.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listDistributeTransfers === 'undefined' || listDistributeTransfers.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -259,8 +259,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // getListDistributeTransfer: DistributeTransferActions.getListDistributeTransfer,
-    // deleteDistributeTransfer: DistributeTransferActions.deleteDistributeTransfer,
+    searchDistributeTransfers: DistributeTransferActions.searchDistributeTransfers,
+    deleteDistributeTransfer: DistributeTransferActions.deleteDistributeTransfer,
 };
 
 const connectedListDistributeTransfer = connect(mapState, actionCreators)(withTranslate(DistributeTransferManager));
