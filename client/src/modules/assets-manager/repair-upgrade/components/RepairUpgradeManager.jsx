@@ -21,7 +21,7 @@ class RepairUpgradeManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        this.props.searchRepairUpgrades(this.state);
+        // this.props.searchRepairUpgrades(this.state);
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -290,7 +290,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    searchRepairUpgrades: RepairUpgradeActions.searchRepairUpgrades,
+    // searchRepairUpgrades: RepairUpgradeActions.searchRepairUpgrades,
     deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
 };
 
