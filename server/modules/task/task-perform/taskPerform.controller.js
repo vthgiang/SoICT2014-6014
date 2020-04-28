@@ -2,13 +2,39 @@ const PerformTaskService = require('./taskPerform.service');
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 // Lấy tất tả lịch sử bấm giờ của một công việc
-exports.getLogTimer = (req, res) => {
-    return PerformTaskService.getLogTimer(req, res);
+exports.getLogTimer = async (req, res) => {
+    try {
+        var logTimer = await PerformTaskService.getLogTimer(req.params);
+        res.status(200).json({
+            success: true,
+            messages : "",
+            content : logTimer
+        })
+    } catch (error) {
+        res.status(200).json({
+            success: false,
+            messages :"",
+            content : error
+        })
+    }
 }
 
 // Lấy trạng thái bấm giờ hiện tai (chưa kết thúc)
-exports.getTimerStatus = (req, res) => {
-    return PerformTaskService.getTimerStatus(req, res);
+exports.getTimerStatus = async (req, res) => {
+    try {
+        var timerStatus = await PerformTaskService.getTimerStatus(req.params);
+        res.status(200).json({
+            success: true,
+            messages : "",
+            content : timerStatus
+        })
+    } catch (error) {
+        res.status(200).json({
+            success: false,
+            messages :"",
+            content : error
+        })
+    }
 }
 
 // Bắt đầu bấm giờ
