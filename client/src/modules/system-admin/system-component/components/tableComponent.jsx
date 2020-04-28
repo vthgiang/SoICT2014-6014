@@ -47,7 +47,7 @@ class TableComponent extends Component {
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
                         componentDescription={ currentRow.description }
-                        componentLink={ currentRow.link._id }
+                        componentLink={ currentRow.link !== undefined ? currentRow.link._id : null }
                         componentRoles={ currentRow.roles.map(role => role._id) }
                     />
                 }
@@ -85,7 +85,7 @@ class TableComponent extends Component {
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
                                     <td>{ component.description }</td>
-                                    <td>{component.link.url}</td>
+                                    <td>{component.link !== undefined && component.link.url}</td>
                                     <td>{ component.roles.map((role, i, arr) => {
                                         if(i !== arr.length - 1)
                                             return <span key={role._id}>{role.name}, </span>

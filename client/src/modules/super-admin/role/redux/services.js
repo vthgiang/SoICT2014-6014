@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const RoleServices = {
     get,
@@ -12,64 +11,46 @@ export const RoleServices = {
 };
 
 function get() {  
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/role`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.role');
 }
 
 function getPaginate(data) {  
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/role/paginate`,
         method: 'POST',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.role');
 }
 
 function show(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/role/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.role');
 }
 
 function create(role) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/role`,
         method: 'POST',
         data: role,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.role');
 }
 
 function edit(role) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/role/${role.id}`,
         method: 'PATCH',
         data: role,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.role');
 }
 
 function destroy(roleId) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/role/${roleId}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'super_admin.role');
 }

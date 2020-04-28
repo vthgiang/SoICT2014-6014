@@ -6,7 +6,7 @@ import {
     ModalEditCertificate, ModalEditCertificateShort,
 } from './combinedContent';
 
-class TabCertificateContent extends Component {
+class CertificateTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -26,7 +26,7 @@ class TabCertificateContent extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                currentRowShort: { ...value, index: index }
+                currentRowcertificates: { ...value, index: index }
             }
         });
         window.$(`#modal-edit-certificateShort-editCertificateShort${index}`).modal('show');
@@ -34,9 +34,9 @@ class TabCertificateContent extends Component {
 
     // Function thêm thông tin bằng cấp
     handleAddCertificate = async (data) => {
-        let { certificate } = this.state;
+        let { degrees } = this.state;
         await this.setState({
-            certificate: [...certificate, {
+            degrees: [...degrees, {
                 ...data
             }]
         })
@@ -45,52 +45,52 @@ class TabCertificateContent extends Component {
     }
     // Function chỉnh sửa thông tin bằng cấp
     handleEditCertificate = async (data) => {
-        const { certificate } = this.state;
-        certificate[data.index] = data;
+        const { degrees } = this.state;
+        degrees[data.index] = data;
         await this.setState({
-            certificate: certificate
+            degrees: degrees
         })
-        this.props.handleEditCertificate(this.state.certificate)
+        this.props.handleEditCertificate(this.state.degrees)
     }
 
     // Function thêm thông tin chứng chỉ
     handleAddCertificateShort = async (data) => {
-        let { certificateShort } = this.state;
+        let { certificates } = this.state;
         await this.setState({
-            certificateShort: [...certificateShort, {
+            certificates: [...certificates, {
                 ...data
             }]
         })
-        this.props.handleAddCertificateShort(this.state.certificateShort)
+        this.props.handleAddCertificateShort(this.state.certificates)
     }
     // Function chỉnh sửa thông tin chứng chỉ
     handleEditCertificateShort = async (data) => {
-        const { certificateShort } = this.state;
-        certificateShort[data.index] = data;
+        const { certificates } = this.state;
+        certificates[data.index] = data;
         await this.setState({
-            certificateShort: certificateShort
+            certificates: certificates
         })
-        this.props.handleEditCertificateShort(this.state.certificateShort)
+        this.props.handleEditCertificateShort(this.state.certificates)
     }
     // Function xoá bằng cấp
     delete = async (index) => {
-        var { certificate } = this.state;
-        certificate.splice(index, 1);
+        var { degrees } = this.state;
+        degrees.splice(index, 1);
         await this.setState({
             ...this.state,
-            certificate: [...certificate]
+            degrees: [...degrees]
         })
-        this.props.handleDeleteCertificate(this.state.certificate)
+        this.props.handleDeleteCertificate(this.state.degrees)
     }
     // Function xoá chứng chỉ
     deleteShort = async (index) => {
-        var { certificateShort } = this.state;
-        certificateShort.splice(index, 1);
+        var { certificates } = this.state;
+        certificates.splice(index, 1);
         await this.setState({
             ...this.state,
-            certificateShort: [...certificateShort]
+            certificates: [...certificates]
         })
-        this.props.handleDeleteCertificateShort(this.state.certificateShort)
+        this.props.handleDeleteCertificateShort(this.state.certificates)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -98,8 +98,8 @@ class TabCertificateContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                certificate: nextProps.certificate,
-                certificateShort: nextProps.certificateShort,
+                degrees: nextProps.degrees,
+                certificates: nextProps.certificates,
             }
         } else {
             return null;
@@ -107,7 +107,7 @@ class TabCertificateContent extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { certificate, certificateShort } = this.state;
+        const { degrees, certificates } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -126,13 +126,13 @@ class TabCertificateContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof certificate !== 'undefined' && certificate.length !== 0) &&
-                                    certificate.map((x, index) => (
+                                {(typeof degrees !== 'undefined' && degrees.length !== 0) &&
+                                    degrees.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameCertificate}</td>
-                                            <td>{x.addressCertificate}</td>
-                                            <td>{x.yearCertificate}</td>
-                                            <td>{translate(`manage_employee.${x.typeCertificate}`)}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.issuedBy}</td>
+                                            <td>{x.year}</td>
+                                            <td>{translate(`manage_employee.${x.degreeType}`)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}
                                             </td>
@@ -145,7 +145,7 @@ class TabCertificateContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof certificate === 'undefined' || certificate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof degrees === 'undefined' || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -163,11 +163,11 @@ class TabCertificateContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof certificateShort !== 'undefined' && certificateShort.length !== 0) &&
-                                    certificateShort.map((x, index) => (
+                                {(typeof certificates !== 'undefined' && certificates.length !== 0) &&
+                                    certificates.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameCertificateShort}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.issuedBy}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
@@ -181,7 +181,7 @@ class TabCertificateContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof certificateShort === 'undefined' || this.state.certificateShort.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof certificates === 'undefined' || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -201,17 +201,17 @@ class TabCertificateContent extends Component {
                     />
                 }
                 {
-                    this.state.currentRowShort !== undefined &&
+                    this.state.currentRowcertificates !== undefined &&
                     <ModalEditCertificateShort
-                        id={`editCertificateShort${this.state.currentRowShort.index}`}
-                        index={this.state.currentRowShort.index}
-                        nameCertificateShort={this.state.currentRowShort.nameCertificateShort}
-                        unit={this.state.currentRowShort.unit}
-                        startDate={this.state.currentRowShort.startDate}
-                        endDate={this.state.currentRowShort.endDate}
-                        file={this.state.currentRowShort.file}
-                        urlFile={this.state.currentRowShort.urlFile}
-                        fileUpload={this.state.currentRowShort.fileUpload}
+                        id={`editCertificateShort${this.state.currentRowcertificates.index}`}
+                        index={this.state.currentRowcertificates.index}
+                        nameCertificateShort={this.state.currentRowcertificates.nameCertificateShort}
+                        unit={this.state.currentRowcertificates.unit}
+                        startDate={this.state.currentRowcertificates.startDate}
+                        endDate={this.state.currentRowcertificates.endDate}
+                        file={this.state.currentRowcertificates.file}
+                        urlFile={this.state.currentRowcertificates.urlFile}
+                        fileUpload={this.state.currentRowcertificates.fileUpload}
                         handleChange={this.handleEditCertificateShort}
                     />
                 }
@@ -219,5 +219,5 @@ class TabCertificateContent extends Component {
         );
     }
 };
-const tabCertificate = connect(null, null)(withTranslate(TabCertificateContent));
-export { tabCertificate as TabCertificateContent };
+const certificateTab = connect(null, null)(withTranslate(CertificateTab));
+export { certificateTab as CertificateTab };

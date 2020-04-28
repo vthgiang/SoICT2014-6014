@@ -74,7 +74,7 @@ class ModalEditEmployeeKpi extends Component {
     //     if (newTarget.parent && newTarget.name && newTarget.weight && newTarget.criteria) {
     //         this.props.editTargetPersonal(id, newTarget);
     //         this.handleCloseModal(id);
-    //         this.notifysuccess(translate('kpi_personal.edit_target_kpi.edit_success'));
+    //         this.notifysuccess(translate('kpi_personal.edit_employee_kpi.edit_success'));
     //     }
     // }
 
@@ -89,7 +89,14 @@ class ModalEditEmployeeKpi extends Component {
         } 
         
         if (this.isFormValidated()) {
-            return this.props.editEmployeeKpi(id, newTarget);
+            let res = await this.props.editEmployeeKpi(id, newTarget);
+
+            window.$(`#editEmployeeKpi${this.props.target._id}`).modal("hide");
+            window.$(".modal-backdrop").remove();
+            window.$('body').removeClass('modal-open');
+            window.$('body').css('padding-right',"0px");
+
+            return res;
         }
     }
     
@@ -148,7 +155,7 @@ class ModalEditEmployeeKpi extends Component {
         this.setState(state => {
             return {
                 ...state,
-                parent: value[0]
+                parent: value,
             }
         });
     }
@@ -231,16 +238,16 @@ class ModalEditEmployeeKpi extends Component {
                 <DialogModal
                     modalID={`editEmployeeKpi${target._id}`} isLoading={editing}
                     formID="formeditEmployeeKpi"
-                    title={translate('employee_kpi_set.edit_target_kpi_modal.edit_employee_kpi')}
-                    msg_success={translate('employee_kpi_set.edit_target_kpi_modal.success')}
-                    msg_faile={translate('employee_kpi_set.edit_target_kpi_modal.failure')}
+                    title={translate('employee_kpi_set.edit_employee_kpi_modal.edit_employee_kpi')}
+                    msg_success={translate('employee_kpi_set.edit_employee_kpi_modal.success')}
+                    msg_faile={translate('employee_kpi_set.edit_employee_kpi_modal.failure')}
                     func={this.handleEditEmployeeKpi}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formeditEmployeeKpi" onSubmit={() => this.handleEditEmployeeKpi(translate('employee_kpi_set.edit_target_kpi_modal.success'))}>
+                    <form id="formeditEmployeeKpi" onSubmit={() => this.handleEditEmployeeKpi(translate('employee_kpi_set.edit_employee_kpi_modal.success'))}>
                         
                             <div className={`form-group ${errorOnName === undefined ? "" : "has-error"}`}>
-                                <label>{translate('employee_kpi_set.edit_target_kpi_modal.name')}<span className="text-red">*</span></label>
+                                <label>{translate('employee_kpi_set.edit_employee_kpi_modal.name')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                                 <ErrorLabel content={errorOnName}/>
                             </div>
@@ -248,7 +255,7 @@ class ModalEditEmployeeKpi extends Component {
                             {(createKpiUnit.currentKPI !== null) &&
                                 (items.length !== 0) && 
                                     <div className="form-group">
-                                        <label>{translate('employee_kpi_set.edit_target_kpi_modal.parents')}<span className="text-red">*</span></label>
+                                        <label>{translate('employee_kpi_set.edit_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
                                         <SelectBox
                                             id={`parent-target-edit${_id}`}
                                             className="form-control select2"
@@ -256,18 +263,19 @@ class ModalEditEmployeeKpi extends Component {
                                             items={items}
                                             onChange={this.handleParentChange}
                                             multiple={false}
+                                            value={items[0]}
                                         />
                                     </div>
                             }
 
                             <div className={`form-group ${errorOnCriteria === undefined ? "" : "has-error"}`}>
-                                <label>{translate('employee_kpi_set.edit_target_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
+                                <label>{translate('employee_kpi_set.edit_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                                 <ErrorLabel content={errorOnCriteria}/>
                             </div>
 
                             <div className={`form-group ${errorOnWeight === undefined ? "" : "has-error"}`}>
-                            <label>{translate('employee_kpi_set.edit_target_kpi_modal.weight')}<span className="text-red">*</span></label>
+                            <label>{translate('employee_kpi_set.edit_employee_kpi_modal.weight')}<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                                 <ErrorLabel content={errorOnWeight}/>
                             </div>    

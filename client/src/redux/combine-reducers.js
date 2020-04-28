@@ -27,7 +27,7 @@ import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/re
 
 import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
 import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
-import {dashboardKPIPersonal} from "../modules/kpi/employee/dashboard/redux/reducers"
+import {dashboardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/redux/reducers"
 
 import {tasktemplates} from '../modules/task/task-template/redux/reducers';
 import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/reducers';
@@ -71,7 +71,7 @@ const appReducer = combineReducers(Object.assign({
     //kpi-personal
     createEmployeeKpiSet,
     KPIPersonalManager,
-    dashboardKPIPersonal,
+    dashboardEmployeeKpiSet,
 
     //tasktemplates
     tasktemplates,

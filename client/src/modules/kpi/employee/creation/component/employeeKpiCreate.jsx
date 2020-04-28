@@ -231,8 +231,8 @@ class CreateEmployeeKpiSet extends Component {
         return [month, year].join('-');
     }
 
-    handleDeleteEmployeeKpi = (employeeKpiStatus, employeeKpiSetStatus, id, employeeKpiSet) => {
-        if (employeeKpiStatus === null) {
+    handleDeleteEmployeeKpi = (employeeKpiSetStatus, id, employeeKpiSet) => {
+        if (employeeKpiSetStatus === 0) {
             Swal.fire({
                 title: translate('employee_kpi_set.create_employee_kpi_set.delete_kpi.kpi_target'),
                 type: 'success',
@@ -367,7 +367,7 @@ class CreateEmployeeKpiSet extends Component {
 
     render() {
         var unitList, currentUnit, currentKPI, userdepartments;
-        const { commenting, editing } = this.state;
+        const { commenting, editing, editingTarget } = this.state;
         const { department, createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
         if (department.unitofuser) {
             unitList = department.unitofuser;
@@ -538,7 +538,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                                         <ModalEditEmployeeKpi target={item}/>
                                                                                         {item.type !== 0 ? 
                                                                                             <a className="copy" title={translate('employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a> 
-                                                                                            : <a href="#abc" style={{ color: "#E34724", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(item.status, currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 
+                                                                                            : <a href="#abc" style={{ color: "#E34724", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 
                                                                                         }
                                                                                     </td>
                                                                                 </tr>

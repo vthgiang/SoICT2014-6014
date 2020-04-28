@@ -4,11 +4,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, ErrorLabel } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './employeeCreateValidator';
 
-class TabTaxContent extends Component {
+class TaxTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
+        this.state = {};
     }
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
@@ -27,11 +26,11 @@ class TabTaxContent extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUserTax: msg,
-                    userTax: value,
+                    errorOnTaxRepresentative: msg,
+                    taxRepresentative: value,
                 }
             });
-            this.props.handleChange("userTax", value);
+            this.props.handleChange("taxRepresentative", value);
         }
         return msg === undefined;
     }
@@ -47,15 +46,15 @@ class TabTaxContent extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNumberTax: msg,
-                    numberTax: value,
+                    errorOnTaxNumber: msg,
+                    taxNumber: value,
                 }
             });
-            this.props.handleChange("numberTax", value);
+            this.props.handleChange("taxNumber", value);
         }
         return msg === undefined;
     }
-    // Function Bắt sự kiện thay đổi người đại diện
+    // Function Bắt sự kiện thay đổi tổ chức quản lý
     handleUnitTaxChange = (e) => {
         const { value } = e.target;
         this.validateUnitTax(value, true);
@@ -66,11 +65,11 @@ class TabTaxContent extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnitTax: msg,
-                    unitTax: value,
+                    errorOnTaxAuthority: msg,
+                    taxAuthority: value,
                 }
             });
-            this.props.handleChange("unitTax", value);
+            this.props.handleChange("taxAuthority", value);
         }
         return msg === undefined;
     }
@@ -85,11 +84,11 @@ class TabTaxContent extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnStartTax: msg,
-                    startTax: value,
+                    errorOnTaxDateOfIssue: msg,
+                    taxDateOfIssue: value,
                 }
             });
-            this.props.handleChange("startTax", value);
+            this.props.handleChange("taxDateOfIssue", value);
         }
         return msg === undefined;
     }
@@ -98,17 +97,18 @@ class TabTaxContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                ATM: nextProps.employee.ATM,
-                nameBank: nextProps.employee.addressBank,
-                addressBank: nextProps.employee.addressBank,
-                numberTax: nextProps.employee.numberTax,
-                userTax: nextProps.employee.userTax,
-                startTax: nextProps.employee.startTax,
-                unitTax: nextProps.employee.unitTax,
-                errorOnUserTax: undefined,
-                errorOnStartTax: undefined,
-                errorOnUnitTax: undefined,
-                errorOnNumberTax: undefined,
+                atmNumber: nextProps.employee.atmNumber,
+                bankName: nextProps.employee.bankName,
+                bankAddress: nextProps.employee.bankAddress,
+                taxNumber: nextProps.employee.taxNumber,
+                taxRepresentative: nextProps.employee.taxRepresentative,
+                taxDateOfIssue: nextProps.employee.taxDateOfIssue,
+                taxAuthority: nextProps.employee.taxAuthority,
+
+                errorOnTaxRepresentative: undefined,
+                errorOnTaxDateOfIssue: undefined,
+                errorOnTaxAuthority: undefined,
+                errorOnTaxNumber: undefined,
 
             }
         } else {
@@ -117,8 +117,8 @@ class TabTaxContent extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { ATM, nameBank, addressBank, numberTax, userTax, startTax, unitTax,
-            errorOnUserTax, errorOnStartTax, errorOnNumberTax, errorOnUnitTax } = this.state;
+        const { atmNumber, bankName, bankAddress, taxNumber, taxRepresentative, taxDateOfIssue, taxAuthority,
+            errorOnTaxRepresentative, errorOnTaxDateOfIssue, errorOnTaxNumber, errorOnTaxAuthority } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -127,43 +127,43 @@ class TabTaxContent extends Component {
                         <div className="row">
                             <div className="form-group col-md-4">
                                 <label htmlFor="ATM">{translate('manage_employee.account_number')}</label>
-                                <input type="text" className="form-control" name="ATM" value={ATM} onChange={this.handleChange} placeholder={translate('manage_employee.account_number')} autoComplete="off" />
+                                <input type="text" className="form-control" name="ATM" value={atmNumber} onChange={this.handleChange} placeholder={translate('manage_employee.account_number')} autoComplete="off" />
                             </div>
                             <div className="form-group col-md-4">
                                 <label htmlFor="nameBank">{translate('manage_employee.bank_name')}</label>
-                                <input type="text" className="form-control" name="nameBank" value={nameBank} onChange={this.handleChange} placeholder={translate('manage_employee.bank_name')} autoComplete="off" />
+                                <input type="text" className="form-control" name="nameBank" value={bankName} onChange={this.handleChange} placeholder={translate('manage_employee.bank_name')} autoComplete="off" />
                             </div>
                             <div className="form-group col-md-4">
                                 <label htmlFor="addressBank">{translate('manage_employee.bank_branch')}</label>
-                                <input type="text" className="form-control" name="addressBank" value={addressBank} onChange={this.handleChange} placeholder={translate('manage_employee.bank_branch')} autoComplete="off" />
+                                <input type="text" className="form-control" name="addressBank" value={bankAddress} onChange={this.handleChange} placeholder={translate('manage_employee.bank_branch')} autoComplete="off" />
                             </div>
                         </div>
                     </fieldset>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.personal_income_tax')}</h4></legend>
-                        <div className={`form-group ${errorOnNumberTax === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnTaxNumber === undefined ? "" : "has-error"}`}>
                             <label htmlFor="numberTax">{translate('manage_employee.tax_number')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="numberTax" value={numberTax} onChange={this.handleNumberTaxChange} placeholder={translate('manage_employee.tax_number')} autoComplete="off" />
-                            <ErrorLabel content={errorOnNumberTax} />
+                            <input type="number" className="form-control" name="numberTax" value={taxNumber} onChange={this.handleNumberTaxChange} placeholder={translate('manage_employee.tax_number')} autoComplete="off" />
+                            <ErrorLabel content={errorOnTaxNumber} />
                         </div>
-                        <div className={`form-group ${errorOnUserTax === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnTaxRepresentative === undefined ? "" : "has-error"}`}>
                             <label htmlFor="userTax">{translate('manage_employee.representative')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="userTax" value={userTax} onChange={this.handleUserTaxChange} placeholder={translate('manage_employee.representative')} autoComplete="off" />
-                            <ErrorLabel content={errorOnUserTax} />
+                            <input type="text" className="form-control" name="userTax" value={taxRepresentative} onChange={this.handleUserTaxChange} placeholder={translate('manage_employee.representative')} autoComplete="off" />
+                            <ErrorLabel content={errorOnTaxRepresentative} />
                         </div>
-                        <div className={`form-group ${errorOnStartTax === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnTaxDateOfIssue === undefined ? "" : "has-error"}`}>
                             <label htmlFor="startDate">{translate('manage_employee.day_active')}<span className="text-red">*</span></label>
                             <DatePicker
-                                id={`startTax-date-${id}`}
-                                value={startTax}
+                                id={`taxDateOfIssue-${id}`}
+                                value={taxDateOfIssue}
                                 onChange={this.handleStartDateChange}
                             />
-                            <ErrorLabel content={errorOnStartTax} />
+                            <ErrorLabel content={errorOnTaxDateOfIssue} />
                         </div>
-                        <div className={`form-group ${errorOnUnitTax === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnTaxAuthority === undefined ? "" : "has-error"}`}>
                             <label htmlFor="unitTax">{translate('manage_employee.managed_by')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="unitTax" value={unitTax} onChange={this.handleUnitTaxChange} placeholder={translate('manage_employee.managed_by')} autoComplete="off" />
-                            <ErrorLabel content={errorOnUnitTax} />
+                            <input type="text" className="form-control" name="unitTax" value={taxAuthority} onChange={this.handleUnitTaxChange} placeholder={translate('manage_employee.managed_by')} autoComplete="off" />
+                            <ErrorLabel content={errorOnTaxAuthority} />
                         </div>
                     </fieldset>
                 </div>
@@ -172,5 +172,5 @@ class TabTaxContent extends Component {
     }
 };
 
-const tabGeneral = connect(null, null)(withTranslate(TabTaxContent));
-export { tabGeneral as TabTaxContent };
+const taxTab = connect(null, null)(withTranslate(TaxTab));
+export { taxTab as TaxTab };
