@@ -5,6 +5,8 @@ import {
 import {
     getStorage, AuthenticateHeader
 } from '../../../../../config';
+import jwt from 'jsonwebtoken';
+import { sendRequest} from '../../../../../helpers/requestHelper'
 export const dashboardServices = {
     getAllKPIUnit,
     // getCurrentKPIUnit,
@@ -15,12 +17,11 @@ export const dashboardServices = {
 
 // Lấy tất cả KPI đơn vị
 function getAllKPIUnit(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/unit/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
+    },false,'kpi.organizational_unit');
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/unit/${id}`, requestOptions).then(handleResponse);
 }
 
 // Lấy KPI đơn vị hiện tại
@@ -57,10 +58,9 @@ function getAllKPIUnit(id) {
 
 // Cập nhật dữ liệu cho KPI đơn vị
 function evaluateKPIUnit(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`, requestOptions).then(handleResponse);
+    },false,'kpi.organizational_unit');
 }
+

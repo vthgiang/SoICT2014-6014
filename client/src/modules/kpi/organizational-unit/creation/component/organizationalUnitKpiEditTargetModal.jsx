@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { UserFormValidator} from '../../../../super-admin/user/components/userFormValidator';
 
 
@@ -190,22 +190,22 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                 <DialogModal
                     modalID={`editTargetKPIUnit${this.props.target._id}`} isLoading={editing}
                     formID="form-edit-target"
-                    title={translate('kpi_unit_create.edit_title')}
-                    msg_success={translate('kpi_unit_create.edit_target_success')}
-                    msg_faile={translate('kpi_unit_create.error')}
+                    title={translate('organizational_unit_kpi_set.edit_target_kpi_modal.edit_organizational_unit_kpi')}
+                    msg_success={translate('organizational_unit_kpi_set.edit_target_kpi_modal.success')}
+                    msg_faile={translate('organizational_unit_kpi_set.edit_target_kpi_modal.failure')}
                     func={this.handleEditTarget}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="form-edit-target" onSubmit={() => this.handleEditTarget(translate('kpi_unit_create.edit_target_success'))}>
+                    <form id="form-edit-target" onSubmit={() => this.handleEditTarget(translate('organizational_unit_kpi_set.edit_target_kpi_modal.success'))}>
                         <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
-                            <label>{translate('kpi_unit_create.target_name')}<span className="text-red">*</span></label>
+                            <label>{translate('organizational_unit_kpi_set.edit_target_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>
                         </div>
                         
                         {(typeof organizationalUnit !== "undefined" && organizationalUnit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                             <div className="form-group">
-                                <label>{translate('kpi_unit_create.on_target')}</label>
+                                <label>{translate('organizational_unit_kpi_set.edit_target_kpi_modal.parents')}</label>
                                 {items.length !== 0 &&
                                     <SelectBox 
                                         id={`parent-target-add${_id}`}
@@ -220,73 +220,19 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                             </div>}
 
                         <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
-                            <label>{translate('kpi_unit_create.criteria')}<span className="text-red">*</span></label>
+                            <label>{translate('organizational_unit_kpi_set.edit_target_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                             <ErrorLabel content={errorOnCriteria}/>
                         </div>
 
                         <div className={`form-group ${errorOnWeight===undefined?"":"has-error"}`}>
-                            <label>{translate('kpi_unit_create.weight')}<span className="text-red">*</span></label>
+                            <label>{translate('organizational_unit_kpi_set.edit_target_kpi_modal.weight')}<span className="text-red">*</span></label>
                             <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                             <ErrorLabel content={errorOnWeight}/>
                         </div>
                     </form>
                 </DialogModal>
             </React.Fragment>
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            // <div className="modal fade" id={`editTargetKPIUnit${target._id}`}>
-            //     <div className="modal-dialog">
-            //         <div className="modal-content">
-            //             <div className="modal-header">
-            //                 <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-            //                 <h3 className="modal-title">{translate('kpi_unit_create.edit_title')}</h3>
-            //             </div>
-            //             <div className="modal-body">
-
-
-            //                     <div className="form-group">
-            //                         <label style={{ float: "left" }}>{translate('kpi_unit_create.target_name')}:</label>
-            //                         <div className={'form-group has-feedback' + (editing && !newTarget.name ? ' has-error' : '')}>
-            //                             <input type="text" className="form-control" ref={input => this.name = input} defaultValue={target.name} placeholder="Tên mục tiêu" name="name" />
-            //                         </div>
-            //                     </div>
-            //                     {(typeof unit !== "undefined" && unit.parent !== null) &&
-            //                     <div className="form-group">
-            //                         <label style={{ float: "left" }}>{translate('kpi_unit_create.on_target')}:</label>
-            //                         <div className={'form-group has-feedback' + (editing && !newTarget.parent ? ' has-error' : '')}>
-            //                             {(typeof parentKPI !== 'undefined' && parentKPI !== null) &&
-            //                                 <select defaultValue={target.parent!==null?target.parent._id:parentKPI.listtarget[0]._id} ref={input => this.parent = input} className="form-control" name="parent">
-            //                                     {parentKPI.listtarget.map(x => {
-            //                                         return <option key={x._id} value={x._id}>{x.name}</option>
-            //                                     })}
-            //                                 </select>}
-            //                         </div>
-            //                     </div>}
-
-
-
-            //                     <div className="form-group">
-            //                         <label style={{ float: "left" }}>{translate('kpi_unit_create.criteria')}:</label>
-            //                         <div className={'form-group has-feedback' + (editing && !newTarget.criteria ? ' has-error' : '')}>
-            //                             <textarea style={{height: "auto"}} ref={input => this.criteria = input} type="text" className='form-control' defaultValue={target.criteria} placeholder="Đánh giá mức độ hoàn thành dựa trên tiêu chí nào?" name="criteria" />
-            //                         </div>
-            //                     </div>
-            //                     <div className="form-group">
-            //                         <label style={{ float: "left" }}>{translate('kpi_unit_create.weight')}:</label>
-            //                         <div className={'form-group has-feedback' + (editing && !newTarget.weight ? ' has-error' : '')}>
-            //                             <input type="Number" min="0" max="100" ref={input => this.weight = input} defaultValue={target.weight} className="form-control pull-right" placeholder="Trọng số của mục tiêu" name="weight" />
-            //                         </div>
-            //                     </div>
-            //             </div>
-            //             <div className="modal-footer">
-            //                 <button className="btn btn-success" onClick={(event)=>this.handleEditTarget(event, target._id)}>{translate('kpi_unit_create.save_change')}</button>
-            //                 <button type="cancel" className="btn btn-primary" data-dismiss="modal">{translate('kpi_unit_create.cancel')}</button>
-            //             </div>
-            //         </div>
-            //     </div>
-            // </div>
         );
     }
 }

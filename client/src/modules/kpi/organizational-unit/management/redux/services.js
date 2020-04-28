@@ -1,10 +1,12 @@
 import {handleResponse} from '../../../../../helpers/handleResponse';
 import {
-    LOCAL_SERVER_API
+    TOKEN_SECRET, LOCAL_SERVER_API
 } from '../../../../../env';
 import {
     getStorage, AuthenticateHeader
 } from '../../../../../config';
+import jwt from 'jsonwebtoken';
+import { sendRequest} from '../../../../../helpers/requestHelper'
 export const managerServices = {
     getAllKPIUnit,
     getCurrentKPIUnit,
@@ -15,52 +17,47 @@ export const managerServices = {
 
 // Lấy tất cả KPI đơn vị
 function getAllKPIUnit(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/unit/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
+    },false,'kpi.organizational_unit');
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/unit/${id}`, requestOptions).then(handleResponse);
 }
 
 // Lấy KPI đơn vị hiện tại
 function getCurrentKPIUnit(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
+    },false,'kpi.organizational_unit');
 }
 
 // Lấy tất cả KPI đơn vị
-function getChildTargetOfCurrentTarget(id) {
-    const requestOptions = {
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
+async function getChildTargetOfCurrentTarget(id) {
+    const token= getStorage();
+    const verified= await jwt.verify(token, TOKEN_SECRET);
+    var id= verified._id;
 
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/child-target/${id}`, requestOptions).then(handleResponse);
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}`,
+        method: 'GET',
+    },false,'kpi.organizational_unit');
 }
 
 // Khởi tạo KPI đơn vị 
-function addKPIUnit(newKPI) {
-    const requestOptions = {
+async function addKPIUnit(newKPI) {
+    return sendRequest({
+        url: '${LOCAL_SERVER_API}/kpiunits/create',
         method: 'POST',
-        headers: AuthenticateHeader(),
         body: JSON.stringify(newKPI)
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/create`, requestOptions).then(handleResponse);
+    },false,'kpi.organizational_unit');
 }
 
 
 // Cập nhật dữ liệu cho KPI đơn vị
 function evaluateKPIUnit(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`, requestOptions).then(handleResponse);
+    },false,'kpi.organizational_unit');
 }
