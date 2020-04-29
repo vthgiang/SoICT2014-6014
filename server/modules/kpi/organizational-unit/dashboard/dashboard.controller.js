@@ -4,20 +4,24 @@ const { LogInfo, LogError } = require('../../../../logs');
 // get all target of unit kpi
 exports.get =async (req, res) => {
     try {
-        var kpiunits = await dashboardService.get(req.params.id);
-        LogInfo(req.user.email, ' get kpi unit ',req.user.company);
-        res.status(200).json({
-            message: "Lấy tất cả kpi của đơn vị",
-            content: kpiunits
-        })
-    } catch (error) {
-        LogError(req.user.email, ' get kpi unit ',req.user.company);
-        res.status(400).json({
-            message: error
-        })
-    }
-
-};
+        console.log(req.params.id);
+         var kpiunits = await managerService.get(req.params.id);
+         LogInfo(req.user.email, ' get kpi unit ',req.user.company);
+         res.status(200).json({
+             success: true,
+             messages: ['get_kpi_unit_success'],
+             content: kpiunits
+         })
+     } catch (error) {
+         LogError(req.user.email, ' get kpi unit ',req.user.company);
+         res.status(400).json({
+             success: false,
+             messages: ['get_kpi_unit_fail'],
+             content: error
+         })
+     }
+ 
+ };
 
 // // Lấy KPI đơn vị hiện tại qua vai trò
 // exports.getByRole =async (req, res) => {
@@ -75,16 +79,19 @@ exports.get =async (req, res) => {
 // Cập nhật dữ liệu mới nhất cho KPI đơn vị
 exports.evaluateKPI =async (req, res) => {
     try {
-        var kpiunit = await dashboardService.evaluateKPI(req.params.id);
+        var kpiunit = await managerService.evaluateKPI(req.params.id);
         LogInfo(req.user.email, ' evaluate kpi unit ',req.user.company)
         res.status(200).json({
-            message: "Cập nhật dữ liệu thành công",
+            success: true,
+            messages: ['update_evaluate_kpi_unit_success'],
             kpiunit: kpiunit
         });
     } catch (error) {
         LogError(req.user.email, ' evaluate kpi unit ',req.user.company)
         res.status(400).json({
-            message: error
+            success: false,
+            messages: ['update_evaluate_kpi_unit_fail'],
+            content: error
         })
     }
 }

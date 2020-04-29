@@ -26,7 +26,8 @@ function getAll() {
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETALL_TASK_SUCCESS,
-                    payload: res.data.content.tasks
+                    // payload: res.data.content.tasks
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -50,7 +51,8 @@ function getAllTaskByRole(id, role) {
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYROLE_SUCCESS,
-                    payload: res.data.content.tasks
+                    // payload: res.data.content.tasks
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -73,7 +75,8 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS,
-                    payload: res.data.content.responsibleTasks
+                    // payload: res.data.content.responsibleTasks
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -95,7 +98,8 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS,
-                    payload: res.data.content.accountableTasks
+                    // payload: res.data.content.accountableTasks
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -118,7 +122,8 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS,
-                    payload: res.data.content.consultedTasks
+                    // payload: res.data.content.consultedTasks
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -141,7 +146,8 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
             .then( res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS, 
-                    payload: res.data.content.informedTasks
+                    // payload: res.data.content.informedTasks
+                    payload: res.data.content
                 });
             })
             .catch(error => {
@@ -164,7 +170,8 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
             .then( res=> {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS, 
-                    payload: res.data.content.creatorTasks 
+                    // payload: res.data.content.creatorTasks 
+                    payload: res.data.content
                 })
             })
             .catch(error=>{
@@ -188,7 +195,8 @@ function getTaskById(id) {
             .then(res=> {
                 dispatch({
                     type: taskManagementConstants.GETTASK_BYID_SUCCESS, 
-                    payload: res.data.content.task
+                    // payload: res.data.content.task
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -209,7 +217,8 @@ function addTask(task) {
             .then(res=>{
                 dispatch({
                     type: taskManagementConstants.ADDNEW_TASK_SUCCESS, 
-                    payload: res.data.content.task
+                    // payload: res.data.content.task
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -229,7 +238,8 @@ function editTask(id, task) {
             .then(res=> {
                 dispatch({
                     type: taskManagementConstants.EDIT_TASK_SUCCESS, 
-                    payload: res.data.content.task
+                    // payload: res.data.content.task
+                    payload: res.data.content
                 })
             })
             .catch(error => {
@@ -271,7 +281,8 @@ function editStatusOfTask(id, status) {
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
-                    payload: res.data.content.task
+                    // payload: res.data.content.task
+                    payload: res.data.content
                 });
             })
             .catch(error => {

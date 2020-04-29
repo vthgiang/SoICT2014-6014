@@ -82,7 +82,7 @@ class ModalApproveTask extends Component {
         return this.props.editResultTask(listResult, taskID);
     }
 
-    handleChangeMyPoint = async () => {
+    handleChangePercent= async () => {
         await this.setState(state => {
             var percent = parseInt(this.percent.value);
             var a = this.validatePoint(percent)
@@ -95,72 +95,79 @@ class ModalApproveTask extends Component {
 
     }
 
-    onHandleChange = async (e, namePoint) => {
+    onHandleChangeAutomaticPoint = async (e) => {
         // var name = e.target.name;
         var value = parseInt(e.target.value);
-        if (namePoint === "automaticPoint") {
-            await this.setState(state => {
-                return {
-                    // [name]: value,
-                    ...state,
-                    automaticPoint: value,
-                    errorOnPercent: this.validatePoint(value)
-                }
-            });
-        }
-        if (namePoint === "employeePoint1") {
-            await this.setState(state => {
-                return {
-                    // [name]: value,
-                    ...state,
-                    employeePoint1: value,
-                    errorOnResponsibleEmployeePoint: this.validatePoint(value)
-                }
-            });
-        }
-        if (namePoint === "approvedPoint1") {
-            await this.setState(state => {
-                return {
-                    // [name]: value,
-                    ...state,
-                    approvedPoint1: value,
-                    errorOnResponsibleApprovedPoint: this.validatePoint(value)
-                }
-            });
-        }
-        if (namePoint === "employeePoint2") {
-            await this.setState(state => {
-                return {
-                    // [name]: value,
-                    ...state,
-                    employeePoint2: value,
-                    errorOnConsultedEmployeePoint: this.validatePoint(value)
-                }
-            });
-        }
-        if (namePoint === "approvedPoint2") {
-            await this.setState(state => {
-                return {
-                    // [name]: value,
-                    ...state,
-                    approvedPoint2: value,
-                    errorOnConsultedApprovedPoint: this.validatePoint(value)
-                }
-            });
-        }
-        if (namePoint === "employeePoint3") {
-            await this.setState(state => {
-                return {
-                    // [name]: value,
-                    ...state,
-                    employeePoint3: value,
-                    errorOnApprovedPoint: this.validatePoint(value)
-                }
-            });
-        }
-        // console.log(this.state);
+        await this.setState(state => {
+            return {
+                // [name]: value,
+                ...state,
+                automaticPoint: value,
+                errorOnPercent: this.validatePoint(value)
+            }
+        });
     }
-
+    onHandleChangeApprovedPoint1 = async (e) => {
+        // var name = e.target.name;
+        var value = parseInt(e.target.value);
+        await this.setState(state => {
+            return {
+                // [name]: value,
+                ...state,
+                approvedPoint1: value,
+                errorOnResponsibleApprovedPoint: this.validatePoint(value)
+            }
+        });
+    }
+    onHandleChangeApprovedPoint2 = async (e) => {
+        // var name = e.target.name;
+        var value = parseInt(e.target.value);
+        await this.setState(state => {
+            return {
+                // [name]: value,
+                ...state,
+                approvedPoint2: value,
+                errorOnConsultedApprovedPoint: this.validatePoint(value)
+            }
+        });
+    }
+    onHandleChangeEmployeePoint1 = async (e) => {
+        // var name = e.target.name;
+        var value = parseInt(e.target.value);
+        await this.setState(state => {
+            return {
+                // [name]: value,
+                ...state,
+                employeePoint1: value,
+                errorOnResponsibleEmployeePoint: this.validatePoint(value)
+            }
+        });
+    }
+    onHandleChangeEmployeePoint2 = async (e) => {
+        // var name = e.target.name;
+        var value = parseInt(e.target.value);
+        await this.setState(state => {
+            return {
+                // [name]: value,
+                ...state,
+                employeePoint2: value,
+                errorOnConsultedEmployeePoint: this.validatePoint(value)
+            }
+        });
+    }
+    onHandleChangeEmployeePoint3 = async (e) => {
+        // var name = e.target.name;
+        var value = parseInt(e.target.value);
+        await this.setState(state => {
+            return {
+                // [name]: value,
+                ...state,
+                employeePoint3: value,
+                errorOnApprovedPoint: this.validatePoint(value)
+            }
+        });
+    }
+    
     validatePoint = (value) => {
         let msg = undefined;
         if (value < 0 || value > 100) {
@@ -176,17 +183,17 @@ class ModalApproveTask extends Component {
         var { tasks, currentUser, role, performtasks } = this.props;
         if (role === "responsible") {
             var status = { status: "Chờ phê duyệt" };
-            this.addResult(this.props.taskID);
-            return this.props.editStatusOfTask(this.props.taskID, status);
+            this.props.editStatusOfTask(this.props.taskID, status);
+            return this.addResult(this.props.taskID);
         }
         else if (role === "consulted") {
             return this.addResult(this.props.taskID);
         }
         else if (role === "accountable") {
             var status = { status: "Đã hoàn thành" };
-            this.addResult(this.props.taskID);
             this.confirmResult(this.props.taskID);
-            return this.props.editStatusOfTask(this.props.taskID, status);
+            this.props.editStatusOfTask(this.props.taskID, status);
+            return this.addResult(this.props.taskID);
         }
     }
 
@@ -275,7 +282,7 @@ class ModalApproveTask extends Component {
                                     placeholder={10}
                                     ref={input => this.percent = input}
                                     value={automaticPoint}
-                                    onChange={() => this.handleChangeMyPoint()}
+                                    onChange={() => this.handleChangePercent()}
                                     disabled={role !== "responsible"}
                                 />
                                 <ErrorLabel content={errorOnPercent} />
@@ -292,7 +299,7 @@ class ModalApproveTask extends Component {
                                     disabled="true"
                                     name="automaticPoint"
                                     value={automaticPoint}
-                                    onChange={(e) => this.onHandleChange(e, "automaticPoint")}
+                                    onChange={(e) => this.onHandleChangeAutomaticPoint(e)}
                                 />
                                 <ErrorLabel content={errorOnAutomaticPoint} />
                             </div>
@@ -313,7 +320,7 @@ class ModalApproveTask extends Component {
                                         disabled={role !== "responsible"}
                                         name="employeePoint1"
                                         value={employeePoint1}
-                                        onChange={(e) => this.onHandleChange(e, "employeePoint1")}
+                                        onChange={(e) => this.onHandleChangeEmployeePoint1(e)}
                                     />
                                     <ErrorLabel content={errorOnResponsibleEmployeePoint} />
                                 </div>
@@ -329,7 +336,7 @@ class ModalApproveTask extends Component {
                                         disabled={role !== "accountable"}
                                         name="approvedPoint1"
                                         value={approvedPoint1}
-                                        onChange={(e) => this.onHandleChange(e, "approvedPoint1")}
+                                        onChange={(e) => this.onHandleChangeApprovedPoint1(e)}
                                     />
                                     <ErrorLabel content={errorOnResponsibleApprovedPoint} />
                                 </div>
@@ -351,7 +358,7 @@ class ModalApproveTask extends Component {
                                         disabled={role !== "consulted"}
                                         name="employeePoint2"
                                         value={employeePoint2}
-                                        onChange={(e) => this.onHandleChange(e, "employeePoint2")}
+                                        onChange={(e) => this.onHandleChangeEmployeePoint2(e)}
                                     />
                                     <ErrorLabel content={errorOnConsultedEmployeePoint} />
                                 </div>
@@ -367,7 +374,7 @@ class ModalApproveTask extends Component {
                                         disabled={role !== "accountable"}
                                         name="approvedPoint2"
                                         value={approvedPoint2}
-                                        onChange={(e) => this.onHandleChange(e, "approvedPoint2")}
+                                        onChange={(e) => this.onHandleChangeApprovedPoint2(e)}
                                     />
                                     <ErrorLabel content={errorOnConsultedApprovedPoint} />
                                 </div>
@@ -388,7 +395,7 @@ class ModalApproveTask extends Component {
                                         disabled={role !== "accountable"}
                                         name="employeePoint3"
                                         value={employeePoint3}
-                                        onChange={(e) => this.onHandleChange(e, "employeePoint3")}
+                                        onChange={(e) => this.onHandleChangeEmployeePoint3(e)}
                                     />
                                     <ErrorLabel content={errorOnApprovedPoint} />
                                 </div>
@@ -410,7 +417,6 @@ const mapState = (state) => {
     return { tasks, performtasks }; // tasks,
 }
 const getState = {
-    // create: DepartmentActions.create
     getTaskById: taskManagementActions.getTaskById,
     createResult: performTaskAction.createResultTask,
     editResultTask: performTaskAction.editResultTask,

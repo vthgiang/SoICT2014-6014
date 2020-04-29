@@ -11,12 +11,12 @@ export function dashboardKpiUnit (state = {}, action){
           return {
             ...state,
             loading: false,
-            kpis: action.kpis.content,
+            kpis: action.payload,
             isLoading: false
           };
         case dashboardConstants.GETALL_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         // case dashboardConstants.GETCURRENT_KPIUNIT_REQUEST:
@@ -93,7 +93,7 @@ export function dashboardKpiUnit (state = {}, action){
           };
         case dashboardConstants.EVALUATE_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         default:
