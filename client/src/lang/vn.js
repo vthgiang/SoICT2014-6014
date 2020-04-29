@@ -16,6 +16,21 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
+            // Quản lý lương nhân viên
+            // TODO: Xoá sau
+            name_other_salary_required: 'Tên lương thưởng khác không được để trống',
+            money_other_salary_required: 'Tiền lương thưởng khác không được để trống',
+            month_salary_required: 'Tháng lương không được để trống',
+            money_salary_required: 'Tiền lương chính không được để trống',
+            month_salary_have_exist: 'Tháng lương đã tồn tại',
+            get_salary_success: 'Lấy thông tin lương nhân viên thành công',
+            get_salary_faile: 'Lấy thông tin lương nhân viên thất bại',
+            create_salary_success: 'Thêm bảng lương thành công',
+            create_salary_faile: 'Thêm bảng lương thất bại',
+            delete_salary_success: 'Xoá bẳng lương thành công',
+            delete_salary_faile: 'Xoá bảng lương thất bại',
+            edit_salary_success: 'Chỉnh sửa bảng lương thành công',
+            edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
             // Quản lý nghỉ phép
             start_date_annual_leave_required: 'Ngày bắt đầu không được để trống',
             end_date_annual_leave_required: 'Ngày kết thúc không được để trống',
@@ -614,6 +629,24 @@ export default {
             edit_succes: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
+        // Quản lý lương nhân viên
+        salary_employee: {      // TODO: Xoá sau
+            list_salary: 'Danh sách bảng lương nhân viên',
+            add_salary: 'Thêm bảng lương',
+            add_salary_title: 'Thêm bảng lương nhân viên',
+            edit_salary: 'Chỉnh sửa bảng lương nhân viên',
+            delete_salary: 'Xoá bảng lương',
+            add_by_hand: 'Thêm bằng tay',
+            add_import: 'Import file excel',
+            add_by_hand_title: 'Thêm một bảng lương',
+            add_import_title: 'Thêm nhiều bảng lương',
+            main_salary: 'Tiền lương chính',
+            other_salary: 'Các loại lương thưởng khác',
+            name_salary: 'Tên lương thưởng',
+            money_salary: 'Số tiền',
+            add_more_salary: 'Thêm lương thưởng khác',
+            add_new_salary: 'Thêm mới bảng lương',
+        },
         // Quản lý khen thưởng, kỷ luật
         discipline: {
             list_discipline: 'Danh sách kỷ luật',
@@ -877,7 +910,7 @@ export default {
             // Quản lý lương nhân viên
             salary: {
                 list_salary: 'Danh sách bảng lương nhân viên',
-                
+
                 // Nhóm dành cho table
                 table: {
                     main_salary: 'Tiền lương chính',
@@ -887,6 +920,7 @@ export default {
                     total_salary: 'Tổng lương',
                     action: 'Hành động'
                 },
+
                 // Nhóm dành cho action
                 edit_salary: 'Chỉnh sửa bảng lương nhân viên',
                 delete_salary: 'Xoá bảng lương',
@@ -913,6 +947,46 @@ export default {
                 delete_salary_faile: 'Xoá bảng lương thất bại',
                 edit_salary_success: 'Chỉnh sửa bảng lương thành công',
                 edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
+            },
+
+            // Quản lý nghỉ phép
+            annual_leave: {
+                list_annual_leave: 'Danh sách đơn xin nghỉ',
+
+                // Nhóm dành cho table
+                table: {
+                    start_date: 'Ngày bắt đầu',
+                    end_date: 'Ngày kết thúc',
+                    reason: 'Lý do',
+                    action: 'Hành động'
+                },
+
+                // Nhóm dành cho trạng thái nghỉ phép 
+                status: {
+                    pass: 'Đã chấp nhận',
+                    faile: 'Không chấp nhận',
+                    process: 'Chờ phê duyệt',
+                },
+
+                // Nhóm dành cho action
+                edit_annual_leave: 'Chỉnh sửa thông tin nghỉ phép',
+                delete_annual_leave: 'Xoá thông tin nghỉ phép',
+                add_annual_leave: 'Thêm đơn xin nghỉ',
+                add_annual_leave_title: 'Thêm mới đơn xin nghỉ phép',
+
+                // Thông điệp trả về từ server
+                start_date_annual_leave_required: 'Ngày bắt đầu không được để trống',
+                end_date_annual_leave_required: 'Ngày kết thúc không được để trống',
+                reason_annual_leave_required: 'Lý do không được để trống',
+                status_annual_leave_required: 'Trạng thái không được để trống',
+                get_annual_leave_success: 'Lấy thông tin nghỉ phép thành công',
+                get_annual_leave_faile: 'Lấy thông tin nghỉ phép thất bại',
+                create_annual_leave_success: 'Thêm đơn xin nghỉ phép thành công',
+                create_annual_leave_faile: 'Thêm đơn xin nghỉ phép thất bại',
+                delete_annual_leave_success: 'Xoá đơn xin nghỉ phép thành công',
+                delete_annual_leave_faile: 'Xoá đơn xin nghỉ phép thất bại',
+                edit_annual_leave_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
+                edit_annual_leave_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
             }
         },
 

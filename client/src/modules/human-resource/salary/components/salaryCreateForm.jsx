@@ -224,8 +224,6 @@ class SalaryCreateForm extends Component {
                     size='50' modalID="modal-create-salary" isLoading={salary.isLoading}
                     formID="form-create-salary"
                     title={translate('human_resource.salary.add_salary_title')}
-                    // msg_success={translate('error.create_salary_success')}
-                    // msg_faile={translate('error.create_salary_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >

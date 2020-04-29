@@ -182,8 +182,6 @@ class SalaryEditForm extends Component {
                     size='50' modalID="modal-edit-salary" isLoading={salary.isLoading}
                     formID="form-edit-salary"
                     title={translate('human_resource.salary.edit_salary')}
-                    // msg_success={translate('error.edit_salary_success')}
-                    // msg_faile={translate('error.edit_salary_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
