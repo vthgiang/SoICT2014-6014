@@ -11,12 +11,12 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpimembers: action.kpimembers.content,
+        kpimembers: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     case  kpiMemberConstants.GETALL_KPIMEMBER_REQUEST:
@@ -29,12 +29,12 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpimembers: action.kpimembers.content,
+        kpimembers: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_FAILURE:
       return { 
-        error: action.error,
+        error: action.payload,
         isLoading: false
       };
     default:
