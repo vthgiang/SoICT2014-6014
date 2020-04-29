@@ -1,6 +1,7 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
 export const SalaryService = {
     searchSalary,
     createSalary,
@@ -11,77 +12,76 @@ export const SalaryService = {
     importSalary
 }
 
-// Lấy danh sách bảng lương
+/**
+ * Lấy danh sách bảng lương
+ * @data dữ liệu key tìm kiếm
+ */ 
 function searchSalary(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/paginate`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, false, 'human_resource.salary');
 }
 
-// tạo mới một bảng lương
+/**
+ * Tạo mới một bảng lương
+ * @data dữ liệu bảng lương mới
+ */
 function createSalary(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/create`,
         method: 'POST',
         data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, true, 'human_resource.salary');
 }
 
-// Xoá bảng lương  theo id
+/**
+ * Xoá bảng lương  theo id
+ * @id Id bảng lương cần xoá
+ */
 function deleteSalary(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, true, 'human_resource.salary');
 }
 
-// Cập nhật thông tin bảng lương theo id
-function updateSalary(id,data) {
-    const requestOptions = {
+/**
+ * Cập nhật thông tin bảng lương
+ * @id : Id bảng lương cần cập nhật
+ * @data : Dữ liệu cập nhật bảng lương 
+ */
+function updateSalary(id, data) {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/${id}`,
         method: 'PUT',
-        data:data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data,
+    }, true, 'human_resource.salary');
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
-function checkSalary(employeeNumber,month) {
-    const requestOptions = {
+function checkSalary(employeeNumber, month) {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/checkSalary/${employeeNumber}/${month}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, false, 'human_resource.salary');
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
 function checkArraySalary(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/checkArraySalary`,
         method: 'POST',
         data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, false, 'human_resource.salary');
 }
 
 // Import lương nhân viên
 function importSalary(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/import`,
         method: 'POST',
         data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, false, 'human_resource.salary');
 }

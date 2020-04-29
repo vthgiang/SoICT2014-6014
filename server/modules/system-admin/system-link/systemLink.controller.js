@@ -66,10 +66,12 @@ exports.getPaginatedSystemLinks = async (req, res) => {
 
 exports.createSystemLink = async (req, res) => {
     try {
+        
         const { url, description, roles, category } = req.body;
         const link = await SystemLinkServices.createSystemLink(url, description, roles, category);
+        
         const data = await SystemLinkServices.getSystemLink(link._id);
-
+        
         LogInfo(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(200).json({
             success: true,
@@ -135,7 +137,7 @@ exports.deleteSystemLink = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(200).json({
             success: true,
-            messages: 'delete_link_default_success',
+            messages: 'delete_system_link_success',
             content: link
         });
     } catch (error) {

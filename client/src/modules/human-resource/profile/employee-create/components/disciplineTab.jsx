@@ -5,11 +5,10 @@ import {
     ModalAddPraise, ModalEditPraise, ModalAddDiscipline, ModalEditDiscipline
 } from './combinedContent';
 
-class TabRearDisciplineContent extends Component {
+class DisciplineTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
+        this.state = {};
     }
     // Bắt sự kiện click edit khen thưởng
     handleEdit = async (value, index) => {
@@ -34,61 +33,61 @@ class TabRearDisciplineContent extends Component {
 
     // Function thêm thông tin khen thưởng
     handleAddPraise = async (data) => {
-        const { praise } = this.state;
+        const { commendations } = this.state;
         await this.setState({
-            praise: [...praise, {
+            commendations: [...commendations, {
                 ...data
             }]
         })
-        this.props.handleAddPraise(this.state.praise)
+        this.props.handleAddPraise(this.state.commendations)
     }
     // Function chỉnh sửa thông tin khen thưởng
     handleEditPraise = async (data) => {
-        const { praise } = this.state;
-        praise[data.index] = data;
+        const { commendations } = this.state;
+        commendations[data.index] = data;
         await this.setState({
-            praise: praise
+            praise: commendations
         })
-        this.props.handleEditPraise(this.state.praise)
+        this.props.handleEditPraise(this.state.commendations)
     }
     // Function bắt sự kiện xoá thông tin khen thưởng
     delete = async (index) => {
-        var praise = this.state.praise;
-        praise.splice(index, 1);
+        var commendations = this.state.commendations;
+        commendations.splice(index, 1);
         await this.setState({
             ...this.state,
-            praise: [...praise]
+            commendations: [...commendations]
         })
         this.props.handleDeletePraise(this.state.praise)
     }
     // Function thêm thông tin kỷ luật
     handleAddDiscipline = async (data) => {
-        const { discipline } = this.state;
+        const { disciplines } = this.state;
         await this.setState({
-            discipline: [...discipline, {
+            disciplines: [...disciplines, {
                 ...data
             }]
         })
-        this.props.handleAddDiscipline(this.state.discipline)
+        this.props.handleAddDiscipline(this.state.disciplines)
     }
     // Function chỉnh sửa thông tin kỷ luật
     handleEditDiscipline = async (data) => {
-        const { discipline } = this.state;
-        discipline[data.index] = data;
+        const { disciplines } = this.state;
+        disciplines[data.index] = data;
         await this.setState({
-            discipline: discipline
+            disciplines: disciplines
         })
-        this.props.handleEditDiscipline(this.state.discipline)
+        this.props.handleEditDiscipline(this.state.disciplines)
     }
     // Function bắt sự kiện xoá thông tin kỷ luật
     deleteDiscipline = async (index) => {
-        var discipline = this.state.discipline;
-        discipline.splice(index, 1);
+        var disciplines = this.state.disciplines;
+        disciplines.splice(index, 1);
         await this.setState({
             ...this.state,
-            discipline: [...discipline]
+            disciplines: [...disciplines]
         })
-        this.props.handleDeleteDiscipline(this.state.discipline)
+        this.props.handleDeleteDiscipline(this.state.disciplines)
     }
 
 
@@ -97,8 +96,8 @@ class TabRearDisciplineContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                praise: nextProps.praise,
-                discipline: nextProps.discipline,
+                commendations: nextProps.commendations,
+                disciplines: nextProps.disciplines,
             }
         } else {
             return null;
@@ -108,7 +107,7 @@ class TabRearDisciplineContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { praise, discipline } = this.state;
+        const { commendations, disciplines } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -128,12 +127,12 @@ class TabRearDisciplineContent extends Component {
 
                             </thead>
                             <tbody>
-                                {(typeof praise !== 'undefined' && praise.length !== 0) &&
-                                    praise.map((x, index) => (
+                                {(typeof commendations !== 'undefined' && commendations.length !== 0) &&
+                                    commendations.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.number}</td>
+                                            <td>{x.decisionNumber}</td>
                                             <td>{x.startDate}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>
                                             <td>
@@ -146,7 +145,7 @@ class TabRearDisciplineContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof praise === 'undefined' || praise.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof commendations === 'undefined' || commendations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -165,13 +164,13 @@ class TabRearDisciplineContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof discipline !== 'undefined' && discipline.length !== 0) &&
-                                    discipline.map((x, index) => (
+                                {(typeof disciplines !== 'undefined' && disciplines.length !== 0) &&
+                                    disciplines.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.number}</td>
+                                            <td>{x.decisionNumber}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>
                                             <td>
@@ -183,7 +182,7 @@ class TabRearDisciplineContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof discipline === 'undefined' || discipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof disciplines === 'undefined' || disciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -219,5 +218,5 @@ class TabRearDisciplineContent extends Component {
     }
 };
 
-const tabRearDiscipline = connect(null, null)(withTranslate(TabRearDisciplineContent));
-export { tabRearDiscipline as TabRearDisciplineContent };
+const disciplineTab = connect(null, null)(withTranslate(DisciplineTab));
+export { disciplineTab as DisciplineTab };

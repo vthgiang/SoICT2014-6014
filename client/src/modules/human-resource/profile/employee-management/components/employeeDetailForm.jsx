@@ -16,11 +16,11 @@ class EmployeeDetailForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                employee: nextProps.employee,
-                salary: nextProps.salary,
-                annualLeave: nextProps.annualLeave,
-                commendation: nextProps.commendation,
-                discipline: nextProps.discipline,
+                employees: nextProps.employees,
+                salarys: nextProps.salarys,
+                annualLeaves: nextProps.annualLeaves,
+                commendations: nextProps.commendations,
+                disciplines: nextProps.disciplines,
             }
         } else {
             return null;
@@ -28,7 +28,7 @@ class EmployeeDetailForm extends Component {
     }
     render() {
         const { employeesManager, translate } = this.props;
-        var { _id, employee, salary, annualLeave, commendation, discipline } = this.state;
+        var { _id, employees, salarys, annualLeaves, commendations, disciplines } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -39,8 +39,8 @@ class EmployeeDetailForm extends Component {
                 // disableSubmit={false}
                 >
                     <form className="form-group" id="form-view-employee" style={{ marginTop: "-15px" }}>
-                        {(typeof employee !== 'undefined' && employee.length !== 0) &&
-                            employee.map((x, index) => (
+                        {(typeof employees !== 'undefined' && employees.length !== 0) &&
+                            employees.map((x, index) => (
                                 <div className="nav-tabs-custom" key={index}>
                                     <ul className="nav nav-tabs">
                                         <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href={`#view_general${_id}`}>{translate('manage_employee.menu_general_infor')}</a></li>
@@ -88,13 +88,13 @@ class EmployeeDetailForm extends Component {
                                         />
                                         <DisciplineTab
                                             id={`view_reward${_id}`}
-                                            commendation={commendation}
-                                            discipline={discipline}
+                                            commendations={commendations}
+                                            disciplines={disciplines}
                                         />
                                         <SalaryTab
                                             id={`view_salary${_id}`}
-                                            annualLeave={annualLeave}
-                                            salary={salary}
+                                            annualLeaves={annualLeaves}
+                                            salarys={salarys}
                                         />
                                         <AttachmentTab
                                             id={`view_attachments${_id}`}

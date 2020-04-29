@@ -15,20 +15,8 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
-            // Quản lý nghỉ phép
-            start_date_annual_leave_required: 'Start date annual leave required',
-            end_date_annual_leave_required: 'End date annual leave required',
-            reason_annual_leave_required: 'Reason annual leave required',
-            status_annual_leave_required: 'Status annual leave required',
-            get_annual_leave_success: 'Get annual leave success',
-            get_annual_leave_faile: 'Get annual leave faile',
-            create_annual_leave_success: 'Create annual leave success',
-            create_annual_leave_faile: 'Create annual leave faile',
-            delete_annual_leave_success: 'Delete annual leave success',
-            delete_annual_leave_faile: 'Delete annual leave faile',
-            edit_annual_leave_success: 'Edit annual leave success',
-            edit_annual_leave_faile: 'Edit annual leave faile',
-            // Quản lý lương nhân viên
+            // Quản lý lương nhân viên 
+            // TODO: Xoá sau
             name_other_salary_required: 'Name other salary required',
             money_other_salary_required: 'Money other salary required',
             month_salary_required: 'Month salary required',
@@ -42,6 +30,19 @@ export default {
             delete_salary_faile: 'Delete salary faile',
             edit_salary_success: 'Edit salary success',
             edit_salary_faile: 'Edit salary faile',
+            // Quản lý nghỉ phép
+            start_date_annual_leave_required: 'Start date annual leave required',
+            end_date_annual_leave_required: 'End date annual leave required',
+            reason_annual_leave_required: 'Reason annual leave required',
+            status_annual_leave_required: 'Status annual leave required',
+            get_annual_leave_success: 'Get annual leave success',
+            get_annual_leave_faile: 'Get annual leave faile',
+            create_annual_leave_success: 'Create annual leave success',
+            create_annual_leave_faile: 'Create annual leave faile',
+            delete_annual_leave_success: 'Delete annual leave success',
+            delete_annual_leave_faile: 'Delete annual leave faile',
+            edit_annual_leave_success: 'Edit annual leave success',
+            edit_annual_leave_faile: 'Edit annual leave faile',
             // Quản lý khen thưởng
             type_commendations_required: 'Reward forms required',
             reason_commendations_required: 'Reason required',
@@ -87,27 +88,33 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
-            table: 'Bảng',
-            name: 'Tên',
-            description: 'Mô tả',
-            search: 'Tìm kiếm',
-            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
-            yes: 'Có',  no: 'Không',
-            loading: 'Đang tải dữ liệu',
-            no_data: 'Không có dữ liệu',
-            success: 'Thành công',
-            error: 'Lỗi',
+            table: 'Table',
+            name: 'name',
+            description: 'Description',
+            search: 'Search',
+            add: 'Add',
+            edit: 'Edit',
+            save: 'Save',
+            close: 'Close',
+            accept: 'Accept',
+            yes: 'Yes',
+            no: 'No',
+            loading: 'Loading',
+            no_data: 'No data',
+            success: 'Successfully',
+            error: 'Error',
             auth_alert: {
-                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
-                reason: 'Nguyên nhân có thể là do:',
+                title: 'Current Session invalid. Please log in again',
+                reason: 'Reasons:',
                 content: [
-                    'Phiên làm việc đã hết hạn',
-                    'Truy cập không hợp lệ',
-                    'Phân quyền của bạn không hợp lệ',
-                    'Phân quyền của bạn đã được quản lý thay đổi',
-                    'Token của bạn không hợp lệ',
-                    'Dịch vụ cho công ty không còn hoạt động',
-                ]
+                    'Session to work invalid',
+                    'Access denied',
+                    'Role invalid',
+                    'Your permission changed',
+                    'Token invalid',
+                    'Company service stoped',
+                ],
+                page_access_denied: 'Page access denied.'
             }
         },
 
@@ -121,7 +128,8 @@ export default {
                     service: 'Dịch vụ',
                     super_admin: 'Tài khoản super admin',
                 },
-                on: 'Bật', off: 'Tắt',
+                on: 'Bật',
+                off: 'Tắt',
                 add: 'Thêm doanh nghiệp/công ty',
                 edit: 'Chỉnh sửa thông tin doanh nghiệp/công ty',
                 service: 'Dịch vụ cho doanh nghiệp/công ty',
@@ -218,7 +226,7 @@ export default {
                 create_user_success: 'Tạo tài khoản người dùng thành công',
                 edit_user_success: 'Chỉnh sửa thông tin tài khoản người dùng thành công',
                 delete_user_success: 'Xóa tài khoản người dùng thành công',
-                
+
                 email_exist: 'Email đã được sử dụng cho một tài khoản khác',
                 user_not_found: 'Không tìm thấy thông tin về tài khoản',
                 department_not_found: 'Không tìm thấy thông tin về phòng ban của user',
@@ -228,7 +236,7 @@ export default {
                 create_role_success: 'Tạo role mới thành công',
                 edit_role_success: 'Chỉnh sửa role thành công',
                 delete_role_success: 'Xóa role thành công',
-                
+
                 role_name_exist: 'Tên cho phân quyền đã được sử dụng cho một phân quyền khác',
                 role_dean_exist: 'Tên cho phân quyền của trưởng đơn vị này đã được sử dụng',
                 role_vice_dean_exist: 'Tên cho phân quyền của phó đơn vị này đã được sử dụng',
@@ -239,7 +247,7 @@ export default {
                 create_link_success: 'Tạo link thành công',
                 edit_link_success: 'Chỉnh sửa link thành công',
                 delete_link_success: 'Xóa link thành công',
-    
+
                 cannot_create_this_url: 'Không thể tạo link này',
                 this_url_cannot_be_use: 'Url này không được phép sử dụng',
                 url_exist: 'Url này đã đươc sử dụng',
@@ -247,7 +255,7 @@ export default {
             component: {
                 // Thông điệp trả về từ server
                 edit_component_success: 'Chỉnh sửa component thành công',
-            
+
                 component_name_exist: 'Tên của component đã được sử dụng',
             },
         },
@@ -407,12 +415,12 @@ export default {
             kpi_unit_dashboard: 'Dashboard unit KPI',
             kpi_unit_manager: 'Manage unit KPI',
             kpi_member_manager: 'Manage Employees KPI',
-            kpi_member_dashboard:'DashBoard KPI Member',
+            kpi_member_dashboard: 'DashBoard KPI Member',
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',
             kpi_personal_overview: 'Overview personal KPI',
             kpi_personal_dashboard: 'DashBoard personal KPI',
-            kpi_personal_manager : 'Manager personal KPI',
+            kpi_personal_manager: 'Manager personal KPI',
 
             notifications: 'Notifications',
 
@@ -420,7 +428,7 @@ export default {
             task_management: 'View task list',
             task_management_dashboard: 'Task dashboard',
         },
-        
+
         manage_system: {
             turn_on: 'Turn on',
             turn_off: 'Turn off',
@@ -525,7 +533,7 @@ export default {
             edit_faile: 'Edit failed!',
         },
         // Quản lý lương nhân viên
-        salary_employee: {
+        salary_employee: { // TODO: Xoá sau
             list_salary: 'List of staff salary',
             add_salary: 'Add salary',
             add_salary_title: 'Add salary',
@@ -790,6 +798,115 @@ export default {
             check_end_Date: 'End day required',
             check_description: 'Description required'
         },
+        // Module Quản lý nhân sự
+        human_resource: {
+            // Nhóm dùng chung cho module quản lý nhân sự
+            unit: 'Unit',
+            position: 'Position',
+            month: 'Month',
+            status: 'Status',
+            staff_number: 'Staff code',
+            staff_name: 'Staff Name',
+            add_success: 'Add new success',
+            all_unit: 'Select all unit',
+            non_unit: 'Select unit',
+            all_position: 'Select all position',
+            non_position: 'Select position',
+            all_status: 'Select all status',
+            non_status: 'Select status',
+
+            // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
+            employee_number_required: 'Staff code required',
+            staff_code_not_special: 'Staff code does not contain special characters',
+            staff_code_not_find: 'Staff code does not exist',
+            number_decisions_required: 'Decis number required',
+            number_decisions_have_exist: 'Decis number have exist',
+            unit_decisions_required: 'Decis unit required',
+
+
+            // Quản lý lương nhân viên
+            salary: {
+                list_salary: 'List of staff salary',
+
+                // Nhóm dành cho table
+                table: {
+                    main_salary: 'Main salary',
+                    other_salary: 'Other salary',
+                    name_salary: 'Name salary',
+                    money_salary: 'Money',
+                    total_salary: 'Total Salary',
+                    action: 'action'
+
+                },
+                // Nhóm dành cho action
+                edit_salary: 'Edit Salary',
+                delete_salary: 'Delete salary',
+                add_salary: 'Add salary',
+                add_salary_title: 'Add salary',
+                add_by_hand: 'Add by hand',
+                add_by_hand_title: 'Add by hand',
+                add_import: 'Import file excel',
+                add_import_title: 'Import file excel',
+                add_more_salary: 'Add other salary',
+                add_new_salary: 'Add new salary',
+
+                // Thông điệp trả về từ server
+                name_other_salary_required: 'Name other salary required',
+                money_other_salary_required: 'Money other salary required',
+                month_salary_required: 'Month salary required',
+                money_salary_required: 'Money_salary required',
+                month_salary_have_exist: 'Month salary have exist',
+                get_salary_success: 'Get salary success',
+                get_salary_faile: 'Get salary faile',
+                create_salary_success: 'Create salary success',
+                create_salary_faile: 'Create salary faile',
+                delete_salary_success: 'Delete salary success',
+                delete_salary_faile: 'Delete salary faile',
+                edit_salary_success: 'Edit salary success',
+                edit_salary_faile: 'Edit salary faile',
+            },
+
+            // Quản lý nghỉ phép
+            annual_leave: {
+                list_annual_leave: 'List of staff annual leave',
+
+                // Nhóm dành cho table
+                table: {
+                    start_date: 'Start day',
+                    end_date: 'End day',
+                    reason: 'Reason',
+                    action: 'action',
+                },
+
+                // Nhóm dành cho trạng thái nghỉ phép 
+                status: {
+                    pass: 'Accepted',
+                    faile: 'Refused',
+                    process: 'Awaiting approval',
+                },
+
+                // Nhóm dành cho action
+                edit_annual_leave: 'Edit annual leave',
+                delete_annual_leave: 'Delete annual leave',
+                add_annual_leave: 'Add annual leave',
+                add_annual_leave_title: 'Add new annual leave',
+
+                // Thông điệp trả về từ server
+                start_date_annual_leave_required: 'Start date annual leave required',
+                end_date_annual_leave_required: 'End date annual leave required',
+                reason_annual_leave_required: 'Reason annual leave required',
+                status_annual_leave_required: 'Status annual leave required',
+                get_annual_leave_success: 'Get annual leave success',
+                get_annual_leave_faile: 'Get annual leave faile',
+                create_annual_leave_success: 'Create annual leave success',
+                create_annual_leave_faile: 'Create annual leave faile',
+                delete_annual_leave_success: 'Delete annual leave success',
+                delete_annual_leave_faile: 'Delete annual leave faile',
+                edit_annual_leave_success: 'Edit annual leave success',
+                edit_annual_leave_faile: 'Edit annual leave faile',
+
+            },
+        },
 
         // Task template
         task_template: {
@@ -808,11 +925,12 @@ export default {
             action: 'Action'
         },
 
+
         // Module KPI đơn vị
         organizational_unit_kpi_set: {
-            create_organizational_unit_kpi_set: {// Module chính
+            create_organizational_unit_kpi_set: { // Module chính
                 // Nhóm dành cho các thông tin chung
-                general_information: { 
+                general_information: {
                     general_information: 'Organizational unit KPI',
                     save: 'Save the edit',
                     confirm: 'Confirm',
@@ -866,7 +984,7 @@ export default {
                 not_initialize: 'No KPI have been initialized in ',
 
                 // Nhóm dành cho các handle
-                
+
                 request_approval_kpi: {
                     approve_already: 'KPI is approved!',
                     approve: 'Are you sure you want to be approved this KPI?',
@@ -919,15 +1037,15 @@ export default {
                 }
             },
 
-            kpi_member_manager:{ // Module con
-                index:'Index',
-                time:'Date',
-                employee_name:'Employee Name',
-                target_number:'Target Number',
-                kpi_status:'KPI Status',
-                result:'Result',
-                approve:'Approve',
-                evaluate:'Evaluate'
+            kpi_member_manager: { // Module con
+                index: 'Index',
+                time: 'Date',
+                employee_name: 'Employee Name',
+                target_number: 'Target Number',
+                kpi_status: 'KPI Status',
+                result: 'Result',
+                approve: 'Approve',
+                evaluate: 'Evaluate'
             },
 
             create_organizational_unit_kpi_set_modal: { // Module con
@@ -957,9 +1075,9 @@ export default {
         },
 
         employee_kpi_set: {
-            create_employee_kpi_set: {// Module chính
+            create_employee_kpi_set: { // Module chính
                 // Nhóm dành cho các thông tin chung
-                general_information: { 
+                general_information: {
                     general_information: 'Personal KPI in',
                     save: 'Save the edit',
                     edit: 'Edit',
@@ -1076,15 +1194,15 @@ export default {
                 }
             },
 
-            kpi_member_manager:{ // Module con
-                index:'Index',
-                time:'Date',
-                employee_name:'Employee Name',
-                target_number:'Target Number',
-                kpi_status:'KPI Status',
-                result:'Result',
-                approve:'Approve',
-                evaluate:'Evaluate'
+            kpi_member_manager: { // Module con
+                index: 'Index',
+                time: 'Date',
+                employee_name: 'Employee Name',
+                target_number: 'Target Number',
+                kpi_status: 'KPI Status',
+                result: 'Result',
+                approve: 'Approve',
+                evaluate: 'Evaluate'
             },
 
             create_employee_kpi_set_modal: { // Module con
@@ -1133,82 +1251,82 @@ export default {
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
                 edit_result_task_success: 'Edit result task successfully',
-                get_task_actions_success : 'Get all task actions successfully',
+                get_task_actions_success: 'Get all task actions successfully',
                 create_task_action_success: 'Create task action successfully',
                 edit_task_action_success: 'Edit task action successfully',
                 delete_task_action_success: 'Delete task action successfully',
-                get_action_comments_success : 'Get all action comments successfully',
+                get_action_comments_success: 'Get all action comments successfully',
                 create_action_comment_success: 'Create action comments successfully',
                 edit_action_comment_success: 'Edit action comments successfully',
                 delete_action_comment_success: 'Delete action comments successfully',
-                get_log_timer_success : 'Get log timer successfully',
-                get_timer_status_success : 'get timer status successfully',
-                start_timer_success : 'Start timer successfully',
-                pause_timer_success : 'Pause timer successfully',
+                get_log_timer_success: 'Get log timer successfully',
+                get_timer_status_success: 'get timer status successfully',
+                start_timer_success: 'Start timer successfully',
+                pause_timer_success: 'Pause timer successfully',
                 continue_timer_success: 'Continue timer successfully',
-                stop_timer_success : 'Stop timer successfully',
-                create_result_info_task_success : 'Create result infomation task successfully',
-                create_result_infomation_task_success : 'Create result infomation task successfully',
+                stop_timer_success: 'Stop timer successfully',
+                create_result_info_task_success: 'Create result infomation task successfully',
+                create_result_infomation_task_success: 'Create result infomation task successfully',
                 edit_result_infomation_task_success: 'Edit result infomation task successfully',
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
-                get_task_actions_success : 'Get all task actions fail',
+                get_task_actions_success: 'Get all task actions fail',
                 create_task_action_success: 'Create task action fail',
                 edit_task_action_success: 'Edit task action fail',
                 delete_task_action_success: 'Delete task action fail',
-                get_action_comments_success : 'Get all action comments fail',
+                get_action_comments_success: 'Get all action comments fail',
                 create_action_comment_success: 'Create action comments fail',
                 edit_action_comment_success: 'Edit action comments fail',
                 delete_action_comment_success: 'Delete action comments fail',
-                get_log_timer_success : 'Get log timer fail',
-                get_timer_status_success : 'get timer status fail',
-                start_timer_success : 'Start timer fail',
-                pause_timer_success : 'Pause timer fail',
+                get_log_timer_success: 'Get log timer fail',
+                get_timer_status_success: 'get timer status fail',
+                start_timer_success: 'Start timer fail',
+                pause_timer_success: 'Pause timer fail',
                 continue_timer_success: 'Continue timer fail',
-                stop_timer_success : 'Stop timer fail',
-                create_result_info_task_success : 'Create result infomation task fail',
-                create_result_infomation_task_success : 'Create result infomation task fail',
+                stop_timer_success: 'Stop timer fail',
+                create_result_info_task_success: 'Create result infomation task fail',
+                create_result_infomation_task_success: 'Create result infomation task fail',
                 edit_result_infomation_task_success: 'Edit result infomation task fail',
-                
-                
+
+
             },
             task_template: {
                 // TODO: code_mesage_task_template
             }
         },
 
-        kpi:{
-            employee:{
-                get_kpi_by_member_success:'Get KPI by member successfully',
-                get_kpi_by_member_fail:'Get KPI by member fail',
-                get_kpi_responsible_success:'Get all KPI responsible successfully',
-                get_kpi_responsible_fail:'Get all KPI responsible fail',
+        kpi: {
+            employee: {
+                get_kpi_by_member_success: 'Get KPI by member successfully',
+                get_kpi_by_member_fail: 'Get KPI by member fail',
+                get_kpi_responsible_success: 'Get all KPI responsible successfully',
+                get_kpi_responsible_fail: 'Get all KPI responsible fail',
             },
-            evaluation:{
+            evaluation: {
                 get_all_kpi_member_success: 'Get all KPI member successfully',
                 get_all_kpi_member_fail: 'Get all KPI member fail',
                 get_kpi_targets_success: 'Get KPI targets successfully',
                 get_kpi_targets_fail: 'Get KPI targets fail',
                 get_all_kpi_member_by_id_success: 'Get all KPI member by Id successfully',
                 get_all_kpi_member_by_id_fail: 'Get all KPI member by Id fail',
-                get_all_kpi_member_by_month_success:'Get all KPI member by month successfully',
-                get_all_kpi_member_by_month_fail:'Get all KPI member by month fail',               
+                get_all_kpi_member_by_month_success: 'Get all KPI member by month successfully',
+                get_all_kpi_member_by_month_fail: 'Get all KPI member by month fail',
                 approve_all_kpi_target_success: 'Approve all KPI target successfully',
                 approve_all_kpi_target_fail: 'Approve all KPI target fail',
                 edit_kpi_target_member_success: 'Edit KPI member target successfully',
                 edit_kpi_target_member_fail: 'Edit KPI member target fail',
                 edit_status_target_success: 'Edit status target successfully',
                 edit_status_target_fail: 'Edit status target fail',
-                get_task_by_id_success:'Get all tasks by Id successfully',
-                get_task_by_id_fail:'Get all tasks by Id fail',
-                get_system_point_success:'Get system point successfully',
-                get_system_point_fail:'Get system point fail',
-                set_point_kpi_success:'Get point KPI successfully',
-                set_point_kpi_fail:'Get point KPI fail',
-            
+                get_task_by_id_success: 'Get all tasks by Id successfully',
+                get_task_by_id_fail: 'Get all tasks by Id fail',
+                get_system_point_success: 'Get system point successfully',
+                get_system_point_fail: 'Get system point fail',
+                set_point_kpi_success: 'Get point KPI successfully',
+                set_point_kpi_fail: 'Get point KPI fail',
+
             },
-            organizational_unit:{
+            organizational_unit: {
                 get_kpi_unit_success: 'Get all KPI unit successfully',
                 get_kpi_unit_fail: 'Get all KPI unit fail',
                 get_kpiunit_by_role_success: 'Get KPI unit by role successfully',

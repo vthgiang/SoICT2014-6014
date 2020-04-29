@@ -37,7 +37,7 @@ function create(role) {
         url: `${ LOCAL_SERVER_API }/role`,
         method: 'POST',
         data: role,
-    }, false, 'super_admin.role');
+    }, true, 'super_admin.role');
 }
 
 function edit(role) {
@@ -45,12 +45,12 @@ function edit(role) {
         url: `${ LOCAL_SERVER_API }/role/${role.id}`,
         method: 'PATCH',
         data: role,
-    }, false, 'super_admin.role');
+    }, true, 'super_admin.role');
 }
 
 function destroy(roleId) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/role/${roleId}`,
         method: 'DELETE',
-    }, false, 'super_admin.role');
+    }, true, 'super_admin.role');
 }

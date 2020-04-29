@@ -10,8 +10,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    GeneralTab, ContactTab, TaxTab, TabInsurranceContent, TabRearDisciplineContent,
-    ExperienceTab, CertificateTab, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
+    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from '../../employee-create/components/combinedContent';
 class EmployeeCreateForm extends Component {
     constructor(props) {
@@ -29,13 +29,13 @@ class EmployeeCreateForm extends Component {
                 brithday: this.formatDate(Date.now()),
                 startTax: this.formatDate(Date.now()),
                 experience: [],
-                BHXH: [],
-                course: []
+                socialInsuranceDetails: [],
+                courses: []
             },
             degrees: [],
             certificates: [],
-            contract: [],
-            file: [],
+            contracts: [],
+            files: [],
             disciplineNew: [],
             praiseNew: [],
             salaryNew: [],
@@ -370,24 +370,24 @@ class EmployeeCreateForm extends Component {
                                     id="account"
                                     employee={this.state.employeeNew}
                                     handleChange={this.handleChange} />
-                                <TabInsurranceContent
+                                <InsurranceTab
                                     id="insurrance"
-                                    BHXH={this.state.employeeNew.BHXH}
+                                    socialInsuranceDetails={this.state.employeeNew.socialInsuranceDetails}
                                     employee={this.state.employeeNew}
                                     handleChange={this.handleChange}
                                     handleAddBHXH={this.handleChangeBHXH}
                                     handleEditBHXH={this.handleChangeBHXH}
                                     handleDeleteBHXH={this.handleChangeBHXH}
                                 />
-                                <TabContractContent
+                                <ContractTab
                                     id="contract"
-                                    contract={this.state.contract}
-                                    course={this.state.employeeNew.course}
+                                    contracts={this.state.contracts}
+                                    courses={this.state.employeeNew.courses}
                                     handleAddContract={this.handleChangeContract}
                                     handleEditContract={this.handleChangeContract}
                                     handleDeleteContract={this.handleChangeContract}
                                 />
-                                <TabRearDisciplineContent
+                                <DisciplineTab
                                     id="reward"
                                     praise={this.state.praiseNew}
                                     discipline={this.state.disciplineNew}
@@ -398,7 +398,7 @@ class EmployeeCreateForm extends Component {
                                     handleEditDiscipline={this.handleChangeDiscipline}
                                     handleDeleteDiscipline={this.handleChangeDiscipline}
                                 />
-                                <TabSalaryContent
+                                <SalaryTab
                                     id="salary"
                                     salary={this.state.salaryNew}
                                     sabbatical={this.state.sabbaticalNew}
@@ -409,7 +409,7 @@ class EmployeeCreateForm extends Component {
                                     handleEditSabbatical={this.handleChangeSabbatical}
                                     handleDeleteSabbatical={this.handleChangeSabbatical}
                                 />
-                                <TabAttachmentsContent
+                                <FileTab
                                     id="attachments"
                                     file={this.state.file}
                                     employee={this.state.employeeNew}

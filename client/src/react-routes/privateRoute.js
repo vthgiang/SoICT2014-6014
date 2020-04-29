@@ -16,18 +16,18 @@ const checkURL = (urlName, linkArr) => {
     return result;
 }
 
-export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => (
-    <Route {...rest} render={props => {
+export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
+    return <Route {...rest} render={props => {
         var logged = getStorage();
         if(logged !== null){
             if(link !== '/' && checkURL(link, auth.links) !== true){
                 if(!auth.calledAPI) //chưa thực hiện load trang để check link
                     return <Layout isLoading={isLoading}></Layout>
-                else return <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+                else return <Redirect to='/'/>
             } 
             return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{
             return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
         }
     }} />
-)
+}

@@ -5,7 +5,7 @@ import {
     ModalAddFile, ModalEditFile,
 } from './combinedContent';
 
-class TabAttachmentsContent extends Component {
+class FileTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -41,40 +41,40 @@ class TabAttachmentsContent extends Component {
             { nameFile: translate('manage_employee.temporary_residence_card'), discFile: translate('manage_employee.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " }
         ]
         await this.setState({
-            file: defaulteFile
+            files: defaulteFile
         })
-        this.props.handleAddFile(this.state.file)
+        this.props.handleAddFile(this.state.files)
     }
 
     // Function thêm thông tin tài liệu đính kèm
     handleAddFile = async (data) => {
-        const { file } = this.state;
+        const { files } = this.state;
         await this.setState({
-            file: [...file, {
+            files: [...files, {
                 ...data
             }]
         })
-        this.props.handleAddFile(this.state.file)
+        this.props.handleAddFile(this.state.files)
 
     }
     // Function chỉnh sửa thông tin tài liệu đính kèm
     handleEditFile = async (data) => {
-        const { file } = this.state;
-        file[data.index] = data;
+        const { files } = this.state;
+        files[data.index] = data;
         await this.setState({
-            file: file
+            files: files
         })
-        this.props.handleEditFile(this.state.file)
+        this.props.handleEditFile(this.state.files)
     }
     // Function xoá kinh nghiệm làm việc
     delete = async (index) => {
-        var { file } = this.state;
-        file.splice(index, 1);
+        var { files } = this.state;
+        files.splice(index, 1);
         await this.setState({
             ...this.state,
-            file: [...file]
+            files: [...files]
         })
-        this.props.handleDeleteFile(this.state.file)
+        this.props.handleDeleteFile(this.state.files)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -82,8 +82,8 @@ class TabAttachmentsContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                file: nextProps.file,
-                numberFile: nextProps.employee.numberFile,
+                files: nextProps.files,
+                archivedRecordNumber: nextProps.employee.archivedRecordNumber,
             }
         } else {
             return null;
@@ -92,14 +92,14 @@ class TabAttachmentsContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { file, numberFile } = this.state;
+        const { files, archivedRecordNumber } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className=" row box-body">
                     <div className="col-md-4">
                         <div className="form-group">
                             <label>{translate('manage_employee.attachments_code')}</label>
-                            <input type="text" className="form-control" name="numberFile" value={numberFile} onChange={this.handleChange} placeholder={translate('manage_employee.attachments_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleChange} placeholder={translate('manage_employee.attachments_code')} autoComplete="off" />
                         </div>
                     </div>
                     <div className="col-md-12">
@@ -118,11 +118,11 @@ class TabAttachmentsContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof file !== 'undefined' && file.length !== 0) &&
-                                    file.map((x, index) => (
+                                {(typeof files !== 'undefined' && files.length !== 0) &&
+                                    files.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameFile}</td>
-                                            <td>{x.discFile}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.description}</td>
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
@@ -136,7 +136,7 @@ class TabAttachmentsContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof file === 'undefined' || file.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof files === 'undefined' || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </div>
@@ -152,8 +152,8 @@ class TabAttachmentsContent extends Component {
                     <ModalEditFile
                         id={`editFile${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
-                        nameFile={this.state.currentRow.nameFile}
-                        discFile={this.state.currentRow.discFile}
+                        name={this.state.currentRow.name}
+                        description={this.state.currentRow.description}
                         number={this.state.currentRow.number}
                         status={this.state.currentRow.status}
                         file={this.state.currentRow.file}
@@ -167,5 +167,5 @@ class TabAttachmentsContent extends Component {
     }
 };
 
-const tabAttachments = connect(null, null)(withTranslate(TabAttachmentsContent));
-export { tabAttachments as TabAttachmentsContent };
+const fileTab = connect(null, null)(withTranslate(FileTab));
+export { fileTab as FileTab };
