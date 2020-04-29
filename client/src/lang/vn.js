@@ -92,7 +92,7 @@ export default {
             name: 'Tên',
             description: 'Mô tả',
             search: 'Tìm kiếm',
-            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
+            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng', accept: 'Xác nhận',
             yes: 'Có',  no: 'Không',
             loading: 'Đang tải dữ liệu',
             no_data: 'Không có dữ liệu',
@@ -108,7 +108,8 @@ export default {
                     'Phân quyền của bạn đã được quản lý thay đổi',
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
-                ]
+                ],
+                page_access_denied: 'Phân quyền hiện tại của bạn không được phép truy cập vào trang này.'
             }
         },
 
@@ -252,6 +253,9 @@ export default {
                 department_name_exist: 'Tên đơn vị này đã được sử dụng',
                 department_not_found: 'Không tìm thấy thông tin về đơn vị',
                 department_has_user: 'Không thể xóa đơn vị này. Đơn vị đã có thành viên',
+                role_dean_exist: 'Tên chức danh cho trưởng đơn vị đã tồn tại',
+                role_vice_dean_exist: 'Tên chức danh cho phó đơn vị đã tồn tại',
+                role_employee_exist: 'Tên chức danh cho nhân viên đơn vị đã tồn tại',
             },
             user: {
                 // Thông điệp trả về từ server
