@@ -27,7 +27,7 @@ class RoleCreateForm extends Component {
                     title={translate('manage_role.add_title')}
                     msg_success={translate('manage_role.add_success')}
                     msg_faile={translate('manage_role.add_faile')}
-                    func={this.save}
+                    func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-role">
                         <div className={`form-group ${roleNameError===undefined?"":"has-error"}`}>

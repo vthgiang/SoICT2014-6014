@@ -87,27 +87,28 @@ export default {
          * @module_name phần tự định nghĩa ngôn ngữ riêng của từng module khác nhau
          *******************************************************/
         general: {
-            table: 'Bảng',
-            name: 'Tên',
-            description: 'Mô tả',
-            search: 'Tìm kiếm',
-            add: 'Thêm', edit: 'Sửa', save: 'Lưu', close: 'Đóng',
-            yes: 'Có',  no: 'Không',
-            loading: 'Đang tải dữ liệu',
-            no_data: 'Không có dữ liệu',
-            success: 'Thành công',
-            error: 'Lỗi',
+            table: 'Table',
+            name: 'name',
+            description: 'Description',
+            search: 'Search',
+            add: 'Add', edit: 'Edit', save: 'Save', close: 'Close', accept: 'Accept',
+            yes: 'Yes',  no: 'No',
+            loading: 'Loading',
+            no_data: 'No data',
+            success: 'Successfully',
+            error: 'Error',
             auth_alert: {
-                title: 'Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc hiện tại của bạn. Vui lòng đăng nhập lại.',
-                reason: 'Nguyên nhân có thể là do:',
+                title: 'Current Session invalid. Please log in again',
+                reason: 'Reasons:',
                 content: [
-                    'Phiên làm việc đã hết hạn',
-                    'Truy cập không hợp lệ',
-                    'Phân quyền của bạn không hợp lệ',
-                    'Phân quyền của bạn đã được quản lý thay đổi',
-                    'Token của bạn không hợp lệ',
-                    'Dịch vụ cho công ty không còn hoạt động',
-                ]
+                    'Session to work invalid',
+                    'Access denied',
+                    'Role invalid',
+                    'Your permission changed',
+                    'Token invalid',
+                    'Company service stoped',
+                ],
+                page_access_denied: 'Page access denied.'
             }
         },
 

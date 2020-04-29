@@ -14,7 +14,6 @@ const checkErrorAuth = (code) => {
     const error_auth = [
         'access_denied',
         'role_invalid',
-        'page_access_denied',
         'user_role_invalid',
         'acc_logged_out',
         'service_off',
@@ -24,6 +23,16 @@ const checkErrorAuth = (code) => {
 
     if(error_auth.indexOf(code) !== -1) return true;
     return false;
+}
+
+const checkPageAccess = (code) => {
+    if(code === 'page_access_denied') return true;
+    return false;
+}
+
+const showAuthResponseAlertAndRedirectToHomePage = async () => {
+    console.log("DFSDFSDFSDFSDFSDFDSF");
+    await window.$(`#alert-error-auth-page-acccess-denied`).modal({backdrop: 'static', keyboard: false, display: 'show'});
 }
 
 const showAuthResponseAlertAndRedirectToLoginPage = async () => {
@@ -63,9 +72,10 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
 
         if(messages){
-            if(checkErrorAuth(messages[0])){
+            if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
-            }
+            else if(checkPageAccess(messages[0]))
+                showAuthResponseAlertAndRedirectToHomePage();
             else{
                 toast.error(
                     <ServerResponseAlert
