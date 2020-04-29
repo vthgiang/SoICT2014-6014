@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class TabSalaryViewContent extends Component {
+class SalaryTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -12,8 +12,8 @@ class TabSalaryViewContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                salary: nextProps.salary,
-                sabbatical: nextProps.sabbatical,
+                salarys: nextProps.salarys,
+                annualLeaves: nextProps.annualLeaves,
             }
         } else {
             return null;
@@ -22,7 +22,7 @@ class TabSalaryViewContent extends Component {
     render() {
         var formater = new Intl.NumberFormat();
         const { id, translate } = this.props;
-        const { sabbatical, salary } = this.state;
+        const { annualLeaves, salarys } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -37,26 +37,24 @@ class TabSalaryViewContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof salary !== 'undefined' && salary.length !== 0) &&
-                                    salary.map((x, index) => {
-                                        let mainSalary = x.mainSalary.slice(0, x.mainSalary.length - 3);
+                                {(typeof salarys !== 'undefined' && salarys.length !== 0) &&
+                                    salarys.map((x, index) => {
                                         if (x.bonus.length !== 0) {
                                             var total = 0;
                                             for (let count in x.bonus) {
                                                 total = total + parseInt(x.bonus[count].number)
                                             }
                                         }
-                                        var unit = x.mainSalary.slice(x.mainSalary.length - 3, x.mainSalary.length);
                                         return (
                                             <tr key={index}>
                                                 <td>{x.month}</td>
-                                                <td>{mainSalary} {unit}</td>
+                                                <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
                                                 <td>
                                                     {
                                                         (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
-                                                            formater.format(parseInt(mainSalary)) :
-                                                            formater.format(total + parseInt(mainSalary))
-                                                    } {unit}
+                                                            formater.format(parseInt(x.mainSalary)) :
+                                                            formater.format(total + parseInt(x.mainSalary))
+                                                    } {x.unit}
                                                 </td>
                                             </tr>
                                         )
@@ -65,7 +63,7 @@ class TabSalaryViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof salary === 'undefined' || salary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof salarys === 'undefined' || salarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -80,8 +78,8 @@ class TabSalaryViewContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof sabbatical !== 'undefined' && sabbatical.length !== 0) &&
-                                    sabbatical.map((x, index) => (
+                                {(typeof annualLeaves !== 'undefined' && annualLeaves.length !== 0) &&
+                                    annualLeaves.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
@@ -92,7 +90,7 @@ class TabSalaryViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof sabbatical === 'undefined' || sabbatical.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof annualLeaves === 'undefined' || annualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -102,5 +100,5 @@ class TabSalaryViewContent extends Component {
     }
 };
 
-const tabSalary = connect(null, null)(withTranslate(TabSalaryViewContent));
-export { tabSalary as TabSalaryViewContent };
+const salaryTab = connect(null, null)(withTranslate(SalaryTab));
+export { salaryTab as SalaryTab };

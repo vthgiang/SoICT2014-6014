@@ -52,7 +52,7 @@ class ModalViewTaskTemplate extends Component {
     render() {
         var template;
         const { tasktemplates } = this.props;
-        if (tasktemplates.template) template = tasktemplates.template;
+        if (tasktemplates.template) template = tasktemplates.template.info;
         return (
             <React.Fragment>
                 <DialogModal

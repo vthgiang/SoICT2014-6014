@@ -1,6 +1,5 @@
 import { UserServices } from "./services";
 import { UserConstants } from "./constants";
-import { AlertActions } from "../../../alert/redux/actions";
 
 export const UserActions = {
     get,
@@ -26,7 +25,7 @@ function get(){
         })
         .catch(err => {
             dispatch({ type: UserConstants.GET_USERS_FAILE});
-            AlertActions.handleAlert(dispatch, err);
+            
         })
     }
 }
@@ -43,7 +42,7 @@ function getPaginate(data){
             })
             .catch(err => {
                 dispatch({ type: UserConstants.GET_USERS_PAGINATE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -51,43 +50,32 @@ function getPaginate(data){
 function edit(id, data){
     return dispatch => {
         dispatch({ type: UserConstants.EDIT_USER_REQUEST});
-        return new Promise((resolve, reject) => {
-            UserServices.edit(id, data)
+        UserServices.edit(id, data)
             .then(res => {
                 dispatch({
                     type: UserConstants.EDIT_USER_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: UserConstants.EDIT_USER_FAILE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        })
     }
 }
 
 function create(data){
     return dispatch => {
         dispatch({ type: UserConstants.CREATE_USER_REQUEST});
-        return new Promise((resolve, reject) => {
-            UserServices.create(data)
-                .then(res => {
-                    dispatch({
-                        type: UserConstants.CREATE_USER_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        UserServices.create(data)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.CREATE_USER_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({ type: UserConstants.CREATE_USER_FAILE});
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
-        
+            })
+            .catch(err => {
+                dispatch({ type: UserConstants.CREATE_USER_FAILE});
+            })
     }
 }
 
@@ -103,7 +91,6 @@ function destroy(id){
             })
             .catch(err => {
                 dispatch({ type: UserConstants.DELETE_USER_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -127,7 +114,7 @@ export const getRoles = () => {
             })
             .catch(err => {
                 dispatch({ type: UserConstants.GET_USER_ROLES_FAILE});
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -144,7 +131,7 @@ export const getLinkOfRole = () => {
             })
             .catch(err => {
                 dispatch({ type: UserConstants.GET_LINK_OF_ROLE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }

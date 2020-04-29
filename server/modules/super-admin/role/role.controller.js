@@ -8,7 +8,7 @@ exports.getAllRoles = async (req, res) => {
         LogInfo(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['get_roles_success'],
+            messages: ['get_roles_success'],
             content: roles
         });
     } catch (error) {
@@ -16,7 +16,7 @@ exports.getAllRoles = async (req, res) => {
         LogError(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -31,7 +31,7 @@ exports.getPaginatedRoles = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_ROLES', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['paginate_roles_success'],
+            messages: ['paginate_roles_success'],
             content: roles
         });
     } catch (error) {
@@ -39,7 +39,7 @@ exports.getPaginatedRoles = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_ROLES', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -53,7 +53,7 @@ exports.createRole = async (req, res) => {
         LogInfo(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['create_role_success'],
+            messages: ['create_role_success'],
             content: data
         });
     } catch (error) {
@@ -61,7 +61,7 @@ exports.createRole = async (req, res) => {
         LogError(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -73,7 +73,7 @@ exports.getRoleById = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['show_role_success'],
+            messages: ['show_role_success'],
             content: role
         });
     } catch (error) {
@@ -81,7 +81,7 @@ exports.getRoleById = async (req, res) => {
         LogError(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -95,7 +95,7 @@ exports.editRole = async (req, res) => {
         LogInfo(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['edit_role_success'],
+            messages: ['edit_role_success'],
             content: data
         });
     } catch (error) {
@@ -103,7 +103,7 @@ exports.editRole = async (req, res) => {
         LogError(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -115,7 +115,7 @@ exports.deleteRole = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_ROLE', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['delete_role_success'],
+            messages: ['delete_role_success'],
             content: role
         });
     } catch (error) {
@@ -123,7 +123,7 @@ exports.deleteRole = async (req, res) => {
         LogError(req.user.email, 'DELETE_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -135,7 +135,7 @@ exports.getAllRolesInSameOrganizationalUnitWithRole = async (req, res) => {
         LogInfo(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            message: ['get_roles_same_department'],
+            messages: ['get_roles_same_department'],
             content: roles
         });
     } catch (error) {
@@ -143,7 +143,7 @@ exports.getAllRolesInSameOrganizationalUnitWithRole = async (req, res) => {
         LogError(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

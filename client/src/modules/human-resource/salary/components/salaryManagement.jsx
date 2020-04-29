@@ -148,67 +148,67 @@ class SalaryManagement extends Component {
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">{translate('salary_employee.list_salary')}:</h4>
+                            <h4 className="box-title">{translate('human_resource.salary.list_salary')}:</h4>
                         </div>
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('salary_employee.add_salary_title')} >{translate('salary_employee.add_salary')}</button>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
                             <ul className="dropdown-menu pull-right" style={{ background: "#999", marginTop: -15 }}>
-                                <li><a style={{ color: "#fff" }} title={translate('salary_employee.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('salary_employee.add_import')}</a></li>
-                                <li><a style={{ color: "#fff" }} title={translate('salary_employee.add_by_hand_title')} onClick={this.createSalary} data-toggle="modal" data-target="#modal-addNewSalary">{translate('salary_employee.add_by_hand')}</a></li>
+                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_import_title')} data-toggle="modal" data-target="#modal-importFileSalary">{translate('human_resource.salary.add_import')}</a></li>
+                                <li><a style={{ color: "#fff" }} title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary} data-toggle="modal" data-target="#modal-addNewSalary">{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}</label>
+                            <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}</label>
+                            <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
+                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.staff_number')}</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('human_resource.month')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
                                 value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
                     <table id="salary-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>{translate('table.employee_number')}</th>
-                                <th>{translate('table.employee_name')}</th>
-                                <th>{translate('table.month')}</th>
-                                <th>{translate('table.total_salary')}</th>
-                                <th>{translate('table.unit')}</th>
-                                <th>{translate('table.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
+                                <th>{translate('human_resource.staff_number')}</th>
+                                <th>{translate('human_resource.staff_name')}</th>
+                                <th>{translate('human_resource.month')}</th>
+                                <th>{translate('human_resource.salary.table.total_salary')}</th>
+                                <th>{translate('human_resource.unit')}</th>
+                                <th>{translate('human_resource.position')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.salary.table.action')}
                                     <DataTableSetting
                                         tableId="salary-table"
                                         columnArr={[
-                                            translate('table.employee_number'),
-                                            translate('table.employee_name'),
-                                            translate('table.month'),
-                                            translate('table.total_salary'),
-                                            translate('table.unit'),
-                                            translate('table.position'),
+                                            translate('human_resource.staff_number'),
+                                            translate('human_resource.staff_name'),
+                                            translate('human_resource.month'),
+                                            translate('human_resource.salary.table.total_salary'),
+                                            translate('human_resource.unit'),
+                                            translate('human_resource.position'),
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -238,7 +238,7 @@ class SalaryManagement extends Component {
                                                         formater.format(total + parseInt(x.mainSalary))
                                                 } {x.unit}
                                             </td>
-                                            <td>{x.organizationalUnit.length !== 0 ? x.organizationalUnit.map(unit => (
+                                            <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                                 <React.Fragment key={unit._id}>
                                                     {unit.name}<br />
                                                 </React.Fragment>
@@ -249,12 +249,12 @@ class SalaryManagement extends Component {
                                                 </React.Fragment>
                                             )) : null}</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('salary_employee.edit_salary')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification
-                                                    content={translate('salary_employee.delete_salary')}
+                                                    content={translate('human_resource.salary.delete_salary')}
                                                     data={{
                                                         id: x._id,
-                                                        info: x.employee.employeeNumber + "- tháng: " + x.month
+                                                        info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + x.month
                                                     }}
                                                     func={this.props.deleteSalary}
                                                 />

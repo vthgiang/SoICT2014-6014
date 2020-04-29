@@ -8,8 +8,8 @@ class ModalAddDiscipline extends Component {
         super(props);
         this.state = {
             employeeNumber: "",
-            number: "",
-            unit: "",
+            decisionNumber: "",
+            organizationalUnit: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             type: "",
@@ -37,16 +37,16 @@ class ModalAddDiscipline extends Component {
      */
     handleNumberChange = (e) => {
         let value = e.target.value;
-        this.validateNumber(value, true);
+        this.validateDecisionNumber(value, true);
     }
-    validateNumber = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateNumber(value, this.props.translate)
+    validateDecisionNumber = (value, willUpdateState = true) => {
+        let msg = DisciplineFromValidator.validateDecisionNumber(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     errorOnNumber: msg,
-                    number: value,
+                    decisionNumber: value,
                 }
             });
         }
@@ -58,16 +58,16 @@ class ModalAddDiscipline extends Component {
      */
     handleUnitChange = (e) => {
         let value = e.target.value;
-        this.validateUnit(value, true);
+        this.validateOrganizationalUnit(value, true);
     }
-    validateUnit = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateUnit(value, this.props.translate)
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let msg = DisciplineFromValidator.validateOrganizationalUnit(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     errorOnUnit: msg,
-                    unit: value,
+                    organizationalUnit: value,
                 }
             });
         }
@@ -160,7 +160,7 @@ class ModalAddDiscipline extends Component {
     isFormValidated = () => {
         let result =
             this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
-            this.validateNumber(this.state.number, false) && this.validateUnit(this.state.unit, false) &&
+            this.validateDecisionNumber(this.state.decisionNumber, false) && this.validateOrganizationalUnit(this.state.organizationalUnit, false) &&
             this.validateType(this.state.reason, false) && this.validateReason(this.state.reason, false);
         return result;
     }
@@ -174,7 +174,7 @@ class ModalAddDiscipline extends Component {
     }
     render() {
         const { translate, id } = this.props;
-        const { startDate, reason, number, unit, type, errorOnEndDate, errorOnStartDate,
+        const { startDate, reason, decisionNumber, organizationalUnit, type, errorOnEndDate, errorOnStartDate,
             errorOnNumber, errorOnUnit, errorOnType, errorOnReason } = this.state;
         return (
             <React.Fragment>
@@ -190,12 +190,12 @@ class ModalAddDiscipline extends Component {
                         <div className="row">
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnNumber === undefined ? "" : "has-error"}`}>
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" placeholder={translate('page.number_decisions')} />
+                                <input type="text" className="form-control" name="number" value={decisionNumber} onChange={this.handleNumberChange} autoComplete="off" placeholder={translate('page.number_decisions')} />
                                 <ErrorLabel content={errorOnNumber} />
                             </div>
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
+                                <input type="text" className="form-control" name="unit" value={organizationalUnit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
                                 <ErrorLabel content={errorOnUnit} />
                             </div>
                         </div>

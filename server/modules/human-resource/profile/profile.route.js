@@ -3,15 +3,22 @@ const router = express.Router();
 const { auth } = require('../../../middleware');
 const EmployeeController = require("./profile.controller");
 
-// Lấy thông tin cá nhân
+/**
+ * Lấy thông tin cá nhân
+ */ 
 router.get('/:email', auth, EmployeeController.getEmployeeProfile);
 
-// Cập nhật thông tin cá nhân
-router.put('/:email', auth, EmployeeController.updateInforPersonal);
+/**
+ * Cập nhật thông tin cá nhân
+ */
+router.put('/:email', auth, EmployeeController.updatePersonalInfor);
+
+/**
+ * Lấy danh sách nhân viên
+ */ 
+router.post('/paginate', auth, EmployeeController.searchEmployeeProfiles);
 
 
-// Lấy danh sách nhân viên
-router.post('/paginate', auth, EmployeeController.get);
 
 // Kiểm tra sự tồn tại của MSNV
 router.get('/checkMSNV/:employeeNumber', auth, EmployeeController.checkMSNV);

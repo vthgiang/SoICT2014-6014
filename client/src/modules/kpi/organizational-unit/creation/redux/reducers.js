@@ -12,12 +12,12 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             loading: false,
-            currentKPI: action.currentKPI.content,
+            currentKPI: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.GETPARENT_KPIUNIT_REQUEST:
@@ -30,12 +30,12 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             loading: false,
-            parent: action.parentKPI.content,
+            parent: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.GETPARENT_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.ADD_KPIUNIT_REQUEST:
@@ -48,12 +48,12 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             adding: false,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.ADD_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.EDIT_KPIUNIT_REQUEST:
@@ -66,12 +66,12 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             editing: false,
-            currentKPI: action.newKPI.organizationalUnitKpiSet,
+            currentKPI: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.EDIT_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.EDITSTATUS_KPIUNIT_REQUEST:
@@ -84,12 +84,12 @@ export function createKpiUnit (state = {}, action){
           return {
             ...state,
             editing: false,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.EDITSTATUS_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         
@@ -108,7 +108,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.DELETE_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_REQUEST:
@@ -120,12 +120,12 @@ export function createKpiUnit (state = {}, action){
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_SUCCESS:
           return {
             ...state,
-            currentKPI: action.newKPI.organizationalUnitKpiSet,
+            currentKPI: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.EDITTARGET_KPIUNIT_REQUEST:
@@ -134,7 +134,7 @@ export function createKpiUnit (state = {}, action){
             currentKPI: {
               ...state.currentKPI,
               kpis: state.currentKPI.kpis.map(target =>
-                target._id === action.id
+                target._id === action.payload
                   ? { ...target, editing: true }
                   : target)
             },
@@ -146,14 +146,14 @@ export function createKpiUnit (state = {}, action){
             currentKPI: {
               ...state.currentKPI,
               kpis: state.currentKPI.kpis.map(target =>
-                target._id === action.newTarget.target._id
-                  ? action.newTarget.target : target)
+                target._id === action.payload._id
+                  ? action.payload : target)
             },
             isLoading: false
           };
         case createUnitKpiConstants.EDITTARGET_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_REQUEST:
@@ -162,7 +162,7 @@ export function createKpiUnit (state = {}, action){
             currentKPI: {
               ...state.currentKPI,
               kpis: state.currentKPI.kpis.map(target =>
-                target._id === action.id
+                target._id === action.payload
                   ? { ...target, deleting: true }
                   : target)
             },
@@ -171,12 +171,12 @@ export function createKpiUnit (state = {}, action){
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_SUCCESS:
           return {
             ...state,
-            currentKPI: action.newKPI.organizationalUnitKpiSet,
+            currentKPI: action.payload,
             isLoading: false
           };
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         default:

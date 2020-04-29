@@ -8,32 +8,41 @@ export const kpiMemberActions = {
 // Lấy tất cả KPI cá nhân
 function getAllKPIMemberOfUnit(infosearch) {
     return dispatch => {
-        dispatch(request(infosearch));
+        dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST});
         kpiMemberServices.getAllKPIMemberOfUnit(infosearch)
-            .then(
-                kpimembers => dispatch(success(kpimembers)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error=>{
+                dispatch({
+                    type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE,
+                    payload: error
+                })
+            })
     };
-
-    function request(infosearch) { return { type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST, infosearch } }
-    function success(kpimembers) { return { type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_SUCCESS, kpimembers } }
-    function failure(error) { return { type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE, error } }
 }
 // Lấy tất cả KPI cá nhân
 function getAllKPIMemberByMember() { //member
     return dispatch => {
-        dispatch(request());
+        dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
         kpiMemberServices.getAllKPIMemberByMember()
-            .then(
-                kpimembers => dispatch(success(kpimembers)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type: kpiMemberConstants.GETALL_KPIMEMBER_FAILURE,
+                    payload: error;
+                })
+            })
     };
 
-    function request() { return { type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST } }
-    function success(kpimembers) { return { type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS, kpimembers } }
-    function failure(error) { return { type: kpiMemberConstants.GETALL_KPIMEMBER_FAILURE, error } }
 }
 
 

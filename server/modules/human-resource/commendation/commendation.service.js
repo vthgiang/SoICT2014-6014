@@ -1,15 +1,20 @@
-const Praise = require('../../../models/human-resource/commendation.model');
-const Employee = require('../../../models/human-resource/employee.model');
 const EmployeeService = require('../profile/profile.service');
+const { Employee, Commendation } = require('../../../models').schema;
 
-// Lấy danh sách khen thưởng của nhân viên
+/**
+ * Lấy danh sách khen thưởng của nhân viên
+ * @data: dữ liệu key tìm kiếm
+ * @company: Id công ty người tìm kiếm
+ */ 
 exports.searchCommendations = async (data, company) => {
     var keySearchEmployee, keySearch = { company: company};
+
     // Bắt sựu kiện đơn vị tìm kiếm khác null 
-    if (data.unit !== null) {
-        let emailCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.unit, data.position);
-        keySearchEmployee = {...keySearchEmployee, emailCompany: {$in: emailCompany}}
+    if (data.organizationalUnit !== null) {
+        let emailInCompany =await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(data.organizationalUnit, data.position);
+        keySearchEmployee = {...keySearchEmployee, emailInCompany: {$in: emailInCompany}}
     }
+
     // Bắt sựu kiện MSNV tìm kiếm khác ""
     if (data.employeeNumber !== "") {
         keySearchEmployee = {...keySearchEmployee, employeeNumber: {$regex: data.employeeNumber, $options: "i"}}
@@ -19,74 +24,96 @@ exports.searchCommendations = async (data, company) => {
         var employee = employeeinfo.map(employeeinfo => employeeinfo._id); 
             keySearch = {...keySearch, employee: { $in: employee}}
     }
+
     // Bắt sựu kiện số quyết định tìm kiếm khác ""
-    if (data.number !== "") {
-        keySearch = {...keySearch, number: {$regex: data.number, $options: "i"}}
+    if (data.decisionNumber !== "") {
+        keySearch = {...keySearch, decisionNumber: {$regex: data.decisionNumber, $options: "i"}}
     };
+
     // Lấy danh sách khen thưởng
-    var totalList = await Praise.count(keySearch);
-    var listPraise = await Praise.find(keySearch).populate({path: 'employee', model: Employee})
+    var totalList = await Commendation.count(keySearch);
+    var listCommendations = await Commendation.find(keySearch).populate({path: 'employee', model: Employee})
         .sort({'createDate': 'desc'}).skip(data.page).limit(data.limit);
-    for (let n in listPraise) {
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listPraise[n].employee.emailCompany);
-        listPraise[n] = {...listPraise[n]._doc, ...value}
+    for (let n in listCommendations) {
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(listCommendations[n].employee.emailInCompany);
+        listCommendations[n] = {...listCommendations[n]._doc, ...value}
     }
-    return {totalList, listPraise}
+    
+    return {totalList, listCommendations}
 }
 
-// Thêm mới khen thưởng
+/**
+ * Thêm mới khen thưởng
+ * @data: dữ liệu khen thưởng cần thêm
+ * @company: Id công ty người thêm
+ */ 
 exports.createCommendation = async (data, company) => {
+
     // Lấy thông tin nhân viên
-    let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailCompany: 1});
+    let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailInCompany: 1});
     if(employeeInfo!==null){
-        var isPraise = await Praise.findOne({employee: employeeInfo._id, company: company, number: data.number}, {field1: 1});
-        if (isPraise !== null) {
+        var isCommendation = await Commendation.findOne({employee: employeeInfo._id, company: company, decisionNumber: data.decisionNumber}, {field1: 1});
+        if (isCommendation !== null) {
             return "have_exist"
         } else {
+
             // Thêm khen thưởng vào database
-            var createPraise = await Praise.create({
+            var createCommendation = await Commendation.create({
                 employee: employeeInfo._id,
                 company: company,
-                number: data.number,
-                unit: data.unit,
+                decisionNumber: data.decisionNumber,
+                organizationalUnit: data.organizationalUnit,
                 startDate: data.startDate,
                 type: data.type,
                 reason: data.reason,
             });
+
             // Lấy thông tin phòng ban, chức vụ của nhân viên
-            let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailCompany);
-            //Lấy thông tin khen thưởng vừa tạo
-            let newPraise = await Praise.findOne({_id: createPraise._id}).populate([{path: 'employee', model: Employee}])
-            return {...newPraise._doc, ...value}
+            let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
+           
+            // Lấy thông tin khen thưởng vừa tạo
+            let newCommendation = await Commendation.findOne({_id: createCommendation._id}).populate([{path: 'employee', model: Employee}])
+            
+            return {...newCommendation._doc, ...value}
         }
     } else return null
 }
 
-// Xoá thông tin khen thưởng
+/**
+ * Xoá thông tin khen thưởng
+ * @id: Id khen thưởng cần xoá
+ */ 
 exports.deleteCommendation = async (id) => {
-    return await Praise.findOneAndDelete({_id: id});
+    return await Commendation.findOneAndDelete({_id: id});
 }
 
-// Chỉnh sửa thông tin khen thưởng
+/**
+ * Chỉnh sửa thông tin khen thưởng
+ * @id: Id khen thương cần chỉnh sửa
+ * @data: dữ liệu chỉnh sửa khen thưởng
+ * @company: Id công ty người thực hiện thay đổi
+ */ 
 exports.updateCommendation = async (id, data, company) => {
     // Lấy thông tin nhân viên
-    let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailCompany: 1});
+    let employeeInfo = await Employee.findOne({ employeeNumber: data.employeeNumber, company: company}, { _id: 1, emailInCompany: 1});
     if(employeeInfo!==null){
-        var praiseChange = {
+        var commendationChange = {
             employee: employeeInfo._id,
-            number: data.number,
-            unit: data.unit,
+            decisionNumber: data.decisionNumber,
+            organizationalUnit: data.organizationalUnit,
             startDate: data.startDate,
             type: data.type,
             reason: data.reason,
-            updateDate: Date.now()
         };
+        
         // Cập nhật thông tin khen thưởng vào database
-        await Praise.findOneAndUpdate({_id: id}, {$set: praiseChange});
+        await Commendation.findOneAndUpdate({_id: id}, {$set: commendationChange});
+       
         // Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
-        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailCompany);
+        let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
+        
         // Lấy thông tin khen thưởng vừa cập nhật
-        var updatePraise = await Praise.findOne({_id: id}).populate([{path: 'employee', model: Employee}])
-        return {...updatePraise._doc, ...value};
+        var updateCommendation = await Commendation.findOne({_id: id}).populate([{path: 'employee', model: Employee}])
+        return {...updateCommendation._doc, ...value};
     } else return null 
 }

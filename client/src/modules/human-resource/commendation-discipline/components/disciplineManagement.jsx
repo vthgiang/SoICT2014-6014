@@ -10,9 +10,9 @@ class DisciplineManager extends Component {
         super(props);
         this.state = {
             position: null,
-            number: "",
+            decisionNumber: "",
             employeeNumber: "",
-            unit: null,
+            organizationalUnit: null,
             page: 0,
             limit: 5,
         }
@@ -39,7 +39,7 @@ class DisciplineManager extends Component {
         };
         this.setState({
             ...this.state,
-            unit: value
+            organizationalUnit: value
         })
     }
 
@@ -86,10 +86,10 @@ class DisciplineManager extends Component {
     render() {
         const { list } = this.props.department;
         const { translate, discipline } = this.props;
-        var listDiscipline = "", listPosition = [];
-        if (this.state.unit !== null) {
-            let unit = this.state.unit;
-            unit.forEach(u => {
+        var listDisciplines = "", listPosition = [];
+        if (this.state.organizationalUnit !== null) {
+            let organizationalUnit = this.state.organizationalUnit;
+            organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
                         let position = [
@@ -103,7 +103,7 @@ class DisciplineManager extends Component {
             })
         }
         if (this.props.discipline.isLoading === false) {
-            listDiscipline = this.props.discipline.listDiscipline;
+            listDisciplines = this.props.discipline.listDisciplines;
         }
         var pageTotal = (this.props.discipline.totalListDiscipline % this.state.limit === 0) ?
             parseInt(this.props.discipline.totalListDiscipline / this.state.limit) :
@@ -135,8 +135,8 @@ class DisciplineManager extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="number" className="form-control-static">{translate('page.number_decisions')}</label>
-                            <input type="text" className="form-control" name="number" onChange={this.handleChange} placeholder={translate('page.number_decisions')} autoComplete="off" />
+                            <label className="form-control-static">{translate('page.number_decisions')}</label>
+                            <input type="text" className="form-control" name="decisionNumber" onChange={this.handleChange} placeholder={translate('page.number_decisions')} autoComplete="off" />
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>
@@ -170,15 +170,15 @@ class DisciplineManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listDiscipline !== 'undefined' && listDiscipline.length !== 0) &&
-                                listDiscipline.map((x, index) => (
+                            {(typeof listDisciplines !== 'undefined' && listDisciplines.length !== 0) &&
+                                listDisciplines.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
                                         <td>{x.employee.fullName}</td>
                                         <td>{x.startDate}</td>
                                         <td>{x.endDate}</td>
-                                        <td>{x.number}</td>
-                                        <td>{x.departments.length !== 0 ? x.departments.map(unit => (
+                                        <td>{x.decisionNumber}</td>
+                                        <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
                                             </React.Fragment>
@@ -194,7 +194,7 @@ class DisciplineManager extends Component {
                                                 content={translate('discipline.delete_discipline')}
                                                 data={{
                                                     id: x._id,
-                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.number
+                                                    info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.decisionNumber
                                                 }}
                                                 func={this.props.deleteDiscipline}
                                             />
@@ -206,7 +206,7 @@ class DisciplineManager extends Component {
                     </table>
                     {discipline.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listDiscipline === 'undefined' || listDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listDisciplines === 'undefined' || listDisciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                     {
@@ -214,8 +214,8 @@ class DisciplineManager extends Component {
                         <DisciplineEditForm
                             _id={this.state.currentRow._id}
                             employeeNumber={this.state.currentRow.employee.employeeNumber}
-                            number={this.state.currentRow.number}
-                            unit={this.state.currentRow.unit}
+                            decisionNumber={this.state.currentRow.decisionNumber}
+                            organizationalUnit={this.state.currentRow.organizationalUnit}
                             startDate={this.state.currentRow.startDate}
                             endDate={this.state.currentRow.endDate}
                             type={this.state.currentRow.type}

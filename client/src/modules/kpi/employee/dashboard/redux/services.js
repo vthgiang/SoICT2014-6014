@@ -7,7 +7,7 @@ import {
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import {handleResponse} from '../../../../../helpers/handleResponse';
-export const dashboardKPIPerService = {
+export const dashboardEmployeeKpiSetService = {
     getEmployeeKpiSetByMember,
     getEmployeeKpiSetOfTask,
     getEmployeeKpiSetByUserID

@@ -12,7 +12,7 @@ export function KPIPersonalManager(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpipersonals: action.kpipersonals.content,
+        kpipersonals: action.payload,
         isLoading: false
       };
     case managerKPIConstants.GETALL_KPIPERSONAL_FAILURE:
@@ -30,7 +30,7 @@ export function KPIPersonalManager(state = {}, action) {
       return {
         ...state,
         loading: false,
-        kpipersonals: action.kpipersonals.content,
+        kpipersonals: action.payload,
         isLoading: false
       };
     case managerKPIConstants.GETALL_KPIPERSONAL_OFTASK_FAILURE:

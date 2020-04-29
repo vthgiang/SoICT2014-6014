@@ -10,8 +10,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
+    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from '../../employee-create/components/combinedContent';
 
 class EmployeeEditFrom extends Component {
@@ -327,20 +327,19 @@ class EmployeeEditFrom extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: nextProps.employee[0].avatar,
+                img: nextProps.employees[0].avatar,
                 avatar: "",
-                employee: nextProps.employee[0],
-                employeeContact: nextProps.employeeContact[0] !== undefined ? nextProps.employeeContact[0] : "",
-                praise: nextProps.praise,
-                salary: nextProps.salary,
-                sabbatical: nextProps.sabbatical,
-                discipline: nextProps.discipline,
-                file: nextProps.employee[0].file,
-                certificate: nextProps.employee[0].certificate,
-                certificateShort: nextProps.employee[0].certificateShort,
-                contract: nextProps.employee[0].contract,
-                BHXH: nextProps.employee[0].BHXH,
-                course: nextProps.employee[0].course,
+                employee: nextProps.employees[0],
+                commendations: nextProps.commendations,
+                salarys: nextProps.salarys,
+                annualLeaves: nextProps.annualLeaves,
+                disciplines: nextProps.disciplines,
+                files: nextProps.employees[0].files,
+                degrees: nextProps.employees[0].degrees,
+                certificates: nextProps.employees[0].certificates,
+                contracts: nextProps.employees[0].contracts,
+                socialInsuranceDetails: nextProps.employees[0].socialInsuranceDetails,
+                courses: nextProps.employees[0].courses,
 
                 // disciplineDelete: [],
                 // praiseDelete: [],
@@ -363,7 +362,7 @@ class EmployeeEditFrom extends Component {
                 <DialogModal
                     size='100' modalID="modal-edit-employee" isLoading={false}
                     formID="form-edit-employee"
-                    title="Chỉnh sửa thông tin nhân viên"
+                    title={translate('manage_employee.edit_diploma')}
                     func={this.save}
                     disableSubmit={false}
                 >
@@ -382,29 +381,29 @@ class EmployeeEditFrom extends Component {
                             <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('manage_employee.menu_attachments')}</a></li>
                         </ul>
                         < div className="tab-content">
-                            <TabGeneralContent
+                            <GeneralTab
                                 id={`edit_general${_id}`}
                                 img={this.state.img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
                                 employee={this.state.employee}
                             />
-                            <TabContactContent
+                            <ContactTab
                                 id={`edit_contact${_id}`}
                                 handleChange={this.handleChange}
-                                employeeContact={this.state.employeeContact}
+                                employee={this.state.employee}
                             />
-                            <TabExperienceContent
+                            <ExperienceTab
                                 id={`edit_experience${_id}`}
                                 employee={this.state.employee}
                                 handleAddExperience={this.handleChangeExperience}
                                 handleEditExperience={this.handleChangeExperience}
                                 handleDeleteExperience={this.handleChangeExperience}
                             />
-                            <TabCertificateContent
+                            <CertificateTab
                                 id={`edit_diploma${_id}`}
-                                certificate={this.state.certificate}
-                                certificateShort={this.state.certificateShort}
+                                degrees={this.state.degrees}
+                                certificates={this.state.certificates}
                                 handleAddCertificate={this.handleChangeCertificate}
                                 handleEditCertificate={this.handleChangeCertificate}
                                 handleDeleteCertificate={this.handleChangeCertificate}
@@ -412,31 +411,31 @@ class EmployeeEditFrom extends Component {
                                 handleEditCertificateShort={this.handleChangeCertificateShort}
                                 handleDeleteCertificateShort={this.handleChangeCertificateShort}
                             />
-                            <TabTaxContent
+                            <TaxTab
                                 id={`edit_account${_id}`}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange} />
-                            <TabInsurranceContent
+                            <InsurranceTab
                                 id={`edit_insurrance${_id}`}
-                                BHXH={this.state.BHXH}
+                                socialInsuranceDetails={this.state.socialInsuranceDetails}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange}
                                 handleAddBHXH={this.handleChangeBHXH}
                                 handleEditBHXH={this.handleChangeBHXH}
                                 handleDeleteBHXH={this.handleChangeBHXH}
                             />
-                            <TabContractContent
+                            <ContractTab
                                 id={`edit_contract${_id}`}
-                                contract={this.state.contract}
-                                course={this.state.course}
+                                contracts={this.state.contracts}
+                                courses={this.state.courses}
                                 handleAddContract={this.handleChangeContract}
                                 handleEditContract={this.handleChangeContract}
                                 handleDeleteContract={this.handleChangeContract}
                             />
-                            <TabRearDisciplineContent
+                            <DisciplineTab
                                 id={`edit_reward${_id}`}
-                                praise={this.state.praise}
-                                discipline={this.state.discipline}
+                                commendations={this.state.commendations}
+                                disciplines={this.state.disciplines}
                                 handleAddPraise={this.handleChangePraise}
                                 handleEditPraise={this.handleChangePraise}
                                 handleDeletePraise={this.handleChangePraise}
@@ -444,10 +443,10 @@ class EmployeeEditFrom extends Component {
                                 handleEditDiscipline={this.handleChangeDiscipline}
                                 handleDeleteDiscipline={this.handleChangeDiscipline}
                             />
-                            <TabSalaryContent
+                            <SalaryTab
                                 id={`edit_salary${_id}`}
-                                salary={this.state.salary}
-                                sabbatical={this.state.sabbatical}
+                                salarys={this.state.salarys}
+                                annualLeaves={this.state.annualLeaves}
                                 handleAddSalary={this.handleChangeSalary}
                                 handleEditSalary={this.handleChangeSalary}
                                 handleDeleteSalary={this.handleChangeSalary}
@@ -455,9 +454,9 @@ class EmployeeEditFrom extends Component {
                                 handleEditSabbatical={this.handleChangeSabbatical}
                                 handleDeleteSabbatical={this.handleChangeSabbatical}
                             />
-                            <TabAttachmentsContent
+                            <FileTab
                                 id={`edit_attachments${_id}`}
-                                file={this.state.file}
+                                files={this.state.files}
                                 employee={this.state.employee}
                                 handleChange={this.handleChange}
                                 handleAddFile={this.handleChangeFile}

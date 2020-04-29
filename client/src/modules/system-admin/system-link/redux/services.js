@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const LinkDefaultServices = {
     get,
@@ -13,74 +12,53 @@ export const LinkDefaultServices = {
 };
 
 function get() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'GET'
+    }, false, 'system_admin.system_link')
 }
 
 function getCategories() {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'GET'
+    }, false, 'system_admin.system_link');
 }
 
 function getPaginate(data) {  
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/paginate`,
         method: 'POST',
-        data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data
+    }, false, 'system_admin.system_link');
 }
 
 function show(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'GET'
+    }, false, 'system_admin.system_link');
 }
 
 function create(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management`,
         method: 'POST',
-        data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data
+    }, true, 'system_admin.system_link');
 }
 
 function edit(id, data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
         method: 'PATCH',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        data
+    }, true, 'system_admin.system_link');
 }
 
 function destroy(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
-        method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+        method: 'DELETE'
+    }, true, 'system_admin.system_link');
 }

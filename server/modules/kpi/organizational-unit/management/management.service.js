@@ -6,6 +6,8 @@ const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
 // get all kpi unit của một đơn vị
 exports.get = async (id) => {
     //req.params.id
+    console.log(id);
+    
     var department = await Department.findOne({
         $or: [
             { 'dean': id },
@@ -13,9 +15,10 @@ exports.get = async (id) => {
             { 'employee': id }
         ]
     });
-    var kpiunits = await KPIUnit.find({ unit: department._id }).sort({ 'time': 'desc' }).skip(0).limit(12)
-        .populate("unit creater")
-        .populate({ path: "listtarget", populate: { path: 'parent' } });
+    console.log(department);
+    var kpiunits = await KPIUnit.find({organizationalUnit : department._id }).sort({ 'time': 'desc' }).skip(0).limit(12)
+        .populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunits;   
 }
 
@@ -29,9 +32,9 @@ exports.getByRole = async (id) => {
             { employee: id }
         ]
     });
-    var kpiunit = await KPIUnit.findOne({ unit: department._id, status: { $ne: 2 } })
-        .populate("unit creater")
-        .populate({ path: "listtarget", populate: { path: 'parent' } });
+    var kpiunit = await KPIUnit.findOne({ organizationalUnit: department._id, status: { $ne: 2 } })
+        .populate("organizationalUnit creater")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunit;    
     
 }
@@ -43,17 +46,17 @@ exports.create = async (timeId,unitId,createrId) => {
         var date = new Date(time[1], time[0], 0)
         // Tạo thông tin chung cho KPI đơn vị
         var kpiunit = await KPIUnit.create({
-            unit: unitId,
-            creater: createrId,
+            organizationalUnit: unitId,
+            creator: creatorId,
             time: date,
-            listtarget: []
+            kpis: []
         });
         // Tìm kiếm phòng ban hiện tại và kiểm tra xem nó có phòng ban cha hay không
         var department = await Department.findById(unitId);
         if (department.parent !== null) {
-            var kpiunitparent = await KPIUnit.findOne({ unit: department.parent, status: 1 }).populate("listtarget");
+            var kpiunitparent = await KPIUnit.findOne({ organizationalUnit: department.parent, status: 1 }).populate("kpis");
             var defaultTarget;
-            if (kpiunitparent.listtarget) defaultTarget = kpiunitparent.listtarget.filter(item => item.default !== 0);
+            if (kpiunitparent.kpis) defaultTarget = kpiunitparent.kpis.filter(item => item.default !== 0);
             if (defaultTarget !== []) {
                 var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
                     var defaultT = await DetailKPIUnit.create({
@@ -66,7 +69,7 @@ exports.create = async (timeId,unitId,createrId) => {
                     return defaultT._id;
                 }))
                 kpiunit = await KPIUnit.findByIdAndUpdate(
-                    kpiunit, { listtarget: defaultTarget }, { new: true }
+                    kpiunit, { kpis: defaultTarget }, { new: true }
                 );
             }
         } else {
@@ -78,7 +81,7 @@ exports.create = async (timeId,unitId,createrId) => {
                 default: 1
             })
             kpiunit = await KPIUnit.findByIdAndUpdate(
-                kpiunit, { $push: { listtarget: targetA._id } }, { new: true }
+                kpiunit, { $push: { kpis: targetA._id } }, { new: true }
             );
             var targetC = await DetailKPIUnit.create({
                 name: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
@@ -88,10 +91,10 @@ exports.create = async (timeId,unitId,createrId) => {
                 default: 2
             })
             kpiunit = await KPIUnit.findByIdAndUpdate(
-                kpiunit, { $push: { listtarget: targetC._id } }, { new: true }
+                kpiunit, { $push: { kpis: targetC._id } }, { new: true }
             );
         }
-        kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+        kpiunit = await kpiunit.populate("organizationalUnit creater").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
         return kpiunit;
 }
 // Lấy tất cả mục tiêu con của mục tiêu hiện tại
@@ -109,12 +112,12 @@ exports.evaluateKPI = async (id) => {
         // Tính điểm cho từng mục tiêu
         // Cập nhật lại data cho từng mục tiêu đơn vị
         // Cập nhật dữ liệu cho KPI đơn vị
-        var listtarget, childUnitTarget, childPersonalTarget, pointkpi;
-        var kpiunit = await KPIUnit.findById(id).populate('listtarget');
-        if (kpiunit.listtarget) listtarget = kpiunit.listtarget;
+        var kpis, childUnitTarget, childPersonalTarget, pointkpi;
+        var kpiunit = await KPIUnit.findById(id).populate('kpis');
+        if (kpiunit.kpis) kpis = kpiunit.kpis;
         // Tính điểm cho từng mục tiêu của KPI đơn vị
-        if (listtarget) {
-            listtarget = await Promise.all(listtarget.map(async (item) => {
+        if (kpis) {
+            kpis = await Promise.all(kpis.map(async (item) => {
                 var pointUnit, pointPersonal, totalunit, totalpersonal, target;
                 // var temp = Object.assign({}, item);
                 childUnitTarget = await DetailKPIUnit.find({ parent: item._id });
@@ -135,12 +138,12 @@ exports.evaluateKPI = async (id) => {
                 return item;
             }));
             // tính điểm cho cả KPI đơn vị
-            var totaltarget = listtarget.length;
-            var totalpoint = listtarget.reduce((sum, item) => sum + item.result, 0);
+            var totaltarget = kpis.length;
+            var totalpoint = kpis.reduce((sum, item) => sum + item.result, 0);
             // console.log(totalpoint);
             pointkpi = Math.round((totalpoint / totaltarget) * 10) / 10;
             kpiunit = await KPIUnit.findByIdAndUpdate(id, { result: pointkpi }, { new: true });
-            kpiunit = await kpiunit.populate("unit creater").populate({ path: "listtarget", populate: { path: 'parent' } }).execPopulate();
+            kpiunit = await kpiunit.populate("organizationalUnit creater").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
         }
         return kpiunit;
         

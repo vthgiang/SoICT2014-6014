@@ -16,9 +16,9 @@ class ModalCopyKPIPersonal extends Component {
         super(props);
         this.state = {
             kpipersonal: {
-                unit: "",
+                organizationalUnit: "",
                 time: this.formatDate(Date.now()),
-                creater: "" //localStorage.getItem("id")
+                creator: "" //localStorage.getItem("id")
                 
             },
         };
@@ -48,20 +48,20 @@ class ModalCopyKPIPersonal extends Component {
         const token = getStorage();
         const verified = await jwt.verify(token, TOKEN_SECRET);
         var id = verified._id;
-        kpipersonal.creater = id;
+        kpipersonal.creator = id;
         await this.setState(state => {
             return {
                 ...state,
                 kpipersonal: {
                     ...state.kpipersonal,
-                    unit: oldkpipersonal.unit._id,
-                    listtarget: oldkpipersonal.listtarget
+                    organizationalUnit: oldkpipersonal.organizationalUnit._id,
+                    kpis: oldkpipersonal.kpis
                 }
             }
         })
         
         var { kpipersonal } = this.state;
-        if (kpipersonal.unit && kpipersonal.time ) {//&& kpipersonal.creater
+        if (kpipersonal.unit && kpipersonal.time ) {//&& kpipersonal.creator
             Swal.fire({
                 title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                 type: 'warning',
@@ -94,7 +94,7 @@ class ModalCopyKPIPersonal extends Component {
                         <div className="modal-body">
                             <div className="form-group">
                                 <label className="col-sm-5">Đơn vị:</label>
-                                <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpipersonal && kpipersonal.unit.name}</label>
+                                <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpipersonal && kpipersonal.organizationalUnit.name}</label>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2">Tháng:</label>
@@ -108,8 +108,8 @@ class ModalCopyKPIPersonal extends Component {
                             <div className="form-group" >
                                 <label className="col-sm-12">Danh sách mục tiêu:</label>
                                 <ul>
-                                    {typeof kpipersonal !== "undefined" && kpipersonal.listtarget.length !== 0 &&
-                                        kpipersonal.listtarget.map(item => {
+                                    {typeof kpipersonal !== "undefined" && kpipersonal.kpis.length !== 0 &&
+                                        kpipersonal.kpis.map(item => {
                                             return <li key={item._id}>{item.name + " (" + item.weight + ")"}</li>
                                         })
                                     }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { PraiseFromValidator } from './commendationFormValidator';
+import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
+import { CommendationFromValidator } from './commendationFormValidator';
 
 import { DisciplineActions } from '../redux/actions';
 class PraiseEditForm extends Component {
@@ -14,18 +14,18 @@ class PraiseEditForm extends Component {
     /**
      * Bắt sự kiện thay đổi cấp ra quyết định
      */
-    handleUnitChange = (e) => {
+    handleOrganizationalUnitChange = (e) => {
         let value = e.target.value;
-        this.validateUnit(value, true);
+        this.validateOrganizationalUnit(value, true);
     }
-    validateUnit = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateUnit(value, this.props.translate)
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let msg = CommendationFromValidator.validateOrganizationalUnit(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
-                    unit: value,
+                    errorOnOrganizationalUnit: msg,
+                    organizationalUnit: value,
                 }
             });
         }
@@ -38,7 +38,7 @@ class PraiseEditForm extends Component {
         this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateStartDate(value, this.props.translate)
+        let msg = CommendationFromValidator.validateStartDate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -59,7 +59,7 @@ class PraiseEditForm extends Component {
         this.validateType(value, true);
     }
     validateType = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateType(value, this.props.translate)
+        let msg = CommendationFromValidator.validateType(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -80,7 +80,7 @@ class PraiseEditForm extends Component {
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = PraiseFromValidator.validateReason(value, this.props.translate)
+        let msg = CommendationFromValidator.validateReason(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -97,7 +97,7 @@ class PraiseEditForm extends Component {
      * Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
      */
     isFormValidated = () => {
-        let result = this.validateUnit(this.state.unit, false) && this.validateType(this.state.reason, false) &&
+        let result = this.validateOrganizationalUnit(this.state.organizationalUnit, false) && this.validateType(this.state.reason, false) &&
             this.validateReason(this.state.reason, false) && this.validateStartDate(this.state.startDate, false);
         return result;
     }
@@ -116,12 +116,12 @@ class PraiseEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 employeeNumber: nextProps.employeeNumber,
-                number: nextProps.number,
-                unit: nextProps.unit,
+                decisionNumber: nextProps.decisionNumber,
+                organizationalUnit: nextProps.organizationalUnit,
                 startDate: nextProps.startDate,
                 type: nextProps.type,
                 reason: nextProps.reason,
-                errorOnUnit: undefined,
+                errorOnOrganizationalUnit: undefined,
                 errorOnType: undefined,
                 errorOnReason: undefined,
                 errorOnStartDate: undefined
@@ -132,8 +132,8 @@ class PraiseEditForm extends Component {
     }
     render() {
         const { translate, discipline } = this.props;
-        const { employeeNumber, startDate, reason, number, unit, type, errorOnStartDate,
-            errorOnUnit, errorOnType, errorOnReason } = this.state;
+        const { employeeNumber, startDate, reason, decisionNumber, organizationalUnit, type, errorOnStartDate,
+            errorOnOrganizationalUnit, errorOnType, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -153,12 +153,12 @@ class PraiseEditForm extends Component {
                         <div className="row">
                             <div className="col-sm-6 col-xs-12 form-group">
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="number" value={number} disabled autoComplete="off" placeholder={translate('page.number_decisions')} />
+                                <input type="text" className="form-control" name="number" value={decisionNumber} disabled autoComplete="off" placeholder={translate('page.number_decisions')} />
                             </div>
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
-                                <ErrorLabel content={errorOnUnit} />
+                                <input type="text" className="form-control" name="unit" value={organizationalUnit} onChange={this.handleOrganizationalUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
+                                <ErrorLabel content={errorOnOrganizationalUnit} />
                             </div>
                         </div>
                         <div className="row">

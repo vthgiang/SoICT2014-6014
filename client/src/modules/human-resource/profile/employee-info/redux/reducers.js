@@ -2,10 +2,9 @@ import { Constants } from './constants';
 const initState ={
     isLoading: false,
     employee: "",
-    employeeContact: "",
     salary: "",
-    sabbatical: "",
-    praise: "",
+    annualLeave: "",
+    commendation: "",
     discipline: "",
     infoEmployeeUpdate: "",
     error: ""
@@ -13,36 +12,35 @@ const initState ={
 
 export function employeesInfo(state = initState, action) {
     switch (action.type) {
-        case Constants.GET_INFOR_PERSONAL_REQUEST:
-        case Constants.UPDATE_INFOR_PERSONAL_REQUEST:
+        case Constants.GET_PERSONAL_INFOR_REQUEST:
+        case Constants.UPDATE_PERSONAL_INFOR_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case Constants.GET_INFOR_PERSONAL_SUCCESS:
+        case Constants.GET_PERSONAL_INFOR_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                employee: action.payload.employee,
-                employeeContact: action.payload.employeeContact,
-                salary: action.payload.salary,
-                sabbatical: action.payload.sabbatical,
-                praise: action.payload.praise,
-                discipline: action.payload.discipline
+                employees: action.payload.employees,
+                salarys: action.payload.salarys,
+                annualLeaves: action.payload.annualLeaves,
+                commendations: action.payload.commendations,
+                disciplines: action.payload.disciplines
             };
-        case Constants.UPDATE_INFOR_PERSONAL_SUCCESS:
+        case Constants.UPDATE_PERSONAL_INFOR_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 infoEmployeeUpdate: action.payload
             };
-        case Constants.GET_INFOR_PERSONAL_FAILURE:
+        case Constants.GET_PERSONAL_INFOR_FAILURE:
             return {
                 ...state,
                 isLoading: false,
                 error: action.error.message
             };
-        case Constants.UPDATE_INFOR_PERSONAL_FAILURE:
+        case Constants.UPDATE_PERSONAL_INFOR_FAILURE:
             return {
                 ...state,
                 isLoading: false,

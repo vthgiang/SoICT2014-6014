@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-class TabGeneralViewContent extends Component {
+class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -13,19 +13,19 @@ class TabGeneralViewContent extends Component {
                 id: nextProps.id,
                 avatar: nextProps.employee.avatar,
                 employeeNumber: nextProps.employee.employeeNumber,
-                MSCC: nextProps.employee.MSCC,
+                employeeTimesheetId: nextProps.employee.employeeTimesheetId,
                 fullName: nextProps.employee.fullName,
                 gender: nextProps.employee.gender,
-                brithday: nextProps.employee.brithday,
+                birthdate: nextProps.employee.birthdate,
                 birthplace: nextProps.employee.birthplace,
-                emailCompany: nextProps.employee.emailCompany,
-                relationship: nextProps.employee.relationship,
-                CMND: nextProps.employee.CMND,
-                dateCMND: nextProps.employee.dateCMND,
-                addressCMND: nextProps.employee.addressCMND,
-                national: nextProps.employee.national,
+                emailInCompany: nextProps.employee.emailInCompany,
+                maritalStatus: nextProps.employee.maritalStatus,
+                identityCardNumber: nextProps.employee.identityCardNumber,
+                identityCardDate: nextProps.employee.identityCardDate,
+                identityCardAddress: nextProps.employee.identityCardAddress,
+                nationality: nextProps.employee.nationality,
+                ethnic: nextProps.employee.ethnic,
                 religion: nextProps.employee.religion,
-                nation: nextProps.employee.nation,
             }
         } else {
             return null;
@@ -33,8 +33,8 @@ class TabGeneralViewContent extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { brithday, dateCMND, avatar, employeeNumber, MSCC, fullName, gender, birthplace,
-            emailCompany, relationship, CMND, addressCMND, national, religion, nation } = this.state;
+        const { avatar, employeeNumber, employeeTimesheetId, fullName, gender,birthdate, birthplace,
+            emailInCompany, maritalStatus, identityCardNumber, identityCardDate, identityCardAddress, nationality, ethnic, religion } = this.state;
         return (
             <div id={id} className="tab-pane active">
                 <div className=" row box-body">
@@ -51,7 +51,7 @@ class TabGeneralViewContent extends Component {
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.attendance_code')}&emsp; </strong>
-                                {MSCC}
+                                {employeeTimesheetId}
                             </div>
                         </div>
                         <div className="row">
@@ -67,7 +67,7 @@ class TabGeneralViewContent extends Component {
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.date_birth')}&emsp; </strong>
-                                {brithday}
+                                {birthdate}
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.place_birth')}&emsp; </strong>
@@ -78,33 +78,33 @@ class TabGeneralViewContent extends Component {
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.email_company')}&emsp; </strong>
-                                {emailCompany}
+                                {emailInCompany}
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.relationship')}&emsp; </strong>
-                                {translate(`manage_employee.${relationship}`)}
+                                {translate(`manage_employee.${maritalStatus}`)}
                             </div>
                         </div>
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.id_card')}&emsp; </strong>
-                                {CMND}
+                                {identityCardNumber}
 
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.date_issued')}&emsp; </strong>
-                                {dateCMND}
+                                {identityCardDate}
                             </div>
 
                         </div>
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.issued_by')}&emsp; </strong>
-                                {addressCMND}
+                                {identityCardAddress}
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.ethnic')}&emsp; </strong>
-                                {national}
+                                {ethnic}
                             </div>
 
                         </div>
@@ -115,7 +115,7 @@ class TabGeneralViewContent extends Component {
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.nationality')}&emsp; </strong>
-                                {nation}
+                                {nationality}
                             </div>
                         </div>
                     </div>
@@ -124,5 +124,5 @@ class TabGeneralViewContent extends Component {
         );
     }
 };
-const tabGeneral = connect(null, null)(withTranslate(TabGeneralViewContent));
-export { tabGeneral as TabGeneralViewContent };
+const tabGeneral = connect(null, null)(withTranslate(GeneralTab));
+export { tabGeneral as GeneralTab };

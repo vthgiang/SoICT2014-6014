@@ -13,40 +13,36 @@ class Roles extends Component {
         this.selectRole = this.selectRole.bind(this);
     }
 
-    selectRole(e) {
+    selectRole = async (e) => {
         this.setState({ currentRole: e.target.value });
         setStorage('currentRole', e.target.value);
-        this.props.getLinksOfRole(e.target.value)
-            .then(res => {
-                var {links} = this.props.auth;
-                var path = window.location.pathname;
-                var linkId;
-                for (let index = 0; index < links.length; index++) {
-                    const element = links[index];
-                    if(element.url === path){
-                        linkId = element._id;
-                        break;
-                    }
-                }
-                var currentRole = getStorage('currentRole');
-                this.props.getComponentsOfUserInLink(currentRole, linkId);
-            });
+        await this.props.getLinksOfRole(e.target.value);
+        var {links} = this.props.auth;
+        var path = window.location.pathname;
+        var linkId;
+        for (let index = 0; index < links.length; index++) {
+            const element = links[index];
+            if(element.url === path){
+                linkId = element._id;
+                break;
+            }
+        }
+        var currentRole = getStorage('currentRole');
+        await this.props.getComponentsOfUserInLink(currentRole, linkId);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         var currentRole = getStorage('currentRole');
-        this.props.getLinksOfRole(currentRole)
-            .then(res => {
-                var {links} = this.props.auth; 
-                var path = window.location.pathname;
-                for (let index = 0; index < links.length; index++) {
-                    const element = links[index];
-                    if(element.url === path){
-                        this.props.getComponentsOfUserInLink(currentRole, element._id);
-                        break;
-                    }
-                }
-            });
+        await this.props.getLinksOfRole(currentRole)
+        var {links} = this.props.auth; 
+        var path = window.location.pathname;
+        for (let index = 0; index < links.length; index++) {
+            const element = links[index];
+            if(element.url === path){
+                await this.props.getComponentsOfUserInLink(currentRole, element._id);
+                break;
+            }
+        }
     }
     
     render() { 

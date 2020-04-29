@@ -10,8 +10,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    TabGeneralContent, TabContactContent, TabTaxContent, TabInsurranceContent, TabRearDisciplineContent,
-    TabExperienceContent, TabCertificateContent, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
+    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from '../../employee-create/components/combinedContent';
 class EmployeeCreateForm extends Component {
     constructor(props) {
@@ -29,13 +29,13 @@ class EmployeeCreateForm extends Component {
                 brithday: this.formatDate(Date.now()),
                 startTax: this.formatDate(Date.now()),
                 experience: [],
-                BHXH: [],
-                course: []
+                socialInsuranceDetails: [],
+                courses: []
             },
-            certificate: [],
-            certificateShort: [],
-            contract: [],
-            file: [],
+            degrees: [],
+            certificates: [],
+            contracts: [],
+            files: [],
             disciplineNew: [],
             praiseNew: [],
             salaryNew: [],
@@ -336,29 +336,29 @@ class EmployeeCreateForm extends Component {
                                 <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('manage_employee.menu_attachments')}</a></li>
                             </ul>
                             < div className="tab-content">
-                                <TabGeneralContent
+                                <GeneralTab
                                     id="general"
                                     img={this.state.img}
                                     handleChange={this.handleChange}
                                     handleUpload={this.handleUpload}
                                     employee={this.state.employeeNew}
                                 />
-                                <TabContactContent
+                                <ContactTab
                                     id="contact"
                                     handleChange={this.handleChange}
-                                    employeeContact={this.state.employeeNew}
+                                    employee={this.state.employeeNew}
                                 />
-                                <TabExperienceContent
+                                <ExperienceTab
                                     id="experience"
                                     employee={this.state.employeeNew}
                                     handleAddExperience={this.handleChangeExperience}
                                     handleEditExperience={this.handleChangeExperience}
                                     handleDeleteExperience={this.handleChangeExperience}
                                 />
-                                <TabCertificateContent
+                                <CertificateTab
                                     id="diploma"
-                                    certificate={this.state.certificate}
-                                    certificateShort={this.state.certificateShort}
+                                    degrees={this.state.degrees}
+                                    certificates={this.state.certificates}
                                     handleAddCertificate={this.handleChangeCertificate}
                                     handleEditCertificate={this.handleChangeCertificate}
                                     handleDeleteCertificate={this.handleChangeCertificate}
@@ -366,28 +366,28 @@ class EmployeeCreateForm extends Component {
                                     handleEditCertificateShort={this.handleChangeCertificateShort}
                                     handleDeleteCertificateShort={this.handleChangeCertificateShort}
                                 />
-                                <TabTaxContent
+                                <TaxTab
                                     id="account"
                                     employee={this.state.employeeNew}
                                     handleChange={this.handleChange} />
-                                <TabInsurranceContent
+                                <InsurranceTab
                                     id="insurrance"
-                                    BHXH={this.state.employeeNew.BHXH}
+                                    socialInsuranceDetails={this.state.employeeNew.socialInsuranceDetails}
                                     employee={this.state.employeeNew}
                                     handleChange={this.handleChange}
                                     handleAddBHXH={this.handleChangeBHXH}
                                     handleEditBHXH={this.handleChangeBHXH}
                                     handleDeleteBHXH={this.handleChangeBHXH}
                                 />
-                                <TabContractContent
+                                <ContractTab
                                     id="contract"
-                                    contract={this.state.contract}
-                                    course={this.state.employeeNew.course}
+                                    contracts={this.state.contracts}
+                                    courses={this.state.employeeNew.courses}
                                     handleAddContract={this.handleChangeContract}
                                     handleEditContract={this.handleChangeContract}
                                     handleDeleteContract={this.handleChangeContract}
                                 />
-                                <TabRearDisciplineContent
+                                <DisciplineTab
                                     id="reward"
                                     praise={this.state.praiseNew}
                                     discipline={this.state.disciplineNew}
@@ -398,7 +398,7 @@ class EmployeeCreateForm extends Component {
                                     handleEditDiscipline={this.handleChangeDiscipline}
                                     handleDeleteDiscipline={this.handleChangeDiscipline}
                                 />
-                                <TabSalaryContent
+                                <SalaryTab
                                     id="salary"
                                     salary={this.state.salaryNew}
                                     sabbatical={this.state.sabbaticalNew}
@@ -409,7 +409,7 @@ class EmployeeCreateForm extends Component {
                                     handleEditSabbatical={this.handleChangeSabbatical}
                                     handleDeleteSabbatical={this.handleChangeSabbatical}
                                 />
-                                <TabAttachmentsContent
+                                <FileTab
                                     id="attachments"
                                     file={this.state.file}
                                     employee={this.state.employeeNew}

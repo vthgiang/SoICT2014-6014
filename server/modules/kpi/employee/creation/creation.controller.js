@@ -10,14 +10,15 @@ exports.getEmployeeKpiSet = async (req, res) => {
         await LogInfo(req.user.email, ` get employee kpi set by user id `, req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['Lấy tập KPI cá hiện hiện tại thành công'],
+            messages: ['Lấy tập KPI cá nhân hiện tại thành công'],
             content: employeeKpiSet
         });
     } catch (error) {
         await LogError(req.user.email, ` get employee kpi set by user id `, req.user.company)
         res.status(400).json({
             success: false,
-            message: error
+            messages: ['Lấy tập KPI cá nhân hiện tại thất bại'],
+            content: error
         });
     }
 }
@@ -30,14 +31,15 @@ exports.createEmployeeKpiSet =async (req, res) => {
         await LogInfo(req.user.email, ` create employee kpi set `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Khởi tạo thành công KPI cá nhân'],
+            messages: ['success'],
             content: employeeKpiSet
         })
     } catch (error) {
         await LogError(req.user.email, ` create employee kpi set `, req.user.company)
         res.status(400).json({
             success: false,
-            message: error
+            messages: ['failure'],
+            content: error
         });
     }
   
@@ -46,18 +48,19 @@ exports.createEmployeeKpiSet =async (req, res) => {
 /** Tạo 1 mục tiêu KPI mới */ 
 exports.createEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpi= await EmployeeKpiSetService.createEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.kpipersonal);
+        var employeeKpi= await EmployeeKpiSetService.createEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.employeeKpiSet);
         await LogInfo(req.user.email, ` create employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Thêm mới thành công một mục tiêu của kpi cá nhân'],
+            messages: ['success'],
             content: employeeKpi
         })
     } catch (error) {
         await LogError(req.user.email, ` create employee kpi `, req.user.company)
         res.status(400).json({
             success: false,
-            message: error
+            messages: ['failure'],
+            content: error
         })
     }
 }
@@ -69,14 +72,15 @@ exports.editEmployeeKpiSet = async (req, res) => {
         await LogInfo(req.user.email, ` edit employee kpi set `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Chỉnh sửa thành công tập KPI của cá nhân'],
+            messages: ['edit_success'],
             content: employeeKpiSet
         });
     } catch (error) {
         await LogError(req.user.email, ` edit employee kpi set `, req.user.company)
         res.status(400).json({
             success: false,
-            message: error
+            messages: ['edit_failure'],
+            content: error
         });
     }
 }
@@ -89,14 +93,15 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
         await LogInfo(req.user.email, ` edit employee kpi set status `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Xác nhận yêu cầu phê duyệt thành công'],
+            messages: ['approve_success'],
             content: employeeKpiSet
         })
     } catch (error) {
         await LogError(req.user.email, ` edit employee kpi set status `, req.user.company)
         res.status(400).json({
             success: false,
-            message: error
+            messages: ['approve_failure'],
+            content: error
         })
     }
 }
@@ -110,7 +115,7 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
         await LogInfo(req.user.email, ` delete employee kpi set `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Xóa thành công tập KPI cá nhân'],
+            messages: ['delete_success'],
             content: employeeKpiSet,
             kpis: kpis
         })
@@ -118,7 +123,8 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
         await LogError(req.user.email, ` delete employee kpi set `, req.user.company)
         res.status(400).json({
             success: false,
-            message: error
+            messages: ['delete_failure'],
+            content: error
         })
 
     }
@@ -131,14 +137,15 @@ exports.editEmployeeKpi = async (req, res) => {
         await LogInfo(req.user.email, ` edit employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Chỉnh sửa thành công một mục tiêu của cá nhân'],
+            messages: ['success'],
             content: employeeKpi
         })
     } catch (error) {
         await LogError(req.user.email, ` edit employee kpi `, req.user.company)
         res.status(400).json({
             success: false,
-            message : error
+            messages: ['failure'],
+            content: error
         })
     }
 
@@ -151,14 +158,15 @@ exports.deleteEmployeeKpi = async (req, res) => {
         await LogInfo(req.user.email, ` delete employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['Xóa thành công một mục tiêu của cá nhân'],
+            messages: ['delete_success'],
             content: employeeKpiSet,
         })
     } catch (error) {
         await LogError(req.user.email, ` delete employee kpi `, req.user.company)
         res.status(400).json({
             success: false,
-            message:error
+            messages: ['delete_failure'],
+            content: error
         });
     }
     return EmployeeKpiSetService.deleteEmployeeKpi(req.params.id,req.params.kpipersonal);

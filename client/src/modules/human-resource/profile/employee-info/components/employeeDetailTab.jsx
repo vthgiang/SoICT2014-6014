@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeInfoActions } from '../redux/actions';
 import {
-    TabGeneralViewContent, TabContactViewContent, TabTaxViewContent,
-    TabInsurranceViewContent, TabSalaryViewContent, TabRearDisciplineViewContent, AttachmentTab,
-    TabExperiencViewContent, TabCertificateViewContent, TabContractViewContent,
-
+    GeneralTab, ContactTab, TaxTab, InsurranceTab, SalaryTab,
+    DisciplineTab, AttachmentTab, ExperiencTab, CertificateTab, ContractTab,
 } from './combinedContent';
 class EmployeeDetail extends Component {
     constructor(props) {
@@ -14,24 +12,23 @@ class EmployeeDetail extends Component {
         this.state = {}
     }
     componentDidMount = async () => {
-        this.props.getInformationPersonal();
+        this.props.getEmployeeProfile();
     }
     render() {
-        var employee, employeeContact, salary, sabbatical, praise, discipline;
+        var employees, salarys, annualLeaves, commendations, disciplines;
         const { employeesInfo, translate } = this.props;
-        if (employeesInfo.employee) employee = employeesInfo.employee;
-        if (employeesInfo.employeeContact) employeeContact = employeesInfo.employeeContact;
-        if (employeesInfo.salary) salary = employeesInfo.salary;
-        if (employeesInfo.sabbatical) sabbatical = employeesInfo.sabbatical;
-        if (employeesInfo.praise) praise = employeesInfo.praise;
-        if (employeesInfo.discipline) discipline = employeesInfo.discipline;
+        if (employeesInfo.employees) employees = employeesInfo.employees;
+        if (employeesInfo.salarys) salarys = employeesInfo.salarys;
+        if (employeesInfo.annualLeaves) annualLeaves = employeesInfo.annualLeaves;
+        if (employeesInfo.commendations) commendations = employeesInfo.commendations;
+        if (employeesInfo.disciplines) disciplines = employeesInfo.disciplines;
         return (
             <React.Fragment>
                 {
-                    typeof employee !== 'undefined' && employee.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
+                    typeof employees !== 'undefined' && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
                 }
-                {(typeof employee !== 'undefined' && employee.length !== 0) &&
-                    employee.map((x, index) => (
+                {(typeof employees !== 'undefined' && employees.length !== 0) &&
+                    employees.map((x, index) => (
                         <div className="row" key={index}>
                             {/* left column */}
                             <div className="col-sm-12">
@@ -49,55 +46,51 @@ class EmployeeDetail extends Component {
                                         <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#view_attachments">{translate('manage_employee.menu_attachments')}</a></li>
                                     </ul>
                                     <div className="tab-content">
-                                        <TabGeneralViewContent
+                                        <GeneralTab
                                             id="view_general"
                                             employee={x}
                                         />
-                                        {
-                                            employeeContact && employeeContact.map((y, indexs) => (
-                                                <TabContactViewContent key={indexs}
-                                                    id="view_contact"
-                                                    employeeContact={y}
-                                                />
-                                            ))
-                                        }
-                                        <TabExperiencViewContent
+                                        <ContactTab
+                                            id="view_contact"
+                                            employee={x}
+                                        />
+                                        <ExperiencTab
                                             id="view_experience"
                                             employee={x}
                                         />
-                                        <TabTaxViewContent
+                                        <TaxTab
                                             id="view_account"
                                             employee={x}
                                         />
-                                        <TabCertificateViewContent
+                                        <CertificateTab
                                             id="view_diploma"
-                                            certificate={x.certificate}
-                                            certificateShort={x.certificateShort}
+                                            degrees={x.degrees}
+                                            certificates={x.certificates}
                                         />
-                                        <TabInsurranceViewContent
+                                        <InsurranceTab
                                             id="view_insurrance"
                                             employee={x}
-                                            BHXH={x.BHXH}
+                                            socialInsuranceDetails={x.socialInsuranceDetails}
                                         />
-                                        <TabContractViewContent
+                                        <ContractTab
                                             id="view_contract"
-                                            course={x.course}
-                                            contract={x.contract}
+                                            courses={x.courses}
+                                            contracts={x.contracts}
                                         />
-                                        <TabRearDisciplineViewContent
+                                        <DisciplineTab
                                             id="view_reward"
-                                            praise={praise}
-                                            discipline={discipline}
+                                            commendations={commendations}
+                                            disciplines={disciplines}
                                         />
-                                        <TabSalaryViewContent
+                                        <SalaryTab
                                             id="view_salary"
-                                            sabbatical={sabbatical}
-                                            salary={salary}
+                                            annualLeaves={annualLeaves}
+                                            salarys={salarys}
                                         />
                                         <AttachmentTab
                                             id="view_attachments"
                                             employee={x}
-                                            file={x.file}
+                                            files={x.files}
 
                                         />
                                     </div>
@@ -116,7 +109,7 @@ function mapState(state) {
     return { employeesInfo };
 }
 const actionCreators = {
-    getInformationPersonal: EmployeeInfoActions.getInformationPersonal,
+    getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
 }
 const connectDetaiEmployee = connect(mapState, actionCreators)(withTranslate(EmployeeDetail));
 export { connectDetaiEmployee as EmployeeDetail };

@@ -26,7 +26,7 @@ class TabTaskContent extends Component {
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null);
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
+            this.props.getAccountableTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         } else if (content === "consulted") {
             this.props.getConsultedTaskByUser("[]", 1, 20, "[]", "[]", "[]", null);
         } else if (content === "creator") {
@@ -287,29 +287,6 @@ class TabTaskContent extends Component {
         }
         if (department.unitofuser) units = department.unitofuser;
         const items = [];
-        // if (pageTotals > 5) {
-        //     if (currentPage < 3) {
-        //         for (let i = 0; i < 5; i++) {
-        //             items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-        //         }
-        //         items.push(<li className="disable" key={pageTotals}><a href="#abc">...</a></li>);
-        //     } else if (currentPage >= pageTotals - 3) {
-        //         items.push(<li className="disable" key={0}><a href="#abc">...</a></li>);
-        //         for (let i = pageTotals - 5; i < pageTotals; i++) {
-        //             items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-        //         }
-        //     } else {
-        //         items.push(<li className="disable" key={0}><a href="#abc">...</a></li>);
-        //         for (let i = currentPage - 2; i < currentPage + 3; i++) {
-        //             items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-        //         }
-        //         items.push(<li className="disable" key={pageTotals + 1}><a href="#abc">...</a></li>);
-        //     }
-        // } else {
-        //     for (let i = 0; i < pageTotals; i++) {
-        //         items.push(<li key={i + 1} className={currentPage === i + 1 ? "active" : ""}><a href="#abc" onClick={() => this.handleGetDataPagination(i + 1)}>{i + 1}</a></li>);
-        //     }
-        // }
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -504,7 +481,7 @@ function mapState(state) {
 
 const actionCreators = {
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getAccounatableTaskByUser: taskManagementActions.getAccounatableTaskByUser,
+    getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,

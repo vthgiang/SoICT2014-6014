@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class TabRearDisciplineViewContent extends Component {
+class DisciplineTab extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,8 +15,8 @@ class TabRearDisciplineViewContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                praise: nextProps.praise,
-                discipline: nextProps.discipline,
+                commendations: nextProps.commendations,
+                disciplines: nextProps.disciplines,
             }
         } else {
             return null;
@@ -26,7 +26,7 @@ class TabRearDisciplineViewContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { praise, discipline } = this.state;
+        const { commendations, disciplines } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -43,12 +43,12 @@ class TabRearDisciplineViewContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof praise !== 'undefined' && praise.length !== 0) &&
-                                    praise.map((x, index) => (
+                                {(typeof commendations !== 'undefined' && commendations.length !== 0) &&
+                                    commendations.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.number}</td>
+                                            <td>{x.decisionNumber}</td>
                                             <td>{x.startDate}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>
                                         </tr>
@@ -57,7 +57,7 @@ class TabRearDisciplineViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof praise === 'undefined' || praise.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof commendations === 'undefined' || commendations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -74,13 +74,13 @@ class TabRearDisciplineViewContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof discipline !== 'undefined' && discipline.length !== 0) &&
-                                    discipline.map((x, index) => (
+                                {(typeof disciplines !== 'undefined' && disciplines.length !== 0) &&
+                                    disciplines.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.number}</td>
+                                            <td>{x.decisionNumber}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{x.unit}</td>
+                                            <td>{x.organizationalUnit}</td>
                                             <td>{x.type}</td>
                                             <td>{x.reason}</td>
                                         </tr>
@@ -88,7 +88,7 @@ class TabRearDisciplineViewContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof discipline === 'undefined' || discipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof disciplines === 'undefined' || disciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
 
@@ -98,5 +98,5 @@ class TabRearDisciplineViewContent extends Component {
     }
 };
 
-const tabRearDiscipline = connect(null, null)(withTranslate(TabRearDisciplineViewContent));
-export { tabRearDiscipline as TabRearDisciplineViewContent };
+const tabRearDiscipline = connect(null, null)(withTranslate(DisciplineTab));
+export { tabRearDiscipline as DisciplineTab };

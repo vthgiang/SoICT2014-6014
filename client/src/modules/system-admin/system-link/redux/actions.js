@@ -1,6 +1,5 @@
 import { LinkDefaultServices } from "./services";
 import { LinkDefaultConstants } from "./constants";
-import { AlertActions} from '../../../alert/redux/actions';
 
 export const LinkDefaultActions = {
     get,
@@ -24,7 +23,6 @@ function get(){
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -41,7 +39,6 @@ function getCategories(){
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -58,7 +55,6 @@ function getPaginate(data){
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -75,7 +71,6 @@ function show(id){
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.SHOW_LINK_DEFAULT_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -83,43 +78,33 @@ function show(id){
 function create(link){
     return dispatch => {
         dispatch({ type: LinkDefaultConstants.CREATE_LINK_DEFAULT_REQUEST});
-        return new Promise((resolve, reject) => {
-            LinkDefaultServices
-                .create(link)
-                .then(res => {
-                    dispatch({
-                        type: LinkDefaultConstants.CREATE_LINK_DEFAULT_SUCCESS,
-                        payload: res.data.content
-                    });
-                    resolve(res);
-                })
-                .catch(err => {
-                    dispatch({ type: LinkDefaultConstants.CREATE_LINK_DEFAULT_FAILE});
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+        LinkDefaultServices
+            .create(link)
+            .then(res => {
+                dispatch({
+                    type: LinkDefaultConstants.CREATE_LINK_DEFAULT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ type: LinkDefaultConstants.CREATE_LINK_DEFAULT_FAILE});
+            })
     }
 }
 
 function edit(id, link){
     return dispatch => {
         dispatch({ type: LinkDefaultConstants.EDIT_LINK_DEFAULT_REQUEST});
-        return new Promise((resolve, reject) => {
-            LinkDefaultServices.edit(id, link)
+        LinkDefaultServices.edit(id, link)
             .then(res => {
                 dispatch({
                     type: LinkDefaultConstants.EDIT_LINK_DEFAULT_SUCCESS,
                     payload: res.data.content
                 })
-                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.EDIT_LINK_DEFAULT_FAILE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        })
     }
 }
 
@@ -135,7 +120,6 @@ function destroy(id, link){
             })
             .catch(err => {
                 dispatch({ type: LinkDefaultConstants.DELETE_LINK_DEFAULT_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

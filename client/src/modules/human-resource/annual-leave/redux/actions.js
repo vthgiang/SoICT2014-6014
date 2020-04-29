@@ -1,6 +1,5 @@
 import { AnnualLeaveConstants } from "./constants";
 import { AnnualLeaveService } from "./services";
-import { AlertActions } from "../../../alert/redux/actions";
 export const AnnualLeaveActions = {
     searchAnnualLeaves,
     createAnnualLeave,
@@ -26,7 +25,6 @@ function searchAnnualLeaves(data) {
                     type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE,
                     error: err.response.data
                 });
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }
@@ -37,24 +35,19 @@ function createAnnualLeave(data) {
         dispatch({
             type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            AnnualLeaveService.createAnnualLeave(data)
-                .then(res => {
-                    dispatch({
-                        type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        AnnualLeaveService.createAnnualLeave(data)
+            .then(res => {
+                dispatch({
+                    type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -64,24 +57,19 @@ function deleteAnnualLeave(id) {
         dispatch({
             type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_REQUEST,
         });
-        return new Promise((resolve, reject) => {
-            AnnualLeaveService.deleteAnnualLeave(id)
-                .then(res => {
-                    dispatch({
-                        type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        AnnualLeaveService.deleteAnnualLeave(id)
+            .then(res => {
+                dispatch({
+                    type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS,
+                    error: err.response.data
+                });
+            })
     }
 }
 
@@ -91,23 +79,18 @@ function updateAnnualLeave(id, infoSabbatical) {
         dispatch({
             type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_REQUEST
         });
-        return new Promise((resolve, reject) => {
-            AnnualLeaveService.updateAnnualLeave(id, infoSabbatical)
-                .then(res => {
-                    dispatch({
-                        type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_SUCCESS,
-                        payload: res.data.content
-                    })
-                    resolve(res);
+        AnnualLeaveService.updateAnnualLeave(id, infoSabbatical)
+            .then(res => {
+                dispatch({
+                    type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_SUCCESS,
+                    payload: res.data.content
                 })
-                .catch(err => {
-                    dispatch({
-                        type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_FAILURE,
-                        error: err.response.data
-                    });
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }

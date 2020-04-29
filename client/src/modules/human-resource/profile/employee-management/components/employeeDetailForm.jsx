@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
 import {
-    TabGeneralViewContent, TabContactViewContent, TabTaxViewContent,
-    TabInsurranceViewContent, TabSalaryViewContent, TabRearDisciplineViewContent, AttachmentTab,
-    TabExperiencViewContent, TabCertificateViewContent, TabContractViewContent
+    GeneralTab, ContactTab, TaxTab, InsurranceTab, SalaryTab,
+    DisciplineTab, AttachmentTab, ExperiencTab, CertificateTab, ContractTab
 } from '../../employee-info/components/combinedContent';
 class EmployeeDetailForm extends Component {
     constructor(props) {
@@ -17,12 +16,11 @@ class EmployeeDetailForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                employee: nextProps.employee,
-                employeeContact: nextProps.employeeContact,
-                salary: nextProps.salary,
-                sabbatical: nextProps.sabbatical,
-                praise: nextProps.praise,
-                discipline: nextProps.discipline,
+                employees: nextProps.employees,
+                salarys: nextProps.salarys,
+                annualLeaves: nextProps.annualLeaves,
+                commendations: nextProps.commendations,
+                disciplines: nextProps.disciplines,
             }
         } else {
             return null;
@@ -30,18 +28,19 @@ class EmployeeDetailForm extends Component {
     }
     render() {
         const { employeesManager, translate } = this.props;
-        var { _id, employee, employeeContact, salary, sabbatical, praise, discipline } = this.state;
+        var { _id, employees, salarys, annualLeaves, commendations, disciplines } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
                     size='100' modalID="modal-view-employee" isLoading={employeesManager}
                     formID="form-view-employee"
-                    title={translate('manage_employee.edit_diploma')}
+                    title="Thông tin nhân viên"
+                    hasSaveButton={false}
                 // disableSubmit={false}
                 >
                     <form className="form-group" id="form-view-employee" style={{ marginTop: "-15px" }}>
-                        {(typeof employee !== 'undefined' && employee.length !== 0) &&
-                            employee.map((x, index) => (
+                        {(typeof employees !== 'undefined' && employees.length !== 0) &&
+                            employees.map((x, index) => (
                                 <div className="nav-tabs-custom" key={index}>
                                     <ul className="nav nav-tabs">
                                         <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href={`#view_general${_id}`}>{translate('manage_employee.menu_general_infor')}</a></li>
@@ -56,55 +55,51 @@ class EmployeeDetailForm extends Component {
                                         <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href={`#view_attachments${_id}`}>{translate('manage_employee.menu_attachments')}</a></li>
                                     </ul>
                                     <div className="tab-content">
-                                        <TabGeneralViewContent
+                                        <GeneralTab
                                             id={`view_general${_id}`}
                                             employee={x}
                                         />
-                                        {
-                                            employeeContact && employeeContact.map((y, indexs) => (
-                                                <TabContactViewContent key={indexs}
-                                                    id={`view_contact${_id}`}
-                                                    employeeContact={y}
-                                                />
-                                            ))
-                                        }
-                                        <TabExperiencViewContent
+                                        <ContactTab
+                                            id={`view_contact${_id}`}
+                                            employee={x}
+                                        />
+                                        <ExperiencTab
                                             id={`view_experience${_id}`}
                                             employee={x}
                                         />
-                                        <TabTaxViewContent
+                                        <TaxTab
                                             id={`view_account${_id}`}
                                             employee={x}
                                         />
-                                        <TabCertificateViewContent
+                                        <CertificateTab
                                             id={`view_diploma${_id}`}
-                                            certificate={x.certificate}
-                                            certificateShort={x.certificateShort}
+                                            degrees={x.degrees}
+                                            certificates={x.certificates}
                                         />
-                                        <TabInsurranceViewContent
+                                        <InsurranceTab
                                             id={`view_insurrance${_id}`}
                                             employee={x}
-                                            BHXH={x.BHXH}
+                                            socialInsuranceDetails={x.socialInsuranceDetails}
                                         />
-                                        <TabContractViewContent
+                                        <ContractTab
                                             id={`view_contract${_id}`}
-                                            course={x.course}
-                                            contract={x.contract}
+                                            courses={x.courses}
+                                            contracts={x.contracts}
                                         />
-                                        <TabRearDisciplineViewContent
+                                        <DisciplineTab
                                             id={`view_reward${_id}`}
-                                            praise={praise}
-                                            discipline={discipline}
+                                            commendations={commendations}
+                                            disciplines={disciplines}
                                         />
-                                        <TabSalaryViewContent
+                                        <SalaryTab
                                             id={`view_salary${_id}`}
-                                            sabbatical={sabbatical}
-                                            salary={salary}
+                                            annualLeaves={annualLeaves}
+                                            salarys={salarys}
                                         />
                                         <AttachmentTab
                                             id={`view_attachments${_id}`}
                                             employee={x}
-                                            file={x.file}
+                                            files={x.files}
                                         />
                                     </div>
                                 </div>

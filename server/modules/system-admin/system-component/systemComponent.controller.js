@@ -8,7 +8,7 @@ exports.getAllSystemComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: ['get_components_default_success'],
+            messages: ['get_components_default_success'],
             content: components
         });
     } catch (error) {
@@ -16,7 +16,7 @@ exports.getAllSystemComponents = async (req, res) => {
         LogError(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -31,7 +31,7 @@ exports.getPaginatedSystemComponents = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
         res.status(200).json({
             success: true,
-            message: ['paginate_components_default_success'],
+            messages: ['paginate_components_default_success'],
             content: components
         });
     } catch (error) {
@@ -39,22 +39,25 @@ exports.getPaginatedSystemComponents = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
 
 exports.createSystemComponent = async (req, res) => {
     try {
+        
         const { name, description, link, roles } = req.body;
         const component = await ComponentDefaultServices.createSystemComponent(name, description, link, roles);
+        
         await ComponentDefaultServices.addSystemComponentsToSystemLink(link, component._id);
+       
         const data = await ComponentDefaultServices.getSystemComponent(component._id);
 
         LogInfo(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: ['create_system_component_success'],
+            messages: ['create_system_component_success'],
             content: data
         });
     } catch (error) {
@@ -62,7 +65,7 @@ exports.createSystemComponent = async (req, res) => {
         LogError(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -74,7 +77,7 @@ exports.getSystemComponent = async (req, res) => {
         LogInfo(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: ['show_system_component_success'],
+            messages: ['show_system_component_success'],
             content: component
         });
     } catch (error) {
@@ -82,7 +85,7 @@ exports.getSystemComponent = async (req, res) => {
         LogError(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -96,7 +99,7 @@ exports.editSystemComponent = async (req, res) => {
         LogInfo(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: ['edit_system_component_success'],
+            messages: ['edit_system_component_success'],
             content: resComponent
         });
     } catch (error) {
@@ -104,7 +107,7 @@ exports.editSystemComponent = async (req, res) => {
         LogError(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };
@@ -117,7 +120,7 @@ exports.deleteSystemComponent = async (req, res) => {
         LogInfo(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(200).json({
             success: true,
-            message: ['delete_system_component_success'],
+            messages: ['delete_system_component_success'],
             content: component
         });
     } catch (error) {
@@ -125,7 +128,7 @@ exports.deleteSystemComponent = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            message: error
+            messages: error
         });
     }
 };

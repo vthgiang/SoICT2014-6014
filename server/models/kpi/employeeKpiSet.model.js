@@ -22,7 +22,7 @@ const EmployeeKpiSetSchema = new Schema({
         ref: User,
         required: true
     },
-    time: {
+    date: {
         type: Date,
         required: true
     },
@@ -47,6 +47,60 @@ const EmployeeKpiSetSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: EmployeeKpi,
         required: true
+    }],
+    comments: [{ // Trao đổi khi thiết lập KPIs
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: User,
+            required: true
+        },
+        content: {
+            type: String,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type : Date,
+            default: Date.now
+        },
+        files: [{ // Các file đi kèm comments
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+                required: true
+            }
+        }],
+        comments: [{  // Comments của comment
+            creator: {
+                type: Schema.Types.ObjectId,
+                ref: User,
+                required: true
+            },
+            content: {
+                type: String,
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            },
+            updatedAt: {
+                type : Date,
+                default: Date.now
+            },
+            files: [{ // Các file đi kèm comments
+                name: {
+                    type: String,
+                },
+                url: {
+                    type: String,
+                    required: true
+                }
+            }],
+        }],
     }]
 }, {
     timestamps: true

@@ -1,6 +1,5 @@
 import { RoleServices } from "./services";
 import { RoleConstants } from "./constants";
-import { AlertActions } from "../../../alert/redux/actions";
 
 export const RoleActions = {
     get,
@@ -22,7 +21,7 @@ function get(){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
                 dispatch({ type: RoleConstants.GET_ROLES_FAILE});
             })
     }
@@ -39,7 +38,7 @@ function getPaginate(data){
                 })
             })
             .catch(err => {
-                AlertActions.handleAlert(dispatch, err);
+                
                 dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_FAILE});
             })
     }
@@ -57,7 +56,7 @@ function show(id){
             })
             .catch(err => {
                 dispatch({ type: RoleConstants.SHOW_ROLE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
+                
             })
     }
 }
@@ -65,43 +64,33 @@ function show(id){
 function create(role){
     return dispatch => {
         dispatch({ type: RoleConstants.CREATE_ROLE_REQUEST});
-        return new Promise((resolve, reject) => {
-            RoleServices
-                .create(role)
-                .then(res => {
-                    dispatch({
-                        type: RoleConstants.CREATE_ROLE_SUCCESS,
-                        payload: res.data.content
-                    });
-                    resolve(res);
-                })
-                .catch(err => {
-                    dispatch({ type: RoleConstants.CREATE_ROLE_FAILE});
-                    AlertActions.handleAlert(dispatch, err);
-                    reject(err);
-                })
-        })
+        RoleServices
+            .create(role)
+            .then(res => {
+                dispatch({
+                    type: RoleConstants.CREATE_ROLE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ type: RoleConstants.CREATE_ROLE_FAILE});
+            })
     }
 }
 
 function edit(role){
     return dispatch => {
         dispatch({ type: RoleConstants.EDIT_ROLE_REQUEST});
-        return new Promise((resolve, reject) => {
-            RoleServices.edit(role)
+        RoleServices.edit(role)
             .then(res => {
                 dispatch({
                     type: RoleConstants.EDIT_ROLE_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
                 dispatch({ type: RoleConstants.EDIT_ROLE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
-                reject(err);
             })
-        })
     }
 }
 
@@ -117,7 +106,6 @@ function destroy(roleId){
             })
             .catch(err => {
                 dispatch({ type: RoleConstants.DELETE_ROLE_FAILE});
-                AlertActions.handleAlert(dispatch, err);
             })
     }
 }

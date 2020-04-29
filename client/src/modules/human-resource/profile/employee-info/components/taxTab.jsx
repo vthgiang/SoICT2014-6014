@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class TabTaxViewContent extends Component {
+class TaxTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -12,13 +12,13 @@ class TabTaxViewContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                ATM: nextProps.employee.ATM,
-                nameBank: nextProps.employee.addressBank,
-                addressBank: nextProps.employee.addressBank,
-                numberTax: nextProps.employee.numberTax,
-                userTax: nextProps.employee.userTax,
-                startTax: nextProps.employee.startTax,
-                unitTax: nextProps.employee.unitTax,
+                atmNumber: nextProps.employee.atmNumber,
+                bankName: nextProps.employee.bankName,
+                bankAddress: nextProps.employee.bankAddress,
+                taxNumber: nextProps.employee.taxNumber,
+                taxRepresentative: nextProps.employee.taxRepresentative,
+                taxDateOfIssue: nextProps.employee.taxDateOfIssue,
+                taxAuthority: nextProps.employee.taxAuthority,
             }
         } else {
             return null;
@@ -26,7 +26,7 @@ class TabTaxViewContent extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { ATM, nameBank, addressBank, numberTax, userTax, startTax, unitTax } = this.state;
+        const { atmNumber, bankName, bankAddress, taxNumber, taxRepresentative, taxDateOfIssue, taxAuthority } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -35,15 +35,15 @@ class TabTaxViewContent extends Component {
                         <div className="row">
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.account_number')}&emsp; </strong>
-                                {ATM}
+                                {atmNumber}
                             </div>
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.bank_name')}&emsp; </strong>
-                                {nameBank}
+                                {bankName}
                             </div>
                             <div className="form-group col-md-4">
                                 <strong>{translate('manage_employee.bank_branch')}&emsp; </strong>
-                                {addressBank}
+                                {bankAddress}
                             </div>
                         </div>
                     </fieldset>
@@ -51,19 +51,19 @@ class TabTaxViewContent extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.personal_income_tax')}</h4></legend>
                         <div className="form-group">
                             <strong>{translate('manage_employee.tax_number')}&emsp; </strong>
-                            {numberTax}
+                            {taxNumber}
                         </div>
                         <div className="form-group">
                             <strong>{translate('manage_employee.representative')}&emsp; </strong>
-                            {userTax}
+                            {taxRepresentative}
                         </div>
                         <div className="form-group">
                             <strong>{translate('manage_employee.day_active')}&emsp; </strong>
-                            {startTax}
+                            {taxDateOfIssue}
                         </div>
                         <div className="form-group">
                             <strong>{translate('manage_employee.managed_by')}&emsp; </strong>
-                            {unitTax}
+                            {taxAuthority}
                         </div>
                     </fieldset>
                 </div>
@@ -72,5 +72,5 @@ class TabTaxViewContent extends Component {
     }
 };
 
-const tabGeneral = connect(null, null)(withTranslate(TabTaxViewContent));
-export { tabGeneral as TabTaxViewContent };
+const tabGeneral = connect(null, null)(withTranslate(TaxTab));
+export { tabGeneral as TaxTab };
