@@ -11,7 +11,7 @@ class RepairUpgradeManager extends Component {
         super(props);
         this.state = {
             repairNumber: "",
-            assetNumber: "",
+            // assetNumber: "",
             month: "",
             type: null,
             status: null,
@@ -21,7 +21,7 @@ class RepairUpgradeManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.searchRepairUpgrades(this.state);
+        this.props.searchRepairUpgrades(this.state);
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -160,9 +160,9 @@ class RepairUpgradeManager extends Component {
                                 options={{ nonSelectedText: "Chọn loại phiếu", allSelectedText: "Chọn tất cả các loại phiếu" }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "repair", text: "Sửa chữa" },
-                                    { value: "substitute", text: "Thay thế" },
-                                    { value: "upgrade", text: "Nâng cấp" }
+                                    { value: "Sửa chữa", text: "Sửa chữa" },
+                                    { value: "Thay thế", text: "Thay thế" },
+                                    { value: "Nâng cấp", text: "Nâng cấp" }
                                 ]}
                             >
                             </SelectMulti>
@@ -184,9 +184,9 @@ class RepairUpgradeManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "complete", text: "Đã thực hiện" },
-                                    { value: "processing", text: "Đang thực hiện" },
-                                    { value: "plan", text: "Chưa thực hiện" }
+                                    { value: "Đã thực hiện", text: "Đã thực hiện" },
+                                    { value: "Đang thực hiện", text: "Đang thực hiện" },
+                                    { value: "Chưa thực hiện", text: "Chưa thực hiện" }
                                 ]}
                             >
                             </SelectMulti>
@@ -233,8 +233,8 @@ class RepairUpgradeManager extends Component {
                             {(typeof listRepairUpgrades !== 'undefined' && listRepairUpgrades.length !== 0) &&
                                 listRepairUpgrades.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.asset.assetNumber}</td>
-                                        <td>{x.asset.assetName}</td>
+                                        <td>{x.assetNumber}</td>
+                                        <td>{x.assetName}</td>
                                         <td>{x.repairNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.type}</td>
@@ -269,10 +269,11 @@ class RepairUpgradeManager extends Component {
                     <RepairUpgradeEditForm
                         _id={this.state.currentRow._id}
                         repairNumber={this.state.currentRow.repairNumber}
-                        createDate={this.state.currentRow.createDate}
+                        dateCreate={this.state.currentRow.dateCreate}
                         type={this.state.currentRow.type}
                         assetNumber={this.state.currentRow.assetNumber}
                         assetName={this.state.currentRow.assetName}
+                        reason={this.state.currentRow.reason}
                         repairDate={this.state.currentRow.repairDate}
                         completeDate={this.state.currentRow.completeDate}
                         cost={this.state.currentRow.cost}
@@ -290,7 +291,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // searchRepairUpgrades: RepairUpgradeActions.searchRepairUpgrades,
+    searchRepairUpgrades: RepairUpgradeActions.searchRepairUpgrades,
     deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
 };
 

@@ -27,7 +27,7 @@ const RepairUpgradeSchema = new Schema({
     },
     reason: {// nội dung, lý do
         type: String,
-        required: String
+        required: true
 
     },
     repairDate: {//Ngày bắt đầu sửa

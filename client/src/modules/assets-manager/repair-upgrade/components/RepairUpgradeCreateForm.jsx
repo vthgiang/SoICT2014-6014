@@ -178,7 +178,7 @@ class RepairUpgradeCreateForm extends Component {
         let result =
             this.validateRepairNumber(this.state.repairNumber, false) &&
             this.validateDateCreate(this.state.dateCreate, false) &&
-            this.validateAssetNumber(this.state.assetNumber, false) &&
+            // this.validateAssetNumber(this.state.assetNumber, false) &&
             this.validateReason(this.state.reason, false) &&
             this.validateRepairDate(this.state.repairDate, false) &&
             this.validateCost(this.state.cost, false)
@@ -234,14 +234,15 @@ class RepairUpgradeCreateForm extends Component {
                                     </select>
                                 </div>
                                 
-                                <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}> */}
+                                <div className="form-group">
                                     <label>Mã tài sản<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Mã tài sản" />
-                                    <ErrorLabel content={errorOnAssetNumber} />
+                                    {/* <ErrorLabel content={errorOnAssetNumber} /> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Tên tài sản</label>
-                                    <input type="text" className="form-control" name="assetName" />
+                                    <input type="text" className="form-control" name="assetName" value={assetName} />
                                 </div>
                             </div>
                             <div className="col-sm-6">
@@ -276,9 +277,9 @@ class RepairUpgradeCreateForm extends Component {
                                 <div className="form-group">
                                     <label>Trạng thái</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="complete">Đã thực hiện</option>
-                                        <option value="processing">Đang thực hiện</option>
-                                        <option value="plan">Chưa thực hiện</option>
+                                        <option value="Đã thực hiện">Đã thực hiện</option>
+                                        <option value="Đang thực hiện">Đang thực hiện</option>
+                                        <option value="Chưa thực hiện">Chưa thực hiện</option>
                                     </select>
                                 </div>
                             </div>

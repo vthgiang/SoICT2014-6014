@@ -2,118 +2,127 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
-// import { RecommendProcureFromValidator } from './RecommendProcureFromValidator';
-// import { RecommendProcureActions } from '../redux/actions';
+import { RecommendProcureFromValidator } from '../../recommend-procure/components/RecommendProcureFromValidator';
+import { RecommendProcureActions } from '../../recommend-procure/redux/actions';
 class RecommendProcureManagerEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
         this.save = this.save.bind(this);
     }
-    // // Bắt sự kiện thay đổi "Ngày lập"
-    // handleDateCreateChange = (value) => {
-    //     this.setState({
-    //         ...this.state,
-    //         dateCreate: value
-    //     })
-    // }
+    // Bắt sự kiện thay đổi "Ngày lập"
+    handleDateCreateChange = (value) => {
+        this.setState({
+            ...this.state,
+            dateCreate: value
+        })
+    }
 
-    // // Bắt sự kiện thay đổi "Thiết bị đề nghị mua"
-    // handleEquipmentChange = (e) => {
-    //     let value = e.target.value;
-    //     this.validateEquipment(value, true);
-    // }
-    // validateEquipment = (value, willUpdateState = true) => {
-    //     let msg = RecommendProcureFromValidator.validateEquipment(value, this.props.translate)
-    //     if (willUpdateState) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnEquipment: msg,
-    //                 equipment: value,
-    //             }
-    //         });
-    //     }
-    //     return msg === undefined;
-    // }
-
-    // // Bắt sự kiện thay đổi "Nhà cung cấp"
-    // handleSupplierChange = (e) => {
-    //     let value = e.target.value;
-    //     this.setState({
-    //         ...this.state,
-    //         supplier: value
-    //     })
-    // }
-
-    // // Bắt sự kiện thay đổi "Số lượng"
-    // handleTotalChange = (e) => {
-    //     let value = e.target.value;
-    //     this.validateTotal(value, true);
-    // }
-    // validateTotal = (value, willUpdateState = true) => {
-    //     let msg = RecommendProcureFromValidator.validateTotal(value, this.props.translate)
-    //     if (willUpdateState) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnTotal: msg,
-    //                 total: value,
-    //             }
-    //         });
-    //     }
-    //     return msg === undefined;
-    // }
-
-    // // Bắt sự kiện thay đổi "Đơn vị tính"
-    // handleUnitChange = (e) => {
-    //     let value = e.target.value;
-    //     this.validateUnit(value, true);
-    // }
-    // validateUnit = (value, willUpdateState = true) => {
-    //     let msg = RecommendProcureFromValidator.validateUnit(value, this.props.translate)
-    //     if (willUpdateState) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnUnit: msg,
-    //                 unit: value,
-    //             }
-    //         });
-    //     }
-    //     return msg === undefined;
-    // }
-
-    // // Bắt sự kiện thay đổi "Giá trị dự tính"
-    // handleEstimatePriceChange = (e) => {
-    //     let value = e.target.value;
-    //     this.setState({
-    //         ...this.state,
-    //         estimatePrice: value
-    //     })
-    // }
-
-        // Bắt sự kiện thay đổi trạng thái phiếu đề nghị mua sắm thiết bị
-        handleStatusChange = (e) => {
-            let value = e.target.value;
-            this.setState({
-                ...this.state,
-                status: value
-            })
+    // Bắt sự kiện thay đổi "Thiết bị đề nghị mua"
+    handleEquipmentChange = (e) => {
+        let value = e.target.value;
+        this.validateEquipment(value, true);
+    }
+    validateEquipment = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateEquipment(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEquipment: msg,
+                    equipment: value,
+                }
+            });
         }
+        return msg === undefined;
+    }
 
-    // // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    // isFormValidated = () => {
-    //     let result =
-    //         this.validateEquipment(this.state.equipment, false) &&
-    //         this.validateTotal(this.state.total, false) &&
-    //         this.validateUnit(this.state.unit, false);
-    //     return result;
-    // }
+    // Bắt sự kiện thay đổi "Nhà cung cấp"
+    handleSupplierChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            supplier: value
+        })
+    }
+
+    // Bắt sự kiện thay đổi "Số lượng"
+    handleTotalChange = (e) => {
+        let value = e.target.value;
+        this.validateTotal(value, true);
+    }
+    validateTotal = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateTotal(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnTotal: msg,
+                    total: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi "Đơn vị tính"
+    handleUnitChange = (e) => {
+        let value = e.target.value;
+        this.validateUnit(value, true);
+    }
+    validateUnit = (value, willUpdateState = true) => {
+        let msg = RecommendProcureFromValidator.validateUnit(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnUnit: msg,
+                    unit: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi "Giá trị dự tính"
+    handleEstimatePriceChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            estimatePrice: value
+        })
+    }
+
+    // Bắt sự kiện thay đổi trạng thái phiếu đề nghị mua sắm thiết bị
+    handleStatusChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            status: value
+        })
+    }
+
+    // Bắt sự kiện thay đổi "Nhà cung cấp"
+    handleNoteChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            note: value
+        })
+    }
+
+    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    isFormValidated = () => {
+        let result =
+            this.validateEquipment(this.state.equipment, false) &&
+            this.validateTotal(this.state.total, false) &&
+            this.validateUnit(this.state.unit, false);
+        return result;
+    }
 
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.updateRecommendProcure(this.state._id, this.state);
+            return this.props.updateRecommendProcure(this.state._id, this.state);
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -224,9 +233,9 @@ class RecommendProcureManagerEditForm extends Component {
                                 <div className="form-group">
                                     <label>Trạng thái</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="complete">Đã thực hiện</option>
-                                        <option value="processing">Đang thực hiện</option>
-                                        <option value="plan">Chưa thực hiện</option>
+                                        <option value="Đã chấp nhận">Đã chấp nhận</option>
+                                        <option value="Chờ phê duyệt">Chờ phê duyệt</option>
+                                        <option value="Không chấp nhận">Không chấp nhận</option>
                                     </select>
                                 </div>
                                 <div className="form-group">
@@ -248,7 +257,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // updateRecommendProcure: RecommendProcureActions.updateRecommendProcure,
+    updateRecommendProcure: RecommendProcureActions.updateRecommendProcure,
 };
 
 const editRecommendProcureManager = connect(mapState, actionCreators)(withTranslate(RecommendProcureManagerEditForm));

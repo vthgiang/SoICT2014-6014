@@ -24,7 +24,8 @@ router.delete('/:id',auth, AssetTypeController.deleteAssetType);
  */
 router.put('/:id',auth, AssetTypeController.updateAssetType);
 
-module.exports = router;
-
 // Kiểm tra sự tồn tại của typeNumber
 router.get('/checkTypeNumber/:typeNumber', auth, AssetTypeController.checkTypeNumber);
+
+module.exports = router;
+

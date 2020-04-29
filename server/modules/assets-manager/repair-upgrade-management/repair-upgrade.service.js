@@ -1,73 +1,84 @@
-// const AssetService = require('../asset-management/asset.service');
-const { Asset, RepairUpgrade} = require('../../../models').schema;
+const RepairUpgrade = require('../../../models/asset/repairUpgrade.model');
 
 /**
- * Lấy danh sách thông tin sửa chữa - thay thế - nâng cấp
- * @data: dữ liệu key tìm kiếm
- * @company: id công ty người dùng
- */ 
-exports.searchRepairUpgrades = async (data, company) => {
-    
+ * Lấy danh sách phiếu sửa chữa - thay thế - nâng cấp
+ */
+exports.searchRepairUpgrades = async (company) => {
+    var listRepairUpgrades = await RepairUpgrade.find({
+        company: company
+    })
+    return listRepairUpgrades;
 }
 
 /**
- * Thêm mới thông tin sửa chữa - thay thế - nâng cấp
- * @data: dữ liệu thông tin sửa chữa - thay thế - nâng cấp
- * @company: id công ty người tạo
- */ 
+ * Thêm mới thông tin phiếu sửa chữa - thay thế - nâng cấp
+ * @data: dữ liệu phiếu sửa chữa - thay thế - nâng cấp
+ */
 exports.createRepairUpgrade = async (data, company) => {
-    // Lấy thông tin tài sản theo mã số tài sản
-    var assetInfo = await Asset.findOne({ assetNumber: data.assetNumber, company: company }, { _id: 1, company: 1  });
-    if(assetInfo!==null){
-        // Tạo mới thông tin sửa chữa - thay thế - nâng cấp vào database
-        var createRepairUpgrade = await RepairUpgrade.create({
-            asset: assetInfo._id,
-            company: company,
-            repairNumber: data.repairNumber,
-            type: data.type,
-            dateCreate: data.dateCreate,
-            reason: data.reason,
-            repairDate: data.repairDate,
-            completeDate: data.completeDate,
-            cost: data.cost,
-            status: data.status
-        });
-        
-        return createRepairUpgrade;
-    } else return null;
+    console.log(data);
+    var createRepairUpgrade = await RepairUpgrade.create({
+        company: company,
+        repairNumber: data.repairNumber,
+        dateCreate: data.dateCreate,
+        type: data.type,
+        asset: null,
+        reason: data.reason,
+        repairDate: data.repairDate,
+        completeDate: data.completeDate,
+        cost: data.cost,
+        status: data.status
+    });
+    return createRepairUpgrade;
 }
 
 /**
- * Xoá thông tin sửa chữa - thay thế - nâng cấp
- * @id: id thông tin sửa chữa - thay thế - nâng cấp muốn xoá
- */ 
+ * Xoá thông tin phiếu sửa chữa - thay thế - nâng cấp
+ * @id: id phiếu sửa chữa - thay thế - nâng cấp muốn xoá
+ */
 exports.deleteRepairUpgrade = async (id) => {
-    return await RepairUpgrade.findOneAndDelete({ _id: id });
+    return await RepairUpgrade.findOneAndDelete({
+        _id: id
+    });
 }
 
 /**
- * Cập nhật thông tin sửa chữa - thay thế - nâng cấp
- * @id: id thông tin sửa chữa - thay thế - nâng cấp muốn chỉnh sửa
- * @data: dữ liệu thay đổi
- */ 
+ * Update thông tin phiếu sửa chữa - thay thế - nâng cấp
+ * @id: id phiếu sửa chữa - thay thế - nâng cấp muốn update
+ */
 exports.updateRepairUpgrade = async (id, data) => {
-    // Lấy thông tin tài sản theo mã số tài sản
-    var assetInfo = await Asset.findOne({ assetNumber: data.assetNumber }, { _id: 1, company: 1 });
-    if(assetInfo!==null){
-        var RepairUpgradeChange = {
-            asset: assetInfo._id,
-            repairNumber: data.repairNumber,
-            type: data.type,
-            dateCreate: data.dateCreate,
-            reason: data.reason,
-            repairDate: data.repairDate,
-            completeDate: data.completeDate,
-            cost: data.cost,
-            status: data.status
-        };
-        // Cập nhật thông tin nghỉ phép vào database
-        await RepairUpgrade.findOneAndUpdate({ _id: id }, { $set: RepairUpgradeChange });
-        
-        return RepairUpgradeChange
-    } else return null;
+    var repairUpgradeChange = {
+        repairNumber: data.repairNumber,
+        dateCreate: data.dateCreate,
+        type: data.type,
+        asset: null,
+        reason: data.reason,
+        repairDate: data.repairDate,
+        completeDate: data.completeDate,
+        cost: data.cost,
+        status: data.status
+    };
+    // Cập nhật thông tin phiếu sửa chữa - thay thế - nâng cấp vào database
+    await RepairUpgrade.findOneAndUpdate({
+        _id: id
+    }, {
+        $set: repairUpgradeChange
+    });
+    return await RepairUpgrade.findOne({
+        _id: id
+    })
+}
+
+// Kiểm tra sự tồn tại của mã phiếu
+exports.checkRepairUpgradeExisted = async (repairNumber, company) => {
+    var idRepairNumber = await RepairUpgrade.find({
+        repairNumber: repairNumber,
+        company: company
+    }, {
+        field1: 1
+    })
+    var checkRepairNumber = false;
+    if (idRepairNumber.length !== 0) {
+        checkRepairNumber = true
+    }
+    return checkRepairNumber;
 }

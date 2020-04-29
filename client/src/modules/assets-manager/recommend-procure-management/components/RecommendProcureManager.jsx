@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 // import { RecommendProcureCreateForm } from './RecommendProcureCreateForm';
 import { RecommendProcureManagerEditForm } from './RecommendProcureManagerEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-
+import { RecommendProcureActions } from '../../recommend-procure/redux/actions';
 
 class RecommendProcureManager extends Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class RecommendProcureManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -82,7 +82,7 @@ class RecommendProcureManager extends Component {
                 month: this.formatDate(Date.now())
             })
         }
-        // this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -90,7 +90,7 @@ class RecommendProcureManager extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        // this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -100,15 +100,15 @@ class RecommendProcureManager extends Component {
             page: parseInt(page),
 
         });
-        // this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
 
     render() {
         const { translate, recommendProcure } = this.props;
-        var listRecommendProcure = "";
+        var listRecommendProcures = "";
 
         if (this.props.recommendProcure.isLoading === false) {
-            listRecommendProcure = this.props.recommendProcure.listRecommendProcure;
+            listRecommendProcures = this.props.recommendProcure.listRecommendProcures;
         }
         var pageTotal = ((this.props.recommendProcure.totalList % this.state.limit) === 0) ?
             parseInt(this.props.recommendProcure.totalList / this.state.limit) :
@@ -186,8 +186,8 @@ class RecommendProcureManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listRecommendProcure !== 'undefined' && listRecommendProcure.length !== 0) &&
-                                listRecommendProcure.map((x, index) => (
+                            {(typeof listRecommendProcures !== 'undefined' && listRecommendProcures.length !== 0) &&
+                                listRecommendProcures.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
@@ -213,7 +213,7 @@ class RecommendProcureManager extends Component {
                     </table>
                     {recommendProcure.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listRecommendProcure === 'undefined' || listRecommendProcure.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listRecommendProcures === 'undefined' || listRecommendProcures.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -221,9 +221,19 @@ class RecommendProcureManager extends Component {
                 {
                     this.state.currentRow !== undefined &&
                     <RecommendProcureManagerEditForm
-                        _id={this.state.currentRow._id}
-                        note={this.state.currentRow.note}
-                        status={this.state.currentRow.status}
+                    _id={this.state.currentRow._id}
+                    recommendNumber={this.state.currentRow.recommendNumber}
+                    dateCreate={this.state.currentRow.dateCreate}
+                    proponent={this.state.currentRow.proponent}
+                    equipment={this.state.currentRow.equipment}
+                    supplier={this.state.currentRow.supplier}
+                    total={this.state.currentRow.total} 
+                    unit={this.state.currentRow.unit} 
+                    estimatePrice={this.state.currentRow.estimatePrice} 
+                    approver={this.state.currentRow.approver} 
+
+
+                    status={this.state.currentRow.status}
                     />
                 }
             </div >
@@ -237,7 +247,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // getListRecommendProcure: RecommendProcureActions.getListRecommendProcure,
+    searchRecommendProcures: RecommendProcureActions.searchRecommendProcures,
     // deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
 };
 

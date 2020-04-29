@@ -5,23 +5,26 @@ const { auth } = require('../../../middleware');
 const RepairUpgradeController = require("./repair-upgrade.controller");
 
 /**
- * Lấy danh sách nghỉ phép
+ * Lấy danh sách phiếu sửa chữa - thay thế - nâng cấp
  */ 
 router.post('/paginate',auth, RepairUpgradeController.searchRepairUpgrades);
 
 /**
- * thêm mới nghỉ phép
+ * thêm mới phiếu sửa chữa - thay thế - nâng cấp
  */ 
 router.post('/create',auth, RepairUpgradeController.createRepairUpgrade);
 
 /**
- * Xoá thông tin nghỉ phép
+ * Xoá thông tin phiếu sửa chữa - thay thế - nâng cấp
  */
 router.delete('/:id',auth, RepairUpgradeController.deleteRepairUpgrade);
 
 /**
- * Cập nhật thông tin nghỉ phép
+ * Cập nhật thông tin phiếu sửa chữa - thay thế - nâng cấp
  */
 router.put('/:id',auth, RepairUpgradeController.updateRepairUpgrade);
+
+// Kiểm tra sự tồn tại của mã phiếu
+router.get('/checkRepairNumber/:repairNumber', auth, RepairUpgradeController.checkRepairNumber);
 
 module.exports = router;

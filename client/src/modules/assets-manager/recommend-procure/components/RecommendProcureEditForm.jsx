@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { RecommendProcureFromValidator } from './RecommendProcureFromValidator';
-// import { RecommendProcureActions } from '../redux/actions';
+import { RecommendProcureActions } from '../redux/actions';
 class RecommendProcureEditForm extends Component {
     constructor(props) {
         super(props);
@@ -104,7 +104,7 @@ class RecommendProcureEditForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.updateRecommendProcure(this.state._id, this.state);
+            return this.props.updateRecommendProcure(this.state._id, this.state);
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -213,7 +213,7 @@ class RecommendProcureEditForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled />
+                                    <input type="text" className="form-control" name="status" value={status} disabled />
                                 </div>
                                 <div className="form-group">
                                     <label>Ghi chú</label>
@@ -234,7 +234,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // updateRecommendProcure: RecommendProcureActions.updateRecommendProcure,
+    updateRecommendProcure: RecommendProcureActions.updateRecommendProcure,
 };
 
 const editRecommendProcure = connect(mapState, actionCreators)(withTranslate(RecommendProcureEditForm));

@@ -1,5 +1,6 @@
-import { RepairUpgradeConstants } from "./constants";
-import { RepairUpgradeService } from "./services";
+import {RepairUpgradeConstants} from "./constants";
+import {RepairUpgradeService} from "./services";
+
 export const RepairUpgradeActions = {
     searchRepairUpgrades,
     createNewRepairUpgrade,
@@ -7,8 +8,9 @@ export const RepairUpgradeActions = {
     updateRepairUpgrade,
 };
 
-// Lấy danh sách sửa chữa - thay thế - nâng cấp
+// lấy danh sách phiếu sửa chữa - thay thế - nâng cấp
 function searchRepairUpgrades(data) {
+
     return dispatch => {
         dispatch({
             type: RepairUpgradeConstants.GET_REPAIR_UPGRADE_REQUEST
@@ -29,7 +31,7 @@ function searchRepairUpgrades(data) {
     }
 }
 
-// Tạo mới thông tin sửa chữa - thay thế - nâng cấp
+// Tạo mới thông tin phiếu sửa chữa - thay thế - nâng cấp
 function createNewRepairUpgrade(data) {
     return dispatch => {
         dispatch({
@@ -51,7 +53,7 @@ function createNewRepairUpgrade(data) {
     }
 }
 
-// Xoá thông tin sửa chữa - thay thế - nâng cấp của tài sản
+// Xoá thông tin thông tin phiếu sửa chữa - thay thế - nâng cấp
 function deleteRepairUpgrade(id) {
     return dispatch => {
         dispatch({
@@ -73,7 +75,7 @@ function deleteRepairUpgrade(id) {
     }
 }
 
-// cập nhật thông tin sửa chữa - thay thế - nâng cấp của tài sản
+// cập nhật thông tin phiếu sửa chữa - thay thế - nâng cấp
 function updateRepairUpgrade(id, infoRepairUpgrade) {
     return dispatch => {
         dispatch({

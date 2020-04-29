@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
 import { RecommendProcureFromValidator } from './RecommendProcureFromValidator';
-// import { RecommendProcureActions } from '../redux/actions';
+import { RecommendProcureActions } from '../redux/actions';
 class RecommendProcureCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -40,7 +40,7 @@ class RecommendProcureCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi mã phiếu
-    handleMSNVChange = (e) => {
+    handleRecommendNumberChange = (e) => {
         let value = e.target.value;
         this.validateRecommendNumber(value, true);
     }
@@ -153,7 +153,7 @@ class RecommendProcureCreateForm extends Component {
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            // return this.props.createNewRecommendProcure(this.state);
+            return this.props.createRecommendProcure(this.state);
         }
     }
 
@@ -178,7 +178,7 @@ class RecommendProcureCreateForm extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnRecommendNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleMSNVChange} autoComplete="off" placeholder="Mã phiếu" />
+                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />
                                 </div>
                                 <div className="form-group">
@@ -259,7 +259,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // createNewRecommendProcure: RecommendProcureActions.createNewRecommendProcure,
+    createRecommendProcure: RecommendProcureActions.createRecommendProcure,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(RecommendProcureCreateForm));

@@ -1,11 +1,30 @@
-// const express = require("express");
-// const router = express.Router();
-// const {auth} = require('../../../middleware');
-// const recommendProcurementController = require("./recommend-procurement.controller");
+const express = require("express");
+const router = express.Router();
+const { auth } = require('../../../middleware');
 
-// router.get('/', recommendProcurementController.get);
-// router.get('/:id', recommendProcurementController.getById);
-// router.post('/create', auth, recommendProcurementController.create);
-// router.patch('/edit/:id',auth,recommendProcurementController.edit);
+const RecommendProcureController = require("./recommend-procurement.controller");
 
-// module.exports = router;
+/**
+ * Lấy danh sách phiếu đề nghị mua sắm thiết bị
+ */ 
+router.post('/paginate',auth, RecommendProcureController.searchRecommendProcures);
+
+/**
+ * thêm mới phiếu đề nghị mua sắm thiết bị
+ */ 
+router.post('/create',auth, RecommendProcureController.createRecommendProcure);
+
+/**
+ * Xoá bẳng thông tin phiếu đề nghị mua sắm thiết bị
+ */
+router.delete('/:id',auth, RecommendProcureController.deleteRecommendProcure);
+
+/**
+ * Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
+ */
+router.put('/:id',auth, RecommendProcureController.updateRecommendProcure);
+
+// Kiểm tra sự tồn tại của mã phiếu
+router.get('/checkRecommendNumber/:recommendNumber', auth, RecommendProcureController.checkRecommendNumber);
+
+module.exports = router;

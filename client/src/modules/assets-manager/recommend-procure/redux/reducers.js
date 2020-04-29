@@ -1,49 +1,51 @@
 import { RecommendProcureConstants } from './constants';
 const initState = {
     isLoading: false,
-    listRecommendProcure: [],
+    listRecommendProcures: [],
     totalList: "",
     error:"",
 }
 export function recommendProcure(state =initState, action) {
     switch (action.type) {
-        case RecommendProcureConstants.GET_RECOMMENDPROCURE_REQUEST:
-        case RecommendProcureConstants.CREATE_RECOMMENDPROCURE_REQUEST:
-        case RecommendProcureConstants.DELETE_RECOMMENDPROCURE_REQUEST:
-        case RecommendProcureConstants.UPDATE_RECOMMENDPROCURE_REQUEST:
+        case RecommendProcureConstants.GET_RECOMMEND_PROCURE_REQUEST:
+        case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_REQUEST:
+        case RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_REQUEST:
+        case RecommendProcureConstants.UPDATE_RECOMMEND_PROCURE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             };
-        case RecommendProcureConstants.GET_RECOMMENDPROCURE_SUCCESS:
+        case RecommendProcureConstants.GET_RECOMMEND_PROCURE_SUCCESS:
+            // console.log(action);
             return {
                 ...state,
                 isLoading: false,
-                listRecommendProcure: action.payload.listRecommendProcure,
-                totalList: action.payload.totalList,   
+                listRecommendProcures: action.payload,
+                //totalList: action.payload.totalList,
             };
-        case RecommendProcureConstants.CREATE_RECOMMENDPROCURE_SUCCESS:
+        case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listRecommendProcure: [...state.listRecommendProcure, action.payload],
+                listRecommendProcures: [...state.listRecommendProcures, action.payload],
             };
-        case RecommendProcureConstants.DELETE_RECOMMENDPROCURE_SUCCESS:
+        case RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_SUCCESS:
+
             return {
                 ...state,
                 isLoading: false,
-                listRecommendProcure: state.listRecommendProcure.filter(recommendProcure => (recommendProcure._id !== action.payload._id)),
+                listRecommendProcures: state.listRecommendProcures.filter(recommendProcure => (recommendProcure._id !== action.payload._id)),
             };
-        case RecommendProcureConstants.UPDATE_RECOMMENDPROCURE_SUCCESS:
+        case RecommendProcureConstants.UPDATE_RECOMMEND_PROCURE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listRecommendProcure: state.listRecommendProcure.map(recommendProcure =>recommendProcure._id === action.payload._id ?action.payload : recommendProcure),
+                listRecommendProcures: state.listRecommendProcures.map(recommendProcure =>recommendProcure._id === action.payload._id ?action.payload : recommendProcure),
             };
-        case RecommendProcureConstants.GET_RECOMMENDPROCURE_FAILURE:
-        case RecommendProcureConstants.CREATE_RECOMMENDPROCURE_FAILURE:
-        case RecommendProcureConstants.DELETE_RECOMMENDPROCURE_FAILURE:
-        case RecommendProcureConstants.UPDATE_RECOMMENDPROCURE_FAILURE:
+        case RecommendProcureConstants.GET_RECOMMEND_PROCURE_FAILURE:
+        case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_FAILURE:
+        case RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_FAILURE:
+        case RecommendProcureConstants.UPDATE_RECOMMEND_PROCURE_FAILURE:
             return {
                 ...state,
                 isLoading: false,

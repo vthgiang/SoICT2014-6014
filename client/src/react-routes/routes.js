@@ -750,7 +750,7 @@ class Routes extends Component {
                     /> 
 
                     <PrivateRoute 
-                        isLoading={ this.props.repairUpgrade.isLoading }
+                        isLoading={ this.props.distributeTransfer.isLoading }
                         key={ 'manage-distribute-asset' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

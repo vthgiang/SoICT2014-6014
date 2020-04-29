@@ -1,87 +1,94 @@
-// const RecommendProcurements = require('../../../models/recommendProcure.model');
+const RecommendProcure = require('../../../models/asset/recommendProcure.model');
 
-// /**
-//  *
-//  *
-//  * Get all data.
-//  *
-//  */
-// exports.get = (req, res) => {
-//     RecommendProcurements.find()
-//         .then(templates => res.status(200).json(templates))
-//         .catch(err => res.status(400).json({message: err}));
-//     console.log("Get Task Template");
-// };
+/**
+ * Lấy danh sách phiếu đề nghị mua sắm thiết bị
+ */
+exports.searchRecommendProcures = async (company) => {
+    var listRecommendProcures = await RecommendProcure.find({
+        company: company
+    })
+    return listRecommendProcures;
+//
+}
 
-// /**
-//  *
-//  * @params {id}
-//  *
-//  * Get details recommend procurement by id.
-//  *
-//  */
-// exports.getById = async (req, res) => {
-//     try {
-//         var recommendProcurement = await RecommendProcurements.findById(req.params.id).populate("proponent company approver");
-//         res.status(200).json({
-//             "data": recommendProcurement,
-//             "status": true
-//         })
-//     } catch (error) {
-//         res.status(400).json({message: error});
-//     }
-// };
+/**
+ * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
+ * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
+ * @company: id công ty người tạo
+ */
+exports.createRecommendProcure = async (data, company) => {
+    console.log(data);
+    var createRecommendProcure = await RecommendProcure.create({
+        company: company,
+        recommendNumber: data.recommendNumber,
+        dateCreate: data.dateCreate,
+        // proponent: data.proponent, //người đề nghị
+        proponent: null, //người đề nghị
+        equipment: data.equipment,
+        supplier: data.supplier,
+        // approver: data.approver, // người phê duyệt
+        approver: null, // người phê duyệt
+        total: data.total,
+        unit: data.unit,
+        estimatePrice: data.estimatePrice,
+        note: data.note,
+        status: data.status,
+    });
+    return createRecommendProcure;
+}
 
-// /**
-//  *
-//  * @body {request.body}
-//  *
-//  * Create recommend procurement.
-//  *
-//  */
-// exports.create = async (body,res) => {
-//     const recommmendProcurement = new RecommendProcurements(body);
+/**
+ * Xoá thông tin phiếu đề nghị mua sắm thiết bị
+ * @id: id phiếu đề nghị mua sắm thiết bị muốn xoá
+ */
+exports.deleteRecommendProcure = async (id) => {
+    return await RecommendProcure.findOneAndDelete({
+        _id: id
+    });
+}
 
-//     recommmendProcurement.save((err, data) => {
-//         if (err) return res.json({success: false, err});
+/**
+ * Update thông tin phiếu đề nghị mua sắm thiết bị
+ * @id: id phiếu đề nghị mua sắm thiết bị muốn update
+ */
+exports.updateRecommendProcure = async (id, data) => {
+    var recommendProcureChange = {
+        recommendNumber: data.recommendNumber,
+        dateCreate: data.dateCreate,
+        // proponent: data.proponent, //người đề nghị
+        proponent: null, //người đề nghị
+        equipment: data.equipment,
+        supplier: data.supplier,
+        // approver: data.approver, // người phê duyệt
+        approver: null, // người phê duyệt
+        total: data.total,
+        unit: data.unit,
+        estimatePrice: data.estimatePrice,
+        note: data.note,
+        status: data.status,
+    };
+    // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
+    await RecommendProcure.findOneAndUpdate({
+        _id: id
+    }, {
+        $set: recommendProcureChange
+    });
+    return await RecommendProcure.findOne({
+        _id: id
+    })
+}
 
-//         return res.status(200).json({
-//             success: true,
-//             data
-//         });
-//     });
-// };
-
-// /**
-//  *
-//  * @params {id}
-//  *
-//  * Delete recommend procurement by id.
-//  *
-//  */
-// exports.delete = async (id,res) => {
-//     RecommendProcurements.findByIdAndRemove({_id: id}, (err, data) => {
-//         if (err) {
-//             res.json(err);
-//         } else {
-//             res.json("Successfully removed");
-//         }
-//     });
-// };
-
-// /**
-//  *
-//  * @params {id}
-//  *
-//  * Edit recommend procurement.
-//  *
-//  */
-// exports.edit = async (body, id,res) => {
-//     RecommendProcurements.findByIdAndUpdate(id, body, (err, data) => {
-//         if (err) return next(err);
-//         return res.status(200).json({
-//             success: true,
-//             data
-//         });
-//     });
-// };
+// Kiểm tra sự tồn tại của mã phiếu
+exports.checkRecommendProcureExisted = async (recommendNumber, company) => {
+    var idRecommendNumber = await RecommendProcure.find({
+        recommendNumber: recommendNumber,
+        company: company
+    }, {
+        field1: 1
+    })
+    var checkRecommendNumber = false;
+    if (idRecommendNumber.length !== 0) {
+        checkRecommendNumber = true
+    }
+    return checkRecommendNumber;
+}

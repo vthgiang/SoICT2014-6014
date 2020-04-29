@@ -16,11 +16,12 @@ export function repairUpgrade(state =initState, action) {
                 isLoading: true,
             };
         case RepairUpgradeConstants.GET_REPAIR_UPGRADE_SUCCESS:
+            // console.log(action);
             return {
                 ...state,
                 isLoading: false,
-                listRepairUpgrades: action.payload.listRepairUpgrades,
-                totalList: action.payload.totalList,   
+                listRepairUpgrades: action.payload,
+                //totalList: action.payload.totalList,
             };
         case RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_SUCCESS:
             return {
@@ -29,6 +30,7 @@ export function repairUpgrade(state =initState, action) {
                 listRepairUpgrades: [...state.listRepairUpgrades, action.payload],
             };
         case RepairUpgradeConstants.DELETE_REPAIR_UPGRADE_SUCCESS:
+
             return {
                 ...state,
                 isLoading: false,

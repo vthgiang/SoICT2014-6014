@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RecommendProcureCreateForm } from './RecommendProcureCreateForm';
 import { RecommendProcureEditForm } from './RecommendProcureEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { RecommendProcureActions } from '../redux/actions';
+import { RecommendProcureActions } from '../redux/actions';
 
 class RecommendProcure extends Component {
     constructor(props) {
@@ -12,14 +12,14 @@ class RecommendProcure extends Component {
         this.state = {
             recommendNumber: "",
             month: "",
-            status: null,
+            status: "process",
             page: 0,
             limit: 5,
         }
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
     handleEdit = async (value) => {
@@ -82,7 +82,7 @@ class RecommendProcure extends Component {
                 month: this.formatDate(Date.now())
             })
         }
-        // this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -90,7 +90,7 @@ class RecommendProcure extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        // this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
 
     // Bắt sự kiện chuyển trang
@@ -100,15 +100,15 @@ class RecommendProcure extends Component {
             page: parseInt(page),
 
         });
-        this.props.getListRecommendProcure(this.state);
+        this.props.searchRecommendProcures(this.state);
     }
 
     render() {
         const { translate, recommendProcure } = this.props;
-        var listRecommendProcure = "";
+        var listRecommendProcures = "";
 
         if (this.props.recommendProcure.isLoading === false) {
-            listRecommendProcure = this.props.recommendProcure.listRecommendProcure;
+            listRecommendProcures = this.props.recommendProcure.listRecommendProcures;
         }
         var pageTotal = ((this.props.recommendProcure.totalList % this.state.limit) === 0) ?
             parseInt(this.props.recommendProcure.totalList / this.state.limit) :
@@ -144,9 +144,9 @@ class RecommendProcure extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "pass", text: "Đã chấp nhận" },
-                                    { value: "process", text: "Chờ phê duyệt" },
-                                    { value: "faile", text: "Không chấp nhận" }
+                                    { value: "Đã chấp nhận", text: "Đã chấp nhận" },
+                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
+                                    { value: "Không chấp nhận", text: "Không chấp nhận" }
                                 ]}
                             >
                             </SelectMulti>
@@ -186,14 +186,14 @@ class RecommendProcure extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listRecommendProcure !== 'undefined' && listRecommendProcure.length !== 0) &&
-                                listRecommendProcure.map((x, index) => (
+                            {(typeof listRecommendProcures !== 'undefined' && listRecommendProcures.length !== 0) &&
+                                listRecommendProcures.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
-                                        <td>{x.nguoidenghi}</td>
+                                        <td>{x.proponent}</td>
                                         <td>{x.equipment}</td>
-                                        <td>{x.nguoipheduyet}</td>
+                                        <td>{x.approver}</td>
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -213,7 +213,7 @@ class RecommendProcure extends Component {
                     </table>
                     {recommendProcure.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listRecommendProcure === 'undefined' || listRecommendProcure.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listRecommendProcures === 'undefined' || listRecommendProcures.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
@@ -224,8 +224,14 @@ class RecommendProcure extends Component {
                         _id={this.state.currentRow._id}
                         recommendNumber={this.state.currentRow.recommendNumber}
                         dateCreate={this.state.currentRow.dateCreate}
-
-
+                        proponent={this.state.currentRow.proponent}
+                        equipment={this.state.currentRow.equipment}
+                        supplier={this.state.currentRow.supplier}
+                        total={this.state.currentRow.total} 
+                        unit={this.state.currentRow.unit} 
+                        estimatePrice={this.state.currentRow.estimatePrice} 
+                        approver={this.state.currentRow.approver} 
+                        note={this.state.currentRow.note} 
                         status={this.state.currentRow.status}
                     />
                 }
@@ -240,8 +246,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // getListRecommendProcure: RecommendProcureActions.getListRecommendProcure,
-    // deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
+    searchRecommendProcures: RecommendProcureActions.searchRecommendProcures,
+    deleteRecommendProcure: RecommendProcureActions.deleteRecommendProcure,
 };
 
 const connectedListRecommendProcure = connect(mapState, actionCreators)(withTranslate(RecommendProcure));
