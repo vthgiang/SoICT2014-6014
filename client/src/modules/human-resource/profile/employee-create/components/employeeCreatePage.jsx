@@ -8,8 +8,8 @@ import { DisciplineActions } from '../../../commendation-discipline/redux/action
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    GeneralTab, ContactTab, TaxTab, TabInsurranceContent, TabRearDisciplineContent,
-    ExperienceTab, CertificateTab, TabContractContent, TabSalaryContent, TabAttachmentsContent
+    GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
+    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
 } from './combinedContent';
 class EmployeeCreatePage extends Component {
     constructor(props) {
@@ -27,13 +27,13 @@ class EmployeeCreatePage extends Component {
                 brithday: this.formatDate(Date.now()),
                 startTax: this.formatDate(Date.now()),
                 experience: [],
-                BHXH: [],
-                course: []
+                socialInsuranceDetails: [],
+                courses: []
             },
             degrees: [],
             certificates: [],
-            contract: [],
-            file: [],
+            contracts: [],
+            files: [],
             disciplineNew: [],
             praiseNew: [],
             salaryNew: [],
@@ -351,24 +351,24 @@ class EmployeeCreatePage extends Component {
                             id="taikhoan"
                             employee={this.state.employeeNew}
                             handleChange={this.handleChange} />
-                        <TabInsurranceContent
+                        <InsurranceTab
                             id="baohiem"
-                            BHXH={this.state.employeeNew.BHXH}
+                            socialInsuranceDetails={this.state.employeeNew.socialInsuranceDetails}
                             employee={this.state.employeeNew}
                             handleChange={this.handleChange}
                             handleAddBHXH={this.handleChangeBHXH}
                             handleEditBHXH={this.handleChangeBHXH}
                             handleDeleteBHXH={this.handleChangeBHXH}
                         />
-                        <TabContractContent
+                        <ContractTab
                             id="hopdong"
-                            contract={this.state.contract}
-                            course={this.state.employeeNew.course}
+                            contracts={this.state.contracts}
+                            courses={this.state.employeeNew.courses}
                             handleAddContract={this.handleChangeContract}
                             handleEditContract={this.handleChangeContract}
                             handleDeleteContract={this.handleChangeContract}
                         />
-                        <TabRearDisciplineContent
+                        <DisciplineTab
                             id="khenthuong"
                             praise={this.state.praiseNew}
                             discipline={this.state.disciplineNew}
@@ -379,7 +379,7 @@ class EmployeeCreatePage extends Component {
                             handleEditDiscipline={this.handleChangeDiscipline}
                             handleDeleteDiscipline={this.handleChangeDiscipline}
                         />
-                        <TabSalaryContent
+                        <SalaryTab
                             id="historySalary"
                             salary={this.state.salaryNew}
                             sabbatical={this.state.sabbaticalNew}
@@ -390,7 +390,7 @@ class EmployeeCreatePage extends Component {
                             handleEditSabbatical={this.handleChangeSabbatical}
                             handleDeleteSabbatical={this.handleChangeSabbatical}
                         />
-                        <TabAttachmentsContent
+                        <FileTab
                             id="pageAttachments"
                             file={this.state.file}
                             employee={this.state.employeeNew}

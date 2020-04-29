@@ -75,26 +75,26 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async(organizationa
  */ 
 exports.getEmployeeProfile = async (email) => {
     
-    let employee = await Employee.find({
+    let employees = await Employee.find({
         emailInCompany: email
     });
-    if(employee.length === 0){
-        return { employee: employee}
+    if(employees.length === 0){
+        return { employees: employees}
     } else {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(email);
-        let salary = await Salary.find({
-            employee: employee[0]._id
+        let salarys = await Salary.find({
+            employee: employees[0]._id
         })
-        let annualLeave = await AnnualLeave.find({
-            employee: employee[0]._id
+        let annualLeaves = await AnnualLeave.find({
+            employee: employees[0]._id
         })
-        let commendation = await Commendation.find({
-            employee: employee[0]._id
+        let commendations = await Commendation.find({
+            employee: employees[0]._id
         })
-        let discipline = await Discipline.find({
-            employee: employee[0]._id
+        let disciplines = await Discipline.find({
+            employee: employees[0]._id
         })
-        return { employee: employee, salary, annualLeave, commendation, discipline, ...value}
+        return { employees: employees, salarys, annualLeaves, commendations, disciplines, ...value}
     }
     
 }
@@ -176,12 +176,12 @@ exports.searchEmployeeProfiles = async (data, company) => {
     var data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);
-        var employee = await Employee.find({_id: listEmployees[n]._id});
-        var salary = await Salary.find({employee: listEmployees[n]._id})
-        var annualLeave = await AnnualLeave.find({employee: listEmployees[n]._id})
-        var commendation = await Commendation.find({employee: listEmployees[n]._id})
-        var discipline = await Discipline.find({employee: listEmployees[n]._id})
-        data[n] = {employee, salary, annualLeave, commendation, discipline, ...value}
+        var employees = await Employee.find({_id: listEmployees[n]._id});
+        var salarys = await Salary.find({employee: listEmployees[n]._id})
+        var annualLeaves = await AnnualLeave.find({employee: listEmployees[n]._id})
+        var commendations = await Commendation.find({employee: listEmployees[n]._id})
+        var disciplines = await Discipline.find({employee: listEmployees[n]._id})
+        data[n] = {employees, salarys, annualLeaves, commendations, disciplines, ...value}
     }
 
     return { data, totalList}

@@ -20,7 +20,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
         required: true
     },
     // KPi tháng nào
-    time: {
+    date: {
         type: Date,
         required: true
     },
