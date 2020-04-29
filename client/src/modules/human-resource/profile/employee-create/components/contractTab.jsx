@@ -5,11 +5,10 @@ import {
     ModalAddContract, ModalEditContract,
 } from './combinedContent';
 
-class TabContractContent extends Component {
+class ContractTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
+        this.state = {};
     }
     // Bắt sự kiện click edit bằng cấp
     handleEdit = async (value, index) => {
@@ -25,32 +24,32 @@ class TabContractContent extends Component {
 
     // function thêm thông tin hợp đồng lao động
     handleAddContract = async (data) => {
-        const { contract } = this.state;
+        const { contracts } = this.state;
         await this.setState({
-            contract: [...contract, {
+            contracts: [...contracts, {
                 ...data
             }]
         })
-        this.props.handleAddContract(this.state.contract);
+        this.props.handleAddContract(this.state.contracts);
     }
     // function chỉnh sửa thông tin hợp đồng lao động
     handleEditContract = async (data) => {
-        const { contract } = this.state;
-        contract[data.index] = data;
+        const { contracts } = this.state;
+        contracts[data.index] = data;
         await this.setState({
-            contract: contract
+            contracts: contracts
         })
-        this.props.handleEditContract(this.state.contract);
+        this.props.handleEditContract(this.state.contracts);
     }
     // Function xoá bằng cấp
     delete = async (index) => {
-        var { contract } = this.state;
-        contract.splice(index, 1);
+        var { contracts } = this.state;
+        contracts.splice(index, 1);
         await this.setState({
             ...this.state,
-            contract: [...contract]
+            contracts: [...contracts]
         })
-        this.props.handleDeleteContract(this.state.contract)
+        this.props.handleDeleteContract(this.state.contracts)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -58,8 +57,8 @@ class TabContractContent extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                contract: nextProps.contract,
-                course: nextProps.course,
+                contracts: nextProps.contracts,
+                courses: nextProps.courses,
             }
         } else {
             return null;
@@ -69,7 +68,7 @@ class TabContractContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { contract, course } = this.state;
+        const { contracts, courses } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -88,11 +87,11 @@ class TabContractContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof contract !== 'undefined' && contract.length !== 0) &&
-                                    contract.map((x, index) => (
+                                {(typeof contracts !== 'undefined' && contracts.length !== 0) &&
+                                    contracts.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameContract}</td>
-                                            <td>{x.typeContract}</td>
+                                            <td>{x.name}</td>
+                                            <td>{x.contractType}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
@@ -106,7 +105,7 @@ class TabContractContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof contract === 'undefined' || contract.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof contracts === 'undefined' || contracts.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -127,14 +126,14 @@ class TabContractContent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof course !== 'undefined' && course.length !== 0) &&
-                                    course.map((x, index) => (
+                                {(typeof courses !== 'undefined' && courses.length !== 0) &&
+                                    courses.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.nameCourse}</td>
+                                            <td>{x.name}</td>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
-                                            <td>{x.unit}</td>
-                                            <td>{x.typeCourse}></td>
+                                            <td>{x.offeredBy}</td>
+                                            <td>{x.courseType}></td>
                                             <td><input type="text" style={{ width: "100%" }} /></td>
                                             <td>{x.status}</td>
                                             <td style={{ textAlign: "center" }}>
@@ -145,7 +144,7 @@ class TabContractContent extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof course === 'undefined' || course.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof courses === 'undefined' || courses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -154,8 +153,8 @@ class TabContractContent extends Component {
                     <ModalEditContract
                         id={`editContract${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
-                        nameContract={this.state.currentRow.nameContract}
-                        typeContract={this.state.currentRow.typeContract}
+                        name={this.state.currentRow.name}
+                        contractType={this.state.currentRow.contractType}
                         startDate={this.state.currentRow.startDate}
                         endDate={this.state.currentRow.endDate}
                         file={this.state.currentRow.file}
@@ -169,5 +168,5 @@ class TabContractContent extends Component {
     }
 };
 
-const tabContract = connect(null, null)(withTranslate(TabContractContent));
-export { tabContract as TabContractContent };
+const contractTab = connect(null, null)(withTranslate(ContractTab));
+export { contractTab as ContractTab };

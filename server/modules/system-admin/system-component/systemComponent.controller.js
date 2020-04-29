@@ -46,9 +46,12 @@ exports.getPaginatedSystemComponents = async (req, res) => {
 
 exports.createSystemComponent = async (req, res) => {
     try {
+        
         const { name, description, link, roles } = req.body;
         const component = await ComponentDefaultServices.createSystemComponent(name, description, link, roles);
+        
         await ComponentDefaultServices.addSystemComponentsToSystemLink(link, component._id);
+       
         const data = await ComponentDefaultServices.getSystemComponent(component._id);
 
         LogInfo(req.user.email, 'CREATE_COMPONENT_DEFAULT');

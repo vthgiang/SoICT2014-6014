@@ -36,13 +36,13 @@ class UpdateEmployee extends Component {
 
     // Bắt sự kiện thay đổi các trường thông tin nhân viên
     handleChange = (e) => {
-        const { employee } = this.props.employeesInfo;
+        const { employees } = this.props.employeesInfo;
         var { name, value } = e.target;
         // Truyền thông tin nhân viên đã tồn tại vào state
         if (this.state.informationEmployee === null) {
             this.setState({
                 informationEmployee: {
-                    ...employee[0],
+                    ...employees[0],
                     [name]: value
                 }
             })
@@ -113,16 +113,16 @@ class UpdateEmployee extends Component {
     render() {
         console.log(this.state);
         const { employeesInfo, translate } = this.props;
-        var employee;
-        if (employeesInfo.employee !== "") employee = employeesInfo.employee;
+        var employees;
+        if (employeesInfo.employees !== "") employees = employeesInfo.employees;
         return (
             <React.Fragment>
                 {
-                    typeof employee !== 'undefined' && employee.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
+                    typeof employees !== 'undefined' && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
                 }
                 {
-                    (typeof employee !== 'undefined' && employee.length !== 0) &&
-                    employee.map((x, index) => (
+                    (typeof employees !== 'undefined' && employees.length !== 0) &&
+                    employees.map((x, index) => (
                         <div className="box qlcv" key={index} >
                             <div className="box-body">
                                 <fieldset className="scheduler-border">

@@ -18,7 +18,7 @@ class ModalCopyKPIUnit extends Component {
             kpiunit: {
                 unit: "",
                 time: this.formatDate(Date.now()),
-                creater: "" //localStorage.getItem("id")
+                creator: "" //localStorage.getItem("id")
             }
         };
     }
@@ -47,14 +47,15 @@ class ModalCopyKPIUnit extends Component {
         const token = getStorage();
         const verified = await jwt.verify(token, TOKEN_SECRET);
         var id = verified._id;
-        kpiunit.creater = id;
+        // kpiunit.creator = id;
         await this.setState(state => {
             return {
                 ...state,
                 kpiunit: {
                     ...state.kpiunit,
-                    unit: oldkpiunit.unit._id,
-                    listtarget: oldkpiunit.listtarget
+                    creator: id,
+                    unit: oldkpiunit.organizationalUnit._id,
+                    kpis: oldkpiunit.kpis
                 }
             }
         })
@@ -92,7 +93,7 @@ class ModalCopyKPIUnit extends Component {
                         <div className="modal-body">
                             <div className="form-group">
                                 <label className="col-sm-4">Đơn vị:</label>
-                                <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpiunit && kpiunit.unit.name}</label>
+                                <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpiunit && kpiunit.organizationalUnit.name}</label>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2">Tháng:</label>
@@ -106,8 +107,8 @@ class ModalCopyKPIUnit extends Component {
                             <div className="form-group" >
                                 <label className="col-sm-12">Danh sách mục tiêu:</label>
                                 <ul>
-                                    {typeof kpiunit !== "undefined" && kpiunit.listtarget.length !== 0 &&
-                                        kpiunit.listtarget.map(item => {
+                                    {typeof kpiunit !== "undefined" && kpiunit.kpis.length !== 0 &&
+                                        kpiunit.kpis.map(item => {
                                             return <li key={item._id}>{item.name+" ("+item.weight+")"}</li>
                                         })
                                     }
