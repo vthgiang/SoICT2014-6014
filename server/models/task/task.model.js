@@ -45,20 +45,15 @@ const TaskSchema = new Schema({
         default: false,
         required: true
     },
-    status: {// có 6 trạng thái công việc: Đang chờ, Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Bị hủy, Tạm hoãn
-        // TODO {code{}, description{} }
+    status: {// có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
         type: String,
-        default: "Đang chờ",//
-        required: true
+        default: "Inprocess",
+        required: true,
+        enum: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"]
     },
     taskTemplate: {
         type: Schema.Types.ObjectId,
         ref: TaskTemplate,
-    },
-    role: { // Bỏ, không cần thiết
-        type: Schema.Types.ObjectId,
-        ref: Role,
-        required: true
     },
     parent: { // Công việc cha
         type: Schema.Types.ObjectId,
@@ -68,15 +63,15 @@ const TaskSchema = new Schema({
         type: Number,
         required: true
     },
-    kpis:[{
+    inactiveEmployees: [{ // Những người từng tham gia công việc nhưng không còn tham gia nữa
         type: Schema.Types.ObjectId,
-        ref: EmployeeKpi,
+        ref: User,
         required: true
     }],
     responsibleEmployees: [{
         type: Schema.Types.ObjectId,
         ref: User,
-        required:  true
+        required: true
     }],
     accountableEmployees: [{
         type: Schema.Types.ObjectId,
@@ -91,12 +86,60 @@ const TaskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: User
     }],
-    time: { // Bỏ, không cần thiết
-        type: Number,
-        default: 0,
-        required: true
-    },
-    progress: {
+    evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+        time: { // Tháng đánh giá
+            type: Date
+        },
+        kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
+            employee:{ // Người thực hiện A nào đó
+                type: Schema.Types.ObjectId,
+                ref: User,
+                required: true
+            },
+            kpis: [{ // Các kpis của người thực hiện A đó. Phải chọn kpis lúc tạo công việc, và sang đầu tháng mới, nếu công việc chưa kết thúc thì phải chọn lại.
+                type: Schema.Types.ObjectId,
+                ref: EmployeeKpi,
+                required: true
+            }]
+        }],
+        results: [{ // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+            employee:{ // Người được đánh giá
+                type: Schema.Types.ObjectId,
+                ref: User,
+                required: true
+            },
+            role:{ // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                type: String,
+                required: true,
+                enum: ["Responsible", "Consulted", "Accountable"]
+            },
+            automaticPoint: { // Điểm hệ thống đánh giá
+                type: Number,
+                default: 0
+            },
+            employeePoint: { // Điểm tự đánh giá
+                type: Number,
+                default: 0
+            },
+            approvedPoint: { // Điểm được phê duyệt
+                type: Number,
+                default: 0
+            }
+        }],
+        taskInformations: [{ // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
+            code: { // Mã thuộc tính công việc dùng trong công thức (nếu công việc theo mẫu)
+                type: String,
+            },
+            name: { // Tên thuộc tính công việc (bao gồm progress + point + các thuộc tính khác nếu như đây là công việc theo mẫu)
+                type: String,
+                required: true
+            },
+            value: { // Giá trị tương ứng của các thuộc tính (tại thời điểm đánh giá)
+                type: Schema.Types.Mixed,
+            }
+        }]
+    }],
+    progress: { // % Hoàn thành thành công việc
         type: Number,
         default: 0,
         required: true
@@ -106,29 +149,6 @@ const TaskSchema = new Schema({
         default: -1,
         required: true
     },
-    results: [{
-        employee:{ // Người được đánh giá
-            type: Schema.Types.ObjectId,
-            ref: User,
-            required: true
-        },
-        role:{ // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
-            type: String,
-            required: true
-        },
-        automaticPoint: { // Điểm hệ thống đánh giá
-            type: Number,
-            default: 0
-        },
-        employeePoint: { // Điểm tự đánh giá
-            type: Number,
-            default: 0
-        },
-        approvedPoint: { // Điểm được phê duyệt
-            type: Number,
-            default: 0
-        }
-    }],
     files: [{ // Các files đi kèm với công việc
         name: {
             type: String,
@@ -138,10 +158,28 @@ const TaskSchema = new Schema({
             required: true
         }
     }],
-    resultInformations: [{ // Kết quả thực hiện công việc --> Bỏ
-        type: Schema.Types.ObjectId,
-        ref: TaskResultInformation,
+    timesheetLogs:[{
+        creator: { // Người thực hiện nào tiến hành bấm giờ
+            type: Schema.Types.ObjectId,
+            ref: User,
+            required: true
+        },
+        startedAt: { // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
+            type: Number
+        },
+        stoppedAt: { // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
+            type: Number
+        },
+        description: { // Mô tả ngắn gọn việc đã làm khi log 
+            type: String,
+            required: true
+        }
     }],
+    totalLoggedTime: { // Tổng thời gian timesheetLog. Cập nhật mỗi khi người dùng lưu lại thời gian bấm giờ (khi họ nhấn nút stop)
+        type: Number,
+        default: 0,
+        required: true
+    },
     taskInformations: [{ // Khi tạo công việc theo mẫu, các giá trị này sẽ được copy từ mẫu công việc sang
         code: { // Mã thuộc tính công việc dùng trong công thức
             type: String,
@@ -199,7 +237,7 @@ const TaskSchema = new Schema({
                 required: true
             }
         }],
-        evaluations:[{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính điểm của người phê duyệt)
+        evaluations:[{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
             creator: {
                 type: Schema.Types.ObjectId,
                 ref: User,
@@ -251,10 +289,13 @@ const TaskSchema = new Schema({
         content: {
             type: String,
         },
-        approved: {
-            type: Number,
-            default: 0,
-            required: true
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type : Date,
+            default: Date.now
         },
         files: [{ // Các file đi kèm comments
             name: {

@@ -30,4 +30,5 @@ router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 
 // đánh giá điểm của kpi
 router.put('/appovepoint/:id_kpi/:id_target', KPIPersonalController.setPointKPI);
+
 module.exports = router;

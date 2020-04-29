@@ -106,7 +106,7 @@ class AnnualLeaveEditForm extends Component {
 
     render() {
         const { translate, annualLeave } = this.props;
-        const { employeeNumber, startDate, endDate, reason, status,
+        const {_id, employeeNumber, startDate, endDate, reason, status,
             errorOnReason, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
@@ -128,7 +128,7 @@ class AnnualLeaveEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('sabbatical.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_start_date"
+                                    id={`edit_start_date${_id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -137,7 +137,7 @@ class AnnualLeaveEditForm extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                 <label>{translate('sabbatical.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id="edit_end_date"
+                                    id={`edit_end_date${_id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />

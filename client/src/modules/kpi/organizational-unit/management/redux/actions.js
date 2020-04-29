@@ -12,93 +12,106 @@ export const managerActions = {
 // lấy tất cả các KPI của đơn vị
 function getAllKPIUnit(id) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: managerConstants.GETALL_KPIUNIT_REQUEST})
 
         managerServices.getAllKPIUnit(id)
-            .then(
-                kpis => dispatch(success(kpis)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res =>{
+                dispatch({
+                    type: managerConstants.GETALL_KPIUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type: managerConstants.GETALL_KPIUNIT_FAILURE,
+                    payload: error
+                })
+            })
+           
     };
-
-    function request(id) { return { type: managerConstants.GETALL_KPIUNIT_REQUEST, id } }
-    function success(kpis) { return { type: managerConstants.GETALL_KPIUNIT_SUCCESS, kpis } }
-    function failure(error) { return { type: managerConstants.GETALL_KPIUNIT_FAILURE, error } }
 }
+
 
 // lấy kpi đơn vị hiện tại
 function getCurrentKPIUnit(id) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({type: managerConstants.GETCURRENT_KPIUNIT_REQUEST});
 
         managerServices.getCurrentKPIUnit(id)
-            .then(
-                currentKPI => dispatch(success(currentKPI)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
-
-    function request(id) { return { type: managerConstants.GETCURRENT_KPIUNIT_REQUEST, id } }
-    function success(currentKPI) { return { type: managerConstants.GETCURRENT_KPIUNIT_SUCCESS, currentKPI } }
-    function failure(error) { return { type: managerConstants.GETCURRENT_KPIUNIT_FAILURE, error } }
+            .then(res =>{
+                dispatch({
+                    type: managerConstants.GETCURRENT_KPIUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: managerConstants.GETCURRENT_KPIUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
 }
 
 // lấy mục tiêu con của mục tiêu hiện tại
 function getChildTargetOfCurrentTarget(id) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({type: managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST});
 
         managerServices.getChildTargetOfCurrentTarget(id)
-            .then(
-                childtarget => dispatch(success(childtarget)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
-
-    function request(id) { return { type: managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST, id } }
-    function success(childtarget) { return { type: managerConstants.GETCHILDTARGET_CURRENTTARGET_SUCCESS, childtarget } }
-    function failure(error) { return { type: managerConstants.GETCHILDTARGET_CURRENTTARGET_FAILURE, error } }
+            .then(res => {
+                dispatch({
+                    type: managerConstants.GETCHILDTARGET_CURRENTTARGET_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error =>{
+                dispatch({
+                    type: managerConstants.GETCHILDTARGET_CURRENTTARGET_FAILURE,
+                    payload: error
+                })
+            })
+    }
 }
 
 // Khởi tạo KPI đơn vị
 function addKPIUnit(newKPI) {
     return dispatch => {
-        dispatch(request(newKPI));
+        dispatch({type: managerConstants.ADD_KPIUNIT_REQUEST});
 
         managerServices.addKPIUnit(newKPI)
-            .then(
-                newKPI => { 
-                    dispatch(success(newKPI));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
-    };
-
-    function request(newKPI) { return { type: managerConstants.ADD_KPIUNIT_REQUEST, newKPI } }
-    function success(newKPI) { return { type: managerConstants.ADD_KPIUNIT_SUCCESS, newKPI } }
-    function failure(error) { return { type: managerConstants.ADD_KPIUNIT_FAILURE, error } }
+            .then(res => {
+                dispatch({
+                    type: managerConstants.ADD_KPIUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: managerConstants.ADD_KPIUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
 }
 
 
 // Cập nhật dữ liệu cho kpi đơn vị
 function evaluateKPIUnit(id) {
     return dispatch => {
-        dispatch(request(id));
-
+        dispatch({type: managerConstants.EVALUATE_KPIUNIT_REQUEST});
         managerServices.evaluateKPIUnit(id)
-            .then(
-                newKPI => { 
-                    dispatch(success(newKPI));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
-    };
-
-    function request(id) { return { type: managerConstants.EVALUATE_KPIUNIT_REQUEST, id } }
-    function success(newKPI) { return { type: managerConstants.EVALUATE_KPIUNIT_SUCCESS, newKPI } }
-    function failure(error) { return { type: managerConstants.EVALUATE_KPIUNIT_FAILURE, error } }
+            .then(res => {
+                dispatch({
+                    type: managerConstants.EVALUATE_KPIUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: managerConstants.EVALUATE_KPIUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
 }

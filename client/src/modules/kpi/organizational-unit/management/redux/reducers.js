@@ -11,12 +11,12 @@ export function managerKpiUnit (state = {}, action){
           return {
             ...state,
             loading: false,
-            kpis: action.kpis.content,
+            kpis: action.payload,
             isLoading: false
           };
         case managerConstants.GETALL_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case managerConstants.GETCURRENT_KPIUNIT_REQUEST:
@@ -29,12 +29,12 @@ export function managerKpiUnit (state = {}, action){
           return {
             ...state,
             loading: false,
-            currentKPI: action.currentKPI.content,
+            currentKPI: action.payload,
             isLoading: false
           };
         case managerConstants.GETCURRENT_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         case managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST:
@@ -47,12 +47,12 @@ export function managerKpiUnit (state = {}, action){
           return {
             ...state,
             loading: false,
-            childtarget: action.childtarget.content,
+            childtarget: action.payload,
             isLoading: false
           };
         case managerConstants.GETCHILDTARGET_CURRENTTARGET_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         
@@ -66,12 +66,12 @@ export function managerKpiUnit (state = {}, action){
           return {
             ...state,
             adding: false,
-            currentKPI: action.newKPI.kpiunit,
+            currentKPI: action.payload,
             isLoading: false
           };
         case managerConstants.ADD_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         
@@ -93,7 +93,7 @@ export function managerKpiUnit (state = {}, action){
           };
         case managerConstants.EVALUATE_KPIUNIT_FAILURE:
           return {
-            error: action.error,
+            error: action.payload,
             isLoading: false
           };
         default:
