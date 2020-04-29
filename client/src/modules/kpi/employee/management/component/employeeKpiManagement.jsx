@@ -45,7 +45,7 @@ class KPIPersonalManager extends Component {
             if (typeof listkpi !== "undefined" && listkpi.length !== 0) {//listkpi.content
                 kpiApproved = listkpi.filter(item => item.status === 3);
                 currentKPI = listkpi.filter(item => item.status !== 3);
-                currentTargets = currentKPI[0].listtarget.map(item => { return { y: item.weight, name: item.name } });
+                currentTargets = currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 systempoint = kpiApproved.map(item => {
                     return { label: this.formatDate(item.time), y: item.systempoint }
                 }).reverse();
@@ -56,13 +56,13 @@ class KPIPersonalManager extends Component {
                     return { label: this.formatDate(item.time), y: item.approverpoint }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[0].approverpoint }
+                    return { label: this.formatDate(item.time), y: item.kpis[0].approverpoint }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[1].approverpoint }
+                    return { label: this.formatDate(item.time), y: item.kpis[1].approverpoint }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.approverpoint - item.listtarget[0].approverpoint - item.listtarget[1].approverpoint) }
+                    return { label: this.formatDate(item.time), y: (item.approverpoint - item.kpis[0].approverpoint - item.kpis[1].approverpoint) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
                     return { label: this.formatDate(item.time), y: (100 - item.approverpoint) }
@@ -70,7 +70,9 @@ class KPIPersonalManager extends Component {
             }
         }
         return (
-            <div className="table-wrapper box">
+            <div className="box">
+                <div className="box-body qlcv">
+
                 {/* <div className="content-wrapper"> */}
                 {/* <section className="content-header">
                         <h1>
@@ -82,7 +84,7 @@ class KPIPersonalManager extends Component {
                             <li className="active">Advanced Elements</li>
                         </ol>
                     </section> */}
-                <section className="content">
+                {/* <section className="content"> */}
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box">
@@ -106,7 +108,7 @@ class KPIPersonalManager extends Component {
                                                 listkpi.map((item, index) =>
                                                     <tr key={index}>
                                                         <td>{this.formatDate(item.time)}</td>
-                                                        <td>{item.listtarget.length}</td>
+                                                        <td>{item.kpis.length}</td>
                                                         <td>{item.systempoint === null ? "Chưa đánh giá" : item.systempoint}</td>
                                                         <td>{item.mypoint === null ? "Chưa đánh giá" : item.mypoint}</td>
                                                         <td>{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</td>
@@ -124,7 +126,9 @@ class KPIPersonalManager extends Component {
                             </div>
                         </div>
                     </div>
-                </section>
+                                        
+                </div>
+                {/* </section> */}
                 {/* </div> */}
             </div>
         )

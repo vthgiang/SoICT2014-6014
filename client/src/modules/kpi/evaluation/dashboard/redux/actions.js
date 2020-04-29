@@ -38,7 +38,7 @@ function getAllKPIMemberByMember() { //member
             .catch(error =>{
                 dispatch({
                     type: kpiMemberConstants.GETALL_KPIMEMBER_FAILURE,
-                    payload: error;
+                    payload: error
                 })
             })
     };

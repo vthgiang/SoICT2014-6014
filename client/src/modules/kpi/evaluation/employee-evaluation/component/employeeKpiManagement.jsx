@@ -286,8 +286,8 @@ class KPIMember extends Component {
                             <tr key={index + 1}>
                             <td title={index+1}>{index + 1}</td>
                             <td title={this.formatDate(item.time)}>{this.formatDate(item.time)}</td>
-                            <td title="">{item.creater.name}</td>
-                            <td title="">{item.listtarget.length}</td>
+                            <td title="">{item.creator.name}</td>
+                            <td title="">{item.kpis.length}</td>
                             <td title="">{this.checkStatusKPI(item.status)}</td>
                             <td title="">{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</td>
                             <td>
@@ -300,7 +300,7 @@ class KPIMember extends Component {
                                 <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
                                 className="copy" title="Đánh giá kpi nhân viên này"><i className="fa fa-list"></i></a>
                                 {this.state.showEvaluateModal === item._id ?
-                                <ModalMemberEvaluate name={item.creater.name} id={item._id} /> : null}
+                                <ModalMemberEvaluate name={item.creator.name} id={item._id} /> : null}
                             </td>
                             </tr>
                             ) : <tr>
