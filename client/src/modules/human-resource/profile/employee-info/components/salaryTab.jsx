@@ -12,8 +12,8 @@ class SalaryTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                salary: nextProps.salary,
-                annualLeave: nextProps.annualLeave,
+                salarys: nextProps.salarys,
+                annualLeaves: nextProps.annualLeaves,
             }
         } else {
             return null;
@@ -22,7 +22,7 @@ class SalaryTab extends Component {
     render() {
         var formater = new Intl.NumberFormat();
         const { id, translate } = this.props;
-        const { annualLeave, salary } = this.state;
+        const { annualLeaves, salarys } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -37,8 +37,8 @@ class SalaryTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof salary !== 'undefined' && salary.length !== 0) &&
-                                    salary.map((x, index) => {
+                                {(typeof salarys !== 'undefined' && salarys.length !== 0) &&
+                                    salarys.map((x, index) => {
                                         if (x.bonus.length !== 0) {
                                             var total = 0;
                                             for (let count in x.bonus) {
@@ -63,7 +63,7 @@ class SalaryTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof salary === 'undefined' || salary.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof salarys === 'undefined' || salarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -78,8 +78,8 @@ class SalaryTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof annualLeave !== 'undefined' && annualLeave.length !== 0) &&
-                                    annualLeave.map((x, index) => (
+                                {(typeof annualLeaves !== 'undefined' && annualLeaves.length !== 0) &&
+                                    annualLeaves.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
@@ -90,7 +90,7 @@ class SalaryTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof annualLeave === 'undefined' || annualLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof annualLeaves === 'undefined' || annualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
