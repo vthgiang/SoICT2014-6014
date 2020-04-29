@@ -289,8 +289,8 @@ var sampleCompanyData = async () => {
     });
     var departments = await OrganizationalUnit.insertMany([
         {
-            name: "Phòng hành chính",
-            description: "Phòng hành chính Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+            name: "Phòng kinh doanh",
+            description: "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
             company:  vnist._id,
             dean: truongPhongHC._id,
             viceDean: phoPhongHC._id,
