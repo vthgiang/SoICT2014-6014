@@ -30,6 +30,7 @@ exports.getSystemComponent = async (id) => {
 }
 
 exports.createSystemComponent = async(name, description, link, roles) => {
+    console.log("DATA SERVICE: ", name, description, link, roles)
     const component = await SystemComponent.findOne({name});
     if(component !== null) throw ['system_component_name_invalid', 'system_component_name_exist'];
 
@@ -59,8 +60,10 @@ exports.deleteSystemComponent = async(id) => {
 
 exports.addSystemComponentsToSystemLink = async(linkId, componentId) => {
     var link = await SystemLink.findById(linkId);
-    link.components.push(componentId);
-    await link.save();
+    if(link !== null){
+        link.components.push(componentId);
+        await link.save();
+    }
 
     return link;
 }

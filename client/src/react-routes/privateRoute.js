@@ -16,8 +16,8 @@ const checkURL = (urlName, linkArr) => {
     return result;
 }
 
-export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => (
-    <Route {...rest} render={props => {
+export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
+    return <Route {...rest} render={props => {
         var logged = getStorage();
         if(logged !== null){
             if(link !== '/' && checkURL(link, auth.links) !== true){
@@ -30,4 +30,4 @@ export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, compone
             return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
         }
     }} />
-)
+}

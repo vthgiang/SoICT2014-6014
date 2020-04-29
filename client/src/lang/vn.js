@@ -205,6 +205,7 @@ export default {
                 // Thông điệp từ server
                 create_system_link_success: 'Tạo system link thành công',
                 edit_system_link_success: 'Chỉnh sửa thông tin system link thành công',
+                delete_system_link_success: 'Xóa system link thành công',
 
                 system_link_url_exist: 'Url này đã được sử dụng',
             },
@@ -229,6 +230,7 @@ export default {
                         no_special: 'Mô tả không được chứa ký tự đặc biệt',
                     },
                 },
+                select_link: 'Chọn link tương ứng',
 
                 //Thông điệp trả về từ server
                 create_system_component_success: 'Tạo system component thành công',
