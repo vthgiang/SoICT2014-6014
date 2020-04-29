@@ -965,9 +965,10 @@ export default {
                     edit: 'Edit',
                     delete: 'Delete this KPI',
                     cancel: 'Cancel',
-                    edit_success: 'Editing successful',
-                    edit_failure: 'Editing falied',
-                    delete_success: 'Delete KPI successful'
+                    edit_success: 'Edit employee KPI set successfully',
+                    edit_failure: 'Edit employee KPI set unsuccessfully',
+                    delete_success: 'Delete employee KPI set successfully',
+                    delete_failure: 'Delete employee KPI set unsuccessfully'
                 },
                 time: 'Time',
                 approver: 'Approver',
@@ -979,6 +980,8 @@ export default {
                 initialize_kpi_newmonth: 'Initialize KPI new month',
                 request_approval: 'Request for approval',
                 cancel_request_approval: 'Cancel request for approval',
+                approve_success: 'Confirm request approval successfully',
+                approve_failure: 'Confirm request approval unsuccessfully',
 
                 // Nhóm dành cho các trạng thái tập KPI
                 kpi_status: {
@@ -1026,7 +1029,8 @@ export default {
                     kpi_target: 'Are you sure you want to delete this KPI target?',
                     approving: 'KPI is being approved, you can not delete!',
                     activated: 'KPI has been activated, you can not delete!',
-                    delete_success: 'Delete KPI target successful'
+                    delete_success: 'Delete KPI target successfully',
+                    delete_failure: 'Delete KPI target unsuccessfully'
                 },
                 edit_target: {
                     approving: 'KPI is being approved, you can not edit!',
@@ -1054,8 +1058,8 @@ export default {
                 parents: 'Parents target',
                 evaluation_criteria: 'Evaluation criteria',
                 weight: 'Weight',
-                success: 'Add KPI target successful',
-                failure: 'You have not entered enough information',
+                success: 'Add KPI target successfully',
+                failure: 'Add KPI target unsuccessfully',
 
                 // Nhóm dành cho validate
                 validate_name: {
@@ -1090,8 +1094,8 @@ export default {
                 month: 'Month',
                 approver: 'Approver',
                 default_target: 'Default target',
-                success: 'Initialize KPI successful',
-                failure: 'You have not entered enough information'
+                success: 'Initialize employee KPI set successfully',
+                failure: 'Initialize employee KPI set unsuccessfully'
             },
 
             edit_employee_kpi_modal: { // Module con
@@ -1101,9 +1105,9 @@ export default {
                 parents: 'Parents target',
                 evaluation_criteria: 'Evaluation criteria',
                 weight: 'Weight',
-                success: 'Edit KPI target successful',
-                failure: 'You have not entered enough information'
-            }
+                success: 'Edit KPI target successfully',
+                failure: 'Edit KPI target unsuccessfully'
+            },
         },
 
         notification: {
@@ -1129,9 +1133,44 @@ export default {
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Evaluate task successfully',
                 edit_result_task_success: 'Edit result task successfully',
+                get_task_actions_success : 'Get all task actions successfully',
+                create_task_action_success: 'Create task action successfully',
+                edit_task_action_success: 'Edit task action successfully',
+                delete_task_action_success: 'Delete task action successfully',
+                get_action_comments_success : 'Get all action comments successfully',
+                create_action_comment_success: 'Create action comments successfully',
+                edit_action_comment_success: 'Edit action comments successfully',
+                delete_action_comment_success: 'Delete action comments successfully',
+                get_log_timer_success : 'Get log timer successfully',
+                get_timer_status_success : 'get timer status successfully',
+                start_timer_success : 'Start timer successfully',
+                pause_timer_success : 'Pause timer successfully',
+                continue_timer_success: 'Continue timer successfully',
+                stop_timer_success : 'Stop timer successfully',
+                create_result_info_task_success : 'Create result infomation task successfully',
+                create_result_infomation_task_success : 'Create result infomation task successfully',
+                edit_result_infomation_task_success: 'Edit result infomation task successfully',
 
                 create_result_task_fail: "Can't evaluate task",
                 edit_result_task_fail: "Can't edit result task",
+                get_task_actions_success : 'Get all task actions fail',
+                create_task_action_success: 'Create task action fail',
+                edit_task_action_success: 'Edit task action fail',
+                delete_task_action_success: 'Delete task action fail',
+                get_action_comments_success : 'Get all action comments fail',
+                create_action_comment_success: 'Create action comments fail',
+                edit_action_comment_success: 'Edit action comments fail',
+                delete_action_comment_success: 'Delete action comments fail',
+                get_log_timer_success : 'Get log timer fail',
+                get_timer_status_success : 'get timer status fail',
+                start_timer_success : 'Start timer fail',
+                pause_timer_success : 'Pause timer fail',
+                continue_timer_success: 'Continue timer fail',
+                stop_timer_success : 'Stop timer fail',
+                create_result_info_task_success : 'Create result infomation task fail',
+                create_result_infomation_task_success : 'Create result infomation task fail',
+                edit_result_infomation_task_success: 'Edit result infomation task fail',
+                
                 
             },
             task_template: {

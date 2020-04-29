@@ -1066,9 +1066,10 @@ export default {
                     edit: 'Chỉnh sửa',
                     delete: 'Xóa KPI này',
                     cancel: 'Hủy',
-                    edit_success: 'Chỉnh sửa thành công',
-                    edit_failure: 'Chỉnh sửa không thành công',
-                    delete_success: 'Xóa KPI thành công'
+                    edit_success: 'Chỉnh sửa tập KPI nhân viên thành công',
+                    edit_failure: 'Chỉnh sửa tập KPI nhân viên thất bại',
+                    delete_success: 'Xóa KPI tập KPI nhân viên thành công',
+                    delete_failure: 'Xóa KPI tập KPI nhân viên thất bại'
                 },
                 time: 'Thời gian',
                 approver: 'Người phê duyệt',
@@ -1080,6 +1081,8 @@ export default {
                 initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                 request_approval: 'Yêu cầu phê duyệt',
                 cancel_request_approval: 'Hủy yêu cầu phê duyệt',
+                approve_success: 'Xác nhận yêu cầu phê duyệt thành công',
+                approve_failure: 'Xác nhận yêu cầu phê duyệt thất bại',
 
                 // Nhóm dành cho các trạng thái tập KPI
                 kpi_status: {
@@ -1144,7 +1147,8 @@ export default {
                     kpi_target: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
                     approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
                     activated: 'KPI đã được kích hoạt, bạn không thể xóa!',
-                    delete_success: 'Xóa mục tiêu KPI thành công'
+                    delete_success: 'Xóa mục tiêu KPI thành công',
+                    delete_failure: 'Xóa mục tiêu KPI thất bại'
                 },
             },
 
@@ -1156,7 +1160,7 @@ export default {
                 evaluation_criteria: 'Tiêu chí đánh giá',
                 weight: 'Trọng số',
                 success: 'Thêm mục tiêu KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin',
+                failure: 'Thêm mục tiêu KPI thất bại',
 
                 // Nhóm dành cho validate
                 validate_name: {
@@ -1192,8 +1196,8 @@ export default {
                 month: 'Tháng',
                 approver: 'Người phê duyệt',
                 default_target: 'Mục tiêu mặc định',
-                success: 'Khởi tạo KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin'
+                success: 'Khởi tạo tập KPI nhân viên thành công',
+                failure: 'Khởi tạo tập KPI nhân viên thất bại'
             },
 
             edit_employee_kpi_modal: { // Mudule con
@@ -1204,8 +1208,8 @@ export default {
                 evaluation_criteria: 'Mô tả tiêu chí đánh giá',
                 weight: 'Trọng số',
                 success: 'Chỉnh sửa mục tiêu KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin'
-            }
+                failure: 'Chỉnh sửa mục tiêu KPI thất bại'
+            },
         },
 
         task: {
@@ -1222,10 +1226,43 @@ export default {
                 // TODO: code_mesage_task_perform
                 create_result_task_success: 'Đánh giá xong kết quả thực hiện công việc',
                 edit_redult_task_success: 'Chỉnh sửa thành công kết quả đánh giá',
-
+                get_task_actions_success : 'Lấy tất cả hoạt động thành công',
+                create_task_action_success: 'Tạo hoạt động thành công',
+                edit_task_action_success: 'Sửa hoạt đông thành công',
+                delete_task_action_success: 'Xóa hoạt động thành công',
+                get_action_comments_success : 'Lấy tất cả bình luận của hoạt động thành công',
+                create_action_comment_success: 'Tạo bình luận hoạt động thành công',
+                edit_action_comment_success: 'Sửa bình luận hoạt động thành công',
+                delete_action_comment_success: 'Xóa bình luận hoạt động thành công',
+                get_log_timer_success : 'Lấy tất cả lịch sử bấm giờ theo công việc thành công',
+                get_timer_status_success : 'Lấy trạng thái bấm giờ hiện tại thành công',
+                start_timer_success : 'Bắt đầu bấm giờ thành công',
+                pause_timer_success : 'Tạm dừng bấm giờ thành công',
+                continue_timer_success: 'Tiếp tục bấm giờ thành công',
+                stop_timer_success : 'Kết thúc bấm giờ thành công',
+                create_result_info_task_success : 'Tạo result info task thành công',
+                create_result_infomation_task_success : 'Tạo result infomation task thành công',
+                edit_result_infomation_task_success: 'Sửa result infomation task thành công',
+                
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
-                
+                get_task_actions_fail : 'Lấy tất cả thông tin hoạt động thất bại',
+                create_task_action_fail: 'Tạo hoạt động thất bại',
+                edit_task_action_fail: 'Sửa hoạt đông thất bại',
+                delete_task_action_fail: 'Xóa hoạt động thất bại',
+                get_action_comments_fail : 'Lấy tất cả bình luận hoạt động thất bại',
+                create_action_comment_fail: 'Tạo bình luận hoạt động thất bại',
+                edit_action_comment_fail: 'Sửa bình luận hoạt động thất bại',
+                delete_action_comment_fail: 'Xóa bình luận hoạt động thất bại',
+                get_log_timer_fail : 'Lấy tất cả lịch sử bấm giờ theo công việc thất bại',
+                get_timer_status_fail : 'Lấy trạng thái bấm giờ hiện tại thất bại',
+                start_timer_fail : 'Bắt đầu bấm giờ thất bại',
+                pause_timer_fail : 'Tạm dừng bấm giờ thất bại',
+                continue_timer_fail: 'Tiếp tục bấm giờ thất bại',
+                stop_timer_fail : 'Kết thúc bấm giờ thất bại',
+                create_result_info_task_fail : 'Tạo result info task thất bại',
+                create_result_infomation_task_fail : 'Tạo result infomation task thất bại',
+                edit_result_infomation_task_fail: 'Sửa result infomation task thất bại',
             },
             task_template: {
                 // TODO: code_mesage_task_template

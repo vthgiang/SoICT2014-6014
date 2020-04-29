@@ -66,7 +66,7 @@ function getLogTimerTask(task) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/${task}`,
         method: 'GET',
-    },false);
+    },false, 'task.task_perform');
 };
 
 // get current status task
@@ -77,7 +77,7 @@ async function getTimerStatusTask(task) { //function getTimerStatusTask(task, us
     return  sendRequest =({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`,
         method: 'GET',
-    },false);
+    },false,'task.task_perform');
 };
 // start timer task
 function startTimerTask(newTimer) {
@@ -85,7 +85,7 @@ function startTimerTask(newTimer) {
         url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
         method : 'POST',
         data : newTimer,
-    },false);
+    },false,'task.task_perform');
 }
 
 // stop timer task
@@ -94,7 +94,7 @@ function stopTimerTask(id, newTimer) {
         url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer/${id}`,
         method : 'PUT',
         data : newTimer
-    },false);
+    },false,'task.task_perform');
 }
 
 // pause timer task
@@ -103,7 +103,7 @@ function pauseTimerTask(id, newTimer) {
         url: `${LOCAL_SERVER_API}/performtask/log-timer/pause-timer/${id}`,
         method :'PUT',
         data : newTimer
-    },false);
+    },false,'task.task_perform');
 }
 
 // continue timer task
@@ -112,7 +112,7 @@ function continueTimerTask(id, newTimer) {
         url : `${LOCAL_SERVER_API}/performtask/log-timer/continue-timer/${id}`,
         method : 'PUT',
         data : newTimer
-    },false)
+    },false,'task.task_perform')
 }
 
 //getall Action task
@@ -120,14 +120,14 @@ function getTaskAction(task) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-action/${task}`,
         method : 'GET'
-    },false);  
+    },false,'task.task_perform');  
 };
 // get all comment task
 function getActionComment(task) {
     return sendRequest({
         url : `${LOCAL_SERVER_API}/performtask/action-comment/${task}`,
         method : 'GET'
-    },false);
+    },false,'task.task_perform');
 }
 // add comment task
 function addActionComment(newComment) {
@@ -135,14 +135,14 @@ function addActionComment(newComment) {
         url:`${LOCAL_SERVER_API}/performtask/action-comment/create`,
         method: 'POST',
         data : newComment
-    },false);
+    },true,'task.task_perform');
 }
 function addTaskAction(newAction){
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-action/create`,
         method : 'POST',
         data : newAction
-    },false);
+    },true,'task.task_perform');
 }
 
 // edit comment task
@@ -151,14 +151,14 @@ function editActionComment(id, newComment) {
         url:`${LOCAL_SERVER_API}/performtask/action-comment/${id}`,
         method:'PUT',
         data : newComment
-    },false);
+    },true,'task.task_perform');
 }
 function editTaskAction(id,newAction) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-action/${id}`,
         method:'PUT',
         data : newAction
-    },false)
+    },true,'task.task_perform')
 }
 
 // delete comment task
@@ -166,12 +166,12 @@ function deleteActionComment(id) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/action-comment/${id}`,
         method: 'DELETE'
-    },false)
+    },true,'task.task_perform')
 }
 
 function deleteTaskAction(id){
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-action/${id}`,
         method:'DELETE'
-    },false);
+    },true,'task.task_perform');
 }
