@@ -10,7 +10,10 @@ export const SalaryActions = {
     importSalary
 };
 
-// lấy danh sách bảng lương
+/**
+ * Lấy danh sách bảng lương
+ * @data : dữ liệu key tìm kiếm
+ */ 
 function searchSalary(data) {
     return dispatch => {
         dispatch({
@@ -32,13 +35,16 @@ function searchSalary(data) {
     }
 }
 
-// tạo mới bảng lương
+/**
+ * Tạo mới một bảng lương
+ * @data : dữ liệu bảng lương mới
+ */
 function createSalary(data) {
     return dispatch => {
         dispatch({
             type: SalaryConstants.CREATE_SALARY_REQUEST
         });
-        SalaryService.createNewSalary(data)
+        SalaryService.createSalary(data)
             .then(res => {
                 dispatch({
                     type: SalaryConstants.CREATE_SALARY_SUCCESS,
@@ -54,7 +60,10 @@ function createSalary(data) {
     }
 }
 
-// Xoá một chương trình đào tạo
+/**
+ * Xoá bảng lương  theo id
+ * @id : Id bảng lương cần xoá
+ */
 function deleteSalary(id) {
     return dispatch => {
         dispatch({
@@ -76,7 +85,11 @@ function deleteSalary(id) {
     }
 }
 
-// Cập nhật thông tin của chương trình đào tạo
+/**
+ * Cập nhật thông tin bảng lương
+ * @id : Id bảng lương cần cập nhật
+ * @data : Dữ liệu cập nhật bảng lương 
+ */
 function updateSalary(id, data) {
     return dispatch => {
         dispatch({

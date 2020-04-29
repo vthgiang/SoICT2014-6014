@@ -9,7 +9,7 @@ class SalaryEditForm extends Component {
         super(props);
         this.state = {}
     }
-    
+
     // Function bắt sự kiện thay đổi tiền lương chính
     handleMainSalaryChange = (e) => {
         let value = e.target.value;
@@ -181,19 +181,19 @@ class SalaryEditForm extends Component {
                 <DialogModal
                     size='50' modalID="modal-edit-salary" isLoading={salary.isLoading}
                     formID="form-edit-salary"
-                    title={translate('salary_employee.edit_salary')}
-                    msg_success={translate('error.edit_salary_success')}
-                    msg_faile={translate('error.edit_salary_faile')}
+                    title={translate('human_resource.salary.edit_salary')}
+                    // msg_success={translate('error.edit_salary_success')}
+                    // msg_faile={translate('error.edit_salary_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-edit-salary">
                         <div className="form-group">
-                            <label>{translate('table.employee_number')}<span className="text-red">*</span></label>
+                            <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} disabled />
                         </div>
                         <div className="form-group">
-                            <label>{translate('page.month')}<span className="text-red">*</span></label>
+                            <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id="edit_month"
                                 dateFormat="month-year"
@@ -203,7 +203,7 @@ class SalaryEditForm extends Component {
                             />
                         </div>
                         <div className={`form-group ${errorOnMainSalary === undefined ? "" : "has-error"}`}>
-                            <label >{translate('salary_employee.main_salary')}<span className="text-red">*</span></label>
+                            <label >{translate('human_resource.salary.table.main_salary')}<span className="text-red">*</span></label>
                             <div>
                                 <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={this.handleMainSalaryChange} style={{ display: "inline", width: "85%" }} autoComplete="off" />
                                 <select className="form-control" name="unit" value={unit} onChange={this.handleChange} style={{ display: "inline", width: "15%" }}>
@@ -214,17 +214,17 @@ class SalaryEditForm extends Component {
                             <ErrorLabel content={errorOnMainSalary} />
                         </div>
                         <div className={`form-group ${(errorOnNameSalary === undefined && errorOnMoreMoneySalary) === undefined ? "" : "has-error"}`}>
-                            <label>{translate('salary_employee.other_salary')}:<a title={translate('salary_employee.add_more_salary')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
-                            <table className="table table-bordered">
+                            <label>{translate('human_resource.salary.table.other_salary')}:<a title={translate('human_resource.salary.table.add_more_salary')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
+                            <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
-                                        <th>{translate('salary_employee.name_salary')}</th>
-                                        <th>{translate('salary_employee.money_salary')}</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                        <th>{translate('human_resource.salary.table.name_salary')}</th>
+                                        <th>{translate('human_resource.salary.table.money_salary')}</th>
+                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.salary.table.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {(typeof bonus === 'undefined' || bonus.length === 0) ? <tr><td colSpan={3}><center> {translate('table.no_data')}</center></td></tr> :
+                                    {(typeof bonus !== 'undefined' && bonus.length !== 0) &&
                                         bonus.map((x, index) => (
                                             <tr key={index}>
                                                 <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={this.handleChangeNameBonus} autoComplete="off" /></td>
@@ -236,6 +236,9 @@ class SalaryEditForm extends Component {
                                         ))}
                                 </tbody>
                             </table>
+                            {
+                                (typeof bonus === 'undefined' || bonus.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            }
                             <ErrorLabel content={errorOnNameSalary} />
                             <ErrorLabel content={errorOnMoreMoneySalary} />
                         </div>
