@@ -175,7 +175,7 @@ exports.createActionComment = async (body) => {
 exports.editActionComment = async (params,body) => {
     const now = new Date()
     var action = await Task.updateOne(
-        { "taskActions.commentAction._id": params.id },
+        { "taskActions.comments._id": params.id },
         {
             $set:
             {
@@ -186,7 +186,7 @@ exports.editActionComment = async (params,body) => {
         {
             arrayFilters: [
                 {
-                    "elem._id": req.params.id
+                    "elem._id": params.id
                 }
             ]
         }
@@ -207,7 +207,6 @@ exports.editActionComment = async (params,body) => {
             }
         }
     ])
-
     return commentAction[0];
 }
 
@@ -312,7 +311,48 @@ exports.deleteTaskAction = async (params) => {
         { $pull: { taskActions: { _id: params.id } } },
         { safe: true })
 }
+/**
+ * Lấy tất cả các bình luận của công việc
+ */
+exports.getTaskComments
+/**
+ * Tạo bình luận công việc
+ */
+exports.createTaskComment = async (body) => {
+    var commentInformation = {
+        creator: body.creator,
+        content: body.content
+    }
 
+    var taskComment1 = await Task.findByIdAndUpdate(body.task,
+        { $push: { taskComments: commentInformation } }, { new: true });
+    
+    var taskComment = await Task.aggregate([
+        {$match : {_id : mongoose.Types.ObjectId(body.task)}},
+        {$unwind: "$taskComments"},
+        { $sort: { "taskComments.createdAt": -1 } },
+        { $replaceRoot: { newRoot: "$taskComments" } },
+        {
+            $group: {
+                _id: null,
+                first: { $first: "$$ROOT" }
+            }
+        },
+        { $replaceRoot: { newRoot: "$first" } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "creator",
+                foreignField: "_id",
+                as: "creator"
+            }
+        },
+        { $unwind: "$creator" }
+    ])    
+    
+    //aggregate tra ve mang 
+    return taskComment[0]
+}
 // Test insert result info task
 exports.createResultInfoTask = async (req, res) => {
     try {
@@ -331,7 +371,9 @@ exports.createResultInfoTask = async (req, res) => {
     }
 }
 
-// Thêm thông tin kết quả của các thông tin công việc theo mẫu
+/**
+ * Thêm thông tin kết quả của các thông tin công việc theo mẫu
+ */
 exports.createResultInformationTask = async (req, res) => {
     try {
         var listResultInfoTask = req.body.listResultInfoTask;
@@ -360,7 +402,9 @@ exports.createResultInformationTask = async (req, res) => {
     }
 }
 
-// Sửa thông tin kết quả của các công việc không theo mẫu
+/**
+ * Sửa thông tin kết quả của các công việc không theo mẫu
+ */
 exports.editResultInformationTask = async (req, res) => {
     try {
         var listResultInfoTask = req.body.listResultInfoTask;
@@ -384,8 +428,9 @@ exports.editResultInformationTask = async (req, res) => {
     }
 }
 
-
-// Thêm thông tin kết quả của đánh giá từng nhân viên
+/**
+ * Thêm thông tin kết quả của đánh giá từng nhân viên
+ */
 exports.createResultTask = async (result, taskID) => {
     var item = result;
 
@@ -408,7 +453,9 @@ exports.createResultTask = async (result, taskID) => {
 
 }
 
-// Sửa thông tin kết quả của nhân viên trong công việc
+/**
+ * Sửa thông tin kết quả của nhân viên trong công việc
+ */
 exports.editResultTask = async (listResult, taskid) => {
     if (listResult !== []) {
         // Lưu thông tin kết quả  var listResultTask = await Promise.all

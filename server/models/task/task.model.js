@@ -294,6 +294,14 @@ const TaskSchema = new Schema({
             default: 0,
             required: true
         },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type : Date,
+            default: Date.now
+        },
         files: [{ // Các file đi kèm comments
             name: {
                 type: String,

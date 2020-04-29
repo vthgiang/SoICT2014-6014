@@ -376,4 +376,19 @@ exports.deleteActionComment = async (req, res) => {
 
 
 }
+exports.createTaskComment = async (req,res) => {
+    try {
+        var taskComment = await PerformTaskService.createTaskComment(req.body);
+        res.status(200).json({
+            success: true,
+            messages : "Tajo thafnh cong",
+            content : taskComment
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: "Tao that bai"
+        })
+    }
+}
 
