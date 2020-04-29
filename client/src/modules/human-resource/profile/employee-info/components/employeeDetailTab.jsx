@@ -15,20 +15,20 @@ class EmployeeDetail extends Component {
         this.props.getEmployeeProfile();
     }
     render() {
-        var employee, salary, annualLeave, commendation, discipline;
+        var employees, salarys, annualLeaves, commendations, disciplines;
         const { employeesInfo, translate } = this.props;
-        if (employeesInfo.employee) employee = employeesInfo.employee;
-        if (employeesInfo.salary) salary = employeesInfo.salary;
-        if (employeesInfo.annualLeave) annualLeave = employeesInfo.annualLeave;
-        if (employeesInfo.commendation) commendation = employeesInfo.commendation;
-        if (employeesInfo.discipline) discipline = employeesInfo.discipline;
+        if (employeesInfo.employees) employees = employeesInfo.employees;
+        if (employeesInfo.salarys) salarys = employeesInfo.salarys;
+        if (employeesInfo.annualLeaves) annualLeaves = employeesInfo.annualLeaves;
+        if (employeesInfo.commendations) commendations = employeesInfo.commendations;
+        if (employeesInfo.disciplines) disciplines = employeesInfo.disciplines;
         return (
             <React.Fragment>
                 {
-                    typeof employee !== 'undefined' && employee.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
+                    typeof employees !== 'undefined' && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
                 }
-                {(typeof employee !== 'undefined' && employee.length !== 0) &&
-                    employee.map((x, index) => (
+                {(typeof employees !== 'undefined' && employees.length !== 0) &&
+                    employees.map((x, index) => (
                         <div className="row" key={index}>
                             {/* left column */}
                             <div className="col-sm-12">
@@ -79,13 +79,13 @@ class EmployeeDetail extends Component {
                                         />
                                         <DisciplineTab
                                             id="view_reward"
-                                            commendation={commendation}
-                                            discipline={discipline}
+                                            commendations={commendations}
+                                            disciplines={disciplines}
                                         />
                                         <SalaryTab
                                             id="view_salary"
-                                            annualLeave={annualLeave}
-                                            salary={salary}
+                                            annualLeaves={annualLeaves}
+                                            salarys={salarys}
                                         />
                                         <AttachmentTab
                                             id="view_attachments"

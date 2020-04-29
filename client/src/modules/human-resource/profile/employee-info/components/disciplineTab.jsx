@@ -15,8 +15,8 @@ class DisciplineTab extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                commendation: nextProps.commendation,
-                discipline: nextProps.discipline,
+                commendations: nextProps.commendations,
+                disciplines: nextProps.disciplines,
             }
         } else {
             return null;
@@ -26,7 +26,7 @@ class DisciplineTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { commendation, discipline } = this.state;
+        const { commendations, disciplines } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -43,8 +43,8 @@ class DisciplineTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof commendation !== 'undefined' && commendation.length !== 0) &&
-                                    commendation.map((x, index) => (
+                                {(typeof commendations !== 'undefined' && commendations.length !== 0) &&
+                                    commendations.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.decisionNumber}</td>
                                             <td>{x.startDate}</td>
@@ -57,7 +57,7 @@ class DisciplineTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof commendation === 'undefined' || commendation.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof commendations === 'undefined' || commendations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
@@ -74,8 +74,8 @@ class DisciplineTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof discipline !== 'undefined' && discipline.length !== 0) &&
-                                    discipline.map((x, index) => (
+                                {(typeof disciplines !== 'undefined' && disciplines.length !== 0) &&
+                                    disciplines.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.decisionNumber}</td>
                                             <td>{x.startDate}</td>
@@ -88,7 +88,7 @@ class DisciplineTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof discipline === 'undefined' || discipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof disciplines === 'undefined' || disciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
 

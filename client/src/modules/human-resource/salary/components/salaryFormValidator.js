@@ -14,9 +14,9 @@ export const SalaryFormValidator = {
 function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.employee_number_required');
+        msg = translate('human_resource.employee_number_required');
     } else if (!VALIDATOR.isValidEmployeeNumber(value)) {
-        msg = translate('error.staff_code_not_special');
+        msg = translate('human_resource.staff_code_not_special');
     }
     return msg;
 }
@@ -24,7 +24,7 @@ function validateEmployeeNumber(value, translate) {
 function validateMonthSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.month_salary_required');
+        msg = translate('human_resource.salary.month_salary_required');
     }
     return msg;
 }
@@ -32,7 +32,7 @@ function validateMonthSalary(value, translate) {
 function validateMainSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.money_salary_required');
+        msg = translate('human_resource.salary.money_salary_required');
     }
     return msg;
 }
@@ -40,7 +40,7 @@ function validateMainSalary(value, translate) {
 function validateNameSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.name_other_salary_required');
+        msg = translate('human_resource.salary.name_other_salary_required');
     }
     return msg;
 }
@@ -48,7 +48,7 @@ function validateNameSalary(value, translate) {
 function validateMoreMoneySalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = translate('error.money_other_salary_required');
+        msg = translate('human_resource.salary.money_other_salary_required');
     }
     return msg;
 }

@@ -28,31 +28,31 @@ class ExperienceTab extends Component {
     handleAddExperience = async (data) => {
         await this.setState({
             ...this.state,
-            experience: [...this.state.experience, {
+            experiences: [...this.state.experiences, {
                 ...data
             }]
         })
-        this.props.handleAddExperience(this.state.experience);
+        this.props.handleAddExperience(this.state.experiences);
     }
     // Function chỉnh sửa kinh nghiệm làm việc
     handleEditExperience = async (data) => {
-        const { experience } = this.state;
-        experience[data.index] = data;
+        const { experiences } = this.state;
+        experiences[data.index] = data;
         await this.setState({
             ...this.state,
-            experience: experience
+            experiences: experiences
         });
-        this.props.handleEditExperience(this.state.experience);
+        this.props.handleEditExperience(this.state.experiences);
     }
     // Function xoá kinh nghiệm làm việc
     delete = async (index) => {
-        var { experience } = this.state;
-        experience.splice(index, 1);
+        var { experiences } = this.state;
+        experiences.splice(index, 1);
         await this.setState({
             ...this.state,
-            experience: [...experience]
+            experiences: [...experiences]
         })
-        this.props.handleDeleteExperience(this.state.experience);
+        this.props.handleDeleteExperience(this.state.experiences);
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
@@ -125,7 +125,7 @@ class ExperienceTab extends Component {
                                             <td>{x.company}</td>
                                             <td>{x.position}</td>
                                             <td >
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_experience')} edit_experience><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_experience')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
@@ -143,7 +143,7 @@ class ExperienceTab extends Component {
                     <ModalEditExperience
                         id={`editExperience${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
-                        unit={this.state.currentRow.unit}
+                        company={this.state.currentRow.company}
                         startDate={this.state.currentRow.startDate}
                         endDate={this.state.currentRow.endDate}
                         position={this.state.currentRow.position}
