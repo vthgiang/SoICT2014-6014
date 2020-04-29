@@ -203,19 +203,19 @@ var sampleCompanyData = async () => {
     });
     var nvPhongHC = await Role.create({
         parents: [roles[3]._id],
-        name: "Nhân viên phòng hành chính",
+        name: "Nhân viên phòng kinh doanh",
         company: vnist._id,
         type: roleChucDanh._id
     });
     var phoPhongHC = await Role.create({
         parents: [roles[2]._id, nvPhongHC._id],
-        name: "Phó phòng hành chính",
+        name: "Phó phòng kinh doanh",
         company: vnist._id,
         type: roleChucDanh._id
     });
     var truongPhongHC = await Role.create({
         parents: [roles[1]._id, nvPhongHC._id, phoPhongHC._id],
-        name: "Trưởng phòng hành chính",
+        name: "Trưởng phòng kinh doanh",
         company: vnist._id,
         type: roleChucDanh._id
     });
@@ -252,7 +252,7 @@ var sampleCompanyData = async () => {
         userId: users[4]._id,
         roleId: thanhVienBGĐ._id
     },
-    {//Trưởng phòng hành chính Nguyễn Văn Danh
+    {//Trưởng phòng kinh doanh Nguyễn Văn Danh
         userId: users[5]._id,
         roleId: truongPhongHC._id
     },
@@ -260,11 +260,11 @@ var sampleCompanyData = async () => {
         userId: users[5]._id,
         roleId: thanhVienBGĐ._id
     },
-    {//Phó phòng hành chính Trần Thị Én
+    {//Phó phòng kinh doanh Trần Thị Én
         userId: users[6]._id,
         roleId: phoPhongHC._id
     },
-    {//Nhân viên phòng hành chính Phạm Đình Phúc
+    {//Nhân viên phòng kinh doanh Phạm Đình Phúc
         userId: users[7]._id,
         roleId: nvPhongHC._id
     }
