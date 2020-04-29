@@ -19,6 +19,8 @@ exports.get = (req, res) => {
 exports.getById = async (req, res) => {
     try {
         var tasktemplate = await TaskTemplate.findById(req.params.id).populate("organizationalUnit creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
+        var nameRead = await Role.findById(tasktemplate.readByEmployees);
+        tasktemplate.readByEmployees[1] = nameRead.name; // thêm vào phân quyền của người được xem
         var actionTemplates = await ActionTask.find({ taskTemplate: tasktemplate._id });
         var informationTemplate = await InformationTaskTemplate.find({ taskTemplate: tasktemplate._id });
         res.status(200).json({
