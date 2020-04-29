@@ -81,6 +81,7 @@ class AssetTypeEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log(nextProps);
         if (nextProps._id !== prevState._id) {
             return {
                 ...prevState,
@@ -100,6 +101,7 @@ class AssetTypeEditForm extends Component {
         const { translate, assetType } = this.props;
         const { typeNumber, typeName, timeDepreciation, parent, description,
                  errorOnTypeName } = this.state;
+        console.log(parent);
         return (
             <React.Fragment>
                 <DialogModal
@@ -128,7 +130,11 @@ class AssetTypeEditForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <input type="text" className="form-control" name="parent" value={parent} onChange={this.handleParentChange} />
+                            <select id="drops" className="form-control" value={parent} name="parent" onChange={(e) => this.setState({parent: e.target.value})}>
+                                {assetType.listAssetTypes.length ? assetType.listAssetTypes.map((item, index) => (
+                                    <option key={index} value={item._id}>{item.typeName}</option>
+                                )) : null}
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>

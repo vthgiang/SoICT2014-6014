@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import { AssetCreateForm } from './AssetCreateForm';
 import { AssetEditForm } from './AssetEditForm';
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
-// import { AssetManagerActions } from '../redux/actions';
+import { AssetManagerActions } from '../redux/actions';
 
 class AssetManager extends Component {
     constructor(props) {
@@ -22,7 +22,7 @@ class AssetManager extends Component {
         this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
     componentDidMount() {
-        // this.props.getAllAsset(this.state);
+        this.props.getAllAsset(this.state);
     }
     // Bắt sự kiện click xem thông tin tài sản
     handleView = async (value) => {
@@ -299,8 +299,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // getAllAsset: AssetManagerActions.getAllAsset,
-    // deleteAsset: AssetManagerActions.deleteAsset,
+    getAllAsset: AssetManagerActions.getAllAsset,
+    deleteAsset: AssetManagerActions.deleteAsset,
 };
 
 const assetManager = connect(mapState, actionCreators)(withTranslate(AssetManager));

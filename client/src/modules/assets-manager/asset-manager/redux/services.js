@@ -15,8 +15,6 @@ export const AssetService = {
     updateFile,
     checkAssetNumber,
     deleteAsset,
-    checkArrayAssetNumber,
-
 }
 
 // Lấy danh sách tài sản
@@ -26,7 +24,6 @@ function getAll(data) {
         headers: AuthenticateHeader(),
         body: JSON.stringify(data)
     }
-
     return fetch(`${ LOCAL_SERVER_API }/asset/paginate`, requestOptions).then(handleResponse);
 }
 
@@ -94,15 +91,4 @@ function deleteAsset(id) {
     };
 
     return fetch(`${ LOCAL_SERVER_API }/asset/${id}`, requestOptions).then(handleResponse);
-}
-
-// Kiểm tra sự tồn tại của AssetNumber trong array 
-function checkArrayAssetNumber(arrayAssetNumber) {
-    const requestOptions = {
-        method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(arrayAssetNumber)
-    }
-
-    return fetch(`${ LOCAL_SERVER_API }/asset/checkArrayAssetNumber`, requestOptions).then(handleResponse);
 }

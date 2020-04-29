@@ -12,8 +12,6 @@ export const AssetManagerActions = {
     updateInformationAsset,
     checkAssetNumber,
     deleteAsset,
-    checkArrayAssetNumber
-
 };
 
 // Lấy danh sách tài sản
@@ -239,38 +237,6 @@ function deleteAsset(id) {
     function failure(error) {
         return {
             type: AssetConstants.DELETE_ASSET_FAILURE,
-            error
-        };
-    };
-}
-
-// Kiểm tra sự tồn tại của AssetNumber trong array
-function checkArrayAssetNumber(arrayAssetNumber) {
-    return dispatch => {
-        dispatch(request());
-        AssetService.checkArrayAssetNumber(arrayAssetNumber)
-            .then(
-                checkArrayAssetNumber => dispatch(success(checkArrayAssetNumber)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
-
-    function request() {
-        return {
-            type: AssetConstants.CHECK_ARRAY_ASSETNUMBER_REQUEST
-        };
-    };
-
-    function success(checkArrayAssetNumber) {
-        return {
-            type: AssetConstants.CHECK_ARRAY_ASSETNUMBER_SUCCESS,
-            checkArrayAssetNumber
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: AssetConstants.CHECK_ARRAY_ASSETNUMBER_FAILURE,
             error
         };
     };

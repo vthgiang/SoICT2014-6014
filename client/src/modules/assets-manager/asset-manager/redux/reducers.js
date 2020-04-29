@@ -120,23 +120,6 @@ export function assetsManager(state = initState, action) {
                 error: action.error,
                 isLoading: false,
             };
-
-        case AssetConstants.CHECK_ARRAY_ASSETNUMBER_REQUEST:
-            return {
-                ...state,
-                isLoading: true
-            };
-        case AssetConstants.CHECK_ARRAY_ASSETNUMBER_SUCCESS:
-            return {
-                ...state,
-                checkArrayAssetNumber: [...action.checkArrayAssetNumber.content],
-                isLoading: false
-            };
-        case AssetConstants.CHECK_ARRAY_ASSETNUMBER_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
         default:
             return state
     }

@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { AssetTypeFromValidator } from './AssetTypeFromValidator';
-import { AssetTypeActions } from '../redux/actions';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {ButtonModal, DialogModal, ErrorLabel} from '../../../../common-components';
+import {AssetTypeFromValidator} from './AssetTypeFromValidator';
+import {AssetTypeActions} from '../redux/actions';
+
 class AssetTypeCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -11,8 +12,8 @@ class AssetTypeCreateForm extends Component {
             typeNumber: "",
             typeName: "",
             timeDepreciation: "",
-            parent: "",
-            description: "",
+            parent: null,
+            description: ""
         };
     }
 
@@ -41,6 +42,7 @@ class AssetTypeCreateForm extends Component {
      * Bắt sự kiện thay đổi tên loại tài sản
      */
     handleTypeNameChange = (e) => {
+
         let value = e.target.value;
         this.validateTypeName(value, true);
     }
@@ -57,7 +59,9 @@ class AssetTypeCreateForm extends Component {
         }
         return msg === undefined;
     }
-
+    validateExitsTypeNumber = (value) => {
+        return this.props.assetType.listAssetTypes.some(item => item.typeNumber === value);
+    }
     /**
      * Bắt sự kiện thay đổi thời gian trích khấu hao
      */
@@ -105,17 +109,21 @@ class AssetTypeCreateForm extends Component {
      * Bắt sự kiện submit form
      */
     save = () => {
-        if (this.isFormValidated()) {
+        if (this.isFormValidated() && this.validateExitsTypeNumber(this.state.typeNumber) === false) {
             return this.props.createAssetType(this.state);
         }
     }
+
     render() {
-        const { translate, assetType } = this.props;
-        const { typeNumber, typeName, timeDepreciation, parent, description,
-            errorOnTypeNumber, errorOnTypeName } = this.state;
+        const {translate, assetType} = this.props;
+        console.log(assetType);
+        const {
+            typeNumber, typeName, timeDepreciation, parent, description,
+            errorOnTypeNumber, errorOnTypeName
+        } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-assettype" button_name="Thêm mới " title="Thêm mới loại tài sản" />
+                <ButtonModal modalID="modal-create-assettype" button_name="Thêm mới " title="Thêm mới loại tài sản"/>
                 <DialogModal
                     size='50' modalID="modal-create-assettype" isLoading={assetType.isLoading}
                     formID="form-create-assettype"
@@ -123,31 +131,39 @@ class AssetTypeCreateForm extends Component {
                     msg_success="{translate('modal.add_success')}"
                     msg_faile={translate('modal.add_faile')}
                     func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!this.isFormValidated() || this.validateExitsTypeNumber(typeNumber)}
                 >
                     <form className="form-group" id="form-create-assettype">
                         <div className={`form-group ${errorOnTypeNumber === undefined ? "" : "has-error"}`}>
                             <label>Mã loại tài sản<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="typeNumber" value={typeNumber} onChange={this.handleTypeNumberChange} autoComplete="off" placeholder="Mã loại tài sản" />
-                            <ErrorLabel content={errorOnTypeNumber} />
+                            <input type="text" className="form-control" name="typeNumber" value={typeNumber} onChange={this.handleTypeNumberChange} autoComplete="off" placeholder="Mã loại tài sản"/>
+                            <ErrorLabel content={errorOnTypeNumber}/>
+                            <ErrorLabel content={this.validateExitsTypeNumber(typeNumber) ? 'Type Number is exits' : ''}/>
                         </div>
                         <div className={`form-group ${errorOnTypeName === undefined ? "" : "has-error"}`}>
                             <label>Tên loại tài sản<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} autoComplete="off" placeholder="Tên loại tài sản" />
-                            <ErrorLabel content={errorOnTypeName} />
+                            <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} autoComplete="off" placeholder="Tên loại tài sản"/>
+                            <ErrorLabel content={errorOnTypeName}/>
                         </div>
                         <div className="form-group">
                             <label>Thời gian khấu hao</label>
-                            <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="timeDepreciation" value={ timeDepreciation } onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao" />
-                            <label style={{ height: 34, display: "inline", width: "5%"}}> &nbsp; Năm</label>
+                            <input style={{display: "inline", width: "93%"}} type="number" className="form-control" name="timeDepreciation" value={timeDepreciation}
+                                   onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao"/>
+                            <label style={{height: 34, display: "inline", width: "5%"}}> &nbsp; Năm</label>
                         </div>
                         <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <input type="text" className="form-control" name="parent" value={parent} onChange={this.handleParentChange} autoComplete="off" placeholder="Loại tài sản cha" />
+                            <select id="drops" className="form-control" name="parent" onChange={(e) => this.setState({parent: e.target.value})}>
+                                {assetType.listAssetTypes.length ? assetType.listAssetTypes.map((item, index) => (
+                                    <option key={index} value={item._id}>{item.typeName}</option>
+                                )) : null}
+
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>
-                            <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder="Mô tả"></textarea>
+                            <textarea className="form-control" rows="3" style={{height: 34}} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                      placeholder="Mô tả"></textarea>
                         </div>
                     </form>
                 </DialogModal>
@@ -157,8 +173,8 @@ class AssetTypeCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { assetType } = state;
-    return { assetType };
+    const {assetType} = state;
+    return {assetType};
 };
 
 const actionCreators = {
@@ -166,4 +182,4 @@ const actionCreators = {
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AssetTypeCreateForm));
-export { createForm as AssetTypeCreateForm };
+export {createForm as AssetTypeCreateForm};

@@ -2,10 +2,10 @@ const AssetType = require('../../../models/asset/assetType.model');
 
 /**
  * Lấy danh sách loại tài sản
- */ 
+ */
 exports.searchAssetTypes = async (company) => {
     var listAssetTypes = await AssetType.find({
-        company: company 
+        company: company
     })
     return listAssetTypes;
 //
@@ -15,7 +15,7 @@ exports.searchAssetTypes = async (company) => {
  * Thêm mới thông tin loại tài sản
  * @data: dữ liệu loại tài sản mới
  * @company: id công ty người tạo
- */ 
+ */
 exports.createAssetType = async (data, company) => {
     console.log(data);
     var createAssetType = await AssetType.create({
@@ -23,7 +23,7 @@ exports.createAssetType = async (data, company) => {
         typeNumber: data.typeNumber,
         typeName: data.typeName,
         timeDepreciation: data.timeDepreciation,
-        parent: null,
+        parent: data.parent,
         // parent: ObjectId.isValid(data.parent) ? data.parent : null,
         description: data.description,
     });
