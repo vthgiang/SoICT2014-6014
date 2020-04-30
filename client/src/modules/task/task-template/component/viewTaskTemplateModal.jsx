@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import  {taskTemplateActions} from '../redux/actions';
+import { taskTemplateActions } from '../redux/actions';
+import { DialogModal } from '../../../../common-components';
 
 class ModalViewTaskTemplate extends Component {
     constructor(props) {
@@ -54,148 +55,193 @@ class ModalViewTaskTemplate extends Component {
         if (tasktemplates.template) template = tasktemplates.template.info;
         return (
             <React.Fragment>
-                <div className="modal modal-full fade" id={`viewTaskTemplate${this.props.id}`} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div className="modal-dialog-full">
-                        <div className="modal-content">
-                            {/* Modal Header */}
-                            <div className="modal-header">
-                                <button type="button" className="close" onClick={() => this.handleCloseModal(this.props.id)} data-dismiss="modal">
-                                    <span aria-hidden="true">×</span>
-                                    <span className="sr-only">Close</span>
-                                </button>
-                                <h3 className="modal-title" id="myModalLabel">{template && template.name}</h3>
-                            </div>
-                            {/* Modal Body */}
-                            <div className="modal-body" >
-                                <form className="form-horizontal">
-                                    <div className="row">
-                                        <div className="col-sm-6">
-                                            <div className='form-group'>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*: {template && template.organizationalUnit.name}</label>
-                                            </div>
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện:</label>
-                                                {template &&
-                                                    <ul>
-                                                        {template.responsibleEmployees.map((item, index) => {
-                                                            return <li key={index}>{item.name}</li>
-                                                        })}
-                                                    </ul>}
-                                            </div>
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt:</label>
-                                                {template &&
-                                                    <ul>
-                                                        {template.accountableEmployees.map((item, index) => {
-                                                            return <li key={index}>{item.name}</li>
-                                                        })}
-                                                    </ul>}
-                                            </div>
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ:</label>
-                                                {template &&
-                                                    <ul>
-                                                        {template.consultedEmployees.map((item, index) => {
-                                                            return <li key={index}>{item.name}</li>
-                                                        })}
-                                                    </ul>}
-                                            </div>
-                                            <div className='form-group' style={{ marginTop: "-15px", marginBottom: "-5px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát:</label>
-                                                {template &&
-                                                    <ul>
-                                                        {template.informedEmployees.map((item, index) => {
-                                                            return <li key={index}>{item.name}</li>
-                                                        })}
-                                                    </ul>}
-                                            </div>
-                                            <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border">Danh sách các hoạt động của công việc*</legend>
-                                                <div className="control-group">
-                                                    <table className="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style={{ width: '10%' }}>STT</th>
-                                                                <th style={{ width: '165px' }}>Tên hoạt động</th>
-                                                                <th style={{ width: '295px' }}>Mô tả</th>
-                                                                <th>Bắt buộc</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                (typeof template === 'undefined' || template.taskActions.length === 0) ? <tr><td colSpan={5}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                    template.taskActions.map((item, index) =>
-                                                                        <tr key={index + 1}>
-                                                                            <td style={{ whiteSpace: "normal" }}>{index + 1}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.name}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.description}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.mandatory ? "Có" : "Không"}</td>
-                                                                        </tr>
-                                                                    )
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </fieldset>
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <div className='form-group'>
-                                                <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc*: {template && template.description}</label>
-                                            </div>
-                                            <div className='form-group' style={{ marginTop: "-15px" }}>
-                                                <label className="col-sm-4 control-label" htmlFor="inputName3" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm KPI công việc: {template && template.formula}</label>
-                                            </div>
-                                            <div>
-                                                <label className="col-sm-12 control-label" style={{ width: '100%', textAlign: 'left' }}>Chú thích:</label>
-                                                <div style={{ marginLeft: "5%", marginTop: "-15px" }} >
-                                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>Px: Thông tin thứ x-1 trong danh sách thông tin yêu cầu của công việc</label>
-                                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label>
-                                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label>
-                                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
-                                                    <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
-                                                </div>
-                                            </div>
-                                            <fieldset className="scheduler-border">
-                                                <legend className="scheduler-border">Danh sách các thông tin yêu cầu của công việc</legend>
-                                                <div className="control-group">
-                                                    <table className="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style={{ width: '38px' }}>Stt</th>
-                                                                <th title="Tên trường thông tin" style={{ whiteSpace: "normal", width: "157px" }}>Tên trường thông tin</th>
-                                                                <th title="Mô tả" style={{ width: '138px' }}>Mô tả</th>
-                                                                <th title="Kiểu dữ liệu" style={{ width: '99px' }}>Kiểu dữ liệu</th>
-                                                                <th title="Chỉ quản lý được điền?">Chỉ quản lý được điền?</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                (typeof template === 'undefined' || template.taskInformations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                    template.taskInformations.map((item, index) =>
-                                                                        <tr key={index}>
-                                                                            <td style={{ whiteSpace: "normal" }}>{index + 1}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.name}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.description}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.type}</td>
-                                                                            <td style={{ whiteSpace: "normal" }}>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
-                                                                        </tr>
-                                                                    )
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </fieldset>
+                <DialogModal
+                    size='75' modalID={`viewTaskTemplate${this.props.id}`} isLoading={false}
+                    formID="form-view-tasktemplate"
+                    title={template && template.info.name}
+                    // func={this.handleCloseModal(this.props.id)}
+                    disableSubmit={false}
+                >
+
+                    {/* Modal Body */}
+                    <form className="form-horizontal">
+                        <div className="row">
+                            <div className="col-sm-6">
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị</label>
                                         </div>
                                     </div>
-                                </form>
+                                    <div className="col-xs-8" >
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{template && template.info.organizationalUnit.name}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người được xem </label>
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-8">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            {template &&
+                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
+                                                    {template.info.readByEmployees[1]}
+                                                </p>}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-8">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            {template &&
+                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
+                                                    {template.info.responsibleEmployees.map((item, index) => {
+                                                        return <p key={index}>{item.name}</p>
+                                                    })}
+                                                </p>}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-8">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            {template &&
+                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
+                                                    {template.info.accountableEmployees.map((item, index) => {
+                                                        return <p key={index}>{item.name}</p>
+                                                    })}
+                                                </p>}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-8">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            {template &&
+                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
+                                                    {template.info.consultedEmployees.map((item, index) => {
+                                                        return <p key={index}>{item.name}</p>
+                                                    })}
+                                                </p>}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-8">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            {template &&
+                                                <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>
+                                                    {template.info.informedEmployees.map((item, index) => {
+                                                        return <p key={index}>{item.name}</p>
+                                                    })}
+                                                </p>}
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
-                            {/* <div className="modal-footer">
-                                <button type="cancel" onClick={() => this.handleCloseModal(this.props.id)} className="btn btn-primary" data-dismiss="modal">Đóng</button>
-                            </div> */}
-                            {/* Modal Footer */}
+                            <div className="col-sm-6">
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-8" >
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{template && template.info.description}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-4">
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-8" >
+                                        <div className='form-group' style={{ marginTop: "-15px" }}>
+                                            <p className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{template && template.info.formula}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ marginTop: "-15px", textAlign: "left" }} >
+                                        <label className="col-sm-12" style={{ fontWeight: "400" }}>D: Tổng số ngày thực hiện công việc (trừ CN)</label><br />
+                                        <label className="col-sm-12" style={{ fontWeight: "400" }}>D0: Số ngày quá hạn</label><br />
+                                        <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label><br />
+                                        <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label><br />
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
-                </div >
+                        <div className="row">
+                            <div className="col-sm-6" style={{ marginTop: "15px" }}>
+                                <div className="row">
+                                    <div className="col-xs-12">
+                                        <div className='form-group' style={{ marginTop: "5px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Danh sách hoạt động: </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="control-group" style={{ marginLeft: "15px" }}>
+                                    {
+                                        (typeof template === 'undefined' || template.actions.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
+                                            template.actions.map((item, index) =>
+                                                <p style={{ textAlign: 'left' }} >{item.name} - {item.description} - {item.mandatary ? "Có" : "Không"} bắt buộc </p>
+                                            )
+                                    }
+                                </div>
+                            </div>
+                            <div className="col-sm-6" style={{ marginTop: "15px" }}>
+                                <div className="row">
+                                    <div className="col-xs-12">
+                                        <div className='form-group' style={{ marginTop: "5px" }}>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Danh sách thông tin: </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="control-group" style={{ marginLeft: "15px" }}>
+
+                                    {
+                                        (typeof template === 'undefined' || template.informations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
+                                            template.informations.map((item, index) =>
+                                                <p style={{ textAlign: 'left' }}>{item.name} - {item.description} - {item.type} - {item.mandatary ? "Chỉ quản lý được điền" : "Không bắt buộc chỉ quản lý được điền"}</p>
+                                            )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </DialogModal>
             </React.Fragment>
         );
     }

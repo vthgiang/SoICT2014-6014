@@ -87,7 +87,7 @@ const TaskSchema = new Schema({
         ref: User
     }],
     evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
-        time: { // Tháng đánh giá
+        date: { // Tháng đánh giá
             type: Date
         },
         kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
@@ -288,6 +288,14 @@ const TaskSchema = new Schema({
         },
         content: {
             type: String,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type : Date,
+            default: Date.now
         },
         createdAt: {
             type: Date,

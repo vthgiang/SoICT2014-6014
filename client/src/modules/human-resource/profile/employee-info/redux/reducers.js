@@ -22,11 +22,11 @@ export function employeesInfo(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                employee: action.payload.employee,
-                salary: action.payload.salary,
-                annualLeave: action.payload.annualLeave,
-                commendation: action.payload.commendation,
-                discipline: action.payload.discipline
+                employees: action.payload.employees,
+                salarys: action.payload.salarys,
+                annualLeaves: action.payload.annualLeaves,
+                commendations: action.payload.commendations,
+                disciplines: action.payload.disciplines
             };
         case Constants.UPDATE_PERSONAL_INFOR_SUCCESS:
             return {

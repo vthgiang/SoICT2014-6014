@@ -69,7 +69,7 @@ class ModalDetailKPIPersonal extends Component {
     render() {
         var list;
         const { kpipersonal } = this.props;
-        if (kpipersonal.listtarget) list = kpipersonal.listtarget;
+        if (kpipersonal.kpis) list = kpipersonal.kpis;
         return (
             <div className="modal modal-full fade" id={"detailKPIPersonal" + kpipersonal._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">

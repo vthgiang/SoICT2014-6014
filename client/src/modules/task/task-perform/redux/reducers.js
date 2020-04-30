@@ -189,11 +189,12 @@ export function performtasks(state = {}, action) {
                 )
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS:
+            console.log( action.newComment.data);
             return {
                 ...state,
                 actioncomments: state.actioncomments.map(comment =>
-                    comment._id === action.newComment.commentTask._id
-                        ? action.newComment.commentTask : comment
+                    comment._id === action.newComment.data.content._id
+                        ? action.newComment.data.content : comment
                 )
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE:

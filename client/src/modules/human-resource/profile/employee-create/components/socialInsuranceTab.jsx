@@ -8,11 +8,10 @@ import {
 } from './combinedContent';
 
 
-class TabInsurranceContent extends Component {
+class InsurranceTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
+        this.state = {};
     }
 
     // Bắt sự kiện click edit BHXH
@@ -33,51 +32,51 @@ class TabInsurranceContent extends Component {
     }
     // Bắt sự kiện thay đổi ngày có hiệu lực
     handleStartDateBHYTChange = (value) => {
-        this.props.handleChange("startDateBHYT", value)
+        this.props.handleChange("healthInsuranceStartDate", value)
     }
     // Bắt sự kiện thay dổi ngày hêt hạn
     handleEndDateBHYTChange = (value) => {
-        this.props.handleChange("endDateBHYT", value)
+        this.props.handleChange("healthInsuranceEndDate", value)
     }
     // function thêm thông tin quá trình đóng BHXH
     handleAddBHXH = async (data) => {
-        var BHXH = this.state.BHXH;
+        var socialInsuranceDetails = this.state.socialInsuranceDetails;
         await this.setState({
-            BHXH: [...BHXH, {
+            socialInsuranceDetails: [...socialInsuranceDetails, {
                 ...data
             }]
         })
-        this.props.handleAddBHXH(this.state.BHXH);
+        this.props.handleAddBHXH(this.state.socialInsuranceDetails);
     }
     // function chỉnh sửa thông tin quá trình đóng BHXH
     handleEditBHXH = async (data) => {
-        var BHXH = this.state.BHXH;
-        BHXH[data.index] = data;
+        var socialInsuranceDetails = this.state.socialInsuranceDetails;
+        socialInsuranceDetails[data.index] = data;
         await this.setState({
-            BHXH: BHXH
+            socialInsuranceDetails: socialInsuranceDetails
         })
-        this.props.handleEditBHXH(this.state.BHXH);
+        this.props.handleEditBHXH(this.state.socialInsuranceDetails);
     }
     // Function bắt sự kiện xoá quá trình đóng BHXH
     delete = async (index) => {
-        var BHXH = this.state.BHXH;
-        BHXH.splice(index, 1);
+        var socialInsuranceDetails = this.state.socialInsuranceDetails;
+        socialInsuranceDetails.splice(index, 1);
         await this.setState({
             ...this.state,
-            experience: [...BHXH]
+            socialInsuranceDetails: [...socialInsuranceDetails]
         })
-        this.props.handleDeleteBHXH(this.state.BHXH);
+        this.props.handleDeleteBHXH(this.state.socialInsuranceDetails);
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
                 id: nextProps.id,
-                BHXH: nextProps.BHXH,
-                numberBHYT: nextProps.employee.numberBHYT,
-                startDateBHYT: nextProps.employee.startDateBHYT,
-                endDateBHYT: nextProps.employee.endDateBHYT,
-                numberBHXH: nextProps.employee.numberBHXH,
+                socialInsuranceDetails: nextProps.socialInsuranceDetails,
+                healthInsuranceNumber: nextProps.employee.healthInsuranceNumber,
+                healthInsuranceStartDate: nextProps.employee.healthInsuranceStartDate,
+                healthInsuranceEndDate: nextProps.employee.healthInsuranceEndDate,
+                socialInsuranceNumber: nextProps.employee.socialInsuranceNumber,
             }
         } else {
             return null;
@@ -87,7 +86,7 @@ class TabInsurranceContent extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { numberBHYT, startDateBHYT, endDateBHYT, numberBHXH, BHXH } = this.state;
+        const { healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, socialInsuranceNumber, socialInsuranceDetails } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -97,22 +96,22 @@ class TabInsurranceContent extends Component {
 
 
                             <div className="form-group col-md-4">
-                                <label htmlFor="numberBHYT">{translate('manage_employee.number_BHYT')}</label>
-                                <input type="text" className="form-control" name="numberBHYT" value={numberBHYT} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHYT')} autoComplete="off" />
+                                <label>{translate('manage_employee.number_BHYT')}</label>
+                                <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHYT')} autoComplete="off" />
                             </div>
                             <div className="form-group col-md-4">
-                                <label htmlFor="startDateBHYT">{translate('manage_employee.start_date')}</label>
+                                <label >{translate('manage_employee.start_date')}</label>
                                 <DatePicker
                                     id={`startDateBHYT${id}`}
-                                    value={startDateBHYT}
+                                    value={healthInsuranceStartDate}
                                     onChange={this.handleStartDateBHYTChange}
                                 />
                             </div>
                             <div className="form-group col-md-4">
-                                <label htmlFor="endDateBHYT">{translate('manage_employee.end_date_certificate')}</label>
+                                <label>{translate('manage_employee.end_date_certificate')}</label>
                                 <DatePicker
                                     id={`endDateBHYT${id}`}
-                                    value={endDateBHYT}
+                                    value={healthInsuranceEndDate}
                                     onChange={this.handleEndDateBHYTChange}
                                 />
                             </div>
@@ -122,8 +121,8 @@ class TabInsurranceContent extends Component {
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.bhxh')}</h4></legend>
                         <div className="row">
                             <div className="form-group col-md-4">
-                                <label htmlFor="numberBHXH">{translate('manage_employee.number_BHXH')}</label>
-                                <input type="text" className="form-control" name="numberBHXH" value={numberBHXH} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHXH')} autoComplete="off" />
+                                <label>{translate('manage_employee.number_BHXH')}</label>
+                                <input type="text" className="form-control" name="socialInsuranceNumber" value={socialInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHXH')} autoComplete="off" />
                             </div>
                             <div className="col-md-12">
                                 <h4 className="row col-md-6">{translate('manage_employee.bhxh_process')}:</h4>
@@ -140,12 +139,12 @@ class TabInsurranceContent extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof BHXH !== 'undefined' && BHXH.length !== 0) &&
-                                            BHXH.map((x, index) => (
+                                        {(typeof socialInsuranceDetails !== 'undefined' && socialInsuranceDetails.length !== 0) &&
+                                            socialInsuranceDetails.map((x, index) => (
                                                 <tr key={index}>
                                                     <td>{x.startDate}</td>
                                                     <td>{x.endDate}</td>
-                                                    <td>{x.unit}</td>
+                                                    <td>{x.company}</td>
                                                     <td>{x.position}</td>
                                                     <td>
                                                         <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_bhxh')}><i className="material-icons">edit</i></a>
@@ -156,7 +155,7 @@ class TabInsurranceContent extends Component {
                                     </tbody>
                                 </table>
                                 {
-                                    (typeof BHXH === 'undefined' || BHXH === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    (typeof socialInsuranceDetails === 'undefined' || socialInsuranceDetails === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
                             </div>
                         </div>
@@ -167,7 +166,7 @@ class TabInsurranceContent extends Component {
                     <ModalEditBHXH
                         id={`editBHXH${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
-                        unit={this.state.currentRow.unit}
+                        company={this.state.currentRow.company}
                         startDate={this.state.currentRow.startDate}
                         endDate={this.state.currentRow.endDate}
                         position={this.state.currentRow.position}
@@ -179,5 +178,5 @@ class TabInsurranceContent extends Component {
     }
 };
 
-const tabInsurrance = connect(null, null)(withTranslate(TabInsurranceContent));
-export { tabInsurrance as TabInsurranceContent };
+const insurranceTab = connect(null, null)(withTranslate(InsurranceTab));
+export { insurranceTab as InsurranceTab };

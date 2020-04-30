@@ -5,7 +5,9 @@ import {
     getStorage, AuthenticateHeader
 } from '../../../../../config';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
 import {handleResponse} from '../../../../../helpers/handleResponse';
+import { sendRequest } from '../../../../../helpers/requestHelper';
 export const managerKPIPerService = {
     getAllKPIPersonalByMember,
     getAllKPIPersonalOfTask,
@@ -17,30 +19,25 @@ async function getAllKPIPersonalByMember() {//member
     const token = getStorage();
     const verified = await jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/user/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
+    }, false, 'kpi.employee.manager')
 
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${id}`, requestOptions).then(handleResponse);
 }
 
 // Lấy tất cả kpi cá nhân
 function getAllKPIPersonalByUserID(member) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/user/${member}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/user/${member}`, requestOptions).then(handleResponse);
+    }, false, 'kpi.employee.manager' )
 }
 
 // Lấy tất cả kpi cá nhân
 function getAllKPIPersonalOfTask(member) {
-    const requestOptions = {
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpipersonals/task/${member}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return fetch(`${LOCAL_SERVER_API}/kpipersonals/task/${member}`, requestOptions).then(handleResponse);
+    }, false,'kpi.employee.manager')
 }
