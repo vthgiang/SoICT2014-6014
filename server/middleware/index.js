@@ -32,7 +32,12 @@ exports.authFunc = (checkPage=true) => {
             /**
              * Giải mã token gửi lên để check dữ liệu trong token
              */
-            const verified = await jwt.verify(token, process.env.TOKEN_SECRET);
+            let verified;
+            try{
+                verified = await jwt.verify(token, process.env.TOKEN_SECRET);
+            } catch (error){ // jwt malformed
+                throw ['access_denied'];
+            }
             req.user = verified; 
             req.token = token;
 
