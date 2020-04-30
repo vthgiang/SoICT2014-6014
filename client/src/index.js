@@ -7,13 +7,11 @@ import store from './redux/store';
 import translations from './lang';
 import { IntlProvider } from 'react-redux-multilingual';
 import AuthAlert from './modules/alert/components/authAlert';
-import AuthPageAccessDeniedAlert from './modules/alert/components/authPageAccessDeniedAlert';
 import { ToastContainer, toast } from 'react-toastify';
 
 ReactDOM.render(
     <Provider store={store}>
         <IntlProvider translations={translations}>
-            <AuthPageAccessDeniedAlert/>
             <AuthAlert />
             <ToastContainer enableMultiContainer containerId={'toast-notification'} position={toast.POSITION.TOP_RIGHT} />
             <App />

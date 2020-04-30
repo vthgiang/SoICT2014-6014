@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Redirect} from 'react-router-dom';
 import { getStorage } from  '../config';
 import {NotFound} from '../modules/not-found/components';
+import {CallApiStatus} from '../modules/auth/redux/reducers'
 
 const checkURL = (urlName, linkArr) => {
     var result = false;
@@ -20,10 +21,11 @@ export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, compone
     return <Route {...rest} render={props => {
         var logged = getStorage();
         if(logged !== null){
+            if(auth.calledAPI !== CallApiStatus.FINISHED)
+                return <Layout></Layout>
+            
             if(link !== '/' && checkURL(link, auth.links) !== true){
-                if(!auth.calledAPI) //chưa thực hiện load trang để check link
-                    return <Layout isLoading={isLoading}></Layout>
-                else return <Redirect to='/'/>
+                return <Redirect to='/'/>
             } 
             return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{
