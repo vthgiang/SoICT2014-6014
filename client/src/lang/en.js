@@ -109,12 +109,12 @@ export default {
                 content: [
                     'Session to work invalid',
                     'Access denied',
+                    'Page access denied',
                     'Role invalid',
                     'Your permission changed',
                     'Token invalid',
                     'Company service stoped',
                 ],
-                page_access_denied: 'Page access denied.'
             }
         },
 

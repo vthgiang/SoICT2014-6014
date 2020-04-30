@@ -25,14 +25,8 @@ const checkErrorAuth = (code) => {
     return false;
 }
 
-const checkPageAccess = (code) => {
-    if(code === 'page_access_denied') return true;
-    return false;
-}
-
 const showAuthResponseAlertAndRedirectToLoginPage = async () => {
-    await window.$(`#alert-error-auth`).modal("show");
-    await localStorage.clear();
+    await window.$(`#alert-error-auth`).modal({backdrop: 'static', keyboard: false, display: 'show'});
 }
 
 /**

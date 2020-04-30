@@ -111,12 +111,12 @@ export default {
                 content: [
                     'Phiên làm việc đã hết hạn',
                     'Truy cập không hợp lệ',
+                    'Phân quyền hiện tại của bạn không được phép truy cập vào trang này',
                     'Phân quyền của bạn không hợp lệ',
                     'Phân quyền của bạn đã được quản lý thay đổi',
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
-                page_access_denied: 'Phân quyền hiện tại của bạn không được phép truy cập vào trang này.'
             }
         },
 
