@@ -1,7 +1,12 @@
 import { AuthConstants } from "./constants";
 
+export const CallApiStatus = {
+    INITIALIZED: 0,
+    CALLING: 1,
+    FINISHED: 2,
+}
 var initState = {
-    calledAPI: false, //chưa chạy lần nào 
+    calledAPI: CallApiStatus.INITIALIZED,
     user: {},
     links: [],
     components: [],
@@ -18,7 +23,7 @@ export function auth(state = initState, action) {
                 ...state,
                 isLoading: true,
                 error: null,
-                calledAPI: true,
+                calledAPI: CallApiStatus.CALLING,
             };
         case AuthConstants.LOGIN_REQUEST:
         case AuthConstants.FORGOT_PASSWORD_REQUEST:
@@ -84,9 +89,9 @@ export function auth(state = initState, action) {
         case AuthConstants.GET_LINKS_OF_ROLE_SUCCESS:
             return {
                 ...state,
-                calledAPI: false,
                 isLoading: false,
-                links: action.payload
+                links: action.payload,
+                calledAPI: CallApiStatus.FINISHED,
             };
 
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_SUCCESS:
@@ -110,7 +115,7 @@ export function auth(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                calledAPI: false,
+                calledAPI: CallApiStatus.FINISHED,
             }
 
         case AuthConstants.REFRESH_DATA_USER_FAILE:
