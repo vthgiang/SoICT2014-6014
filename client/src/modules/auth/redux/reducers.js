@@ -13,6 +13,13 @@ var initState = {
 export function auth(state = initState, action) {
 
     switch (action.type) {
+        case AuthConstants.GET_LINKS_OF_ROLE_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+                error: null,
+                calledAPI: true,
+            };
         case AuthConstants.LOGIN_REQUEST:
         case AuthConstants.FORGOT_PASSWORD_REQUEST:
         case AuthConstants.RESET_PASSWORD_REQUEST:
@@ -29,7 +36,6 @@ export function auth(state = initState, action) {
         case AuthConstants.LOGIN_SUCCESS:
             return {
                 ...state,
-                calledAPI: true,
                 user: action.payload,
                 isLoading: false,
                 error: null
@@ -52,7 +58,6 @@ export function auth(state = initState, action) {
         case AuthConstants.EDIT_PROFILE_SUCCESS:
             return {
                 ...state,
-                calledAPI: true,
                 isLoading: false,
                 user: action.payload
             };
@@ -61,7 +66,6 @@ export function auth(state = initState, action) {
         case AuthConstants.CHANGE_USER_PASSWORD_SUCCESS:
             return {
                 ...state,
-                calledAPI: true,
                 user: action.payload,
                 isLoading: false,
                 error: null
@@ -73,7 +77,6 @@ export function auth(state = initState, action) {
             }
             return {
                 ...state,
-                calledAPI: true,
                 isLoading: false,
                 user: action.payload
             };
@@ -81,7 +84,7 @@ export function auth(state = initState, action) {
         case AuthConstants.GET_LINKS_OF_ROLE_SUCCESS:
             return {
                 ...state,
-                calledAPI: true,
+                calledAPI: false,
                 isLoading: false,
                 links: action.payload
             };
@@ -89,7 +92,6 @@ export function auth(state = initState, action) {
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_SUCCESS:
             return {
                 ...state,
-                calledAPI: true,
                 isLoading: false,
                 components: action.payload
             };
@@ -102,18 +104,22 @@ export function auth(state = initState, action) {
             };
 
         case AuthConstants.RESET_PASSWORD_SUCCESS:
-            
             return initState;
+        
+        case AuthConstants.GET_LINKS_OF_ROLE_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+                calledAPI: false,
+            }
 
         case AuthConstants.REFRESH_DATA_USER_FAILE:
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE:
-        case AuthConstants.GET_LINKS_OF_ROLE_FAILE:
         case AuthConstants.CHANGE_USER_INFORMATION_FAILE:
         case AuthConstants.CHANGE_USER_PASSWORD_FAILE:
             return {
                 ...state,
                 isLoading: false,
-                calledAPI: true
             }
 
         default:

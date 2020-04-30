@@ -20,10 +20,10 @@ export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, compone
     return <Route {...rest} render={props => {
         var logged = getStorage();
         if(logged !== null){
+            if(auth.calledAPI) //chưa thực hiện load trang để check link
+                return <Layout></Layout>
             if(link !== '/' && checkURL(link, auth.links) !== true){
-                if(!auth.calledAPI) //chưa thực hiện load trang để check link
-                    return <Layout isLoading={isLoading}></Layout>
-                else return <Redirect to='/'/>
+                return <Redirect to='/'/>
             } 
             return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{

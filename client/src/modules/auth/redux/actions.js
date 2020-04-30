@@ -113,6 +113,7 @@ function changePassword(data){
 
 function getLinksOfRole(idRole){
     return dispatch => {
+        dispatch({ type: AuthConstants.GET_LINKS_OF_ROLE_REQUEST });
         AuthService.getLinksOfRole(idRole)
             .then(res => {
                 dispatch({

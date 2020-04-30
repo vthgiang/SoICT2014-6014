@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { AuthenticateHeader } from '../config';
 import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
-import AuthAlert from '../modules/alert/components/authAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
 
@@ -13,6 +12,7 @@ const checkErrorAuth = (code) => {
     
     const error_auth = [
         'access_denied',
+        'page_access_denied',
         'role_invalid',
         'user_role_invalid',
         'acc_logged_out',
@@ -28,11 +28,6 @@ const checkErrorAuth = (code) => {
 const checkPageAccess = (code) => {
     if(code === 'page_access_denied') return true;
     return false;
-}
-
-const showAuthResponseAlertAndRedirectToHomePage = async () => {
-    console.log("DFSDFSDFSDFSDFSDFDSF");
-    await window.$(`#alert-error-auth-page-acccess-denied`).modal({backdrop: 'static', keyboard: false, display: 'show'});
 }
 
 const showAuthResponseAlertAndRedirectToLoginPage = async () => {
@@ -74,8 +69,6 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
         if(messages){
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
-            else if(checkPageAccess(messages[0]))
-                showAuthResponseAlertAndRedirectToHomePage();
             else{
                 toast.error(
                     <ServerResponseAlert
