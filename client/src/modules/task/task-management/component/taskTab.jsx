@@ -17,7 +17,8 @@ class TabTaskContent extends Component {
             startTimer: false,
             currentTimer: "",
             currentPage: 1,
-            showModal: ""
+            showModal: "",
+            showAddSubTask: ""
         };
     }
     componentDidMount() {
@@ -276,6 +277,15 @@ class TabTaskContent extends Component {
         modal.classList.add("in");
         modal.style = "display: block; padding-right: 17px;";
     }
+    handleCheckClickAddSubTask = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showAddSubTask: id
+            }
+        });
+        window.$(`#addNewTask${id}`).modal('show')
+    }
     render() {
         var currentTasks, units = [];
         var pageTotals;
@@ -426,14 +436,18 @@ class TabTaskContent extends Component {
                                                     }
                                                     <button type="button" data-toggle="collapse" data-target={`#actionTask${item._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
                                                     <div id={`actionTask${item._id}`} className="collapse">
-                                                        <a href={`#addNewTask${item._id}`} onClick={this.handleCheckClick} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
+                                                        <a href={`#addNewTask${item._id}`} onClick={() => this.handleCheckClickAddSubTask(item._id)} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
                                                         <a href="#abc" className="all_inbox" title="Lưu công việc này vào kho"><i className="material-icons">all_inbox</i></a>
                                                         {
                                                             this.props.role === "accountable" &&
                                                             <a href="#abc" className="delete" onClick={() => this.handleAction(item._id)} title="Xóa công việc này"><i className="material-icons"></i></a>
                                                         }
                                                     </div>
-                                                    <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
+                                                    {
+                                                        this.state.showAddSubTask === item._id &&
+                                                        <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
+                                                    }
+                                                    {/* <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} /> */}
                                                 </td>
                                             </tr>
                                         ) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
@@ -445,7 +459,7 @@ class TabTaskContent extends Component {
 
                     <PaginateBar
                         pageTotal={tasks.pages}
-                        currentPage={ this.state.currentPage } 
+                        currentPage={this.state.currentPage}
                         func={this.handleGetDataPagination}
                     />
 

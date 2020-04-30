@@ -11,9 +11,6 @@ class ModalApproveTask extends Component {
         this.state = {}
         this.save = this.save.bind(this);
     }
-    // UNSAFE_componentWillMount() {
-    //     this.props.getTaskById(this.props.taskID);
-    // }
     
     componentWillMount() {
         this.props.getTaskById(this.props.taskID);
@@ -88,7 +85,7 @@ class ModalApproveTask extends Component {
                 employee: task && task.consultedEmployees[0]._id,
                 roleMember: "consulted"
             }
-        ]; // currentTask.results;
+        ]; 
         return this.props.editResultTask(listResult, taskID);
     }
 
@@ -118,11 +115,9 @@ class ModalApproveTask extends Component {
         });
     }
     onHandleChangeApprovedPoint1 = async (e) => {
-        // var name = e.target.name;
         var value = parseInt(e.target.value);
         await this.setState(state => {
             return {
-                // [name]: value,
                 ...state,
                 approvedPoint1: value,
                 errorOnResponsibleApprovedPoint: this.validatePoint(value)
@@ -130,11 +125,9 @@ class ModalApproveTask extends Component {
         });
     }
     onHandleChangeApprovedPoint2 = async (e) => {
-        // var name = e.target.name;
         var value = parseInt(e.target.value);
         await this.setState(state => {
             return {
-                // [name]: value,
                 ...state,
                 approvedPoint2: value,
                 errorOnConsultedApprovedPoint: this.validatePoint(value)
@@ -142,11 +135,9 @@ class ModalApproveTask extends Component {
         });
     }
     onHandleChangeEmployeePoint1 = async (e) => {
-        // var name = e.target.name;
         var value = parseInt(e.target.value);
         await this.setState(state => {
             return {
-                // [name]: value,
                 ...state,
                 employeePoint1: value,
                 errorOnResponsibleEmployeePoint: this.validatePoint(value)
@@ -154,11 +145,9 @@ class ModalApproveTask extends Component {
         });
     }
     onHandleChangeEmployeePoint2 = async (e) => {
-        // var name = e.target.name;
         var value = parseInt(e.target.value);
         await this.setState(state => {
             return {
-                // [name]: value,
                 ...state,
                 employeePoint2: value,
                 errorOnConsultedEmployeePoint: this.validatePoint(value)
@@ -166,11 +155,9 @@ class ModalApproveTask extends Component {
         });
     }
     onHandleChangeEmployeePoint3 = async (e) => {
-        // var name = e.target.name;
         var value = parseInt(e.target.value);
         await this.setState(state => {
             return {
-                // [name]: value,
                 ...state,
                 employeePoint3: value,
                 errorOnApprovedPoint: this.validatePoint(value)
@@ -323,8 +310,6 @@ class ModalApproveTask extends Component {
                                     className="form-control"
                                     id="automaticPoint"
                                     placeholder={10}
-                                    // ref={input => this.automaticPoint = input} 
-                                    // defaultValue={task && defaultPoint.automaticPoint} 
                                     disabled="true"
                                     name="automaticPoint"
                                     value={automaticPoint}
@@ -344,8 +329,6 @@ class ModalApproveTask extends Component {
                                         className="form-control"
                                         id="employeePoint1"
                                         placeholder={80}
-                                        // ref={input => this.employeePoint1 = input} 
-                                        // defaultValue={task && defaultPoint.responsible.employeePoint} 
                                         disabled={role !== "responsible"}
                                         name="employeePoint1"
                                         value={employeePoint1}
@@ -360,8 +343,6 @@ class ModalApproveTask extends Component {
                                         className="form-control"
                                         id="approvedPoint1"
                                         placeholder={80}
-                                        // ref={input => this.approvedPoint1 = input} 
-                                        // defaultValue={task && defaultPoint.responsible.approvedPoint} 
                                         disabled={role !== "accountable"}
                                         name="approvedPoint1"
                                         value={approvedPoint1}
@@ -382,8 +363,6 @@ class ModalApproveTask extends Component {
                                         className="form-control"
                                         id="employeePoint2"
                                         placeholder={10}
-                                        // ref={input => this.employeePoint2 = input} 
-                                        // defaultValue={task && defaultPoint.consulted.employeePoint} 
                                         disabled={role !== "consulted"}
                                         name="employeePoint2"
                                         value={employeePoint2}
@@ -398,8 +377,6 @@ class ModalApproveTask extends Component {
                                         className="form-control"
                                         id="approvedPoint2"
                                         placeholder={10}
-                                        // ref={input => this.approvedPoint2 = input} 
-                                        // defaultValue={task && defaultPoint.consulted.approvedPoint} 
                                         disabled={role !== "accountable"}
                                         name="approvedPoint2"
                                         value={approvedPoint2}
@@ -419,8 +396,6 @@ class ModalApproveTask extends Component {
                                         className="form-control"
                                         id="employeePoint3"
                                         placeholder={10}
-                                        // ref={input => this.employeePoint3 = input} 
-                                        // defaultValue={task && defaultPoint.accountable.employeePoint} 
                                         disabled={role !== "accountable"}
                                         name="employeePoint3"
                                         value={employeePoint3}

@@ -436,12 +436,13 @@ exports.createResultTask = async (result, taskID, evaluateID, date) => {
 
     if (item !== null) {
         // Lưu thông tin kết quả 
-        var resultTask = {
-            employee: item.member,
-            role: item.roleMember,
-            automaticPoint: item.systempoint,
-            employeePoint: item.mypoint,
-            approvedPoint: item.approverpoint
+         // Lưu thông tin kết quả 
+         var resultTask = {
+            employee: item.employee,
+            role: item.role,
+            automaticPoint: item.automaticPoint,
+            employeePoint: item.employeePoint,
+            approvedPoint: item.approvedPoint
         }
         console.log(resultTask);
         // Cập nhật thông tin công việc

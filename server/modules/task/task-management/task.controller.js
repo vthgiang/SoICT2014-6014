@@ -183,7 +183,7 @@ exports.getInformedTaskByUser = async (req, res) => {
  * Tạo một công việc mới
  */
 exports.create = async (req, res) => {
-    // try {
+    try {
         var task = await TaskManagementService.create(req.body.parent,req.body.startDate,req.body.endDate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.taskTemplate,req.body.role,req.body.kpi,req.body.responsibleEmployees,req.body.accountableEmployees,req.body.consultedEmployees,req.body.informedEmployees); 
         console.log(req.body);
         await LogInfo(req.user.email, ` create task `,req.user.company)
@@ -192,14 +192,14 @@ exports.create = async (req, res) => {
             messages: ['create_task_success'],
             content: task
         });
-    // } catch (error) {
-    //     await LogError(req.user.email, ` create task  `,req.user.company)
-    //     res.status(400).json({
-    //         success:false,
-    //         messages: ['create_task_fail'],
-    //         content: error
-    //     })
-    // }
+    } catch (error) {
+        await LogError(req.user.email, ` create task  `,req.user.company)
+        res.status(400).json({
+            success:false,
+            messages: ['create_task_fail'],
+            content: error
+        })
+    }
 }
 /**
  *  Xóa một công việc đã thiết lập

@@ -16,23 +16,11 @@ exports.getTaskById = async (id) => {
     //req.params.id
     var task = await Task.findById(id)
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees parent" });        
-    // if (task.taskInformations !== null) {
-    //     // var actionTemplates = await TaskAction.find({ taskTemplate: task.taskTemplate._id });
-    //     // var informationTemplate = await TaskTemplateInformation.find({ taskTemplate: task.taskTemplate._id });
-    //     var actionTemplates = await Task.findById(id).select(' -taskActions ');
-    //     var informationTemplate = await Task.findById(id).select(' -taskInformations ');
-    //     return {
-    //         "info": task,
-    //         "actions": actionTemplates,
-    //         "informations": informationTemplate
-    //     };
-    // } else {
-        return {
-            "info": task,
-            "actions": task.taskActions,
-            "informations": task.taskInformations
-        };
-    // }
+    return {
+        "info": task,
+        "actions": task.taskActions,
+        "informations": task.taskInformations
+    };
 }
 
 /**
@@ -263,7 +251,6 @@ exports.delete = async (id) => {
 /**
  * edit status of task
  */
-// có 6 trạng thái công việc: Đang chờ, Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Bị hủy, Tạm hoãn
 exports.editStatusOfTask = async (taskID, status) => {
     var task = await Task.findByIdAndUpdate(taskID, 
         { $set: {status: status }},
