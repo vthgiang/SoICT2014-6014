@@ -147,7 +147,7 @@ exports.editResultInformationTask = async (req, res) => {
 // Thêm kết quả đánh giá công việc cho từng người tham gia
 exports.createResultTask = async (req, res) => {
     try {
-        var task = await PerformTaskService.createResultTask(req.body.result,req.body.task);
+        var task = await PerformTaskService.createResultTask(req.body.result,req.body.task, req.body.evaluateID, req.body.date);
         await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
         res.json({
             success : true,

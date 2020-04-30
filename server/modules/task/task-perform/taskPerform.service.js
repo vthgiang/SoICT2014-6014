@@ -419,9 +419,10 @@ exports.editResultInformationTask = async (req, res) => {
     }
 }
 
-
-// Thêm thông tin kết quả của đánh giá từng nhân viên
-exports.createResultTask = async (result, taskID) => {
+/**
+ * Thêm thông tin kết quả của đánh giá từng nhân viên
+ */
+exports.createResultTask = async (result, taskID, evaluateID, date) => {
     var item = result;
     
     if (item !== null) {
@@ -433,27 +434,48 @@ exports.createResultTask = async (result, taskID) => {
             employeePoint: item.employeePoint,
             approvedPoint: item.approvedPoint
         }
+        console.log(resultTask);
         // Cập nhật thông tin công việc
-        var task = await Task.findByIdAndUpdate(
-            taskID, { $push: { results: resultTask } }, { new: true }
+        var addResult = await Task.updateOne(
+            {
+                _id: taskID,
+                "evaluations._id" : evaluateID
+                // "evaluations.date": date // req.body.date // "2020-04-22T16:06:17.145Z"
+            }, 
+            {
+                $push: {
+                    "evaluations.$.results": resultTask
+                } 
+            }, 
+            { new: true }
         );
     }
-    return task;
+    
+    return await Task.findById(taskID);
     
 }
 
-// Sửa thông tin kết quả của nhân viên trong công việc
+/**
+ * Sửa thông tin kết quả của nhân viên trong công việc
+ */
 exports.editResultTask = async (listResult,taskid) => {
     if (listResult !== []) {
-
         // Lưu thông tin kết quả 
         listResult.forEach( async (item) => {
-            var newTask = await Task.updateOne({"results._id" : item._id},
+            var newTask = await Task.updateOne(
+                {
+                    "evaluations.results._id" : item._id,
+                    // k can xet dieu kien ngay danh gia vi _id cua result la duy nhat
+                },
                 { $set: {
-                    "results.$.automaticPoint": item.automaticPoint,
-                    "results.$.employeePoint": item.employeePoint,
-                    "results.$.approvedPoint": item.approvedPoint
-                }}
+                    "evaluations.$.results.$[elem].automaticPoint": item.automaticPoint,
+                    "evaluations.$.results.$[elem].employeePoint": item.employeePoint,
+                    "evaluations.$.results.$[elem].approvedPoint": item.approvedPoint
+                }},
+                { arrayFilters: [{
+                        "elem._id" : item._id,
+                    }]
+                } 
             );
         })
     }

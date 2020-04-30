@@ -11,12 +11,16 @@ class ModalApproveTask extends Component {
         this.state = {}
         this.save = this.save.bind(this);
     }
-    UNSAFE_componentWillMount() {
+    // UNSAFE_componentWillMount() {
+    //     this.props.getTaskById(this.props.taskID);
+    // }
+    
+    componentWillMount() {
         this.props.getTaskById(this.props.taskID);
     }
     
-    addResult = (taskID) => { // tạo mới result task rồi thêm vào db, cập nhật lại result trong task
-        var { currentUser, role, performtasks } = this.props;
+    addResult = (taskID, evaluateID, evaluationDate) => { // tạo mới result task rồi thêm vào db, cập nhật lại result trong task
+        var { currentUser, role } = this.props;
         //1-responsible, 2-accountable, 3-consulted
         if (role === "responsible") {
             return this.props.createResult({
@@ -27,7 +31,9 @@ class ModalApproveTask extends Component {
                     approvedPoint: this.state.approvedPoint1,
                     role: "responsible"
                 },
-                task: taskID
+                task: taskID,
+                evaluateID: evaluateID,
+                date: evaluationDate
             });
         } else if (role === "consulted") {
             return this.props.createResult({
@@ -39,7 +45,9 @@ class ModalApproveTask extends Component {
                     approvedPoint: this.state.approvedPoint2,
                     role: "consulted"
                 },
-                task: taskID
+                task: taskID,
+                evaluateID: evaluateID,
+                date: evaluationDate
             });
         } else if (role === "accountable") {
             var employeePoint = this.state.employeePoint3;
@@ -52,12 +60,14 @@ class ModalApproveTask extends Component {
                     approvedPoint: employeePoint,
                     role: "accountable"
                 },
-                task: taskID
+                task: taskID,
+                evaluateID: evaluateID,
+                date: evaluationDate
             });
         }
     }
 
-    confirmResult = (taskID) => {
+    confirmResult = (taskID, oldResults) => {
         var { tasks, performtasks } = this.props;
         var task;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
@@ -66,7 +76,7 @@ class ModalApproveTask extends Component {
                 automaticPoint: this.state.automaticPoint,
                 employeePoint: this.state.employeePoint1,
                 approvedPoint: this.state.approvedPoint1,
-                _id: task && task.results[0]._id,
+                _id: oldResults[0]._id,
                 employee: task && task.responsibleEmployees[0]._id,
                 role: "responsible"
             },
@@ -74,7 +84,7 @@ class ModalApproveTask extends Component {
                 automaticPoint: this.state.automaticPoint,
                 employeePoint: this.state.employeePoint2,
                 approvedPoint: this.state.approvedPoint2,
-                _id: task && task.results[1]._id,
+                _id: oldResults[1]._id,
                 employee: task && task.consultedEmployees[0]._id,
                 roleMember: "consulted"
             }
@@ -180,20 +190,30 @@ class ModalApproveTask extends Component {
     }
 
     save = () => {
-        var { tasks, currentUser, role, performtasks } = this.props;
+        var { currentUser, role } = this.props;
+        var { tasks, performtasks } = this.props;
+        var task;
+
+        if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
+
+        var evaluate = task.evaluations;
+        var evaluationDate = evaluate[evaluate.length -1].date;
+        var evaluateID = evaluate[evaluate.length -1]._id;
+        var oldResults = evaluate[evaluate.length -1].results;
+
         if (role === "responsible") {
-            var status = { status: "Chờ phê duyệt" };
+            var status = { status: "WaitForApproval" };
             this.props.editStatusOfTask(this.props.taskID, status);
-            return this.addResult(this.props.taskID);
+            return this.addResult(this.props.taskID, evaluateID, evaluationDate);
         }
         else if (role === "consulted") {
-            return this.addResult(this.props.taskID);
+            return this.addResult(this.props.taskID, evaluateID, evaluationDate);
         }
         else if (role === "accountable") {
-            var status = { status: "Đã hoàn thành" };
-            this.confirmResult(this.props.taskID);
+            var status = { status: "Finished" };
+            this.confirmResult(this.props.taskID, oldResults);
             this.props.editStatusOfTask(this.props.taskID, status);
-            return this.addResult(this.props.taskID);
+            return this.addResult(this.props.taskID, evaluateID, evaluationDate);
         }
     }
 
@@ -203,13 +223,22 @@ class ModalApproveTask extends Component {
             var task;
             var responsiblePoint, consultedPoint, accountablePoint;
             if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-            if (task && task.results) {
-                var listResult = task.results;
-                listResult.map((item) => {
-                    if (task.responsibleEmployees[0]._id === item.employee && item.role === "responsible") responsiblePoint = item;
-                    if (task.consultedEmployees[0]._id === item.employee && item.role === "consulted") consultedPoint = item;
-                    if (task.accountableEmployees[0]._id === item.employee && item.role === "accountable") accountablePoint = item;
-                })
+            // console.log("task ---->> ", task);
+            // task.evaluations.forEach( x => {
+            //     if(x.date.getMonth() >= task.startDate.getMonth() && x.date.getMonth() <= task.endDate.getMonth()){}
+            // });
+            if (task && task.evaluations.length) {
+                var evaluate = task.evaluations;
+                var resultArr = evaluate[evaluate.length -1].results;
+                if(resultArr.length !== 0){
+                    var listResult = resultArr;
+                    console.log('---result--', resultArr);
+                    listResult.map((item) => {
+                        if (task.responsibleEmployees[0]._id === item.employee && item.role === "responsible") responsiblePoint = item;
+                        if (task.consultedEmployees[0]._id === item.employee && item.role === "consulted") consultedPoint = item;
+                        if (task.accountableEmployees[0]._id === item.employee && item.role === "accountable") accountablePoint = item;
+                    })
+                }
             }
             const automaticPoint_def = (responsiblePoint) ? responsiblePoint.automaticPoint : 0;
             const defaultPoint = {
