@@ -38,7 +38,7 @@ class AuthAlert extends Component {
                                 </ul>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal" onClick={this.reset}>{translate('general.close')}</button>
+                                <button type="button" className="btn btn-default" data-dismiss="modal" onClick={this.reset}>{translate('general.accept')}</button>
                             </div>
                         </div>
                     </div>
