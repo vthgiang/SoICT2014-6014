@@ -40,7 +40,7 @@ function logout(){
         dispatch({type: AuthConstants.LOGOUT_REQUEST});
         AuthService.logout()
             .then(res => {
-                dispatch({type: AuthConstants.LOGOUT_SUCCESS});
+                // Do sẽ reset localStorage và redux, không cần gọi dispatch({type: AuthConstants.LOGOUT_SUCCESS});
                 dispatch({type: 'RESET'})
             })
             .catch(err => {
@@ -54,7 +54,7 @@ function logoutAllAccount(){
         dispatch({type: AuthConstants.LOGOUT_ALL_REQUEST});
         AuthService.logoutAllAccount()
             .then(res => {
-                dispatch({type: AuthConstants.LOGOUT_ALL_SUCCESS});
+                // Do sẽ reset localStorage và redux, Không cần gọi dispatch({type: AuthConstants.LOGOUT_ALL_SUCCESS});
                 dispatch({type: 'RESET'});
             })
             .catch(err => {
