@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import { createUnitKpiActions } from '../redux/actions';
 import { DatePicker } from '../../../../../common-components';
 import { DialogModal } from '../../../../../common-components';
-
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { withTranslate } from 'react-redux-multilingual';
 
 class OrganizationalUnitKpiCreateModal extends Component {
@@ -30,11 +27,6 @@ class OrganizationalUnitKpiCreateModal extends Component {
         script.defer = true;
         document.body.appendChild(script);
     }
-
-    // function: notification the result of an action
-    notifysuccess = (message) => toast.success(message, {containerId: 'toast-notification'});
-    notifyerror = (message) => toast.error(message, {containerId: 'toast-notification'});
-    notifywarning = (message) => toast.warning(message, {containerId: 'toast-notification'});
 
     formatDate = async (value) => {
         await this.setState(state => {
@@ -89,9 +81,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
 
             window.$("#startKPIUnit").modal("hide");
         }
-        else{
-            this.notifyerror(translate('kpi_unit_create.error'));
-        }
+
     }
     
     render() {
@@ -117,20 +107,20 @@ class OrganizationalUnitKpiCreateModal extends Component {
                 <DialogModal
                     modalID="startKPIUnit" isLoading={false}
                     formID="formStartKPIUnit"
-                    title={translate('kpi_unit_create.init_title')}
-                    msg_success={translate('kpi_unit_create.init_success')}
-                    msg_faile={translate('kpi_unit_create.error')}
+                    title={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.initialize_kpi_set')}
+                    msg_success={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.success')}
+                    msg_faile={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.failure')}
                     func={this.handleSubmit}
                     // disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formStartKPIUnit" onSubmit={() => this.handleSubmit(translate('kpi_unit_create.init_success'))}>
+                    <form id="formStartKPIUnit" onSubmit={() => this.handleSubmit(translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.success'))}>
                         <div className="form-group">
-                            <label className="col-sm-2">{translate('kpi_unit_create.unit')}</label>
+                            <label className="col-sm-2">{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.organizational_unit')}</label>
                             <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
                         
                         <div className="form-group">
-                            <label className="col-sm-2">{translate('kpi_unit_create.month')}</label>
+                            <label className="col-sm-2">{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.month')}</label>
                             <DatePicker
                                 id="month"      
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -141,7 +131,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
                         </div>
 
                         <div className="form-group">
-                            <label className="col-sm-12">{translate('kpi_unit_create.default_target')}</label>
+                            <label className="col-sm-12">{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.default_target')}</label>
                             <ul>
                                 <li>Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)</li>
                                 <li>Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)</li>
@@ -151,47 +141,6 @@ class OrganizationalUnitKpiCreateModal extends Component {
                     </form>
                 </DialogModal>
             </React.Fragment>
-
-            // <div className="modal fade" id="startKPIUnit">
-            //     <div className="modal-dialog">
-            //         <div className="modal-content">
-            //             <div className="modal-header">
-            //                 <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-            //                 <h3 className="modal-title">{translate('kpi_unit_create.init_title')}</h3>
-            //             </div>
-            //             <div className="modal-body">
-            //                 <div className="form-group">
-            //                     <label className="col-sm-3">{translate('kpi_unit_create.unit')}:</label>
-            //                     <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{unit && unit.name}</label>
-            //                 </div>
-
-
-            //                 <div className="form-group" >
-            //                     <label className="col-sm-2">{translate('kpi_unit_create.month')}:</label>
-            //                     <div className='input-group col-sm-10 date has-feedback'>
-            //                         <div className="input-group-addon">
-            //                             <i className="fa fa-calendar" />
-            //                         </div>
-            //                         <input type="text" className="form-control pull-right" ref={input => this.time = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
-            //                     </div>
-            //                 </div>
-
-
-            //                 <div className="form-group" >
-            //                     <label className="col-sm-12">{translate('kpi_unit_create.default_target')}:</label>
-            //                     <ul>
-            //                         <li>Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)</li>
-            //                         <li>Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)</li>
-            //                     </ul>
-            //                 </div>
-            //             </div>
-            //             <div className="modal-footer">
-            //                 <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, unit && unit._id)}>{translate('kpi_unit_create.init')}</button>
-            //                 <button type="cancel" className="btn btn-primary" data-dismiss="modal">{translate('kpi_unit_create.cancel')}</button>
-            //             </div>
-            //         </div>
-            //     </div>
-            // </div>
         );
     }
 }

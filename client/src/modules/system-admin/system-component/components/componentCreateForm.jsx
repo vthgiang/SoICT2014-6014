@@ -12,14 +12,16 @@ class ComponentCreateForm extends Component {
         super(props);
         this.state = {
             componentName: '',
-            componentDescription: ''
+            componentDescription: '',
+            componentLink: undefined,
+            componentRoles: []
         }
         this.save = this.save.bind(this);
     }
 
     render() { 
         const { translate, rolesDefault, linksDefault } = this.props;
-        const { componentNameError, componentDescriptionError } = this.state;
+        const { componentLink, componentNameError, componentDescriptionError } = this.state;
 
         return ( 
             <React.Fragment>
@@ -54,7 +56,9 @@ class ComponentCreateForm extends Component {
                                     items = {
                                         linksDefault.list.map( link => {return {value: link._id, text: link.url}})
                                     }
+                                    value={componentLink}
                                     onChange={this.handleLink}
+                                    options={{placeholder: translate('system_admin.system_component.select_link')}}
                                     multiple={false}
                                 />
                             }
@@ -121,7 +125,7 @@ class ComponentCreateForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                componentLink: value
+                componentLink: value[0]
             }
         })
     }

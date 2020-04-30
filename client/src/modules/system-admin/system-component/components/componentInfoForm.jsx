@@ -66,6 +66,7 @@ class ComponentInfoForm extends Component {
                                     items = {
                                         linksDefault.list.map( link => {return {value: link._id, text: link.url}})
                                     }
+                                    options={{placeholder: translate('system_admin.system_component.select_link')}}
                                     onChange={this.handleLink}
                                     value={componentLink}
                                     multiple={false}

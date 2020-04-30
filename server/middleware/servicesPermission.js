@@ -223,7 +223,7 @@ exports.data = [
     { path: '/kpimembers/all-member/:role/:user/:status/:starttime/:endtime', method: 'GET', roles: ['Dean']},
     { path: '/kpimembers/user/:member', method: 'GET', roles: ['Dean']},
     { path: '/kpimembers/:id', method: 'GET', roles: ['Dean']},
-    { path: '/kpimembers//member/:id/:time', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/member/:id/:time', method: 'GET', roles: ['Dean']},
     { path: '/kpimembers/approve/:id', method:'PUT', roles: ['Dean']},
     { path: '/kpimembers/target/:id', method: 'PUT', roles: ['Dean']},
     { path: '/kpimembers/status-target/:id/:status', method: 'PUT', roles: ['Dean']},
@@ -247,10 +247,15 @@ exports.data = [
     { path: '/performtask/log-timer/continue-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/log-timer/stop-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
     
-    { path: '/performtask/comment-task/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/comment-task/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/comment-task/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
-    { path: '/performtask/comment-task/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/action-comment/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/action-comment/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/action-comment/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/action-comment/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
+
+    { path: '/performtask/task-action/:task', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-action/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-action/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee']},
+    { path: '/performtask/task-action/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee']},
     
     { path: '/performtask/add-result/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/performtask/information-task-template/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee']},

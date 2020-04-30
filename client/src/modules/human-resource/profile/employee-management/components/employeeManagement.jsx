@@ -224,10 +224,10 @@ class EmployeeManagement extends Component {
                             {(typeof lists !== 'undefined' && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.employee.map(y => y.employeeNumber)}</td>
-                                        <td>{x.employee.map(y => y.fullName)}</td>
-                                        <td>{x.employee.map(y => y.gender)}</td>
-                                        <td>{x.employee.map(y => y.birthdate)}</td>
+                                        <td>{x.employees.map(y => y.employeeNumber)}</td>
+                                        <td>{x.employees.map(y => y.fullName)}</td>
+                                        <td>{x.employees.map(y => y.gender)}</td>
+                                        <td>{x.employees.map(y => y.birthdate)}</td>
                                         <td>{x.organizationalUnits.length !== 0 ? x.organizationalUnits.map(unit => (
                                             <React.Fragment key={unit._id}>
                                                 {unit.name}<br />
@@ -238,15 +238,15 @@ class EmployeeManagement extends Component {
                                                 {role.roleId.name}<br />
                                             </React.Fragment>
                                         )) : null}</td>
-                                        <td>{x.employee.map(y => y.status)}</td>
+                                        <td>{x.employees.map(y => y.status)}</td>
                                         < td >
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin nhân viên"><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin nhân viên"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content="Xoá thông tin nhân viên"
                                                 data={{
-                                                    id: x.employee.map(y => y._id),
-                                                    info: x.employee.map(y => y.fullName) + " - " + x.employee.map(y => y.employeeNumber)
+                                                    id: x.employees.map(y => y._id),
+                                                    info: x.employees.map(y => y.fullName) + " - " + x.employees.map(y => y.employeeNumber)
                                                 }}
                                                 func={this.props.deleteEmployee}
                                             />
@@ -268,24 +268,23 @@ class EmployeeManagement extends Component {
                 {
                     this.state.currentRowView !== undefined &&
                     <EmployeeDetailForm
-                        _id={this.state.currentRowView.employee[0]._id}
-                        employee={this.state.currentRowView.employee}
-                        salary={this.state.currentRowView.salary}
-                        annualLeave={this.state.currentRowView.annualLeave}
-                        commendation={this.state.currentRowView.commendation}
-                        discipline={this.state.currentRowView.discipline}
+                        _id={this.state.currentRowView.employees[0]._id}
+                        employees={this.state.currentRowView.employees}
+                        salarys={this.state.currentRowView.salarys}
+                        annualLeaves={this.state.currentRowView.annualLeaves}
+                        commendations={this.state.currentRowView.commendations}
+                        disciplines={this.state.currentRowView.disciplines}
                     />
                 }
                 {
                     this.state.currentRow !== undefined &&
                     <EmployeeEditFrom
-                        _id={this.state.currentRow.employee[0]._id}
-                        employee={this.state.currentRow.employee}
-                        employeeContact={this.state.currentRow.employeeContact}
-                        salary={this.state.currentRow.salary}
-                        sabbatical={this.state.currentRow.sabbatical}
-                        praise={this.state.currentRow.praise}
-                        discipline={this.state.currentRow.discipline}
+                        _id={this.state.currentRow.employees[0]._id}
+                        employees={this.state.currentRow.employees}
+                        salarys={this.state.currentRow.salarys}
+                        annualLeaves={this.state.currentRow.annualLeaves}
+                        commendations={this.state.currentRow.commendations}
+                        disciplines={this.state.currentRow.disciplines}
                     />
                 }
             </div>

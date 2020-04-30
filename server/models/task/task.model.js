@@ -126,7 +126,7 @@ const TaskSchema = new Schema({
                 default: 0
             }
         }],
-        taskInformations: { // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
+        taskInformations: [{ // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             code: { // Mã thuộc tính công việc dùng trong công thức (nếu công việc theo mẫu)
                 type: String,
             },
@@ -137,7 +137,7 @@ const TaskSchema = new Schema({
             value: { // Giá trị tương ứng của các thuộc tính (tại thời điểm đánh giá)
                 type: Schema.Types.Mixed,
             }
-        }
+        }]
     }],
     progress: { // % Hoàn thành thành công việc
         type: Number,
@@ -289,10 +289,21 @@ const TaskSchema = new Schema({
         content: {
             type: String,
         },
-        approved: {
-            type: Number,
-            default: 0,
-            required: true
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type : Date,
+            default: Date.now
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        updatedAt: {
+            type : Date,
+            default: Date.now
         },
         files: [{ // Các file đi kèm comments
             name: {

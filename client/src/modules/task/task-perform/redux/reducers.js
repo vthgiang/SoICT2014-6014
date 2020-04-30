@@ -11,7 +11,7 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 adding: false,
-                currentTask: action.task.content
+                currentTask: action.task.data.content
             };
         case performTaskConstants.CREATE_RESULT_TASK_FAILURE:
             return {
@@ -24,7 +24,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.EDIT_RESULT_TASK_SUCCESS:
             return {
                 ...state,
-                resulttask: action.resultTask.content
+                resulttask: action.resultTask.data.content
             };
         case performTaskConstants.EDIT_RESULT_TASK_FAILURE:
             return {
@@ -39,7 +39,7 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 loading: false,
-                logtimer: action.logTimer
+                logtimer: action.logTimer.data.content
             };
         case performTaskConstants.GET_LOGTIMER_FAILURE:
             return {
@@ -54,7 +54,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.GET_TIMERSTATUS_SUCCESS:
             return {
                 ...state,
-                currentTimer: action.currentTimer
+                currentTimer: action.currentTimer.data.content
             };
         case performTaskConstants.GET_TIMERSTATUS_FAILURE:
             return {
@@ -68,7 +68,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.START_TIMER_SUCCESS:
             return {
                 ...state,
-                currentTimer: action.timer.timerStatus
+                currentTimer: action.timer.data.content
             };
         case performTaskConstants.START_TIMER_FAILURE:
             return {
@@ -82,7 +82,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.PAUSE_TIMER_SUCCESS:
             return {
                 ...state,
-                currentTimer: action.newTimer.timerStatus
+                currentTimer: action.newTimer.data.content
             };
         case performTaskConstants.PAUSE_TIMER_FAILURE:
             return {
@@ -96,7 +96,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.CONTINUE_TIMER_SUCCESS:
             return {
                 ...state,
-                currentTimer: action.newTimer.timerStatus
+                currentTimer: action.newTimer.data.content
             };
         case performTaskConstants.CONTINUE_TIMER_FAILURE:
             return {
@@ -124,7 +124,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.GET_ACTIONCOMMENT_SUCCESS:
             return {
                 ...state,
-                actioncomments: action.actionComments.content
+                actioncomments: action.actionComments.data.content
             };
         case performTaskConstants.GET_ACTIONCOMMENT_FAILURE:
             return {
@@ -138,7 +138,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.GET_TASKACTION_SUCCESS:
             return {
                 ...state,
-                taskactions: action.taskActions.content
+                taskactions: action.taskActions.data.content
             };
         case performTaskConstants.GET_TASKACTION_FAILURE:
             return {
@@ -151,11 +151,10 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS:
             return {
-                
                 ...state,
                 actioncomments: [
                     ...state.actioncomments,
-                    action.newComment.commentTask
+                    action.newComment.data.content
                 ]
             };
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_FAILURE:
@@ -168,12 +167,12 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
-            console.log(action.newAction.content)
+            console.log(action.newAction.data.content)
              return {
                 ...state,
                 taskactions:[
                     ...state.taskactions,
-                    action.newAction.content
+                    action.newAction.data.content
                 ]
             }
         case performTaskConstants.ADDNEW_TASKACTION_FAILURE:
@@ -190,11 +189,12 @@ export function performtasks(state = {}, action) {
                 )
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS:
+            console.log( action.newComment.data);
             return {
                 ...state,
                 actioncomments: state.actioncomments.map(comment =>
-                    comment._id === action.newComment.commentTask._id
-                        ? action.newComment.commentTask : comment
+                    comment._id === action.newComment.data.content._id
+                        ? action.newComment.data.content : comment
                 )
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE:
@@ -214,8 +214,8 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 taskactions: state.taskactions.map(action1=>
-                    action1._id === action.newAction.content._id ? 
-                    action.newAction.content : action1)
+                    action1._id === action.newAction.data.content._id ? 
+                    action.newAction.data.content : action1)
             };
         case performTaskConstants.EDIT_TASKACTION_FAILURE:
             return {
