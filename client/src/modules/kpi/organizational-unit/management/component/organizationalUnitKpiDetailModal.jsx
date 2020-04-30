@@ -35,7 +35,7 @@ class ModalDetailKPI extends Component {
                         {/* Modal Header */}
                         <div className="modal-header" style={{ textAlign: "center", background: "#605ca8", color: "white" }}>
                             <button type="button" className="close" data-dismiss="modal">
-                                <span  classname="modal-full" style={{color:"#ffffff"}}>×</span>
+                                <span  className="modal-full" style={{color:"#ffffff"}}>×</span>
                                 {/* <span className="sr-only">Close</span> */}
                             </button>
                             <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi đơn vị tháng 1 năm 2020</h3>
