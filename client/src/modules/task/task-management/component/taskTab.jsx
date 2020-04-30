@@ -139,7 +139,7 @@ class TabTaskContent extends Component {
             if (content === "responsible") {
                 this.props.getResponsibleTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "consulted") {
                 this.props.getConsultedTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "creator") {
@@ -165,7 +165,7 @@ class TabTaskContent extends Component {
             if (content === "responsible") {
                 this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "consulted") {
                 this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "creator") {
@@ -189,9 +189,9 @@ class TabTaskContent extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.props.role;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "consulted") {
                 this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "creator") {
@@ -212,7 +212,7 @@ class TabTaskContent extends Component {
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getAccountableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "consulted") {
             this.props.getConsultedTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "creator") {
@@ -235,7 +235,7 @@ class TabTaskContent extends Component {
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
+            this.props.getAccountableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "consulted") {
             this.props.getConsultedTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "creator") {
@@ -407,7 +407,7 @@ class TabTaskContent extends Component {
                                                 <td title={this.formatDate(item.endDate)}>{this.formatDate(item.endDate)}</td>
                                                 <td title={item.status}>{item.status}</td>
                                                 <td title={item.progress + "%"}>{item.progress + "%"}</td>
-                                                <td title={this.convertTime(item.time)}>{this.convertTime(item.time)}</td>
+                                                <td title={this.convertTime(item.totalLoggedTime)}>{this.convertTime(item.totalLoggedTime)}</td>
                                                 <td>
                                                     <a href={`#modelPerformTask${item._id}`} className="edit" data-toggle="modal" onClick={() => this.handleShowModal(item._id)} title={"Bắt đầu" + item.name}><i className="material-icons">edit</i></a>
                                                     {
@@ -445,7 +445,7 @@ class TabTaskContent extends Component {
 
                     <PaginateBar
                         pageTotal={tasks.pages}
-                        currentPage={this.state.currentPage ? 1 : this.state.currentPage}
+                        currentPage={ this.state.currentPage } 
                         func={this.handleGetDataPagination}
                     />
 
