@@ -1,47 +1,55 @@
 const KPIUnitService = require('./creation.service');
 const { LogInfo, LogError } = require('../../../../logs');
 
-// Lấy KPI đơn vị hiện tại qua vai trò
+/**
+ * Lấy KPI đơn vị hiện tại qua vai trò
+ */
 exports.getByRole = async (req, res) => {
     try {
         var kpiunit = await KPIUnitService.getByRole(req.params.id);
         LogInfo(req.user.email, `Get kpi unit by role `, req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['get_by_role_success'],
+            messages: ['get_kpiunit_by_role_success'],
             content: kpiunit
         })
     } catch (error) {
         LogError(req.user.email, `Get kpi unit by role `, req.user.company)
         res.status(400).json({
             success: false,
-            messages:error
+            messages: ['get_kpiunit_by_role_fail'],
+            content: error
         })
     }
 }
 
-// Chỉnh sửa thông tin chung của kpi đơn vị
+/**
+ * Chỉnh sửa thông tin chung của KPI đơn vị
+ */
 exports.edit = async (req, res) => {
     try {
-        let timeString = req.body.time;
+        let dateString = req.body.date;
         let id = req.params.id;
-        var organizationalUnitKpiSet = await KPIUnitService.editById(timeString,id);
+        var organizationalUnitKpiSet = await KPIUnitService.editById(dateString,id);
         LogInfo(req.user.email, ' Edit kpi unit ',req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['edit_success'],
+            messages: ['edit_kpi_success'],
             content: organizationalUnitKpiSet,
         });
     } catch (error) {
         LogError(req.user.email, ' Edit kpi unit ',req.user.company);
         res.status(400).json({
             success: false,
-            messages : error
+            messages: ['edit_kpi_failure'],
+            content: error
         })
     }
 }
 
-// xóa kpi đơn vị
+/**
+ * Xóa KPI của đơn vị 
+ */
 exports.delete = async (req, res) => {
     try {
         var arr = await KPIUnitService.delete(req.params.id);
@@ -50,7 +58,7 @@ exports.delete = async (req, res) => {
         LogInfo(req.user.email, 'delete kpi unit',req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['delete_success'],
+            messages: ['delete_kpi_success'],
             content: {
                 kpiunit: kpiunit,
                 listtarget: listTarget
@@ -60,50 +68,60 @@ exports.delete = async (req, res) => {
         LogError(req.user.email, 'delete kpi unit',req.user.company)
         res.status(400).json({
             success: false,
-            messages: error
+            messages: ['delete_kpi_failure'],
+            content: error
         })
     }
 
 }
-// delete target of unit kpi
+
+/**
+ * Xóa mục tiêu của KPI đơn vị
+ */
 exports.deleteTarget = async (req, res) => {
     try {
         var organizationalUnitKpiSet = await KPIUnitService.deleteTarget(req.params.id,req.params.kpiunit);
         LogInfo(req.user.email, 'delete target kpi unit',req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['delete_success'],
+            messages: ['confirm_delete_target_success'],
             content: organizationalUnitKpiSet
         });
     } catch (error) {
         LogError(req.user.email, 'delete target kpi unit',req.user.company)
         res.status(400).json({
             success: false,
-            messages:error
+            messages: ['confirm_delete_target_failure'],
+            content: error
         })
     } 
 }
 
-// Chỉnh sửa trạng thái của kpi đơn vị
+/**
+ * Chỉnh sửa trạng thái của KPI đơn vị
+ */
 exports.editStatusKPIUnit =async (req, res) => {
     try {
         var kpiunit= await KPIUnitService.editStatusKPIUnit(req.params.id,req.params.status);
         LogInfo(req.user.email, 'edit status kpi unit',req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['success'],
+            messages: ['confirm_edit_status_success'],
             content: kpiunit,
         });
     } catch (error) {
         LogError(req.user.email, 'edit status kpi unit',req.user.company)
         res.status(400).json({
             success: false,
-            messages: error
+            messages: ['confirm_edit_status_failure'],
+            content: error
         })
     }
 }
 
-// lấy KPI đơn vị của đơn vị cha
+/**
+ * Lấy KPI đơn vị của đơn vị cha
+ */
 exports.getParentByUnit =async (req, res) => {
     try {
         var kpiunit = await KPIUnitService.getParentByUnit(req.params.id);
@@ -117,67 +135,76 @@ exports.getParentByUnit =async (req, res) => {
         LogError(req.user.email, 'get parent kpi unit',req.user.company)
         res.status(400).json({
             success: false,
-            messages: error
+            messages: ['get_parent_by_unit_failure'],
+            content: error
         })
     }
 
 }
 
-// create new target of unit kpi
+/**
+ * Thêm mới mục tiêu của KPI đơn vị
+ */
 exports.createTarget =async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await  KPIUnitService.createTarget(req.body.name, req.body.parent, req.body.weight, req.body.criteria, req.body.organizationalUnitKpiSetId);
+        var organizationalUnitKpiSet = await  KPIUnitService.createTarget(req.body);
         LogInfo(req.user.email, 'create target kpi unit',req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['success'],
+            messages: ['create_target_success'],
             content: organizationalUnitKpiSet,
         });
     } catch (error) {
         LogError(req.user.email, 'create target kpi unit',req.user.company)
         res.status(400).json({
             success: false,
-            messages : error
+            messages: ['create_target_failure'],
+            content: error
         })
     }
 }
 
-// Chỉnh sửa mục tiêu của kpi đơn vị
+/**
+ * Chỉnh sửa mục tiêu của KPI đơn vị
+ */
 exports.editTargetById = async (req, res) => {
     try {
-        var target = await KPIUnitService.editTargetById(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id);
+        var target = await KPIUnitService.editTargetById(req.body, req.params.id);
         LogInfo(req.user.email, 'edit target kpi unit',req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['success'],
+            messages: ['edit_target_success'],
             content: target
         });
     } catch (error) {
         LogError(req.user.email, 'edit target kpi unit',req.user.company)
         res.status(400).json({
             success: false,
-            messages: error
+            messages: ['edit_target_failure'],
+            content: error
         })
     }
  
 }
 
-// Khởi tạo KPI đơn vị
+/**
+ * Khởi tạo KPI đơn vị
+ */
 exports.create =async (req, res) => {
     try {
-        var organizationalUnitKpi = await KPIUnitService.create(req.body.time,req.body.organizationalUnit,req.body.creator);
+        var organizationalUnitKpi = await KPIUnitService.create(req.body);
         LogInfo(req.user.email, 'create kpi unit',req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['success'],
+            messages: ['create_organizational_unit_kpi_set_success'],
             content: organizationalUnitKpi,
-            // organizationalUnitKpi: organizationalUnitKpi
         });
     } catch (error) {
         LogError(req.user.email, 'create kpi unit',req.user.company)
         res.status(400).json({
             success: false,
-            messages: error
+            messages: ['create_organizational_unit_kpi_set_failure'],
+            content: error
         })
     }
  

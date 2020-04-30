@@ -172,19 +172,19 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         
         return (
             <React.Fragment>
-                {/* <ModalButton modalID="modal-add-target" button_name={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.add_target')} title={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.add_title')}/> */}
+                {/* <ModalButton modalID="modal-add-target" button_name={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.add_target')} title={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.add_title')}/> */}
                 <DialogModal
                     modalID="modal-add-target" isLoading={adding}
                     formID="form-add-target"
-                    title={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.create_organizational_unit_kpi')}
-                    msg_success={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.success')}
-                    msg_faile={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.failure')}
+                    title={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.create_organizational_unit_kpi')}
+                    msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.success')}
+                    msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.failure')}
                     func={this.onAddItem}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="form-add-target" onSubmit={() => this.onAddItem(translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.success'))}>
+                    <form id="form-add-target" onSubmit={() => this.onAddItem(translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.success'))}>
                         <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
-                            <label>{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.name')}<span className="text-red">*</span></label>
+                            <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>
                         </div>
@@ -192,7 +192,7 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                         {(typeof organizationalUnit !== "undefined" && organizationalUnit.parent !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                                 (items.length !== 0) &&
                                     <div className="form-group">
-                                    <label>{ translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.parents') }</label>
+                                    <label>{ translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.parents') }</label>
                                     <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                         id={`parent-target-add`}
                                         className="form-control select2"
@@ -205,13 +205,13 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                             </div>}
 
                         <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
-                            <label>{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
+                            <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                             <ErrorLabel content={errorOnCriteria}/>
                         </div>
 
                         <div className={`form-group ${errorOnWeight===undefined?"":"has-error"}`}>
-                            <label>{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_modal.weight')}<span className="text-red">*</span></label>
+                            <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.weight')}<span className="text-red">*</span></label>
                             <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                             <ErrorLabel content={errorOnWeight}/>
                         </div>

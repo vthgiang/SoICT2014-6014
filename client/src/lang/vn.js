@@ -1008,153 +1008,6 @@ export default {
             action: 'Hành động'
         },
 
-        // Module KPI đơn vị
-        organizational_unit_kpi_set: {
-            create_organizational_unit_kpi_set: { // Module chính
-                // Nhóm dành cho các thông tin chung
-                general_information: {
-                    general_information: 'KPI đơn vị',
-                    save: 'Lưu chỉnh sửa',
-                    confirm: 'Xác nhận',
-                    edit: 'Chỉnh sửa',
-                    delete: 'Xóa KPI này',
-                    cancel: 'Hủy',
-                    approve: 'Kích hoạt',
-                    cancel_approve: 'Bỏ kích hoạt',
-                    add_target: 'Thêm mục tiêu',
-                    target: 'mục tiêu',
-                    edit_success: 'Chỉnh sửa thành công',
-                    edit_failure: 'Chỉnh sửa không thành công',
-                    confirm_delete_success: 'Bạn chắc chắn muốn xóa toàn bộ KPI này?',
-                    delete_success: 'Xóa KPI thành công'
-                },
-                time: 'Thời gian',
-                initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
-                approve: 'Kích hoạt',
-                cancel_approve: 'Bỏ kích hoạt',
-
-                weight_status: {
-                    weight_total: 'Tổng trọng số',
-                    not_satisfied: 'Chưa thỏa mãn',
-                    satisfied: 'Thỏa mãn'
-                },
-
-                // Nhóm dành cho các trạng thái tập KPI
-                kpi_status: {
-                    not_approved: 'Chưa kích hoạt',
-                    approved: 'Đã kich hoạt'
-                },
-
-                // Nhóm dành cho các trạng thái mục tiêu KPI
-                check_status_target: {
-                    not_approved: 'Chưa phê duyệt',
-                    edit_request: 'Yêu cầu chỉnh sửa',
-                    activated: 'Đã kích hoạt',
-                    finished: 'Đã kết thúc'
-                },
-
-                // Nhóm dành cho table
-                target_list: 'Danh sách mục tiêu',
-                add_target: 'Thêm mục tiêu',
-                no_: 'Stt',
-                target_name: 'Tên mục tiêu',
-                parents_target: 'Mục tiêu cha',
-                evaluation_criteria: 'Tiêu chí đánh giá',
-                weight: 'Trọng số',
-                action: 'Hành động',
-                not_initialize: 'Chưa khởi tạo KPI tháng ',
-
-                // Nhóm dành cho các handle
-                request_approval_kpi: {
-                    approve_already: 'KPI đã kích hoạt!',
-                    approve: 'Bạn chắc chắn muốn kích hoạt KPI này?',
-                    not_enough_weight: 'Tổng trọng số phải bằng 100',
-                    approve_success: 'Kích hoạt KPI thành công',
-                    success: 'Chỉnh sửa trạng thái Kpi thành công'
-                },
-                cancel_approve: {
-                    cancel: 'Bạn chắc chắn muốn hủy kích hoạt KPI này?',
-                    success: 'Hủy kích hoạt KPI thành công'
-                },
-                action_title: {
-                    edit: 'Chỉnh sửa',
-                    content: 'Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)',
-                    delete: 'Xóa'
-                },
-                edit_target: {
-                    approving: 'KPI đang được phê duyệt, Bạn không thể chỉnh sửa!',
-                    activated: 'KPI đã được kích hoạt, Bạn không thể chỉnh sửa!'
-                },
-                delete_kpi: {
-                    kpi: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
-                    approving: 'KPI đã kích hoạt, bạn không thể xóa!',
-                    delete_success: 'Xóa mục tiêu KPI thành công'
-                },
-            },
-
-            create_organizational_unit_kpi_modal: { // Module con
-                // Nhóm dành cho modal
-                create_organizational_unit_kpi: 'Thêm mục tiêu KPI đơn vị',
-                name: 'Tên mục tiêu',
-                parents: 'Mục tiêu cha',
-                evaluation_criteria: 'Tiêu chí đánh giá',
-                weight: 'Trọng số',
-                success: 'Thêm mục tiêu KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin',
-
-                // Nhóm dành cho validate
-                validate_name: {
-                    empty: 'Tên mục tiêu không được bỏ trống',
-                    less_than_4: 'Tên mục tiêu không được ít hơn 4 ký tự',
-                    more_than_50: 'Tên mục tiêu không được nhiều hơn 50 ký tự',
-                    special_character: 'Tên mục tiêu không được chưa ký tự đặc biệt'
-
-                },
-                validate_criteria: 'Tiêu chí không được để trống',
-                validate_weight: {
-                    empty: 'Trọng số không được để trống',
-                    less_than_0: 'Trọng số không được nhỏ hơn 0',
-                    greater_than_100: 'Trọng số không được lớn hơn 100'
-                }
-            },
-
-            kpi_organizational_unit_manager: {
-                index: 'STT',
-                time: 'Thời gian',
-                employee_name: 'Tên nhân viên',
-                target_number: 'Số lượng mục tiêu',
-                kpi_status: 'Trạng thái KPI',
-                result: 'Kết quả',
-                approve: 'Phê duyệt',
-                evaluate: 'Đánh giá'
-            },
-
-            create_organizational_unit_kpi_set_modal: { // Module con
-                // Nhóm dành cho modal
-                initialize_kpi_set: 'Khởi tạo KPI đơn vị',
-                organizational_unit: 'Đơn vị',
-                month: 'Tháng',
-                default_target: 'Mục tiêu mặc định',
-                success: 'Khởi tạo KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin'
-            },
-
-            edit_target_kpi_modal: { // Mudule con
-                // Nhóm dành cho modal
-                edit_organizational_unit_kpi: 'Chỉnh sửa mục tiêu KPI đơn vị',
-                name: 'Tên mục tiêu',
-                parents: 'Mục tiêu cha',
-                evaluation_criteria: 'Mô tả tiêu chí đánh giá',
-                weight: 'Trọng số',
-                success: 'Chỉnh sửa mục tiêu KPI thành công',
-                failure: 'Bạn chưa nhập đủ thông tin'
-            },
-
-            //Thông điệp khác trả về từ server
-            get_by_role_success: 'Lấy KPI đơn vị hiện tại qua vai trò thành công',
-            get_parent_by_unit_success: 'Lấy KPI đơn vị của đơn vị cha thành công',
-        },
-
         employee_kpi_set: {
             create_employee_kpi_set: { // Module chính
                 // Nhóm dành cho các thông tin chung
@@ -1398,12 +1251,129 @@ export default {
 
             },
             organizational_unit: {
+                // Module chính
+                create_organizational_unit_kpi_set: {
+                    // Nhóm dành cho các thông tin chung
+                    general_information: 'KPI đơn vị',
+                    save: 'Lưu chỉnh sửa',
+                    confirm: 'Xác nhận',
+                    delete: 'Xóa KPI này',
+                    cancel: 'Hủy',
+                    approve: 'Kích hoạt',
+                    cancel_approve: 'Bỏ kích hoạt',
+                    target: 'mục tiêu',
+                    confirm_delete_success: 'Bạn chắc chắn muốn xóa toàn bộ KPI này?',
+                    time: 'Thời gian',
+                    initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
+                    edit_kpi_success: 'Chỉnh sửa KPI thành công',
+                    edit_kpi_failure: 'Chỉnh sửa KPI không thành công',
+                    delete_kpi_success: 'Xóa KPI thành công',
+                    delete_kpi_failure: 'Xóa KPI không thành công',
+
+                    // Nhóm dành cho trọng số
+                    weight_total: 'Tổng trọng số',
+                    not_satisfied: 'Chưa thỏa mãn',
+                    satisfied: 'Thỏa mãn',
+    
+                    // Nhóm dành cho các trạng thái tập KPI
+                    not_approved: 'Chưa kích hoạt',
+                    approved: 'Đã kich hoạt',
+
+                    // Nhóm dành cho table
+                    target_list: 'Danh sách mục tiêu',
+                    add_target: 'Thêm mục tiêu',
+                    no_: 'Stt',
+                    target_name: 'Tên mục tiêu',
+                    parents_target: 'Mục tiêu cha',
+                    evaluation_criteria: 'Tiêu chí đánh giá',
+                    weight: 'Trọng số',
+                    action: 'Hành động',
+                    not_initialize: 'Chưa khởi tạo KPI tháng ',
+    
+                    // Nhóm dành cho các handle
+                    confirm_approve_already: 'KPI đã kích hoạt!',
+                    confirm_approve: 'Bạn chắc chắn muốn kích hoạt KPI này?',
+                    confirm_not_enough_weight: 'Tổng trọng số phải bằng 100',
+                    confirm_cancel_approve:'Bạn chắc chắn muốn hủy kích hoạt KPI này?',
+                    confirm_edit_status_success: 'Chỉnh sửa trạng thái Kpi thành công',
+                    confirm_edit_status_failure: 'Chỉnh sửa trạng thái Kpi không thành công',
+
+                    confirm_kpi: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
+                    confirm_approving: 'KPI đã kích hoạt, bạn không thể xóa!',
+                    confirm_delete_target_success: 'Xóa mục tiêu KPI thành công',
+                    confirm_delete_target_failure: 'Xóa mục tiêu KPI không thành công',
+
+                    // Nhóm các title
+                    edit: 'Chỉnh sửa',
+                    content: 'Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)',
+                    delete_title: 'Xóa',
+                },
+    
+                create_organizational_unit_kpi_modal: { // Module con
+                    // Nhóm dành cho modal
+                    create_organizational_unit_kpi: 'Thêm mục tiêu KPI đơn vị',
+                    name: 'Tên mục tiêu',
+                    parents: 'Mục tiêu cha',
+                    evaluation_criteria: 'Tiêu chí đánh giá',
+                    weight: 'Trọng số',
+                    create_target_success: 'Thêm mục tiêu KPI thành công',
+                    create_target_failure: 'Bạn chưa nhập đủ thông tin',
+    
+                    // Nhóm dành cho validate
+                    validate_name: {
+                        empty: 'Tên mục tiêu không được bỏ trống',
+                        less_than_4: 'Tên mục tiêu không được ít hơn 4 ký tự',
+                        more_than_50: 'Tên mục tiêu không được nhiều hơn 50 ký tự',
+                        special_character: 'Tên mục tiêu không được chưa ký tự đặc biệt'
+    
+                    },
+                    validate_criteria: 'Tiêu chí không được để trống',
+                    validate_weight: {
+                        empty: 'Trọng số không được để trống',
+                        less_than_0: 'Trọng số không được nhỏ hơn 0',
+                        greater_than_100: 'Trọng số không được lớn hơn 100'
+                    }
+                },
+    
+                kpi_organizational_unit_manager: {
+                    index: 'STT',
+                    time: 'Thời gian',
+                    employee_name: 'Tên nhân viên',
+                    target_number: 'Số lượng mục tiêu',
+                    kpi_status: 'Trạng thái KPI',
+                    result: 'Kết quả',
+                    approve: 'Phê duyệt',
+                    evaluate: 'Đánh giá'
+                },
+    
+                create_organizational_unit_kpi_set_modal: { // Module con
+                    // Nhóm dành cho modal
+                    initialize_kpi_set: 'Khởi tạo KPI đơn vị',
+                    organizational_unit: 'Đơn vị',
+                    month: 'Tháng',
+                    default_target: 'Mục tiêu mặc định',
+                    create_organizational_unit_kpi_set_success: 'Khởi tạo KPI thành công',
+                    create_organizational_unit_kpi_set_failure: 'Bạn chưa nhập đủ thông tin'
+                },
+    
+                edit_target_kpi_modal: { // Mudule con
+                    // Nhóm dành cho modal
+                    edit_organizational_unit_kpi: 'Chỉnh sửa mục tiêu KPI đơn vị',
+                    name: 'Tên mục tiêu',
+                    parents: 'Mục tiêu cha',
+                    evaluation_criteria: 'Mô tả tiêu chí đánh giá',
+                    weight: 'Trọng số',
+                    edit_target_success: 'Chỉnh sửa mục tiêu KPI thành công',
+                    edit_target_failure: 'Bạn chưa nhập đủ thông tin'
+                },
+    
+                //Thông điệp khác trả về từ server
+                get_parent_by_unit_success: 'Lấy KPI đơn vị của đơn vị cha thành công',
+                get_parent_by_unit_failure: 'Lấy KPI đơn vị của đơn vị cha không thành công',
                 get_kpi_unit_success: 'Lấy danh sách KPI đơn vị thành công',
                 get_kpi_unit_fail: 'Lấy danh sách KPI đơn vị lỗi',
                 get_kpiunit_by_role_success: 'Lấy danh sách KPI đơn vị theo vai trò thành công',
                 get_kpiunit_by_role_fail: 'Lấy danh sách KPI đơn vị theo vai trò lỗi',
-                get_child_target_by_parent_id_success: 'Lấy mục tiêu con theo Id của mục tiêu cha thành công',
-                get_child_target_by_parent_id_fail: 'Lấy mục tiêu con theo Id của mục tiêu cha lỗi',
                 create_kpi_unit_success: 'Khởi tạo KPI đơn vị thành công',
                 create_kpi_unit_fail: 'Khởi tạo KPI đơn vị lỗi',
                 update_evaluate_kpi_unit_success: 'Cập nhật điểm đánh giá KPI đơn vị thành công',
