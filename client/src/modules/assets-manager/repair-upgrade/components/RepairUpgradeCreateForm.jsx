@@ -10,14 +10,14 @@ class RepairUpgradeCreateForm extends Component {
         this.state = {
             repairNumber: "",
             dateCreate: this.formatDate(Date.now()),
-            type: "",
+            type: "Sửa chữa",
             assetNumber: "",
             // assetName: "",
             reason: "",
             repairDate: this.formatDate(Date.now()),
             completeDate: this.formatDate(Date.now()),
             cost: "",
-            status: "",
+            status: "Chưa thực hiện",
         };
     }
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -228,9 +228,9 @@ class RepairUpgradeCreateForm extends Component {
                                 <div className="form-group">
                                     <label>Phân loại</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="repair">Sửa chữa</option>
-                                        <option value="substitute">Thay thế</option>
-                                        <option value="upgrade">Nâng cấp</option>
+                                        <option value="Sửa chữa">Sửa chữa</option>
+                                        <option value="Thay thế">Thay thế</option>
+                                        <option value="Nâng cấp">Nâng cấp</option>
                                     </select>
                                 </div>
                                 

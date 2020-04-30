@@ -156,10 +156,10 @@ class DistributeTransferEditForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateDateCreate(this.state.dateCreate, false) &&
-            this.validateAssetNumber(this.state.assetNumber, false) &&
+            // this.validateAssetNumber(this.state.assetNumber, false) &&
             this.validatePlace(this.state.place, false) &&
-            this.validateHandoverMan(this.state.handoverMan, false) &&
-            this.validateReceiver(this.state.receiver, false) &&
+            // this.validateHandoverMan(this.state.handoverMan, false) &&
+            // this.validateReceiver(this.state.receiver, false) &&
             this.validateNextLocation(this.state.nextLocation, false) &&
             this.validateReason(this.state.reason, false)
         return result;
@@ -180,7 +180,11 @@ class DistributeTransferEditForm extends Component {
                 type: nextProps.type,
                 place: nextProps.place,
                 handoverMan: nextProps.handoverMan,
+                department: nextProps.department,
+                position: nextProps.position,
                 receiver: nextProps.receiver,
+                department1: nextProps.department1,
+                position1: nextProps.position1,
                 assetNumber: nextProps.assetNumber,
                 assetName: nextProps.assetName,
                 nowLocation: nextProps.nowLocation,
@@ -201,12 +205,12 @@ class DistributeTransferEditForm extends Component {
 
     render() {
         const { translate, distributeTransfer } = this.props;
-        const { distributeNumber, dateCreate, type, place, handoverMan, receiver, assetNumber, assetName, nowLocation, nextLocation, reason,
+        const { distributeNumber, dateCreate, type, place, handoverMan, department, position, receiver, department1, position1, assetNumber, assetName, nowLocation, nextLocation, reason,
                 errorOnDateCreate, errorOnPlace, errorOnHandoverMan, errorOnReceiver, errorOnAssetNumber, errorOnNextLocation, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-edit-distribute" isLoading={distributeTransfer.isLoading}
+                    size='75' modalID="modal-edit-distributetransfer" isLoading={distributeTransfer.isLoading}
                     formID="form-edit-distributetransfer"
                     title="Chỉnh sửa thông tin phiếu cấp phát - điều chuyển - thu hồi"
                     msg_success={translate('manage_user.edit_success')}
@@ -244,43 +248,46 @@ class DistributeTransferEditForm extends Component {
                                     <input type="text" className="form-control" name="place" value={place} onChange={this.handlePlaceChange} autoComplete="off" placeholder="Địa điểm bàn giao" />
                                     <ErrorLabel content={errorOnPlace} />
                                 </div>
-                                <div className={`form-group ${errorOnHandoverMan === undefined ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${errorOnHandoverMan === undefined ? "" : "has-error"}`}> */}
+                                <div className="form-group">
                                     <label>Người bàn giao</label>
                                     <input type="text" className="form-control" name="handoverMan" value={handoverMan} onChange={this.handleHandoverManChange} autoComplete="off" placeholder="Người bàn giao" />
-                                    <ErrorLabel content={errorOnHandoverMan} />
+                                    {/* <ErrorLabel content={errorOnHandoverMan} /> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="department" />
+                                    <input type="text" className="form-control" name="department" value={department} disabled />
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position" />
+                                    <input type="text" className="form-control" name="position" value={position} disabled />
                                 </div>
                             </div>
 
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnReceiver === undefined ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${errorOnReceiver === undefined ? "" : "has-error"}`}> */}
+                                <div className="form-group">
                                     <label>Người tiếp nhận</label>
                                     <input type="text" className="form-control" name="receiver" value={receiver} onChange={this.handleReceiverChange} autoComplete="off" placeholder="Người tiếp nhận" />
-                                    <ErrorLabel content={errorOnReceiver} />
+                                    {/* <ErrorLabel content={errorOnReceiver} /> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="deparment1" />
+                                    <input type="text" className="form-control" name="deparment1" value={department1} disabled />
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position1" />
+                                    <input type="text" className="form-control" name="position1" value={position1} disabled />
                                 </div>
-                                <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}> */}
+                                <div className="form-group">
                                     <label>Mã tài sản<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Mã tài sản" />
                                     <ErrorLabel content={errorOnAssetNumber} />
                                 </div>
                                 <div className="form-group">
                                     <label>Tên tài sản</label>
-                                    <input type="text" className="form-control" name="assetName" autoComplete="off" placeholder="Tên tài sản" />
+                                    <input type="text" className="form-control" name="assetName" value={assetName} autoComplete="off" placeholder="Tên tài sản" disabled />
                                 </div>
                                 <div className="form-group">
                                     <label>Vị trí ban đầu của tài sản</label>

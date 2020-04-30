@@ -148,9 +148,9 @@ class DistributeTransferManager extends Component {
                                 options={{ nonSelectedText: "Chọn loại phiếu", allSelectedText: "Chọn tất cả các loại phiếu" }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "distribute", text: "Cấp phát" },
-                                    { value: "transfer", text: "Điều chuyển" },
-                                    { value: "revoke", text: "Thu hồi" }
+                                    { value: "Cấp phát", text: "Cấp phát" },
+                                    { value: "Điều chuyển", text: "Điều chuyển" },
+                                    { value: "Thu hồi", text: "Thu hồi" }
                                 ]}
                             >
                             </SelectMulti>
@@ -204,14 +204,14 @@ class DistributeTransferManager extends Component {
                             {(typeof listDistributeTransfers !== 'undefined' && listDistributeTransfers.length !== 0) &&
                                 listDistributeTransfers.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.asset.assetNumber}</td>
-                                        <td>{x.asset.assetName}</td>
+                                        <td>{x.assetNumber}</td>
+                                        <td>{x.assetName}</td>
                                         <td>{x.distributeNumber}</td>
                                         <td>{x.dateCreate}</td>
                                         <td>{x.type}</td>
                                         <td>{x.handoverMan}</td>
                                         <td>{x.receiver}</td>
-                                        <td>{x.secondLocation}</td>
+                                        <td>{x.nextLocation}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
@@ -239,13 +239,15 @@ class DistributeTransferManager extends Component {
                     <DistributeTransferEditForm
                         _id={this.state.currentRow._id}
                         distributeNumber={this.state.currentRow.distributeNumber}
-                        createDate={this.state.currentRow.createDate}
+                        dateCreate={this.state.currentRow.dateCreate}
+                        place={this.state.currentRow.place}
                         type={this.state.currentRow.type}
                         assetNumber={this.state.currentRow.assetNumber}
                         assetName={this.state.currentRow.assetName}
                         handoverMan={this.state.currentRow.handoverMan}
                         receiver={this.state.currentRow.receiver}
-                        secondLocation={this.state.currentRow.secondLocation}
+                        nextLocation={this.state.currentRow.nextLocation}
+                        reason={this.state.currentRow.reason}
                     />
                 }
             </div >

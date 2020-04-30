@@ -16,11 +16,12 @@ export function distributeTransfer(state =initState, action) {
                 isLoading: true,
             };
         case DistributeTransferConstants.GET_DISTRIBUTE_TRANSFER_SUCCESS:
+            // console.log(action);
             return {
                 ...state,
                 isLoading: false,
-                listDistributeTransfers: action.payload.listDistributeTransfers,
-                totalList: action.payload.totalList,   
+                listDistributeTransfers: action.payload,
+                //totalList: action.payload.totalList,
             };
         case DistributeTransferConstants.CREATE_DISTRIBUTE_TRANSFER_SUCCESS:
             return {
@@ -29,6 +30,7 @@ export function distributeTransfer(state =initState, action) {
                 listDistributeTransfers: [...state.listDistributeTransfers, action.payload],
             };
         case DistributeTransferConstants.DELETE_DISTRIBUTE_TRANSFER_SUCCESS:
+
             return {
                 ...state,
                 isLoading: false,

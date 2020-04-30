@@ -9,7 +9,7 @@ const DistributeTransferSchema = new Schema({
     asset: {
         type: Schema.Types.ObjectId,
         ref: Asset,
-        require: true,
+        // require: true,
     },
     company: {
         type: Schema.Types.ObjectId,

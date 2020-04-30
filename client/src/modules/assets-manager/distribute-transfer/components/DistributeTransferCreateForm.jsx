@@ -10,7 +10,7 @@ class DistributeTransferCreateForm extends Component {
         this.state = {
             distributeNumber: "",
             dateCreate: this.formatDate(Date.now()),
-            type: "",
+            type: "Cấp phát",
             place: "",
             handoverMan: "", // người bàn giao
             receiver: "", // người tiếp nhận
@@ -201,10 +201,10 @@ class DistributeTransferCreateForm extends Component {
         let result =
             this.validateDistributeNumber(this.state.distributeNumber, false) &&
             this.validateDateCreate(this.state.dateCreate, false) &&
-            this.validateAssetNumber(this.state.assetNumber, false) &&
+            // this.validateAssetNumber(this.state.assetNumber, false) &&
             this.validatePlace(this.state.place, false) &&
-            this.validateHandoverMan(this.state.handoverMan, false) &&
-            this.validateReceiver(this.state.receiver, false) &&
+            // this.validateHandoverMan(this.state.handoverMan, false) &&
+            // this.validateReceiver(this.state.receiver, false) &&
             this.validateNextLocation(this.state.nextLocation, false) &&
             this.validateReason(this.state.reason, false)
         return result;
@@ -219,7 +219,7 @@ class DistributeTransferCreateForm extends Component {
 
     render() {
         const { translate, distributeTransfer } = this.props;
-        const { distributeNumber, dateCreate, type, place, assetNumber, handoverMan, receiver, reason, nowLocation, nextLocation,
+        const { distributeNumber, dateCreate, type, place, assetNumber, assetName, handoverMan, deparment, position, receiver, deparment1, position1, reason, nowLocation, nextLocation,
             errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnAssetNumber, errorOnHandoverMan, errorOnReceiver, errorOnNextLocation, errorOnReason } = this.state;
         return (
             <React.Fragment>
@@ -263,43 +263,46 @@ class DistributeTransferCreateForm extends Component {
                                     <input type="text" className="form-control" name="place" value={place} onChange={this.handlePlaceChange} autoComplete="off" placeholder="Địa điểm bàn giao" />
                                     <ErrorLabel content={errorOnPlace} />
                                 </div>
-                                <div className={`form-group ${errorOnHandoverMan === undefined ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${errorOnHandoverMan === undefined ? "" : "has-error"}`}> */}
+                                <div className="form-group">
                                     <label>Người bàn giao<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="handoverMan" value={handoverMan} onChange={this.handleHandoverManChange} autoComplete="off" placeholder="Người bàn giao" />
-                                    <ErrorLabel content={errorOnHandoverMan} />
+                                    {/* <ErrorLabel content={errorOnHandoverMan} /> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="department" />
+                                    <input type="text" className="form-control" name="department" value={deparment} />
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position" />
+                                    <input type="text" className="form-control" name="position" value={position} />
                                 </div>
                             </div>
 
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnReceiver === undefined ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${errorOnReceiver === undefined ? "" : "has-error"}`}> */}
+                                <div className="form-group">
                                     <label>Người tiếp nhận<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="receiver" value={receiver} onChange={this.handleReceiverChange} autoComplete="off" placeholder="Người tiếp nhận" />
-                                    <ErrorLabel content={errorOnReceiver} />
+                                    {/* <ErrorLabel content={errorOnReceiver} /> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="deparment1" />
+                                    <input type="text" className="form-control" name="deparment1" value={deparment1} />
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position1" />
+                                    <input type="text" className="form-control" name="position1" value={position1} />
                                 </div>
-                                <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}> */}
+                                <div className="form-group">
                                     <label>Mã tài sản<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Mã tài sản" />
-                                    <ErrorLabel content={errorOnAssetNumber} />
+                                    {/* <ErrorLabel content={errorOnAssetNumber} /> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Tên tài sản</label>
-                                    <input type="text" className="form-control" name="assetName" autoComplete="off" placeholder="Tên tài sản" />
+                                    <input type="text" className="form-control" name="assetName" value={assetName} autoComplete="off" placeholder="Tên tài sản" />
                                 </div>
                                 <div className="form-group">
                                     <label>Vị trí ban đầu của tài sản</label>

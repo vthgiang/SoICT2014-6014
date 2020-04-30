@@ -8,7 +8,6 @@ class RepairUpgradeEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.save = this.save.bind(this);
     }
     
     // Bắt sự kiện thay đổi "Ngày lập"
