@@ -13,43 +13,60 @@
 
 @keyframes show {
     from  {display: none;}
-    /* 50%  {display: block; margin-top: 40px} */
     to {display: block;}
 }
 
+.modal-dialog {
+    margin: 0 auto;
+}
+
 .modal-size-50 {
-    margin-top: 10px;
     width: 50%;
-    margin-bottom: 10px
+    margin-top: 5px;
 }
 
 .modal-size-75 {
-    margin-top: 10px;
     width: 75%;
-    margin-bottom: 10px
+    margin-top: 5px;
 }
 
-@media only screen and (max-width: 800px) {
-
-    .modal-size-50{
-        margin-top: 0px;
-        margin-left: 0px;
-        width: 100%;
-        margin-bottom: 0px
-    }
-
-    .modal-size-75{
-        margin-top: 0px;
-        margin-left: 0px;
-        width: 100%;
-        margin-bottom: 0px
-    }
-  }
-
 .modal-size-100 {
-    margin-top: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
     width: 100%;
-    margin-bottom: 0px
+}
+
+@media only screen and (max-width: 768px) {
+    .modal-size-50{
+        width: 100%;
+        margin-top: 0px;
+    }
+    .modal-size-75{
+        width: 100%;
+        margin-top: 0px;
+    }
+}
+
+
+
+
+
+
+
+
+
+.modal-content {
+    height: auto;
+    min-height: 100%;
+    border-radius: 0;
+}
+.modal-header {
+    height: 50px;
+}
+.modal-body {
+    max-width: 100%;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.modal-header .modal-title {
+    font-weight: bold;
 }

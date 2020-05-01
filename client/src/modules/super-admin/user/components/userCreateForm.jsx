@@ -102,6 +102,8 @@ class UserCreateForm extends Component {
                     msg_faile={translate('manage_user.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
+                    size={50}
+                    maxWidth={500}
                 >
                     <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
                         <div className={`form-group ${errorOnUserName===undefined?"":"has-error"}`}>
