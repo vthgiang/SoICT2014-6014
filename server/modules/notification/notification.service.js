@@ -1,5 +1,4 @@
-const NotificationUser = require('../../models/notification/notificationUser.model');
-const Notification = require('../../models/notification/notification.model')
+const {Notification, NotificationUser} = require('../../models').schema;
 
 //Lấy tất cả các thông báo trong công ty
 exports.getAllNotifications = async (company) => { //id cua cong ty do
@@ -26,6 +25,7 @@ exports.getNotificationById = async (id) => {
 
 //Tạo thông báo mới
 exports.createNotification = async (data, company) => {
+    console.log("TẠO NOTIFICATION: ", data)
     return await Notification.create({
         company,
         title: data.title,
@@ -37,6 +37,7 @@ exports.createNotification = async (data, company) => {
 
 //Thông báo tới phòng ban nào (thông báo đến các user trong phòng ban)
 exports.noticeToUsers = async (userArr, notificationId) => { //mảng các userId và id của notification
+    console.log("RESSfsdfsdfsdfsdfsdf: ", userArr, notificationId)
     const data = userArr.map(userId => {
         return {
             userId,
@@ -44,7 +45,9 @@ exports.noticeToUsers = async (userArr, notificationId) => { //mảng các userI
         };
     });
 
-    return await NotificationUser.insertMany(data);
+    const results = await NotificationUser.insertMany(data);
+    console.log("RESSS: ", userArr, notificationId, results)
+    return results;
 }
 
 exports.deleteReceivedNotification = async (id) => {

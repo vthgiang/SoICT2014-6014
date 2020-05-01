@@ -3,13 +3,12 @@ import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
-import { DialogModal, ErrorLabel } from '../../../common-components';
+import { DialogModal } from '../../../common-components';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './header.css';
-import { LOCAL_SERVER_API } from '../../../env';
-import { Validator } from './validator';
+import { getStorage } from '../../../config';
 import ModalChangeUserInformation from './modalChangeUserInformation';
 
 class Header extends Component {
@@ -98,8 +97,30 @@ class Header extends Component {
         
     }
 
-    componentDidMount() {
+    getLinkId = (path, links) => {
+        
+        var linkId;
+        for (let index = 0; index < links.length; index++) {
+            const element = links[index];
+            if(element.url === path){
+                linkId = element._id;
+            }
+        }
+
+        return linkId;
+    } 
+
+    componentDidMount(){
         this.props.refresh();
+        
+        const currentRole = getStorage('currentRole');
+        this.props.getLinksOfRole(currentRole)
+            .then(res=>{
+                const links = res.data.content;
+                const path = window.location.pathname;
+                const linkId = this.getLinkId(path, links);
+                this.props.getComponentsOfUserInLink(currentRole, linkId);
+            })
     }
 }
  
@@ -110,6 +131,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     changePassword: AuthActions.changePassword,
     refresh: AuthActions.refresh,
+    getLinksOfRole: AuthActions.getLinksOfRole,
+    getComponentsOfUserInLink: AuthActions.getComponentOfUserInLink
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Header) );
