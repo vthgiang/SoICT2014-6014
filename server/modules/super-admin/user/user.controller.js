@@ -16,7 +16,8 @@ exports.getAllUsers = async (req, res) => {
         LogError(req.user.email, 'GET_USERS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_users_faile'],
+            content: error
         })
     }
 };
@@ -39,7 +40,8 @@ exports.getPaginatedUsers = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_USERS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['paginate_users_faile'],
+            content: error
         });
     }
 };
@@ -61,7 +63,8 @@ exports.createUser = async (req, res) => {
         LogError(req.user.email, 'CREATE_USER', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_user_faile'],
+            content: error
         })
     }
 };
@@ -81,7 +84,8 @@ exports.getUserById = async (req, res) => {
         LogError(req.user.email, 'SHOW_USER', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_user_faile'],
+            content: error
         })
     }
 };
@@ -103,7 +107,8 @@ exports.editUser = async (req, res) => {
         LogError(req.user.email, 'EDIT_USER', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_user_faile'],
+            content: error
         });
     }
 };
@@ -123,7 +128,8 @@ exports.deleteUser = async (req, res) => {
         LogError(req.user.email, 'DELETE_USER', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_user_faile'],
+            content: error
         });
     }
 };
@@ -143,7 +149,8 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async (req, res) => {
         LogError(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_users_same_department_faile'],
+            content: error
         })
     }
 }
@@ -163,7 +170,8 @@ exports.getAllUsersInOrganizationalUnit = async (req, res) => {
         LogError(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_users_of_department_faile'],
+            content: error
         })
     }
 }

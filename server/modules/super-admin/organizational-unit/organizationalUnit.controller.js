@@ -22,7 +22,8 @@ exports.getAllOrganizationalUnits = async (req, res) => {
         await LogError(req.user.email, 'GET_DEPARTMENTS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_departments_faile'],
+            content: error
         });
     }
 };
@@ -47,7 +48,8 @@ exports.createOrganizationalUnit = async (req, res) => {
         await LogError(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_department_faile'],
+            content: error
         });
     }
 };
@@ -67,7 +69,8 @@ exports.show = async (req, res) => {
         await LogError(req.user.email, 'SHOW_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_department_faile'],
+            content: error
         });
     }
 };
@@ -94,7 +97,8 @@ exports.edit = async (req, res) => {
         await LogError(req.user.email, 'EDIT_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_department_faile'],
+            content: error
         });
     }
 };
@@ -115,7 +119,8 @@ exports.delete = async (req, res) => {
         await LogError(req.user.email, 'DELETE_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_department_faile'],
+            content: error
         });
     }
 };
@@ -136,7 +141,8 @@ exports.getDepartmentOfUser = async (req, res) => {
         await LogError(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_department_of_user_faile'],
+            content: error
         });
     }
 }
@@ -156,7 +162,8 @@ exports.getDepartmentsThatUserIsDean = async (req, res) =>{
         await LogError(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_department_that_user_is_dean_faile'],
+            content: error
         });
     }
 }

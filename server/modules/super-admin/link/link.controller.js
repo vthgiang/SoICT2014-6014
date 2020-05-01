@@ -20,7 +20,8 @@ exports.getAllLinks = async (req, res) => {
         await LogError(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_faile'],
+            content: error
         });
     }
 };
@@ -43,7 +44,8 @@ exports.getPaginatedLinks = async (req, res) => {
         await LogError(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['paginate_links_faile'],
+            content: error
         });
     }
 };
@@ -65,7 +67,8 @@ exports.createLink = async (req, res) => {
         await LogError(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_link_faile'],
+            content: error
         });
     }
 };
@@ -85,7 +88,8 @@ exports.getLinkById = async (req, res) => {
         await LogError(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_link_faile'],
+            content: error
         });
     }
 };
@@ -107,7 +111,8 @@ exports.editLink = async (req, res) => {
         await LogError(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_link_faile'],
+            content: error
         });
     }
 };
@@ -127,7 +132,8 @@ exports.deleteLink = async (req, res) => {
         await LogError(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_link_faile'],
+            content: error
         });
     }
 };
