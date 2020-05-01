@@ -152,3 +152,24 @@ exports.uploadAvatar = multer({ storage: multer.diskStorage({
         }
     }) 
 });
+
+/**
+ * Viết lại middleware check và lấy dữ liệu về file mà client người đến
+ * name - tên của thuộc tính lưu dữ liệu file trong data mà client gửi lên
+ * path đường dẫn đến thư mục muốn lưu file
+ */
+exports.uploadFile = (name, path, multiple=false) => {
+
+    const uploadAvatar = multer({ storage: multer.diskStorage({
+            destination: function (req, file, cb) {
+                cb(null, `./upload`+path)
+            },
+            filename: function (req, file, cb) {
+                cb(null, `${Date.now()}_${req.user._id}_${file.originalname}`)
+            }
+        }) 
+    });
+
+    return !multiple ? uploadAvatar.single(name) : uploadAvatar.array(name, 10);
+
+}
