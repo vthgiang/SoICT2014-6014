@@ -44,6 +44,8 @@ div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
 }
 
 
+
+
 /*
 CSS cho bảng dữ liệu
 */
@@ -63,6 +65,8 @@ td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không
 table tbody tr th { /* Hiện thông báo không có dữ liệu */
     font-weight: normal;
 }
+
+
 
 
 /*
@@ -129,6 +133,8 @@ table.table td a.approve {
 }
 
 
+
+
 /*
 * CSS cho thông báo với bảng (đang load dữ liệu, không có dữ liệu, ...)
 */
@@ -136,4 +142,23 @@ div.table-info-panel {
     text-align: center;
     background-color: #f9f9f9;
     padding: 10px;
+}
+
+
+
+
+/* Fieldset */
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+legend.scheduler-border {
+    width:inherit; /* Or auto */
+    padding:0 10px; /* To give a bit of padding on the left and right */
+    border-bottom:none;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 18px;
 }
