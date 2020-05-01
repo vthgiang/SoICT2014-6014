@@ -5,6 +5,9 @@ import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-component
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
+
+import './employeeInOrganizationalUnit.css'
+
 class EmployeeInOrganizationalUnitEditForm extends Component {
     constructor(props) {
         super(props);
@@ -110,7 +113,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID={`modal-edit-unit`} isLoading={false}
+                    size='50' modalID={`modal-edit-unit`} isLoading={false}
                     formID={`form-edit-unit`}
                     title={translate('manage_unit.edit_unit')}
                     msg_success={translate('manage_unit.edit_sucsess')}
@@ -142,60 +145,53 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 multiple={true}
                             />
                         </div>
-                        <label>{translate('manage_unit.employee_unit')}</label>
-                        <div className="form-group" >
-                            <fieldset className="scheduler-border">
-                                <div className="form-group" style={{ marginBottom: 0, marginTop: 10 }}>
-                                    <label>{translate('manage_employee.add_staff')}</label>
-                                    <div className="row" >
-                                        <div className="form-group col-lg-10 col-md-9 col-sm-9 col-xs-12" >
-                                            <SelectBox
-                                                id={`employee-unit-${_id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={userlist.map(x => { return { value: x._id, text: x.name } })}
-                                                onChange={this.handleEmployeeChange}
-                                                value={addUserEmployee}
-                                                multiple={true}
-                                            />
-                                        </div>
-                                        <div className="form-group col-lg-2 col-md-3 col-sm-3 col-xs-12">
-                                            <button type="button" className="btn btn-success pull-right" onClick={this.handleAdd} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
-                                        </div>
-                                    </div>
+                        
+                        
+                        
+                        <div className="form-group" style={{ marginBottom: 0, marginTop: 40 }}>
+                            <label>{translate('manage_unit.employee_unit')}</label>
+                            <div>
+                                <div id="employeeBox">
+                                    <SelectBox
+                                        id={`employee-unit-${_id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={userlist.map(x => { return { value: x._id, text: x.name } })}
+                                        onChange={this.handleEmployeeChange}
+                                        value={addUserEmployee}
+                                        multiple={true}
+                                    />
                                 </div>
-                                <div className="form-group">
-                                    <h4 className="box-title">{translate('manage_unit.list_employee_unit')}:</h4>
-                                </div>
-                                <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                                    <thead>
-                                        <tr>
-                                            <th>{translate('table.employee_name')}</th>
-                                            <th>{translate('manage_unit.email_employee')}</th>
-                                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            infoEmployee.length !== 0 &&
-                                            infoEmployee.map((user, index) => (
-                                                <tr key={index}>
-                                                    <td style={{ textAlign: "left" }}>{user.name}</td>
-                                                    <td style={{ textAlign: "left" }}>{user.email}</td>
-                                                    <td>
-                                                        <a className="delete" title="Delete" onClick={() => this.handleDelete(user._id)}><i className="material-icons"></i></a>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                                {user.isLoading ?
-                                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                    (typeof infoEmployee === 'undefined' || infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                }
-                            </fieldset>
+                                <button type="button" className="btn btn-success pull-right" style={{marginBottom: 5}} onClick={this.handleAdd} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
+                            </div>
                         </div>
+                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                            <thead>
+                                <tr>
+                                    <th>{translate('table.employee_name')}</th>
+                                    <th>{translate('manage_unit.email_employee')}</th>
+                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    infoEmployee.length !== 0 &&
+                                    infoEmployee.map((user, index) => (
+                                        <tr key={index}>
+                                            <td style={{ textAlign: "left" }}>{user.name}</td>
+                                            <td style={{ textAlign: "left" }}>{user.email}</td>
+                                            <td>
+                                                <a className="delete" title="Delete" onClick={() => this.handleDelete(user._id)}><i className="material-icons"></i></a>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                        {user.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            (typeof infoEmployee === 'undefined' || infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        }
                     </form>
                 </DialogModal>
             </React.Fragment>

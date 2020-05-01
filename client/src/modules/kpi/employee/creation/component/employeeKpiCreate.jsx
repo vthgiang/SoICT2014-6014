@@ -42,7 +42,7 @@ class CreateEmployeeKpiSet extends Component {
             employeeKpiSet: {
                 creator: "", //localStorage.getItem("id")
                 organizationUnit: "",
-                time: "",
+                date: "",
                 approver: null
             },
             adding: false,
@@ -195,13 +195,13 @@ class CreateEmployeeKpiSet extends Component {
             day = '0' + day;
         var defaultTime =  [month, year].join('-');
 
-        if(this.state.employeeKpiSet.time === ""){
+        if(this.state.employeeKpiSet.date === ""){
             await this.setState(state => {
                 return {
                     ...state,
                     employeeKpiSet: {
                         ...state.employeeKpiSet,
-                        time: defaultTime,
+                        date: defaultTime,
                     }
                 }
             })
@@ -217,7 +217,7 @@ class CreateEmployeeKpiSet extends Component {
             }
         })
         var { employeeKpiSet } = this.state;
-        if (employeeKpiSet.approver && employeeKpiSet.time ) {//&& kpipersonal.creater
+        if (employeeKpiSet.approver && employeeKpiSet.date ) {//&& kpipersonal.creater
             this.props.editEmployeeKpiSet(id, employeeKpiSet);
         }
     }
@@ -481,7 +481,7 @@ class CreateEmployeeKpiSet extends Component {
                                 </div>
 
                                 <div className="" style={{ marginBottom: "10px" }}>
-                                    <h4 style={{ display: "inline", fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.time)} ({currentKPI.organizationalUnit.name})</h4>
+                                    <h4 style={{ display: "inline", fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name})</h4>
                                     <span style={{ float: "right" }} title={translate('employee_kpi_set.create_employee_kpi_set.kpi_status.status')}>{this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}</span>
                                 </div>
                                 
@@ -622,7 +622,7 @@ class CreateEmployeeKpiSet extends Component {
                             </div>
                             : <div className="col-xs-12">
                                 <div style={{marginLeft: "-10px"}}>
-                                    {(typeof createKpiUnit.currentKPI !== 'undefined' && createKpiUnit.currentKPI !== null) ?
+                                    {/* {(typeof createKpiUnit.currentKPI !== 'undefined' && createKpiUnit.currentKPI !== null) ?
                                         <div>{ createKpiUnit.currentKPI.status !== 1 ?
                                             <div>  
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotActivatedOrganizationalUnitKpi()}}>
@@ -640,7 +640,13 @@ class CreateEmployeeKpiSet extends Component {
                                         : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotInitializeOrganizationalUnitKpi()}}>
                                             <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                         </a>
-                                    }
+                                    } */}
+                                    <div>
+                                                <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                </a>
+                                                <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0]} />
+                                            </div>
                                 </div>
                                 <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(Date.now())}</h3>
                                 <p>{translate('employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
