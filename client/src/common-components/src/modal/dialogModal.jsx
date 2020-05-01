@@ -24,7 +24,11 @@ class DialogModal extends Component {
     }
 
     save = () => {
+        const {closeOnSave = true, resetOnSave = false} = this.props;
         this.props.func();
+        if (closeOnSave){
+            this.closeModal(resetOnSave);
+        }
     }
 
     componentDidUpdate(){
