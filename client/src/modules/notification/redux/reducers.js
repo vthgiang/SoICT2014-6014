@@ -64,11 +64,12 @@ export function notifications(state = initState, action) {
             };
 
         case NotificationConstants.CREATE_NOTIFICATION_SUCCESS:
+            
             return {
                 ...state,
                 listSent: [
                     action.payload,
-                    ...state.list
+                    ...state.listSent
                 ],
                 isLoading: false
             };

@@ -1,7 +1,8 @@
-const NotificationUser = require('../../models/notification/notificationUser.model');
-const Notification = require('../../models/notification/notification.model')
+const {Notification, NotificationUser} = require('../../models').schema;
 
-//Lấy tất cả các thông báo trong công ty
+/**
+ * Lấy tất cả thông báo
+ */
 exports.getAllNotifications = async (company) => { //id cua cong ty do
     return await Notification.find({ company })
         .populate([
@@ -9,7 +10,9 @@ exports.getAllNotifications = async (company) => { //id cua cong ty do
         ]);
 }
 
-//Lấy danh sách thông báo theo số lượng
+/**
+ * Phân trang danh sách các thông báo
+ */
 exports.getPaginatedNotifications = async (company, limit, page, data={}) => {
     const newData = await Object.assign({ company }, data );
     return await Notification
@@ -19,24 +22,31 @@ exports.getPaginatedNotifications = async (company, limit, page, data={}) => {
         });
 }
 
-//Lấy thông tin về thông báo
+/**
+ * Lấy thông báo theo id
+ */
 exports.getNotificationById = async (id) => {
     return await Notification.findById(id);
 }
 
-//Tạo thông báo mới
+/**
+ * Tạo thông báo
+ */
 exports.createNotification = async (data, company) => {
+    
     return await Notification.create({
         company,
         title: data.title,
-        icon: data.icon,
+        level: data.level,
         content: data.content,
-        creater: data.creater
+        creator: data.creator
     });
 }
 
-//Thông báo tới phòng ban nào (thông báo đến các user trong phòng ban)
-exports.noticeToUsers = async (userArr, notificationId) => { //mảng các userId và id của notification
+/**
+ * Thông báo đến người dùng
+ */
+exports.noticeToUsers = async (userArr, notificationId) => {
     const data = userArr.map(userId => {
         return {
             userId,
@@ -47,11 +57,16 @@ exports.noticeToUsers = async (userArr, notificationId) => { //mảng các userI
     return await NotificationUser.insertMany(data);
 }
 
+/**
+ * Xóa thông báo đã nhận 
+ */
 exports.deleteReceivedNotification = async (id) => {
     return true;
 }
 
-//Lấy tất cả các thông báo đã nhận của user
+/**
+ * Lấy tất cả thông báo đã nhận
+ */
 exports.getAllReceivedNotificationsOfUser = async (userId) => {
     var data = await NotificationUser
         .find({userId})
@@ -61,19 +76,25 @@ exports.getAllReceivedNotificationsOfUser = async (userId) => {
     return notifications;
 }
 
-//Lấy tất cả các thông báo đã tạo của user
+/**
+ * Lấy tất cả thông báo đã tạo và gửi đi
+ */
 exports.getAllNotificationsSentByUser = async (userId) => {
     var notifications = await Notification.find({creator: userId});
 
     return notifications;
 }
 
-// Xóa thông báo đã nhận - xóa trong collection NotificationUser
+/**
+ * Xóa thông báo đã nhận
+ */
 exports.deleteReceivedNotification = async (userId, notificationId) => {
     return await NotificationUser.deleteOne({userId, notificationId});
 }
 
-// Xóa thông báo đã gửi - xóa trực tiếp trong collection notifications
+/**
+ * Xóa thông báo đã gửi
+ */
 exports.deleteSentNotification = async (notificationId) => {
     await NotificationUser.deleteMany({notificationId});
 

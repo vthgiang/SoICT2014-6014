@@ -5,6 +5,8 @@ import Routes from './react-routes/routes';
 import { IntlActions } from 'react-redux-multilingual';
 import store from './redux/store';
 
+import './app.css'
+
 const history = createBrowserHistory();
 
 class App extends Component {

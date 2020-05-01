@@ -7,10 +7,18 @@ exports.getAllNotifications = async (req, res) => {
         var notifications = await NotificationServices.getAllNotifications(req.user.company._id);
 
         await LogInfo(req.user.email, 'GET_NOTIFICATIONS', req.user.company._id );
-        res.status(200).json(notifications);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_notifications_success'],
+            content: notifications
+        });
     } catch (error) {
         await LogError(req.user.email, 'GET_NOTIFICATIONS', req.user.company._id );
-        res.status(400).json(error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_all_notifications_faile'],
+            content: error
+        })
     }
 };
 
@@ -22,30 +30,47 @@ exports.getPaginatedNotifications = async (req, res) => {
         var notifications = await NotificationServices.getPaginatedNotifications(req.user.company._id, limit, page, req.body);
 
         await LogInfo(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id );
-        res.status(200).json(notifications);
+        res.status(200).json({
+            success: true,
+            messages: ['paginate_notifications_success'],
+            content: notifications
+        });
     } catch (error) {
         
         await LogError(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id );
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['paginate_notifications_faile'],
+            content: error
+        });
     }
 };
 
 exports.createNotification = async (req, res) => {
     try {
-        req.body.creater = req.user._id;
-        var notification = await NotificationServices.createNotification(req.body, req.user.company._id);
-        var {departments} = req.body;
-        departments.forEach(async(department) => {
-            var userArr =  await UserServices.getAllUsersInOrganizationalUnit(department);
+        req.body.creator = req.user._id;
+        const notification = await NotificationServices.createNotification(req.body, req.user.company._id);
+        const {departments} = req.body;
+        
+        for (let i = 0; i < departments.length; i++) {
+            const userArr =  await UserServices.getAllUsersInOrganizationalUnit(departments[i]);
             await NotificationServices.noticeToUsers(userArr, notification._id);
-        });
+        }
 
         await LogInfo(req.user.email, 'CREATE_NOTIFICATION', req.user.company._id );
-        res.status(200).json(notification);
+        res.status(200).json({
+            success: true,
+            messages: ['create_notification_success'],
+            content: notification
+        });
     } catch (error) {
 
         await LogError(req.user.email, 'CREATE_NOTIFICATION', req.user.company._id );
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_notification_faile'],
+            content: error
+        });
     }
 };
 
@@ -54,11 +79,19 @@ exports.getNotification = async (req, res) => {
         var notification = await NotificationServices.getNotificationById(req.params.id);
 
         await LogInfo(req.user.email, 'SHOW_NOTIFICATION', req.user.company._id );
-        res.status(200).json(notification)
+        res.status(200).json({
+            success: true,
+            messages: ['get_notification_success'],
+            content: notification
+        })
     } catch (error) {
         
         await LogError(req.user.email, 'SHOW_NOTIFICATION', req.user.company._id );
-        res.status(400).json(error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_notification_faile'],
+            content: error
+        })
     }
 };
 
@@ -67,11 +100,19 @@ exports.editNotification = async (req, res) => {
         var notification = await NotificationServices.editNotification(req.params.id, req.body);
         
         await LogInfo(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id );
-        res.status(200).json(notification);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_notification_success'],
+            content: notification
+        });
     } catch (error) {
         
         await LogError(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id );
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_notification_faile'],
+            content: error
+        });
     }
 };
 
@@ -80,11 +121,19 @@ exports.deleteNotification = async (req, res) => {
         var notification = await NotificationServices.deleteReceivedNotification(req.params.id);
 
         await LogInfo(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
-        res.status(200).json(notification);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_notification_success'],
+            content: notification
+        });
     } catch (error) {
 
         await LogError(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
-        res.status(400).json(error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_notification_faile'],
+            content: error
+        })
     }
 };
 
@@ -93,11 +142,19 @@ exports.getNotificationReceivered = async (req, res) => {
         var notifications = await NotificationServices.getAllReceivedNotificationsOfUser(req.params.userId);
 
         await LogInfo(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id );
-        res.status(200).json(notifications);
+        res.status(200).json({
+            success: true,
+            messages: ['get_notification_receivered_success'],
+            content: notifications
+        });
     } catch (error) {
 
         await LogError(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id );
-        res.status(400).json(error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_notification_receivered_faile'],
+            content: error
+        })
     }
 };
 
@@ -106,11 +163,19 @@ exports.getNotificationSent = async (req, res) => {
         var notifications = await NotificationServices.getAllNotificationsSentByUser(req.params.userId);
 
         await LogInfo(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id );
-        res.status(200).json(notifications);
+        res.status(200).json({
+            success: true,
+            messages: ['get_notification_sent_success'],
+            content: notifications
+        });
     } catch (error) {
 
         await LogError(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id );
-        res.status(400).json(error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_notification_sent_faile'],
+            content: error
+        })
     }
 };
 
@@ -129,7 +194,8 @@ exports.deleteNotificationReceivered = async (req, res) => {
         await LogError(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
         res.status(400).json({
             success: false,
-            message: 'delete_notification_receivered__faile'
+            messages: Array.isArray(error) ? error : ['delete_notification_receivered_faile'],
+            content: error
         });
     }
 };
@@ -149,7 +215,8 @@ exports.deleteNotificationSent = async (req, res) => {
         await LogError(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
         res.status(400).json({
             success: false,
-            message: 'delete_notification_sent_faile'
+            messages: Array.isArray(error) ? error : ['delete_notification_sent_faile'],
+            content: error
         });
     }
 };

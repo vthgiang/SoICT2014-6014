@@ -136,6 +136,8 @@ class UserEditForm extends Component {
                     msg_success={translate('manage_user.edit_success')}
                     msg_faile={translate('manage_user.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
+                    size={50}
+                    maxWidth={500}
                 >
                     <form id={`form-edit-user`}>
                         <div className="row">
