@@ -117,7 +117,8 @@ exports.changeInformation = async (req, res) => {
         await LogError(req.user.email,'CHANGE_USER_INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['change_user_information_faile'],
+            content: error
         });
     }
 };
