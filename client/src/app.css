@@ -1,39 +1,164 @@
-.App {
-  text-align: center;
+/*
+Chuẩn tắc css cho các form control:
+1. Tính từ thẻ gốc class là qlcv
+2. Tiép đến là thẻ form-inline, thẻ form-group. Sau đó đặt các control trong div form-group (Cũng có thể đặt trực tiếp trong form-inline)
+3. control có class là form-control
+Ví dụ:
+<div className="box">
+    <div className="box-body qlcv">
+        <div className="form-inline">
+            <div className = "form-group">
+                <label>Abc def</label>
+                <input className="form-control" type="text"/>
+            </div>
+        </div>
+    </div>
+</div>
+*/
+
+div.qlcv div.selectmulti,
+div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
+div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
+div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label{
+    margin: 5px 0 5px 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+@media (min-width: 768px){
+    div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
+    div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
+    div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group > .form-control,
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label,
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
+        margin: 5px;
+    }
+    div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
+    div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
+    div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group {
+        width: 200px;
+    }
+    div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{
+        width: 100px;
+        text-align: right;
+    }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+
+
+
+/*
+CSS cho bảng dữ liệu
+*/
+.table-hover tbody tr:hover{ /* Hight light dòng con trỏ đang trỏ tới */
+    background-color: #d7d6ee;
+}
+table thead tr th.resizing { /* Màu header cột đang được Resize */
+    background-color: #d7d6ee;
+}
+table thead tr th:not(:last-child) { /* Hiện con trỏ khi trỏ vào header bảng */
+    cursor: ew-resize;
+}
+td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
+    word-wrap: break-word;
+    white-space: normal;
+}
+table tbody tr th { /* Hiện thông báo không có dữ liệu */
+    font-weight: normal;
 }
 
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+
+/*
+CSS cho cột cuối trong bảng (có các hành động edit, delete, save, ...) và các icon trong đó
+*/
+table.table td:last-child, table.table th:last-child { /* Căn giữa cho cột cuối */
+    text-align: center;
 }
 
-.App-link {
-  color: #61dafb;
+table.table td a {
+    cursor: pointer;
+    margin-right: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+table.table td i {
+    font-size: 19px;
+}
+
+table.table td a.add {
+    color: #27C46B;
+}
+table.table td a.copy {
+    color: #27C46B;
+}
+
+table.table td a.edit {
+    color: #FFC107;
+}
+
+table.table td a.star {
+    color: #FFC107;
+}
+
+table.table td a.timer {
+    color: black;
+}
+
+table.table td a.default {
+    color: black;
+}
+
+table.table td a.all_inbox {
+    color: darkred;
+}
+
+table.table td a.add_circle {
+    color: green;
+}
+
+table.table td a.save_result {
+    color: green;
+}
+
+table.table td a.timer:hover {
+    color: #FFC107;
+}
+
+table.table td a.delete {
+    color: #E34724;
+}
+
+table.table td a.approve {
+    color: deepskyblue;
+}
+
+
+
+
+/*
+* CSS cho thông báo với bảng (đang load dữ liệu, không có dữ liệu, ...)
+*/
+div.table-info-panel {
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 10px;
+}
+
+
+
+
+/* Fieldset */
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+legend.scheduler-border {
+    width:inherit; /* Or auto */
+    padding:0 10px; /* To give a bit of padding on the left and right */
+    border-bottom:none;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 18px;
 }
