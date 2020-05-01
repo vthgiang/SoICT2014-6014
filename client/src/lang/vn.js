@@ -333,6 +333,29 @@ export default {
             },
         },
 
+        notification: {
+            add: 'Thêm mới',
+            add_title: 'Thêm thông báo mới',
+            added: 'Thông báo đã tạo',
+            receivered: 'Thông báo đã nhận',
+            add_success: 'Tạo thông báo mới thành công',
+            add_faile: 'Tạo thông báo thất bại',
+            edit_success: 'Chỉnh sửa thông báo thành công',
+            edit_faile: 'Chỉnh sửa thông báo thất bại',
+            departments: 'Thông báo tới đơn vị/phòng ban',
+            users: 'Thông báo đến người dùng cụ thể',
+            news: 'Thông báo mới',
+            see_all: 'Xem tất cả',
+            delete: 'Xóa thông báo',
+
+            // Thông điệp trả về từ server
+            create_notification_success: 'Tạo thông báo thành công',
+            create_notification_faile: 'Tạo thông báo thất bại',
+            edit_notification_success: 'Chỉnh sửa thông báo thành công',
+            edit_notification_faile: 'Chỉnh sửa thông báo thất bại',
+            delete_notification_success: 'Xóa thông báo thành công',
+            delete_notification_faile: 'Xóa thông báo thất bại',
+        },
 
         not_found: {
             title: 'Không tìm thấy địa chỉ này!',
@@ -866,21 +889,7 @@ export default {
             historySalary: 'Lịch sử tăng giảm lương',
             sabbatical: 'Thông tin nghỉ phép',
         },
-        notification: {
-            add: 'Thêm mới',
-            add_title: 'Thêm thông báo mới',
-            added: 'Thông báo đã tạo',
-            receivered: 'Thông báo đã nhận',
-            add_success: 'Tạo thông báo mới thành công',
-            add_faile: 'Tạo thông báo thất bại',
-            edit_success: 'Chỉnh sửa thông báo thành công',
-            edit_faile: 'Chỉnh sửa thông báo thất bại',
-            departments: 'Thông báo tới đơn vị/phòng ban',
-            users: 'Thông báo đến người dùng cụ thể',
-            news: 'Thông báo mới',
-            see_all: 'Xem tất cả',
-            delete: 'Xóa thông báo'
-        },
+
         // Quản lý kê hoạch làm việc
         holiday: {
             start_date: 'Ngày bắt đầu',

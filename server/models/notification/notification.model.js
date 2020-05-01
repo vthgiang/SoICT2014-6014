@@ -8,19 +8,17 @@ const NotificationUser= require('./notificationUser.model');
 const NotificationSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        required: true
+        ref: 'companies'
     },
     title: {
         type: String,
         required: true
     },
     level: { //gồm 4 loại: info, normal, warning, error
-        type: String,
-        required: true
+        type: String
     },
     content: {
-        type: String,
-        required: true
+        type: String
     },
     creator: {
         type: Schema.Types.ObjectId,

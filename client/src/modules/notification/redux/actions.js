@@ -18,7 +18,7 @@ function get(){
             .then(res => {
                 dispatch({
                     type: NotificationConstants.GET_NOTIFICATIONS_SUCCESS,
-                    payload: res.data //danh sách các notification
+                    payload: res.data.content //danh sách các notification
                 });
             })
             .catch(err => {
@@ -34,7 +34,7 @@ function getNotificationReceivered(){
             .then(res => {
                 dispatch({
                     type: NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_SUCCESS,
-                    payload: res.data //danh sách các notification
+                    payload: res.data.content //danh sách các notification
                 });
             })
             .catch(err => {
@@ -50,7 +50,7 @@ function getNotificationSent(){
             .then(res => {
                 dispatch({
                     type: NotificationConstants.GET_NOTIFICATIONS_SENT_SUCCESS,
-                    payload: res.data //danh sách các notification
+                    payload: res.data.content //danh sách các notification
                 });
             })
             .catch(err => {
@@ -66,7 +66,7 @@ function create(data){
             .then(res => {
                 dispatch({
                     type: NotificationConstants.CREATE_NOTIFICATION_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
             })
             .catch(err => {
