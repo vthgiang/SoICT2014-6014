@@ -120,6 +120,35 @@ export default {
             }
         },
 
+        auth: {
+            security: {
+                label: 'Bảo mật',
+                title: 'Thay đổi mật khẩu người dùng',
+                old_password: 'Mật khẩu cũ',
+                new_password: 'Mật khẩu mới',
+                confirm_password: 'Xác thực mật khẩu'
+            },
+            login: 'Đăng nhập',
+            logout: 'Đăng xuất',
+            logout_all_account: 'Đăng xuất khỏi tất cả các thiết bị',
+            profile: {
+                label: 'Thông tin',
+                title: 'Thông tin tài khoản người dùng',
+                name: 'Tên người dùng',
+                email: 'Địa chỉ email',
+                password: 'Mật khẩu mới',
+                confirm: 'Xác thực mật khẩu',
+                edit_success: 'Chỉnh sửa thông tin người dùng thành công',
+                edit_faile: 'Chỉnh sửa thông tin người dùng thất bại'
+            },
+
+            // Thông điệp nhận từ server
+            change_user_information_success: 'Thay đổi thông tin người dùng thành công',
+            change_user_information_faile: 'Thay đổi thông tin người dùng thất bại',
+            change_user_password_success: 'Thay đổi mật khẩu thành công',
+            change_user_password_faile: 'Thay đổi mật khẩu thất bại'
+        },
+
         system_admin: {
             company: {
                 table: {
@@ -329,28 +358,6 @@ export default {
             acc_have_not_role: 'Tài khoản chưa được phân quyền',
             reset_password_success: 'Reset mật khẩu thành công!',
             reset_password_faile: 'Reset mật khẩu thất bại!'
-        },
-        auth: {
-            security: {
-                label: 'Bảo mật',
-                title: 'Thay đổi mật khẩu người dùng',
-                old_password: 'Mật khẩu cũ',
-                new_password: 'Mật khẩu mới',
-                confirm_password: 'Xác thực mật khẩu'
-            },
-            login: 'Đăng nhập',
-            logout: 'Đăng xuất',
-            logout_all_account: 'Đăng xuất khỏi tất cả các thiết bị',
-            profile: {
-                label: 'Thông tin',
-                title: 'Thông tin tài khoản người dùng',
-                name: 'Tên người dùng',
-                email: 'Địa chỉ email',
-                password: 'Mật khẩu mới',
-                confirm: 'Xác thực mật khẩu',
-                edit_success: 'Chỉnh sửa thông tin người dùng thành công',
-                edit_faile: 'Chỉnh sửa thông tin người dùng thất bại'
-            },
         },
 
         confirm: {
