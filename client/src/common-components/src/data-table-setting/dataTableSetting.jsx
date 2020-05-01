@@ -14,14 +14,15 @@ class DataTableSetting extends Component {
             useScrollBar: false,
             hiddenColumns: [],
         };
-
-        window.addEventListener("resize", () => {
-            this.adjustSize(window.innerWidth);
-        }, { passive: true });
     }
 
     componentDidMount() {
-        this.adjustSize(window.innerWidth);
+        this.adjustSize();
+        window.addEventListener("resize", this.adjustSize);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.adjustSize);
     }
 
     componentDidUpdate(){
@@ -37,11 +38,11 @@ class DataTableSetting extends Component {
         }
     }
 
-    adjustSize = async (innerWidth) => {
+    adjustSize = async () => {
         await this.setState(state => {
             return {
                 ...state,
-                useScrollBar: (innerWidth > 992 ? false : true) // 992: kích thước Bootstrap md
+                useScrollBar: (window.innerWidth > 992 ? false : true) // 992: kích thước Bootstrap md
             }
         })
     }
