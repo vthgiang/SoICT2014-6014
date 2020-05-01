@@ -1,4 +1,4 @@
-const {Notification, NotificationUser} = require('../../models').schema;
+const {OrganizationalUnit, UserRole, Notification, NotificationUser} = require('../../models').schema;
 
 /**
  * Lấy tất cả thông báo
@@ -43,6 +43,22 @@ exports.createNotification = async (data, company) => {
     });
 }
 
+exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
+    var department = await OrganizationalUnit.findById(departmentId)
+        .populate([
+            {path: 'dean', model: Role, populate: { path: 'users', model: UserRole}},
+            {path: 'viceDean', model: Role, populate: { path: 'users', model: UserRole}},
+            {path: 'employee', model: Role, populate: { path: 'users', model: UserRole}}
+        ]);
+    var users = [];
+    users = users.concat(
+        department.dean.users.map(user => user.userId), 
+        department.viceDean.users.map(user => user.userId), 
+        department.employee.users.map(user => user.userId)
+    );
+
+    return users;
+}
 /**
  * Thông báo đến người dùng
  */

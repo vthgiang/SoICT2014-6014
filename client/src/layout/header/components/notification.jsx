@@ -3,12 +3,19 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
+import { NotificationActions } from '../../../modules/notification/redux/actions';
 
 class Notification extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
     }
+
+    componentDidMount(){
+        this.props.getNotificationReceivered();
+        this.props.getNotificationSent();
+    }
+
     render() { 
         const {translate, notifications} = this.props;
         return ( 
@@ -43,6 +50,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = { 
+    getNotificationReceivered: NotificationActions.getNotificationReceivered,
+    getNotificationSent: NotificationActions.getNotificationSent
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Notification));

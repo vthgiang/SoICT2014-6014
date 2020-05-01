@@ -49,10 +49,16 @@ class NotificationTable extends Component {
                                                 <tr key={notification._id}>
                                                     <td>
                                                         <i className={
-                                                            notification.icon === 'info' ? "fa fa-info-circle text-green" :
-                                                            notification.icon === 'normal' ? "fa fa-question-circle text-blue" :
-                                                            notification.icon === 'warning' ? "fa fa-warning text-orange" : "fa fa-hourglass-end text-red"
-                                                        } style={{fontSize: '14px'}}/><strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
+                                                            notification.level === 'info' ? 'material-icons text-blue' :
+                                                            notification.level === 'normal' ? 'material-icons text-green' :
+                                                            notification.level === 'warning' ? 'material-icons text-orange' : 'material-icons text-red'
+                                                        }>
+                                                            {
+                                                                notification.level === 'info' ? 'info' :
+                                                                notification.level === 'normal' ? 'notification' :
+                                                                notification.level === 'warning' ? 'warning' : 'new_releases'
+                                                            }
+                                                        </i><strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
                                                     </td>
                                                     <td>
                                                         <i style={{fontSize: '14px'}}>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</i>
@@ -106,17 +112,23 @@ class NotificationTable extends Component {
                                                 <tr key={notification._id}>
                                                     <td>
                                                         <i className={
-                                                            notification.icon === 'info' ? "fa fa-info-circle text-green" :
-                                                            notification.icon === 'normal' ? "fa fa-question-circle text-blue" :
-                                                            notification.icon === 'warning' ? "fa fa-warning text-orange" : "fa fa-hourglass-end text-red"
-                                                        } style={{fontSize: '14px'}}/><strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
+                                                            notification.level === 'info' ? 'material-icons text-blue' :
+                                                            notification.level === 'normal' ? 'material-icons text-green' :
+                                                            notification.level === 'warning' ? 'material-icons text-orange' : 'material-icons text-red'
+                                                        }>
+                                                            {
+                                                                notification.level === 'info' ? 'info' :
+                                                                notification.level === 'normal' ? 'notification' :
+                                                                notification.level === 'warning' ? 'warning' : 'new_releases'
+                                                            }
+                                                        </i><strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
                                                     </td>
                                                     <td>
                                                         <i style={{fontSize: '14px'}}>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</i>
                                                     </td>
                                                     <td style={{width: '5px'}}>
                                                         <DeleteNotification 
-                                                            content={translate('notification.delete')+"KDFKSKDf"}
+                                                            content={translate('notification.delete')}
                                                             data={{ id: notification._id, info: notification.title }}
                                                             func={this.props.deleteNotificationSent}
                                                         />

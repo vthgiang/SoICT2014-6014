@@ -47,12 +47,12 @@ class NotificationMenu extends Component {
                     <div className="box-header with-border">
                         <h3 className="box-title">Chú thích</h3>
                     </div>
-                    <div className="box-body no-padding">
+                    <div className="box-body">
                         <ul className="nav nav-pills nav-stacked">
-                            <li><a title="Thông báo để biết"><i className="fa fa-info-circle text-green"/>Thông báo để biết</a></li>
-                            <li><a title="Thông báo việc cần làm"><i className="fa fa-question-circle text-blue"/>Thông báo việc cần làm</a></li>
-                            <li><a title="Thông báo việc quan trọng"><i className="fa fa-warning text-orange" />Thông báo việc quan trọng</a></li>
-                            <li><a title="Thông báo đặc biệt quan trọng"><i className="fa fa-hourglass-end text-red"/>Thông báo đặc biệt quan trọng</a></li>
+                            <li className="text-blue"><i className="material-icons">info</i>Thông tin</li>
+                            <li className="text-green"><i className="material-icons">notifications</i>Thông báo chung</li>
+                            <li className="text-orange"><i className="material-icons">warning</i>Thông báo quan trọng</li>
+                            <li className="text-red"><i className="material-icons">new_releases</i>Thông báo khẩn</li>
                         </ul>
                     </div>  
                 </div>

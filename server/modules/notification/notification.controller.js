@@ -53,7 +53,8 @@ exports.createNotification = async (req, res) => {
         const {departments} = req.body;
         
         for (let i = 0; i < departments.length; i++) {
-            const userArr =  await UserServices.getAllUsersInOrganizationalUnit(departments[i]);
+            const userArr =  await NotificationServices.getAllUsersInOrganizationalUnit(departments[i]);
+            console.log("users:", userArr)
             await NotificationServices.noticeToUsers(userArr, notification._id);
         }
 

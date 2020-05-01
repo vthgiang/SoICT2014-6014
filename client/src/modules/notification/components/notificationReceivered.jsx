@@ -59,14 +59,17 @@ class NotificationReceivered extends Component {
                                 notification.listReceivered.map(notification => 
                                     <tr key={notification._id} onClick={this.hello}>
                                         <td>
-                                            <i className={
-                                                notification.icon === 'info' ? "fa fa-info-circle text-green" :
-                                                notification.icon === 'normal' ? "fa fa-question-circle text-blue" :
-                                                notification.icon === 'warning' ? "fa fa-warning text-orange" : "fa fa-hourglass-end text-red"
-                                            } style={{fontSize: '14px'}}/><strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
+                                            <i className="materials-icon">
+                                                {
+                                                    notification.level === 'info' ? 'info' :
+                                                    notification.level === 'normal' ? 'notification' :
+                                                    notification.level === 'warning' ? 'warning' : 'error'
+                                                }
+                                            </i>
+                                            <strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
                                         </td>
                                         <td>
-                                            <i style={{fontSize: '14px'}}>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</i>
+                                            {notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}
                                         </td>
                                         <td style={{width: '5px'}}>
                                             <a className="delete pull-right">
