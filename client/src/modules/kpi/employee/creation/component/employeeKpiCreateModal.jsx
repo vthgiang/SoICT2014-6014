@@ -25,7 +25,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 organizationalUnit: "",
                 // creater: this.getCreater(), //localStorage.getItem("id"),
                 approver: null,
-                time: "",
+                date: "",
             },
             adding: false
         };
@@ -45,7 +45,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 ...state,
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
-                    time: value
+                    date: value
                 }
             }
         })
@@ -78,13 +78,13 @@ class ModalCreateEmployeeKpiSet extends Component {
         if (day.length < 2)
             day = '0' + day;
         var defaultTime =  [month, year].join('-');
-        if(this.state.employeeKpiSet.time === ""){
+        if(this.state.employeeKpiSet.date === ""){
             await this.setState(state => {
                 return {
                     ...state,
                     employeeKpiSet: {
                         ...state.employeeKpiSet,
-                        time: defaultTime,
+                        date: defaultTime,
                     }
                 }
             })
@@ -116,7 +116,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             }
         })
         var { employeeKpiSet } = this.state;
-        if(employeeKpiSet.organizationalUnit  && employeeKpiSet.time && employeeKpiSet.approver){//&& employeeKpiSet.creater
+        if(employeeKpiSet.organizationalUnit  && employeeKpiSet.date && employeeKpiSet.approver){//&& employeeKpiSet.creater
             this.props.createEmployeeKpiSet(employeeKpiSet);
             window.$("#createEmployeeKpiSet").modal("hide");
         }
@@ -225,7 +225,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             //                             <div className="input-group-addon">
             //                                 <i className="fa fa-calendar"/>
             //                             </div>
-            //                             <input type="text" className="form-control" ref={input => this.time = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
+            //                             <input type="text" className="form-control" ref={input => this.date = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
             //                         </div>
             //                     </div>
 
