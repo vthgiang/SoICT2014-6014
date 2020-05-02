@@ -24,8 +24,7 @@ class ModalAddTask extends Component {
 
     componentDidMount() {
         // get id current role
-        // this.props.getTaskTemplateByUser("1", "[]");
-        this.props.getTaskTemplateByUser("1", "0", "[]");//fix--localStorage.getItem('id'),
+        this.props.getTaskTemplateByUser("1", "0", "[]"); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // load js for form

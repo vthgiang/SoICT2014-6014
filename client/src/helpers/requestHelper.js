@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { AuthenticateHeader } from '../config';
 import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
-import AuthAlert from '../modules/alert/components/authAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
 
@@ -13,6 +12,7 @@ const checkErrorAuth = (code) => {
     
     const error_auth = [
         'access_denied',
+        'page_access_denied',
         'role_invalid',
         'user_role_invalid',
         'acc_logged_out',
@@ -25,19 +25,8 @@ const checkErrorAuth = (code) => {
     return false;
 }
 
-const checkPageAccess = (code) => {
-    if(code === 'page_access_denied') return true;
-    return false;
-}
-
-const showAuthResponseAlertAndRedirectToHomePage = async () => {
-    console.log("DFSDFSDFSDFSDFSDFDSF");
-    await window.$(`#alert-error-auth-page-acccess-denied`).modal({backdrop: 'static', keyboard: false, display: 'show'});
-}
-
 const showAuthResponseAlertAndRedirectToLoginPage = async () => {
-    await window.$(`#alert-error-auth`).modal("show");
-    await localStorage.clear();
+    await window.$(`#alert-error-auth`).modal({backdrop: 'static', keyboard: false, display: 'show'});
 }
 
 /**
@@ -58,6 +47,7 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
 
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
+        console.log("message: ", messages)
 
         showAlert && toast.success(
             <ServerResponseAlert
@@ -70,12 +60,10 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
-
+        console.log("message error: ", messages)
         if(messages){
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
-            else if(checkPageAccess(messages[0]))
-                showAuthResponseAlertAndRedirectToHomePage();
             else{
                 toast.error(
                     <ServerResponseAlert

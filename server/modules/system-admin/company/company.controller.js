@@ -16,7 +16,8 @@ exports.getAllCompanies = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPANIES');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_companies_faile'],
+            content: error
         });
     }
 };
@@ -40,7 +41,8 @@ exports.getPaginatedCompanies = async (req, res) => {
         LogInfo(req.user.email, 'PAGINATE_COMPANIES');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['paginate_companies_faile'],
+            content: error
         });
     }
 };
@@ -66,7 +68,8 @@ exports.createCompany = async (req, res) => {
         LogError(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_company_faile'],
+            content: error
         });
     }
 };
@@ -86,7 +89,8 @@ exports.getCompany = async (req, res) => {
         LogError(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_company_faile'],
+            content: error
         });
     }
 };
@@ -107,7 +111,8 @@ exports.editCompany = async (req, res) => {
         LogError(req.user.email, 'EDIT_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_company_faile'],
+            content: error
         });
     }
 };
@@ -127,7 +132,8 @@ exports.deleteCompany = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_company_faile'],
+            content: error
         });
     }
 };
@@ -147,7 +153,8 @@ exports.getCompanyLinks = async (req, res) => {
         LogError(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_of_company_faile'],
+            content: error
         });
     }
 };
@@ -167,7 +174,8 @@ exports.addCompanyLink = async (req, res) => {
         LogError(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['add_new_link_for_company_faile'],
+            content: error
         });
     }
 };
@@ -187,7 +195,8 @@ exports.deleteCompanyLink = async (req, res) => {
         LogError(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_link_for_company_faile'],
+            content: error
         });
     }
 };
@@ -208,7 +217,8 @@ exports.addCompanyComponent = async (req, res) => {
         LogError(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['add_new_component_for_company_faile'],
+            content: error
         });
     }
 };
@@ -228,7 +238,8 @@ exports.deleteCompanyComponent = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_component_for_company_faile'],
+            content: error
         });
     }
 };
@@ -247,7 +258,8 @@ exports.getCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_list_of_company_faile'],
+            content: error
         });
     }
 };
@@ -271,7 +283,8 @@ exports.getPaginatedCompanyLinks = async (req, res) => {
         LogInfo(req.user.email, 'LINKS_PAGINATE_OF_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_paginate_of_company_faile'],
+            content: error
         });
     }
 };
@@ -283,14 +296,15 @@ exports.getCompanyComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(200).json({
             success: true,
-            messages: ['get_components_list_of_company'],
+            messages: ['get_components_list_of_company_success'],
             content: components
         });
     } catch (error) {
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_components_list_of_company_faile'],
+            content: error
         });
     }
 };
@@ -314,7 +328,8 @@ exports.getPaginatedCompanyComponents = async (req, res) => {
         LogInfo(req.user.email, 'GET_COMPONENTS_PAGINATE_OF_COMPANY');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_components_paginate_of_company_faile'],
+            content: error
         });
     }
 };

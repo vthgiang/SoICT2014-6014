@@ -53,7 +53,7 @@ function editProfile(data) {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
         data: data,
-    }, false, 'auth');
+    }, true, 'auth');
 }
 
 function changeInformation(data) {
@@ -65,7 +65,7 @@ function changeInformation(data) {
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
         method: 'PATCH',
         data: data,
-    }, false, 'auth');
+    }, true, 'auth');
 }
 
 function changePassword(data) {
@@ -77,7 +77,7 @@ function changePassword(data) {
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
         method: 'PATCH',
         data: data,
-    }, false, 'auth');
+    }, true, 'auth');
 }
 
 async function getLinksOfRole(idRole) {

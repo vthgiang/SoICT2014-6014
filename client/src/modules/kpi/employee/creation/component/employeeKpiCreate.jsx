@@ -42,7 +42,7 @@ class CreateEmployeeKpiSet extends Component {
             employeeKpiSet: {
                 creator: "", //localStorage.getItem("id")
                 organizationUnit: "",
-                time: "",
+                date: "",
                 approver: null
             },
             adding: false,
@@ -87,14 +87,14 @@ class CreateEmployeeKpiSet extends Component {
             })
         } else if(status === 1){
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.handle_edit_kpi.approving'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_edit_kpi.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
             })
         } else {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.handle_edit_kpi.activated'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_edit_kpi.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -123,7 +123,7 @@ class CreateEmployeeKpiSet extends Component {
     handleDeleteEmployeeKpiSet = async (id, employeeKpiSet) => {
         if (employeeKpiSet === 0) {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.delete_kpi.kpi'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.kpi'),
                 type: 'success',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -137,14 +137,14 @@ class CreateEmployeeKpiSet extends Component {
             });
         } else if(employeeKpiSet === 1){
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.delete_kpi.approving'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
             })
         } else {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -195,13 +195,13 @@ class CreateEmployeeKpiSet extends Component {
             day = '0' + day;
         var defaultTime =  [month, year].join('-');
 
-        if(this.state.employeeKpiSet.time === ""){
+        if(this.state.employeeKpiSet.date === ""){
             await this.setState(state => {
                 return {
                     ...state,
                     employeeKpiSet: {
                         ...state.employeeKpiSet,
-                        time: defaultTime,
+                        date: defaultTime,
                     }
                 }
             })
@@ -217,7 +217,7 @@ class CreateEmployeeKpiSet extends Component {
             }
         })
         var { employeeKpiSet } = this.state;
-        if (employeeKpiSet.approver && employeeKpiSet.time ) {//&& kpipersonal.creater
+        if (employeeKpiSet.approver && employeeKpiSet.date ) {//&& kpipersonal.creater
             this.props.editEmployeeKpiSet(id, employeeKpiSet);
         }
     }
@@ -277,7 +277,7 @@ class CreateEmployeeKpiSet extends Component {
     handleDeleteEmployeeKpi = (employeeKpiSetStatus, id, employeeKpiSet) => {
         if (employeeKpiSetStatus === 0) {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.delete_kpi.kpi_target'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.kpi_target'),
                 type: 'success',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -290,14 +290,14 @@ class CreateEmployeeKpiSet extends Component {
             });
         } else if (employeeKpiSetStatus === 1) {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.delete_kpi.approving'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
             })
         } else {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -317,14 +317,14 @@ class CreateEmployeeKpiSet extends Component {
             window.$(`#editEmployeeKpi${target._id}`).modal("show");
         } else if (employeeKpiStatus === 1) {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.edit_target.approving'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
             })
         } else {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -335,25 +335,25 @@ class CreateEmployeeKpiSet extends Component {
 
     handleCheckEmployeeKpiStatus = (employeeKpiStatus) => {
         if (employeeKpiStatus === null) {
-            return translate('employee_kpi_set.create_employee_kpi_set.check_status_target.not_approved');
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.not_approved');
         } else if (employeeKpiStatus === 0) {
-            return translate('employee_kpi_set.create_employee_kpi_set.check_status_target.edit_request');
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.edit_request');
         } else if (employeeKpiStatus === 1) {
-            return translate('employee_kpi_set.create_employee_kpi_set.check_status_target.activated');
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.activated');
         } else if (employeeKpiStatus === 2) {
-            return translate('employee_kpi_set.create_employee_kpi_set.check_status_target.not_finished')
+            return translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.check_status_target.not_finished')
         }
     }
 
     handleCheckEmployeeKpiSetStatus = (employeeKpiSetStatus) => {
         if (employeeKpiSetStatus === 0) {
-            return <span style={{ color: "#2b035e" }}><i className="fa fa-cogs" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.kpi_status.setting_up')}</span>;
+            return <span style={{ color: "#2b035e" }}><i className="fa fa-cogs" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.setting_up')}</span>;
         } else if (employeeKpiSetStatus === 1) {
-            return <span style={{ color: "#FFC107" }}><i className="fa fa-hourglass-half" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.kpi_status.awaiting_approval')}</span>;
+            return <span style={{ color: "#FFC107" }}><i className="fa fa-hourglass-half" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.awaiting_approval')}</span>;
         } else if (employeeKpiSetStatus === 2) {
-            return <span style={{ color: "#00EB1B" }}><i className="fa fa-check-circle" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.kpi_status.activated')}</span>;
+            return <span style={{ color: "#00EB1B" }}><i className="fa fa-check-circle" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.activated')}</span>;
         } else if (employeeKpiSetStatus === 3) {
-            return <span style={{ color: "#270700" }}><i className="fa fa-lock" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.kpi_status.finished')}</span>;
+            return <span style={{ color: "#270700" }}><i className="fa fa-lock" style={{ fontSize: "16px", marginRight: "10px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.finished')}</span>;
         }
     }
 
@@ -361,7 +361,7 @@ class CreateEmployeeKpiSet extends Component {
         var totalWeight = kpipersonal.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
         if (totalWeight === 100) {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.request_approval_kpi.approve'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval_kpi.approve'),
                 type: 'success',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -374,7 +374,7 @@ class CreateEmployeeKpiSet extends Component {
             });
         } else {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.request_approval_kpi.not_enough_weight'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval_kpi.not_enough_weight'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -385,7 +385,7 @@ class CreateEmployeeKpiSet extends Component {
     handleCancelApproveEmployeeKpiSet = (kpipersonal) => {
         if (kpipersonal.status === 1) {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.cancel_approve.cancel'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.cancel_approve.cancel'),
                 type: 'success',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -398,7 +398,7 @@ class CreateEmployeeKpiSet extends Component {
             });
         } else {
             Swal.fire({
-                title: translate('employee_kpi_set.create_employee_kpi_set.cancel_approve.activated'),
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.cancel_approve.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Xác nhận'
@@ -450,44 +450,44 @@ class CreateEmployeeKpiSet extends Component {
                                     {editing ?
                                         <React.Fragment>
                                             <a className="btn btn-app" onClick={() => this.handleSaveEditEmployeeKpiSet(currentKPI._id, currentUnit && currentUnit[0]._id)} title="Lưu thông tin chỉnh sửa">
-                                                <i className="fa fa-save" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.general_information.save')}
+                                                <i className="fa fa-save" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.save')}
                                             </a>
                                             <a className="btn btn-app" onClick={() => this.handleCancelEditEmployeeKpiSet()} title="Hủy bỏ chỉnh sửa">
-                                                <i className="fa fa-ban" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.general_information.cancel')}
+                                                <i className="fa fa-ban" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.cancel')}
                                             </a>
                                         </React.Fragment> :
                                         <a className="btn btn-app" onClick={() => this.handleEditEmployeeKpiSet(currentKPI.status)} title="Chỉnh sửa thông tin chung">
-                                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.general_information.edit')}
+                                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.edit')}
                                         </a>
                                     }
                                     
                                     <a className="btn btn-app" onClick={() => this.handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status)} title="Xóa KPI tháng">
-                                        <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.general_information.delete')}
+                                        <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
                                     </a>
                                     
                                     <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpi" data-backdrop="static" data-keyboard="false">
-                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.add_target')}
+                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
                                     </a>
                                     <ModalCreateEmployeeKpi employeeKpiSet={currentKPI._id} organizationalUnit={currentUnit && currentUnit[0]} />
 
                                     {currentKPI.status === 0 ? 
                                         <a className="btn btn-app" onClick={() => this.handleRequestApproveEmployeeKpiSet(currentKPI)}>
-                                            <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.request_approval')}
+                                            <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval')}
                                         </a> 
                                         : <a className="btn btn-app" onClick={() => this.handleCancelApproveEmployeeKpiSet(currentKPI)}>
-                                            <i className="fa fa-minus-square" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.cancel_request_approval')}
+                                            <i className="fa fa-minus-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.cancel_request_approval')}
                                         </a>
                                     }
                                 </div>
 
                                 <div className="" style={{ marginBottom: "10px" }}>
-                                    <h4 style={{ display: "inline", fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.time)} ({currentKPI.organizationalUnit.name})</h4>
-                                    <span style={{ float: "right" }} title={translate('employee_kpi_set.create_employee_kpi_set.kpi_status.status')}>{this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}</span>
+                                    <h4 style={{ display: "inline", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name})</h4>
+                                    <span style={{ float: "right" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.kpi_status.status')}>{this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}</span>
                                 </div>
                                 
                                 {editing ? userdepartments && (items.length !== 0) &&
                                     <div className="col-sm-6 col-xs-12 form-group">
-                                        <label>{translate('employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
+                                        <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                         <SelectBox
                                             id={`createEmployeeKpiSet`}
                                             className="form-control select2"
@@ -499,33 +499,14 @@ class CreateEmployeeKpiSet extends Component {
                                         />
                                     </div> 
                                     : <div className="form-group">
-                                        <span style={{ fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.approver')}: </span>
+                                        <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.approver')}: </span>
                                         <span>{currentKPI.approver.name}</span>
                                     </div>
                                 }
 
-                                    {/* {editing ? userdepartments &&
-                                        <div className="col-sm-10 input-group" style={{ width: "25%", paddingLeft: "15px" }}>
-                                            <select defaultValue={currentKPI.approver._id} ref={input => this.approver = input} className="form-control select2">
-                                                <optgroup label={userdepartments[0].roleId.name}>
-                                                    {userdepartments[0].userId.map(x => {
-                                                        return <option key={x._id} value={x._id}>{x.name}</option>
-                                                    })}
-                                                </optgroup>
-                                                <optgroup label={userdepartments[1].roleId.name}>
-                                                    {userdepartments[1].userId.map(x => {
-                                                        return <option key={x._id} value={x._id}>{x.name}</option>
-                                                    })}
-                                                </optgroup>
-                                            </select>
-                                        </div> :
-                                        <label className="col-sm-10" style={{ fontWeight: "400" }}>: {currentKPI.approver.name}</label>
-                                    } */} 
-                                
-
                                 {editing &&
                                    <div className="col-sm-6 col-xs-12 form-group">
-                                        <label>{translate('employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
+                                        <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
                                         <DatePicker 
                                         style={{ width: "60%" }}
                                             id="month"   
@@ -539,18 +520,18 @@ class CreateEmployeeKpiSet extends Component {
 
                                 {editing === false &&
                                     <div className="form group">
-                                        <span style={{ fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.weight.weight_total')}: </span>
+                                        <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.weight_total')}: </span>
                                         <span>{currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
                                         {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
-                                            <span className="text-danger" style={{fontWeight: "bold"}}>{translate('employee_kpi_set.create_employee_kpi_set.weight.not_satisfied')}</span>
-                                            : <span className="text-success" style={{fontWeight: "bold"}}>{translate('employee_kpi_set.create_employee_kpi_set.weight.satisfied')}</span>
+                                            <span className="text-danger" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.not_satisfied')}</span>
+                                            : <span className="text-success" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight.satisfied')}</span>
                                         }
                                     </div>
                                 }
 
                                 <div>
                                     {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
-                                        <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('employee_kpi_set.create_employee_kpi_set.target_list')} ({currentKPI.kpis.reduce(sum => sum + 1, 0)})</h4>
+                                        <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')} ({currentKPI.kpis.reduce(sum => sum + 1, 0)})</h4>
                                     }
 
                                     <SlimScroll outerComponentId="kpi_table" innerComponentId="kpipersonal_table" innerComponentWidth="992px" activate={this.state.fixTableWidth}/>
@@ -558,19 +539,19 @@ class CreateEmployeeKpiSet extends Component {
                                         <table className="table table-bordered table-striped table-hover" id="kpipersonal_table">
                                             <thead>
                                                 <tr>
-                                                    <th title="Số thứ tự" style={{ width: '40px' }}>{translate('employee_kpi_set.create_employee_kpi_set.no_')}</th>
-                                                    <th title="Tên mục tiêu" className="col-lg-3 col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set.target_name')}</th>
-                                                    <th title="Mục tiêu cha" className="col-lg-3 col-sm-3">{translate('employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
-                                                    <th title="Tiêu chí đánh giá" className="col-lg-2 col-sm-2">{translate('employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
-                                                    <th title="Trọng số" className="col-lg-1 col-sm-1">{translate('employee_kpi_set.create_employee_kpi_set.max_score')}</th>
-                                                    <th title="Trạng thái" className="col-lg-1 col-sm-1">{translate('employee_kpi_set.create_employee_kpi_set.status')}</th>
-                                                    <th title="Hành động" className="col-lg-1 col-sm-1">{translate('employee_kpi_set.create_employee_kpi_set.action')}</th>
+                                                    <th title="Số thứ tự" style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                                                    <th title="Tên mục tiêu" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
+                                                    <th title="Mục tiêu cha" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
+                                                    <th title="Tiêu chí đánh giá" className="col-lg-2 col-sm-2">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
+                                                    <th title="Trọng số" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.max_score')}</th>
+                                                    <th title="Trạng thái" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')}</th>
+                                                    <th title="Hành động" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
                                                     (typeof currentKPI === 'undefined' || currentKPI === null) ? 
-                                                        <tr><td colSpan={7}><center>{translate('employee_kpi_set.create_employee_kpi_set.not_initialize')} {this.formatDate(Date.now())}</center></td></tr> 
+                                                        <tr><td colSpan={7}><center>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')} {this.formatDate(Date.now())}</center></td></tr> 
                                                         : (currentKPI.kpis.map((item, index) =>
                                                             <tr key={index + 1}>
                                                                 <td title={index + 1}>{index + 1}</td>
@@ -580,11 +561,11 @@ class CreateEmployeeKpiSet extends Component {
                                                                 <td title={item.weight}>{item.weight}</td>
                                                                 <td title={this.handleCheckEmployeeKpiStatus(item.status)}>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
                                                                 <td>
-                                                                    <a data-target={`#editEmployeeKpi${item._id}`} style={{ color: "#FFC107", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.edit')} data-toggle="modal" onClick={() => this.handleEditEmployeeKpi(currentKPI.status, item)}><i className="fa fa-edit"></i></a>
+                                                                    <a data-target={`#editEmployeeKpi${item._id}`} style={{ color: "#FFC107", fontSize: "16px" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.edit')} data-toggle="modal" onClick={() => this.handleEditEmployeeKpi(currentKPI.status, item)}><i className="fa fa-edit"></i></a>
                                                                     {editingTarget === item._id && <ModalEditEmployeeKpi target={item}/>}
                                                                     {item.type !== 0 ? 
-                                                                        <a className="copy" title={translate('employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a> 
-                                                                        : <a style={{ color: "#E34724", fontSize: "16px" }} title={translate('employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 
+                                                                        <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a> 
+                                                                        : <a style={{ color: "#E34724", fontSize: "16px" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 
                                                                     }
                                                                 </td>
                                                             </tr>
@@ -599,10 +580,10 @@ class CreateEmployeeKpiSet extends Component {
                                     <div>
                                         {commenting ? 
                                             <div>
-                                                <button className="btn btn-danger" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('employee_kpi_set.create_employee_kpi_set.submit.cancel_feedback')}</button>
-                                                <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('employee_kpi_set.create_employee_kpi_set.submit.send_feedback')}</button>
+                                                <button className="btn btn-danger" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.cancel_feedback')}</button>
+                                                <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.send_feedback')}</button>
                                             </div>
-                                            : <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('employee_kpi_set.create_employee_kpi_set.submit.feedback')}</button>
+                                            : <button className="btn btn-primary" style={{ marginRight: "15px", float: "right" }} onClick={() => this.handleCommentEmployeeKpiSet()}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.feedback')}</button>
                                         }
                                     </div>
                                 }
@@ -611,7 +592,7 @@ class CreateEmployeeKpiSet extends Component {
                                     <div className="col-xs-12">
                                         <form>
                                             <div className="form-group">
-                                                <label>{translate('employee_kpi_set.create_employee_kpi_set.submit.feedback')}</label>
+                                                <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.submit.feedback')}</label>
                                                 <div className='form-group'>
                                                     <textarea type="text" className='form-control' id="inputname" name="reason" />
                                                 </div>
@@ -626,24 +607,24 @@ class CreateEmployeeKpiSet extends Component {
                                         <div>{ createKpiUnit.currentKPI.status !== 1 ?
                                             <div>  
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotActivatedOrganizationalUnitKpi()}}>
-                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                                 </a>
                                             </div>
                                             : <div>
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
-                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                                 </a>
                                                 <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0]} />
                                             </div>
                                             }
                                         </div>
                                         : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => {this.handleNotInitializeOrganizationalUnitKpi()}}>
-                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                         </a>
                                     }
                                 </div>
-                                <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(Date.now())}</h3>
-                                <p>{translate('employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
+                                <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(Date.now())}</h3>
+                                <p>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
                             </div>
                         }
                     </div>

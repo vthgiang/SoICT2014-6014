@@ -16,7 +16,8 @@ exports.getAllRoles = async (req, res) => {
         LogError(req.user.email, 'GET_ALL_ROLES', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_roles_faile'],
+            content: error
         });
     }
 };
@@ -39,7 +40,8 @@ exports.getPaginatedRoles = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_ROLES', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['paginate_roles_faile'],
+            content: error
         });
     }
 };
@@ -48,7 +50,7 @@ exports.createRole = async (req, res) => {
     try {
         var role = await RoleService.createRole(req.body, req.user.company._id);
         await RoleService.editRelationshipUserRole(role._id, req.body.users);
-        var data = await RoleService.getRoleById(role._id);
+        var data = await RoleService.getRole(role._id);
         
         LogInfo(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(200).json({
@@ -61,14 +63,15 @@ exports.createRole = async (req, res) => {
         LogError(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_role_faile'],
+            content: error
         });
     }
 };
 
-exports.getRoleById = async (req, res) => {
+exports.getRole = async (req, res) => {
     try {
-        var role = await RoleService.getRoleById(req.params.id);
+        var role = await RoleService.getRole(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(200).json({
@@ -81,7 +84,8 @@ exports.getRoleById = async (req, res) => {
         LogError(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_role_faile'],
+            content: error
         });
     }
 };
@@ -90,7 +94,7 @@ exports.editRole = async (req, res) => {
     try {
         await RoleService.editRelationshipUserRole(req.params.id, req.body.users);
         var role = await RoleService.editRole(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
-        var data = await RoleService.getRoleById(role._id);
+        var data = await RoleService.getRole(role._id);
         
         LogInfo(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(200).json({
@@ -103,7 +107,8 @@ exports.editRole = async (req, res) => {
         LogError(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_role_faile'],
+            content: error
         });
     }
 };
@@ -123,7 +128,8 @@ exports.deleteRole = async (req, res) => {
         LogError(req.user.email, 'DELETE_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_role_faile'],
+            content: error
         });
     }
 };
@@ -135,7 +141,7 @@ exports.getAllRolesInSameOrganizationalUnitWithRole = async (req, res) => {
         LogInfo(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['get_roles_same_department'],
+            messages: ['get_roles_same_department_success'],
             content: roles
         });
     } catch (error) {
@@ -143,7 +149,8 @@ exports.getAllRolesInSameOrganizationalUnitWithRole = async (req, res) => {
         LogError(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_roles_same_department_faile'],
+            content: error
         });
     }
 };

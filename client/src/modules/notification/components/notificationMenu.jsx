@@ -34,7 +34,7 @@ class NotificationMenu extends Component {
                                     data-toggle="tab"
                                 >
                                     <i className="fa fa-upload"/>
-                                    {translate('notification.added')}
+                                    {translate('notification.sent')}
                                     <span className="label label-default pull-right">
                                         {notifications.listSent.length}
                                     </span>
@@ -45,14 +45,14 @@ class NotificationMenu extends Component {
                 </div>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Chú thích</h3>
+                        <strong className="box-title">{translate('notification.note')}</strong>
                     </div>
-                    <div className="box-body no-padding">
+                    <div className="box-body">
                         <ul className="nav nav-pills nav-stacked">
-                            <li><a title="Thông báo để biết"><i className="fa fa-info-circle text-green"/>Thông báo để biết</a></li>
-                            <li><a title="Thông báo việc cần làm"><i className="fa fa-question-circle text-blue"/>Thông báo việc cần làm</a></li>
-                            <li><a title="Thông báo việc quan trọng"><i className="fa fa-warning text-orange" />Thông báo việc quan trọng</a></li>
-                            <li><a title="Thông báo đặc biệt quan trọng"><i className="fa fa-hourglass-end text-red"/>Thông báo đặc biệt quan trọng</a></li>
+                            <li className="text-blue"><i className="material-icons">info</i> {translate('notification.type.info')}</li>
+                            <li className="text-green"><i className="material-icons">notifications</i> {translate('notification.type.general')}</li>
+                            <li className="text-orange"><i className="material-icons">warning</i> {translate('notification.type.important')}</li>
+                            <li className="text-red"><i className="material-icons">new_releases</i> {translate('notification.type.emergency')}</li>
                         </ul>
                     </div>  
                 </div>

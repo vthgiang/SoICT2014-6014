@@ -7,7 +7,7 @@ const SalaryController = require("./salary.controller");
 /**
  * Lấy danh sách các bảng lương
  */ 
-router.post('/paginate',auth, SalaryController.searchSalary);
+router.post('/paginate',auth, SalaryController.searchSalaries);
 
 /**
  *  Thêm mới bảng lương nhân viên
@@ -25,12 +25,12 @@ router.delete('/:id',auth, SalaryController.deleteSalary);
 router.put('/:id',auth, SalaryController.updateSalary);
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
-router.get('/checkSalary/:employeeNumber/:month',auth, SalaryController.checkSalary);
+router.get('/checkSalary/:employeeNumber/:month',auth, SalaryController.checkSalaryExisted);
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array truyền vào
-router.post('/checkArraySalary',auth, SalaryController.checkArraySalary);
+router.post('/checkArraySalary',auth, SalaryController.checkSalariesExisted);
 
 // Import lương nhân viên
-router.post('/import',auth, SalaryController.importSalary);
+router.post('/import',auth, SalaryController.importSalaries);
 
 module.exports = router;

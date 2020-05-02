@@ -431,45 +431,61 @@ exports.editResultInformationTask = async (req, res) => {
 /**
  * Thêm thông tin kết quả của đánh giá từng nhân viên
  */
-exports.createResultTask = async (result, taskID) => {
+exports.createResultTask = async (result, taskID, evaluateID, date) => {
     var item = result;
 
     if (item !== null) {
         // Lưu thông tin kết quả 
-        var resultTask = {
-            employee: item.member,
-            role: item.roleMember,
-            automaticPoint: item.systempoint,
-            employeePoint: item.mypoint,
-            approvedPoint: item.approverpoint
+         // Lưu thông tin kết quả 
+         var resultTask = {
+            employee: item.employee,
+            role: item.role,
+            automaticPoint: item.automaticPoint,
+            employeePoint: item.employeePoint,
+            approvedPoint: item.approvedPoint
         }
+        console.log(resultTask);
         // Cập nhật thông tin công việc
-        var task = await Task.findByIdAndUpdate(
-            taskID, { $push: { results: resultTask } }, { new: true }
-            // là _id của task muốn đánh giá.
+        var addResult = await Task.updateOne(
+            {
+                _id: taskID,
+                "evaluations._id" : evaluateID
+                // "evaluations.date": date // req.body.date // "2020-04-22T16:06:17.145Z"
+            }, 
+            {
+                $push: {
+                    "evaluations.$.results": resultTask
+                } 
+            }, 
+            { new: true }
         );
     }
-    return task;
-
+    
+    return await Task.findById(taskID);
+    
 }
 
 /**
  * Sửa thông tin kết quả của nhân viên trong công việc
  */
-exports.editResultTask = async (listResult, taskid) => {
+exports.editResultTask = async (listResult,taskid) => {
     if (listResult !== []) {
-        // Lưu thông tin kết quả  var listResultTask = await Promise.all
-        listResult.forEach(async (item) => {
-            // var newTask = await Task.findOneAndUpdate({results: {$elemMatch: {_id : item._id} }},
-            var newTask = await Task.updateOne({ "results._id": item._id },
-                // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},
+        // Lưu thông tin kết quả 
+        listResult.forEach( async (item) => {
+            var newTask = await Task.updateOne(
                 {
-                    $set: {
-                        "results.$.automaticPoint": item.systempoint,
-                        "results.$.employeePoint": item.mypoint,
-                        "results.$.approvedPoint": item.approverpoint
-                    }
-                }
+                    "evaluations.results._id" : item._id,
+                    // k can xet dieu kien ngay danh gia vi _id cua result la duy nhat
+                },
+                { $set: {
+                    "evaluations.$.results.$[elem].automaticPoint": item.automaticPoint,
+                    "evaluations.$.results.$[elem].employeePoint": item.employeePoint,
+                    "evaluations.$.results.$[elem].approvedPoint": item.approvedPoint
+                }},
+                { arrayFilters: [{
+                        "elem._id" : item._id,
+                    }]
+                } 
             );
         })
     }

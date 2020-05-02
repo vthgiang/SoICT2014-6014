@@ -16,7 +16,8 @@ exports.login = async (req, res) => {
         await LogError(req.body.email, 'LOGIN');
         res.status(400).json({
             success: false,
-            messages: error
+            essages: Array.isArray(error) ? error : ['login_faile'],
+            content: error
         });
     }
 };
@@ -36,7 +37,8 @@ exports.logout = async (req, res) => {
         await LogError(req.user.email, 'LOG_OUT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['logout_faile'],
+            content: error
         });
     }
 };
@@ -56,7 +58,8 @@ exports.logoutAllAccount = async (req, res) => {
         await LogError(req.user.email, 'LOG_OUT_ALL_ACCOUNT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['logout_all_faile'],
+            content: error
         });
     }
 };
@@ -76,7 +79,8 @@ exports.forgetPassword = async (req, res) => {
         await LogError(req.body.email, 'FORGET_PASSWORD');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['request_forgot_password_faile'],
+            content: error
         });
     }
 };
@@ -96,7 +100,8 @@ exports.resetPassword = async (req, res) => {
         await LogError(req.body.email, 'RESET_PASSWORD');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['reset_password_faile'],
+            content: error
         });
     }
 };
@@ -117,7 +122,8 @@ exports.changeInformation = async (req, res) => {
         await LogError(req.user.email,'CHANGE_USER_INFORMATION', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['change_user_information_faile'],
+            content: error
         });
     }
 };
@@ -129,7 +135,7 @@ exports.changePassword = async (req, res) => {
         await LogInfo(req.user.email, 'CHANGE_USER_PASSWORD', req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['change_user_password'],
+            messages: ['change_user_password_success'],
             content: user
         });
     } catch (error) {
@@ -137,7 +143,8 @@ exports.changePassword = async (req, res) => {
         await LogError(req.user.email,'CHANGE_USER_PASSWORD', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['change_user_password_faile'],
+            content: error
         });
     }
 };
@@ -157,7 +164,8 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
         await LogError(req.user.email,'GET_LINKS_OF_ROLE', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_of_role_faile'],
+            content: error
         });
     }
 };
@@ -177,7 +185,8 @@ exports.getProfile = async (req, res) => {
         await LogError(req.user.email, 'GET_PROFILE');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_profile_faile'],
+            content: error
         });
     }
 };

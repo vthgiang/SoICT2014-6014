@@ -12,7 +12,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
         this.state = {
             organizationalUnitKpi: {
                 organizationalUnit: "",
-                time: "",
+                date: "",
                 // creater: localStorage.getItem("id")
             }
         };
@@ -34,7 +34,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
                 ...state,
                 organizationalUnitKpi: {
                     ...state.organizationalUnitKpi,
-                    time: value
+                    date: value
                 }
             }
         })
@@ -53,13 +53,13 @@ class OrganizationalUnitKpiCreateModal extends Component {
             day = '0' + day;
         var defaultTime =  [month, year].join('-');
 
-        if(this.state.organizationalUnitKpi.time === ""){
+        if(this.state.organizationalUnitKpi.date === ""){
             await this.setState(state => {
                 return {
                     ...state,
                     organizationalUnitKpi: {
                         ...state.organizationalUnitKpi,
-                        time: defaultTime,
+                        date: defaultTime,
                     }
                 }
             })
@@ -76,7 +76,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
         })
         var { organizationalUnitKpi } = this.state;
         
-        if (organizationalUnitKpi.organizationalUnit && organizationalUnitKpi.time) {            
+        if (organizationalUnitKpi.organizationalUnit && organizationalUnitKpi.date) {            
             this.props.addKPIUnit(organizationalUnitKpi);
 
             window.$("#startKPIUnit").modal("hide");
@@ -107,20 +107,20 @@ class OrganizationalUnitKpiCreateModal extends Component {
                 <DialogModal
                     modalID="startKPIUnit" isLoading={false}
                     formID="formStartKPIUnit"
-                    title={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.initialize_kpi_set')}
-                    msg_success={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.success')}
-                    msg_faile={translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.failure')}
+                    title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.initialize_kpi_set')}
+                    msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
+                    msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                     func={this.handleSubmit}
                     // disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formStartKPIUnit" onSubmit={() => this.handleSubmit(translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.success'))}>
+                    <form id="formStartKPIUnit" onSubmit={() => this.handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
                         <div className="form-group">
-                            <label className="col-sm-2">{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.organizational_unit')}</label>
+                            <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.organizational_unit')}</label>
                             <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
                         
                         <div className="form-group">
-                            <label className="col-sm-2">{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.month')}</label>
+                            <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.month')}</label>
                             <DatePicker
                                 id="month"      
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -131,7 +131,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
                         </div>
 
                         <div className="form-group">
-                            <label className="col-sm-12">{translate('organizational_unit_kpi_set.create_organizational_unit_kpi_set_modal.default_target')}</label>
+                            <label className="col-sm-12">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.default_target')}</label>
                             <ul>
                                 <li>Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)</li>
                                 <li>Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)</li>
