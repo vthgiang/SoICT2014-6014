@@ -4,7 +4,7 @@ const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, Organizat
 /**
  * Lấy tất cả các công việc
  */
- exports.getAllTask = (req, res) => {
+ exports.getAllTasks = (req, res) => {
     var tasks = Task.find();
     return tasks;  
 }
@@ -12,7 +12,7 @@ const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, Organizat
 /**
  * Lấy mẫu công việc theo Id
  */
-exports.getTaskById = async (id) => {
+exports.getTask = async (id) => {
     //req.params.id
     var task = await Task.findById(id)
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees parent" });        
@@ -25,11 +25,10 @@ exports.getTaskById = async (id) => {
 
 /**
  * Lấy mẫu công việc theo chức danh và người dùng
+ * @id: id người dùng
  */
-exports.getTaskByRole = async (roleId,id) => {
-    //req.params.role,req.params.id
+exports.getTasksCreatedByUser = async (id) => {
     var tasks = await Task.find({
-        role: roleId,
         creator: id
     }).populate({ path: 'taskTemplate', model: TaskTemplate });
     return tasks;
@@ -38,7 +37,7 @@ exports.getTaskByRole = async (roleId,id) => {
 /**
  * Lấy công việc thực hiện chính theo id người dùng
  */
-exports.getResponsibleTaskByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksResponsibleByUser = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var responsibleTasks;
         var perPage = Number(perpageId);
@@ -67,7 +66,7 @@ exports.getResponsibleTaskByUser = async (perpageId,numberId,unitId,userId,statu
 /**
  * Lấy công việc phê duyệt theo id người dùng
  */
-exports.getAccountableTaskByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+exports.getPaginatedTasksAccountableByUser = async (perpageId,numberId,unitId,statusId,userId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
     var accountableTasks;
         var perPage = Number(perpageId);
@@ -96,7 +95,7 @@ exports.getAccountableTaskByUser = async (perpageId,numberId,unitId,statusId,use
 /**
  * Lấy công việc hỗ trợ theo id người dùng
  */
-exports.getConsultedTaskByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksConsultedByUser = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var consultedTasks;
         var perPage = Number(perpageId);
@@ -125,7 +124,7 @@ exports.getConsultedTaskByUser = async (perpageId,numberId,unitId,userId,statusI
 /**
  * Lấy công việc thiết lập theo id người dùng
  */
-exports.getCreatorTaskByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+exports.getPaginatedTasksCreatedByUser = async (perpageId,numberId,unitId,statusId,userId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
     var creatorTasks;
         var perPage = Number(perpageId);
@@ -154,7 +153,7 @@ exports.getCreatorTaskByUser = async (perpageId,numberId,unitId,statusId,userId)
 /**
  * Lấy công việc quan sát theo id người dùng
  */
-exports.getInformedTaskByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getTasksThatAreInformedToUser = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var informedTasks;
         var perPage = Number(perpageId);
@@ -184,7 +183,7 @@ exports.getInformedTaskByUser = async (perpageId,numberId,unitId,userId,statusId
 /**
  * Tạo công việc mới
  */
-exports.create = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,descriptionId,priorityId,taskTemplateId,roleId,kpiId,responsibleId,accountableId,consultedId,informedId) => {
+exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,descriptionId,priorityId,taskTemplateId,roleId,kpiId,responsibleId,accountableId,consultedId,informedId) => {
     // Lấy thông tin công việc cha
         var level = 1;
         if (mongoose.Types.ObjectId.isValid(parentId)) {
@@ -239,7 +238,7 @@ exports.create = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,d
 /**
  * Xóa công việc
  */
-exports.delete = async (id) => {
+exports.deleteTask = async (id) => {
     //req.params.id
     var template = await WorkTemplate.findByIdAndDelete(id); // xóa mẫu công việc theo id
     var privileges = await Privilege.deleteMany({
@@ -251,7 +250,7 @@ exports.delete = async (id) => {
 /**
  * edit status of task
  */
-exports.editStatusOfTask = async (taskID, status) => {
+exports.editTaskStatus = async (taskID, status) => {
     var task = await Task.findByIdAndUpdate(taskID, 
         { $set: {status: status }},
         { new: true } 

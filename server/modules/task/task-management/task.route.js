@@ -5,16 +5,16 @@ const {auth} = require('../../../middleware/index');
 
 const TaskManagementController = require("./task.controller");
 
-router.get('/', auth, TaskManagementController.getAllTask);
-router.get('/:id', auth, TaskManagementController.getTaskById);
-router.get('/role/:id/:role', auth, TaskManagementController.getTaskByRole);
-router.get('/user/task-responsible/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getResponsibleTaskByUser);
-router.get('/user/task-accountable/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getAccountableTaskByUser);
-router.get('/user/task-consulted/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getConsultedTaskByUser);
-router.get('/user/task-creator/:unit/:user/:number/:perPage/:status/:priority/:special/:name',auth, TaskManagementController.getCreatorTaskByUser);
-router.get('/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getInformedTaskByUser);
-router.post('/create', auth, TaskManagementController.create);
-router.delete('/:id', auth, TaskManagementController.delete);
-router.patch('/:id', auth, TaskManagementController.editStatusOfTask);
+router.get('/', auth, TaskManagementController.getAllTasks);
+router.get('/:id', auth, TaskManagementController.getTask);
+router.get('/role/:id/:role', auth, TaskManagementController.getAllTasksCreatedByUser);
+router.get('/user/task-responsible/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getPaginatedTasksResponsibleByUser);
+router.get('/user/task-accountable/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getPaginatedTasksAccountableByUser);
+router.get('/user/task-consulted/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getPaginatedTasksConsultedByUser);
+router.get('/user/task-creator/:unit/:user/:number/:perPage/:status/:priority/:special/:name',auth, TaskManagementController.getPaginatedTasksCreatedByUser);
+router.get('/user/task-informed/:unit/:user/:number/:perPage/:status/:priority/:special/:name', auth, TaskManagementController.getTasksThatAreInformedToUser);
+router.post('/create', auth, TaskManagementController.createTask);
+router.delete('/:id', auth, TaskManagementController.deleteTask);
+router.patch('/:id', auth, TaskManagementController.editTaskStatus);
 
 module.exports = router;
