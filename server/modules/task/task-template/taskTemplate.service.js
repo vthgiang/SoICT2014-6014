@@ -2,14 +2,14 @@ const { TaskTemplate, Privilege, Role, UserRole } = require('../../../models').s
 
 
 //Lấy tất cả các mẫu công việc
-exports.get = (req, res) => {
+exports.getAllTaskTemplates = (req, res) => {
     TaskTemplate.find()
         .then(templates => res.status(200).json(templates))
         .catch(err => res.status(400).json({ message: err }));
 }
 
 //Lấy mẫu công việc theo Id
-exports.getById = async (req, res) => {
+exports.getTaskTemplate = async (req, res) => {
     try {
         var tasktemplate = await TaskTemplate.findById(req.params.id).populate("organizationalUnit creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
         var nameRead = await Role.findById(tasktemplate.readByEmployees);
@@ -27,7 +27,7 @@ exports.getById = async (req, res) => {
 }
 
 //Lấy mẫu công việc theo chức danh
-exports.getByRole = async (id) => {
+exports.getTaskTemplatesOfUserRole = async (id) => {
    
     var roleId = await Role.findById(id); //lấy id role hiện tại
     var roles = [roleId._id]; //thêm id role hiện tại vào 1 mảng
@@ -41,7 +41,7 @@ exports.getByRole = async (id) => {
 }
 
 // lấy tất cả mẫu công việc theo id user
-exports.getByUser = async (id, pageNumber, noResultsPerPage, organizationalUnit, name="") => {
+exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizationalUnit, name="") => {
         // Lấy tất cả các role người dùng có
         var roles = await UserRole.find({ userId: id }).populate({path: "roleId"});
         var newRoles = roles.map(role => role.roleId);
@@ -88,7 +88,7 @@ exports.getByUser = async (id, pageNumber, noResultsPerPage, organizationalUnit,
 }
 
 //Tạo mẫu công việc
-exports.create = async (body) => {
+exports.createTaskTemplate = async (body) => {
         var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc
             organizationalUnit: body.organizationalUnit,
             name: body.name,
@@ -135,7 +135,7 @@ exports.create = async (body) => {
 }
 
 //Xóa mẫu công việc
-exports.delete = async (id) => { 
+exports.deleteTaskTemplate = async (id) => { 
         var template = await TaskTemplate.findByIdAndDelete(id); // xóa mẫu công việc theo id
         var privileges = await Privilege.deleteMany({
             resourceId: id, //id của task template
@@ -146,7 +146,7 @@ exports.delete = async (id) => {
 }
 
 //sửa mẫu công việc
-exports.edit =async(data,id)=>{
+exports.editTaskTemplate =async(data,id)=>{
  
        
        var tasktemplate =await TaskTemplate.findById(id).select('-name -description') ;

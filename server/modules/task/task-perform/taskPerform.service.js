@@ -12,7 +12,7 @@ const User = require('../../../models/auth/user.model')
  * Bấm giờ công việc
  * Lấy tất cả lịch sử bấm giờ theo công việc
  */
-exports.getLogTimer = async (params) => {
+exports.getTaskTimesheetLogs = async (params) => {
     var logTimers= await TimesheetLog.find({ task: params.task }).populate("user");
 
     return logTimers;
@@ -22,7 +22,7 @@ exports.getLogTimer = async (params) => {
  * Lấy trạng thái bấm giờ hiện tại. Bảng TimesheetLog tìm hàng có endTime là rỗng 
  * Nếu có trả về startTimer: true, và time, startTime. Không có trả ver startTimer: false
  */
-exports.getTimerStatus = async (params) => {
+exports.getActiveTimesheetLog = async (params) => {
     var timerStatus =await TimesheetLog.findOne({ task: params.task, user: params.user, stopTimer: null })
 
     return timerStatus
@@ -31,7 +31,7 @@ exports.getTimerStatus = async (params) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimer = async (body) => {
+exports.startTimesheetLog = async (body) => {
     var timer = await TimesheetLog.create({
         task: body.task,
         user: body.user,
@@ -45,9 +45,10 @@ exports.startTimer = async (body) => {
 }
 
 /**
- * ạm dừng: Lưu thời gian đã bấm (time)
+ * // TODO: Bỏ service này
+ * Tạm dừng: Lưu thời gian đã bấm (time)
  */
-exports.pauseTimer = async (params,body) => {
+exports.pauseTimesheetLog = async (params,body) => {
     var timer = await TimesheetLog.findByIdAndUpdate(
         params.id, { time: body.time, pause: true }, { new: true }
     );
@@ -56,9 +57,10 @@ exports.pauseTimer = async (params,body) => {
 }
 
 /**
+ * // TODO: Bỏ service này
  * Tiếp tục bấm giờ: Cập nhật lại trạng thái bắt đầu (time)
  */
-exports.continueTimer = async (params,body) => {
+exports.continueTimesheetLog = async (params,body) => {
     var timer = await TimesheetLog.findByIdAndUpdate(
         params.id, { startTimer: body.startTimer, pause: false }, { new: true }
     );
@@ -69,7 +71,7 @@ exports.continueTimer = async (params,body) => {
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (enndTime và time)
  */
-exports.stopTimer = async (req, res) => {
+exports.stopTimesheetLog = async (req, res) => {
     var timer = await TimesheetLog.findByIdAndUpdate(
         req.params.id, { stopTimer: req.body.stopTimer, time: req.body.time }, { new: true }
     );
@@ -98,7 +100,7 @@ exports.stopTimer = async (req, res) => {
 /**
  * Lấy tất cả nội dung bình luận của hoạt động
  */
-exports.getActionComments = async (params) => {
+exports.getCommentsOfTaskAction = async (params) => {
     var actionComments = await Task.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(params.task) } },
         { $unwind: "$taskActions" },
@@ -124,7 +126,7 @@ exports.getActionComments = async (params) => {
 /**
  * Thêm bình luận của hoạt động
  */
-exports.createActionComment = async (body) => {
+exports.createCommentOfTaskAction = async (body) => {
 
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
@@ -172,7 +174,7 @@ exports.createActionComment = async (body) => {
 /**
  * Sửa nội dung bình luận hoạt động
  */
-exports.editActionComment = async (params,body) => {
+exports.editCommentOfTaskAction = async (params,body) => {
     const now = new Date()
     var action = await Task.updateOne(
         { "taskActions.comments._id": params.id },
@@ -213,7 +215,7 @@ exports.editActionComment = async (params,body) => {
 /**
  * Xóa bình luận hoạt động
  */
-exports.deleteActionComment = async (params) => {
+exports.deleteCommentOfTaskAction = async (params) => {
     var action = await Task.update(
         { "taskActions.comments._id": params.id },
         { $pull: { "taskActions.$.comments" : {_id : params.id} } },
@@ -374,7 +376,7 @@ exports.createResultInfoTask = async (req, res) => {
 /**
  * Thêm thông tin kết quả của các thông tin công việc theo mẫu
  */
-exports.createResultInformationTask = async (req, res) => {
+exports.createTaskInformation = async (req, res) => {
     try {
         var listResultInfoTask = req.body.listResultInfoTask;
         if (listResultInfoTask !== []) {
@@ -405,7 +407,7 @@ exports.createResultInformationTask = async (req, res) => {
 /**
  * Sửa thông tin kết quả của các công việc không theo mẫu
  */
-exports.editResultInformationTask = async (req, res) => {
+exports.editTaskInformation = async (req, res) => {
     try {
         var listResultInfoTask = req.body.listResultInfoTask;
         if (listResultInfoTask !== []) {
@@ -431,7 +433,7 @@ exports.editResultInformationTask = async (req, res) => {
 /**
  * Thêm thông tin kết quả của đánh giá từng nhân viên
  */
-exports.createResultTask = async (result, taskID, evaluateID, date) => {
+exports.createTaskResult = async (result, taskID, evaluateID, date) => {
     var item = result;
 
     if (item !== null) {
@@ -444,7 +446,6 @@ exports.createResultTask = async (result, taskID, evaluateID, date) => {
             employeePoint: item.employeePoint,
             approvedPoint: item.approvedPoint
         }
-        console.log(resultTask);
         // Cập nhật thông tin công việc
         var addResult = await Task.updateOne(
             {
@@ -468,7 +469,7 @@ exports.createResultTask = async (result, taskID, evaluateID, date) => {
 /**
  * Sửa thông tin kết quả của nhân viên trong công việc
  */
-exports.editResultTask = async (listResult,taskid) => {
+exports.editTaskResult = async (listResult,taskid) => {
     if (listResult !== []) {
         // Lưu thông tin kết quả 
         listResult.forEach( async (item) => {

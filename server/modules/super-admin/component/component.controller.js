@@ -56,7 +56,7 @@ exports.createComponent = async (req, res) => {
         req.body.company = req.user.company._id;
         const createComponent = await ComponentService.createComponent(req.body);
         await ComponentService.relationshipComponentRole(createComponent._id, req.body.roles);
-        const component = await ComponentService.getComponentById(createComponent._id);
+        const component = await ComponentService.getComponent(createComponent._id);
         await LinkServices.addComponentOfLink(req.body.linkId, createComponent._id); //thêm component đó vào trang
 
         await LogInfo(req.user.email, 'CREATE_COMPONENT', req.user.company);
@@ -76,9 +76,9 @@ exports.createComponent = async (req, res) => {
     }
 };
 
-exports.getComponentById = async (req, res) => {
+exports.getComponent = async (req, res) => {
     try {
-        const component = await ComponentService.getComponentById(req.params.id);
+        const component = await ComponentService.getComponent(req.params.id);
         
         await LogInfo(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
         res.status(200).json({
