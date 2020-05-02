@@ -2,28 +2,11 @@ import { NotificationServices } from "./services";
 import { NotificationConstants } from "./constants";
 
 export const NotificationActions = {
-    get,
     getNotificationReceivered,
     getNotificationSent,
     create,
-    deleteNotificationReceiverd,
+    deleteNotificationReceivered,
     deleteNotificationSent
-}
-
-function get(){
-    return dispatch => {
-        dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_REQUEST});
-        NotificationServices
-            .get()
-            .then(res => {
-                dispatch({
-                    type: NotificationConstants.GET_NOTIFICATIONS_SUCCESS,
-                    payload: res.data.content //danh sách các notification
-                });
-            })
-            .catch(err => {
-            })
-    }
 }
 
 function getNotificationReceivered(){
@@ -74,11 +57,11 @@ function create(data){
     }
 }
 
-function deleteNotificationReceiverd(notificationId){
+function deleteNotificationReceivered(notificationId){
     return dispatch => {
         dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_REQUEST});
         NotificationServices
-            .deleteNotificationReceiverd(notificationId)
+            .deleteNotificationReceivered(notificationId)
             .then(res => {
                 dispatch({
                     type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_SUCCESS,

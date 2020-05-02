@@ -47,6 +47,7 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
 
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
+        console.log("message: ", messages)
 
         showAlert && toast.success(
             <ServerResponseAlert
@@ -59,7 +60,7 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
-
+        console.log("message error: ", messages)
         if(messages){
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();

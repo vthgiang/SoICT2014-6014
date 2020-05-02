@@ -5,20 +5,12 @@ import jwt from 'jsonwebtoken';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const NotificationServices = {
-    get,
     getNotificationReceivered,
     getNotificationSent,
     create,
     deleteNotificationReceivered,
     deleteNotificationSent
 };
-
-function get() {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications`,
-        method: 'GET',
-    }, false, 'notification');
-}
 
 function getNotificationReceivered() {
     const token = getStorage();

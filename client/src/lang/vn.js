@@ -334,19 +334,22 @@ export default {
         },
 
         notification: {
-            add: 'Thêm mới',
-            add_title: 'Thêm thông báo mới',
-            added: 'Thông báo đã tạo',
-            receivered: 'Thông báo đã nhận',
-            add_success: 'Tạo thông báo mới thành công',
-            add_faile: 'Tạo thông báo thất bại',
-            edit_success: 'Chỉnh sửa thông báo thành công',
-            edit_faile: 'Chỉnh sửa thông báo thất bại',
+            title: 'Tiêu đề',
+            type: {
+                title: 'Loại thông báo',
+                info: 'Thông tin',
+                general: 'Thông báo chung',
+                important: 'Thông báo quan trọng',
+                emergency: 'Thông báo khẩn',
+            },
+            content: 'Nội dung thông báo',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
-            news: 'Thông báo mới',
-            see_all: 'Xem tất cả',
-            delete: 'Xóa thông báo',
+
+            add: 'Tạo thông báo',
+            receivered: 'Đã nhận',
+            sent: 'Đã tạo',
+            note: 'Chú thích',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',
@@ -355,6 +358,10 @@ export default {
             edit_notification_faile: 'Chỉnh sửa thông báo thất bại',
             delete_notification_success: 'Xóa thông báo thành công',
             delete_notification_faile: 'Xóa thông báo thất bại',
+            delete_notification_receivered_success: 'Xóa thông báo thành công',
+            delete_notification_receivered_faile: 'Xóa thông báo thất bại',
+            delete_notification_sent_success: 'Xóa thông báo thành công',
+            delete_notification_sent_faile: 'Xóa thông báo thất bại',
         },
 
         not_found: {
