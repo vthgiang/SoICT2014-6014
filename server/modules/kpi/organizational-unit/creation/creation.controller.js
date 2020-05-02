@@ -2,11 +2,11 @@ const KPIUnitService = require('./creation.service');
 const { LogInfo, LogError } = require('../../../../logs');
 
 /**
- * Lấy KPI đơn vị hiện tại qua vai trò
+ * Lấy tập KPI đơn vị của đơn vị ứng với role người dùng
  */
-exports.getByRole = async (req, res) => {
+exports.getOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.getByRole(req.params.id);
+        var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.params.id);
         LogInfo(req.user.email, `Get kpi unit by role `, req.user.company);
         res.status(200).json({
             success: true,
@@ -24,13 +24,13 @@ exports.getByRole = async (req, res) => {
 }
 
 /**
- * Chỉnh sửa thông tin chung của KPI đơn vị
+ * Chỉnh sửa thông tin chung của tập KPI đơn vị
  */
-exports.edit = async (req, res) => {
+exports.editOrganizationalUnitKpiSet = async (req, res) => {
     try {
         let dateString = req.body.date;
         let id = req.params.id;
-        var organizationalUnitKpiSet = await KPIUnitService.editById(dateString,id);
+        var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(dateString,id);
         LogInfo(req.user.email, ' Edit kpi unit ',req.user.company);
         res.status(200).json({
             success: true,
@@ -48,11 +48,11 @@ exports.edit = async (req, res) => {
 }
 
 /**
- * Xóa KPI của đơn vị 
+ * Xóa tập KPI đơn vị 
  */
-exports.delete = async (req, res) => {
+exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var arr = await KPIUnitService.delete(req.params.id);
+        var arr = await KPIUnitService.deleteOrganizationalUnitKpiSet(req.params.id);
         kpiunit = arr[0];
         listTarget = arr[1];
         LogInfo(req.user.email, 'delete kpi unit',req.user.company)
@@ -76,11 +76,11 @@ exports.delete = async (req, res) => {
 }
 
 /**
- * Xóa mục tiêu của KPI đơn vị
+ * Xóa KPI đơn vị
  */
-exports.deleteTarget = async (req, res) => {
+exports.deleteOrganizationalUnitKpi = async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await KPIUnitService.deleteTarget(req.params.id,req.params.kpiunit);
+        var organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.params.id,req.params.kpiunit);
         LogInfo(req.user.email, 'delete target kpi unit',req.user.company);
         res.status(200).json({
             success: true,
@@ -100,9 +100,9 @@ exports.deleteTarget = async (req, res) => {
 /**
  * Chỉnh sửa trạng thái của KPI đơn vị
  */
-exports.editStatusKPIUnit =async (req, res) => {
+exports.editOrganizationalUnitKpiSetStatus =async (req, res) => {
     try {
-        var kpiunit= await KPIUnitService.editStatusKPIUnit(req.params.id,req.params.status);
+        var kpiunit= await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.params.id,req.params.status);
         LogInfo(req.user.email, 'edit status kpi unit',req.user.company)
         res.status(200).json({
             success: true,
@@ -120,11 +120,11 @@ exports.editStatusKPIUnit =async (req, res) => {
 }
 
 /**
- * Lấy KPI đơn vị của đơn vị cha
+ * Lấy tập KPI đơn vị của đơn vị cha của đơn vị ứng với role người dùng
  */
-exports.getParentByUnit =async (req, res) => {
+exports.getParentOrganizationalUnitKpiSet =async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.getParentByUnit(req.params.id);
+        var kpiunit = await KPIUnitService.getParentOrganizationalUnitKpiSet(req.params.id);
         LogInfo(req.user.email, 'get parent kpi unit',req.user.company)
         res.status(200).json({
             success: true,
@@ -143,11 +143,11 @@ exports.getParentByUnit =async (req, res) => {
 }
 
 /**
- * Thêm mới mục tiêu của KPI đơn vị
+ * Thêm một KPI vào tập KPI đơn vị
  */
-exports.createTarget =async (req, res) => {
+exports.createOrganizationalUnitKpi =async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await  KPIUnitService.createTarget(req.body);
+        var organizationalUnitKpiSet = await  KPIUnitService.createOrganizationalUnitKpi(req.body);
         LogInfo(req.user.email, 'create target kpi unit',req.user.company)
         res.status(200).json({
             success: true,
@@ -165,11 +165,11 @@ exports.createTarget =async (req, res) => {
 }
 
 /**
- * Chỉnh sửa mục tiêu của KPI đơn vị
+ * Chỉnh sửa KPI đơn vị
  */
-exports.editTargetById = async (req, res) => {
+exports.editOrganizationalUnitKpi = async (req, res) => {
     try {
-        var target = await KPIUnitService.editTargetById(req.body, req.params.id);
+        var target = await KPIUnitService.editOrganizationalUnitKpi(req.body, req.params.id);
         LogInfo(req.user.email, 'edit target kpi unit',req.user.company)
         res.status(200).json({
             success: true,
@@ -188,11 +188,11 @@ exports.editTargetById = async (req, res) => {
 }
 
 /**
- * Khởi tạo KPI đơn vị
+ * Khởi tạo tập KPI đơn vị
  */
-exports.create =async (req, res) => {
+exports.createOrganizationalUnitKpiSet =async (req, res) => {
     try {
-        var organizationalUnitKpi = await KPIUnitService.create(req.body);
+        var organizationalUnitKpi = await KPIUnitService.createOrganizationalUnitKpiSet(req.body);
         LogInfo(req.user.email, 'create kpi unit',req.user.company)
         res.status(200).json({
             success: true,
