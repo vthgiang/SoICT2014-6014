@@ -14,13 +14,6 @@ class ModalViewTaskTemplate extends Component {
         this.props.getTaskTemplate(this.props.id);
         this.handleResizeColumn();
     }
-    handleCloseModal = (id) => {
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.remove("modal-open");
-        var modal = document.getElementById(`viewTaskTemplate${id}`);
-        modal.classList.remove("in");
-        modal.style = "display: none;";
-    }
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -52,15 +45,14 @@ class ModalViewTaskTemplate extends Component {
     render() {
         var template;
         const { tasktemplates } = this.props;
-        if (tasktemplates.template) template = tasktemplates.template.info;
+        if (tasktemplates.template) template = tasktemplates.template;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID={`viewTaskTemplate${this.props.id}`} isLoading={false}
-                    formID="form-view-tasktemplate"
+                    size='75' modalID="modal-view-tasktemplate" isLoading={false}
+                    formID={`viewTaskTemplate${this.props.id}`}
                     title={template && template.info.name}
-                    // func={this.handleCloseModal(this.props.id)}
-                    disableSubmit={false}
+                    hasSaveButton={false}
                 >
 
                     {/* Modal Body */}
@@ -214,8 +206,8 @@ class ModalViewTaskTemplate extends Component {
                                 </div>
                                 <div className="control-group" style={{ marginLeft: "15px" }}>
                                     {
-                                        (typeof template === 'undefined' || template.actions.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
-                                            template.actions.map((item, index) =>
+                                        (typeof template === 'undefined' || template.info.taskActions.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
+                                            template.info.taskActions.map((item, index) =>
                                                 <p style={{ textAlign: 'left' }} >{item.name} - {item.description} - {item.mandatary ? "Có" : "Không"} bắt buộc </p>
                                             )
                                     }
@@ -232,8 +224,8 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="control-group" style={{ marginLeft: "15px" }}>
 
                                     {
-                                        (typeof template === 'undefined' || template.informations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
-                                            template.informations.map((item, index) =>
+                                        (typeof template === 'undefined' || template.info.taskInformations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
+                                            template.info.taskInformations.map((item, index) =>
                                                 <p style={{ textAlign: 'left' }}>{item.name} - {item.description} - {item.type} - {item.mandatary ? "Chỉ quản lý được điền" : "Không bắt buộc chỉ quản lý được điền"}</p>
                                             )
                                     }

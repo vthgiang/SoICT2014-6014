@@ -100,11 +100,7 @@ class TaskTemplate extends Component {
                 showView: id
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`viewTaskTemplate${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$('#modal-view-tasktemplate').modal('show');
     }
     handleShowEdit = async (id) => {
         await this.setState(state => {
