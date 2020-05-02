@@ -54,9 +54,9 @@ exports.createOrganizationalUnit = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getOrganizationalUnit = async (req, res) => {
     try {
-        var department = await OrganizationalUnitService.getById(req.params.id);
+        var department = await OrganizationalUnitService.getOrganizationalUnit(req.params.id);
         
         await LogInfo(req.user.email, 'SHOW_DEPARTMENT', req.user.company);
         res.status(200).json({
@@ -75,9 +75,9 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editOrganizationalUnit = async (req, res) => {
     try {
-        var department = await OrganizationalUnitService.edit(req.params.id, req.body);
+        var department = await OrganizationalUnitService.editOrganizationalUnit(req.params.id, req.body);
         var dean = await RoleService.editRole(department.dean, {name: req.body.dean});
         var viceDean = await RoleService.editRole(department.viceDean, {name: req.body.viceDean});
         var employee = await RoleService.editRole(department.employee, {name: req.body.employee});
@@ -103,9 +103,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deleteOrganizationalUnit = async (req, res) => {
     try {
-        var role = await OrganizationalUnitService.delete(req.params.id);
+        var role = await OrganizationalUnitService.deleteOrganizationalUnit(req.params.id);
         var tree = await OrganizationalUnitService.getAllOrganizationalUnitsAsTree(req.user.company._id);
 
         await LogInfo(req.user.email, 'DELETE_DEPARTMENT', req.user.company);
@@ -126,9 +126,9 @@ exports.delete = async (req, res) => {
 };
 
 
-exports.getDepartmentOfUser = async (req, res) => {
+exports.getOrganizationalUnitsOfUser = async (req, res) => {
     try {
-        const department = await OrganizationalUnitService.getDepartmentOfUser(req.params.id);
+        const department = await OrganizationalUnitService.getOrganizationalUnitsOfUser(req.params.id);
         
         await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
         res.status(200).json({
@@ -147,9 +147,9 @@ exports.getDepartmentOfUser = async (req, res) => {
     }
 }
 
-exports.getDepartmentsThatUserIsDean = async (req, res) =>{
+exports.getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
     try {
-        const department = await OrganizationalUnitService.getDepartmentsThatUserIsDean(req.params.id);
+        const department = await OrganizationalUnitService.getOrganizationalUnitsThatUserIsDean(req.params.id);
         
         await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
         res.status(200).json({
