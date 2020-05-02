@@ -3,12 +3,12 @@ const router = express.Router();
 const PrivilegeController = require('./privilege.controller');
 const { auth } = require('../../../middleware');
 
-router.get("/", auth, PrivilegeController.get);
-router.post("/", auth, PrivilegeController.create);
-router.get("/:id", auth, PrivilegeController.show);
-router.patch("/:id", auth, PrivilegeController.edit);
-router.delete("/:id", auth, PrivilegeController.delete);
+router.get("/", auth, PrivilegeController.getAllPriveleges);
+router.post("/", auth, PrivilegeController.createPrivelege);
+router.get("/:id", auth, PrivilegeController.getPrivelege);
+router.patch("/:id", auth, PrivilegeController.editPrivelege);
+router.delete("/:id", auth, PrivilegeController.deletePrivelege);
 
-router.get("/get-links-of-role/:idRole", auth, PrivilegeController.getLinksRoleCanAccess);
+router.get("/get-links-of-role/:idRole", auth, PrivilegeController.getLinksThatRoleCanAccess);
 
 module.exports = router;
