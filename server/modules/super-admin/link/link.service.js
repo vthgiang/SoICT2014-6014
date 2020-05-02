@@ -34,7 +34,7 @@ exports.getPaginatedLinks = async (company, limit, page, data={}) => {
  * Lấy thông tin link theo id
  * @id id link
  */
-exports.getLinkById = async (id) => {
+exports.getLink = async (id) => {
 
     return await Link
         .findById(id)
