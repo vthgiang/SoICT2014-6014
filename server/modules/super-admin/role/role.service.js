@@ -41,7 +41,7 @@ exports.getPaginatedRoles = async (company, limit, page, data={}) => {
  * Lấy thông tin của 1 role
  * @roleId id role
  */
-exports.getRoleById = async (roleId) => {
+exports.getRole = async (roleId) => {
 
     return await Role
         .findById(roleId)
