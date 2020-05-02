@@ -4,13 +4,12 @@ const {auth} = require('../../../middleware');
 
 const TaskTemplateController = require("./taskTemplate.controller");
 
-router.get('/', auth, TaskTemplateController.get);
-router.get('/:id', auth, TaskTemplateController.getById);
-router.get('/role/:id', auth, TaskTemplateController.getByRole);
-router.post('/user', auth, TaskTemplateController.getByUser);
-router.post('/create', auth, TaskTemplateController.create);
-router.delete('/:id', auth, TaskTemplateController.delete);
-router.post('/test', auth, TaskTemplateController.test);
-router.patch('/edit/:id',auth,TaskTemplateController.edit);
+router.get('/', auth, TaskTemplateController.getAllTaskTemplates);
+router.get('/:id', auth, TaskTemplateController.getTaskTemplate);
+router.get('/role/:id', auth, TaskTemplateController.getTaskTemplatesOfUserRole);
+router.post('/user', auth, TaskTemplateController.searchTaskTemplates);
+router.post('/create', auth, TaskTemplateController.createTaskTemplate);
+router.delete('/:id', auth, TaskTemplateController.deleteTaskTemplate);
+router.patch('/edit/:id',auth,TaskTemplateController.editTaskTemplate);
 
 module.exports = router;
