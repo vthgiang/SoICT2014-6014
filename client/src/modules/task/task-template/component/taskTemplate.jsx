@@ -213,7 +213,7 @@ class TaskTemplate extends Component {
                     <div className="form-inline">
                         <div className = "form-group">
                             <label className = "form-control-static">{translate('task_template.name')}</label>
-                            <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" ref={input => this.name = input}/>
+                            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input}/>
                         </div>
                     </div>
 
@@ -224,7 +224,7 @@ class TaskTemplate extends Component {
                                 <SelectMulti id="multiSelectUnit"
                                     defaultValue = {units.map(item => {return item._id})}
                                     items = {units.map(item => {return {value: item._id, text: item.name}})} 
-                                    options = {{nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị"}}>
+                                    options = {{nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị"}}>
                                 </SelectMulti>
                             }
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import  {taskTemplateActions} from '../redux/actions';
+import { withTranslate } from 'react-redux-multilingual';
 
 class ModalEditTaskTemplate extends Component {
     constructor(props) {
@@ -44,6 +45,7 @@ class ModalEditTaskTemplate extends Component {
     render() {
         var template;
         const { tasktemplates } = this.props;
+        const { translate } = this.props;
         if (tasktemplates.template) template = tasktemplates.template;
         return (
             <React.Fragment>
@@ -52,7 +54,7 @@ class ModalEditTaskTemplate extends Component {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={()=>this.handleCloseModal(this.props.id)} data-dismiss="modal" aria-hidden="true">×</button>
-                                <h3 className="modal-title">Chỉnh sửa {template && template.name}</h3>
+                                <h3 className="modal-title">{translate('task_template.edit')}</h3>
                             </div>
                             <div className="modal-body">
                                 {
@@ -60,11 +62,11 @@ class ModalEditTaskTemplate extends Component {
                                         <form>
                                             <div className="box-body">
                                                 <div className="form-group">
-                                                    <label>Tên mẫu công việc</label>
+                                                    <label>{translate('task_template.tasktemplate_name')}</label>
                                                     <input name="url" type="text" className="form-control" ref={input => this.name = input} defaultValue={template.info.name} />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Mô tả mẫu công việc</label>
+                                                    <label>{translate('task_template.description')}</label>
                                                     <input name="description" type="text" className="form-control" ref={input => this.description = input} defaultValue={template.info.description} />
                                                 </div>
                                             </div>
@@ -72,8 +74,8 @@ class ModalEditTaskTemplate extends Component {
                                 }
                             </div>
                             <div className="modal-footer">
-                                <button className="btn btn-success" onClick={(event)=>this.handleSubmit(event, this.props.id)} >Lưu</button>
-                                <button type="cancel" className="btn btn-primary" data-dismiss="modal" onClick={()=>this.handleCloseModal(this.props.id)}>Hủy bỏ</button>
+                                <button className="btn btn-success" onClick={(event)=>this.handleSubmit(event, this.props.id)} >{translate('task_template.save')}</button>
+                            <button type="cancel" className="btn btn-primary" data-dismiss="modal" onClick={()=>this.handleCloseModal(this.props.id)}>{translate('task_template.close')}</button>
                             </div>
                         </div>
                     </div>
@@ -92,5 +94,5 @@ const actionCreators = {
     getTaskTemplate: taskTemplateActions.getTaskTemplateById,
     editTaskTemplate: taskTemplateActions.editTaskTemplate
 };
-const connectedModelEditTaskTemplate = connect(mapState, actionCreators)(ModalEditTaskTemplate);
+const connectedModelEditTaskTemplate = connect(mapState, actionCreators)( withTranslate(ModalEditTaskTemplate));
 export { connectedModelEditTaskTemplate as ModalEditTaskTemplate };
