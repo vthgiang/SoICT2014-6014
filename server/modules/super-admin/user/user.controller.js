@@ -50,7 +50,7 @@ exports.createUser = async (req, res) => {
     try {
         var user = await UserService.createUser(req.body, req.user.company._id);
         await UserService.addRolesForUser(user._id, req.body.roles);
-        var result = await UserService.getUserById(user._id);
+        var result = await UserService.getUser(user._id);
 
         LogInfo(req.user.email, 'CREATE_USER', req.user.company);
         res.status(200).json({
@@ -69,9 +69,9 @@ exports.createUser = async (req, res) => {
     }
 };
 
-exports.getUserById = async (req, res) => {
+exports.getUser = async (req, res) => {
     try {
-        var user = await UserService.getUserById(req.params.id);
+        var user = await UserService.getUser(req.params.id);
 
         LogInfo(req.user.email, 'SHOW_USER', req.user.company);
         res.status(200).json({
@@ -94,7 +94,7 @@ exports.editUser = async (req, res) => {
     try {
         var user = await UserService.editUser(req.params.id, req.body);
         await UserService.editRolesForUser(user._id, req.body.roles);
-        var result = await UserService.getUserById(user._id);
+        var result = await UserService.getUser(user._id);
         
         LogInfo(req.user.email, 'EDIT_USER', req.user.company);
         res.status(200).json({

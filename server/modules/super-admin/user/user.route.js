@@ -6,7 +6,7 @@ const { auth } = require('../../../middleware');
 router.get("/", auth, UserController.getAllUsers);
 router.post("/paginate", auth, UserController.getPaginatedUsers);
 router.post("/", auth, UserController.createUser);
-router.get("/:id", auth, UserController.getUserById);
+router.get("/:id", auth, UserController.getUser);
 router.patch("/:id", auth, UserController.editUser);
 router.delete("/:id", auth, UserController.deleteUser);
 

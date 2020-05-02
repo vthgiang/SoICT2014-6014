@@ -44,7 +44,7 @@ exports.getPaginatedUsers = async (company, limit, page, data={}) => {
  * Lấy thông tin user theo id
  * @id id của user
  */
-exports.getUserById = async (id) => {
+exports.getUser = async (id) => {
     var user = await User
         .findById(id)
         .select('-password -status -deleteSoft -tokens')
