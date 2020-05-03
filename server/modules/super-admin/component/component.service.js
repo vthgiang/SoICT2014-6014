@@ -34,7 +34,7 @@ exports.getPaginatedComponents = async (company, limit, page, data={}) => {
  * Lấy component theo id
  * @id id component
  */
-exports.getComponentById = async (id) => {
+exports.getComponent = async (id) => {
 
     return await Component
         .findById(id)

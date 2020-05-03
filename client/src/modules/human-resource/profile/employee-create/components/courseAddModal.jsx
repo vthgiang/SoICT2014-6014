@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-class ModalAddCourse extends Component {
+class CourseAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -81,4 +81,4 @@ class ModalAddCourse extends Component {
         );
     }
 };
-export { ModalAddCourse };
+export { CourseAddModal };

@@ -2,7 +2,7 @@ const Course = require('../../../models/training/course.model');
 const EducationProgram = require('../../../models/training/educationProgram.model');
 
 //Lấy danh sách khoá học 
-exports.get = async (data, company) => {
+exports.searchCourses = async (data, company) => {
     var keySearch = {
         company: company
     }
@@ -37,8 +37,8 @@ exports.get = async (data, company) => {
     return content;
 }
 
-//Lấy danh sách khoá học theo chương trình đào tạo
-exports.getByEducation = async (data, company) => {
+/** Lấy danh sách khóa học của một chương trình đào tạo */
+exports.getCoursesOfEducationProgram = async (data, company) => {
     var keySearch = {
         company: company,
         educationProgram: data._id
@@ -76,7 +76,7 @@ exports.getByEducation = async (data, company) => {
 }
 
 // Thêm mới khoá đào tạo
-exports.create = async (data, company) => {
+exports.createCourse = async (data, company) => {
     var course = await Course.create({
         company: company,
         nameCourse: data.nameCourse,
@@ -99,7 +99,7 @@ exports.create = async (data, company) => {
 }
 
 // Xoá khoá học
-exports.delete = async (id) => {
+exports.deleteCourse = async (id) => {
     var courseDelete = await Course.findOneAndDelete({
         _id: id
     });
@@ -107,7 +107,7 @@ exports.delete = async (id) => {
 }
 
 // Cập nhật thông tin khoá học
-exports.update = async (id, data) => {
+exports.updateCourse = async (id, data) => {
     var courseChange = {
         nameCourse: data.nameCourse,
         numberCourse: data.numberCourse,

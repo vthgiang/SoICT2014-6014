@@ -18,20 +18,20 @@
 
 .modal-dialog {
     margin: 0 auto;
+    margin-top: 5px;
 }
 
 .modal-size-50 {
     width: 50%;
-    margin-top: 5px;
 }
 
 .modal-size-75 {
     width: 75%;
-    margin-top: 5px;
 }
 
 .modal-size-100 {
     width: 100%;
+    margin-top: 0px;
 }
 
 @media only screen and (max-width: 768px) {

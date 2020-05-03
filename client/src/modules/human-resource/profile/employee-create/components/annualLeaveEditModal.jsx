@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker, ButtonModal } from '../../../../../common-components';
 import { AnnualLeaveFormValidator } from '../../../annual-leave/components/combinedContent';
-class ModalEditSabbatical extends Component {
+class AnnualLeaveEditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -158,5 +158,5 @@ class ModalEditSabbatical extends Component {
         );
     }
 };
-const editSabbatical = connect(null, null)(withTranslate(ModalEditSabbatical));
-export { editSabbatical as ModalEditSabbatical };
+const editModal = connect(null, null)(withTranslate(AnnualLeaveEditModal));
+export { editModal as AnnualLeaveEditModal };

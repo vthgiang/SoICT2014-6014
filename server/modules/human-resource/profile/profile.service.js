@@ -103,10 +103,14 @@ exports.getEmployeeProfile = async (email) => {
  * @eamil: email công ty của nhân viên 
  * @data: dữ liệu chỉnh sửa thông tin của nhân viên
  */
-exports.updatePersonalInfor = async (email, data) => {
+exports.updatePersonalInformation = async (email, data, avatar) => {
+    if(avatar===""){
+        avatar=data.avatar;
+    }
     var employeeInfo = await Employee.findOne({emailInCompany: email}, { _id: 1});
     // Thông tin cần cập nhật 
     var employeeUpdate = {
+        avatar: avatar,
         gender: data.gender,
         ethnic: data.ethnic,
         religion: data.religion,
@@ -134,7 +138,7 @@ exports.updatePersonalInfor = async (email, data) => {
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
         temporaryResidenceWard: data.temporaryResidenceWard,
     }
-    // cập nhật thông tin cơ bản vào database
+    // Cập nhật thông tin cơ bản vào database
     await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
     
     return await Employee.find({_id: employeeInfo._id});
@@ -190,7 +194,7 @@ exports.searchEmployeeProfiles = async (data, company) => {
 
 
 // Thêm mới nhân viên
-exports.create = async (data, company) => {
+exports.createEmployee = async (data, company) => {
     // var createEmployees = await Employee.create({
     //     avatar: data.avatar,
     //     fullName: data.fullName,
@@ -273,7 +277,7 @@ exports.create = async (data, company) => {
 
 
 // Cập nhât thông tin nhân viên theo id
-exports.updateInfoEmployee = async (id, data) => {
+exports.updateEmployeeInformation = async (id, data) => {
     // var employee = await Employee.findOne({
     //     _id: id
     // });
@@ -373,7 +377,7 @@ exports.updateInfoEmployee = async (id, data) => {
 
 
 // Cập nhật(thêm mới) Avatar nhân viên
-exports.updateAvatar = async (employeeNumber, url, company) => {
+exports.updateEmployeeAvatar = async (employeeNumber, url, company) => {
     // var employeeinfo = await Employee.findOne({
     //     employeeNumber: employeeNumber,
     //     company: company
@@ -394,7 +398,7 @@ exports.updateAvatar = async (employeeNumber, url, company) => {
 }
 
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-exports.updateContract = async (employeeNumber, data, url, company) => {
+exports.updateEmployeeContract = async (employeeNumber, data, url, company) => {
     // var employeeinfo = await Employee.findOne({
     //     employeeNumber: employeeNumber,
     //     company: company
@@ -427,7 +431,7 @@ exports.updateContract = async (employeeNumber, data, url, company) => {
 }
 
 // Cập nhật(thêm) thông tin bằng cấp theo MSNV
-exports.updateCertificate = async (employeeNumber, data, url, company) => {
+exports.updateEmployeeDegrees = async (employeeNumber, data, url, company) => {
     // var employeeinfo = await Employee.findOne({
     //     employeeNumber: employeeNumber,
     //     company: company
@@ -462,7 +466,7 @@ exports.updateCertificate = async (employeeNumber, data, url, company) => {
 }
 
 // Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-exports.updateCertificateShort = async (employeeNumber, data, url, company) => {
+exports.updateEmployeeCertificates = async (employeeNumber, data, url, company) => {
     // var employeeinfo = await Employee.findOne({
     //     employeeNumber: employeeNumber,
     //     company: company
@@ -532,7 +536,7 @@ exports.updateFile = async (employeeNumber, data, url, company) => {
 }
 
 //  Xoá thông tin nhân viên theo 
-exports.delete = async (id) => {
+exports.deleteEmployee = async (id) => {
     // var infoEmployee = await Employee.findOneAndDelete({
     //     _id: id
     // });

@@ -5,9 +5,9 @@ const {
 } = require('../../../logs');
 
 // Lấy danh sách khoá đào tạo
-exports.get = async (req, res) => {
+exports.searchCourses = async (req, res) => {
     try {
-        var allList = await CourseService.get(req.body, req.user.company._id);
+        var allList = await CourseService.searchCourses(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_LIST_COURSE', req.user.company);
         res.status(200).json({
             message: "success",
@@ -21,10 +21,10 @@ exports.get = async (req, res) => {
     }
 }
 
-// Lấy danh sách khoá đào tạo theo mã chương trình đào tạo
-exports.getByEducation = async (req, res) => {
+/** Lấy danh sách khóa học của một chương trình đào tạo */
+exports.getCoursesOfEducationProgram = async (req, res) => {
     try {
-        var listCourse = await CourseService.getByEducation( req.body, req.user.company._id);
+        var listCourse = await CourseService.getCoursesOfEducationProgram( req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_LIST_COURSE_BY_EDUCATION', req.user.company);
         res.status(200).json({
             message: "success",
@@ -39,9 +39,9 @@ exports.getByEducation = async (req, res) => {
 }
 
 // Tạo kháo đào tạo
-exports.create = async (req, res) => {
+exports.createCourse = async (req, res) => {
     try {
-        var newCourse = await CourseService.create(req.body, req.user.company._id);
+        var newCourse = await CourseService.createCourse(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'CREATE_COURSE', req.user.company);
         res.status(200).json({
             message: "success",
@@ -56,9 +56,9 @@ exports.create = async (req, res) => {
 }
 
 // Xoá kháo đào tạo
-exports.delete = async (req, res) => {
+exports.deleteCourse = async (req, res) => {
     try {
-        var courseDelete = await CourseService.delete(req.params.id);
+        var courseDelete = await CourseService.deleteCourse(req.params.id);
         await LogInfo(req.user.email, 'DELETE_COURSE', req.user.company);
         res.status(200).json({
             message: "success",
@@ -72,9 +72,9 @@ exports.delete = async (req, res) => {
 }
 
 // Cập nhật thông tin khoá học
-exports.update = async (req, res) => {
+exports.updateCourse = async (req, res) => {
     try {
-        var courseUpdate = await CourseService.update(req.params.id, req.body);
+        var courseUpdate = await CourseService.updateCourse(req.params.id, req.body);
         await LogInfo(req.user.email, 'EDIT_COURSE', req.user.company);
         res.status(200).json({
             message: "success",

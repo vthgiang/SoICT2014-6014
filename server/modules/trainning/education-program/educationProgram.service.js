@@ -4,14 +4,14 @@ const Course = require('../../../models/training/course.model');
 const Role = require('../../../models/auth/role.model')
 
 // Lấy danh sách tất cả các chương trình đào tạo
-exports.getAll = async (company) => {
+exports.getAllEducationPrograms = async (company) => {
     return await EducationProgram.find({
         company: company
     })
 }
 
 //get list educationProgram
-exports.get = async (data, company) => {
+exports.searchEducationPrograms = async (data, company) => {
     var keySearch = {
         company: company
     }
@@ -60,7 +60,7 @@ exports.get = async (data, company) => {
 }
 
 // add a new educationProgram
-exports.create = async (data, company) => {
+exports.createEducationProgram = async (data, company) => {
     var education = await EducationProgram.create({
         company: company,
         nameEducation: data.nameEducation,
@@ -79,7 +79,7 @@ exports.create = async (data, company) => {
 }
 
 // Delete educationProgram
-exports.delete = async (id) => {
+exports.deleteEducationProgram = async (id) => {
     var educationDelete = await EducationProgram.findOneAndDelete({
         _id: id
     });
@@ -87,7 +87,7 @@ exports.delete = async (id) => {
 }
 
 // Update educationProgram
-exports.update = async (id, data) => {
+exports.updateEducationProgram = async (id, data) => {
     var eduacationChange = {
         numberEducation: data.numberEducation,
         nameEducation: data.nameEducation,
