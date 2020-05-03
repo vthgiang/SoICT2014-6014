@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {
-    ModalAddFile, ModalEditFile,
-} from './combinedContent';
+import { FileAddModal, FileEditModal } from './combinedContent';
 
 class FileTab extends Component {
     constructor(props) {
@@ -30,15 +28,15 @@ class FileTab extends Component {
         var { translate } = this.props;
         e.preventDefault();
         const defaulteFile = [
-            { nameFile: translate('manage_employee.diploma'), discFile: translate('manage_employee.disc_diploma'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.curriculum_vitae'), discFile: translate('manage_employee.disc_curriculum_vitae'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.img'), discFile: translate('manage_employee.disc_img'), number: "3", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.copy_id_card'), discFile: translate('manage_employee.disc_copy_id_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.health_certificate'), discFile: translate('manage_employee.disc_health_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.birth_certificate'), discFile: translate('manage_employee.disc_birth_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.job_application'), discFile: translate('manage_employee.disc_job_application'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.commitment'), discFile: translate('manage_employee.disc_commitment'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " },
-            { nameFile: translate('manage_employee.temporary_residence_card'), discFile: translate('manage_employee.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: " " }
+            { name: translate('manage_employee.diploma'), description: translate('manage_employee.disc_diploma'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.curriculum_vitae'), description: translate('manage_employee.disc_curriculum_vitae'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.img'), description: translate('manage_employee.disc_img'), number: "3", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.copy_id_card'), description: translate('manage_employee.disc_copy_id_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.health_certificate'), description: translate('manage_employee.disc_health_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.birth_certificate'), description: translate('manage_employee.disc_birth_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.job_application'), description: translate('manage_employee.disc_job_application'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.commitment'), description: translate('manage_employee.disc_commitment'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('manage_employee.temporary_residence_card'), description: translate('manage_employee.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" }
         ]
         await this.setState({
             files: defaulteFile
@@ -54,7 +52,7 @@ class FileTab extends Component {
                 ...data
             }]
         })
-        this.props.handleAddFile(this.state.files)
+        this.props.handleAddFile(this.state.files, data)
 
     }
     // Function chỉnh sửa thông tin tài liệu đính kèm
@@ -64,17 +62,18 @@ class FileTab extends Component {
         await this.setState({
             files: files
         })
-        this.props.handleEditFile(this.state.files)
+        this.props.handleEditFile(this.state.files, data)
     }
     // Function xoá kinh nghiệm làm việc
-    delete = async (index) => {
+    handleDeleteFile = async (index) => {
         var { files } = this.state;
+        var data = files[index];
         files.splice(index, 1);
         await this.setState({
             ...this.state,
             files: [...files]
         })
-        this.props.handleDeleteFile(this.state.files)
+        this.props.handleDeleteFile(this.state.files, data)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -104,7 +103,7 @@ class FileTab extends Component {
                     </div>
                     <div className="col-md-12">
                         <h4 className="row col-md-6">{translate('manage_employee.list_attachments')}:</h4>
-                        <ModalAddFile handleChange={this.handleAddFile} id={`addFile${id}`} />
+                        <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
                         <button style={{ marginBottom: 5, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
@@ -129,7 +128,7 @@ class FileTab extends Component {
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td >
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_file')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}
@@ -149,7 +148,7 @@ class FileTab extends Component {
 
                 {
                     this.state.currentRow !== undefined &&
-                    <ModalEditFile
+                    <FileEditModal
                         id={`editFile${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
                         name={this.state.currentRow.name}

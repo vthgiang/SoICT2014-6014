@@ -126,29 +126,29 @@ class TaxTab extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.bank_account')}</h4></legend>
                         <div className="row">
                             <div className="form-group col-md-4">
-                                <label htmlFor="ATM">{translate('manage_employee.account_number')}</label>
-                                <input type="text" className="form-control" name="ATM" value={atmNumber} onChange={this.handleChange} placeholder={translate('manage_employee.account_number')} autoComplete="off" />
+                                <label >{translate('manage_employee.account_number')}</label>
+                                <input type="text" className="form-control" name="atmNumber" value={atmNumber} onChange={this.handleChange} placeholder={translate('manage_employee.account_number')} autoComplete="off" />
                             </div>
                             <div className="form-group col-md-4">
-                                <label htmlFor="nameBank">{translate('manage_employee.bank_name')}</label>
-                                <input type="text" className="form-control" name="nameBank" value={bankName} onChange={this.handleChange} placeholder={translate('manage_employee.bank_name')} autoComplete="off" />
+                                <label >{translate('manage_employee.bank_name')}</label>
+                                <input type="text" className="form-control" name="bankName" value={bankName} onChange={this.handleChange} placeholder={translate('manage_employee.bank_name')} autoComplete="off" />
                             </div>
                             <div className="form-group col-md-4">
-                                <label htmlFor="addressBank">{translate('manage_employee.bank_branch')}</label>
-                                <input type="text" className="form-control" name="addressBank" value={bankAddress} onChange={this.handleChange} placeholder={translate('manage_employee.bank_branch')} autoComplete="off" />
+                                <label >{translate('manage_employee.bank_branch')}</label>
+                                <input type="text" className="form-control" name="bankAddress" value={bankAddress} onChange={this.handleChange} placeholder={translate('manage_employee.bank_branch')} autoComplete="off" />
                             </div>
                         </div>
                     </fieldset>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.personal_income_tax')}</h4></legend>
                         <div className={`form-group ${errorOnTaxNumber === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="numberTax">{translate('manage_employee.tax_number')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="numberTax" value={taxNumber} onChange={this.handleNumberTaxChange} placeholder={translate('manage_employee.tax_number')} autoComplete="off" />
+                            <label >{translate('manage_employee.tax_number')}<span className="text-red">*</span></label>
+                            <input type="number" className="form-control" name="taxNumber" value={taxNumber} onChange={this.handleNumberTaxChange} placeholder={translate('manage_employee.tax_number')} autoComplete="off" />
                             <ErrorLabel content={errorOnTaxNumber} />
                         </div>
                         <div className={`form-group ${errorOnTaxRepresentative === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="userTax">{translate('manage_employee.representative')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="userTax" value={taxRepresentative} onChange={this.handleUserTaxChange} placeholder={translate('manage_employee.representative')} autoComplete="off" />
+                            <label >{translate('manage_employee.representative')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="taxRepresentative" value={taxRepresentative} onChange={this.handleUserTaxChange} placeholder={translate('manage_employee.representative')} autoComplete="off" />
                             <ErrorLabel content={errorOnTaxRepresentative} />
                         </div>
                         <div className={`form-group ${errorOnTaxDateOfIssue === undefined ? "" : "has-error"}`}>
@@ -161,8 +161,8 @@ class TaxTab extends Component {
                             <ErrorLabel content={errorOnTaxDateOfIssue} />
                         </div>
                         <div className={`form-group ${errorOnTaxAuthority === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unitTax">{translate('manage_employee.managed_by')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="unitTax" value={taxAuthority} onChange={this.handleUnitTaxChange} placeholder={translate('manage_employee.managed_by')} autoComplete="off" />
+                            <label>{translate('manage_employee.managed_by')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="taxAuthority" value={taxAuthority} onChange={this.handleUnitTaxChange} placeholder={translate('manage_employee.managed_by')} autoComplete="off" />
                             <ErrorLabel content={errorOnTaxAuthority} />
                         </div>
                     </fieldset>

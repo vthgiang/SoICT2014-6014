@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
-class ModalEditFile extends Component {
+class FileEditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -45,7 +45,7 @@ class ModalEditFile extends Component {
                 return {
                     ...state,
                     errorOnNameFile: msg,
-                    nameFile: value,
+                    name: value,
                 }
             });
         }
@@ -64,7 +64,7 @@ class ModalEditFile extends Component {
                 return {
                     ...state,
                     errorOnDiscFile: msg,
-                    discFile: value,
+                    description: value,
                 }
             });
         }
@@ -93,7 +93,7 @@ class ModalEditFile extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateNameFile(this.state.nameFile, false) && this.validateDiscFile(this.state.discFile, false) &&
+            this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) &&
             this.validateNumberFile(this.state.number, false);
         return result;
     }
@@ -109,8 +109,8 @@ class ModalEditFile extends Component {
                 ...prevState,
                 id: nextProps.id,
                 index: nextProps.index,
-                nameFile: nextProps.nameFile,
-                discFile: nextProps.discFile,
+                name: nextProps.name,
+                description: nextProps.description,
                 number: nextProps.number,
                 status: nextProps.status,
 
@@ -124,7 +124,7 @@ class ModalEditFile extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { nameFile, discFile, number, status,
+        const { name, description, number, status,
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
         return (
             <React.Fragment>
@@ -138,12 +138,12 @@ class ModalEditFile extends Component {
                     <form className="form-group" id={`form-create-file-${id}`}>
                         <div className={`form-group ${errorOnNameFile === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.file_name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="nameFile" value={nameFile} onChange={this.handleNameFileChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
                         <div className={`form-group ${errorOnDiscFile === undefined ? "" : "has-error"}`}>
                             <label>{translate('table.description')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="discFile" value={discFile} onChange={this.handleDiscFileChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
                         <div className="row">
@@ -171,5 +171,5 @@ class ModalEditFile extends Component {
         );
     }
 };
-const editFile = connect(null, null)(withTranslate(ModalEditFile));
-export { editFile as ModalEditFile };
+const editModal = connect(null, null)(withTranslate(FileEditModal));
+export { editModal as FileEditModal };

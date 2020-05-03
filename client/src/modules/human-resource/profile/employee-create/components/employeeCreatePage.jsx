@@ -17,16 +17,16 @@ class EmployeeCreatePage extends Component {
         this.state = {
             img: 'lib/adminLTE/dist/img/avatar5.png',
             avatar: "",
-            employeeNew: {
+            employee: {
                 avatar: 'lib/adminLTE/dist/img/avatar5.png',
                 gender: "male",
-                relationship: "single",
-                cultural: "12/12",
-                educational: "unavailable",
-                dateCMND: this.formatDate(Date.now()),
-                brithday: this.formatDate(Date.now()),
-                startTax: this.formatDate(Date.now()),
-                experience: [],
+                maritalStatus: "single",
+                educationalLevel: "12/12",
+                professionalSkill: "unavailable",
+                identityCardDate: this.formatDate(Date.now()),
+                birthdate: this.formatDate(Date.now()),
+                taxDateOfIssue: this.formatDate(Date.now()),
+                experiences: [],
                 socialInsuranceDetails: [],
                 courses: []
             },
@@ -34,10 +34,10 @@ class EmployeeCreatePage extends Component {
             certificates: [],
             contracts: [],
             files: [],
-            disciplineNew: [],
-            praiseNew: [],
-            salaryNew: [],
-            sabbaticalNew: [],
+            disciplines: [],
+            commendations: [],
+            salaries: [],
+            annualLeaves: [],
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
@@ -69,80 +69,80 @@ class EmployeeCreatePage extends Component {
     }
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
-        const { employeeNew } = this.state;
+        const { employee } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
+            employee: {
+                ...employee,
                 [name]: value
             }
         });
     }
     // Function thêm mới kinh nghiệm làm việc
-    handleChangeExperience = (data) => {
-        const { employeeNew } = this.state;
+    handleChangeExperience = (data, addData) => {
+        const { employee } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                experience: data
+            employee: {
+                ...employee,
+                experiences: data
             }
         })
     }
     // Function thêm, chỉnh sửa thông tin bằng cấp
-    handleChangeCertificate = (data) => {
+    handleChangeDegree = (data, addData) => {
         this.setState({
-            certificate: data
+            degrees: data
         })
     }
     // Function thêm, chỉnh sửa thông tin chứng chỉ
-    handleChangeCertificateShort = (data) => {
+    handleChangeCertificate = (data, addData) => {
         this.setState({
-            certificateShort: data
+            certificates: data
         })
     }
     // Function thêm, chỉnh sửa thông tin quá trình đóng BHXH
-    handleChangeBHXH = (data) => {
-        const { employeeNew } = this.state;
+    handleChangeBHXH = (data, addData) => {
+        const { employee } = this.state;
         this.setState({
-            employeeNew: {
-                ...employeeNew,
-                BHXH: data
+            employee: {
+                ...employee,
+                socialInsuranceDetails: data
             }
         })
     }
     // Function thêm thông tin hợp đồng lao động
-    handleChangeContract = (data) => {
+    handleChangeContract = (data, addData) => {
         this.setState({
-            contract: data
+            contracts: data
         })
     }
     // Function thêm thông tin khen thưởng
-    handleChangePraise = (data) => {
+    handleChangeConmmendation = (data, addData) => {
         this.setState({
-            praiseNew: data
+            commendations: data
         })
     }
     // Function thêm thông tin kỷ luật
-    handleChangeDiscipline = (data) => {
+    handleChangeDiscipline = (data, addData) => {
         this.setState({
-            disciplineNew: data
+            disciplines: data
         })
     }
     // Function thêm thông tin lịch sử lương
-    handleChangeSalary = (data) => {
+    handleChangeSalary = (data, addData) => {
         this.setState({
-            salaryNew: data
+            salaries: data
         })
     }
     // Function thêm thông tin nghỉ phép
-    handleChangeSabbatical = (data) => {
+    handleChangeAnnualLeave = (data, addData) => {
         this.setState({
-            sabbaticalNew: data
+            annualLeaves: data
         })
     }
     // Function thêm thông tin tài liệu đính kèm
     handleChangeFile = (data) => {
         this.setState({
-            file: data
+            files: data
         })
     }
 
@@ -300,6 +300,7 @@ class EmployeeCreatePage extends Component {
     }
 
     render() {
+        console.log(this.state.files);
         const { translate } = this.props;
         return (
             <div className=" qlcv">
@@ -322,16 +323,17 @@ class EmployeeCreatePage extends Component {
                             img={this.state.img}
                             handleChange={this.handleChange}
                             handleUpload={this.handleUpload}
-                            employee={this.state.employeeNew}
+                            employee={this.state.employee}
                         />
                         <ContactTab
                             id="thongtinlienhe"
                             handleChange={this.handleChange}
-                            employee={this.state.employeeNew}
+                            employee={this.state.employee}
                         />
                         <ExperienceTab
                             id="kinhnghiem"
-                            employee={this.state.employeeNew}
+                            employee={this.state.employee}
+                            handleChange={this.handleChange}
                             handleAddExperience={this.handleChangeExperience}
                             handleEditExperience={this.handleChangeExperience}
                             handleDeleteExperience={this.handleChangeExperience}
@@ -340,21 +342,21 @@ class EmployeeCreatePage extends Component {
                             id="bangcap"
                             degrees={this.state.degrees}
                             certificates={this.state.certificates}
+                            handleAddDegree={this.handleChangeDegree}
+                            handleEditDegree={this.handleChangeDegree}
+                            handleDeleteDegree={this.handleChangeDegree}
                             handleAddCertificate={this.handleChangeCertificate}
                             handleEditCertificate={this.handleChangeCertificate}
                             handleDeleteCertificate={this.handleChangeCertificate}
-                            handleAddCertificateShort={this.handleChangeCertificateShort}
-                            handleEditCertificateShort={this.handleChangeCertificateShort}
-                            handleDeleteCertificateShort={this.handleChangeCertificateShort}
                         />
                         <TaxTab
                             id="taikhoan"
-                            employee={this.state.employeeNew}
+                            employee={this.state.employee}
                             handleChange={this.handleChange} />
                         <InsurranceTab
                             id="baohiem"
-                            socialInsuranceDetails={this.state.employeeNew.socialInsuranceDetails}
-                            employee={this.state.employeeNew}
+                            socialInsuranceDetails={this.state.employee.socialInsuranceDetails}
+                            employee={this.state.employee}
                             handleChange={this.handleChange}
                             handleAddBHXH={this.handleChangeBHXH}
                             handleEditBHXH={this.handleChangeBHXH}
@@ -363,37 +365,37 @@ class EmployeeCreatePage extends Component {
                         <ContractTab
                             id="hopdong"
                             contracts={this.state.contracts}
-                            courses={this.state.employeeNew.courses}
+                            courses={this.state.employee.courses}
                             handleAddContract={this.handleChangeContract}
                             handleEditContract={this.handleChangeContract}
                             handleDeleteContract={this.handleChangeContract}
                         />
                         <DisciplineTab
                             id="khenthuong"
-                            praise={this.state.praiseNew}
-                            discipline={this.state.disciplineNew}
-                            handleAddPraise={this.handleChangePraise}
-                            handleEditPraise={this.handleChangePraise}
-                            handleDeletePraise={this.handleChangePraise}
+                            commendations={this.state.commendations}
+                            disciplines={this.state.disciplines}
+                            handleAddConmmendation={this.handleChangeConmmendation}
+                            handleEditConmmendation={this.handleChangeConmmendation}
+                            handleDeleteConmmendation={this.handleChangeConmmendation}
                             handleAddDiscipline={this.handleChangeDiscipline}
                             handleEditDiscipline={this.handleChangeDiscipline}
                             handleDeleteDiscipline={this.handleChangeDiscipline}
                         />
                         <SalaryTab
                             id="historySalary"
-                            salary={this.state.salaryNew}
-                            sabbatical={this.state.sabbaticalNew}
+                            salaries={this.state.salaries}
+                            annualLeaves={this.state.annualLeaves}
                             handleAddSalary={this.handleChangeSalary}
                             handleEditSalary={this.handleChangeSalary}
                             handleDeleteSalary={this.handleChangeSalary}
-                            handleAddSabbatical={this.handleChangeSabbatical}
-                            handleEditSabbatical={this.handleChangeSabbatical}
-                            handleDeleteSabbatical={this.handleChangeSabbatical}
+                            handleAddAnnualLeave={this.handleChangeAnnualLeave}
+                            handleEditAnnualLeave={this.handleChangeAnnualLeave}
+                            handleDeleteAnnualLeave={this.handleChangeAnnualLeave}
                         />
                         <FileTab
                             id="pageAttachments"
-                            file={this.state.file}
-                            employee={this.state.employeeNew}
+                            files={this.state.files}
+                            employee={this.state.employee}
                             handleChange={this.handleChange}
                             handleAddFile={this.handleChangeFile}
                             handleEditFile={this.handleChangeFile}
@@ -418,7 +420,7 @@ const actionCreators = {
     uploadAvatar: EmployeeManagerActions.uploadAvatar,
     checkMSNV: EmployeeManagerActions.checkMSNV,
     checkEmail: EmployeeManagerActions.checkEmail,
-    createNewSalary: SalaryActions.createNewSalary,
+    createNewSalary: SalaryActions.createSalary,
     createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
     createNewPraise: DisciplineActions.createNewPraise,
     createNewDiscipline: DisciplineActions.createNewDiscipline,

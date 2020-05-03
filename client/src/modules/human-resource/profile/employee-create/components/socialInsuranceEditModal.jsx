@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
-class ModalEditBHXH extends Component {
+class SocialInsuranceEditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -20,7 +20,7 @@ class ModalEditBHXH extends Component {
                 return {
                     ...state,
                     errorOnUnit: msg,
-                    unit: value,
+                    company: value,
                 }
             });
         }
@@ -81,8 +81,8 @@ class ModalEditBHXH extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateExperienceUnit(this.state.unit, false) && this.validateExperiencePosition(this.state.position, false) &&
-            this.validateExperienceStartDate(this.state.unit, false) && this.validateExperienceEndDate(this.state.position, false)
+            this.validateExperienceUnit(this.state.company, false) && this.validateExperiencePosition(this.state.position, false) &&
+            this.validateExperienceStartDate(this.state.startDate, false) && this.validateExperienceEndDate(this.state.endDate, false)
         return result;
     }
     // Bắt sự kiện submit form
@@ -97,7 +97,7 @@ class ModalEditBHXH extends Component {
             return {
                 ...prevState,
                 id: nextProps.id,
-                unit: nextProps.unit,
+                company: nextProps.company,
                 startDate: nextProps.startDate,
                 endDate: nextProps.endDate,
                 position: nextProps.position,
@@ -113,20 +113,20 @@ class ModalEditBHXH extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { unit, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
+        const { company, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
                     size='50' modalID={`modal-edit-BHXH-${id}`} isLoading={false}
                     formID={`form-edit-BHXH-${id}`}
-                    title={translate('manage_employee.edit_bhxh')} 
+                    title={translate('manage_employee.edit_bhxh')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-edit-BHXH-${id}`}>
                         <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">{translate('manage_employee.unit')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" />
+                            <label >{translate('manage_employee.unit')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="company" value={company} onChange={this.handleUnitChange} autoComplete="off" />
                             <ErrorLabel content={errorOnUnit} />
                         </div>
                         <div className="row">
@@ -152,7 +152,7 @@ class ModalEditBHXH extends Component {
                             </div>
                         </div>
                         <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">{translate('table.position')}<span className="text-red">*</span></label>
+                            <label>{translate('table.position')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
                         </div>
@@ -162,5 +162,5 @@ class ModalEditBHXH extends Component {
         );
     }
 };
-const editBHXH = connect(null, null)(withTranslate(ModalEditBHXH));
-export { editBHXH as ModalEditBHXH };
+const editBHXH = connect(null, null)(withTranslate(SocialInsuranceEditModal));
+export { editBHXH as SocialInsuranceEditModal };

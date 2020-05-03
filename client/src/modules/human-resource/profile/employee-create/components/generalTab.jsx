@@ -26,6 +26,9 @@ class GeneralTab extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
         const { name, value } = e.target;
+        this.setState({
+            [name]: value,
+        })
         this.props.handleChange(name, value);
     }
     // Function bắt sự kiện thay đổi mã nhân viên
@@ -36,13 +39,9 @@ class GeneralTab extends Component {
     validateEmployeeNumber = (value, willUpdateState = true) => {
         let msg = EmployeeCreateValidator.validateEmployeeNumber(value, this.props.translate)
         if (willUpdateState) {
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEmployeeNumber: msg,
-                    employeeNumber: value,
-                }
+            this.setState({
+                errorOnEmployeeNumber: msg,
+                employeeNumber: value,
             });
             this.props.handleChange("employeeNumber", value);
         }
@@ -248,7 +247,7 @@ class GeneralTab extends Component {
                         </div>
                         <div className="row">
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="employeeNumber">{translate('manage_employee.staff_number')}<span className="text-red">*</span></label>
+                                <label>{translate('manage_employee.staff_number')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} autoComplete="off" placeholder={translate('manage_employee.staff_number')} onChange={this.handleMSNVChange} />
                                 <ErrorLabel content={errorOnEmployeeNumber} />
                             </div>

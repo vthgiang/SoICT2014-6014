@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
-class ModalAddBHXH extends Component {
+class SocialInsuranceAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: "",
+            company: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             position: "",
@@ -39,7 +39,7 @@ class ModalAddBHXH extends Component {
                 return {
                     ...state,
                     errorOnUnit: msg,
-                    unit: value,
+                    company: value,
                 }
             });
         }
@@ -101,7 +101,8 @@ class ModalAddBHXH extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateExperienceUnit(this.state.unit, false) &&
+            this.validateExperienceUnit(this.state.company, false) && this.validateExperienceStartDate(this.state.startDate, false) &&
+            this.validateExperienceEndDate(this.state.endDate, false) &&
             this.validateExperiencePosition(this.state.position, false);
         return result;
     }
@@ -113,7 +114,7 @@ class ModalAddBHXH extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { unit, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
+        const { company, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID={`modal-create-BHXH-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_bhxh')} />
@@ -126,8 +127,8 @@ class ModalAddBHXH extends Component {
                 >
                     <form className="form-group" id={`form-create-BHXH-${id}`}>
                         <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">{translate('manage_employee.unit')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" />
+                            <label>{translate('manage_employee.unit')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="company" value={company} onChange={this.handleUnitChange} autoComplete="off" />
                             <ErrorLabel content={errorOnUnit} />
                         </div>
                         <div className="row">
@@ -153,7 +154,7 @@ class ModalAddBHXH extends Component {
                             </div>
                         </div>
                         <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="unit">{translate('table.position')}<span className="text-red">*</span></label>
+                            <label>{translate('table.position')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
                         </div>
@@ -163,5 +164,5 @@ class ModalAddBHXH extends Component {
         );
     }
 };
-const addBHXH = connect(null, null)(withTranslate(ModalAddBHXH));
-export { addBHXH as ModalAddBHXH };
+const addModal = connect(null, null)(withTranslate(SocialInsuranceAddModal));
+export { addModal as SocialInsuranceAddModal };
