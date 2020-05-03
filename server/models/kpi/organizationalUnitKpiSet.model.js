@@ -30,9 +30,17 @@ const OrganizationalUnitKpiSetSchema = new Schema({
         ref: OrganizationalUnitKpi,
         required: true
     }],
-    result: {
+    automaticPoint: {
         type: Number,
-        default: 0
+        default: null
+    },
+    employeePoint: {
+        type: Number,
+        default: null
+    },
+    approvedPoint: {
+        type: Number,
+        default: null
     },
     // Có 3 trang thái kpi đơn vị: 0: Đang thiết lập, 1: Đã kích hoạt, 2: Đã kết thúc
     status: {

@@ -116,9 +116,10 @@ exports.getEmployeeProfile = async (req, res) => {
 /**
  * Cập nhật thông tin cá nhân
  */
-exports.updatePersonalInfor = async (req, res) => {
+exports.updatePersonalInformation = async (req, res) => {
     try {
-        var data = await EmployeeService.updatePersonalInfor(req.params.email, req.body);
+        let avatar = `/${req.file.path}`;
+        var data = await EmployeeService.updatePersonalInformation(req.params.email, req.body, avatar);
         await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(200).json({ success: true, messages: ["edit_infor_personal_success"], content: data });
     } catch (error) {
@@ -142,7 +143,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
 }
 
 // Kiểm tra sự tồn tại của MSNV
-exports.checkMSNV = async (req, res) => {
+exports.checkEmployeeExisted = async (req, res) => {
     try {
         var checkMSNV = await EmployeeService.checkEmployeeExisted(req.params.employeeNumber, req.user.company._id);
         res.status(200).json({
@@ -156,7 +157,7 @@ exports.checkMSNV = async (req, res) => {
     }
 }
 // Kiểm tra sự tồn tại của email công ty
-exports.checkEmail = async (req, res) => {
+exports.checkEmployeeCompanyEmailExisted = async (req, res) => {
     try {
         var checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.params.email);
         res.status(200).json({
@@ -173,9 +174,9 @@ exports.checkEmail = async (req, res) => {
 
 
 // Tạo nhân viên mới
-exports.create = async (req, res) => {
+exports.createEmployee = async (req, res) => {
     try {
-        var data = await EmployeeService.create(req.body, req.user.company._id);
+        var data = await EmployeeService.createEmployee(req.body, req.user.company._id);
         res.status(200).json({
             message: "success",
             content: data
@@ -190,9 +191,9 @@ exports.create = async (req, res) => {
 
 
 // Cập nhật thông tin nhân viên
-exports.updateInfoEmployee = async (req, res) => {
+exports.updateEmployeeInformation = async (req, res) => {
     try {
-        var data = await EmployeeService.updateInfoEmployee(req.params.id, req.body);
+        var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body);
         res.status(200).json({
             message: "success",
             content: data
@@ -205,9 +206,9 @@ exports.updateInfoEmployee = async (req, res) => {
 }
 
 // Cập nhật avater nhân viên
-exports.updateAvatar = async (req, res) => {
+exports.updateEmployeeAvatar = async (req, res) => {
     try {
-        var updateAvatar = await EmployeeService.updateAvatar(req.params.employeeNumber, req.file.filename, req.user.company._id);
+        var updateAvatar = await EmployeeService.updateEmployeeAvatar(req.params.employeeNumber, req.file.filename, req.user.company._id);
         await LogInfo(req.user.email, 'UPDATE_AVATAR', req.user.company);
         res.status(200).json({ success: true, message: ["update_avatar_success"], content: updateAvatar });
     } catch (error) {
@@ -216,9 +217,9 @@ exports.updateAvatar = async (req, res) => {
     }
 }
 // Cập nhật(thêm) thông tin hợp đồng lao động theo MSNV
-exports.updateContract = async (req, res) => {
+exports.updateEmployeeContract = async (req, res) => {
     try {
-        var updateContract = await EmployeeService.updateContract(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
+        var updateContract = await EmployeeService.updateEmployeeContract(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateContract
@@ -232,7 +233,7 @@ exports.updateContract = async (req, res) => {
 // Cập nhật(thêm) thông tin bằng cấp theo MSNV
 exports.updateCertificate = async (req, res) => {
     try {
-        var updateCertificate = await EmployeeService.updateCertificate(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
+        var updateCertificate = await EmployeeService.updateEmployeeDegrees(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateCertificate
@@ -245,9 +246,9 @@ exports.updateCertificate = async (req, res) => {
 }
 
 // Cập nhật(thêm) thông tin chứng chỉ theo MSNV
-exports.updateCertificateShort = async (req, res) => {
+exports.updateEmployeeCertificates = async (req, res) => {
     try {
-        var updateCertificateShort = await EmployeeService.updateCertificateShort(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
+        var updateCertificateShort = await EmployeeService.updateEmployeeCertificates(req.params.employeeNumber, req.body, req.file.filename, req.user.company._id);
         res.status(200).json({
             message: "success",
             content: updateCertificateShort
@@ -275,9 +276,9 @@ exports.updateFile = async (req, res) => {
 }
 
 // delete thông tin nhân viên
-exports.delete = async (req, res) => {
+exports.deleteEmployee = async (req, res) => {
     try {
-        var infoEmployeeDelete = await EmployeeService.delete(req.params.id);
+        var infoEmployeeDelete = await EmployeeService.deleteEmployee(req.params.id);
         res.status(200).json({
             message: "success",
             content: infoEmployeeDelete
@@ -290,7 +291,7 @@ exports.delete = async (req, res) => {
 }
 
 // Kiểm tra sự tồn tại của MSNV trong array
-exports.checkArrayMSNV = async (req, res) => {
+exports.checkEmployeesExisted = async (req, res) => {
     try {
         var checkArrayMSNV = await EmployeeService.checkEmployeesExisted(req.body, req.user.company._id);
         res.status(200).json({

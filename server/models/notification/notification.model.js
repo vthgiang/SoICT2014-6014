@@ -2,30 +2,27 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const User= require('../auth/user.model');
 const NotificationUser= require('./notificationUser.model');
 
 // Create Schema
 const NotificationSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
-        required: true
+        ref: 'companies'
     },
     title: {
         type: String,
         required: true
     },
     level: { //gồm 4 loại: info, normal, warning, error
-        type: String,
-        required: true
+        type: String
     },
     content: {
-        type: String,
-        required: true
+        type: String
     },
     creator: {
         type: Schema.Types.ObjectId,
-        refs: User
+        refs: 'users'
     }
 },{
     timestamps: true,

@@ -4,9 +4,9 @@ const { LogInfo, LogError } = require('../../../logs');
 /**
  * Lấy danh sách các bảng lương
  */
-exports.searchSalary = async (req, res) => {
+exports.searchSalaries = async (req, res) => {
     try {
-        var listSaralys = await SalaryService.searchSalary(req.body, req.user.company._id);
+        var listSaralys = await SalaryService.searchSalaries(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_SARALY', req.user.company);
         res.status(200).json({ success: true, messages:["get_salary_success"], content: listSaralys});
     } catch (error) {
@@ -103,9 +103,9 @@ exports.updateSalary = async (req, res) => {
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
-exports.checkSalary = async (req, res) => {
+exports.checkSalaryExisted = async (req, res) => {
     try {
-        var checkSalary = await SalaryService.checkSalary(req.params.employeeNumber,req.params.month, req.user.company._id);
+        var checkSalary = await SalaryService.checkSalaryExisted(req.params.employeeNumber,req.params.month, req.user.company._id);
         res.status(200).json({
             messages: "success",
             content: checkSalary
@@ -118,9 +118,9 @@ exports.checkSalary = async (req, res) => {
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array truyền vào
-exports.checkArraySalary = async (req, res) => {
+exports.checkSalariesExisted = async (req, res) => {
     try {
-        var checkArraySalary = await SalaryService.checkArraySalary(req.body, req.user.company._id);
+        var checkArraySalary = await SalaryService.checkSalariesExisted(req.body, req.user.company._id);
         res.status(200).json({
             messages: "success",
             content: checkArraySalary
@@ -133,9 +133,9 @@ exports.checkArraySalary = async (req, res) => {
 }
 
 // Import dữ liệu bảng lương
-exports.importSalary = async (req, res) => {
+exports.importSalaries = async (req, res) => {
     try {
-        var importSalary = await SalaryService.importSalary(req.body, req.user.company._id);
+        var importSalary = await SalaryService.importSalaries(req.body, req.user.company._id);
         res.status(200).json({
             messages: "success",
             content: importSalary

@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
-import { AuthenticateHeader,getStorage } from '../../../config';
+import { getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
+import { sendRequest } from '../../../helpers/requestHelper';
 
 export const NotificationServices = {
-    get,
     getNotificationReceivered,
     getNotificationSent,
     create,
@@ -12,28 +12,15 @@ export const NotificationServices = {
     deleteNotificationSent
 };
 
-function get() {
-    const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/notifications`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
-}
-
 function getNotificationReceivered() {
     const token = getStorage();
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
 
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/receivered/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'notification');
 }
 
 function getNotificationSent() {
@@ -41,45 +28,34 @@ function getNotificationSent() {
     const verified = jwt.verify(token, TOKEN_SECRET);
     var id = verified._id;
 
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
         method: 'GET',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, false, 'notification');
 }
 
 function create(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications`,
         method: 'POST',
         data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'notification');
 }
 
 function deleteNotificationReceivered(notificationId) {
     const token = getStorage();
     const verified = jwt.verify(token, TOKEN_SECRET);
     var userId = verified._id;
-    const requestOptions = {
+
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/receivered/${userId}/${notificationId}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'notification');
 }
 
 function deleteNotificationSent(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
+    }, true, 'notification');
 }

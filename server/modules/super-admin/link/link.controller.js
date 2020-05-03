@@ -20,7 +20,8 @@ exports.getAllLinks = async (req, res) => {
         await LogError(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_faile'],
+            content: error
         });
     }
 };
@@ -43,7 +44,8 @@ exports.getPaginatedLinks = async (req, res) => {
         await LogError(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['paginate_links_faile'],
+            content: error
         });
     }
 };
@@ -52,7 +54,7 @@ exports.createLink = async (req, res) => {
     try {
         var createLink = await LinkService.createLink(req.body, req.user.company._id);
         await LinkService.relationshipLinkRole(createLink._id, req.body.roles);
-        var link = await LinkService.getLinkById(createLink._id);
+        var link = await LinkService.getLink(createLink._id);
 
         await LogInfo(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(200).json({
@@ -65,14 +67,15 @@ exports.createLink = async (req, res) => {
         await LogError(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_link_faile'],
+            content: error
         });
     }
 };
 
-exports.getLinkById = async (req, res) => {
+exports.getLink = async (req, res) => {
     try {
-        var link = await LinkService.getLinkById(req.params.id);
+        var link = await LinkService.getLink(req.params.id);
         
         await LogInfo(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(200).json({
@@ -85,7 +88,8 @@ exports.getLinkById = async (req, res) => {
         await LogError(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_link_faile'],
+            content: error
         });
     }
 };
@@ -94,7 +98,7 @@ exports.editLink = async (req, res) => {
     try {
         await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
         const link = await LinkService.editLink(req.params.id, req.body);
-        const data = await LinkService.getLinkById(link._id);
+        const data = await LinkService.getLink(link._id);
         
         await LogInfo(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(200).json({
@@ -107,7 +111,8 @@ exports.editLink = async (req, res) => {
         await LogError(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_link_faile'],
+            content: error
         });
     }
 };
@@ -127,7 +132,8 @@ exports.deleteLink = async (req, res) => {
         await LogError(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_link_faile'],
+            content: error
         });
     }
 };

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { taskTemplateActions } from '../redux/actions';
 import { DialogModal } from '../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
 
 class ModalViewTaskTemplate extends Component {
     constructor(props) {
@@ -13,13 +14,6 @@ class ModalViewTaskTemplate extends Component {
     componentDidMount() {
         this.props.getTaskTemplate(this.props.id);
         this.handleResizeColumn();
-    }
-    handleCloseModal = (id) => {
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.remove("modal-open");
-        var modal = document.getElementById(`viewTaskTemplate${id}`);
-        modal.classList.remove("in");
-        modal.style = "display: none;";
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -52,15 +46,15 @@ class ModalViewTaskTemplate extends Component {
     render() {
         var template;
         const { tasktemplates } = this.props;
-        if (tasktemplates.template) template = tasktemplates.template.info;
+        const { translate } = this.props;
+        if (tasktemplates.template) template = tasktemplates.template;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID={`viewTaskTemplate${this.props.id}`} isLoading={false}
-                    formID="form-view-tasktemplate"
+                    size='75' modalID="modal-view-tasktemplate" isLoading={false}
+                    formID={`viewTaskTemplate${this.props.id}`}
                     title={template && template.info.name}
-                    // func={this.handleCloseModal(this.props.id)}
-                    disableSubmit={false}
+                    hasSaveButton={false}
                 >
 
                     {/* Modal Body */}
@@ -70,7 +64,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị</label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.unit')}</label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8" >
@@ -82,7 +76,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người được xem </label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.permission_view')} </label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8">
@@ -97,7 +91,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện</label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.performer')}</label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8">
@@ -115,7 +109,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt</label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.approver')}</label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8">
@@ -133,7 +127,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.observer')}</label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8">
@@ -151,7 +145,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.supporter')}</label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8">
@@ -171,7 +165,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả công việc</label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}</label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8" >
@@ -183,7 +177,7 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-4">
                                         <div className='form-group' style={{ marginTop: "-15px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Công thức tính điểm</label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.formula')}</label>
                                         </div>
                                     </div>
                                     <div className="col-xs-8" >
@@ -208,14 +202,14 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-12">
                                         <div className='form-group' style={{ marginTop: "5px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Danh sách hoạt động: </label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.activity_list')} </label>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="control-group" style={{ marginLeft: "15px" }}>
                                     {
-                                        (typeof template === 'undefined' || template.actions.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
-                                            template.actions.map((item, index) =>
+                                        (typeof template === 'undefined' || template.info.taskActions.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                            template.info.taskActions.map((item, index) =>
                                                 <p style={{ textAlign: 'left' }} >{item.name} - {item.description} - {item.mandatary ? "Có" : "Không"} bắt buộc </p>
                                             )
                                     }
@@ -225,15 +219,15 @@ class ModalViewTaskTemplate extends Component {
                                 <div className="row">
                                     <div className="col-xs-12">
                                         <div className='form-group' style={{ marginTop: "5px" }}>
-                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Danh sách thông tin: </label>
+                                            <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.information_list')} </label>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="control-group" style={{ marginLeft: "15px" }}>
 
                                     {
-                                        (typeof template === 'undefined' || template.informations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>Chưa có dữ liệu</p> :
-                                            template.informations.map((item, index) =>
+                                        (typeof template === 'undefined' || template.info.taskInformations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                            template.info.taskInformations.map((item, index) =>
                                                 <p style={{ textAlign: 'left' }}>{item.name} - {item.description} - {item.type} - {item.mandatary ? "Chỉ quản lý được điền" : "Không bắt buộc chỉ quản lý được điền"}</p>
                                             )
                                     }
@@ -255,5 +249,5 @@ function mapState(state) {
 const actionCreators = {
     getTaskTemplate: taskTemplateActions.getTaskTemplateById,
 };
-const connectedModalViewTaskTemplate = connect(mapState, actionCreators)(ModalViewTaskTemplate);
+const connectedModalViewTaskTemplate = connect(mapState, actionCreators)( withTranslate(ModalViewTaskTemplate));
 export { connectedModalViewTaskTemplate as ModalViewTaskTemplate };

@@ -21,7 +21,8 @@ exports.getAllComponents = async (req, res) => {
         await LogError(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_components_faile'],
+            content: error
         });
     }
 };
@@ -44,7 +45,8 @@ exports.getPaginatedComponents = async (req, res) => {
         await LogError(req.user.email, 'PAGINATE_COMPONENTS', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['paginate_components_faile'],
+            content: error
         });
     }
 };
@@ -54,7 +56,7 @@ exports.createComponent = async (req, res) => {
         req.body.company = req.user.company._id;
         const createComponent = await ComponentService.createComponent(req.body);
         await ComponentService.relationshipComponentRole(createComponent._id, req.body.roles);
-        const component = await ComponentService.getComponentById(createComponent._id);
+        const component = await ComponentService.getComponent(createComponent._id);
         await LinkServices.addComponentOfLink(req.body.linkId, createComponent._id); //thêm component đó vào trang
 
         await LogInfo(req.user.email, 'CREATE_COMPONENT', req.user.company);
@@ -68,14 +70,15 @@ exports.createComponent = async (req, res) => {
         await LogError(req.user.email, 'CREATE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_component_faile'],
+            content: error
         });
     }
 };
 
-exports.getComponentById = async (req, res) => {
+exports.getComponent = async (req, res) => {
     try {
-        const component = await ComponentService.getComponentById(req.params.id);
+        const component = await ComponentService.getComponent(req.params.id);
         
         await LogInfo(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
         res.status(200).json({
@@ -88,7 +91,8 @@ exports.getComponentById = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_component_faile'],
+            content: error
         });
     }
 };
@@ -109,7 +113,8 @@ exports.editComponent = async (req, res) => {
         await LogError(req.user.email, 'EDIT_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_component_faile'],
+            content: error
         });
     }
 };
@@ -129,7 +134,8 @@ exports.deleteComponent = async (req, res) => {
         await LogError(req.user.email, 'DELETE_COMPONENT', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_component_faile'],
+            content: error
         });
     }
 };
@@ -150,7 +156,8 @@ exports.getComponentsOfUserInLink = async (req, res) => {
         await LogError(req.user.email, 'GET_COMPONENTS_OF_USER_IN_LINK', req.user.company);
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_components_of_user_in_link_faile'],
+            content: error
         });
     }
 };

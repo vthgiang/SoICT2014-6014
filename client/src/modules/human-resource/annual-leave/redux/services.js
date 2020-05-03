@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
+import { sendRequest } from '../../../../helpers/requestHelper';
 export const AnnualLeaveService = {
     searchAnnualLeaves,
     createAnnualLeave,
@@ -8,45 +7,49 @@ export const AnnualLeaveService = {
     updateAnnualLeave,
 }
 
-// Lấy danh sách nghỉ phép
+/**
+ * Lấy danh sách nghỉ phép
+ * @data : dữ liệu key tìm kiếm
+ */ 
 function searchAnnualLeaves(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/sabbatical/paginate`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, false, 'human_resource.annual_leave');
 }
 
-// tạo mới thông tin nghỉ phép
+/**
+ * Tạo mới thông tin nghỉ phép
+ * @data : Dữ liệu tạo mới thông tin nghỉ phép
+ */
 function createAnnualLeave(data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/sabbatical/create`,
         method: 'POST',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, 'human_resource.annual_leave');
 }
 
-// Xoá thông tin nghỉ phép
+/**
+ * Xoá thông tin nghỉ phép
+ * @id: Id nghỉ phép cần xoá
+ */
 function deleteAnnualLeave(id) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+    }, true, 'human_resource.annual_leave');
 }
-
-// Cập nhật thông tin nghỉ phép
+/**
+ * Cập nhật thông tin nghỉ phép
+ * @id : Id nghỉ phép cần cập nhật 
+ * @data  : dữ liệu cập nhật nghỉ phép
+ */
 function updateAnnualLeave(id, data) {
-    const requestOptions = {
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'PUT',
-        data:data,
-        headers: AuthenticateHeader()
-    };
-    return axios(requestOptions);
+        data: data
+    }, true, 'human_resource.annual_leave');
 }

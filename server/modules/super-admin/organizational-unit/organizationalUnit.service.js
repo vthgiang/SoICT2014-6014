@@ -46,7 +46,7 @@ exports.getAllOrganizationalUnitsAsTree = async (id) => {
  * Lấy thông tin đơn vị theo id
  * @id đơn vị
  */
-exports.getById = async (id) => {
+exports.getOrganizationalUnit = async (id) => {
 
     return await OrganizationalUnit.findById(id);
 }
@@ -80,7 +80,7 @@ exports.createOrganizationalUnit = async(data, deanId, viceDeanId, employeeId, c
  * @id id đơn vị
  * @data dữ liệu sửa
  */
-exports.edit = async(id, data) => {
+exports.editOrganizationalUnit = async(id, data) => {
     const department = await OrganizationalUnit.findById(id);
     if(department === null) throw['department_not_found'];
     department.name = data.name;
@@ -95,7 +95,7 @@ exports.edit = async(id, data) => {
  * Xóa đơn vị
  * @departmentId id của đơn vị
  */
-exports.delete = async(departmentId) => {
+exports.deleteOrganizationalUnit = async(departmentId) => {
     const department = await OrganizationalUnit.findById(departmentId);
 
     const roles = await Role.find({
@@ -127,10 +127,10 @@ exports.delete = async(departmentId) => {
 }
 
 /**
- * Lấy thông tin phòng ban của user
+ * Lấy tất cả các đơn vị tổ chức một user thuộc về
  * @userId id của user
  */
-exports.getDepartmentOfUser = async (userId) => {
+exports.getOrganizationalUnitsOfUser = async (userId) => {
     const roles = await UserRole.find({ userId });
     const newRoles = roles.map( role => role.roleId);
     const departments = await OrganizationalUnit.find({
@@ -156,7 +156,7 @@ exports.getDepartmentOfUser = async (userId) => {
  * 2. userId - id của người dùng
  * 3. roleId - xác định vai trò truy cập hiện tại của người dùng trên website (vd: đang truy cập với quyền là Nhân viên phòng hành chính,...)
  */
-exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
+exports.getOrganizationalUnitByUserRole = async (companyId, roleId) => {
     const department = await OrganizationalUnit.findOne({
         $or: [
             {'dean': roleId, company: companyId }, 
@@ -176,7 +176,7 @@ exports.getDepartmentByCurrentRole = async (companyId, roleId) => {
  * Lấy thông tin đơn vị mà user làm trưởng
  * @userId id của user
  */
-exports.getDepartmentsThatUserIsDean = async (userId) => {
+exports.getOrganizationalUnitsThatUserIsDean = async (userId) => {
     const roles = await UserRole.find({ 'userId': userId });
     const newRoles = roles.map( role => role.roleId);
     const departments = await OrganizationalUnit.find({'dean': { $in: newRoles } });

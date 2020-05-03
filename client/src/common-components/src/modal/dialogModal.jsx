@@ -24,7 +24,11 @@ class DialogModal extends Component {
     }
 
     save = () => {
+        const {closeOnSave = true, resetOnSave = false} = this.props;
         this.props.func();
+        if (closeOnSave){
+            this.closeModal(resetOnSave);
+        }
     }
 
     componentDidUpdate(){
@@ -37,12 +41,11 @@ class DialogModal extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true} = this.props;
-
+        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth} = this.props;
         return ( 
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div  className={`modal-dialog  modal-size-${this.props.size}`}>
+                    <div className={`modal-dialog modal-size-${this.props.size}`} style={maxWidth===undefined?{}:{maxWidth: maxWidth}}>
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" onClick={()=>this.closeModal(resetOnClose)}>&times;</button>
@@ -53,10 +56,10 @@ class DialogModal extends Component {
                             </div>
                             <div className="modal-footer">
                                 <div className="row">
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
                                     </div>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         {
                                             hasSaveButton && <button type="submit" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }

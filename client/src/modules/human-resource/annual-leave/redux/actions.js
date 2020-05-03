@@ -7,7 +7,10 @@ export const AnnualLeaveActions = {
     updateAnnualLeave,
 };
 
-// Lấy danh sách nghỉ phép
+/**
+ * Lấy danh sách nghỉ phép
+ * @data : dữ liệu key tìm kiếm
+ */ 
 function searchAnnualLeaves(data) {
     return dispatch => {
         dispatch({
@@ -29,7 +32,10 @@ function searchAnnualLeaves(data) {
     }
 }
 
-// Tạo mới thông tin nghỉ phép
+/**
+ * Tạo mới thông tin nghỉ phép
+ * @data : Dữ liệu tạo mới thông tin nghỉ phép
+ */
 function createAnnualLeave(data) {
     return dispatch => {
         dispatch({
@@ -51,7 +57,10 @@ function createAnnualLeave(data) {
     }
 }
 
-// Xoá thông tin nghỉ phép của nhân viên
+/**
+ * Xoá thông tin nghỉ phép
+ * @id: Id nghỉ phép cần xoá
+ */
 function deleteAnnualLeave(id) {
     return dispatch => {
         dispatch({
@@ -73,7 +82,11 @@ function deleteAnnualLeave(id) {
     }
 }
 
-// cập nhật thông tin nghỉ phép của nhân viên
+/**
+ * Cập nhật thông tin nghỉ phép
+ * @id : Id nghỉ phép cần cập nhật 
+ * @data  : dữ liệu cập nhật nghỉ phép
+ */
 function updateAnnualLeave(id, infoSabbatical) {
     return dispatch => {
         dispatch({

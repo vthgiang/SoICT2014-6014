@@ -31,6 +31,7 @@ export default {
             edit_salary_success: 'Edit salary success',
             edit_salary_faile: 'Edit salary faile',
             // Quản lý nghỉ phép
+            // TODO: Xoá sau
             start_date_annual_leave_required: 'Start date annual leave required',
             end_date_annual_leave_required: 'End date annual leave required',
             reason_annual_leave_required: 'Reason annual leave required',
@@ -44,6 +45,7 @@ export default {
             edit_annual_leave_success: 'Edit annual leave success',
             edit_annual_leave_faile: 'Edit annual leave faile',
             // Quản lý khen thưởng
+            // TODO: Xoá sau
             type_commendations_required: 'Reward forms required',
             reason_commendations_required: 'Reason required',
             decisions_date_required: 'Decis day required',
@@ -56,6 +58,7 @@ export default {
             edit_commendations_success: 'Edit Reward success',
             edit_commendations_faile: 'Edit Reward faile',
             // Quản lý kỷ luật
+            // TODO: Xoá sau
             type_discipline_required: 'Discipline forms required',
             reason_discipline_required: 'Reason required',
             start_date_discipline_required: 'Effective date required',
@@ -69,6 +72,7 @@ export default {
             edit_discipline_success: 'Edit discipline success',
             edit_discipline_faile: 'Edit discipline faile',
             // Quản lý thông tin cá nhân
+            // TODO: Xoá sau
             get_infor_personal_success: 'Get information personal success',
             get_infor_personal_false: 'Get information personal false',
             edit_infor_personal_success: 'Update information personal success',
@@ -109,12 +113,12 @@ export default {
                 content: [
                     'Session to work invalid',
                     'Access denied',
+                    'Page access denied',
                     'Role invalid',
                     'Your permission changed',
                     'Token invalid',
                     'Company service stoped',
                 ],
-                page_access_denied: 'Page access denied.'
             }
         },
 
@@ -561,8 +565,8 @@ export default {
             add_sabbatical_title: 'Add new sabbatical',
             edit_sabbatical: 'Edit Sabbatical',
             delete_sabbatical: 'Delete sabbatical',
-            start_date: 'Start day',
-            end_date: 'End day',
+            start_date: 'Start date',
+            end_date: 'End date',
             reason: 'Reason',
             check_null_msnv: 'Staff code required',
             check_msnv: 'Not find staff code',
@@ -872,8 +876,8 @@ export default {
 
                 // Nhóm dành cho table
                 table: {
-                    start_date: 'Start day',
-                    end_date: 'End day',
+                    start_date: 'Start date',
+                    end_date: 'End date',
                     reason: 'Reason',
                     action: 'action',
                 },
@@ -906,11 +910,126 @@ export default {
                 edit_annual_leave_faile: 'Edit annual leave faile',
 
             },
+            // Quản lý khen thưởng kỷ luật
+            commendation_discipline: {
+                // Quản lý khen thưởng
+                commendation: {
+                    list_praise: 'List of staff reward',
+                    list_praise_title: 'List of staff reward',
+
+                    // Nhóm dành cho table
+                    table: {
+                        decision_date: 'Decis date',
+                        decision_unit: 'Decis unit',
+                        reward_forms: 'Reward forms',
+                        reason_praise: 'Reason',
+
+                    },
+
+                    // Nhóm dành cho action
+                    add_praise: 'Add reward',
+                    add_praise_title: 'Add new reward',
+                    edit_praise: 'Edit Reward',
+                    delete_praise: 'Delete reward',
+
+                    // Thông điệp trả về từ server
+                    employee_number_required: 'Staff code required',
+                    staff_code_not_special: 'Staff code does not contain special characters',
+                    staff_code_not_find: 'Staff code does not exist',
+                    number_decisions_required: 'Decis number required',
+                    number_decisions_have_exist: 'Decis number have exist',
+                    unit_decisions_required: 'Decis unit required',
+                    type_commendations_required: 'Reward forms required',
+                    reason_commendations_required: 'Reason required',
+                    decisions_date_required: 'Decis day required',
+                    get_commendations_success: 'Get Reward success',
+                    get_commendations_faile: 'Get Reward faile',
+                    create_commendations_success: 'Create Reward success',
+                    create_commendations_faile: 'Create Reward faile',
+                    delete_commendations_success: 'Delete Reward success',
+                    delete_commendations_faile: 'Delete Reward faile',
+                    edit_commendations_success: 'Edit Reward success',
+                    edit_commendations_faile: 'Edit Reward faile',
+                },
+
+                // Quản lý ky luật
+                discipline: {
+                    list_discipline: 'List of staff discipline',
+                    list_discipline_title: 'List of staff discipline',
+
+                    // Nhóm dành cho table
+                    table: {
+                        start_date: 'Effective date',
+                        end_date: 'Expiration date',
+                        discipline_forms: 'Discipline forms',
+                        reason_discipline: 'Reason',
+                    },
+
+                    // Nhóm dành cho action
+                    add_discipline: 'Add discipline',
+                    add_discipline_title: 'Add new discipline',
+                    edit_discipline: 'Edit Discipline',
+                    delete_discipline: 'Delete discipline',
+
+                    // Thông điệp trả về từ server
+                    employee_number_required: 'Staff code required',
+                    staff_code_not_special: 'Staff code does not contain special characters',
+                    staff_code_not_find: 'Staff code does not exist',
+                    number_decisions_required: 'Decis number required',
+                    number_decisions_have_exist: 'Decis number have exist',
+                    unit_decisions_required: 'Decis unit required',
+                    type_discipline_required: 'Discipline forms required',
+                    reason_discipline_required: 'Reason required',
+                    start_date_discipline_required: 'Effective date required',
+                    end_date_discipline_required: 'Expiration date required',
+                    get_discipline_success: 'Get discipline success',
+                    get_discipline_faile: 'Get discipline faile',
+                    create_discipline_success: 'Create discipline success',
+                    create_discipline_faile: 'Create discipline faile',
+                    delete_discipline_success: 'Delete discipline success',
+                    delete_discipline_faile: 'Delete discipline faile',
+                    edit_discipline_success: 'Edit discipline success',
+                    edit_discipline_faile: 'Edit discipline faile',
+                }
+            },
+
+            // Quản lý thông tin nhân viên
+            profile: {
+                // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
+
+                // Quản lý thông tin cá nhân
+                employee_info: {
+                    // Nhóm dành cho UI
+                    guaranteed_infor_to_update: 'You have not guaranteed information to update',
+                    no_change_data: 'No information changed',
+
+                    // Thông điệp trả về từ server
+                    get_infor_personal_success: 'Get information personal success',
+                    get_infor_personal_false: 'Get information personal false',
+                    edit_infor_personal_success: 'Update information personal success',
+                    edit_infor_personal_false: 'Update infor personal false',
+                    
+                }
+            }
         },
 
         // Task template
         task_template: {
             search: 'Search',
+            search_by_name: 'Search by name',
+            select_all_units: 'Select all units',
+            permission_view: 'Permission to view',
+            performer: 'Performer',
+            approver: 'Approver',
+            observer: 'Observer',
+            supporter: 'Supporter',
+            formula: 'Formula',
+            activity_list: 'Activity list',
+            information_list: 'Information list',
+            no_data: 'No data',
+            edit: 'Edit',
+            save: 'Save',
+            close: 'Close',
             add: 'Add new',
             confirm: 'Confirm',
             confirm_title: 'Are you sure you want to delete this task template?',
@@ -923,309 +1042,6 @@ export default {
             creator: 'Creator',
             unit: 'Unit',
             action: 'Action'
-        },
-
-
-        // Module KPI đơn vị
-        organizational_unit_kpi_set: {
-            create_organizational_unit_kpi_set: { // Module chính
-                // Nhóm dành cho các thông tin chung
-                general_information: {
-                    general_information: 'Organizational unit KPI',
-                    save: 'Save the edit',
-                    confirm: 'Confirm',
-                    edit: 'Edit',
-                    delete: 'Delete this KPI',
-                    cancel: 'Cancel',
-                    approve: 'Approve',
-                    cancel_approve: 'Unapprove',
-                    add_target: 'Add new target',
-                    target: 'target',
-                    edit_success: 'Editing successful',
-                    edit_failure: 'Editing falied',
-                    confirm_delete_success: 'Are you sure you want to delete this entire KPI?',
-                    delete_success: 'Delete KPI successful'
-                },
-                time: 'Time',
-                weight_total: 'Weight total',
-                initialize_kpi_newmonth: 'Initialize KPI new month',
-                approve: 'Approve',
-                cancel_approve: 'Unapprove',
-
-                weight_status: {
-                    weight_total: 'Weight total',
-                    not_satisfied: 'Not satisfied',
-                    satisfied: 'Satisfied'
-                },
-
-                // Nhóm dành cho các trạng thái tập KPI
-                kpi_status: {
-                    not_approved: 'Not approved',
-                    approved: 'Approved'
-                },
-
-                // Nhóm dành cho các trạng thái mục tiêu KPI
-                check_status_target: {
-                    not_approved: 'Not approved',
-                    edit_request: 'Edit request',
-                    activated: 'Activated',
-                    finished: 'Finished'
-                },
-
-                // Nhóm dành cho table
-                target_list: 'Target list',
-                add_target: 'Add target',
-                no_: 'No.',
-                target_name: 'Target name',
-                parents_target: 'Parents target',
-                evaluation_criteria: 'Evalution criteria',
-                weight: 'Weight',
-                action: 'Action',
-                not_initialize: 'No KPI have been initialized in ',
-
-                // Nhóm dành cho các handle
-
-                request_approval_kpi: {
-                    approve_already: 'KPI is approved!',
-                    approve: 'Are you sure you want to be approved this KPI?',
-                    not_enough_weight: 'The total weight must be 100',
-                    approve_success: 'KPI approve was successful',
-                    success: 'Edit status kpi successful'
-                },
-                cancel_approve: {
-                    cancel: 'Are you sure you want to cancel this KPI?',
-                    success: 'KPI unapprove was successful'
-                },
-                action_title: {
-                    edit: 'Edit',
-                    content: 'This is the default target (if necessary, weights can be corrected)',
-                    delete: 'Delete'
-                },
-                edit_target: {
-                    approving: 'KPI is being approved, you can not edit!',
-                    activated: 'KPI is being activated, you can not edit!'
-                },
-                delete_kpi: {
-                    kpi: 'Are you sure you want to delete this KPI target?',
-                    approving: 'KPI has been activated, you can not delete!',
-                    delete_success: 'Delete KPI target successful'
-                },
-            },
-
-            create_organizational_unit_kpi_modal: { // Module con
-                // Nhóm dành cho modal
-                create_organizational_unit_kpi: 'Add personal KPI target',
-                name: 'Target name',
-                parents: 'Parents target',
-                evaluation_criteria: 'Evaluation criteria',
-                weight: 'Weight',
-                success: 'Add KPI target successful',
-                failure: 'You have not entered enough information',
-
-                // Nhóm dành cho validate
-                validate_name: {
-                    empty: 'Target name cannot be empty',
-                    less_than_4: 'Target name cannot be less than 4 characters',
-                    more_than_50: 'Target name cannot be more than 50 characters',
-                    special_character: 'Target name cannot contain special characters'
-                },
-                validate_criteria: 'Criteria cannot be empty',
-                validate_weight: {
-                    empty: 'Weight cannot be empty',
-                    less_than_0: 'Weight cannot be less than 0',
-                    greater_than_100: 'Weight cannot be greater than 100'
-                }
-            },
-
-            kpi_member_manager: { // Module con
-                index: 'Index',
-                time: 'Date',
-                employee_name: 'Employee Name',
-                target_number: 'Target Number',
-                kpi_status: 'KPI Status',
-                result: 'Result',
-                approve: 'Approve',
-                evaluate: 'Evaluate'
-            },
-
-            create_organizational_unit_kpi_set_modal: { // Module con
-                // Nhóm dành cho modal
-                initialize_kpi_set: 'Initialize organizational unit KPI',
-                organizational_unit: 'Organizational Unit',
-                month: 'Month',
-                default_target: 'Default target',
-                success: 'Initialize KPI successful',
-                failure: 'You have not entered enough information'
-            },
-
-            edit_target_kpi_modal: { // Module con
-                // Nhóm dành cho modal
-                edit_organizational_unit_kpi: 'Edit personal KPI targets',
-                name: 'Target name',
-                parents: 'Parents target',
-                evaluation_criteria: 'Evaluation criteria',
-                weight: 'Weight',
-                success: 'Edit KPI target successful',
-                failure: 'You have not entered enough information'
-            },
-
-            //Thông điệp khác trả về từ server
-            get_by_role_success: 'Get KPI by role successful',
-            get_parent_by_unit_success: 'Get KPI by parent unit successful',
-        },
-
-        employee_kpi_set: {
-            create_employee_kpi_set: { // Module chính
-                // Nhóm dành cho các thông tin chung
-                general_information: {
-                    general_information: 'Personal KPI in',
-                    save: 'Save the edit',
-                    edit: 'Edit',
-                    delete: 'Delete this KPI',
-                    cancel: 'Cancel',
-                    edit_success: 'Edit employee KPI set successfully',
-                    edit_failure: 'Edit employee KPI set unsuccessfully',
-                    delete_success: 'Delete employee KPI set successfully',
-                    delete_failure: 'Delete employee KPI set unsuccessfully'
-                },
-                time: 'Time',
-                approver: 'Approver',
-                weight: {
-                    weight_total: 'Weight total',
-                    not_satisfied: 'Not satisfied',
-                    satisfied: 'Satisfied'
-                },
-                initialize_kpi_newmonth: 'Initialize KPI new month',
-                request_approval: 'Request for approval',
-                cancel_request_approval: 'Cancel request for approval',
-                approve_success: 'Confirm request approval successfully',
-                approve_failure: 'Confirm request approval unsuccessfully',
-
-                // Nhóm dành cho các trạng thái tập KPI
-                kpi_status: {
-                    status: 'KPI status',
-                    setting_up: 'Setting-up',
-                    awaiting_approval: 'Awaiting approval',
-                    activated: 'Activated',
-                    finished: 'Finished'
-                },
-
-                // Nhóm dành cho các trạng thái mục tiêu KPI
-                check_status_target: {
-                    not_approved: 'Not approved',
-                    edit_request: 'Edit request',
-                    activated: 'Activated',
-                    finished: 'Finished'
-                },
-
-                // Nhóm dành cho table
-                target_list: 'Target list',
-                add_target: 'Add target',
-                no_: 'No.',
-                target_name: 'Target name',
-                parents_target: 'Parents target',
-                evaluation_criteria: 'Evalution criteria',
-                max_score: 'Max score',
-                status: 'Status',
-                action: 'Action',
-                not_initialize: 'No KPI have been initialized in ',
-
-                // Nhóm dành cho phản hồi
-                submit: {
-                    feedback: 'Feedback',
-                    send_feedback: 'Send feedback',
-                    cancel_feedback: 'Cancel',
-                },
-
-                // Nhóm dành cho các handle
-                handle_edit_kpi: {
-                    approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
-                    activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
-                },
-                delete_kpi: {
-                    kpi: 'Are you sure you want to delete this KPI?',
-                    kpi_target: 'Are you sure you want to delete this KPI target?',
-                    approving: 'KPI is being approved, you can not delete!',
-                    activated: 'KPI has been activated, you can not delete!',
-                    delete_success: 'Delete KPI target successfully',
-                    delete_failure: 'Delete KPI target unsuccessfully'
-                },
-                edit_target: {
-                    approving: 'KPI is being approved, you can not edit!',
-                    activated: 'KPI is being activated, you can not edit!'
-                },
-                request_approval_kpi: {
-                    approve: 'Are you sure you want to be approved this KPI?',
-                    not_enough_weight: 'The total weight must be 100'
-                },
-                cancel_approve: {
-                    cancel: 'Are you sure you want to cancel this KPI?',
-                    activated: 'KPI has been activated, you can not cancel the request for approval. If you want to modify, please contact your manager!'
-                },
-                action_title: {
-                    edit: 'Edit',
-                    content: 'This is the default target (if necessary, weights can be corrected)',
-                    delete: 'Delete'
-                },
-            },
-
-            create_employee_kpi_modal: { // Module con
-                // Nhóm dành cho modal
-                create_employee_kpi: 'Add personal KPI target',
-                name: 'Target name',
-                parents: 'Parents target',
-                evaluation_criteria: 'Evaluation criteria',
-                weight: 'Weight',
-                success: 'Add KPI target successfully',
-                failure: 'Add KPI target unsuccessfully',
-
-                // Nhóm dành cho validate
-                validate_name: {
-                    empty: 'Target name cannot be empty',
-                    less_than_4: 'Target name cannot be less than 4 characters',
-                    more_than_50: 'Target name cannot be more than 50 characters',
-                    special_character: 'Target name cannot contain special characters'
-                },
-                validate_criteria: 'Criteria cannot be empty',
-                validate_weight: {
-                    empty: 'Weight cannot be empty',
-                    less_than_0: 'Weight cannot be less than 0',
-                    greater_than_100: 'Weight cannot be greater than 100'
-                }
-            },
-
-            kpi_member_manager: { // Module con
-                index: 'Index',
-                time: 'Date',
-                employee_name: 'Employee Name',
-                target_number: 'Target Number',
-                kpi_status: 'KPI Status',
-                result: 'Result',
-                approve: 'Approve',
-                evaluate: 'Evaluate'
-            },
-
-            create_employee_kpi_set_modal: { // Module con
-                // Nhóm dành cho modal
-                initialize_kpi_set: 'Initialize personal KPI',
-                organizational_unit: 'Organizational Unit',
-                month: 'Month',
-                approver: 'Approver',
-                default_target: 'Default target',
-                success: 'Initialize employee KPI set successfully',
-                failure: 'Initialize employee KPI set unsuccessfully'
-            },
-
-            edit_employee_kpi_modal: { // Module con
-                // Nhóm dành cho modal
-                edit_employee_kpi: 'Edit personal KPI targets',
-                name: 'Target name',
-                parents: 'Parents target',
-                evaluation_criteria: 'Evaluation criteria',
-                weight: 'Weight',
-                success: 'Edit KPI target successfully',
-                failure: 'Edit KPI target unsuccessfully'
-            },
         },
 
         notification: {
@@ -1302,6 +1118,170 @@ export default {
                 get_kpi_by_member_fail: 'Get KPI by member fail',
                 get_kpi_responsible_success: 'Get all KPI responsible successfully',
                 get_kpi_responsible_fail: 'Get all KPI responsible fail',
+
+                //Nhóm dành cho module creation
+                employee_kpi_set: {
+                    create_employee_kpi_set: { // Module chính
+                        // Nhóm dành cho các thông tin chung
+                        general_information: {
+                            general_information: 'Personal KPI in',
+                            save: 'Save the edit',
+                            edit: 'Edit',
+                            delete: 'Delete this KPI',
+                            cancel: 'Cancel'
+                        },
+                        time: 'Time',
+                        approver: 'Approver',
+                        weight: {
+                            weight_total: 'Weight total',
+                            not_satisfied: 'Not satisfied',
+                            satisfied: 'Satisfied'
+                        },
+                        initialize_kpi_newmonth: 'Initialize KPI new month',
+                        request_approval: 'Request for approval',
+                        cancel_request_approval: 'Cancel request for approval',
+
+                        // Nhóm dành cho các trạng thái tập KPI
+                        kpi_status: {
+                            status: 'KPI status',
+                            setting_up: 'Setting-up',
+                            awaiting_approval: 'Awaiting approval',
+                            activated: 'Activated',
+                            finished: 'Finished'
+                        },
+
+                        // Nhóm dành cho các trạng thái mục tiêu KPI
+                        check_status_target: {
+                            not_approved: 'Not approved',
+                            edit_request: 'Edit request',
+                            activated: 'Activated',
+                            finished: 'Finished'
+                        },
+
+                        // Nhóm dành cho table
+                        target_list: 'Target list',
+                        add_target: 'Add target',
+                        no_: 'No.',
+                        target_name: 'Target name',
+                        parents_target: 'Parents target',
+                        evaluation_criteria: 'Evalution criteria',
+                        max_score: 'Max score',
+                        status: 'Status',
+                        action: 'Action',
+                        not_initialize: 'No KPI have been initialized in ',
+
+                        // Nhóm dành cho phản hồi
+                        submit: {
+                            feedback: 'Feedback',
+                            send_feedback: 'Send feedback',
+                            cancel_feedback: 'Cancel',
+                        },
+
+                        // Nhóm dành cho các handle
+                        handle_edit_kpi: {
+                            approving: 'KPI is being approved, you can not edit it. If you want to modify, please contact your manager!',
+                            activated: 'KPI has been activated, you can not edit. If you want to modify, please contact your manager!'
+                        },
+                        delete_kpi: {
+                            kpi: 'Are you sure you want to delete this KPI?',
+                            kpi_target: 'Are you sure you want to delete this KPI target?',
+                            approving: 'KPI is being approved, you can not delete!',
+                            activated: 'KPI has been activated, you can not delete!'
+                        },
+                        edit_target: {
+                            approving: 'KPI is being approved, you can not edit!',
+                            activated: 'KPI is being activated, you can not edit!'
+                        },
+                        request_approval_kpi: {
+                            approve: 'Are you sure you want to be approved this KPI?',
+                            not_enough_weight: 'The total weight must be 100'
+                        },
+                        cancel_approve: {
+                            cancel: 'Are you sure you want to cancel this KPI?',
+                            activated: 'KPI has been activated, you can not cancel the request for approval. If you want to modify, please contact your manager!'
+                        },
+                        action_title: {
+                            edit: 'Edit',
+                            content: 'This is the default target (if necessary, weights can be corrected)',
+                            delete: 'Delete'
+                        },
+                    },
+
+                    create_employee_kpi_modal: { // Module con
+                        // Nhóm dành cho modal
+                        create_employee_kpi: 'Add personal KPI target',
+                        name: 'Target name',
+                        parents: 'Parents target',
+                        evaluation_criteria: 'Evaluation criteria',
+                        weight: 'Weight',
+
+                        // Nhóm dành cho validate
+                        validate_name: {
+                            empty: 'Target name cannot be empty',
+                            less_than_4: 'Target name cannot be less than 4 characters',
+                            more_than_50: 'Target name cannot be more than 50 characters',
+                            special_character: 'Target name cannot contain special characters'
+                        },
+                        validate_criteria: 'Criteria cannot be empty',
+                        validate_weight: {
+                            empty: 'Weight cannot be empty',
+                            less_than_0: 'Weight cannot be less than 0',
+                            greater_than_100: 'Weight cannot be greater than 100'
+                        }
+                    },
+
+                    kpi_member_manager: { // Module con
+                        index: 'Index',
+                        time: 'Date',
+                        employee_name: 'Employee Name',
+                        target_number: 'Target Number',
+                        kpi_status: 'KPI Status',
+                        result: 'Result',
+                        approve: 'Approve',
+                        evaluate: 'Evaluate'
+                    },
+
+                    create_employee_kpi_set_modal: { // Module con
+                        // Nhóm dành cho modal
+                        initialize_kpi_set: 'Initialize personal KPI',
+                        organizational_unit: 'Organizational Unit',
+                        month: 'Month',
+                        approver: 'Approver',
+                        default_target: 'Default target'
+                    },
+
+                    edit_employee_kpi_modal: { // Module con
+                        // Nhóm dành cho modal
+                        edit_employee_kpi: 'Edit personal KPI targets',
+                        name: 'Target name',
+                        parents: 'Parents target',
+                        evaluation_criteria: 'Evaluation criteria',
+                        weight: 'Weight'
+                    },
+
+                    //Thông điệp trả về từ server
+                    messages_from_server: {
+                        initialize_employee_kpi_set_success: 'Initialize employee KPI set successfully',
+                        initialize_employee_kpi_set_failure: 'Initialize employee KPI set unsuccessfully',
+
+                        create_employee_kpi_success: 'Add KPI target successfully',
+                        create_employee_kpi_failure: 'Add KPI target unsuccessfully',
+
+                        edit_employee_kpi_set_success: 'Edit employee KPI set successfully',
+                        edit_employee_kpi_set_failure: 'Edit employee KPI set unsuccessfully',
+                        delete_employee_kpi_set_success: 'Delete employee KPI set successfully',
+                        delete_employee_kpi_set_failure: 'Delete employee KPI set unsuccessfully',
+
+                        approve_success: 'Confirm request approval successfully',
+                        approve_failure: 'Confirm request approval unsuccessfully',
+
+                        delete_employee_kpi_success: 'Delete KPI target successfully',
+                        delete_employee_kpi_failure: 'Delete KPI target unsuccessfully',
+
+                        edit_employee_kpi_success: 'Edit KPI target successfully',
+                        edit_employee_kpi_failure: 'Edit KPI target unsuccessfully'
+                    }
+                },
             },
             evaluation: {
                 get_all_kpi_member_success: 'Get all KPI member successfully',
@@ -1327,12 +1307,128 @@ export default {
 
             },
             organizational_unit: {
+                // Module chính
+                create_organizational_unit_kpi_set: {
+                    // Nhóm dành cho các thông tin chung
+                    general_information: 'Organizational unit KPI',
+                    save: 'Save the edit',
+                    confirm: 'Confirm',
+                    delete: 'Delete this KPI',
+                    cancel: 'Cancel',
+                    approve: 'Approve',
+                    cancel_approve: 'Unapprove',
+                    target: 'target',
+                    confirm_delete_success: 'Are you sure you want to delete this entire KPI?',
+                    time: 'Time',
+                    initialize_kpi_newmonth: 'Initialize KPI new month',
+                    edit_kpi_success: 'Editing KPI successful',
+                    edit_kpi_failure: 'Editing KPI falied',
+                    delete_kpi_success: 'Delete KPI successfully',
+                    delete_kpi_failure: 'Delete KPI unsuccessfully',
+
+                    // Nhóm dành cho trọng số
+                    weight_total: 'Weight total',
+                    not_satisfied: 'Not satisfied',
+                    satisfied: 'Satisfied',
+
+                    // Nhóm dành cho các trạng thái tập KPI
+                    not_approved: 'Not approved',
+                    approved: 'Approved',
+
+                    // Nhóm dành cho table
+                    target_list: 'Target list',
+                    add_target: 'Add target',
+                    no_: 'No.',
+                    target_name: 'Target name',
+                    parents_target: 'Parents target',
+                    evaluation_criteria: 'Evalution criteria',
+                    weight: 'Weight',
+                    action: 'Action',
+                    not_initialize: 'No KPI have been initialized in ',
+
+                    // Nhóm dành cho các handle
+                    confirm_approve_already: 'KPI is approved!',
+                    confirm_approve: 'Are you sure you want to be approved this KPI?',
+                    confirm_not_enough_weight: 'The total weight must be 100',
+                    confirm_cancel_approve: 'Are you sure you want to cancel this KPI?',
+                    confirm_edit_status_success: 'Edit status kpi successfully',
+                    confirm_edit_status_failure: 'Edit status kpi unsuccessfully',
+
+                    confirm_kpi: 'Are you sure you want to delete this KPI target?',
+                    confirm_approving: 'KPI has been activated, you can not delete!',
+                    confirm_delete_target_success: 'Delete KPI target successful',
+                    confirm_delete_target_failure: 'Delete KPI target unsuccessfully',
+
+                    // Nhóm các title
+                    edit: 'Edit',
+                    content: 'This is the default target (if necessary, weights can be corrected)',
+                    delete_title: 'Delete',
+                },
+
+                create_organizational_unit_kpi_modal: { // Module con
+                    // Nhóm dành cho modal
+                    create_organizational_unit_kpi: 'Add personal KPI target',
+                    name: 'Target name',
+                    parents: 'Parents target',
+                    evaluation_criteria: 'Evaluation criteria',
+                    weight: 'Weight',
+                    create_target_success: 'Add KPI target successful',
+                    create_target_failure: 'You have not entered enough information',
+
+                    // Nhóm dành cho validate
+                    validate_name: {
+                        empty: 'Target name cannot be empty',
+                        less_than_4: 'Target name cannot be less than 4 characters',
+                        more_than_50: 'Target name cannot be more than 50 characters',
+                        special_character: 'Target name cannot contain special characters'
+                    },
+                    validate_criteria: 'Criteria cannot be empty',
+                    validate_weight: {
+                        empty: 'Weight cannot be empty',
+                        less_than_0: 'Weight cannot be less than 0',
+                        greater_than_100: 'Weight cannot be greater than 100'
+                    }
+                },
+
+                kpi_member_manager: { // Module con
+                    index: 'Index',
+                    time: 'Date',
+                    employee_name: 'Employee Name',
+                    target_number: 'Target Number',
+                    kpi_status: 'KPI Status',
+                    result: 'Result',
+                    approve: 'Approve',
+                    evaluate: 'Evaluate'
+                },
+
+                create_organizational_unit_kpi_set_modal: { // Module con
+                    // Nhóm dành cho modal
+                    initialize_kpi_set: 'Initialize organizational unit KPI',
+                    organizational_unit: 'Organizational Unit',
+                    month: 'Month',
+                    default_target: 'Default target',
+                    create_organizational_unit_kpi_set_success: 'Initialize KPI successful',
+                    create_organizational_unit_kpi_set_failure: 'You have not entered enough information'
+                },
+
+                edit_target_kpi_modal: { // Module con
+                    // Nhóm dành cho modal
+                    edit_organizational_unit_kpi: 'Edit personal KPI targets',
+                    name: 'Target name',
+                    parents: 'Parents target',
+                    evaluation_criteria: 'Evaluation criteria',
+                    weight: 'Weight',
+                    edit_target_success: 'Edit KPI target successful',
+                    edit_target_failure: 'You have not entered enough information'
+                },
+
+                //Thông điệp khác trả về từ server
+                get_parent_by_unit_success: 'Get KPI by parent unit successfully',
+                get_parent_by_unit_failure: 'Get KPI by parent unit unsuccessfully',
                 get_kpi_unit_success: 'Get all KPI unit successfully',
                 get_kpi_unit_fail: 'Get all KPI unit fail',
                 get_kpiunit_by_role_success: 'Get KPI unit by role successfully',
                 get_kpiunit_by_role_fail: 'Get KPI unit by role fail',
-                get_child_target_by_parent_id_success: 'Get child targets by parent Id successfully',
-                get_child_target_by_parent_id_fail: 'Get child targets by parent Id fail',
                 create_kpi_unit_success: 'Create KPI unit successfully',
                 create_kpi_unit_fail: 'Create KPI unit fail',
                 update_evaluate_kpi_unit_success: 'Update kpi unit evaluation successfully',
