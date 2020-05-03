@@ -116,9 +116,10 @@ exports.getEmployeeProfile = async (req, res) => {
 /**
  * Cập nhật thông tin cá nhân
  */
-exports.updateEmployeeInformation = async (req, res) => {
+exports.updatePersonalInformation = async (req, res) => {
     try {
-        var data = await EmployeeService.updateEmployeeInformation(req.params.email, req.body);
+        let avatar = `/${req.file.path}`;
+        var data = await EmployeeService.updatePersonalInformation(req.params.email, req.body, avatar);
         await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(200).json({ success: true, messages: ["edit_infor_personal_success"], content: data });
     } catch (error) {

@@ -1,21 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require('../../../middleware');
+const {
+    auth,
+    uploadFile
+} = require('../../../middleware');
 const EmployeeController = require("./profile.controller");
 
 /**
  * Lấy thông tin cá nhân
- */ 
+ */
 router.get('/:email', auth, EmployeeController.getEmployeeProfile);
 
 /**
  * Cập nhật thông tin cá nhân
  */
-router.put('/:email', auth, EmployeeController.updateEmployeeInformation);
+router.put('/:email', auth, uploadFile('fileAvatar', '/human-resource/avatars'), EmployeeController.updatePersonalInformation);
 
 /**
  * Lấy danh sách nhân viên
- */ 
+ */
 router.post('/paginate', auth, EmployeeController.searchEmployeeProfiles);
 
 
@@ -25,7 +28,7 @@ router.get('/checkMSNV/:employeeNumber', auth, EmployeeController.checkEmployeeE
 
 // Kiểm tra sự tồn tại của email công ty
 router.get('/checkEmail/:email', auth, EmployeeController.checkEmployeeCompanyEmailExisted);
- 
+
 
 
 // Thêm mới một nhân viên

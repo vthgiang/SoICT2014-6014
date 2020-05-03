@@ -73,6 +73,7 @@ export default {
             edit_discipline_success: 'Chỉnh sửa kỷ luật thành công',
             edit_discipline_faile: 'Chỉnh sửa kỷ luật thất bại',
             // Quản lý thông tin cá nhân
+            // TODO: Xoá sau
             get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
             get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
             edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
@@ -1020,6 +1021,7 @@ export default {
                 edit_annual_leave_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
                 edit_annual_leave_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
             },
+
             // Quản lý khen thưởng kỷ luật
             commendation_discipline: {
                 // Quản lý khen thưởng
@@ -1103,6 +1105,24 @@ export default {
 
                 }
             },
+
+            // Quản lý thông tin nhân viên
+            profile: {
+                // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
+
+                // Quản lý thông tin cá nhân
+                employee_info: {
+                    // Nhóm dành cho UI
+                    guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
+                    no_change_data: 'Không có thông tin nào được thay đổi',
+
+                    // Thông điệp trả về từ server
+                    get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
+                    get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
+                    edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
+                    edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
+                }
+            }
         },
 
 

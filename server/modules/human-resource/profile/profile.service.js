@@ -103,10 +103,12 @@ exports.getEmployeeProfile = async (email) => {
  * @eamil: email công ty của nhân viên 
  * @data: dữ liệu chỉnh sửa thông tin của nhân viên
  */
-exports.updateEmployeeInformation = async (email, data) => {
+exports.updatePersonalInformation = async (email, data, avatar) => {
+    console.log(avatar);
     var employeeInfo = await Employee.findOne({emailInCompany: email}, { _id: 1});
     // Thông tin cần cập nhật 
     var employeeUpdate = {
+        avatar: avatar,
         gender: data.gender,
         ethnic: data.ethnic,
         religion: data.religion,
@@ -134,7 +136,7 @@ exports.updateEmployeeInformation = async (email, data) => {
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
         temporaryResidenceWard: data.temporaryResidenceWard,
     }
-    // cập nhật thông tin cơ bản vào database
+    // Cập nhật thông tin cơ bản vào database
     await Employee.findOneAndUpdate({_id: employeeInfo._id}, {$set: employeeUpdate});
     
     return await Employee.find({_id: employeeInfo._id});

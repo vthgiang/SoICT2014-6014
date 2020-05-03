@@ -17,7 +17,10 @@ export const DisciplineActions = {
  * 
  */
 
-// Lấy danh sách kỷ luật
+/**
+ * Lấy danh sách kỷ luật
+ * @data : dữ liệu key tìm kiếm 
+ */
 function getListDiscipline(data) {
     return dispatch => {
         dispatch({
@@ -39,7 +42,10 @@ function getListDiscipline(data) {
     }
 }
 
-// Tạo mới thông tin kỷ luật của nhân viên
+/**
+ * Thêm mới kỷ luật của nhân viên
+ * @data : dữ liệu kỷ luật cần thêm 
+ */
 function createNewDiscipline(data) {
     return dispatch => {
         dispatch({
@@ -61,7 +67,10 @@ function createNewDiscipline(data) {
     }
 }
 
-// Xoá thông tin kỷ luật của nhân viên
+/**
+ * Xoá thông tin kỷ luật của nhân viên
+ * @id : Id kỷ luật cần xoá 
+ */
 function deleteDiscipline(id) {
     return dispatch => {
         dispatch({
@@ -83,7 +92,11 @@ function deleteDiscipline(id) {
     }
 }
 
-// cập nhật thông tin kỷ luật của nhân viên
+/**
+ * Cập nhật thông tin kỷ luật của nhân viên
+ * @id : Id kỷ luật cần cập nhật 
+ * @data  : dữ liệu cập nhật
+ */
 function updateDiscipline(id, data) {
     return dispatch => {
         dispatch({
@@ -107,18 +120,17 @@ function updateDiscipline(id, data) {
 /**
  * End
  * Quản lý kỷ luật
- * 
  */
-
-
 
 /**
  * Start
  * Quản lý khen thưởng
- * 
  */
 
-// Lấy danh sách khen thưởng
+/**
+ * Lấy danh sách khen thưởng
+ * @data : dữ liệu key tìm kiếm 
+ */
 function getListPraise(data) {
     return dispatch => {
         dispatch({
@@ -140,7 +152,10 @@ function getListPraise(data) {
     }
 }
 
-// Thêm mới thông tin khen thưởng
+/**
+ * Thêm mới thông tin khen thưởng
+ * @data : dữ liệu khen thưởng thêm mới
+ */
 function createNewPraise(data) {
     return dispatch => {
         dispatch({
@@ -162,7 +177,10 @@ function createNewPraise(data) {
     }
 }
 
-// Xoá một chương trình đào tạo
+/**
+ * Xoá thông tin khen thưởng
+ * @id : Id khen thương cần xoá 
+ */
 function deletePraise(id) {
     return dispatch => {
         dispatch({
@@ -184,7 +202,11 @@ function deletePraise(id) {
     }
 }
 
-// cập nhật thông tin của chương trình đào tạo
+/**
+ * Cập nhật thông tin khen thưởng
+ * @id : id khen thưởng cần cập nhật
+ * @data  : Dữ liệu cập nhật khen thưởng
+ */
 function updatePraise(id, data) {
     return dispatch => {
         dispatch({
@@ -208,5 +230,4 @@ function updatePraise(id, data) {
 /**
  * End
  * Quản lý khen thưởng
- * 
  */

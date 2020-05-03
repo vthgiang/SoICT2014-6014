@@ -72,6 +72,7 @@ export default {
             edit_discipline_success: 'Edit discipline success',
             edit_discipline_faile: 'Edit discipline faile',
             // Quản lý thông tin cá nhân
+            // TODO: Xoá sau
             get_infor_personal_success: 'Get information personal success',
             get_infor_personal_false: 'Get information personal false',
             edit_infor_personal_success: 'Update information personal success',
@@ -991,6 +992,25 @@ export default {
                     edit_discipline_faile: 'Edit discipline faile',
                 }
             },
+
+            // Quản lý thông tin nhân viên
+            profile: {
+                // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
+
+                // Quản lý thông tin cá nhân
+                employee_info: {
+                    // Nhóm dành cho UI
+                    guaranteed_infor_to_update: 'You have not guaranteed information to update',
+                    no_change_data: 'No information changed',
+
+                    // Thông điệp trả về từ server
+                    get_infor_personal_success: 'Get information personal success',
+                    get_infor_personal_false: 'Get information personal false',
+                    edit_infor_personal_success: 'Update information personal success',
+                    edit_infor_personal_false: 'Update infor personal false',
+                    
+                }
+            }
         },
 
         // Task template

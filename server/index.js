@@ -8,6 +8,7 @@ const multer = require('multer');
 multer({dest: 'upload/avatars'});
 multer({dest: 'upload/docs'});
 multer({dest: 'upload/excels'});
+multer({dest: 'human-resource/avatars'});
 require('dotenv').config();
 
 
