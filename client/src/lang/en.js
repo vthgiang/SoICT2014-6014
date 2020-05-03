@@ -561,8 +561,8 @@ export default {
             add_sabbatical_title: 'Add new sabbatical',
             edit_sabbatical: 'Edit Sabbatical',
             delete_sabbatical: 'Delete sabbatical',
-            start_date: 'Start day',
-            end_date: 'End day',
+            start_date: 'Start date',
+            end_date: 'End date',
             reason: 'Reason',
             check_null_msnv: 'Staff code required',
             check_msnv: 'Not find staff code',
@@ -872,8 +872,8 @@ export default {
 
                 // Nhóm dành cho table
                 table: {
-                    start_date: 'Start day',
-                    end_date: 'End day',
+                    start_date: 'Start date',
+                    end_date: 'End date',
                     reason: 'Reason',
                     action: 'action',
                 },
