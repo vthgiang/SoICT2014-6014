@@ -29,12 +29,12 @@ router.post('/log-timer/start-timer',auth,  PerformTaskController.startTimesheet
 router.put('/log-timer/pause-timer/:id',auth,  PerformTaskController.pauseTimesheetLog);
 router.put('/log-timer/continue-timer/:id',auth,  PerformTaskController.continueTimesheetLog);
 router.put('/log-timer/stop-timer/:id',auth,  PerformTaskController.stopTimesheetLog);
-router.delete('/task-action/:id',auth, PerformTaskController.deleteTaskAction);
+router.delete('/task-action/:task/:id',auth, PerformTaskController.deleteTaskAction);
 router.get('/action-comment/:task',auth,  PerformTaskController.getCommentsOfTaskAction);
 router.post('/action-comment/create',auth,  PerformTaskController.createCommentOfTaskAction);//,upload.single('file')
 router.put('/action-comment/:id',auth,  PerformTaskController.editCommentOfTaskAction);
 router.put('/task-action/:id',auth, PerformTaskController.editTaskAction)
-router.delete('/action-comment/:id',auth,  PerformTaskController.deleteCommentOfTaskAction);
+router.delete('/action-comment/:task/:id',auth,  PerformTaskController.deleteCommentOfTaskAction);
 router.get('/task-action/:task',auth, PerformTaskController.getTaskActions);
 router.post('/task-action/create',auth, PerformTaskController.createTaskAction)
 router.post('/add-result/create',auth,  PerformTaskController.createResultInfoTask);

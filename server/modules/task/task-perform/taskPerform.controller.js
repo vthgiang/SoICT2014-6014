@@ -284,11 +284,12 @@ exports.editTaskAction = async (req,res) =>{
 
 exports.deleteTaskAction = async (req,res)=>{
     try {
-        await PerformTaskService.deleteTaskAction(req.params);
+        var taskAction = await PerformTaskService.deleteTaskAction(req.params);
         await LogInfo(req.user.email, ` delete task action  `,req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['delete_task_action_success']
+            messages: ['delete_task_action_success'],
+            content: taskAction
         })
     } catch (error) {
         await LogError(req.user.email, ` delete task action  `,req.user.company);
@@ -366,12 +367,14 @@ exports.deleteCommentOfTaskAction = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['delete_action_comment_success'],
+            content : task
         })
     } catch (error) {
         await LogError(req.user.email, ` delete action comment  `,req.user.company)
         res.status(400).json({
             success: false,
-            messages : ['delete_action_comment_fail']
+            messages : ['delete_action_comment_fail'],
+            content : error
         })
     }
 
