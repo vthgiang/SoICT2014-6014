@@ -146,8 +146,8 @@ exports.getById = async (id) => {
 }
 
 exports.getTaskById= async (id) =>{
-    var task = await Task.find({kpi: id}) 
-    .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
+    var task = await Task.find({'evaluations.kpis.kpis': id}) 
+    .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
     
     return task;
 }

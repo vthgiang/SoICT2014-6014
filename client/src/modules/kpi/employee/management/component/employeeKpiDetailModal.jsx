@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { managerServices } from '../../../organizational-unit/management/redux/services';
+import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
 class ModalDetailKPIPersonal extends Component {
     // componentDidMount() {
@@ -47,11 +48,12 @@ class ModalDetailKPIPersonal extends Component {
     }
     handleChangeContent = async (id) => {
         await this.setState(state => {
+            this.props.getAllTaskById(id);
             return {
                 ...state,
                 content: id
             }
-        })
+        });
     }
     formatDate(date) {
         var d = new Date(date),
@@ -68,7 +70,10 @@ class ModalDetailKPIPersonal extends Component {
     }
     render() {
         var list;
-        const { kpipersonal } = this.props;
+        var myTask = [];
+        const { kpimembers, kpipersonal } = this.props;
+        console.log("============",kpimembers.tasks)
+        if(typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         if (kpipersonal.kpis) list = kpipersonal.kpis;
         return (
             <div className="modal modal-full fade" id={"detailKPIPersonal" + kpipersonal._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -80,7 +85,7 @@ class ModalDetailKPIPersonal extends Component {
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>
                             </button>
-                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi cá nhân tháng {this.formatDate(kpipersonal.time)}</h3>
+                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi cá nhân tháng {this.formatDate(kpipersonal.date)}</h3>
                         </div>
                         {/* Modal Body */}
                         <div className="modal-body modal-body-perform-task" >
@@ -116,11 +121,11 @@ class ModalDetailKPIPersonal extends Component {
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Hệ thống đánh giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.systempoint==null?"Chưa đánh giá":item.systempoint}</label>
+                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.systempoint == null ? "Chưa đánh giá" : item.systempoint}</label>
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Quản lý đánh giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.approverpoint===null?"Chưa đánh giá":item.approverpoint}</label>
+                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</label>
                                                 </div>
                                                 <div className="col-sm-12">
                                                     <label className="col-sm-2" style={{ fontWeight: "400" }}>Cá nhân tự đánh giá:</label>
@@ -153,105 +158,23 @@ class ModalDetailKPIPersonal extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>1</td>
-                                                            <td>Kiểm thử lô hàng số 17</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>2</td>
-                                                            <td>Kiểm thử lô hàng số 13</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>95</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3</td>
-                                                            <td>Kiểm thử lô hàng số 15</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>90</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>4</td>
-                                                            <td>Kiểm thử lô hàng số 19</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>5</td>
-                                                            <td>Kiểm thử lô hàng số 11</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>85</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6</td>
-                                                            <td>Kiểm thử lô hàng số 10</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>7</td>
-                                                            <td>Kiểm thử lô hàng số 1</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đã hoàn thành</td>
-                                                            <td>80</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>8</td>
-                                                            <td>Kiểm thử lô hàng số 8</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đã hủy</td>
-                                                            <td>0</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>9</td>
-                                                            <td>Kiểm thử lô hàng số 7</td>
-                                                            <td>Đảm bảo chất lượng sản phẩm</td>
-                                                            <td>Hoàn thành kiểm thử chất lượng, thành phần của sản phẩm</td>
-                                                            <td>Lê Thị Phương</td>
-                                                            <td>Lê Việt Anh</td>
-                                                            <td>Hoàng Thị Hạnh</td>
-                                                            <td>Đang thực hiện</td>
-                                                            <td>0</td>
-                                                        </tr>
+                                                        {
+
+                                                            (typeof kpimembers.tasks !== "undefined" && kpimembers.tasks) ?
+                                                                (kpimembers.tasks.map((itemTask, index) =>
+
+                                                                    <tr key={index}>
+                                                                        <td>{index + 1}</td>
+                                                                        <td>{itemTask.name}</td>
+                                                                        <td>{itemTask.organizationalUnit.name}</td>
+                                                                        <td>{itemTask.description}</td>
+                                                                        <td>{itemTask.creator.name}</td>
+                                                                        <td>{itemTask.accountableEmployees.name}</td>
+                                                                        <td>{itemTask.consultedEmployees.name}</td>
+                                                                        <td>{itemTask.status}</td>
+                                                                        {/* <td>{itemTask.evaluations[0]. === 0 ? 0 : itemTask.point}</td> */}
+                                                                    </tr>)) : <tr><td colSpan={5}>Không có dữ liệu thỏa mãn điều kiện</td></tr>
+                                                        }
                                                     </tbody>
                                                 </table>
                                                 <div className="footer-content-right">
@@ -272,12 +195,13 @@ class ModalDetailKPIPersonal extends Component {
 }
 
 function mapState(state) {
-    const { managerKpiUnit } = state;
-    return { managerKpiUnit };
+    const { managerKpiUnit,kpimembers } = state;
+    return { managerKpiUnit,kpimembers };
 }
 
 const actionCreators = {
     getAllTarget: managerServices.getAllTargetByUnitId,
+    getAllTaskById: kpiMemberActions.getTaskById
 };
 const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(ModalDetailKPIPersonal);
 export { connectedModalDetailKPIPersonal as ModalDetailKPIPersonal };
