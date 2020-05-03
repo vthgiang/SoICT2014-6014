@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
-class ModalAddCertificate extends Component {
+class DegreeAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nameCertificate: "",
-            addressCertificate: "",
-            yearCertificate: "",
-            typeCertificate: "excellent",
+            name: "",
+            issuedBy: "",
+            year: "",
+            degreeType: "excellent",
             file: "",
-            urlFile: " ",
-            fileUpload: " ",
+            urlFile: "",
+            fileUpload: "",
         }
     }
     // Bắt sự kiện thay đổi file đính kèm
@@ -34,61 +34,61 @@ class ModalAddCertificate extends Component {
         }
     }
     // Bắt sự kiên thay đổi tên bằng cấp
-    handleNameCertificateChange = (e) => {
+    handleNameChange = (e) => {
         let { value } = e.target;
-        this.validateNameCertificate(value, true);
+        this.validateName(value, true);
     }
-    validateNameCertificate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateNameCertificate(value, this.props.translate)
+    validateName = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateNameDegree(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameCertificate: msg,
-                    nameCertificate: value,
+                    errorOnName: msg,
+                    name: value,
                 }
             });
         }
         return msg === undefined;
     }
     // Bắt sự kiện thay đổi nơi đào tạo
-    handleAddressCertificateChange = (e) => {
+    handleIssuedByChange = (e) => {
         let { value } = e.target;
-        this.validateAddressCertificate(value, true);
+        this.validateIssuedBy(value, true);
     }
-    validateAddressCertificate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateAddressCertificate(value, this.props.translate)
+    validateIssuedBy = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateIssuedByDegree(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnAddressCertificate: msg,
-                    addressCertificate: value,
+                    errorOnIssuedBy: msg,
+                    issuedBy: value,
                 }
             });
         }
         return msg === undefined;
     }
     // Bắt sự kiện thay đổi năm tốt nghiệp
-    handleYearCertificateChange = (e) => {
+    handleYearChange = (e) => {
         let { value } = e.target;
-        this.validateYearCertificate(value, true);
+        this.validateYear(value, true);
     }
-    validateYearCertificate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateYearCertificate(value, this.props.translate)
+    validateYear = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateYearDegree(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnYearCertificate: msg,
-                    yearCertificate: value,
+                    errorOnYear: msg,
+                    year: value,
                 }
             });
         }
         return msg === undefined;
     }
     // Bắt sự kiện thay đổi xếp loại
-    handleTypeCertificateChange = (e) => {
+    handleDegreeTypeChange = (e) => {
         let { name, value } = e.target;
         this.setState({
             [name]: value
@@ -98,8 +98,8 @@ class ModalAddCertificate extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateNameCertificate(this.state.nameCertificate, false) && this.validateAddressCertificate(this.state.addressCertificate, false) &&
-            this.validateYearCertificate(this.state.yearCertificate, false);
+            this.validateName(this.state.name, false) && this.validateIssuedBy(this.state.issuedBy, false) &&
+            this.validateYear(this.state.year, false);
         return result;
     }
     // Bắt sự kiện submit form
@@ -110,8 +110,7 @@ class ModalAddCertificate extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { nameCertificate, addressCertificate, yearCertificate, typeCertificate,
-            errorOnNameCertificate, errorOnAddressCertificate, errorOnYearCertificate } = this.state;
+        const { name, issuedBy, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID={`modal-create-certificate-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_diploma')} />
@@ -123,25 +122,25 @@ class ModalAddCertificate extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-certificate-${id}`}>
-                        <div className={`form-group ${errorOnNameCertificate === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnName === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.name_diploma')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="nameCertificate" value={nameCertificate} onChange={this.handleNameCertificateChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnNameCertificate} />
+                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameChange} autoComplete="off" />
+                            <ErrorLabel content={errorOnName} />
                         </div>
-                        <div className={`form-group ${errorOnAddressCertificate === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnIssuedBy === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.diploma_issued_by')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="addressCertificate" value={addressCertificate} onChange={this.handleAddressCertificateChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnAddressCertificate} />
+                            <input type="text" className="form-control" name="issuedBy" value={issuedBy} onChange={this.handleIssuedByChange} autoComplete="off" />
+                            <ErrorLabel content={errorOnIssuedBy} />
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnYearCertificate === undefined ? "" : "has-error"}`}>
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear === undefined ? "" : "has-error"}`}>
                                 <label>{translate('manage_employee.graduation_year')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="yearCertificate" value={yearCertificate} onChange={this.handleYearCertificateChange} autoComplete="off" />
-                                <ErrorLabel content={errorOnYearCertificate} />
+                                <input type="text" className="form-control" name="year" value={year} onChange={this.handleYearChange} autoComplete="off" />
+                                <ErrorLabel content={errorOnYear} />
                             </div>
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('manage_employee.ranking_learning')}<span className="text-red">*</span></label>
-                                <select className="form-control" value={typeCertificate} name="typeCertificate" onChange={this.handleTypeCertificateChange}>
+                                <select className="form-control" value={degreeType} name="degreeType" onChange={this.handleDegreeTypeChange}>
                                     <option value="excellent">{translate('manage_employee.excellent')}</option>
                                     <option value="very_good">{translate('manage_employee.very_good')}</option>
                                     <option value="good">{translate('manage_employee.good')}</option>
@@ -160,5 +159,5 @@ class ModalAddCertificate extends Component {
         );
     }
 };
-const addCertificate = connect(null, null)(withTranslate(ModalAddCertificate));
-export { addCertificate as ModalAddCertificate };
+const addModal = connect(null, null)(withTranslate(DegreeAddModal));
+export { addModal as DegreeAddModal };

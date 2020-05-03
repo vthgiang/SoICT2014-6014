@@ -71,9 +71,9 @@ exports.getAllTasksCreatedByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người thực hiện chính
  */
-exports.getPaginatedTasksResponsibleByUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
     try {
-        var responsibleTasks = await TaskManagementService.getPaginatedTasksResponsibleByUser(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
         await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(200).json({
             success:true,
@@ -93,9 +93,9 @@ exports.getPaginatedTasksResponsibleByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người phê duyệt
  */
-exports.getPaginatedTasksAccountableByUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasAccountableRole = async (req, res) => {
     try {
-        var accountableTasks = await TaskManagementService.getPaginatedTasksAccountableByUser(req.params.perPage,req.params.number,req.params.unit,req.params.status,req.params.user);
+        var accountableTasks = await TaskManagementService.getPaginatedTasksThatUserHasAccountableRole(req.params.perPage,req.params.number,req.params.unit,req.params.status,req.params.user);
         await LogInfo(req.user.email, ` get task accountable by user  `,req.user.company)
         // res.status(200).json(accountableTasks);
         res.status(200).json({
@@ -116,9 +116,9 @@ exports.getPaginatedTasksAccountableByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người hỗ trợ
  */
-exports.getPaginatedTasksConsultedByUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasConsultedRole = async (req, res) => {
     try {
-        var consultedTasks = await  TaskManagementService.getPaginatedTasksConsultedByUser(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var consultedTasks = await  TaskManagementService.getPaginatedTasksThatUserHasConsultedRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
         await LogInfo(req.user.email, ` get task consulted by user `,req.user.company)
         res.status(200).json({
             success:true,
@@ -160,9 +160,9 @@ exports.getPaginatedTasksCreatedByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người quan sát
  */
-exports.getTasksThatAreInformedToUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
     try {
-        var informedTasks = await TaskManagementService.getTasksThatAreInformedToUser(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var informedTasks = await TaskManagementService.getPaginatedTasksThatUserHasInformedRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
         await LogInfo(req.user.email, ` get task informed by user `,req.user.company)
         res.status(200).json({
             success:true,

@@ -37,7 +37,7 @@ exports.getTasksCreatedByUser = async (id) => {
 /**
  * Lấy công việc thực hiện chính theo id người dùng
  */
-exports.getPaginatedTasksResponsibleByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksThatUserHasResponsibleRole = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var responsibleTasks;
         var perPage = Number(perpageId);
@@ -66,7 +66,7 @@ exports.getPaginatedTasksResponsibleByUser = async (perpageId,numberId,unitId,us
 /**
  * Lấy công việc phê duyệt theo id người dùng
  */
-exports.getPaginatedTasksAccountableByUser = async (perpageId,numberId,unitId,statusId,userId) => {
+exports.getPaginatedTasksThatUserHasAccountableRole = async (perpageId,numberId,unitId,statusId,userId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.status,req.params.user
     var accountableTasks;
         var perPage = Number(perpageId);
@@ -95,7 +95,7 @@ exports.getPaginatedTasksAccountableByUser = async (perpageId,numberId,unitId,st
 /**
  * Lấy công việc hỗ trợ theo id người dùng
  */
-exports.getPaginatedTasksConsultedByUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksThatUserHasConsultedRole = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var consultedTasks;
         var perPage = Number(perpageId);
@@ -153,7 +153,7 @@ exports.getPaginatedTasksCreatedByUser = async (perpageId,numberId,unitId,status
 /**
  * Lấy công việc quan sát theo id người dùng
  */
-exports.getTasksThatAreInformedToUser = async (perpageId,numberId,unitId,userId,statusId) => {
+exports.getPaginatedTasksThatUserHasInformedRole = async (perpageId,numberId,unitId,userId,statusId) => {
     //req.params.perpage,req.params.number,req.params.unit,req.params.user,req.params.status
     var informedTasks;
         var perPage = Number(perpageId);

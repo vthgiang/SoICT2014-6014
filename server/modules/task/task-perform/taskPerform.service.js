@@ -94,37 +94,10 @@ exports.stopTimer = async (req, res) => {
     }
 }
 
-
-/**
- * Lấy tất cả nội dung bình luận của hoạt động
- */
-exports.getActionComments = async (params) => {
-    var actionComments = await Task.aggregate([
-        { $match: { _id: mongoose.Types.ObjectId(params.task) } },
-        { $unwind: "$taskActions" },
-        { $replaceRoot: { newRoot: "$taskActions" } },
-        { $unwind: "$comments" },
-        { $replaceRoot: { newRoot: "$comments" } },
-        {
-            $lookup: {
-                from: "users",
-                localField: "creator",
-                foreignField: "_id",
-                as: "creator"
-
-            }
-        },
-        {$unwind : "$creator"}
-    ])
-
-    return actionComments;
-
-}
-
 /**
  * Thêm bình luận của hoạt động
  */
-exports.createActionComment = async (body) => {
+exports.createCommentOfTaskAction = async (body) => {
 
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
@@ -140,39 +113,43 @@ exports.createActionComment = async (body) => {
                 }
             }
         )
-        var actionComment = await Task.aggregate([
-            {
-                $match: { "taskActions._id": mongoose.Types.ObjectId(body.taskActionId) }
-            },
-            { $unwind: "$taskActions" },
-            { $replaceRoot: { newRoot: "$taskActions" } },
-            { $match: { "_id": mongoose.Types.ObjectId(body.taskActionId) } },
-            { $unwind: "$comments" },
-            { $sort: { "comments.createdAt": -1 } },
-            {
-                $group: {
-                    _id: null,
-                    first: { $first: "$$ROOT" }
-                }
-            },
-            { $replaceRoot: { newRoot: "$first.comments" } },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "creator",
-                    foreignField: "_id",
-                    as: "creator"
+        // var task = await Task.aggregate([
+        //     {
+        //         $match: { "taskActions._id": mongoose.Types.ObjectId(body.taskActionId) }
+        //     },
+        //     { $unwind: "$taskActions" },
+        //     { $replaceRoot: { newRoot: "$taskActions" } },
+        //     { $match: { "_id": mongoose.Types.ObjectId(body.taskActionId) } },
+        //     { $unwind: "$comments" },
+        //     { $sort: { "comments.createdAt": -1 } },
+        //     {
+        //         $group: {
+        //             _id: null,
+        //             first: { $first: "$$ROOT" }
+        //         }
+        //     },
+        //     { $replaceRoot: { newRoot: "$first.comments" } },
+        //     {
+        //         $lookup: {
+        //             from: "users",
+        //             localField: "creator",
+        //             foreignField: "_id",
+        //             as: "creator"
 
-                }
-            },
-            {$unwind : "$creator"}
-        ])
-        return actionComment[0];
+        //         }
+        //     },
+        //     {$unwind : "$creator"}
+        // ])
+        var task = await Task.findOne({"taskActions._id": body.taskActionId}).populate([
+            { path: "taskActions.creator", model: User,select: 'name email' },
+            { path: "taskActions.comments.creator", model: User, select: 'name email'}
+        ]).select("taskActions");
+        return task.taskActions ;
 }
 /**
  * Sửa nội dung bình luận hoạt động
  */
-exports.editActionComment = async (params,body) => {
+exports.editCommentOfTaskAction = async (params,body) => {
     const now = new Date()
     var action = await Task.updateOne(
         { "taskActions.comments._id": params.id },
@@ -191,43 +168,52 @@ exports.editActionComment = async (params,body) => {
             ]
         }
     )
-    var commentAction = await Task.aggregate([
-        { $match: { "taskActions.comments._id": mongoose.Types.ObjectId(params.id) } },
-        { $unwind: "$taskActions" },
-        { $replaceRoot: { newRoot: "$taskActions" } },
-        { $unwind: "$comments" },
-        { $replaceRoot: { newRoot: "$comments" } },
-        { $match: { _id: mongoose.Types.ObjectId(params.id) } },
-        {
-            $lookup: {
-                from: "users",
-                localField: "creator",
-                foreignField: "_id",
-                as: "creator"
-            }
-        }
-    ])
-    return commentAction[0];
+    // var commentAction = await Task.aggregate([
+    //     { $match: { "taskActions.comments._id": mongoose.Types.ObjectId(params.id) } },
+    //     { $unwind: "$taskActions" },
+    //     { $replaceRoot: { newRoot: "$taskActions" } },
+    //     {
+    //         $lookup: {
+    //             from: "users",
+    //             localField: "creator",
+    //             foreignField: "_id",
+    //             as: "creator"
+    //         }
+    //     },
+    // ])
+    var task = await Task.findOne({"taskActions.comments._id": params.id}).populate([
+        { path: "taskActions.creator", model: User,select: 'name email' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email'}
+    ]).select("taskActions")
+    return task.taskActions;
 }
 
 /**
  * Xóa bình luận hoạt động
  */
-exports.deleteActionComment = async (params) => {
+exports.deleteCommentOfTaskAction = async (params) => {
     var action = await Task.update(
         { "taskActions.comments._id": params.id },
         { $pull: { "taskActions.$.comments" : {_id : params.id} } },
         { safe: true })
+    
+    var task = await Task.findOne({_id: params.task}).populate([
+        { path: "taskActions.creator", model: User,select: 'name email' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email'}
+        ]).select("taskActions");
+
+    return task.taskActions ;    
 }
 /**
  * Lấy thông tin tất cả các hoạt động không theo mẫu của công việc
  */
 exports.getTaskActions = async (taskId) => {
     //tim cac field actiontask trong task với ddkien task hiện tại trùng với task.params
-    var taskaction = await Task.findOne({ _id: taskId }).populate('taskActions.creator').sort({'createdAt': 'asc'}).select("taskActions -_id");
+    var task = await Task.findOne({ _id: taskId }).populate([
+        { path: "taskActions.creator", model: User,select: 'name email' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email'}])
     
-    var taskactions = taskaction.taskActions
-    return taskactions
+    return task.taskActions
  };
  
 /**
@@ -243,34 +229,35 @@ exports.createTaskAction = async (body) => {
     var taskAction1 = await Task.findByIdAndUpdate(body.task,
         { $push: { taskActions: actionInformation } }, { new: true }
     )
-        .populate(
-            'taskActions.creator'
-        )
     //aggregate trả về 1 mảng có 1 phần tử => taskAction[0]
-    var taskAction = await Task.aggregate([
-        { $match: { _id: mongoose.Types.ObjectId(body.task) } },
-        { $unwind: "$taskActions" },
-        { $sort: { "taskActions.createdAt": -1 } },
-        { $replaceRoot: { newRoot: "$taskActions" } },
-        {
-            $group: {
-                _id: null,
-                first: { $first: "$$ROOT" }
-            }
-        },
-        { $replaceRoot: { newRoot: "$first" } },
-        {
-            $lookup: {
-                from: "users",
-                localField: "creator",
-                foreignField: "_id",
-                as: "creator"
-            }
-        },
-        { $unwind: "$creator" }
-    ])
+    // var taskAction = await Task.aggregate([
+    //     { $match: { _id: mongoose.Types.ObjectId(body.task) } },
+    //     { $unwind: "$taskActions" },
+    //     { $sort: { "taskActions.createdAt": -1 } },
+    //     { $replaceRoot: { newRoot: "$taskActions" } },
+    //     {
+    //         $group: {
+    //             _id: null,
+    //             first: { $first: "$$ROOT" }
+    //         }
+    //     },
+    //     { $replaceRoot: { newRoot: "$first" } },
+    //     {
+    //         $lookup: {
+    //             from: "users",
+    //             localField: "creator",
+    //             foreignField: "_id",
+    //             as: "creator"
+    //         }
+    //     },
+    //     { $unwind: "$creator" }
+    // ])
 
-    return taskAction[0];
+    var task = await Task.findOne({ _id: body.task }).populate([
+        { path: "taskActions.creator", model: User,select: 'name email' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email'}])
+
+    return task.taskActions ;
 }
 /**
  * Sửa hoạt động của cộng việc
@@ -284,22 +271,13 @@ exports.editTaskAction = async (params,body) => {
             }
         }
     )
-    var taskAction = await Task.aggregate([
-        { $match: { "taskActions._id": mongoose.Types.ObjectId(params.id) } },
-        { $unwind: "$taskActions" },
-        { $replaceRoot: { newRoot: "$taskActions" } },
-        { $match: { _id: mongoose.Types.ObjectId(params.id) } },
-        {
-            $lookup: {
-                from: "users",
-                localField: "creator",
-                foreignField: "_id",
-                as: "creator"
-            }
-        },
-        { $unwind: "$creator" }
-    ])
-    return taskAction[0];
+    
+    var task = await Task.findOne({ "taskActions._id": params.id }).populate([
+        { path: "taskActions.creator", model: User,select: 'name email' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email'}])
+
+    return task.taskActions ;
+    
 }
 
 /**
@@ -310,48 +288,12 @@ exports.deleteTaskAction = async (params) => {
         { "taskActions._id": params.id },
         { $pull: { taskActions: { _id: params.id } } },
         { safe: true })
-}
-/**
- * Lấy tất cả các bình luận của công việc
- */
-exports.getTaskComments
-/**
- * Tạo bình luận công việc
- */
-exports.createTaskComment = async (body) => {
-    var commentInformation = {
-        creator: body.creator,
-        content: body.content
-    }
+   
+    var task = await Task.findOne({ _id: params.task }).populate([
+    { path: "taskActions.creator", model: User,select: 'name email' },
+    { path: "taskActions.comments.creator", model: User, select: 'name email'}])
 
-    var taskComment1 = await Task.findByIdAndUpdate(body.task,
-        { $push: { taskComments: commentInformation } }, { new: true });
-    
-    var taskComment = await Task.aggregate([
-        {$match : {_id : mongoose.Types.ObjectId(body.task)}},
-        {$unwind: "$taskComments"},
-        { $sort: { "taskComments.createdAt": -1 } },
-        { $replaceRoot: { newRoot: "$taskComments" } },
-        {
-            $group: {
-                _id: null,
-                first: { $first: "$$ROOT" }
-            }
-        },
-        { $replaceRoot: { newRoot: "$first" } },
-        {
-            $lookup: {
-                from: "users",
-                localField: "creator",
-                foreignField: "_id",
-                as: "creator"
-            }
-        },
-        { $unwind: "$creator" }
-    ])    
-    
-    //aggregate tra ve mang 
-    return taskComment[0]
+    return task.taskActions ;
 }
 // Test insert result info task
 exports.createResultInfoTask = async (req, res) => {
@@ -431,64 +373,61 @@ exports.editResultInformationTask = async (req, res) => {
 /**
  * Thêm thông tin kết quả của đánh giá từng nhân viên
  */
-exports.createResultTask = async (result, taskID, evaluateID, date) => {
+exports.createResultTask = async (result, taskID) => {
     var item = result;
 
     if (item !== null) {
         // Lưu thông tin kết quả 
-         // Lưu thông tin kết quả 
-         var resultTask = {
-            employee: item.employee,
-            role: item.role,
-            automaticPoint: item.automaticPoint,
-            employeePoint: item.employeePoint,
-            approvedPoint: item.approvedPoint
+        var resultTask = {
+            employee: item.member,
+            role: item.roleMember,
+            automaticPoint: item.systempoint,
+            employeePoint: item.mypoint,
+            approvedPoint: item.approverpoint
         }
-        console.log(resultTask);
         // Cập nhật thông tin công việc
-        var addResult = await Task.updateOne(
-            {
-                _id: taskID,
-                "evaluations._id" : evaluateID
-                // "evaluations.date": date // req.body.date // "2020-04-22T16:06:17.145Z"
-            }, 
-            {
-                $push: {
-                    "evaluations.$.results": resultTask
-                } 
-            }, 
-            { new: true }
+        var task = await Task.findByIdAndUpdate(
+            taskID, { $push: { results: resultTask } }, { new: true }
+            // là _id của task muốn đánh giá.
         );
     }
-    
-    return await Task.findById(taskID);
-    
+    return task;
+
 }
 
 /**
  * Sửa thông tin kết quả của nhân viên trong công việc
  */
-exports.editResultTask = async (listResult,taskid) => {
+exports.editResultTask = async (listResult, taskid) => {
     if (listResult !== []) {
-        // Lưu thông tin kết quả 
-        listResult.forEach( async (item) => {
-            var newTask = await Task.updateOne(
+        // Lưu thông tin kết quả  var listResultTask = await Promise.all
+        listResult.forEach(async (item) => {
+            // var newTask = await Task.findOneAndUpdate({results: {$elemMatch: {_id : item._id} }},
+            var newTask = await Task.updateOne({ "results._id": item._id },
+                // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},
                 {
-                    "evaluations.results._id" : item._id,
-                    // k can xet dieu kien ngay danh gia vi _id cua result la duy nhat
-                },
-                { $set: {
-                    "evaluations.$.results.$[elem].automaticPoint": item.automaticPoint,
-                    "evaluations.$.results.$[elem].employeePoint": item.employeePoint,
-                    "evaluations.$.results.$[elem].approvedPoint": item.approvedPoint
-                }},
-                { arrayFilters: [{
-                        "elem._id" : item._id,
-                    }]
-                } 
+                    $set: {
+                        "results.$.automaticPoint": item.systempoint,
+                        "results.$.employeePoint": item.mypoint,
+                        "results.$.approvedPoint": item.approverpoint
+                    }
+                }
             );
         })
     }
     return await Task.findOne({ _id: taskid });
 }
+/**
+ * Tạo bình luận công việc
+ */
+exports.createTaskComment = async (body) => {
+    var commentInformation = {
+        creator: body.creator,
+        content: body.content
+    }
 
+    var taskComment1 = await Task.findByIdAndUpdate(body.task,
+        { $push: { taskComments: commentInformation } }, { new: true });
+    
+    
+}

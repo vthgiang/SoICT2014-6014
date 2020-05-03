@@ -3,9 +3,9 @@ const {  LogInfo,  LogError } = require('../../../logs');
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 // Lấy tất tả lịch sử bấm giờ của một công việc
-exports.getLogTimer = async (req, res) => {
+exports.getTaskTimesheetLogs = async (req, res) => {
     try {
-        var logTimer = await PerformTaskService.getLogTimer(req.params);
+        var logTimer = await PerformTaskService.getTaskTimesheetLogs(req.params);
         await LogInfo(req.user.email, ` get log timer  `,req.user.company)
         res.status(200).json({
             success: true,
@@ -23,9 +23,9 @@ exports.getLogTimer = async (req, res) => {
 }
 
 // Lấy trạng thái bấm giờ hiện tai (chưa kết thúc)
-exports.getTimerStatus = async (req, res) => {
+exports.getActiveTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.getTimerStatus(req.params);
+        var timerStatus = await PerformTaskService.getActiveTimesheetLog(req.params);
         await LogInfo(req.user.email, ` get timer status `,req.user.company)
         res.status(200).json({
             success: true,
@@ -43,9 +43,9 @@ exports.getTimerStatus = async (req, res) => {
 }
 
 // Bắt đầu bấm giờ
-exports.startTimer = async (req, res) => {
+exports.startTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.startTimer(req.body);
+        var timerStatus = await PerformTaskService.startTimesheetLog(req.body);
         await LogInfo(req.user.email, ` start timer `,req.user.company)
         res.status(200).json({
             success: true,
@@ -62,10 +62,11 @@ exports.startTimer = async (req, res) => {
     }
 }
 
+// TODO: Bỏ service này
 // Tạm dừng bấm giờ
-exports.pauseTimer = async (req, res) => {
+exports.pauseTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.pauseTimer(req.params,req.body);
+        var timerStatus = await PerformTaskService.pauseTimesheetLog(req.params,req.body);
         await LogInfo(req.user.email, ` pause timer `,req.user.company);
         res.status(200).json({
             success: true ,
@@ -83,9 +84,9 @@ exports.pauseTimer = async (req, res) => {
 }
 
 // Tiếp tục bấm giờ
-exports.continueTimer = async (req, res) => {
+exports.continueTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.continueTimer(req.params,req.body);
+        var timerStatus = await PerformTaskService.continueTimesheetLog(req.params,req.body);
         await(req.user.email, ` continue timer `,req.user.company)
         res.status(200).json({
             success : true,
@@ -103,9 +104,9 @@ exports.continueTimer = async (req, res) => {
 }
 
 // Kết thúc bấm giờ
-exports.stopTimer = async (req, res) => {
+exports.stopTimesheetLog = async (req, res) => {
     try {
-        var timer = await PerformTaskService.stopTimer(req.params,req.body);
+        var timer = await PerformTaskService.stopTimesheetLog(req.params,req.body);
         await LogInfo(req.user.email, ` stop timer `,req.user.company)
         res.status(200).json({
             success: true,
@@ -144,9 +145,9 @@ exports.createResultInfoTask = async (req, res) => {
 }
 
 // Thêm dữ liệu nhập liệu cho thông tin mẫu công việc
-exports.createResultInformationTask = async (req, res) => {
+exports.createTaskInformation = async (req, res) => {
     try {
-        var task =  await PerformTaskService.createResultInformationTask(req.body);
+        var task =  await PerformTaskService.createTaskInformation(req.body);
         await LogInfo(req.user.email, ` create result infomation task `,req.user.company)
         res.status(200).json({
             success : true,
@@ -164,9 +165,9 @@ exports.createResultInformationTask = async (req, res) => {
 }
 
 // Chỉnh sửa dữ liệu nhập liệu cho thông tin mẫu công việc
-exports.editResultInformationTask = async (req, res) => {
+exports.editTaskInformation = async (req, res) => {
     try {
-        var listResultInfoTask = await PerformTaskService.editResultInformationTask(req.body);
+        var listResultInfoTask = await PerformTaskService.editTaskInformation(req.body);
         await LogInfo(req.user.email, ` edit result infomation task `,req.user.company);
         res.status(200).json({
             success: true,
@@ -184,9 +185,9 @@ exports.editResultInformationTask = async (req, res) => {
 }
 
 // Thêm kết quả đánh giá công việc cho từng người tham gia
-exports.createResultTask = async (req, res) => {
+exports.createTaskResult = async (req, res) => {
     try {
-        var task = await PerformTaskService.createResultTask(req.body.result,req.body.task, req.body.evaluateID, req.body.date);
+        var task = await PerformTaskService.createTaskResult(req.body.result,req.body.task, req.body.evaluateID, req.body.date);
         await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
         res.json({
             success : true,
@@ -204,9 +205,9 @@ exports.createResultTask = async (req, res) => {
 }
 
 // Chỉnh sửa kết quả đánh giá công việc cho từng người tham gia listResult, taskID
-exports.editResultTask = async (req, res) => {
+exports.editTaskResult = async (req, res) => {
     try {
-        var listResultTask = await PerformTaskService.editResultTask(req.body, req.params.id);
+        var listResultTask = await PerformTaskService.editTaskResult(req.body, req.params.id);
         await LogInfo(req.user.email, ` edit result of task  `,req.user.company);
         res.json({
             success: true,
@@ -283,11 +284,12 @@ exports.editTaskAction = async (req,res) =>{
 
 exports.deleteTaskAction = async (req,res)=>{
     try {
-        await PerformTaskService.deleteTaskAction(req.params);
+        var taskAction = await PerformTaskService.deleteTaskAction(req.params);
         await LogInfo(req.user.email, ` delete task action  `,req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['delete_task_action_success']
+            messages: ['delete_task_action_success'],
+            content: taskAction
         })
     } catch (error) {
         await LogError(req.user.email, ` delete task action  `,req.user.company);
@@ -299,9 +301,9 @@ exports.deleteTaskAction = async (req,res)=>{
     }
 }
 // Lấy tất cả bình luận và hoạt động của một công việc
-exports.getActionComments =async (req, res) => {
+exports.getCommentsOfTaskAction =async (req, res) => {
     try {
-        var actionComments = await PerformTaskService.getActionComments(req.params)
+        var actionComments = await PerformTaskService.getCommentsOfTaskAction(req.params)
         await LogInfo(req.user.email, ` get all action comments  `,req.user.company);
         res.status(200).json({
             success: true,
@@ -319,9 +321,9 @@ exports.getActionComments =async (req, res) => {
  }
  
  // Tạo một bình luận hoặc hoạt động cho công việc
- exports.createActionComment = async (req, res) => {
+ exports.createCommentOfTaskAction = async (req, res) => {
      try {
-        var actionComment = await PerformTaskService.createActionComment(req.body);
+        var actionComment = await PerformTaskService.createCommentOfTaskAction(req.body);
         await LogInfo(req.user.email, ` create  action comment  `,req.user.company);
         res.status(200).json({
              success: true,
@@ -338,9 +340,9 @@ exports.getActionComments =async (req, res) => {
      }
  }
 // Chỉnh sửa một hoạt động hoặc bình luận
-exports.editActionComment = async (req, res) => {
+exports.editCommentOfTaskAction = async (req, res) => {
     try {
-        var actionComment = await PerformTaskService.editActionComment(req.params,req.body);
+        var actionComment = await PerformTaskService.editCommentOfTaskAction(req.params,req.body);
         await LogInfo(req.user.email, ` edit action comment  `,req.user.company);
         res.status(200).json({
             success: true,
@@ -358,19 +360,21 @@ exports.editActionComment = async (req, res) => {
 }
 
 // Xóa bỏ một bình luận hoặc hoạt động
-exports.deleteActionComment = async (req, res) => {
+exports.deleteCommentOfTaskAction = async (req, res) => {
     try {
-        await PerformTaskService.deleteActionComment(req.params);
+        await PerformTaskService.deleteCommentOfTaskAction(req.params);
         await LogInfo(req.user.email, ` delete action comment  `,req.user.company)
         res.status(200).json({
             success: true,
             messages: ['delete_action_comment_success'],
+            content : task
         })
     } catch (error) {
         await LogError(req.user.email, ` delete action comment  `,req.user.company)
         res.status(400).json({
             success: false,
-            messages : ['delete_action_comment_fail']
+            messages : ['delete_action_comment_fail'],
+            content : error
         })
     }
 

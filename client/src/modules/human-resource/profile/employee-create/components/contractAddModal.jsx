@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
-class ModalAddContract extends Component {
+class ContractAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nameContract: "",
-            typeContract: "",
+            name: "",
+            contractType: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             file: "",
-            urlFile: " ",
-            fileUpload: " "
+            urlFile: "",
+            fileUpload: ""
         }
     }
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -60,7 +60,7 @@ class ModalAddContract extends Component {
                 return {
                     ...state,
                     errorOnNameContract: msg,
-                    nameContract: value,
+                    name: value,
                 }
             });
         }
@@ -78,7 +78,7 @@ class ModalAddContract extends Component {
                 return {
                     ...state,
                     errorOnTypeContract: msg,
-                    typeContract: value,
+                    contractType: value,
                 }
             });
         }
@@ -109,7 +109,7 @@ class ModalAddContract extends Component {
         this.validateEndDateCertificateShort(value, true);
     }
     validateEndDateCertificateShort = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateEndDateCertificateShort(value, this.props.translate)
+        let msg = EmployeeCreateValidator.validateEndDateCertificate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -128,7 +128,7 @@ class ModalAddContract extends Component {
     isFormValidated = () => {
         let result =
             this.validateStartDateContract(this.state.startDate, false) && this.validateEndDateCertificateShort(this.state.endDate, false) &&
-            this.validateNameContract(this.state.nameContract, false) && this.validateTypeContract(this.state.typeContract, false) ;
+            this.validateNameContract(this.state.name, false) && this.validateTypeContract(this.state.contractType, false) ;
         return result;
     }
     // Bắt sự kiện submit form
@@ -139,7 +139,7 @@ class ModalAddContract extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { nameContract, typeContract, startDate, endDate,
+        const { name, contractType, startDate, endDate,
             errorOnNameContract, errorOnTypeContract, errorOnStartDate, errorOnEndDate } = this.state;
         return (
             <React.Fragment>
@@ -154,12 +154,12 @@ class ModalAddContract extends Component {
                     <form className="form-group" id={`form-create-contract-${id}`}>
                         <div className={`form-group ${errorOnNameContract === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.name_contract')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="nameContract" value={nameContract} onChange={this.handleNameContract} autoComplete="off" />
+                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameContract} autoComplete="off" />
                             <ErrorLabel content={errorOnNameContract} />
                         </div>
                         <div className={`form-group ${errorOnTypeContract === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.type_contract')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="typeContract" value={typeContract} onChange={this.handleTypeContract} autoComplete="off" />
+                            <input type="text" className="form-control" name="contractType" value={contractType} onChange={this.handleTypeContract} autoComplete="off" />
                             <ErrorLabel content={errorOnTypeContract} />
                         </div>
                         <div className="row">
@@ -193,5 +193,5 @@ class ModalAddContract extends Component {
         );
     }
 };
-const addContract = connect(null, null)(withTranslate(ModalAddContract));
-export { addContract as ModalAddContract };
+const addModal = connect(null, null)(withTranslate(ContractAddModal));
+export { addModal as ContractAddModal };

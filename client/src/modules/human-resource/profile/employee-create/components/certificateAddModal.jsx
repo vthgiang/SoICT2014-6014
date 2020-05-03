@@ -3,16 +3,16 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
-class ModalAddCertificateShort extends Component {
+class CertificateAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
-            nameCertificateShort: "",
-            unit: "",
-            urlFile: " ",
-            fileUpload: " ",
+            name: "",
+            issuedBy: "",
+            urlFile: "",
+            fileUpload: "",
             file: "",
         }
     }
@@ -49,36 +49,36 @@ class ModalAddCertificateShort extends Component {
         }
     }
     // Bắt sự kiên thay đổi tên chứng chỉ
-    handleNameCertificateChange = (e) => {
+    handleNameChange = (e) => {
         let { value } = e.target;
-        this.validateNameCertificateShort(value, true);
+        this.validateNameCertificate(value, true);
     }
-    validateNameCertificateShort = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateNameCertificateShort(value, this.props.translate)
+    validateNameCertificate = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateNameCertificate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameCertificateShort: msg,
-                    nameCertificateShort: value,
+                    errorOnName: msg,
+                    name: value,
                 }
             });
         }
         return msg === undefined;
     }
     // Bắt sự kiện thay đổi nơi cấp
-    handleUnitCertificateChange = (e) => {
+    handleIssuedByChange = (e) => {
         let { value } = e.target;
-        this.validateUnitCertificateShort(value, true);
+        this.validateIssuedByCertificate(value, true);
     }
-    validateUnitCertificateShort = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateUnitCertificateShort(value, this.props.translate)
+    validateIssuedByCertificate = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateIssuedByCertificate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     errorOnUnit: msg,
-                    unit: value,
+                    issuedBy: value,
                 }
             });
         }
@@ -86,10 +86,10 @@ class ModalAddCertificateShort extends Component {
     }
     // Bắt sự kiện thay đổi ngày có hiệu lực
     handleStartDateChange = (value) => {
-        this.validateStartDateCertificateShort(value, true);
+        this.validateStartDateCertificate(value, true);
     }
-    validateStartDateCertificateShort = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateStartDateCertificateShort(value, this.props.translate)
+    validateStartDateCertificate = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateStartDateCertificate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -104,10 +104,10 @@ class ModalAddCertificateShort extends Component {
 
     // Bắt sự kiện thay đổi ngày hết hiệu lực
     handleEndDateChange = (value) => {
-        this.validateEndDateCertificateShort(value, true);
+        this.validateEndDateCertificate(value, true);
     }
-    validateEndDateCertificateShort = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateEndDateCertificateShort(value, this.props.translate)
+    validateEndDateCertificate = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateEndDateCertificate(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -123,10 +123,10 @@ class ModalAddCertificateShort extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateNameCertificateShort(this.state.nameCertificateShort, false) &&
-            this.validateUnitCertificateShort(this.state.unit, false) &&
-            this.validateStartDateCertificateShort(this.state.startDate, false) &&
-            this.validateEndDateCertificateShort(this.state.endDate, false);
+            this.validateNameCertificate(this.state.name, false) &&
+            this.validateIssuedByCertificate(this.state.issuedBy, false) &&
+            this.validateStartDateCertificate(this.state.startDate, false) &&
+            this.validateEndDateCertificate(this.state.endDate, false);
         return result;
     }
     // Bắt sự kiện submit form
@@ -137,8 +137,7 @@ class ModalAddCertificateShort extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { nameCertificateShort, unit, endDate, startDate,
-            errorOnNameCertificateShort, errorOnUnit, errorOnEndDate, errorOnStartDate } = this.state;
+        const { name, issuedBy, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID={`modal-create-certificateShort-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_certificate')} />
@@ -150,14 +149,14 @@ class ModalAddCertificateShort extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-certificateShort-${id}`}>
-                        <div className={`form-group ${errorOnNameCertificateShort === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnName === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.name_certificate')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="nameCertificate" value={nameCertificateShort} onChange={this.handleNameCertificateChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnNameCertificateShort} />
+                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameChange} autoComplete="off" />
+                            <ErrorLabel content={errorOnName} />
                         </div>
                         <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.issued_by')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="addressCertificate" value={unit} onChange={this.handleUnitCertificateChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="issuedBy" value={issuedBy} onChange={this.handleIssuedByChange} autoComplete="off" />
                             <ErrorLabel content={errorOnUnit} />
                         </div>
                         <div className="row">
@@ -190,5 +189,5 @@ class ModalAddCertificateShort extends Component {
         );
     }
 };
-const addCertificateShort = connect(null, null)(withTranslate(ModalAddCertificateShort));
-export { addCertificateShort as ModalAddCertificateShort };
+const addModal = connect(null, null)(withTranslate(CertificateAddModal));
+export { addModal as CertificateAddModal };

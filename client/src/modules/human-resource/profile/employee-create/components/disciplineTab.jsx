@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import {
-    ModalAddPraise, ModalEditPraise, ModalAddDiscipline, ModalEditDiscipline
+    CommendationAddModal, CommendationEditModal, DisciplineAddModal, DisciplineEditModal
 } from './combinedContent';
 
 class DisciplineTab extends Component {
@@ -32,33 +32,34 @@ class DisciplineTab extends Component {
     }
 
     // Function thêm thông tin khen thưởng
-    handleAddPraise = async (data) => {
+    handleAddConmmendation = async (data) => {
         const { commendations } = this.state;
         await this.setState({
             commendations: [...commendations, {
                 ...data
             }]
         })
-        this.props.handleAddPraise(this.state.commendations)
+        this.props.handleAddConmmendation(this.state.commendations, data);
     }
     // Function chỉnh sửa thông tin khen thưởng
-    handleEditPraise = async (data) => {
+    handleEditConmmendation = async (data) => {
         const { commendations } = this.state;
         commendations[data.index] = data;
         await this.setState({
             praise: commendations
         })
-        this.props.handleEditPraise(this.state.commendations)
+        this.props.handleEditConmmendation(this.state.commendations, data);
     }
     // Function bắt sự kiện xoá thông tin khen thưởng
-    delete = async (index) => {
+    handleDeleteConmmendation = async (index) => {
         var commendations = this.state.commendations;
+        var data = commendations[index];
         commendations.splice(index, 1);
         await this.setState({
             ...this.state,
             commendations: [...commendations]
         })
-        this.props.handleDeletePraise(this.state.praise)
+        this.props.handleDeleteConmmendation(this.state.praise, data);
     }
     // Function thêm thông tin kỷ luật
     handleAddDiscipline = async (data) => {
@@ -68,7 +69,7 @@ class DisciplineTab extends Component {
                 ...data
             }]
         })
-        this.props.handleAddDiscipline(this.state.disciplines)
+        this.props.handleAddDiscipline(this.state.disciplines, data)
     }
     // Function chỉnh sửa thông tin kỷ luật
     handleEditDiscipline = async (data) => {
@@ -77,17 +78,18 @@ class DisciplineTab extends Component {
         await this.setState({
             disciplines: disciplines
         })
-        this.props.handleEditDiscipline(this.state.disciplines)
+        this.props.handleEditDiscipline(this.state.disciplines, data)
     }
     // Function bắt sự kiện xoá thông tin kỷ luật
-    deleteDiscipline = async (index) => {
+    handleDeleteDiscipline = async (index) => {
         var disciplines = this.state.disciplines;
+        var data = disciplines[index];
         disciplines.splice(index, 1);
         await this.setState({
             ...this.state,
             disciplines: [...disciplines]
         })
-        this.props.handleDeleteDiscipline(this.state.disciplines)
+        this.props.handleDeleteDiscipline(this.state.disciplines, data)
     }
 
 
@@ -113,7 +115,7 @@ class DisciplineTab extends Component {
                 <div className="box-body">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.Reward')}</h4></legend>
-                        <ModalAddPraise handleChange={this.handleAddPraise} id={`addPraise${id}`} />
+                        <CommendationAddModal handleChange={this.handleAddConmmendation} id={`addPraise${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -122,7 +124,7 @@ class DisciplineTab extends Component {
                                     <th>{translate('discipline.decision_unit')}</th>
                                     <th>{translate('discipline.reward_forms')}</th>
                                     <th>{translate('discipline.reason_praise')}</th>
-                                    <th style={{width:'120px'}}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
 
                             </thead>
@@ -137,7 +139,7 @@ class DisciplineTab extends Component {
                                             <td>{x.reason}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteConmmendation(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}
@@ -150,7 +152,7 @@ class DisciplineTab extends Component {
                     </fieldset>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.discipline')}</h4></legend>
-                        <ModalAddDiscipline handleChange={this.handleAddDiscipline} id={`addDiscipline${id}`} />
+                        <DisciplineAddModal handleChange={this.handleAddDiscipline} id={`addDiscipline${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -160,7 +162,7 @@ class DisciplineTab extends Component {
                                     <th>{translate('discipline.decision_unit')}</th>
                                     <th>{translate('discipline.discipline_forms')}</th>
                                     <th>{translate('discipline.reason_discipline')}</th>
-                                    <th style={{width:'120px'}}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,7 +177,7 @@ class DisciplineTab extends Component {
                                             <td>{x.reason}</td>
                                             <td>
                                                 <a onClick={() => this.handleViewDiscipline(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteDiscipline(index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDiscipline(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}
@@ -188,7 +190,7 @@ class DisciplineTab extends Component {
                 </div>
                 {
                     this.state.currentRow !== undefined &&
-                    <ModalEditPraise
+                    <CommendationEditModal
                         id={`editPraise${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
                         decisionNumber={this.state.currentRow.decisionNumber}
@@ -196,12 +198,12 @@ class DisciplineTab extends Component {
                         startDate={this.state.currentRow.startDate}
                         type={this.state.currentRow.type}
                         reason={this.state.currentRow.reason}
-                        handleChange={this.handleEditPraise}
+                        handleChange={this.handleEditConmmendation}
                     />
                 }
                 {
                     this.state.currentRowDiscipline !== undefined &&
-                    <ModalEditDiscipline
+                    <DisciplineEditModal
                         id={`editDiscipline${this.state.currentRowDiscipline.index}`}
                         index={this.state.currentRowDiscipline.index}
                         decisionNumber={this.state.currentRowDiscipline.decisionNumber}

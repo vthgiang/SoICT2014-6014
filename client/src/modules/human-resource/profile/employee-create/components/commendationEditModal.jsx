@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { CommendationFromValidator } from '../../../commendation-discipline/components/combinedContent';
-class ModalEditPraise extends Component {
+class CommendationEditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -171,12 +171,12 @@ class ModalEditPraise extends Component {
                         <div className="row">
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnNumber === undefined ? "" : "has-error"}`}>
                                 <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="number" value={decisionNumber} onChange={this.handleNumberChange} autoComplete="off" placeholder={translate('page.number_decisions')} />
+                                <input type="text" className="form-control" name="decisionNumber" value={decisionNumber} onChange={this.handleNumberChange} autoComplete="off" placeholder={translate('page.number_decisions')} />
                                 <ErrorLabel content={errorOnNumber} />
                             </div>
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                 <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="unit" value={organizationalUnit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
+                                <input type="text" className="form-control" name="organizationalUnit" value={organizationalUnit} onChange={this.handleUnitChange} autoComplete="off" placeholder={translate('discipline.decision_unit')} />
                                 <ErrorLabel content={errorOnUnit} />
                             </div>
                         </div>
@@ -207,5 +207,5 @@ class ModalEditPraise extends Component {
         );
     }
 };
-const editPraise = connect(null, null)(withTranslate(ModalEditPraise));
-export { editPraise as ModalEditPraise };
+const editModal = connect(null, null)(withTranslate(CommendationEditModal));
+export { editModal as CommendationEditModal };

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import {
-    ModalAddContract, ModalEditContract,
+    ContractAddModal, ContractEditModal,
 } from './combinedContent';
 
 class ContractTab extends Component {
@@ -30,7 +30,7 @@ class ContractTab extends Component {
                 ...data
             }]
         })
-        this.props.handleAddContract(this.state.contracts);
+        this.props.handleAddContract(this.state.contracts, data);
     }
     // function chỉnh sửa thông tin hợp đồng lao động
     handleEditContract = async (data) => {
@@ -39,17 +39,18 @@ class ContractTab extends Component {
         await this.setState({
             contracts: contracts
         })
-        this.props.handleEditContract(this.state.contracts);
+        this.props.handleEditContract(this.state.contracts, data);
     }
     // Function xoá bằng cấp
     delete = async (index) => {
         var { contracts } = this.state;
+        var data = contracts[index];
         contracts.splice(index, 1);
         await this.setState({
             ...this.state,
             contracts: [...contracts]
         })
-        this.props.handleDeleteContract(this.state.contracts)
+        this.props.handleDeleteContract(this.state.contracts, data)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -74,7 +75,7 @@ class ContractTab extends Component {
                 <div className="box-body">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.labor_contract')}</h4></legend>
-                        <ModalAddContract handleChange={this.handleAddContract} id={`addContract${id}`} />
+                        <ContractAddModal handleChange={this.handleAddContract} id={`addContract${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}  >
                             <thead>
                                 <tr>
@@ -83,7 +84,7 @@ class ContractTab extends Component {
                                     <th >{translate('manage_employee.start_date')}</th>
                                     <th >{translate('manage_employee.end_date_certificate')}</th>
                                     <th >{translate('manage_employee.attached_files')}</th>
-                                    <th style={{width:'120px'}}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -150,7 +151,7 @@ class ContractTab extends Component {
                 </div>
                 {
                     this.state.currentRow !== undefined &&
-                    <ModalEditContract
+                    <ContractEditModal
                         id={`editContract${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
                         name={this.state.currentRow.name}

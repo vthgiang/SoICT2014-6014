@@ -985,7 +985,7 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     await Employee.insertMany([{
-        avatar: "lib/adminLTE/dist/img/avatar5.png",
+        avatar: "/upload/human-resource/avatars/avatar5.png",
         fullName: "Vũ Thị Cúc",
         employeeNumber: "MS2015122",
         status:"active",
@@ -1077,7 +1077,7 @@ const sampleCompanyData = async () => {
         archivedRecordNumber: "T3 - 123698",
         files: [],
     }, {
-        avatar: "lib/adminLTE/dist/img/avatar5.png",
+        avatar: "/upload/human-resource/avatars/avatar5.png",
         fullName: "Trần Văn Bình",
         employeeNumber: "MS2015124",
         status:"active",
@@ -1171,7 +1171,7 @@ const sampleCompanyData = async () => {
     }])
     console.log("Khởi tạo dữ liệu nhân viên!");
     var employee = await Employee.create({
-        avatar: "lib/adminLTE/dist/img/avatar5.png",
+        avatar: "/upload/human-resource/avatars/avatar5.png",
         fullName: "Nguyễn Văn An",
         employeeNumber: "MS2015123",
         status:"active",
