@@ -16,9 +16,10 @@ const EmployeeSchema = new Schema({
         type: String,
         required: true
     },
-    status:{
-        type:String,
-        default: "active"
+    status: { // active - Đang làm việc, leave - Đã nghỉ làm
+        type: String,
+        default: 'active',
+        enum: ['active', 'leave']
     },
     company: {
         type: Schema.Types.ObjectId,
@@ -28,9 +29,10 @@ const EmployeeSchema = new Schema({
         type: String,
         required: true
     },
-    gender: { // {code, value}
+    gender: { // male - nam, female - nữ
         type: String,
-        required: true
+        required: true,
+        enum: ['male', 'female']
     },
     birthdate: {
         type: String,
@@ -72,8 +74,9 @@ const EmployeeSchema = new Schema({
     religion: { // Tín ngưỡng
         type: String
     },
-    maritalStatus: { // Tình trạng hôn nhân
-        type: String
+    maritalStatus: { // Tình trạng hôn nhân: single - Độc thân, married - Đã kết hôn
+        type: String,
+        enum: ['single', 'married']
     },
     /**
      * Start
@@ -113,7 +116,7 @@ const EmployeeSchema = new Schema({
     emergencyContactPersonAddress: {
         type: String,
     },
-    permanentResidence: {  // Địa chỉ hộ khẩu thường trú
+    permanentResidence: { // Địa chỉ hộ khẩu thường trú
         type: String
     },
     permanentResidenceCountry: { // Quốc gia trong hộ khẩu thường trú
@@ -148,15 +151,17 @@ const EmployeeSchema = new Schema({
      * End
      * Thông tin liên hệ
      */
-    educationalLevel: { // trình độ văn hóa
+    educationalLevel: { // Trình độ văn hóa
         type: String,
-        required: true
+        required: true,
+        enum: ['12/12', '11/12', '10/12', '9/12']
     },
     foreignLanguage: { // Trình độ ngoại ngữ
         type: String
     },
-    professionalSkill: { // Trình độ chuyên môn
-        type: String
+    professionalSkill: { // Trình độ chuyên môn: intermediate_degree - Trung cấp, colleges - Cao đẳng, university-Đại học, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có 
+        type: String,
+        enum: ['intermediate_degree', 'colleges', 'university', 'master_degree', 'phd', 'unavailable']
     },
     healthInsuranceNumber: {
         type: String
