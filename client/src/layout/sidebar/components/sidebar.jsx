@@ -175,15 +175,6 @@ class SideBar extends Component {
                                     icon='fa fa-folder-open'
                                 />
                             }
-                            {
-                                this.checkURL('/task-template', links) === true &&
-                                <Item
-                                    key='task_template'
-                                    name='task_template'
-                                    path='/task-template'
-                                    icon='fa fa-flash'
-                                />
-                            }
 
                             {/* Quan ly nhan su */}
                             {
@@ -349,16 +340,17 @@ class SideBar extends Component {
                                                 <Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link>
                                             </li>
                                         } */}
-                                        {
-                                            (this.checkURL('/kpi-units/create', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-units/create" ? "active" : ""}>
-                                                <Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link>
-                                            </li>
-                                        }
+
                                         {
                                             (this.checkURL('/kpi-units/dashboard', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-units/dashboard" ? "active" : ""}>
                                                 <Link to="/kpi-units/dashboard">{translate(`menu.kpi_unit_dashboard`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            (this.checkURL('/kpi-units/create', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-units/create" ? "active" : ""}>
+                                                <Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link>
                                             </li>
                                         }
                                         {
@@ -388,17 +380,17 @@ class SideBar extends Component {
                                                 <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
                                             </li>
                                         } */}
-                                        {
-                                            (this.checkURL('/kpi-personals/create', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-personals/create" ? "active" : ""}>
-                                                <Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link>
-                                            </li>
-                                        }
 
                                         {
                                             (this.checkURL('/kpi-personals/dashboard', links) === true) &&
                                             <li className={window.location.pathname === "/kpi-personals/dashboard" ? "active" : ""}>
                                                 <Link to="/kpi-personals/dashboard">{translate(`menu.kpi_personal_dashboard`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            (this.checkURL('/kpi-personals/create', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-personals/create" ? "active" : ""}>
+                                                <Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link>
                                             </li>
                                         }
                                         {
@@ -410,6 +402,18 @@ class SideBar extends Component {
                                     </ul>
                                 </li>
                             }
+
+
+                            {
+                                this.checkURL('/task-template', links) === true &&
+                                <Item
+                                    key='task_template'
+                                    name='task_template'
+                                    path='/task-template'
+                                    icon='fa fa-flash'
+                                />
+                            }
+
                             {/* Task management */}
                             {   
                                 (this.checkURL('/task-management-dashboard', links) === true || this.checkURL('/task-management', links) === true) && 

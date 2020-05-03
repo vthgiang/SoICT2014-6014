@@ -418,7 +418,7 @@ export default {
             kpi_unit_overview: 'Overview unit KPI',
             kpi_unit_dashboard: 'Dashboard unit KPI',
             kpi_unit_manager: 'Manage unit KPI',
-            kpi_member_manager: 'Manage Employees KPI',
+            kpi_member_manager: 'Evaluate Employee KPI',
             kpi_member_dashboard: 'DashBoard KPI Member',
             kpi_personal_create: 'Create personal KPI',
             kpi_personal_evaluate: 'Evaluate personal KPI',

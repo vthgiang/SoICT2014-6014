@@ -512,7 +512,7 @@ export default {
             kpi_unit_overview: 'Tổng quan KPI đơn vị',
             kpi_unit_dashboard: 'Dashboard KPI đơn vị',
             kpi_unit_manager: 'Quản lý KPI đơn vị',
-            kpi_member_manager: 'Quản lý KPI nhân viên',
+            kpi_member_manager: 'Đánh giá KPI nhân viên',
             kpi_member_dashboard: 'DashBoard KPI nhân viên',
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
