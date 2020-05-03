@@ -1,7 +1,5 @@
 import { LOCAL_SERVER_API } from '../../../../env';
-import {
-    sendRequest
-} from '../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../helpers/requestHelper';
 export const SalaryService = {
     searchSalary,
     createSalary,
