@@ -117,14 +117,18 @@ exports.getEmployeeProfile = async (req, res) => {
  * Cập nhật thông tin cá nhân
  */
 exports.updatePersonalInformation = async (req, res) => {
+    //if()
     try {
-        let avatar = `/${req.file.path}`;
+        let avatar ="";
+        if(req.file!==undefined){
+            let avatar = `/${req.file.path}`;
+        }
         var data = await EmployeeService.updatePersonalInformation(req.params.email, req.body, avatar);
         await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(200).json({ success: true, messages: ["edit_infor_personal_success"], content: data });
     } catch (error) {
         await LogError(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
-        res.status(400).json({ success: false, messages: ["edit_infor_personal_false"], content: {error: error} });
+        //res.status(400).json({ success: false, messages: ["edit_infor_personal_false"], content: {error: error} });
     }
 }
 

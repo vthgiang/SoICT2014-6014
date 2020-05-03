@@ -222,31 +222,31 @@ class UpdateEmployee extends Component {
                                 </fieldset>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_contact_infor')}</h4></legend>
-                                    <div className="col-md-12 col-ms-12 col-xs-12">
+                                    <div className="col-md-12">
                                         <div className="row">
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="phoneNumber">{translate('manage_employee.mobile_phone_1')}</label>
-                                                <input type="text" className="form-control " name="phoneNumber" id="phoneNumber" defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label >{translate('manage_employee.mobile_phone_1')}</label>
+                                                <input type="text" className="form-control " name="phoneNumber"  defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={this.handleChange} />
                                             </div>
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="phoneNumber2">{translate('manage_employee.mobile_phone_2')}</label>
-                                                <input type="text" className="form-control " name="phoneNumber2" id="phoneNumber2" defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label>{translate('manage_employee.mobile_phone_2')}</label>
+                                                <input type="text" className="form-control " name="phoneNumber2"  defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-12 col-ms-12 col-xs-12">
+                                    <div className="col-md-12">
                                         <div className="row">
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="personalEmail">{translate('manage_employee.personal_email_1')}</label>
-                                                <input type="text" className="form-control " name="personalEmail" id="personalEmail" defaultValue={x.personalEmail} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label >{translate('manage_employee.personal_email_1')}</label>
+                                                <input type="text" className="form-control " name="personalEmail"  defaultValue={x.personalEmail} onChange={this.handleChange} />
                                             </div>
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="personalEmail2">{translate('manage_employee.personal_email_2')}</label>
-                                                <input type="text" className="form-control " name="personalEmail2" id="personalEmail2" defaultValue={x.personalEmail2} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label>{translate('manage_employee.personal_email_2')}</label>
+                                                <input type="text" className="form-control " name="personalEmail2" defaultValue={x.personalEmail2} onChange={this.handleChange} />
                                             </div>
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="homePhone">{translate('manage_employee.home_phone')}</label>
-                                                <input type="text" className="form-control " name="homePhone" id="homePhone" defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label>{translate('manage_employee.home_phone')}</label>
+                                                <input type="text" className="form-control " name="homePhone"  defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -255,7 +255,7 @@ class UpdateEmployee extends Component {
                                             <legend className="scheduler-border">{translate('manage_employee.emergency_contact')}</legend>
                                             <div className="col-md-6">
                                                 <div className="form-group" >
-                                                    <label htmlFor="emergencyContactPerson">{translate('manage_employee.full_name')}</label>
+                                                    <label >{translate('manage_employee.full_name')}</label>
                                                     <input type="text" className="form-control " name="emergencyContactPerson" id="emergencyContactPerson" defaultValue={x.emergencyContactPerson} onChange={this.handleChange} />
                                                 </div>
                                                 <div className="form-group" >

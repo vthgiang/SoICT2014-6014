@@ -104,7 +104,9 @@ exports.getEmployeeProfile = async (email) => {
  * @data: dữ liệu chỉnh sửa thông tin của nhân viên
  */
 exports.updatePersonalInformation = async (email, data, avatar) => {
-    console.log(avatar);
+    if(avatar===""){
+        avatar=data.avatar;
+    }
     var employeeInfo = await Employee.findOne({emailInCompany: email}, { _id: 1});
     // Thông tin cần cập nhật 
     var employeeUpdate = {
