@@ -20,7 +20,6 @@ export const performTaskService = {
     addActionComment,
     deleteActionComment,
     editActionComment,
-    getActionComment,
     createResultTask,
     editResultTask,
     addTaskAction,
@@ -122,13 +121,6 @@ function getTaskAction(task) {
         method : 'GET'
     },false,'task.task_perform');  
 };
-// get all comment task
-function getActionComment(task) {
-    return sendRequest({
-        url : `${LOCAL_SERVER_API}/performtask/action-comment/${task}`,
-        method : 'GET'
-    },false,'task.task_perform');
-}
 // add comment task
 function addActionComment(newComment) {
     return sendRequest({
@@ -162,16 +154,16 @@ function editTaskAction(id,newAction) {
 }
 
 // delete comment task
-function deleteActionComment(id) {
+function deleteActionComment(id,task) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/action-comment/${id}`,
+        url:`${LOCAL_SERVER_API}/performtask/action-comment/${task}/${id}`,
         method: 'DELETE'
     },true,'task.task_perform')
 }
 
-function deleteTaskAction(id){
+function deleteTaskAction(id,task){
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/performtask/task-action/${id}`,
+        url:`${LOCAL_SERVER_API}/performtask/task-action/${task}/${id}`,
         method:'DELETE'
     },true,'task.task_perform');
 }

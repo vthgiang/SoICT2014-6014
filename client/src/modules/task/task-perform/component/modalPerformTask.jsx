@@ -123,7 +123,6 @@ class ModalPerformTask extends Component {
         this.props.getAllKPIPersonalByMember(this.props.responsible);
         this.props.getAllUserOfDepartment(this.props.unit);
         this.props.getTaskById(this.props.id);
-        this.props.getActionComments(this.props.id);
         this.props.getTaskActions(this.props.id);
         this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
     }
@@ -655,7 +654,6 @@ class ModalPerformTask extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
-        if (typeof performtasks.actioncomments !== 'undefined' && performtasks.actioncomments !== null) actionComments = performtasks.actioncomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
@@ -1153,7 +1151,7 @@ class ModalPerformTask extends Component {
                                                         {showChildComment === item._id &&
                                                             <div className="comment-content-child">
                                                                 {
-                                                                    actionComments.map(child => {
+                                                                    item.comments.map(child => {
                                                                         if (child.parent === item._id) return <div className="col-sm-12 " key={child._id} style={{ marginBottom: "10px" }}>
                                                                             <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
@@ -1233,7 +1231,7 @@ class ModalPerformTask extends Component {
                                                     {(item.creator._id === this.state.currentUser && this.props.role === "responsible") &&
                                                         <div className="action-comment " style={{ display: "inline-block" }}>
                                                             <a href="#abc" title="Sửa hành động" className="edit" onClick={() => this.handleEditAction(item._id)}><i className="material-icons">edit</i></a>
-                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id)}><i className="material-icons">delete</i></a>
+                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id,this.props.id)}><i className="material-icons">delete</i></a>
                                                         </div>
                                                     }
                                                     {this.props.role === "accountable" &&
@@ -1265,7 +1263,7 @@ class ModalPerformTask extends Component {
                                                                 <ul className="list-inline">
                                                                     <li className="pull-right">
                                                                         <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
-                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({actionComments.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
+                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
                                                                             {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
                                                                         </a>
                                                                     </li>
@@ -1273,7 +1271,7 @@ class ModalPerformTask extends Component {
                                                                 {/* Hiển thị bình luận cho hoạt động không theo mẫu */}
                                                                 {showChildComment === item._id &&
                                                                     <div className="comment-content-child">
-                                                                        {actionComments.map(child => {
+                                                                        {item.comments.map(child => {
                                                                             if (child.parent === item._id) return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
                                                                                 <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
                                                                                     <img className="img-circle img-bordered-sm"
@@ -1290,7 +1288,7 @@ class ModalPerformTask extends Component {
                                                                                     {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
                                                                                         <div className="action-comment" style={{ display: "inline-block" }}>
                                                                                             <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id)}><i className="material-icons">delete</i></a>
+                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id,this.props.id)}><i className="material-icons">delete</i></a>
                                                                                         </div>
                                                                                     }
                                                                                     {editComment === child._id &&
@@ -1407,7 +1405,6 @@ function mapState(state) {
 const actionCreators = {
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getTaskById: taskManagementActions.getTaskById,
-    getActionComments: performTaskAction.getActionComments,
     addActionComment: performTaskAction.addActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,

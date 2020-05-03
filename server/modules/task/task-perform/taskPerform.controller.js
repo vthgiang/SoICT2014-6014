@@ -283,11 +283,12 @@ exports.editTaskAction = async (req,res) =>{
 
 exports.deleteTaskAction = async (req,res)=>{
     try {
-        await PerformTaskService.deleteTaskAction(req.params);
+        var taskAction = await PerformTaskService.deleteTaskAction(req.params);
         await LogInfo(req.user.email, ` delete task action  `,req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['delete_task_action_success']
+            messages: ['delete_task_action_success'],
+            content: taskAction
         })
     } catch (error) {
         await LogError(req.user.email, ` delete task action  `,req.user.company);
@@ -298,26 +299,6 @@ exports.deleteTaskAction = async (req,res)=>{
         })
     }
 }
-// Lấy tất cả bình luận và hoạt động của một công việc
-exports.getActionComments =async (req, res) => {
-    try {
-        var actionComments = await PerformTaskService.getActionComments(req.params)
-        await LogInfo(req.user.email, ` get all action comments  `,req.user.company);
-        res.status(200).json({
-            success: true,
-            messages : ['get_action_comments_success'],
-            content: actionComments
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` get all action comments  `,req.user.company);
-        res.status(400).json({
-            success: false,
-            messages:['get_action_comments_fail'],
-            content : error
-        })
-    }
- }
- 
  // Tạo một bình luận hoặc hoạt động cho công việc
  exports.createActionComment = async (req, res) => {
      try {
@@ -360,17 +341,19 @@ exports.editActionComment = async (req, res) => {
 // Xóa bỏ một bình luận hoặc hoạt động
 exports.deleteActionComment = async (req, res) => {
     try {
-        await PerformTaskService.deleteActionComment(req.params);
+        var task =  await PerformTaskService.deleteActionComment(req.params);
         await LogInfo(req.user.email, ` delete action comment  `,req.user.company)
         res.status(200).json({
             success: true,
             messages: ['delete_action_comment_success'],
+            content : task
         })
     } catch (error) {
         await LogError(req.user.email, ` delete action comment  `,req.user.company)
         res.status(400).json({
             success: false,
-            messages : ['delete_action_comment_fail']
+            messages : ['delete_action_comment_fail'],
+            content : error
         })
     }
 

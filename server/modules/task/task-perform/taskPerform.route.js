@@ -29,12 +29,11 @@ router.post('/log-timer/start-timer',auth,  PerformTaskController.startTimer);
 router.put('/log-timer/pause-timer/:id',auth,  PerformTaskController.pauseTimer);
 router.put('/log-timer/continue-timer/:id',auth,  PerformTaskController.continueTimer);
 router.put('/log-timer/stop-timer/:id',auth,  PerformTaskController.stopTimer);
-router.delete('/task-action/:id',auth, PerformTaskController.deleteTaskAction);
-router.get('/action-comment/:task',auth,  PerformTaskController.getActionComments);
+router.delete('/task-action/:task/:id',auth, PerformTaskController.deleteTaskAction);
 router.post('/action-comment/create',auth,  PerformTaskController.createActionComment);//,upload.single('file')
 router.put('/action-comment/:id',auth,  PerformTaskController.editActionComment);
 router.put('/task-action/:id',auth, PerformTaskController.editTaskAction)
-router.delete('/action-comment/:id',auth,  PerformTaskController.deleteActionComment);
+router.delete('/action-comment/:task/:id',auth,  PerformTaskController.deleteActionComment);
 router.get('/task-action/:task',auth, PerformTaskController.getTaskActions);
 router.post('/task-action/create',auth, PerformTaskController.createTaskAction)
 router.post('/add-result/create',auth,  PerformTaskController.createResultInfoTask);
