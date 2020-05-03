@@ -31,64 +31,7 @@ async function getEmployeeKpiSet() {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
         method: 'GET'
-    });
-}
-
-/** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
-async function editEmployeeKpiSet(id, newTarget) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var creater = verified._id;
-    newTarget = {...newTarget, creater: creater};
-
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
-        method: 'PUT',
-        data: newTarget
-    }, true, 'employee_kpi_set.create_employee_kpi_set.general_information');
-}
-
-/** Chỉnh sửa trạng thái của KPI cá nhân */ 
-function updateEmployeeKpiSetStatus(id, status) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`,
-        method: 'PUT'
-    }, true, 'employee_kpi_set.create_employee_kpi_set');
-}
-
-/** Xóa KPI cá nhân */
-function deleteEmployeeKpiSet(id) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
-        method: 'DELETE'
-    }, true, 'employee_kpi_set.create_employee_kpi_set.general_information');
-}
-
-/** Xóa mục tiêu KPI cá nhân */ 
-function deleteEmployeeKpi(id, kpipersonal) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`,
-        method: 'DELETE'
-    }, true, 'employee_kpi_set.create_employee_kpi_set.delete_kpi');
-}
-
-/** Tạo 1 mục tiêu KPI cá nhân mới */  
-function createEmployeeKpi(newTarget) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/create-target`,
-        method: 'POST',
-        data: JSON.stringify(newTarget)
-    }, true, 'employee_kpi_set.create_employee_kpi_modal');
-}
-
-
-/** Chỉnh sửa mục tiêu KPI cá nhân */ 
-function editEmployeeKpi(id, newTarget) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/target/${id}`,
-        method: 'PUT',
-        data: JSON.stringify(newTarget)
-    }, true, 'employee_kpi_set.edit_employee_kpi_modal');
+    }, false);
 }
 
 /** Khởi tạo KPI cá nhân */  
@@ -102,7 +45,63 @@ async function createEmployeeKpiSet(newKPI) {
         url: `${LOCAL_SERVER_API}/kpipersonals/create`,
         method: 'POST',
         data: JSON.stringify(newKPI)
-    }, true, 'employee_kpi_set.create_employee_kpi_set_modal');
+    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
+
+/** Tạo 1 mục tiêu KPI cá nhân mới */  
+function createEmployeeKpi(newTarget) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/create-target`,
+        method: 'POST',
+        data: JSON.stringify(newTarget)
+    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
+
+/** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
+async function editEmployeeKpiSet(id, newTarget) {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var creater = verified._id;
+    newTarget = {...newTarget, creater: creater};
+
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
+        method: 'PUT',
+        data: newTarget
+    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
+
+/** Chỉnh sửa trạng thái của KPI cá nhân */ 
+function updateEmployeeKpiSetStatus(id, status) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`,
+        method: 'PUT'
+    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
+
+/** Xóa KPI cá nhân */
+function deleteEmployeeKpiSet(id) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
+        method: 'DELETE'
+    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
+
+/** Xóa 1 mục tiêu KPI cá nhân */ 
+function deleteEmployeeKpi(id, kpipersonal) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`,
+        method: 'DELETE'
+    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
+
+/** Chỉnh sửa mục tiêu KPI cá nhân */ 
+function editEmployeeKpi(id, newTarget) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpipersonals/target/${id}`,
+        method: 'PUT',
+        data: JSON.stringify(newTarget)
+    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Phê duyệt kpi cá nhân */ 

@@ -1,32 +1,44 @@
 const overviewService = require('./management.service');
 const { LogInfo, LogError } = require('../../../../logs');
-// get all target of personal kpi
-exports.getByMember = async (req, res) => {
+
+/** Lấy tất cả tập kpi cá nhân của một nhân viên */ 
+exports.getAllEmployeeKpiSets = async (req, res) => {
     try {
         
-        var kpipersonals = await overviewService.getByMember(req.params.member);
+        var kpipersonals = await overviewService.getAllEmployeeKpiSets(req.params.member);
         LogInfo(req.user.email, ` get all target of personal kpi `, req.user.company)
-        res.status(200).json(kpipersonals)
+        res.status(200).json({
+            success: true,
+            messages: ['get_kpi_by_member_success'],
+            content: kpipersonals
+        })
     } catch (error) {
         LogError(req.user.email, ` get all target of personal kpi `, req.user.company)
         res.status(400).json({
-            message : error
+            success: false,
+            messages : ['get_kpi_by_member_fail'],
+            content: error
         })
     }
 };
 
-// lấy tất cả các kpi cá nhân của nhân viên trong công việc
-exports.getKPIResponsible = async (req, res) => {
+/** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */ 
+exports.getAllFinishedEmployeeKpiSets = async (req, res) => {
     try {
-        var kpipersonals = await overviewService.getKPIResponsible(req.params.member);
+        var kpipersonals = await overviewService.getAllFinishedEmployeeKpiSets(req.params.member);
         LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
         res.status(200).json({
-            message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
+            success: true,
+            messages: ['get_kpi_responsible_success'],
             content: kpipersonals
         });
     } catch (error) {
         LogError(req.user.email, ` get all kpi personal `, req.user.company);
-        res.status(400).json({message: error})
+        res.status(400).json({
+            success : false,
+            messages: ['get_kpi_responsible_fail'],
+            content: error
+        })
     }
 
 };

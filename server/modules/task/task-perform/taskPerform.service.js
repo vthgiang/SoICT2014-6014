@@ -12,7 +12,7 @@ const User = require('../../../models/auth/user.model')
  * Bấm giờ công việc
  * Lấy tất cả lịch sử bấm giờ theo công việc
  */
-exports.getLogTimer = async (params) => {
+exports.getTaskTimesheetLogs = async (params) => {
     var logTimers= await TimesheetLog.find({ task: params.task }).populate("user");
 
     return logTimers;
@@ -22,7 +22,7 @@ exports.getLogTimer = async (params) => {
  * Lấy trạng thái bấm giờ hiện tại. Bảng TimesheetLog tìm hàng có endTime là rỗng 
  * Nếu có trả về startTimer: true, và time, startTime. Không có trả ver startTimer: false
  */
-exports.getTimerStatus = async (params) => {
+exports.getActiveTimesheetLog = async (params) => {
     var timerStatus =await TimesheetLog.findOne({ task: params.task, user: params.user, stopTimer: null })
 
     return timerStatus
@@ -31,7 +31,7 @@ exports.getTimerStatus = async (params) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimer = async (body) => {
+exports.startTimesheetLog = async (body) => {
     var timer = await TimesheetLog.create({
         task: body.task,
         user: body.user,
@@ -45,9 +45,10 @@ exports.startTimer = async (body) => {
 }
 
 /**
- * ạm dừng: Lưu thời gian đã bấm (time)
+ * // TODO: Bỏ service này
+ * Tạm dừng: Lưu thời gian đã bấm (time)
  */
-exports.pauseTimer = async (params,body) => {
+exports.pauseTimesheetLog = async (params,body) => {
     var timer = await TimesheetLog.findByIdAndUpdate(
         params.id, { time: body.time, pause: true }, { new: true }
     );
@@ -56,9 +57,10 @@ exports.pauseTimer = async (params,body) => {
 }
 
 /**
+ * // TODO: Bỏ service này
  * Tiếp tục bấm giờ: Cập nhật lại trạng thái bắt đầu (time)
  */
-exports.continueTimer = async (params,body) => {
+exports.continueTimesheetLog = async (params,body) => {
     var timer = await TimesheetLog.findByIdAndUpdate(
         params.id, { startTimer: body.startTimer, pause: false }, { new: true }
     );
@@ -69,7 +71,7 @@ exports.continueTimer = async (params,body) => {
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (enndTime và time)
  */
-exports.stopTimer = async (req, res) => {
+exports.stopTimesheetLog = async (req, res) => {
     var timer = await TimesheetLog.findByIdAndUpdate(
         req.params.id, { stopTimer: req.body.stopTimer, time: req.body.time }, { new: true }
     );
@@ -98,7 +100,7 @@ exports.stopTimer = async (req, res) => {
 /**
  * Lấy tất cả nội dung bình luận của hoạt động
  */
-exports.getActionComments = async (params) => {
+exports.getCommentsOfTaskAction = async (params) => {
     var actionComments = await Task.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(params.task) } },
         { $unwind: "$taskActions" },
@@ -124,7 +126,7 @@ exports.getActionComments = async (params) => {
 /**
  * Thêm bình luận của hoạt động
  */
-exports.createActionComment = async (body) => {
+exports.createCommentOfTaskAction = async (body) => {
 
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
@@ -172,10 +174,10 @@ exports.createActionComment = async (body) => {
 /**
  * Sửa nội dung bình luận hoạt động
  */
-exports.editActionComment = async (params,body) => {
+exports.editCommentOfTaskAction = async (params,body) => {
     const now = new Date()
     var action = await Task.updateOne(
-        { "taskActions.commentAction._id": params.id },
+        { "taskActions.comments._id": params.id },
         {
             $set:
             {
@@ -186,7 +188,7 @@ exports.editActionComment = async (params,body) => {
         {
             arrayFilters: [
                 {
-                    "elem._id": req.params.id
+                    "elem._id": params.id
                 }
             ]
         }
@@ -207,14 +209,13 @@ exports.editActionComment = async (params,body) => {
             }
         }
     ])
-
     return commentAction[0];
 }
 
 /**
  * Xóa bình luận hoạt động
  */
-exports.deleteActionComment = async (params) => {
+exports.deleteCommentOfTaskAction = async (params) => {
     var action = await Task.update(
         { "taskActions.comments._id": params.id },
         { $pull: { "taskActions.$.comments" : {_id : params.id} } },
@@ -312,7 +313,48 @@ exports.deleteTaskAction = async (params) => {
         { $pull: { taskActions: { _id: params.id } } },
         { safe: true })
 }
+/**
+ * Lấy tất cả các bình luận của công việc
+ */
+exports.getTaskComments
+/**
+ * Tạo bình luận công việc
+ */
+exports.createTaskComment = async (body) => {
+    var commentInformation = {
+        creator: body.creator,
+        content: body.content
+    }
 
+    var taskComment1 = await Task.findByIdAndUpdate(body.task,
+        { $push: { taskComments: commentInformation } }, { new: true });
+    
+    var taskComment = await Task.aggregate([
+        {$match : {_id : mongoose.Types.ObjectId(body.task)}},
+        {$unwind: "$taskComments"},
+        { $sort: { "taskComments.createdAt": -1 } },
+        { $replaceRoot: { newRoot: "$taskComments" } },
+        {
+            $group: {
+                _id: null,
+                first: { $first: "$$ROOT" }
+            }
+        },
+        { $replaceRoot: { newRoot: "$first" } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "creator",
+                foreignField: "_id",
+                as: "creator"
+            }
+        },
+        { $unwind: "$creator" }
+    ])    
+    
+    //aggregate tra ve mang 
+    return taskComment[0]
+}
 // Test insert result info task
 exports.createResultInfoTask = async (req, res) => {
     try {
@@ -331,8 +373,10 @@ exports.createResultInfoTask = async (req, res) => {
     }
 }
 
-// Thêm thông tin kết quả của các thông tin công việc theo mẫu
-exports.createResultInformationTask = async (req, res) => {
+/**
+ * Thêm thông tin kết quả của các thông tin công việc theo mẫu
+ */
+exports.createTaskInformation = async (req, res) => {
     try {
         var listResultInfoTask = req.body.listResultInfoTask;
         if (listResultInfoTask !== []) {
@@ -360,8 +404,10 @@ exports.createResultInformationTask = async (req, res) => {
     }
 }
 
-// Sửa thông tin kết quả của các công việc không theo mẫu
-exports.editResultInformationTask = async (req, res) => {
+/**
+ * Sửa thông tin kết quả của các công việc không theo mẫu
+ */
+exports.editTaskInformation = async (req, res) => {
     try {
         var listResultInfoTask = req.body.listResultInfoTask;
         if (listResultInfoTask !== []) {
@@ -384,45 +430,63 @@ exports.editResultInformationTask = async (req, res) => {
     }
 }
 
-
-// Thêm thông tin kết quả của đánh giá từng nhân viên
-exports.createResultTask = async (result, taskID) => {
+/**
+ * Thêm thông tin kết quả của đánh giá từng nhân viên
+ */
+exports.createTaskResult = async (result, taskID, evaluateID, date) => {
     var item = result;
 
     if (item !== null) {
         // Lưu thông tin kết quả 
-        var resultTask = {
-            employee: item.member,
-            role: item.roleMember,
-            automaticPoint: item.systempoint,
-            employeePoint: item.mypoint,
-            approvedPoint: item.approverpoint
+         // Lưu thông tin kết quả 
+         var resultTask = {
+            employee: item.employee,
+            role: item.role,
+            automaticPoint: item.automaticPoint,
+            employeePoint: item.employeePoint,
+            approvedPoint: item.approvedPoint
         }
         // Cập nhật thông tin công việc
-        var task = await Task.findByIdAndUpdate(
-            taskID, { $push: { results: resultTask } }, { new: true }
-            // là _id của task muốn đánh giá.
+        var addResult = await Task.updateOne(
+            {
+                _id: taskID,
+                "evaluations._id" : evaluateID
+                // "evaluations.date": date // req.body.date // "2020-04-22T16:06:17.145Z"
+            }, 
+            {
+                $push: {
+                    "evaluations.$.results": resultTask
+                } 
+            }, 
+            { new: true }
         );
     }
-    return task;
-
+    
+    return await Task.findById(taskID);
+    
 }
 
-// Sửa thông tin kết quả của nhân viên trong công việc
-exports.editResultTask = async (listResult, taskid) => {
+/**
+ * Sửa thông tin kết quả của nhân viên trong công việc
+ */
+exports.editTaskResult = async (listResult,taskid) => {
     if (listResult !== []) {
-        // Lưu thông tin kết quả  var listResultTask = await Promise.all
-        listResult.forEach(async (item) => {
-            // var newTask = await Task.findOneAndUpdate({results: {$elemMatch: {_id : item._id} }},
-            var newTask = await Task.updateOne({ "results._id": item._id },
-                // await Task.updateOne({results: {$elemMatch: {_id : item._id} }},
+        // Lưu thông tin kết quả 
+        listResult.forEach( async (item) => {
+            var newTask = await Task.updateOne(
                 {
-                    $set: {
-                        "results.$.automaticPoint": item.systempoint,
-                        "results.$.employeePoint": item.mypoint,
-                        "results.$.approvedPoint": item.approverpoint
-                    }
-                }
+                    "evaluations.results._id" : item._id,
+                    // k can xet dieu kien ngay danh gia vi _id cua result la duy nhat
+                },
+                { $set: {
+                    "evaluations.$.results.$[elem].automaticPoint": item.automaticPoint,
+                    "evaluations.$.results.$[elem].employeePoint": item.employeePoint,
+                    "evaluations.$.results.$[elem].approvedPoint": item.approvedPoint
+                }},
+                { arrayFilters: [{
+                        "elem._id" : item._id,
+                    }]
+                } 
             );
         })
     }

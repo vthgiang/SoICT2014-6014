@@ -6,6 +6,9 @@ import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import Sortable from 'sortablejs';
 
+import {InformationTemplate} from '../component/informationsTemplate';
+import {ActionTemplate} from '../component/actionsTemplate';
+
 import {SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
 
@@ -23,41 +26,15 @@ class ModalAddTaskTemplate extends Component {
         // Lấy tất cả các role là dean 
         this.props.getDepartmentsThatUserIsDean();
 
-        // Load library for sort action table
-        this.handleSortable();
+        
     }
 
     constructor(props) {
         super(props);
 
-        let INFO_TYPE = {
-            TEXT: "Văn bản",
-            NUMBER: "Số",
-            DATE: "Ngày tháng",
-            BOOLEAN: "Boolean",
-            SET: "Tập giá trị",
-        };
-
-        let EMPTY_INFORMATION = {
-            name: '',
-            description: '',
-            type: INFO_TYPE.TEXT,
-            extra: '',
-            filledByAccountableEmployeesOnly: false
-        };
-
-        let EMPTY_ACTION = {
-            name: '',
-            description: '',
-            mandatory: true,
-        };
 
         this.state = {
-            INFO_TYPE: INFO_TYPE,
-            EMPTY_INFORMATION: Object.assign({}, EMPTY_INFORMATION),
-            information: EMPTY_INFORMATION,
-            EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
-            action:  Object.assign({}, EMPTY_ACTION),
+            
             newTemplate: {
                 organizationalUnit: '',
                 name: '',
@@ -72,80 +49,14 @@ class ModalAddTaskTemplate extends Component {
                 taskActions: [],
                 taskInformations: []
             },
-            editAction: false,
-            editInfo: false,
+
             currentRole: localStorage.getItem('currentRole'),
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    // Drag and drop item in action table
-    handleSortable = () => {
-        var el1 = document.getElementById('actions');
-        Sortable.create(el1, {
-            chosenClass: 'chosen',
-            animation: 500,
-            onChange: function (evt) {
-                window.$('#actions tr').each(function (index) {
-                    window.$(this).find('td:nth-child(1)').html(index + 1);
-                });
-            },
-            onEnd: async(evt) => {
-                let taskActions = this.state.newTemplate.taskActions;
-                const item = taskActions[evt.oldIndex];
-                taskActions.splice(evt.oldIndex, 1);
-                taskActions.splice(evt.newIndex, 0, item);
-            }, store:{
-                /**
-                 * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
-                 * Khi lưu thứ tự sắp xếp mới vào state, do state thay đổi, react render lại.
-                 * Sortable phát hiện cấu trúc DOM thay đổi nên tự động thay đổi trở lại thứ tự các phần tử
-                 * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
-                 **/ 
-                set: (sortable) => {
-                    let state = this.state;
-                    state.keyPrefix = Math.random(); // force react to destroy children
-                    state.order = sortable.toArray();
-                    this.setState({
-                        ...state
-                    })
-                } 
-            }
-        });
-        var el2 = document.getElementById('informations');
-        Sortable.create(el2, {
-            chosenClass: 'chosen',
-            animation: 500,
-            onChange: async(evt) => {
-                window.$('#informations tr').each(function (index) {
-                    window.$(this).find('td:nth-child(1)').html(index + 1);
-                });
-            },
-            onEnd: async(evt) => {
-                let taskInformations = this.state.newTemplate.taskInformations;
-                const item = taskInformations[evt.oldIndex];
-                taskInformations.splice(evt.oldIndex, 1);
-                taskInformations.splice(evt.newIndex, 0, item);
-            }, store:{
-                /**
-                 * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
-                 * Khi lưu thứ tự sắp xếp mới vào state, do state thay đổi, react render lại.
-                 * Sortable phát hiện cấu trúc DOM thay đổi nên tự động thay đổi trở lại thứ tự các phần tử
-                 * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
-                 **/ 
-                set: (sortable) => {
-                    let state = this.state;
-                    state.keyPrefix = Math.random(); // force react to destroy children
-                    state.order = sortable.toArray();
-                    this.setState({
-                        ...state
-                    })
-                } 
-            }
-        });
-    }
-
+    
 
     
     
@@ -305,14 +216,7 @@ class ModalAddTaskTemplate extends Component {
                 ...state,
             };
         });
-    }
-
-
-
-
-
-
-  
+    }  
 
     // Submit new template in data
     handleSubmit = async (event) => {
@@ -321,364 +225,40 @@ class ModalAddTaskTemplate extends Component {
         window.$("#addTaskTemplate").modal("hide");
     }
 
-
-
-
-    handleCancelEditAction = (event) => {
-        event.preventDefault(); // Ngăn không submit
-
-        this.setState(state => {
-            return {
-                ...state,
-                editAction: false,
-                action: Object.assign({}, state.EMPTY_ACTION),
-            }
-        })
-    }
-
-    // function: reset all data fields of action table
-    handleClearAction = (event) => {
-        event.preventDefault(); // Ngăn không submit
-
-        this.setState(state => {
-            return {
-                ...state,
-                action: Object.assign({}, state.EMPTY_ACTION),
-            }
-        })
-    }
-
-    // function add action of template
-    handleAddAction = (event) => {
-        event.preventDefault(); // Ngăn không submit
+    
+    handleAction =(data) =>{
+        //event.preventDefault(); // Ngăn không submit
         let { newTemplate } = this.state;
         this.setState(state => {
-            const taskActions = [...newTemplate.taskActions, state.action]
+            
             return {
                 ...state,
                 newTemplate: {
                     ...newTemplate,
-                    taskActions: taskActions
+                    taskActions: data
                 },
-                action: Object.assign({}, state.EMPTY_ACTION),
+                //action: Object.assign({}, state.EMPTY_ACTION),
             }
         })
-    }
-
-    // function edit item in action table
-    handleEditAction = (action, index) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editAction: true,
-                indexAction: index,
-                action: Object.assign({}, action),
-            }
-        });
-    }
-
-    // Save new data after edit action
-    handleSaveEditedAction = (event) => {
-        event.preventDefault(); // Ngăn không submit
-        
-        const { indexAction } = this.state;
-        let { taskActions } = this.state.newTemplate;
-        var newTaskActions;
-        if (taskActions) {
-            newTaskActions = taskActions.map((item, index) => {
-                return (index === indexAction) ? this.state.action : item;
-            })
-        }
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: {
-                    ...(this.state.newTemplate),
-                    taskActions: newTaskActions
-                },
-                editAction: false,
-                action: Object.assign({}, state.EMPTY_ACTION),
-            }
-        })
-    }
-
-    // delete action in action table
-    handleDeleteAction = (index) => {
-        let { taskActions } = this.state.newTemplate;
-        var newTaskInformations;
-        if (taskActions) {
-            newTaskInformations = taskActions.filter((item, x) => index !== x);
-        }
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: {
-                    ...(this.state.newTemplate),
-                    taskActions: newTaskInformations
-                },
-            }
-        })
-    }
-
-    // Edit information in information table
-    handleEditInformation = async (information, index) => {
-        this.setState((state)=> {
-            return {
-                ...state,
-                editInfo: true,
-                indexInfo: index,
-                information: Object.assign({}, information),
-            }
-        });
-    }
-
-    // Save new data after edit information in information table
-    handleSaveEditedInformation = (event) => {
-        event.preventDefault(); // Ngăn không submit
-
-        const { indexInfo } = this.state;
-        
-        let { taskInformations } = this.state.newTemplate;
-        var newTaskInformations;
-        if (taskInformations) {
-            newTaskInformations = taskInformations.map((item, index) => {
-                return (index === indexInfo) ? this.state.information : item;
-            })
-        }
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: {
-                    ...(this.state.newTemplate),
-                    taskInformations: newTaskInformations
-                },
-                editInfo: false,
-                information: Object.assign({}, state.EMPTY_INFORMATION),
-            }
-        })
-    }
-
-    handleCancelEditInformation = (event) => {
-        event.preventDefault(); // Ngăn không submit
-
-        this.setState(state => {
-            return {
-                ...state,
-                editInfo: false,
-                information: Object.assign({}, state.EMPTY_INFORMATION),
-            }
-        })
-    }
+        console.log("+++++++++++++++++++",this.state);
     
-    // function: reset all data fields of information table
-    handleClearInformation = (event) => {
-        event.preventDefault(); // Ngăn không submit
-
-        this.setState(state => {
-            return {
-                ...state,
-                information: Object.assign({}, state.EMPTY_INFORMATION),
-            }
-        })
     }
-
-    // delete item in information table
-    handleDeleteInformation = (index) => {
-        let { taskInformations } = this.state.newTemplate;
-        var newTaskInformations;
-        if (taskInformations) {
-            newTaskInformations = taskInformations.filter((item, x) => index !== x);
-        }
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: {
-                    ...(this.state.newTemplate),
-                    taskInformations: newTaskInformations
-                }
-            }
-        })
-    }
-
-    // add new information in information table
-    handleAddInformation = (event) => {
-        event.preventDefault(); // Ngăn không submit
-
+    handleInformation =(data)=>{
+        //event.preventDefault(); // Ngăn không submit
         let { newTemplate } = this.state;
         this.setState(state => {
-            const taskInformations = [...(newTemplate.taskInformations), state.information];
+            
             return {
+                ...state,
                 newTemplate: {
                     ...newTemplate,
-                    taskInformations: taskInformations
+                    taskInformations: data
                 },
-                information: Object.assign({}, state.EMPTY_INFORMATION),
+                //action: Object.assign({}, state.EMPTY_ACTION),
             }
         })
+        console.log("+++++++++++++++++++",this.state);
     }
-    
-
-    
-
-
-
-
-
-    /**
-     * Bộ xử lý cho Action Form 
-    **/
-    isActionFormValidated = () => {
-        let result = 
-            this.validateActionName(this.state.action.name, false) &&
-            this.validateActionDesc(this.state.action.description, false);
-        return result;
-    }
-
-    handleChangeActionName = (event) => {
-        let value = event.target.value;
-        this.validateActionName(value, true);
-    }
-    validateActionName = (value, willUpdateState=true) => {
-        let msg = TaskTemplateFormValidator.validateActionName(value);
-
-        if (willUpdateState){
-            this.state.action.name = value;
-            this.state.action.errorOnName = msg;
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        return msg == undefined;
-    }
-
-    handleChangeActionDesc = (event) => {
-        let value = event.target.value;
-        this.validateActionDesc(value, true);
-    }
-    validateActionDesc = (value, willUpdateState=true) => {
-        let msg = TaskTemplateFormValidator.validateActionDescription(value);
-
-        if (willUpdateState){
-            this.state.action.description = value;
-            this.state.action.errorOnDescription = msg;
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        return msg == undefined;
-    }
-
-    handleChangeActionMandatory= (event) => {
-        let value = event.target.checked;
-        this.state.action.mandatory = value;
-        this.setState(state =>{
-            return{
-                ...state
-            };
-        });
-    }
-
-
-
-
-
-    /**
-     * Bộ xử lý cho Information Form 
-    **/
-    isInfoFormValidated = () => {
-        let result = 
-            this.validateInfoName(this.state.information.name, false) &&
-            this.validateInfoDesc(this.state.information.description, false) &&
-            (this.state.information.type !== this.state.INFO_TYPE.SET ||
-                (this.state.information.type === this.state.INFO_TYPE.SET && 
-                    this.validateInfoSetOfValues(this.state.information.extra, false))
-            );
-        return result;
-    }
-
-    handleChangeInfoName = (event) => {
-        let value = event.target.value;
-        this.validateInfoName(value, true);
-    }
-    validateInfoName = (value, willUpdateState=true) => {
-        let msg = TaskTemplateFormValidator.validateInfoName(value);
-
-        if (willUpdateState){
-            this.state.information.name = value;
-            this.state.information.errorOnName = msg;
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        return msg == undefined;
-    }
-
-    handleChangeInfoDesc = (event) => {
-        let value = event.target.value;
-        this.validateInfoDesc(value, true);
-    }
-    validateInfoDesc = (value, willUpdateState=true) => {
-        let msg = TaskTemplateFormValidator.validateInfoDescription(value);
-
-        if (willUpdateState){
-            this.state.information.description = value;
-            this.state.information.errorOnDescription = msg;
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        return msg == undefined;
-    }
-
-    //function: show selection input
-    handleChangeInfoType = (event) => { 
-        let value = event.target.value;
-        this.state.information.type = value;
-        this.setState(state =>{
-            return{
-                ...state
-            };
-        });
-    }
-
-    handleChangeInfoSetOfValues = (event) => {
-        let value = event.target.value;
-        this.validateInfoSetOfValues(value);
-    }
-    validateInfoSetOfValues = (value, willUpdateState=true) => {
-        let msg = TaskTemplateFormValidator.validateInfoSetOfValues(value);
-
-        if (willUpdateState){
-            this.state.information.extra = value;
-            this.state.information.errorOnSetOfValues = msg;
-            this.setState(state =>{
-                return{
-                    ...state,
-                };
-            });
-        }
-        return msg == undefined;
-    }
-
-    handleChangeInfoFilledByAccountableEmployeesOnly = (event) => {
-        let value = event.target.checked;
-        this.state.information.filledByAccountableEmployeesOnly = value;
-        this.setState(state =>{
-            return{
-                ...state
-            };
-        });
-    }
-
-
 
     render() {
         var units, currentUnit, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean;
@@ -687,7 +267,6 @@ class ModalAddTaskTemplate extends Component {
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
         
-
         if (department.unitofuser) {
             units = department.unitofuser;
             currentUnit = units.find(item =>
@@ -867,69 +446,7 @@ class ModalAddTaskTemplate extends Component {
                                                 }
                                             </div>
                                         </div>
-                                        <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border">Danh sách các hoạt động của công việc*</legend>
-                                            <div className="control-group">
-                                                <div className='form-group'>
-                                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên hoạt động*</label>
-                                                    <div className={`col-sm-10 form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                        <input type="text" className="form-control" placeholder="Tên hoạt động" value={action.name} onChange={this.handleChangeActionName} />
-                                                        <ErrorLabel content={this.state.action.errorOnName}/>
-                                                    </div>
-                                                </div>
-                                                <div className='form-group'>
-                                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mô tả hoạt động*</label>
-                                                    <div className={`col-sm-10 form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                        <textarea type="text" className="form-control"name="description" placeholder="Mô tả hoạt động" value={action.description} onChange={this.handleChangeActionDesc} />
-                                                        <ErrorLabel content={this.state.action.errorOnDescription}/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label className="col-sm-2 control-label">
-                                                        Bắt buộc &nbsp;
-                                                        <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
-                                                    </label>
-                                                </div>
-                                                <div className="pull-right" style={{ marginBottom: '10px' }}>
-                                                    {this.state.editAction ?
-                                                        <React.Fragment>
-                                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>Hủy chỉnh sửa</button>
-                                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>Lưu</button>
-                                                        </React.Fragment>:
-                                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>Thêm</button>
-                                                    }
-                                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>Xóa trắng</button>
-                                                </div>
-                                                <table className="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style={{ width: '10%' }}>STT</th>
-                                                            <th title="Tên hoạt động">Tên hoạt động</th>
-                                                            <th title="Mô tả">Mô tả</th>
-                                                            <th title="Bắt buộc">Bắt buộc</th>
-                                                            <th title="Hành động">Hành động</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="actions">
-                                                        {
-                                                            (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                taskActions.map((item, index) =>
-                                                                    <tr key={`${this.state.keyPrefix}_${index}`}>
-                                                                        <td>{index + 1}</td>
-                                                                        <td>{item.name}</td>
-                                                                        <td>{item.description}</td>
-                                                                        <td>{item.mandatory ? "Có" : "Không"}</td>
-                                                                        <td>
-                                                                            <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => this.handleEditAction(item, index)}><i className="material-icons"></i></a>
-                                                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAction(index)}><i className="material-icons"></i></a>
-                                                                        </td>
-                                                                    </tr>
-                                                                )
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </fieldset>
+                                        <ActionTemplate  taskAction ={taskActions} handleAction={this.handleAction} />
                                     </div>
                                     <div className="col-sm-6">
                                         <div className={'form-group has-feedback' + (submitted && !newTemplate.description ? ' has-error' : '')}>
@@ -952,98 +469,10 @@ class ModalAddTaskTemplate extends Component {
                                             <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
                                             <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
                                         </div>
+                                    <InformationTemplate informationsTemplate ={taskInformations} handleInformation={this.handleInformation}/>
 
 
-
-                                        <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border">Danh sách các thông tin yêu cầu của công việc</legend>
-                                            <div className="control-group">
-                                                <div className={'form-group'}>
-                                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Tên thông tin</label>
-                                                    <div className={`col-sm-10 form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                        <input type="text" className="form-control" placeholder="Tên thông tin" value={information.name} onChange={this.handleChangeInfoName} />
-                                                        <ErrorLabel content={this.state.information.errorOnName}/>
-                                                    </div>
-                                                </div>
-                                                <div className={'form-group'}>
-                                                    <label className="col-sm-4 control-label" htmlFor="inputDescriptionInfo" style={{ width: '100%', textAlign: 'left' }}>Mô tả thông tin</label>
-                                                    <div className={`col-sm-10 form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                        <textarea type="text" className="form-control" id="inputDescriptionInfo" name="description" placeholder="Mô tả thông tin" value={information.description} onChange={this.handleChangeInfoDesc} />
-                                                        <ErrorLabel content={this.state.information.errorOnDescription}/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label className="col-sm-4 control-label">Kiểu dữ liệu:</label>
-                                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                                        <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
-                                                            <option value="Văn bản">Văn bản</option>
-                                                            <option value="Số">Số</option>
-                                                            <option value="Ngày tháng">Ngày tháng</option>
-                                                            <option value="Boolean">Boolean</option>
-                                                            <option value="Tập giá trị">Tập giá trị</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                { this.state.information.type === this.state.INFO_TYPE.SET?
-                                                    <div className={'form-group has-feedback' + (!information.type ? ' has-error' : '')}>
-                                                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>{`Nhập tập giá trị:`}</label>
-                                                        <div className={`col-sm-10 form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                                            <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
-                                                            <ErrorLabel content={this.state.information.errorOnSetOfValues}/>
-                                                        </div>
-                                                    </div>
-                                                    : null
-                                                }
-
-                                                <div className="form-group">
-                                                    <label className="col-sm-2 control-label">
-                                                        Chỉ quản lý được điền? &nbsp;
-                                                        <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
-                                                    </label>
-                                                </div>
-                                                <div className="pull-right" style={{marginBottom: "10px"}}>
-                                                    {this.state.editInfo ?
-                                                        <React.Fragment>
-                                                            <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>Hủy chỉnh sửa</button>
-                                                            <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>Lưu</button>
-                                                        </React.Fragment>:
-                                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>Thêm</button>
-                                                    }
-                                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>Xóa trắng</button>
-                                                </div>
-                                                <table className="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style={{ width: '10%' }}>Stt</th>
-                                                            <th title="Tên trường thông tin">Tên trường thông tin</th>
-                                                            <th title="Mô tả">Mô tả</th>
-                                                            <th title="Kiểu dữ liệu">Kiểu dữ liệu</th>
-                                                            <th title="Chỉ quản lý được điền?">Chỉ quản lý được điền?</th>
-                                                            <th>Hành động</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="informations">
-                                                        {
-                                                            (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>Chưa có dữ liệu</center></td></tr> :
-                                                                taskInformations.map((item, index) =>
-                                                                    <tr key={`${this.state.keyPrefix}_${index}`}>
-                                                                        <td>{index + 1}</td>
-                                                                        <td>{item.name}</td>
-                                                                        <td>{item.description}</td>
-                                                                        <td>{item.type}</td>
-                                                                        <td>{item.filledByAccountableEmployeesOnly ? "Có" : "Không"}</td>
-                                                                        <td>
-                                                                            <a href="#abc" className="edit" title="Edit" onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
-                                                                            <a href="#abc" className="delete" title="Delete" onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
-                                                                        </td>
-                                                                    </tr>
-                                                                )
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </fieldset>
+                                        
                                     </div>
                                 </div>
                             </form>

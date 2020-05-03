@@ -6,7 +6,7 @@ const { Employee, Salary } = require('../../../models').schema;
  * @data: dữ liệu các key tìm kiếm
  * @company: id công ty người tìm kiếm
  */
-exports.searchSalary = async (data, company) => {
+exports.searchSalaries = async (data, company) => {
     var keySearchEmployee, keySearch = { company: company};
 
     // Bắt sựu kiện đơn vị tìm kiếm khác null 
@@ -113,7 +113,7 @@ exports.updateSalary = async (id, data, company) => {
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương
-exports.checkSalary = async (employeeNumber,month, company) => {
+exports.checkSalaryExisted = async (employeeNumber,month, company) => {
     var employeeInfo = await Employee.findOne({
         employeeNumber: employeeNumber,
         company:company
@@ -131,7 +131,7 @@ exports.checkSalary = async (employeeNumber,month, company) => {
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
-exports.checkArraySalary = async (data, company) => {
+exports.checkSalariesExisted = async (data, company) => {
     var list=[];
     for(let i=0; i<data.arraySalary.length; i++){
         let employeeInfo = await Employee.findOne({
@@ -157,7 +157,7 @@ exports.checkArraySalary = async (data, company) => {
 }
 
 // Import dữ liệu bảng lương
-exports.importSalary = async (data, company) => {
+exports.importSalaries = async (data, company) => {
     var importSalary=[];
     for(let n in data.rows){
         var row = data.rows[n];

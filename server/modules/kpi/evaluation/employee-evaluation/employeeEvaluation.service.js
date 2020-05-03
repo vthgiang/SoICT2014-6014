@@ -61,10 +61,7 @@ exports.getKPIAllMember = async (data) => {
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         }
     }
-    return {
-        message: "Tìm kiếm KPI nhân viên thành công",
-        content: kpipersonals
-    }
+    return kpipersonals;
 }
 
 // Lấy tất cả KPI cá nhân theo người thiết lập
@@ -74,10 +71,7 @@ exports.getByMember = async (creatorID) => {
         .sort({ 'time': 'desc' })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis" });
-    return {
-        message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
-        content: kpipersonals
-    }
+    return kpipersonals;
 }
 
 // Lấy tất cả kpi cá nhân theo tháng
@@ -87,10 +81,7 @@ exports.getByMonth = async (data) => {
     var kpipersonals = await KPIPersonal.findOne({ creator: data.id, time: month })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-    return {
-        message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
-        content: kpipersonals
-    }
+    return kpipersonals;
 }
 
 // Phê duyệt tất cả các mục tiêu
@@ -107,11 +98,8 @@ exports.approveAllTarget = async (id) => {
     kpipersonal = await kpipersonal.populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    return {
-        message: "Xác nhận yêu cầu phê duyệt thành công",
-        kpimember: kpipersonal,
-        kpis: targets
-    }
+    return [kpipersonal,targets];
+    
 }
 
 // Phê duyệt từng mục tiêu
@@ -134,10 +122,8 @@ exports.editStatusTarget = async (data) => {
     kpipersonal = await KPIPersonal.findByIdAndUpdate(kpipersonal._id, { $set: { status: checkFullApprove } }, { new: true })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-    return {
-        message: "Phê duyệt mục tiêu thành công",
-        newKPI: kpipersonal
-    }
+    return kpipersonal;
+    
 }
 
 // Chỉnh sửa mục tiêu của KPI cá nhân
@@ -149,30 +135,21 @@ exports.editTarget = async (id, data) => {
         criteria: data.criteria
     }
     var target = await DetailKPIPersonal.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
-    return {
-        message: "Chỉnh sửa thành công một mục tiêu của cá nhân",
-        target: target
-    }
+    return target;
 }
 // Lấy kpi cá nhân theo id
 exports.getById = async (id) => {
     var kpipersonal = await KPIPersonal.findById(id)
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-    return {
-        message: "Lấy kpi cá nhân theo id thành công",
-        content: kpipersonal
-    }
+    return kpipersonal;
 }
 
 exports.getTaskById= async (id) =>{
     var task = await Task.find({kpi: id}) 
     .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
     
-    return {
-        message: "Lấy tất cả các mục tiêu kpi cá nhân thành công",
-        content: task
-    }
+    return task;
 }
 
 exports.getSystemPoint= async(id)=>{
@@ -188,10 +165,7 @@ exports.getSystemPoint= async(id)=>{
     var systempoint= sum/task.length*kpi.weight/100;
     
     var kpipersonal= await DetailKPIPersonal.findByIdAndUpdate(id, { $set: { systempoint: systempoint} }, { new: true });
-    return {
-        message: "DetailKPI tính điểm sys thành công",
-        kpipersonal: kpipersonal
-    }
+    return kpipersonal;
 }
 
 exports.setPointKPI = async(id_kpi, id_target, data) =>{
@@ -199,8 +173,5 @@ exports.setPointKPI = async(id_kpi, id_target, data) =>{
     var kpipersonal = await KPIPersonal.findById(id_kpi)
     .populate("organizationalUnit creator approver")
     .populate({ path: "kpis", populate: { path: 'parent' } });
-    return {
-            message : "Cập nhật thành công điểm quản lí đánh giá",
-            content : kpipersonal
-        }
+    return kpipersonal;
 }

@@ -17,7 +17,8 @@ class TabTaskContent extends Component {
             startTimer: false,
             currentTimer: "",
             currentPage: 1,
-            showModal: ""
+            showModal: "",
+            showAddSubTask: ""
         };
     }
     componentDidMount() {
@@ -139,7 +140,7 @@ class TabTaskContent extends Component {
             if (content === "responsible") {
                 this.props.getResponsibleTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "consulted") {
                 this.props.getConsultedTaskByUser(unit, newCurrentPage, perPage, status, "[]", "[]", null);
             } else if (content === "creator") {
@@ -165,7 +166,7 @@ class TabTaskContent extends Component {
             if (content === "responsible") {
                 this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "consulted") {
                 this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "creator") {
@@ -189,9 +190,9 @@ class TabTaskContent extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             var content = this.props.role;
             if (content === "responsible") {
-                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+                this.props.getResponsibleTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "accountable") {
-                this.props.getAccounatableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
+                this.props.getAccountableTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "consulted") {
                 this.props.getConsultedTaskByUser(unit, newCurrentPage, 20, status, "[]", "[]", null);
             } else if (content === "creator") {
@@ -212,7 +213,7 @@ class TabTaskContent extends Component {
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
+            this.props.getAccountableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "consulted") {
             this.props.getConsultedTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "creator") {
@@ -235,7 +236,7 @@ class TabTaskContent extends Component {
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
         } else if (content === "accountable") {
-            this.props.getAccounatableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
+            this.props.getAccountableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "consulted") {
             this.props.getConsultedTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "creator") {
@@ -275,6 +276,15 @@ class TabTaskContent extends Component {
         var modal = document.getElementById(`modelPerformTask${id}`);
         modal.classList.add("in");
         modal.style = "display: block; padding-right: 17px;";
+    }
+    handleCheckClickAddSubTask = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showAddSubTask: id
+            }
+        });
+        window.$(`#addNewTask${id}`).modal('show')
     }
     render() {
         var currentTasks, units = [];
@@ -407,7 +417,7 @@ class TabTaskContent extends Component {
                                                 <td title={this.formatDate(item.endDate)}>{this.formatDate(item.endDate)}</td>
                                                 <td title={item.status}>{item.status}</td>
                                                 <td title={item.progress + "%"}>{item.progress + "%"}</td>
-                                                <td title={this.convertTime(item.time)}>{this.convertTime(item.time)}</td>
+                                                <td title={this.convertTime(item.totalLoggedTime)}>{this.convertTime(item.totalLoggedTime)}</td>
                                                 <td>
                                                     <a href={`#modelPerformTask${item._id}`} className="edit" data-toggle="modal" onClick={() => this.handleShowModal(item._id)} title={"Bắt đầu" + item.name}><i className="material-icons">edit</i></a>
                                                     {
@@ -426,14 +436,18 @@ class TabTaskContent extends Component {
                                                     }
                                                     <button type="button" data-toggle="collapse" data-target={`#actionTask${item._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
                                                     <div id={`actionTask${item._id}`} className="collapse">
-                                                        <a href={`#addNewTask${item._id}`} onClick={this.handleCheckClick} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
+                                                        <a href={`#addNewTask${item._id}`} onClick={() => this.handleCheckClickAddSubTask(item._id)} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
                                                         <a href="#abc" className="all_inbox" title="Lưu công việc này vào kho"><i className="material-icons">all_inbox</i></a>
                                                         {
                                                             this.props.role === "accountable" &&
                                                             <a href="#abc" className="delete" onClick={() => this.handleAction(item._id)} title="Xóa công việc này"><i className="material-icons"></i></a>
                                                         }
                                                     </div>
-                                                    <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
+                                                    {
+                                                        this.state.showAddSubTask === item._id &&
+                                                        <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
+                                                    }
+                                                    {/* <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} /> */}
                                                 </td>
                                             </tr>
                                         ) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
@@ -445,7 +459,7 @@ class TabTaskContent extends Component {
 
                     <PaginateBar
                         pageTotal={tasks.pages}
-                        currentPage={this.state.currentPage ? 1 : this.state.currentPage}
+                        currentPage={this.state.currentPage}
                         func={this.handleGetDataPagination}
                     />
 

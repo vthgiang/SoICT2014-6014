@@ -16,7 +16,8 @@ exports.getAllSystemLinks = async (req, res) => {
         LogError(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_default_faile'],
+            content: error
         });
     }
 };
@@ -36,7 +37,8 @@ exports.getAllSystemLinkCategories = async (req, res) => {
         LogError(req.user.email, 'GET_LINKS_DEFAULT_CATEGORIES');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_links_default_categories_faile'],
+            content: error
         });
     }
 };
@@ -59,7 +61,8 @@ exports.getPaginatedSystemLinks = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_system_component_faile'],
+            content: error
         });
     }
 };
@@ -83,7 +86,8 @@ exports.createSystemLink = async (req, res) => {
         LogError(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_system_link_faile'],
+            content: error
         });
     }
 };
@@ -103,7 +107,8 @@ exports.getSystemLink = async (req, res) => {
         LogError(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_link_default_faile'],
+            content: error
         });
     }
 };
@@ -125,7 +130,8 @@ exports.editSystemLink = async (req, res) => {
         LogError(req.user.email, 'EDIT_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_system_link_faile'],
+            content: error
         });
     }
 };
@@ -145,7 +151,8 @@ exports.deleteSystemLink = async (req, res) => {
         LogError(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_system_link_faile'],
+            content: error
         });
     }
 };

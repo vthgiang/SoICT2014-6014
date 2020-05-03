@@ -985,7 +985,7 @@ class ModalPerformTask extends Component {
                                                     <div className='form-group has-feedback'>
                                                         <label className="col-sm-2 control-label" style={{ width: '40%', textAlign: 'left', fontWeight: "500" }}>Thời gian làm việc:</label>
                                                         <div className="col-sm-8" style={{ width: '60%' }}>
-                                                            <input type="name" className="form-control" value={this.convertTime(task && task.time)} ref={input => this.time = input} disabled />
+                                                            <input type="name" className="form-control" value={this.convertTime(task && task.totalLoggedTime)} ref={input => this.time = input} disabled />
                                                         </div>
                                                     </div>
                                                 </div>

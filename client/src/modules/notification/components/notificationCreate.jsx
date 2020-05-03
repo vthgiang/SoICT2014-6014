@@ -19,11 +19,11 @@ class NotificationCreate extends Component {
 
     save = () => {
         var title = this.refs.title.value;
-        var icon = this.refs.icon.value;
+        var level = this.refs.level.value;
         var content = this.refs.content.value;
         var departments = [].filter.call(this.refs.departments.options, o => o.selected).map(o => o.value);
         var users = [].filter.call(this.refs.users.options, o => o.selected).map(o => o.value);
-        var data = {title, icon, content, departments, users};
+        var data = {title, level, content, departments, users};
         
 
         return this.props.create(data);
@@ -44,22 +44,22 @@ class NotificationCreate extends Component {
                 >
                     <form id="form-create-notification">
                         <div className="row">
-                            <div className="form-group col-sm-9">
-                                <label>Tiêu đề<span className="text-red">*</span></label>
+                            <div className="form-group col-sm-8">
+                                <label>{translate('notification.title')}<span className="text-red">*</span></label>
                                 <input type="text" ref="title" className="form-control"/>
                             </div>
-                            <div className="form-group col-sm-3">
-                                <label>Loại thông báo<span className="text-red">*</span></label>
-                                <select className="form-control" ref="icon" defaultValue='info'>
-                                    <option key={1} value={'info'}>info</option>
-                                    <option key={2} value={'normal'}>normal</option>
-                                    <option key={3} value={'warning'}>warning</option>
-                                    <option key={4} value={'error'}>error</option>
+                            <div className="form-group col-sm-4">
+                                <label>{translate('notification.type.title')}<span className="text-red">*</span></label>
+                                <select className="form-control" ref="level" defaultValue='info'>
+                                    <option key={1} value={'info'}>{translate('notification.type.info')}</option>
+                                    <option key={2} value={'general'}>{translate('notification.type.general')}</option>
+                                    <option key={3} value={'important'}>{translate('notification.type.important')}</option>
+                                    <option key={4} value={'emergency'}>{translate('notification.type.emergency')}</option>
                                 </select>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label>Nội dung<span className="text-red">*</span></label>
+                            <label>{translate('notification.content')}<span className="text-red">*</span></label>
                             <textarea type="text" ref="content" className="form-control" style={{height:'150px'}}/>
                         </div>
                         <div className="form-group">

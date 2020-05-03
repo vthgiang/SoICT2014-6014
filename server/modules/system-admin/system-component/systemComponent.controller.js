@@ -16,7 +16,8 @@ exports.getAllSystemComponents = async (req, res) => {
         LogError(req.user.email, 'GET_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['get_components_default_faile'],
+            content: error
         });
     }
 };
@@ -39,7 +40,8 @@ exports.getPaginatedSystemComponents = async (req, res) => {
         LogError(req.user.email, 'PAGINATE_COMPONENTS_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['paginate_components_default_faile'],
+            content: error
         });
     }
 };
@@ -65,7 +67,8 @@ exports.createSystemComponent = async (req, res) => {
         LogError(req.user.email, 'CREATE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['create_system_component_faile'],
+            content: error
         });
     }
 };
@@ -85,7 +88,8 @@ exports.getSystemComponent = async (req, res) => {
         LogError(req.user.email, 'SHOW_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['show_system_component_faile'],
+            content: error
         });
     }
 };
@@ -107,7 +111,8 @@ exports.editSystemComponent = async (req, res) => {
         LogError(req.user.email, 'EDIT_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['edit_system_component_faile'],
+            content: error
         });
     }
 };
@@ -128,7 +133,8 @@ exports.deleteSystemComponent = async (req, res) => {
         LogError(req.user.email, 'DELETE_COMPONENT_DEFAULT');
         res.status(400).json({
             success: false,
-            messages: error
+            messages: Array.isArray(error) ? error : ['delete_system_component_faile'],
+            content: error
         });
     }
 };

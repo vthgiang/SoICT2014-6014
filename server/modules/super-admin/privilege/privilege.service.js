@@ -45,7 +45,7 @@ exports.addLinkThatRolesCanAccess = async (linkId, roleArr) => {
 /**
  * Lấy ra mảng links mà một role được quyền truy cập
  */
-exports.getLinksRoleCanAccess = async (idRole) => {
+exports.getLinksThatRoleCanAccess = async (idRole) => {
     const role = await Role.findById(idRole); //lay duoc role hien tai
     var roles = [role._id];
     roles = roles.concat(role.parents);

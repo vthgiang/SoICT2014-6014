@@ -108,7 +108,7 @@ class ModalCreateEmployeeKpi extends Component {
     validateCriteria = (value, willUpdateState=true) => {
         let msg = undefined;
         if (value.trim() === ""){
-            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_criteria');
+            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_criteria');
         }
 
         if (willUpdateState){
@@ -130,11 +130,11 @@ class ModalCreateEmployeeKpi extends Component {
     validateWeight = (value, willUpdateState=true) => {
         let msg = undefined;
         if (value.trim() === ""){
-            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_weight.empty');
+            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.empty');
         } else if(value < 0){
-            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0');
+            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0');
         } else if(value > 100){
-            msg = translate('employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100');
+            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100');
         } 
         
         if (willUpdateState){
@@ -178,15 +178,15 @@ class ModalCreateEmployeeKpi extends Component {
                 <DialogModal
                     modalID="createEmployeeKpi" isLoading={adding}
                     formID="formCreateEmployeeKpi"
-                    title={translate('employee_kpi_set.create_employee_kpi_modal.create_employee_kpi')}
-                    msg_success={translate('employee_kpi_set.create_employee_kpi_modal.success')}
-                    msg_faile={translate('employee_kpi_set.create_employee_kpi_modal.failure')}
+                    title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.create_employee_kpi')}
+                    msg_success={translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.success')}
+                    msg_faile={translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.failure')}
                     func={this.handleCreateEmployeeKpi}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form id="formCreateEmployeeKpi" onSubmit={() => this.handleCreateEmployeeKpi(translate('employee_kpi_set.create_employee_kpi_modal.success'))}>
+                    <form id="formCreateEmployeeKpi" onSubmit={() => this.handleCreateEmployeeKpi(translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.success'))}>
                         <div className={`form-group ${errorOnName===undefined?"":"has-error"}`}>
-                            <label>{translate('employee_kpi_set.create_employee_kpi_modal.name')}<span className="text-red">*</span></label>
+                            <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
                             <ErrorLabel content={errorOnName}/>
                         </div>
@@ -194,7 +194,7 @@ class ModalCreateEmployeeKpi extends Component {
                         {(createKpiUnit.currentKPI !== null) &&//unit.parent === null này!!! kiểm tra xem đây là đơn vị gốc hay không!
                                 (items.length !== 0) &&
                                     <div className="form-group">
-                                    <label>{ translate('employee_kpi_set.create_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
+                                    <label>{ translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
                                     <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                         id={`parent-target-add`}
                                         className="form-control select2"
@@ -208,13 +208,13 @@ class ModalCreateEmployeeKpi extends Component {
                             </div>}
 
                         <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
-                            <label>{translate('employee_kpi_set.create_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
+                            <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
                             <ErrorLabel content={errorOnCriteria}/>
                         </div>
 
                         <div className={`form-group ${errorOnWeight===undefined?"":"has-error"}`}>
-                            <label>{translate('employee_kpi_set.create_employee_kpi_modal.weight')}<span className="text-red">*</span></label>
+                            <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.weight')}<span className="text-red">*</span></label>
                             <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
                             <ErrorLabel content={errorOnWeight}/>
                         </div>

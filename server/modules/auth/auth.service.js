@@ -220,7 +220,7 @@ exports.getLinksThatRoleCanAccess = async (idRole) => {
 exports.getProfile = async (id) => {
     var user = await User
         .findById(id)
-        .select('-password -status -delete_soft -token')
+        .select('-password -status -deleteSoft -tokens')
         .populate([
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }

@@ -11,7 +11,7 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 adding: false,
-                currentTask: action.task.data.content
+                currentTask: action.task.content
             };
         case performTaskConstants.CREATE_RESULT_TASK_FAILURE:
             return {
@@ -24,7 +24,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.EDIT_RESULT_TASK_SUCCESS:
             return {
                 ...state,
-                resulttask: action.resultTask.data.content
+                resulttask: action.resultTask.content
             };
         case performTaskConstants.EDIT_RESULT_TASK_FAILURE:
             return {
@@ -189,11 +189,12 @@ export function performtasks(state = {}, action) {
                 )
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS:
+            console.log( action.newComment.data);
             return {
                 ...state,
                 actioncomments: state.actioncomments.map(comment =>
-                    comment._id === action.newComment.commentTask._id
-                        ? action.newComment.commentTask : comment
+                    comment._id === action.newComment.data.content._id
+                        ? action.newComment.data.content : comment
                 )
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE:

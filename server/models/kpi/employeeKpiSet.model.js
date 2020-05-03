@@ -22,7 +22,7 @@ const EmployeeKpiSetSchema = new Schema({
         ref: User,
         required: true
     },
-    time: {
+    date: {
         type: Date,
         required: true
     },

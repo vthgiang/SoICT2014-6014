@@ -208,17 +208,17 @@ class ModalMemberApprove extends Component {
                 <div className="modal-dialog-full">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.listtarget)}>
+                            <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(this.props.id, kpimember.kpis)}>
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>
                             </button>
                             <div className="col-sm-6">
-                                <h3 className="modal-title" id="myModalLabel">Phê duyệt KPI nhân viên {kpimember && kpimember.creater.name}</h3>
+                                <h3 className="modal-title" id="myModalLabel">Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
                             </div>
                             <div className="col-sm-5" style={{ marginTop: "-5px", marginLeft: "7%" }}>
                                 {this.state.compare ? <button className="col-sm-3 btn btn-success" style={{marginLeft:"48%"}} onClick={() => this.handleCompare()}>Tắt so sánh</button>
-                                    : <button className="col-sm-3 btn btn-success" style={{ marginLeft: "48%" }} onClick={() => this.handleCompare(kpimember.creater._id)}>So sánh với KPI cũ</button>}
-                                <button className="col-sm-3 btn btn-success" style={{ marginLeft: "10px" }} onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.listtarget)}>Duyệt toàn bộ KPI</button>
+                                    : <button className="col-sm-3 btn btn-success" style={{ marginLeft: "48%" }} onClick={() => this.handleCompare(kpimember.creator._id)}>So sánh với KPI cũ</button>}
+                                <button className="col-sm-3 btn btn-success" style={{ marginLeft: "10px" }} onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>
                             </div>
                         </div>
                         <div className="modal-body modal-body-perform-task" >
@@ -226,7 +226,7 @@ class ModalMemberApprove extends Component {
                                 {this.state.checkWeight&&<div className="col-sm-12" style={{color: "red"}}><label>Trọng số đang không thỏa mãn!</label></div>}
                                 <div className="col-xs-12">
                                     <label className="col-sm-2"><b>Người thực hiện:</b></label>
-                                    <label className="col-sm-10">{kpimember && kpimember.creater.name}</label>
+                                    <label className="col-sm-10">{kpimember && kpimember.creator.name}</label>
                                 </div>
                                 <div className="col-xs-12">
                                     <label className="col-sm-2"><b>Thời gian:</b></label>
@@ -234,7 +234,7 @@ class ModalMemberApprove extends Component {
                                 </div>
                                 <div className="col-xs-12" style={{ marginBottom: "10px" }}>
                                     <label className="col-sm-2">Số mục tiêu:</label>
-                                    <label className="col-sm-2">{kpimember && kpimember.listtarget.length}</label>
+                                    <label className="col-sm-2">{kpimember && kpimember.kpis.length}</label>
                                     {/* {!this.state.compare && <button className="btn btn-success" style={{position: "absolute", right: "-2%", marginTop: "-1%"}}>Duyệt toàn bộ KPI</button>} */}
                                 </div>
                             </div>
@@ -254,7 +254,7 @@ class ModalMemberApprove extends Component {
                                             }
                                         </div>
                                         <div className="col-xs-4" style={{ marginTop: "-8px", marginLeft: "-5%" }}>
-                                            <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember.creater._id, Date.now())}>Tìm kiếm</button>
+                                            <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember.creator._id, Date.now())}>Tìm kiếm</button>
                                         </div>
                                     </div>
                                     <table className="table table-bordered table-striped">
@@ -269,7 +269,7 @@ class ModalMemberApprove extends Component {
                                         </thead>
                                         <tbody >
                                             {typeof kpimember !== "undefined" ?
-                                                kpimember.listtarget.map(item =>
+                                                kpimember.kpis.map(item =>
                                                     <tr key={item._id}>
                                                         <td>{item.name}</td>
                                                         <td>{item.parent.name}</td>
@@ -300,7 +300,7 @@ class ModalMemberApprove extends Component {
                                     </thead>
                                     <tbody>
                                         {typeof kpimember !== "undefined" &&
-                                            kpimember.listtarget.map(item =>
+                                            kpimember.kpis.map(item =>
                                                 <tr key={item._id}>
                                                     <td>{item.name}</td>
                                                     <td>{item.parent.name}</td>
