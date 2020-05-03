@@ -97,7 +97,7 @@ exports.stopTimer = async (req, res) => {
 /**
  * Thêm bình luận của hoạt động
  */
-exports.createActionComment = async (body) => {
+exports.createCommentOfTaskAction = async (body) => {
 
         var commenttasks = await Task.updateOne(
             { "taskActions._id": body.taskActionId },
@@ -149,7 +149,7 @@ exports.createActionComment = async (body) => {
 /**
  * Sửa nội dung bình luận hoạt động
  */
-exports.editActionComment = async (params,body) => {
+exports.editCommentOfTaskAction = async (params,body) => {
     const now = new Date()
     var action = await Task.updateOne(
         { "taskActions.comments._id": params.id },
@@ -191,7 +191,7 @@ exports.editActionComment = async (params,body) => {
 /**
  * Xóa bình luận hoạt động
  */
-exports.deleteActionComment = async (params) => {
+exports.deleteCommentOfTaskAction = async (params) => {
     var action = await Task.update(
         { "taskActions.comments._id": params.id },
         { $pull: { "taskActions.$.comments" : {_id : params.id} } },
