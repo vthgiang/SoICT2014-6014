@@ -17,7 +17,7 @@ function getAllKPIMemberOfUnit(infosearch) {
     return sendRequest ({
         url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.starttime}/${infosearch.endtime}`,
         method: 'GET',
-    },false,'kpi.evaluation')
+    }, false, true, 'kpi.evaluation')
 }
 
 // Lấy tất cả kpi cá nhân
@@ -28,5 +28,5 @@ async function getAllKPIMemberByMember() {
     return sendRequest ({
         url:`${LOCAL_SERVER_API}/kpimembers/user/${member}`,
         method: 'GET',
-    },false,'kpi.evaluation')
+    }, false, true, 'kpi.evaluation')
 }

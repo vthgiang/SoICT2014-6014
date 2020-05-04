@@ -18,7 +18,7 @@ function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/department`,
         method: 'GET',
-    }, false, 'super_admin.organization_unit');
+    }, false, true, 'super_admin.organization_unit');
 }
 
 function create(department) {
@@ -26,7 +26,7 @@ function create(department) {
         url: `${ LOCAL_SERVER_API }/department`,
         method: 'POST',
         data: department,
-    }, true, 'super_admin.organization_unit');
+    }, true, true, 'super_admin.organization_unit');
 }
 
 function edit(department) {
@@ -34,21 +34,21 @@ function edit(department) {
         url: `${ LOCAL_SERVER_API }/department/${department._id}`,
         method: 'PATCH',
         data: department,
-    }, true, 'super_admin.organization_unit');
+    }, true, true, 'super_admin.organization_unit');
 }
 
 function destroy(departmentId) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/department/${departmentId}`,
         method: 'DELETE',
-    }, true, 'super_admin.organization_unit');
+    }, true, true, 'super_admin.organization_unit');
 }
 
 function getAll() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/departments`,
         method: 'GET'
-    }, false, 'super_admin.organization_unit');
+    }, false, true, 'super_admin.organization_unit');
 }
 
 async function getDepartmentOfUser() {
@@ -59,7 +59,7 @@ async function getDepartmentOfUser() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/department/department-of-user/${id}`,
         method: 'GET',
-    }, false, 'super_admin.organization_unit');
+    }, false, true, 'super_admin.organization_unit');
 }
 
 async function getDepartmentsThatUserIsDean(currentRole) {
@@ -70,6 +70,6 @@ async function getDepartmentsThatUserIsDean(currentRole) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/department/departments-that-user-is-dean/${id}`,
         method: 'GET',
-    }, false, 'super_admin.organization_unit');
+    }, false, true, 'super_admin.organization_unit');
 }
 

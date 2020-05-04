@@ -19,7 +19,7 @@ async function getEmployeeProfile() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/employee/${email}`,
         method: 'GET',
-    }, false, 'human_resource.profile.employee_info');
+    }, false, true, 'human_resource.profile.employee_info');
 }
 
 /**
@@ -34,5 +34,5 @@ async function updatePersonalInformation(data) {
         url: `${ LOCAL_SERVER_API }/employee/${email}`,
         method: 'PUT',
         data: data,
-    }, true, 'human_resource.profile.employee_info');
+    }, true, true, 'human_resource.profile.employee_info');
 }

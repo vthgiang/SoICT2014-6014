@@ -19,7 +19,7 @@ function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user`,
         method: 'GET',
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }
 
 function getPaginate(data) {  
@@ -27,7 +27,7 @@ function getPaginate(data) {
         url: `${ LOCAL_SERVER_API }/user/paginate`,
         method: 'POST',
         data,
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }
 
 function edit(id, data) {
@@ -35,7 +35,7 @@ function edit(id, data) {
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'PATCH',
         data,
-    }, true, 'super_admin.user');
+    }, true, true, 'super_admin.user');
 }
 
 function create(data) {
@@ -43,14 +43,14 @@ function create(data) {
         url: `${ LOCAL_SERVER_API }/user`,
         method: 'POST',
         data,
-    }, true, 'super_admin.user');
+    }, true, true, 'super_admin.user');
 }
 
 function destroy(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/${id}`,
         method: 'DELETE',
-    }, true, 'super_admin.user');
+    }, true, true, 'super_admin.user');
 }
 
 function getRoles() {
@@ -58,7 +58,7 @@ function getRoles() {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/roles/${id}`,
         method: 'GET',
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }
 
 function getLinkOfRole() {
@@ -66,14 +66,14 @@ function getLinkOfRole() {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/links/role/${currentRole}`,
         method: 'GET',
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }
 // Lấy tất cả các vai trò cùng phòng ban với người dùng
 function getRoleSameDepartmentOfUser(currentRole) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/role/same-department/${currentRole}`,
         method: 'GET',
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }
 
 // Lấy tất cả nhân viên của công ty
@@ -81,7 +81,7 @@ function getAllUserOfCompany() {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/user`,
         method: 'GET',
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }
 
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
@@ -89,7 +89,7 @@ function getAllUserOfDepartment(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/user/users-of-department/${id}`,
         method: 'GET',
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }
 
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
@@ -97,5 +97,5 @@ function getAllUserSameDepartment(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/user/same-department/${id}`,
         method: 'GET',
-    }, false, 'super_admin.user');
+    }, false, true, 'super_admin.user');
 }

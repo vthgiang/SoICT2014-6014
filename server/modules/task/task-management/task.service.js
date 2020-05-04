@@ -197,7 +197,12 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         var endTime = endDateId.split("-");
         var endDate = new Date(endTime[2], endTime[1]-1, endTime[0]);
         if(taskTemplateId !== null){
-            var taskTemplate = TaskTemplate.findById(taskTemplateId)
+            var taskTemplate = await TaskTemplate.findById(taskTemplateId);
+            var taskActions = {
+                ...taskTemplate.taskActions,
+                creator: taskTemplate.creator
+            }
+
         }
         console.log(taskTemplate);
         var evaluations = [{
@@ -215,6 +220,7 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
             startDate: startDate,
             endDate: endDate,
             priority: priorityId,
+            taskTemplate: taskTemplate ? taskTemplate : null,
             taskInformations: taskTemplate?taskTemplate.taskInformations:[],
             taskActions: taskTemplate?taskTemplate.taskActions:[],
             role: roleId,

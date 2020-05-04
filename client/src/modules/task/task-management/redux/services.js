@@ -29,7 +29,7 @@ function getAll() {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 
 // get a task by id 
@@ -37,7 +37,7 @@ function getById(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 
 // get all task by Role
@@ -45,7 +45,7 @@ function getAllTaskByRole(id, role) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/role/${id}/${role}`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 // get all task by Role
 async function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name) {//param -- user,
@@ -56,7 +56,7 @@ async function getResponsibleTaskByUser(unit, number, perPage, status, priority,
     return sendRequest({//user = localStorage.getItem('id')
         url: `${LOCAL_SERVER_API}/tasks/user/task-responsible/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 // get all task by Role
 async function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name) {
@@ -66,7 +66,7 @@ async function getAccountableTaskByUser(unit, number, perPage, status, priority,
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-accountable/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 // get all task by Role
 async function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name) {
@@ -76,7 +76,7 @@ async function getConsultedTaskByUser(unit, number, perPage, status, priority, s
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-consulted/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 // get all task by Role
 async function getInformedTaskByUser(unit, number, perPage, status, priority, special, name) {
@@ -86,7 +86,7 @@ async function getInformedTaskByUser(unit, number, perPage, status, priority, sp
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-informed/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 // get all task by Role
 async function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name) {
@@ -96,7 +96,7 @@ async function getCreatorTaskByUser(unit, number, perPage, status, priority, spe
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/user/task-creator/${unit}/${user}/${number}/${perPage}/${status}/${priority}/${special}/${name}`,
         method: 'GET',
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }
 
 // add new task
@@ -105,7 +105,7 @@ function addNewTask(newTask) {
         url: `${LOCAL_SERVER_API}/tasks/create`,
         method: 'POST',
         data: newTask
-    }, true, 'task.task_management');
+    }, true, true, 'task.task_management');
 }
 
 // edit a task
@@ -114,7 +114,7 @@ function editTask(id, newTask) {
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'PUT',
         data: newTask
-    }, true, 'task.task_management');
+    }, true, true, 'task.task_management');
 }
 
 // delete a task
@@ -122,7 +122,7 @@ function deleteTaskById(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'DELETE',
-    }, true, 'task.task_management');
+    }, true, true, 'task.task_management');
 }
 
 function editStatusOfTask(id, status) {
@@ -130,5 +130,5 @@ function editStatusOfTask(id, status) {
         url: `${LOCAL_SERVER_API}/tasks/${id}`,
         method: 'PATCH',
         data: status,
-    }, false, 'task.task_management');
+    }, false, true, 'task.task_management');
 }

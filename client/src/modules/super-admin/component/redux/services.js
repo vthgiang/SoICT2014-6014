@@ -14,7 +14,7 @@ function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/component`,
         method: 'GET',
-    }, false, 'super_admin.component');
+    }, false, true, 'super_admin.component');
 }
 
 function getPaginate(data) {  
@@ -22,14 +22,14 @@ function getPaginate(data) {
         url: `${ LOCAL_SERVER_API }/component/paginate`,
         method: 'POST',
         data,
-    }, false, 'super_admin.component');
+    }, false, true, 'super_admin.component');
 }
 
 function show(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'GET',
-    }, false, 'super_admin.component');
+    }, false, true, 'super_admin.component');
 }
 
 function create(data) {
@@ -45,12 +45,12 @@ function edit(id, data) {
         url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'PATCH',
         data,
-    }, true, 'super_admin.component');
+    }, true, true, 'super_admin.component');
 }
 
 function destroy(id, component) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/component/${id}`,
         method: 'DELETE',
-    }, true, 'super_admin.component');
+    }, true, true, 'super_admin.component');
 }
