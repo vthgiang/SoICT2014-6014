@@ -31,7 +31,7 @@ async function getEmployeeKpiSet() {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
         method: 'GET'
-    }, false);
+    }, false, true);
 }
 
 /** Khởi tạo KPI cá nhân */  
@@ -45,7 +45,7 @@ async function createEmployeeKpiSet(newKPI) {
         url: `${LOCAL_SERVER_API}/kpipersonals/create`,
         method: 'POST',
         data: JSON.stringify(newKPI)
-    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Tạo 1 mục tiêu KPI cá nhân mới */  
@@ -54,7 +54,7 @@ function createEmployeeKpi(newTarget) {
         url: `${LOCAL_SERVER_API}/kpipersonals/create-target`,
         method: 'POST',
         data: JSON.stringify(newTarget)
-    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
@@ -68,7 +68,7 @@ async function editEmployeeKpiSet(id, newTarget) {
         url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
         method: 'PUT',
         data: newTarget
-    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Chỉnh sửa trạng thái của KPI cá nhân */ 
@@ -76,7 +76,7 @@ function updateEmployeeKpiSetStatus(id, status) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`,
         method: 'PUT'
-    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Xóa KPI cá nhân */
@@ -84,7 +84,7 @@ function deleteEmployeeKpiSet(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
         method: 'DELETE'
-    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Xóa 1 mục tiêu KPI cá nhân */ 
@@ -92,7 +92,7 @@ function deleteEmployeeKpi(id, kpipersonal) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`,
         method: 'DELETE'
-    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Chỉnh sửa mục tiêu KPI cá nhân */ 
@@ -101,7 +101,7 @@ function editEmployeeKpi(id, newTarget) {
         url: `${LOCAL_SERVER_API}/kpipersonals/target/${id}`,
         method: 'PUT',
         data: JSON.stringify(newTarget)
-    }, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Phê duyệt kpi cá nhân */ 
@@ -109,5 +109,5 @@ function approveEmployeeKpiSet(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/approve/${id}`,
         method: 'PUT'
-    });
+    }, true, true);
 }

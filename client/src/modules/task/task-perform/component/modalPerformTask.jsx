@@ -12,7 +12,6 @@ import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { managerKpiActions } from "../../../kpi/employee/management/redux/actions";
-// import { taskManagementActions, performTaskAction, UserActions, kpiPersonalActions } from '../../../redux-actions/CombineActions';
 import ModalApproveTask from "./modalApproveTask";
 import { ButtonModal } from '../../../../common-components';
 
@@ -25,7 +24,7 @@ class ModalPerformTask extends Component {
 
         super(props);
         this.state = {
-            currentUser: idUser,//fix---------------localStorage.getItem('id')-------------------
+            currentUser: idUser,
             selected: "taskAction",
             extendDescription: false,
             editDescription: false,
@@ -43,7 +42,7 @@ class ModalPerformTask extends Component {
             showChildComment: "",
             newComment: {
                 task: this.props.id,
-                creator: idUser,//fix---------------localStorage.getItem("id")-------------------
+                creator: idUser,
                 parent: null,
                 content: "",
                 file: null,
@@ -59,7 +58,7 @@ class ModalPerformTask extends Component {
                 task: this.props.id,
                 startTimer: "",
                 stopTimer: null,
-                user: idUser,//fix---------------localStorage.getItem("id")-------------------
+                user: idUser,
                 time: 0,
             },
             resultTask: 0,
@@ -74,57 +73,84 @@ class ModalPerformTask extends Component {
         this.approvepoint = [];
     }
     componentDidUpdate() {
-        let script3 = document.createElement('script');
-        script3.src = '../lib/main/js/CoCauToChuc.js';//fix /lib/main.....................................
-        script3.async = true;
-        script3.defer = true;
-        document.body.appendChild(script3);
-        const { performtasks } = this.props;
-        var currentTimer;
-        if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-        if (currentTimer && this.state.timer.startTimer === "") {
-            this.setState(state => {
-                return {
-                    ...state,
-                    timer: {
-                        ...currentTimer,
-                        startTimer: currentTimer.startTimer - currentTimer.time
-                    },
-                    startTimer: true,
-                    pauseTimer: currentTimer.pause,
-                }
-            })
-            //Chỉnh giao diện
-            document.getElementById("start-timer-task").style.width = "20%";
-            document.getElementById("btn-approve").style.marginLeft = "50%";
-            // Setup thời thời gian chạy
-            if (currentTimer.pause === false) {
-                this.timer = setInterval(() => this.setState(state => {
+        if (this.props.id !== undefined){
+            let script3 = document.createElement('script');
+            script3.src = '../lib/main/js/CoCauToChuc.js';
+            script3.async = true;
+            script3.defer = true;
+            document.body.appendChild(script3);
+            const { performtasks } = this.props;
+            var currentTimer;
+            if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
+            if (currentTimer && this.state.timer.startTimer === "") {
+                this.setState(state => {
                     return {
                         ...state,
                         timer: {
-                            ...state.timer,
-                            time: Date.now() - this.state.timer.startTimer,
+                            ...currentTimer,
+                            startTimer: currentTimer.startTimer - currentTimer.time
                         },
+                        startTimer: true,
+                        pauseTimer: currentTimer.pause,
                     }
-                }), 1000);
+                })
+                //Chỉnh giao diện
+                document.getElementById("start-timer-task").style.width = "20%";
+                document.getElementById("btn-approve").style.marginLeft = "50%";
+                // Setup thời thời gian chạy
+                if (currentTimer.pause === false) {
+                    this.timer = setInterval(() => this.setState(state => {
+                        return {
+                            ...state,
+                            timer: {
+                                ...state.timer,
+                                time: Date.now() - this.state.timer.startTimer,
+                            },
+                        }
+                    }), 1000);
+                }
             }
         }
+        
     }
     componentDidMount() {
         let script2 = document.createElement('script');
-        script2.src = '../lib/main/js/uploadfile/custom.js';//fix-------------------------------------------------------------
+        script2.src = '../lib/main/js/uploadfile/custom.js';
         script2.async = true;
         script2.defer = true;
         document.body.appendChild(script2);
     }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.id !== prevState.id){
+            return {
+                ...prevState,
+                id: nextProps.id
+            }
+        }
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        
+        if(nextProps.id !== this.state.id ){
+            // console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
+            this.props.getLogTimer(nextProps.id);
+            this.props.getTaskById(nextProps.id);
+            this.props.getTaskActions(nextProps.id);
+            this.props.getStatusTimer(nextProps.id);
+
+            // return true;
+        }
+        return true;
+    }
+
     UNSAFE_componentWillMount() {
-        this.props.getLogTimer(this.props.id);
-        this.props.getAllKPIPersonalByMember(this.props.responsible);
-        this.props.getAllUserOfDepartment(this.props.unit);
-        this.props.getTaskById(this.props.id);
-        this.props.getTaskActions(this.props.id);
-        this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
+        // this.props.getLogTimer(this.props.id);
+        // this.props.getAllKPIPersonalByMember(this.props.responsible);
+        // this.props.getAllUserOfDepartment(this.props.unit);
+        // this.props.getTaskById(this.props.id);
+        // this.props.getTaskActions(this.props.id);
+        // this.props.getStatusTimer(this.props.id);
     }
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -641,6 +667,7 @@ class ModalPerformTask extends Component {
     }
 
     render() {
+        // console.log('props--->', this.props);
         var task, actionComments, taskActions, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
@@ -654,9 +681,11 @@ class ModalPerformTask extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
+        if (typeof performtasks.actioncomments !== 'undefined' && performtasks.actioncomments !== null) actionComments = performtasks.actioncomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
+        console.log('logTimer', logTimer);
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;//sửa ten -> ten-props.kpipersonals//chắc là cho vào overviewkpipersonal
         return (
@@ -1151,7 +1180,7 @@ class ModalPerformTask extends Component {
                                                         {showChildComment === item._id &&
                                                             <div className="comment-content-child">
                                                                 {
-                                                                    item.comments.map(child => {
+                                                                    actionComments.map(child => {
                                                                         if (child.parent === item._id) return <div className="col-sm-12 " key={child._id} style={{ marginBottom: "10px" }}>
                                                                             <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
@@ -1231,7 +1260,7 @@ class ModalPerformTask extends Component {
                                                     {(item.creator._id === this.state.currentUser && this.props.role === "responsible") &&
                                                         <div className="action-comment " style={{ display: "inline-block" }}>
                                                             <a href="#abc" title="Sửa hành động" className="edit" onClick={() => this.handleEditAction(item._id)}><i className="material-icons">edit</i></a>
-                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id,this.props.id)}><i className="material-icons">delete</i></a>
+                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id)}><i className="material-icons">delete</i></a>
                                                         </div>
                                                     }
                                                     {this.props.role === "accountable" &&
@@ -1263,7 +1292,7 @@ class ModalPerformTask extends Component {
                                                                 <ul className="list-inline">
                                                                     <li className="pull-right">
                                                                         <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
-                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
+                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({actionComments.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
                                                                             {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
                                                                         </a>
                                                                     </li>
@@ -1271,7 +1300,7 @@ class ModalPerformTask extends Component {
                                                                 {/* Hiển thị bình luận cho hoạt động không theo mẫu */}
                                                                 {showChildComment === item._id &&
                                                                     <div className="comment-content-child">
-                                                                        {item.comments.map(child => {
+                                                                        {actionComments.map(child => {
                                                                             if (child.parent === item._id) return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
                                                                                 <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
                                                                                     <img className="img-circle img-bordered-sm"
@@ -1288,7 +1317,7 @@ class ModalPerformTask extends Component {
                                                                                     {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
                                                                                         <div className="action-comment" style={{ display: "inline-block" }}>
                                                                                             <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id,this.props.id)}><i className="material-icons">delete</i></a>
+                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id)}><i className="material-icons">delete</i></a>
                                                                                         </div>
                                                                                     }
                                                                                     {editComment === child._id &&
@@ -1398,11 +1427,12 @@ class ModalPerformTask extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, KPIPersonalManager } = state;//cho là overviewKpiPersonal
+    const { tasks, performtasks, user, KPIPersonalManager } = state;
     return { tasks, performtasks, user, KPIPersonalManager };
 }
 
 const actionCreators = {
+
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getTaskById: taskManagementActions.getTaskById,
     addActionComment: performTaskAction.addActionComment,
@@ -1419,7 +1449,7 @@ const actionCreators = {
     getLogTimer: performTaskAction.getLogTimerTask,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    //kpi member actions ko thì cho vào managerKpiActions (của personal) cũng đc
+    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);
 export { connectedModalPerformTask as ModalPerformTask };

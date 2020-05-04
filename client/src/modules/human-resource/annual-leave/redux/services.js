@@ -16,7 +16,7 @@ function searchAnnualLeaves(data) {
         url: `${ LOCAL_SERVER_API }/sabbatical/paginate`,
         method: 'POST',
         data: data
-    }, false, 'human_resource.annual_leave');
+    }, false, true, 'human_resource.annual_leave');
 }
 
 /**
@@ -28,7 +28,7 @@ function createAnnualLeave(data) {
         url: `${ LOCAL_SERVER_API }/sabbatical/create`,
         method: 'POST',
         data: data
-    }, true, 'human_resource.annual_leave');
+    }, true, true, 'human_resource.annual_leave');
 }
 
 /**
@@ -39,7 +39,7 @@ function deleteAnnualLeave(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'DELETE',
-    }, true, 'human_resource.annual_leave');
+    }, true, true, 'human_resource.annual_leave');
 }
 /**
  * Cập nhật thông tin nghỉ phép
@@ -51,5 +51,5 @@ function updateAnnualLeave(id, data) {
         url: `${ LOCAL_SERVER_API }/sabbatical/${id}`,
         method: 'PUT',
         data: data
-    }, true, 'human_resource.annual_leave');
+    }, true, true, 'human_resource.annual_leave');
 }
