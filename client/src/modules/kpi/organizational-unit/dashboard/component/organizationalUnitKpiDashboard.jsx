@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { dashboardActions } from '../redux/actions';
+import { managerActions } from '../../management/redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 // import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
@@ -90,7 +91,7 @@ class OrganizationalUnitKpiDashboard extends Component {
     render() {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
-        const { department, dashboardKpiUnit } = this.props;
+        const { department, managerKpiUnit } = this.props;
         if (department.unitofuser) {
             unitList = department.unitofuser;
             currentUnit = unitList.filter(item =>
@@ -99,8 +100,8 @@ class OrganizationalUnitKpiDashboard extends Component {
                 || item.employee === this.state.currentRole);
         }
         
-        if (dashboardKpiUnit.kpis) {
-            listkpi = dashboardKpiUnit.kpis;
+        if (managerKpiUnit.kpis) {
+            listkpi = managerKpiUnit.kpis;
             if(typeof listkpi !== "undefined" && listkpi.length !== 0)//listkpi.content
             {
                 kpiApproved = listkpi.filter(item => item.status === 2);
@@ -315,14 +316,13 @@ class OrganizationalUnitKpiDashboard extends Component {
 }
 
 function mapState(state) {
-    const { department, dashboardKpiUnit } = state;
-    return { department, dashboardKpiUnit };
+    const { department, managerKpiUnit } = state;
+    return { department, managerKpiUnit };
 }
 
 const actionCreators = {
     getDepartment: DepartmentActions.getDepartmentOfUser,
-    getAllKPIUnit: dashboardActions.getAllKPIUnit,
-    refreshData: dashboardActions.evaluateKPIUnit
+    getAllKPIUnit: managerActions.getAllKPIUnit,
 };
 const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(OrganizationalUnitKpiDashboard);
 export { connectedOrganizationalUnitKpiDashboard as OrganizationalUnitKpiDashboard };
