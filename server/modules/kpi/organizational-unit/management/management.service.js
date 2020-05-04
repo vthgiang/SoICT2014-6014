@@ -56,7 +56,7 @@ exports.create = async (timeId,unitId,createrId) => {
         if (department.parent !== null) {
             var kpiunitparent = await KPIUnit.findOne({ organizationalUnit: department.parent, status: 1 }).populate("kpis");
             var defaultTarget;
-            if (kpiunitparent.kpis) defaultTarget = kpiunitparent.kpis.filter(item => item.default !== 0);
+            if (kpiunitparent.kpis) defaultTarget = kpiunitparent.kpis.filter(item => item.type !== 0);
             if (defaultTarget !== []) {
                 var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
                     var defaultT = await DetailKPIUnit.create({
@@ -64,7 +64,7 @@ exports.create = async (timeId,unitId,createrId) => {
                         parent: item._id,
                         weight: 5,
                         criteria: item.criteria,
-                        default: item.default
+                        type: item.type
                     })
                     return defaultT._id;
                 }))
@@ -78,7 +78,7 @@ exports.create = async (timeId,unitId,createrId) => {
                 parent: null,
                 weight: 5,
                 criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-                default: 1
+                type: 1
             })
             kpiunit = await KPIUnit.findByIdAndUpdate(
                 kpiunit, { $push: { kpis: targetA._id } }, { new: true }
@@ -88,7 +88,7 @@ exports.create = async (timeId,unitId,createrId) => {
                 parent: null,
                 weight: 5,
                 criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-                default: 2
+                type: 2
             })
             kpiunit = await KPIUnit.findByIdAndUpdate(
                 kpiunit, { $push: { kpis: targetC._id } }, { new: true }

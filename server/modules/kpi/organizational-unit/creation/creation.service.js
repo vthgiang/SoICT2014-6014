@@ -78,7 +78,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
     if (organizationalUnit.parent !== null) {
         var organizationalUnitParent = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: organizationalUnit.parent, status: 1 }).populate("kpis");
         var defaultTarget;
-        if (organizationalUnitParent.kpis) defaultTarget = organizationalUnitParent.kpis.filter(item => item.default !== 0);//default Target là nhưng mục tiêu có default !== 0
+        if (organizationalUnitParent.kpis) defaultTarget = organizationalUnitParent.kpis.filter(item => item.type !== 0);//default Target là nhưng mục tiêu có default !== 0
         if (defaultTarget !== []) {
             var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
                 var defaultT = await OrganizationalUnitKpi.create({
@@ -86,7 +86,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
                     parent: item._id,
                     weight: 5,
                     criteria: item.criteria,
-                    default: item.default
+                    type: item.type
                 })
                 return defaultT._id;
             }))
@@ -100,7 +100,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
             parent: null,
             weight: 5,
             criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-            default: 1
+            type: 1
         })
         organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
             organizationalUnitKpi, { $push: { kpis: targetA._id } }, { new: true }
@@ -110,7 +110,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
             parent: null,
             weight: 5,
             criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-            default: 2
+            type: 2
         })
         organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
             organizationalUnitKpi, { $push: { kpis: targetC._id } }, { new: true }
