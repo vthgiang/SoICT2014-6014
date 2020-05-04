@@ -216,6 +216,7 @@ exports.create = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,d
             startDate: startDate,
             endDate: endDate,
             priority: priorityId,
+            taskTemplate: taskTemplate ? taskTemplate : null,
             taskInformations: taskTemplate?taskTemplate.taskInformations:[],
             taskActions: taskTemplate?taskTemplate.taskActions:[],
             role: roleId,

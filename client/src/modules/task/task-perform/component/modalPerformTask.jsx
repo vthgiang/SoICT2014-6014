@@ -74,42 +74,52 @@ class ModalPerformTask extends Component {
         this.approvepoint = [];
     }
     componentDidUpdate() {
-        let script3 = document.createElement('script');
-        script3.src = '../lib/main/js/CoCauToChuc.js';//fix /lib/main.....................................
-        script3.async = true;
-        script3.defer = true;
-        document.body.appendChild(script3);
-        const { performtasks } = this.props;
-        var currentTimer;
-        if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-        if (currentTimer && this.state.timer.startTimer === "") {
-            this.setState(state => {
-                return {
-                    ...state,
-                    timer: {
-                        ...currentTimer,
-                        startTimer: currentTimer.startTimer - currentTimer.time
-                    },
-                    startTimer: true,
-                    pauseTimer: currentTimer.pause,
-                }
-            })
-            //Chỉnh giao diện
-            document.getElementById("start-timer-task").style.width = "20%";
-            document.getElementById("btn-approve").style.marginLeft = "50%";
-            // Setup thời thời gian chạy
-            if (currentTimer.pause === false) {
-                this.timer = setInterval(() => this.setState(state => {
+    console.log('id---->', this.props.id);
+        if (this.props.id !== undefined){
+            console.log('id---->', this.props.id);
+            let script3 = document.createElement('script');
+            script3.src = '../lib/main/js/CoCauToChuc.js';//fix /lib/main.....................................
+            script3.async = true;
+            script3.defer = true;
+            document.body.appendChild(script3);
+            const { performtasks } = this.props;
+            var currentTimer;
+            if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
+            if (currentTimer && this.state.timer.startTimer === "") {
+                this.setState(state => {
                     return {
                         ...state,
                         timer: {
-                            ...state.timer,
-                            time: Date.now() - this.state.timer.startTimer,
+                            ...currentTimer,
+                            startTimer: currentTimer.startTimer - currentTimer.time
                         },
+                        startTimer: true,
+                        pauseTimer: currentTimer.pause,
                     }
-                }), 1000);
+                })
+                //Chỉnh giao diện
+                document.getElementById("start-timer-task").style.width = "20%";
+                document.getElementById("btn-approve").style.marginLeft = "50%";
+                // Setup thời thời gian chạy
+                if (currentTimer.pause === false) {
+                    this.timer = setInterval(() => this.setState(state => {
+                        return {
+                            ...state,
+                            timer: {
+                                ...state.timer,
+                                time: Date.now() - this.state.timer.startTimer,
+                            },
+                        }
+                    }), 1000);
+                }
             }
+            // this.props.getTaskById(this.props.id);
+            // this.props.getActionComments(this.props.id);
+            // this.props.getTaskActions(this.props.id);
+            // this.props.getStatusTimer(this.props.id);
+            // this.props.getLogTimer(this.props.id);
         }
+        
     }
     componentDidMount() {
         let script2 = document.createElement('script');
@@ -118,14 +128,41 @@ class ModalPerformTask extends Component {
         script2.defer = true;
         document.body.appendChild(script2);
     }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.id !== prevState.id){
+            return {
+                ...prevState,
+                id: nextProps.id
+            }
+        }
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        
+        if(nextProps.id !== this.state.id ){
+            console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
+            this.props.getLogTimer(nextProps.id);
+            // this.props.getAllKPIPersonalByMember(nextProps.responsible);
+            // this.props.getAllUserOfDepartment(this.props.unit);
+            this.props.getTaskById(nextProps.id);
+            this.props.getActionComments(nextProps.id);
+            this.props.getTaskActions(nextProps.id);
+            this.props.getStatusTimer(nextProps.id);
+
+            // return true;
+        }
+        return true;
+    }
+
     UNSAFE_componentWillMount() {
-        this.props.getLogTimer(this.props.id);
-        this.props.getAllKPIPersonalByMember(this.props.responsible);
-        this.props.getAllUserOfDepartment(this.props.unit);
-        this.props.getTaskById(this.props.id);
-        this.props.getActionComments(this.props.id);
-        this.props.getTaskActions(this.props.id);
-        this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
+        // this.props.getLogTimer(this.props.id);
+        // this.props.getAllKPIPersonalByMember(this.props.responsible);
+        // this.props.getAllUserOfDepartment(this.props.unit);
+        // this.props.getTaskById(this.props.id);
+        // this.props.getActionComments(this.props.id);
+        // this.props.getTaskActions(this.props.id);
+        // this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
     }
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -642,6 +679,7 @@ class ModalPerformTask extends Component {
     }
 
     render() {
+        console.log('props--->', this.props);
         var task, actionComments, taskActions, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
