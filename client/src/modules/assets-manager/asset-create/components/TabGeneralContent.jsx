@@ -11,7 +11,7 @@ class TabGeneralContent extends Component {
         this.state = {
             detailInfo: [],
             userIndex: '',
-            status: "available"
+            status: "Sẵn sàng sử dụng"
         };
     }
 
@@ -440,10 +440,10 @@ class TabGeneralContent extends Component {
                                     <div className="form-group">
                                         <label htmlFor="status">Trạng thái</label>
                                         <select className="form-control" name="status" value={status} onChange={this.handleStatusChange}>
-                                            <option value="available">Sẵn sàng sử dụng</option>
-                                            <option value="using">Đang sử dụng</option>
-                                            <option value="broken">Hỏng hóc</option>
-                                            <option value="lost">Mất</option>
+                                            <option value="Sẵn sàng sử dụng">Sẵn sàng sử dụng</option>
+                                            <option value="Đang sử dụng">Đang sử dụng</option>
+                                            <option value="Hỏng hóc">Hỏng hóc</option>
+                                            <option value="Mất">Mất</option>
                                         </select>
                                     </div>
                                 </div>

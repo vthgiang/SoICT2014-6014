@@ -189,10 +189,11 @@ class AssetManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái" }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "available", text: "Sẵn sàng sử dụng" },
-                                    { value: "using", text: "Đang sử dụng" },
-                                    { value: "broken", text: "Hỏng hóc" },
-                                    { value: "lost", text: "Mất" }
+                                    { value: "Sẵn sàng sử dụng", text: "Sẵn sàng sử dụng" },
+                                    { value: "Đang sử dụng", text: "Đang sử dụng" },
+                                    { value: "Hỏng hóc", text: "Hỏng hóc" },
+                                    { value: "Mất", text: "Mất" },
+                                    { value: "Thanh lý", text: "Thanh lý" }
                                 ]}
                             >
                             </SelectMulti>

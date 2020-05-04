@@ -20,8 +20,8 @@ export function assetType(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listAssetTypes: action.payload,
-                //totalList: action.payload.totalList,
+                listAssetTypes: action.payload.listAssetTypes,
+                totalList: action.payload.totalList,
             };
         case AssetTypeConstants.CREATE_ASSET_TYPE_SUCCESS:
             return {

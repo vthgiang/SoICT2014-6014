@@ -7,9 +7,9 @@ const {LogInfo, LogError} = require('../../../logs');
 exports.searchAssetTypes = async (req, res) => {
     // console.log('req.body',req.body);
     try {
-        var listAssetType = await AssetTypeService.searchAssetTypes(req.user.company._id);
+        var listAssetTypes = await AssetTypeService.searchAssetTypes(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_ASSETTYPE', req.user.company);
-        res.status(200).json({ success: true, message: ["get_asset_type_success"], content: listAssetType });
+        res.status(200).json({ success: true, message: ["get_asset_type_success"], content: listAssetTypes });
     } catch (error) {
         await LogError(req.user.email, 'GET_ASSETTYPE', req.user.company);
         res.status(400).json({ success: false, message: ["get_asset_type_faile"], content: {error:error}});

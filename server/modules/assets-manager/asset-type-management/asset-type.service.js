@@ -3,11 +3,23 @@ const AssetType = require('../../../models/asset/assetType.model');
 /**
  * Lấy danh sách loại tài sản
  */
-exports.searchAssetTypes = async (company) => {
-    var listAssetTypes = await AssetType.find({
-        company: company
-    })
-    return listAssetTypes;
+exports.searchAssetTypes = async (data, company) => {
+    var keySearch = {company: company};
+
+    // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
+    if (data.typeNumber !== "") {
+        keySearch = {...keySearch, typeNumber: {$regex: data.typeNumber, $options: "i"}}
+    }
+
+    // Bắt sựu kiện tên loại tài sản tìm kiếm khác ""
+    if (data.typeName !== "") {
+        keySearch = {...keySearch, typeName: {$regex: data.typeName, $options: "i"}}
+    };
+
+    var totalList = await AssetType.count(keySearch);
+    var listAssetTypes = await AssetType.find(keySearch).sort({'createDate': 'desc'}).skip(data.page).limit(data.limit);
+
+    return {totalList, listAssetTypes};
 //
 }
 
