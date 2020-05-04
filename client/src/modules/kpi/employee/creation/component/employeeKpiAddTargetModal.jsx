@@ -46,7 +46,7 @@ class ModalCreateEmployeeKpi extends Component {
                 parent = null;
             }
             else{    
-                items = currentOrganizationalKpiSet.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+                items = currentOrganizationalKpiSet.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
                     return {value: x._id, text: x.name} });
 
                 parent = items[0].value;
@@ -167,7 +167,7 @@ class ModalCreateEmployeeKpi extends Component {
         if(currentOrganizationalUnitKpiSet === undefined){
             items = [];
         } else {    
-            items = currentOrganizationalUnitKpiSet.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = currentOrganizationalUnitKpiSet.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
 

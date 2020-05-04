@@ -16,7 +16,7 @@ exports.createEmployeeKpiSet = async (creatorId,approverId,organizationalUnitId,
         var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: organizationalUnitId, status: 1 }).populate("kpis");//status = 1 là kpi đã đc phê duyệt
         
         var defaultOrganizationalUnitKpi;
-        if (organizationalUnitKpiSet.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.default !== 0);
+        if (organizationalUnitKpiSet.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
         if (defaultOrganizationalUnitKpi !== []) {
             
             var time = dateId.split("-");
@@ -37,7 +37,7 @@ exports.createEmployeeKpiSet = async (creatorId,approverId,organizationalUnitId,
                     weight: 5,
                     criteria: item.criteria,
                     status: null,
-                    type: item.default
+                    type: item.type
                 })
                 return defaultT._id;
             }));

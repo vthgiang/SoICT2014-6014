@@ -185,7 +185,7 @@ class ModalEditEmployeeKpi extends Component {
             items = [];
         }
         else{    
-            items = currentOrganizationalUnitKPI.kpis.filter(item => item.default === 0).map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = currentOrganizationalUnitKPI.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
             return {value: x._id, text: x.name} });
         }
         
