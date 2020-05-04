@@ -217,15 +217,21 @@ const TaskSchema = new Schema({
             type: Schema.Types.Mixed,
         }
     }],
-    taskActions: [{
-        creator:{
+    taskActions: [{ // Khi task theo tempate nào đó, sẽ copy hết actions trong template vào đây
+        creator:{ // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
             type:Schema.Types.ObjectId,
             ref : User,
-            required:true
         },
-        content:{
+        name: {
             type: String,
-            required:true
+        },
+        description: {
+            type: String,
+            required: true
+        },
+        mandatory: { // Hoạt động này bắt buộc hay không?
+            type: Boolean,
+            default: true,
         },
         createdAt:{
             type: Date,
