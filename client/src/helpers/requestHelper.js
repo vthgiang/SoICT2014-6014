@@ -36,7 +36,7 @@ const showAuthResponseAlertAndRedirectToLoginPage = async () => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function sendRequest(options, showAlert=false, module, successTitle='general.success', errorTitle='general.error') {
+export function sendRequest(options, showSuccessAlert=false, showFailAlert=true, module, successTitle='general.success', errorTitle='general.error') {
 
     const requestOptions = {
         url: options.url, 
@@ -49,7 +49,7 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
         console.log("message: ", messages)
 
-        showAlert && toast.success(
+        showSuccessAlert && toast.success(
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
@@ -65,7 +65,7 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
             else{
-                toast.error(
+                showFailAlert && toast.error(
                     <ServerResponseAlert
                         type='error'
                         title={errorTitle}

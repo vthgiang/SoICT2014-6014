@@ -20,7 +20,7 @@ function getAllKPIUnit(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/unit/${id}`,
         method: 'GET',
-    },false,'kpi.organizational_unit');
+    }, false, true, 'kpi.organizational_unit');
 
 }
 
@@ -61,6 +61,6 @@ function evaluateKPIUnit(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
         method: 'PUT',
-    },false,'kpi.organizational_unit');
+    }, false, true, 'kpi.organizational_unit');
 }
 
