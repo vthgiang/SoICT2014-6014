@@ -27,7 +27,7 @@ function getCurrentKPIUnit(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`,
         method: 'GET',
-    }, false, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, false, 'kpi.organizational_unit');
 }
 
 // Lấy KPI đơn vị cha
@@ -35,7 +35,7 @@ function getKPIParent(parentUnit) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/parent/${parentUnit}`,
         method: 'GET',
-    }, false, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, false, 'kpi.organizational_unit');
 }
 
 // Khởi tạo KPI đơn vị 
