@@ -132,7 +132,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addKPIUnit: managerActions.addKPIUnit
 };
 const connectedModalCopyKPIUnit = connect(mapState, actionCreators)(ModalCopyKPIUnit);
 export { connectedModalCopyKPIUnit as ModalCopyKPIUnit };
