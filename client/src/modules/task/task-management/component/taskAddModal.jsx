@@ -96,7 +96,7 @@ class ModalAddTask extends Component {
                     endDate: this.endDate.value,
                     priority: this.priority.value,
                     unit: this.unit.value,
-                    taskTemplate: (ckTemplate && this.tasktemplate.value !== "") ? this.tasktemplate.value : null,
+                    taskTemplate: (ckTemplate && this.taskTemplate.value !== "") ? this.taskTemplate.value : null,
                     role: localStorage.getItem("currentRole"),
                     parent: this.parent.value !== "" ? this.parent.value : null,
                     kpi: kpi,

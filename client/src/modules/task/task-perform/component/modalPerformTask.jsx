@@ -133,10 +133,9 @@ class ModalPerformTask extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         
         if(nextProps.id !== this.state.id ){
-            console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
+            // console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
             this.props.getLogTimer(nextProps.id);
             this.props.getTaskById(nextProps.id);
-            this.props.getActionComments(nextProps.id);
             this.props.getTaskActions(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
 
@@ -150,7 +149,6 @@ class ModalPerformTask extends Component {
         // this.props.getAllKPIPersonalByMember(this.props.responsible);
         // this.props.getAllUserOfDepartment(this.props.unit);
         // this.props.getTaskById(this.props.id);
-        // this.props.getActionComments(this.props.id);
         // this.props.getTaskActions(this.props.id);
         // this.props.getStatusTimer(this.props.id);
     }
@@ -669,7 +667,7 @@ class ModalPerformTask extends Component {
     }
 
     render() {
-        console.log('props--->', this.props);
+        // console.log('props--->', this.props);
         var task, actionComments, taskActions, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
@@ -687,6 +685,7 @@ class ModalPerformTask extends Component {
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
+        console.log('logTimer', logTimer);
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;//sửa ten -> ten-props.kpipersonals//chắc là cho vào overviewkpipersonal
         return (
@@ -1433,9 +1432,9 @@ function mapState(state) {
 }
 
 const actionCreators = {
+
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getTaskById: taskManagementActions.getTaskById,
-    getActionComments: performTaskAction.getActionComments,
     addActionComment: performTaskAction.addActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,
@@ -1450,7 +1449,7 @@ const actionCreators = {
     getLogTimer: performTaskAction.getLogTimerTask,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    
+    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);
 export { connectedModalPerformTask as ModalPerformTask };
