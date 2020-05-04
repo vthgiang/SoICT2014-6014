@@ -6,7 +6,7 @@ const DIRAVATAR = '../client/public/fileupload/employee-manage/avatar';
 const DIRFILE = '../client/public/fileupload/employee-manage/file';
 
 /**
- * upload file tài liệu đính kèm 
+ * upload file tài liệu đính kèm
 */
 const multerStorageFile = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -44,7 +44,7 @@ exports.uploadAvatar = uploadAvatar.single("fileUpload");
 
 /**
  * Lấy danh sách tài sản
- */ 
+ */
 exports.searchAssetProfiles = async (req, res) => {
     try {
         var allAssets = await AssetService.searchAssetProfiles(req.body, req.user.company._id);
@@ -75,7 +75,7 @@ exports.checkAssetNumber = async (req, res) => {
 // Tạo tài sản mới
 exports.create = async (req, res) => {
     try {
-        var data = await AssetService.create(req.body, req.user.company._id);
+        var data = await AssetService.create(req.body);
         res.status(200).json({
             message: "success",
             content: data

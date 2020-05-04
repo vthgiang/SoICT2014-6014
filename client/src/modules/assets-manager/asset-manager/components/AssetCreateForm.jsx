@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal } from '../../../../common-components';
-import { RepairUpgradeActions } from '../../repair-upgrade/redux/actions';
-import { DistributeTransferActions } from '../../distribute-transfer/redux/actions';
-import { AssetManagerActions } from '../../asset-manager/redux/actions';
-import { toast } from 'react-toastify';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {ButtonModal, DialogModal} from '../../../../common-components';
+import {RepairUpgradeActions} from '../../repair-upgrade/redux/actions';
+import {DistributeTransferActions} from '../../distribute-transfer/redux/actions';
+import {AssetManagerActions} from '../../asset-manager/redux/actions';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-    TabGeneralContent, TabRepairContent, TabDistributeContent, TabAttachmentsContent, TabDepreciationContent
-} from '../../asset-create/components/CombineContent';
+import {TabAttachmentsContent, TabDepreciationContent, TabGeneralContent} from '../../asset-create/components/CombineContent';
+import {UserActions} from '../../../super-admin/user/redux/actions';
+import {AssetTypeActions} from "../../asset-type/redux/actions";
+
 class AssetCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +28,12 @@ class AssetCreateForm extends Component {
         };
 
     }
+
+    componentDidMount() {
+        this.props.searchAssetTypes();
+        this.props.getAllUsers();
+    }
+
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate = (date) => {
         var d = new Date(date),
@@ -48,7 +55,7 @@ class AssetCreateForm extends Component {
     notifyerror = (message) => toast.error(message);
     notifywarning = (message) => toast.warning(message);
 
-    // Function upload avatar 
+    // Function upload avatar
     handleUpload = (img, avatar) => {
         this.setState({
             img: img,
@@ -57,7 +64,7 @@ class AssetCreateForm extends Component {
     }
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
-        const { assetNew } = this.state;
+        const {assetNew} = this.state;
         this.setState({
             assetNew: {
                 ...assetNew,
@@ -67,44 +74,42 @@ class AssetCreateForm extends Component {
     }
 
     // Function thêm thông tin sửa chữa - thay thế - nâng cấp
-handleChangeRepairUpgrade = (data) => {
-    this.setState({
-        repairUpgradeNew: data
-    })
-}
+    handleChangeRepairUpgrade = (data) => {
+        this.setState({
+            repairUpgradeNew: data
+        })
+    }
 
 // Function thêm thông tin cấp phát - điều chuyển - thu hồi
-handleChangeDistributeTransfer = (data) => {
-    this.setState({
-        distributeTransferNew: data
-    })
-}
+    handleChangeDistributeTransfer = (data) => {
+        this.setState({
+            distributeTransferNew: data
+        })
+    }
 
 // Function thêm thông tin tài liệu đính kèm
-handleChangeFile = (data) => {
-    this.setState({
-        file: data
-    })
-}
+    handleChangeFile = (data) => {
+        this.setState({
+            file: data
+        })
+    }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        
+
     }
 
     // function thêm mới thông tin tài sản
     save = async () => {
-        let newAsset = this.state.assetNew;
-        let { file } = this.state;
+        let assetNew = this.state.assetNew;
+        let {file} = this.state;
         // cập nhật lại state trước khi add asset
         await this.setState({
             assetNew: {
-                ...newAsset,
-
+                ...assetNew,
                 file: file.filter(file => (file.fileUpload === " "))
             }
         })
-        const { assetNew } = this.state;
         // kiểm tra việc nhập các trường bắt buộc
         if (!assetNew.assetNumber) {
             this.notifyerror("Bạn chưa nhập mã tài sản");
@@ -120,7 +125,11 @@ handleChangeFile = (data) => {
             this.notifyerror("Bạn chưa nhập người quản lý");
         } else if (!assetNew.initialPrice) {
             this.notifyerror("Bạn chưa nhập giá trị ban đầu");
-        } else {
+        } else if (!assetNew.startDepreciation) {
+            this.notifyerror("Bạn chưa nhập thời gian bắt đầu trích khấu hao");
+        } else if (!assetNew.timeDepreciation) {
+            this.notifyerror("Bạn chưa nhập thời gian trích khấu hao");
+        }else {
             await this.props.addNewAsset(assetNew);
 
             // lưu avatar
@@ -134,7 +143,7 @@ handleChangeFile = (data) => {
             if (this.state.repairUpgradeNew.length !== 0) {
                 let assetNumber = this.state.assetNew.assetNumber;
                 this.state.repairUpgradeNew.map(x => {
-                    this.props.createNewRepairUpgrade({ ...x, assetNumber })
+                    this.props.createNewRepairUpgrade({...x, assetNumber})
                 })
             }
 
@@ -142,7 +151,7 @@ handleChangeFile = (data) => {
             if (this.state.distributeTransferNew.length !== 0) {
                 let assetNumber = this.state.assetNew.assetNumber;
                 this.state.distributeTransferNew.map(x => {
-                    this.props.createNewDistributeTransfer({ ...x, assetNumber })
+                    this.props.createNewDistributeTransfer({...x, assetNumber})
                 })
             }
 
@@ -160,18 +169,16 @@ handleChangeFile = (data) => {
                     this.props.updateFile(this.state.assetNew.assetNumber, formData)
                 })
             }
-            
+
             this.notifysuccess("Thêm tài sản thành công");
         }
     }
 
 
-
     render() {
-        const { translate, assetsManager } = this.props;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-add-asset" button_name="Thêm mới tài sản" title="Thêm mới tài sản" />
+                <ButtonModal modalID="modal-add-asset" button_name="Thêm mới tài sản" title="Thêm mới tài sản"/>
                 <DialogModal
                     size='100' modalID="modal-add-asset" isLoading={false}
                     formID="form-add-asset"
@@ -180,16 +187,16 @@ handleChangeFile = (data) => {
                     disableSubmit={false}
                 >
                     {/* <form className="form-group" id="form-addAA-employee"> */}
-                        <div className="nav-tabs-custom" style={{marginTop:'-15px'}} >
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#thongtinchung">Thông tin chung</a></li>
-                                <li><a title="Sửa chữa - thay thế - nâng cấp" data-toggle="tab" href="#suachua">Sửa chữa - Thay thế - Nâng cấp</a></li>
-                                <li><a title="Cấp phát - điều chuyển - thu hồi" data-toggle="tab" href="#capphat">Cấp phát - Điều chuyển - Thu hồi</a></li>
-                                <li><a title="Bảo hành - bảo trì" data-toggle="tab" href="#baohanh">Bảo hành - Bảo trì</a></li>
-                                <li><a title="Thông tin khấu hao" data-toggle="tab" href="#khauhao">Thông tin khấu hao</a></li>
-                                <li><a title="Tài liệu đính kèm" data-toggle="tab" href="#tailieu">Tài liệu đính kèm</a></li>
-                            </ul>
-                            < div className="tab-content">
+                    <div className="nav-tabs-custom" style={{marginTop: '-15px'}}>
+                        <ul className="nav nav-tabs">
+                            <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#thongtinchung">Thông tin chung</a></li>
+                            {/*<li><a title="Sửa chữa - thay thế - nâng cấp" data-toggle="tab" href="#suachua">Sửa chữa - Thay thế - Nâng cấp</a></li>*/}
+                            {/*<li><a title="Cấp phát - điều chuyển - thu hồi" data-toggle="tab" href="#capphat">Cấp phát - Điều chuyển - Thu hồi</a></li>*/}
+                            {/*<li><a title="Bảo hành - bảo trì" data-toggle="tab" href="#baohanh">Bảo hành - Bảo trì</a></li>*/}
+                            <li><a title="Thông tin khấu hao" data-toggle="tab" href="#khauhao">Thông tin khấu hao</a></li>
+                            <li><a title="Tài liệu đính kèm" data-toggle="tab" href="#tailieu">Tài liệu đính kèm</a></li>
+                        </ul>
+                        < div className="tab-content">
                             <TabGeneralContent
                                 id="thongtinchung"
                                 img={this.state.img}
@@ -198,22 +205,22 @@ handleChangeFile = (data) => {
                                 asset={this.state.assetNew}
                             />
 
-                            <TabRepairContent
-                                id="suachua"
-                                repairUpgrade={this.state.repairUpgradeNew}
-                                handleAddRepairUpgrade={this.handleChangeRepairUpgrade}
-                                handleEditRepairUpgrade={this.handleChangeRepairUpgrade}
-                                handleDeleteRepairUpgrade={this.handleChangeRepairUpgrade}
-                            />
+                            {/*<TabRepairContent*/}
+                            {/*    id="suachua"*/}
+                            {/*    repairUpgrade={this.state.repairUpgradeNew}*/}
+                            {/*    handleAddRepairUpgrade={this.handleChangeRepairUpgrade}*/}
+                            {/*    handleEditRepairUpgrade={this.handleChangeRepairUpgrade}*/}
+                            {/*    handleDeleteRepairUpgrade={this.handleChangeRepairUpgrade}*/}
+                            {/*/>*/}
 
-                            <TabDistributeContent
-                                id="capphat"
-                                distributeTransfer={this.state.distributeTransferNew}
-                                handleAddDistributeTransfer={this.handleChangeDistributeTransfer}
-                                handleEditDistributeTransfer={this.handleChangeDistributeTransfer}
-                                handleDeleteDistributeTransfer={this.handleChangeDistributeTransfer}
-                            />
-                    
+                            {/*<TabDistributeContent*/}
+                            {/*    id="capphat"*/}
+                            {/*    distributeTransfer={this.state.distributeTransferNew}*/}
+                            {/*    handleAddDistributeTransfer={this.handleChangeDistributeTransfer}*/}
+                            {/*    handleEditDistributeTransfer={this.handleChangeDistributeTransfer}*/}
+                            {/*    handleDeleteDistributeTransfer={this.handleChangeDistributeTransfer}*/}
+                            {/*/>*/}
+
                             <TabDepreciationContent
                                 id="khauhao"
                                 asset={this.state.assetNew}
@@ -230,28 +237,31 @@ handleChangeFile = (data) => {
                                 handleDeleteFile={this.handleChangeFile}
                                 handleSubmit={this.handleSubmit}
                             />
-                            </div>
                         </div>
+                    </div>
                     {/* </form> */}
                 </DialogModal>
             </React.Fragment>
         );
     }
 };
+
 function mapState(state) {
-    const { assetsManager, RepairUpgrade, DistributeTransfer } = state;
-    return { assetsManager, RepairUpgrade, DistributeTransfer };
+    const {assetsManager, RepairUpgrade, DistributeTransfer} = state;
+    return {assetsManager, RepairUpgrade, DistributeTransfer};
 };
 
 const actionCreators = {
-    // getAllAsset: AssetManagerActions.getAllAsset,
-    // addNewAsset: AssetManagerActions.addNewAsset,
-    // uploadAvatar: AssetManagerActions.uploadAvatar,
-    // checkAssetNumber: AssetManagerActions.checkAssetNumber,
-    // createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
-    // createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
-    // updateFile: AssetManagerActions.updateFile,
+    getAllAsset: AssetManagerActions.getAllAsset,
+    addNewAsset: AssetManagerActions.addNewAsset,
+    uploadAvatar: AssetManagerActions.uploadAvatar,
+    checkAssetNumber: AssetManagerActions.checkAssetNumber,
+    createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
+    createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
+    updateFile: AssetManagerActions.updateFile,
+    searchAssetTypes: AssetTypeActions.searchAssetTypes,
+    getAllUsers: UserActions.get
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AssetCreateForm));
-export { createForm as AssetCreateForm };
+export {createForm as AssetCreateForm};

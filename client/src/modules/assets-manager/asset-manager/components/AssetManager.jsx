@@ -108,7 +108,7 @@ class AssetManager extends Component {
         })
     }
 
-    // Function bắt sự kiện tìm kiếm 
+    // Function bắt sự kiện tìm kiếm
     handleSunmitSearch = async () => {
         this.props.getAllAsset(this.state);
     }
@@ -136,8 +136,9 @@ class AssetManager extends Component {
         var lists = "";
 
         if (assetsManager.allAsset) {
-            lists = this.props.assetsManager.listAsset;
+            lists = this.props.assetsManager.allAsset;
         }
+        console.log(assetsManager);
         var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
             parseInt(assetsManager.totalList / this.state.limit) :
             parseInt((assetsManager.totalList / this.state.limit) + 1);
@@ -166,7 +167,7 @@ class AssetManager extends Component {
                                 options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    
+
                                 ]}
                             >
                             </SelectMulti>
@@ -236,14 +237,14 @@ class AssetManager extends Component {
                             {(typeof lists !== 'undefined' && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.asset.map(y => y.assetNumber)}</td>
-                                        <td>{x.asset.map(y => y.assetName)}</td>
-                                        <td>{x.map(y => y.assetType)}</td>
-                                        <td>{x.map(y => y.datePurchase)}</td>
-                                        <td>{x.map(y => y.manager)}</td>
-                                        <td>{x.map(y => y.position)}</td>
-                                        <td>{x.map(y => y.location)}</td>
-                                        <td>{x.map(y => y.status)}</td>
+                                        <td>{x.asset.assetNumber}</td>
+                                        <td>{x.asset.assetName}</td>
+                                        <td>{x.asset.assetType.typeName}</td>
+                                        <td>{x.asset.datePurchase}</td>
+                                        <td>{x.asset.manager.name}</td>
+                                        <td>{x.asset.manager.position.name}</td>
+                                        <td>{x.asset.location}</td>
+                                        <td>{x.asset.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin tài sản"><i className="material-icons">edit</i></a>
@@ -285,7 +286,7 @@ class AssetManager extends Component {
                         asset={this.state.currentRow.asset}
                         repairUpgrade={this.state.currentRow.repairUpgrade}
                         distributeTransfer={this.state.currentRow.distributeTransfer}
-                        
+
                     />
                 }
             </div >

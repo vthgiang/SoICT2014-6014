@@ -50,7 +50,7 @@ function getAllAsset(data) {
 function checkAssetNumber(assetNumber) {
     return dispatch => {
         dispatch(request());
-        AssetService.checkAssetNumber(assetNumber)
+        AssetService.checkMSNV(assetNumber)
             .then(
                 checkAssetNumber => dispatch(success(checkAssetNumber)),
                 error => dispatch(failure(error.toString()))

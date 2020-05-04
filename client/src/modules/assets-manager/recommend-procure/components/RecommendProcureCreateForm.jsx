@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { RecommendProcureFromValidator } from './RecommendProcureFromValidator';
-import { RecommendProcureActions } from '../redux/actions';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {ButtonModal, DatePicker, DialogModal, ErrorLabel} from '../../../../common-components';
+import {RecommendProcureFromValidator} from './RecommendProcureFromValidator';
+import {RecommendProcureActions} from '../redux/actions';
+
 class RecommendProcureCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -24,6 +25,7 @@ class RecommendProcureCreateForm extends Component {
             note: "",
         };
     }
+
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
         var d = new Date(date),
@@ -158,12 +160,15 @@ class RecommendProcureCreateForm extends Component {
     }
 
     render() {
-        const { translate, recommendProcure } = this.props;
-        const { recommendNumber, dateCreate, equipment, supplier, total, unit, estimatePrice,
-                errorOnRecommendNumber, errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
+        const {translate, recommendProcure} = this.props;
+        const {
+            recommendNumber, dateCreate, equipment, supplier, total, unit, estimatePrice,
+            errorOnRecommendNumber, errorOnEquipment, errorOnTotal, errorOnUnit
+        } = this.state;
+        console.log(this.props.auth);
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-recommendprocure" button_name="Thêm mới phiếu" title="Thêm mới phiếu đề nghị" />
+                <ButtonModal modalID="modal-create-recommendprocure" button_name="Thêm mới phiếu" title="Thêm mới phiếu đề nghị"/>
                 <DialogModal
                     size='75' modalID="modal-create-recommendprocure" isLoading={recommendProcure.isLoading}
                     formID="form-create-recommendprocure"
@@ -178,8 +183,9 @@ class RecommendProcureCreateForm extends Component {
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnRecommendNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
-                                    <ErrorLabel content={errorOnRecommendNumber} />
+                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off"
+                                           placeholder="Mã phiếu"/>
+                                    <ErrorLabel content={errorOnRecommendNumber}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Ngày lập<span className="text-red">*</span></label>
@@ -192,45 +198,43 @@ class RecommendProcureCreateForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Người đề nghị<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="proponent" />
-                                </div>
-                                <div className="form-group">
-                                    <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="department" />
+                                    <input defaultValue={this.props.auth.user.name} type="text" className="form-control" name="proponent"/>
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position" />
+                                    <input defaultValue={Object.keys(this.props.auth.user) && this.props.auth.user.roles[0].roleId.name} type="text" className="form-control" name="position"/>
                                 </div>
                                 <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua"></textarea>
-                                    <ErrorLabel content={errorOnEquipment} />
+                                    <textarea className="form-control" rows="3" style={{height: 34}} name="equipment" value={equipment} onChange={this.handleEquipmentChange} autoComplete="off"
+                                              placeholder="Thiết bị đề nghị mua"></textarea>
+                                    <ErrorLabel content={errorOnEquipment}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Nhà cung cấp</label>
-                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} autoComplete="off" placeholder="Nhà cung cấp" />
+                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} autoComplete="off" placeholder="Nhà cung cấp"/>
                                 </div>
                             </div>
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
                                     <label>Số lượng<span className="text-red">*</span></label>
-                                    <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} autoComplete="off" placeholder="Số lượng" />
-                                    <ErrorLabel content={errorOnTotal} />
+                                    <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} autoComplete="off" placeholder="Số lượng"/>
+                                    <ErrorLabel content={errorOnTotal}/>
                                 </div>
                                 <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
                                     <label>Đơn vị tính<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
-                                    <ErrorLabel content={errorOnUnit} />
+                                    <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính"/>
+                                    <ErrorLabel content={errorOnUnit}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Giá trị dự tính:</label>
-                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="estimatePrice" value={ estimatePrice } onChange={this.handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính" />
-                                    <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label>
+                                    <input style={{display: "inline", width: "93%"}} type="number" className="form-control" name="estimatePrice" value={estimatePrice}
+                                           onChange={this.handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính"/>
+                                    <label style={{height: 34, display: "inline", width: "5%"}}> VNĐ</label>
                                 </div>
                                 <div className="form-group">
                                     <label>Người phê duyệt</label>
-                                    <input type="text" className="form-control" name="approver" disabled />
+                                    <input type="text" className="form-control" name="approver" disabled/>
                                 </div>
                                 <div className="form-group">
                                     <label>Chức vụ</label>
@@ -238,7 +242,7 @@ class RecommendProcureCreateForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
-                                    <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled />
+                                    <input type="text" className="form-control" name="status" defaultValue="Chờ phê duyệt" disabled/>
                                 </div>
                                 <div className="form-group">
                                     <label>Ghi chú</label>
@@ -254,8 +258,8 @@ class RecommendProcureCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure } = state;
-    return { recommendProcure };
+    const {recommendProcure, auth} = state;
+    return {recommendProcure,auth};
 };
 
 const actionCreators = {
@@ -263,4 +267,4 @@ const actionCreators = {
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(RecommendProcureCreateForm));
-export { createForm as RecommendProcureCreateForm };
+export {createForm as RecommendProcureCreateForm};

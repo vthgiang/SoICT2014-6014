@@ -1,18 +1,21 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, ErrorLabel } from '../../../../common-components';
-import { AssetCreateValidator } from './AssetCreateValidator';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {DatePicker, ErrorLabel} from '../../../../common-components';
+import {AssetCreateValidator} from './AssetCreateValidator';
 import "./add-asset.css";
+
 class TabGeneralContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
             detailInfo: [],
-
+            userIndex: '',
+            status: "available"
         };
     }
-    // Function upload avatar 
+
+    // Function upload avatar
     handleUpload = (e) => {
         var file = e.target.files[0];
         if (file !== undefined) {
@@ -26,15 +29,11 @@ class TabGeneralContent extends Component {
             };
         }
     }
-    // Function lưu các trường thông tin vào state
-    handleChange = (e) => {
-        const { name, value } = e.target;
-        this.props.handleChange(name, value);
-    }
+
 
     // Function bắt sự kiện thay đổi mã tài sản
     handleAssetNumberChange = (e) => {
-        const { value } = e.target;
+        const {value} = e.target;
         this.validateAssetNumber(value, true);
     }
     validateAssetNumber = (value, willUpdateState = true) => {
@@ -55,7 +54,7 @@ class TabGeneralContent extends Component {
 
     // Function bắt sự kiện thay đổi tên tài sản
     handleAssetNameChange = (e) => {
-        const { value } = e.target;
+        const {value} = e.target;
         this.validateAssetName(value, true);
     }
     validateAssetName = (value, willUpdateState = true) => {
@@ -76,7 +75,7 @@ class TabGeneralContent extends Component {
 
     // Function bắt sự kiện thay đổi loại tài sản
     handleAssetTypeChange = (e) => {
-        const { value } = e.target;
+        const {value} = e.target;
         this.validateAssetType(value, true);
     }
     validateAssetType = (value, willUpdateState = true) => {
@@ -97,7 +96,7 @@ class TabGeneralContent extends Component {
 
     // Function bắt sự kiện thay đổi vị trí tài sản
     handleLocationChange = (e) => {
-        const { value } = e.target;
+        const {value} = e.target;
         this.validateLocation(value, true);
     }
     validateLocation = (value, willUpdateState = true) => {
@@ -138,7 +137,9 @@ class TabGeneralContent extends Component {
 
     // Function bắt sự kiện người quản lý
     handleManagerChange = (e) => {
-        const { value } = e.target;
+        const selectedIndex = e.target.options.selectedIndex;
+        this.setState({userIndex: e.target.options[selectedIndex].getAttribute('data-key')});
+        const {value} = e.target;
         this.validateManager(value, true);
     }
     validateManager = (value, willUpdateState = true) => {
@@ -159,7 +160,7 @@ class TabGeneralContent extends Component {
 
     // Function bắt sự kiện thay đổi giá trị ban đầu
     handleInitialPriceChange = (e) => {
-        const { value } = e.target;
+        const {value} = e.target;
         this.validateInitialPrice(value, true);
     }
     validateInitialPrice = (value, willUpdateState = true) => {
@@ -220,28 +221,28 @@ class TabGeneralContent extends Component {
             }
             if (result === true) {
                 this.setState({
-                    detailInfo: [...detailInfo, { nameField: "", value: "" }]
+                    detailInfo: [...detailInfo, {nameField: "", value: ""}]
                 })
             }
         } else {
             this.setState({
-                detailInfo: [...detailInfo, { nameField: "", value: "" }]
+                detailInfo: [...detailInfo, {nameField: "", value: ""}]
             })
         }
 
     }
 
-    // Bắt sự kiện chỉnh sửa tên trường dữ liệu thông tin chi tiết 
+    // Bắt sự kiện chỉnh sửa tên trường dữ liệu thông tin chi tiết
     handleChangeNameField = (e) => {
-        var { value, className } = e.target;
+        var {value, className} = e.target;
         this.validateNameField(value, className);
     }
     // Function kiểm tra tên trường dữ liệu thông tin chi tiết nhập vào có hợp lệ không
     validateNameField = (value, className, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateNameField(value, this.props.translate);
         if (willUpdateState) {
-            var { detailInfo } = this.state;
-            detailInfo[className] = { ...detailInfo[className], nameField: value }
+            var {detailInfo} = this.state;
+            detailInfo[className] = {...detailInfo[className], nameField: value}
             this.setState(state => {
                 return {
                     ...state,
@@ -249,22 +250,23 @@ class TabGeneralContent extends Component {
                     detailInfo: detailInfo
                 }
             });
-            this.props.handleChange("description", value);
+            this.props.handleChange("detailInfo", detailInfo);
         }
         return msg === undefined;
     }
 
-    // Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin chi tiết 
+
+    // Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin chi tiết
     handleChangeValue = (e) => {
-        var { value, className } = e.target;
+        var {value, className} = e.target;
         this.validateValue(value, className);
     }
     // Kiểm tra giá trị trường dữ liệu thông tin chi tiết nhập vào có hợp lệ hay không
     validateValue = (value, className, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateValue(value, this.props.translate);
         if (willUpdateState) {
-            var { detailInfo } = this.state;
-            detailInfo[className] = { ...detailInfo[className], value: value }
+            var {detailInfo} = this.state;
+            detailInfo[className] = {...detailInfo[className], value: value}
             this.setState(state => {
                 return {
                     ...state,
@@ -272,13 +274,14 @@ class TabGeneralContent extends Component {
                     detailInfo: detailInfo
                 }
             });
+            this.props.handleChange("detailInfo", detailInfo);
         }
         return msg === undefined;
     }
 
     // Function xoá thông tin chi tiết
     delete = (index) => {
-        var { detailInfo } = this.state;
+        var {detailInfo} = this.state;
         detailInfo.splice(index, 1);
         this.setState({
             detailInfo: detailInfo
@@ -298,6 +301,8 @@ class TabGeneralContent extends Component {
 
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log(nextProps);
+
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -329,49 +334,63 @@ class TabGeneralContent extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
-        const { img, assetNumber, assetName, asssetType, location, datePurchase,
+        const {id, translate} = this.props;
+        const {
+            img, assetNumber, assetName, asssetType, location, datePurchase,
             manager, department, initialPrice, description, status, detailInfo,
             errorOnAssetNumber, errorOnAssetName, errorOnAssetType, errorOnLocation, errorOnDatePurchase,
             errorOnManager, errorOnInitialPrice, errorOnNameField, errorOnValue,
         } = this.state;
+        const user = this.props.user;
+        const listAssetTypes = this.props.assetType
         return (
             <div id={id} className="tab-pane active">
                 <div className="box-body">
                     <div className="col-md-12">
-                        <div className="col-md-4" style={{ textAlign: 'center' }}>
+                        <div className="col-md-4" style={{textAlign: 'center'}}>
                             <div>
-                                <img className="attachment-img avarta" src={img} alt="Attachment" />
-                            </div><br />
+                                <img className="attachment-img avarta" src={img} alt="Attachment"/>
+                            </div>
+                            <br/>
                             <div className="upload btn btn-default ">
                                 {translate('manage_employee.upload')}
-                                <input className="upload" type="file" name="file" onChange={this.handleUpload} />
+                                <input className="upload" type="file" name="file" onChange={this.handleUpload}/>
                             </div>
                         </div>
-                        <label >Thông tin cơ bản:</label>
-                        <br />
-                        <div className="col-md-8" >
+                        <label>Thông tin cơ bản:</label>
+                        <br/>
+                        <div className="col-md-8">
                             <div>
                                 <div className="col-md-6">
                                     <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"} `}>
                                         <label htmlFor="assetNumber">Mã tài sản<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} placeholder="Mã tài sản" autoComplete="off" />
-                                        <ErrorLabel content={errorOnAssetNumber} />
+                                        <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} placeholder="Mã tài sản"
+                                               autoComplete="off"/>
+                                        <ErrorLabel content={errorOnAssetNumber}/>
                                     </div>
                                     <div className={`form-group ${errorOnAssetName === undefined ? "" : "has-error"} `}>
                                         <label htmlFor="assetName">Tên tài sản<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="assetName" value={assetName} onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
-                                        <ErrorLabel content={errorOnAssetName} />
+                                        <input type="text" className="form-control" name="assetName" value={assetName} onChange={this.handleAssetNameChange} placeholder="Tên tài sản"
+                                               autoComplete="off"/>
+                                        <ErrorLabel content={errorOnAssetName}/>
                                     </div>
                                     <div className={`form-group ${errorOnAssetType === undefined ? "" : "has-error"} `}>
                                         <label htmlFor="assetType">Loại tài sản<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="assetType" value={asssetType} onChange={this.handleAssetTypeChange} placeholder="Loại tài sản" autoComplete="off" />
-                                        <ErrorLabel content={errorOnAssetType} />
+                                        <select id="drops" className="form-control" name="asssetType" defaultValue="" onChange={this.handleAssetTypeChange}>
+                                            <option value="" disabled>Please Select</option>
+                                            {listAssetTypes.listAssetTypes.length ? listAssetTypes.listAssetTypes.map((item, index) => (
+                                                <option key={index} value={item._id}>{item.typeName}</option>
+                                            )) : null}
+
+                                        </select>
+
+                                        <ErrorLabel content={errorOnAssetType}/>
                                     </div>
                                     <div className={`form-group ${errorOnLocation === undefined ? "" : "has-error"}`}>
                                         <label htmlFor="location">Vị trí tài sản<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} placeholder="Vị trí tài sản" autoComplete="off" />
-                                        <ErrorLabel content={errorOnLocation} />
+                                        <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} placeholder="Vị trí tài sản"
+                                               autoComplete="off"/>
+                                        <ErrorLabel content={errorOnLocation}/>
                                     </div>
                                     <div className={`form-group ${errorOnDatePurchase === undefined ? "" : "has-error"}`}>
                                         <label htmlFor="datePurchase">Ngày nhập<span className="text-red">*</span></label>
@@ -380,29 +399,43 @@ class TabGeneralContent extends Component {
                                             value={datePurchase}
                                             onChange={this.handleDatePurchaseChange}
                                         />
-                                        <ErrorLabel content={errorOnDatePurchase} />
+                                        <ErrorLabel content={errorOnDatePurchase}/>
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"} `}>
+
                                         <label htmlFor="manager">Người quản lý<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" name="manager" value={manager} onChange={this.handleManagerChange} placeholder="Người quản lý" autoComplete="off" />
-                                        <ErrorLabel content={errorOnManager} />
+                                        <select id="drops" className="form-control" name="manager" defaultValue="" placeholder="Please Select" onChange={this.handleManagerChange}>
+                                            <option value="" disabled>Please Select</option>
+                                            {user.list.length ? user.list.map((item, index) => {
+                                                return (
+                                                    <option data-key={index} key={index} value={item._id}>{item.name} - {item.email}</option>
+                                                )
+                                            }) : null}
+
+                                        </select>
+
+                                        <ErrorLabel content={errorOnManager}/>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="department">Đơn vị</label>
-                                        <input type="text" className="form-control" placeholder="Đơn vị" name="department" placeholder="Đơn vị" autoComplete="off" />
+                                        <label htmlFor="department">Chức vụ</label>
+                                        <input value={this.state.userIndex !== '' && user.list[this.state.userIndex].roles.length ? user.list[this.state.userIndex].roles[0].roleId.name : ''}
+                                               type="text" className="form-control"
+                                               placeholder="Đơn vị" name="department" placeholder="Đơn vị" autoComplete="off"/>
                                     </div>
                                     <div className={`form-group ${errorOnInitialPrice === undefined ? "" : "has-error"} `}>
                                         <label htmlFor="initialPrice">Giá trị ban đầu<span className="text-red">*</span></label>
-                                        <input style={{ display: "inline", width: "88%" }} type="number" className="form-control" name="initialPrice" value={initialPrice} onChange={this.handleInitialPriceChange} placeholder="Giá trị ban đầu" autoComplete="off" />
-                                        <label style={{ height: 34, display: "inline", width: "5%" }}>&nbsp; VNĐ</label>
-                                        <ErrorLabel content={errorOnInitialPrice} />
+                                        <input style={{display: "inline", width: "88%"}} type="number" className="form-control" name="initialPrice" value={initialPrice}
+                                               onChange={this.handleInitialPriceChange} placeholder="Giá trị ban đầu" autoComplete="off"/>
+                                        <label style={{height: 34, display: "inline", width: "5%"}}>&nbsp; VNĐ</label>
+                                        <ErrorLabel content={errorOnInitialPrice}/>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="description">Mô tả</label>
-                                        <input type="text" className="form-control" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Mô tả" autoComplete="off" />
+                                        <input type="text" className="form-control" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Mô tả"
+                                               autoComplete="off"/>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="status">Trạng thái</label>
@@ -419,30 +452,34 @@ class TabGeneralContent extends Component {
                             <div>
 
                                 <div className={`form-group ${(errorOnNameField === undefined && errorOnValue) === undefined ? "" : "has-error"}`}>
-                                    <label>Thông tin chi tiết:<a title="Thông tin chi tiết"><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddDetailInfo} /></a></label>
+                                    <label>Thông tin chi tiết:<a title="Thông tin chi tiết"><i className="fa fa-plus" style={{color: "#00a65a", marginLeft: 5}} onClick={this.handleAddDetailInfo}/></a></label>
                                     <table className="table table-bordered">
                                         <thead>
-                                            <tr>
-                                                <th>Tên trường dữ liệu</th>
-                                                <th>Giá trị</th>
-                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                            </tr>
+                                        <tr>
+                                            <th>Tên trường dữ liệu</th>
+                                            <th>Giá trị</th>
+                                            <th style={{width: '120px', textAlign: 'center'}}>{translate('table.action')}</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            {(typeof detailInfo === 'undefined' || detailInfo.length === 0) ? <tr><td colSpan={3}><center> {translate('table.no_data')}</center></td></tr> :
-                                                detailInfo.map((x, index) => (
-                                                    <tr key={index}>
-                                                        <td><input className={index} type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={this.handleChangeNameField} /></td>
-                                                        <td><input className={index} type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={this.handleChangeValue} /></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                        {(typeof detailInfo === 'undefined' || detailInfo.length === 0) ? <tr>
+                                                <td colSpan={3}>
+                                                    <center> {translate('table.no_data')}</center>
+                                                </td>
+                                            </tr> :
+                                            detailInfo.map((x, index) => {
+                                                return <tr key={index}>
+                                                    <td><input className={index} type="text" name="nameField" style={{width: "100%"}} onChange={this.handleChangeNameField}/></td>
+                                                    <td><input className={index} type="text" name="value" style={{width: "100%"}} onChange={this.handleChangeValue}/></td>
+                                                    <td style={{textAlign: "center"}}>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                    </td>
+                                                </tr>
+                                            })}
                                         </tbody>
                                     </table>
-                                    <ErrorLabel content={errorOnNameField} />
-                                    <ErrorLabel content={errorOnValue} />
+                                    <ErrorLabel content={errorOnNameField}/>
+                                    <ErrorLabel content={errorOnValue}/>
                                 </div>
                             </div>
                         </div>
@@ -452,5 +489,10 @@ class TabGeneralContent extends Component {
         );
     }
 };
-const tabGeneral = connect(null, null)(withTranslate(TabGeneralContent));
-export { tabGeneral as TabGeneralContent };
+
+function mapState(state) {
+    const {assetType, user} = state;
+    return {assetType, user};
+};
+const tabGeneral = connect(mapState, null)(withTranslate(TabGeneralContent));
+export {tabGeneral as TabGeneralContent};

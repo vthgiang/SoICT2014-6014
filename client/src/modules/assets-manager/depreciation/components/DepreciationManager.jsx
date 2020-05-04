@@ -274,7 +274,6 @@ function mapState(state) {
 
 const actionCreators = {
     // getListAsset: AssetActions.getListAsset,
-    // deleteAsset: AssetActions.deleteAsset,
 };
 
 const connectedListDepreciation = connect(mapState, actionCreators)(withTranslate(DepreciationManager));
