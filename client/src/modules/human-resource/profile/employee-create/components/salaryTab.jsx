@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {
-    ModalAddSalary, ModalEditSalary,
-    ModalAddSabbatical, ModalEditSabbatical,
-} from './combinedContent';
+import { SalaryAddModal, SalaryEditModal, AnnualLeaveAddModal, AnnualLeaveEditModal } from './combinedContent';
 
 class SalaryTab extends Component {
     constructor(props) {
@@ -34,74 +31,78 @@ class SalaryTab extends Component {
 
     // Function thêm thông tin lịch sử lương
     handleAddSalary = async (data) => {
-        const { salarys } = this.state;
+        const { salaries } = this.state;
         let check = [];
-        check = salarys.filter(x => (x.month === data.month));
+        check = salaries.filter(x => (x.month === data.month));
         if (check.length !== 0) {
             console.log("Tháng lương đã tồn tại");
         } else {
             await this.setState({
-                salarys: [...salarys, {
+                salaries: [...salaries, {
                     ...data
                 }]
             })
-            this.props.handleAddSalary(this.state.salary);
+            this.props.handleAddSalary(this.state.salaries, data);
         }
     }
     // Function chỉnh sửa thông tin lịch sử lương
     handleEditSalary = async (data) => {
-        const { salarys } = this.state;
-        salarys[data.index] = data;
+        const { salaries } = this.state;
+        salaries[data.index] = data;
         await this.setState({
-            salarys: salarys
+            salaries: salaries
         })
-        this.props.handleEditSalary(this.state.salarys);
+        this.props.handleEditSalary(this.state.salaries, data);
     }
     // Function xoá bảng lương
-    deleteSalary = async (index) => {
-        var { salarys } = this.state;
-        salarys.splice(index, 1);
+    handleDeleteSalary = async (index) => {
+        var { salaries } = this.state;
+        var data = salaries[index];
+        salaries.splice(index, 1);
         await this.setState({
             ...this.state,
-            salarys: [...salarys]
+            salaries: [...salaries]
         })
-        this.props.handleDeleteSalary(this.state.salarys);
+        this.props.handleDeleteSalary(this.state.salaries, data);
     }
+
     // Function thêm thông tin nghỉ phép
-    handleAddAnnualLeaves = async (data) => {
+    handleAddAnnualLeave = async (data) => {
         const { annualLeaves } = this.state;
         await this.setState({
             annualLeaves: [...annualLeaves, {
                 ...data
             }]
         })
-        this.props.handleAddSabbatical(this.state.annualLeaves);
+        this.props.handleAddAnnualLeave(this.state.annualLeaves, data);
     }
     // Function chỉnh sửa thông tin nghỉ phép
-    handleEditAnnualLeaves = async (data) => {
+    handleEditAnnualLeave = async (data) => {
         const { annualLeaves } = this.state;
         annualLeaves[data.index] = data;
         await this.setState({
             annualLeaves: annualLeaves
         })
-        this.props.handleEditSabbatical(this.state.annualLeaves);
+        this.props.handleEditAnnualLeave(this.state.annualLeaves, data
+        );
     }
     // Function xoá thông tin nghỉ phép
-    deleteAnnualLeaves = async (index) => {
+    handleDeleteAnnualLeave = async (index) => {
         var { annualLeaves } = this.state;
+        var data = annualLeaves[index];
         annualLeaves.splice(index, 1);
         await this.setState({
             ...this.state,
             annualLeaves: [...annualLeaves]
         })
-        this.props.handleDeleteSabbatical(this.state.annualLeaves);
+        this.props.handleDeleteAnnualLeave(this.state.annualLeaves, data);
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
                 id: nextProps.id,
-                salarys: nextProps.salarys,
+                salaries: nextProps.salaries,
                 annualLeaves: nextProps.annualLeaves,
             }
         } else {
@@ -111,14 +112,14 @@ class SalaryTab extends Component {
     render() {
         var formater = new Intl.NumberFormat();
         const { id, translate } = this.props;
-        const { annualLeaves, salarys } = this.state;
+        const { annualLeaves, salaries } = this.state;
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <div className=" row col-md-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.historySalary')}</h4></legend>
-                            <ModalAddSalary handleChange={this.handleAddSalary} id={`addSalary${id}`} />
+                            <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                                 <thead>
                                     <tr>
@@ -129,8 +130,8 @@ class SalaryTab extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {(typeof salarys !== 'undefined' && salarys.length !== 0) &&
-                                        salarys.map((x, index) => {
+                                    {(typeof salaries !== 'undefined' && salaries.length !== 0) &&
+                                        salaries.map((x, index) => {
                                             if (x.bonus.length !== 0) {
                                                 var total = 0;
                                                 for (let count in x.bonus) {
@@ -140,7 +141,7 @@ class SalaryTab extends Component {
                                             return (
                                                 <tr key={index}>
                                                     <td>{x.month}</td>
-                                                    <td>{x.mainSalary} {x.unit}</td>
+                                                    <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
                                                     <td>
                                                         {
                                                             (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
@@ -150,7 +151,7 @@ class SalaryTab extends Component {
                                                     </td>
                                                     <td>
                                                         <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('salary_employee.edit_salary')}><i className="material-icons">edit</i></a>
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteSalary(index)}><i className="material-icons"></i></a>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteSalary(index)}><i className="material-icons"></i></a>
                                                     </td>
                                                 </tr>
                                             )
@@ -159,12 +160,12 @@ class SalaryTab extends Component {
                                 </tbody>
                             </table>
                             {
-                                (typeof salarys === 'undefined' || salarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                (typeof salaries === 'undefined' || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                             }
                         </fieldset>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.sabbatical')}</h4></legend>
-                            <ModalAddSabbatical handleChange={this.handleAddAnnualLeaves} id={`addSabbatical${id}`} />
+                            <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
@@ -185,7 +186,7 @@ class SalaryTab extends Component {
                                                 <td>{translate(`sabbatical.${x.status}`)}</td>
                                                 <td >
                                                     <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
-                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteAnnualLeaves(index)}><i className="material-icons"></i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAnnualLeave(index)}><i className="material-icons"></i></a>
                                                 </td>
                                             </tr>
                                         ))}
@@ -199,7 +200,7 @@ class SalaryTab extends Component {
                 </div>
                 {
                     this.state.currentRow !== undefined &&
-                    <ModalEditSalary
+                    <SalaryEditModal
                         id={`editSalary${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
                         unit={this.state.currentRow.unit}
@@ -211,14 +212,14 @@ class SalaryTab extends Component {
                 }
                 {
                     this.state.currentRowSabbatical !== undefined &&
-                    <ModalEditSabbatical
+                    <AnnualLeaveEditModal
                         id={`editSabbatical${this.state.currentRowSabbatical.index}`}
                         index={this.state.currentRowSabbatical.index}
                         startDate={this.state.currentRowSabbatical.startDate}
                         endDate={this.state.currentRowSabbatical.endDate}
                         reason={this.state.currentRowSabbatical.reason}
                         status={this.state.currentRowSabbatical.status}
-                        handleChange={this.handleEditAnnualLeaves}
+                        handleChange={this.handleEditAnnualLeave}
                     />
                 }
             </div>

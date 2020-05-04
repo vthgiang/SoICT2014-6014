@@ -5,7 +5,7 @@ export * from './generalTab';
 export * from './experienceTab';
 export * from './certificateTab';
 export * from './taxTab';
-export * from './socialInsuranceTab';
+export * from './InsuranceTab';
 export * from './disciplineTab';
 export * from './salaryTab';
 export * from './fileTab';

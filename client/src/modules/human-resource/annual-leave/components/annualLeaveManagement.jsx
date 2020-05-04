@@ -160,31 +160,31 @@ class AnnualLeaveManagement extends Component {
                 <div className="box-body qlcv">
                     <AnnualLeaveCreateForm />
                     <div className="form-group">
-                        <h4 className="box-title">{translate('sabbatical.list_sabbatical')}: </h4>
+                        <h4 className="box-title">{translate('human_resource.annual_leave.list_annual_leave')}: </h4>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}</label>
+                            <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}</label>
+                            <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
+                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.staff_number')}</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('human_resource.month')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
@@ -196,46 +196,46 @@ class AnnualLeaveManagement extends Component {
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}</label>
+                            <label className="form-control-static">{translate('human_resource.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
+                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "pass", text: translate('sabbatical.pass') },
-                                    { value: "process", text: translate('sabbatical.process') },
-                                    { value: "faile", text: translate('sabbatical.faile') }
+                                    { value: "pass", text: translate('human_resource.annual_leave.status.pass') },
+                                    { value: "process", text: translate('human_resource.annual_leave.status.process') },
+                                    { value: "faile", text: translate('human_resource.annual_leave.status.faile') }
                                 ]}
                             >
                             </SelectMulti>
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSunmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
                     <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>{translate('table.employee_number')}</th>
-                                <th style={{ width: "14%" }}>{translate('table.employee_name')}</th>
-                                <th style={{ width: "9%" }}>{translate('table.start_date')}</th>
-                                <th style={{ width: "9%" }}>{translate('table.end_date')}</th>
-                                <th>{translate('sabbatical.reason')}</th>
-                                <th style={{ width: "12%" }}>{translate('table.unit')}</th>
-                                <th style={{ width: "14%" }}>{translate('table.position')}</th>
-                                <th style={{ width: "11%" }}>{translate('table.status')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
+                                <th style={{ width: "10%" }}>{translate('human_resource.staff_number')}</th>
+                                <th style={{ width: "14%" }}>{translate('human_resource.staff_name')}</th>
+                                <th style={{ width: "9%" }}>{translate('human_resource.annual_leave.table.start_date')}</th>
+                                <th style={{ width: "9%" }}>{translate('human_resource.annual_leave.table.end_date')}</th>
+                                <th>{translate('human_resource.annual_leave.table.reason')}</th>
+                                <th style={{ width: "12%" }}>{translate('human_resource.unit')}</th>
+                                <th style={{ width: "14%" }}>{translate('human_resource.position')}</th>
+                                <th style={{ width: "11%" }}>{translate('human_resource.status')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.annual_leave.table.action')}
                                     <DataTableSetting
                                         tableId="sabbatical-table"
                                         columnArr={[
-                                            translate('table.employee_number'),
-                                            translate('table.employee_name'),
-                                            translate('table.start_date'),
-                                            translate('table.end_date'),
-                                            translate('sabbatical.reason'),
-                                            translate('table.unit'),
-                                            translate('table.position'),
-                                            translate('table.status')
+                                            translate('human_resource.staff_number'),
+                                            translate('human_resource.staff_name'),
+                                            translate('human_resource.annual_leave.table.start_date'),
+                                            translate('human_resource.annual_leave.table.end_date'),
+                                            translate('human_resource.annual_leave.table.reason'),
+                                            translate('human_resource.unit'),
+                                            translate('human_resource.position'),
+                                            translate('human_resource.status')
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -263,11 +263,11 @@ class AnnualLeaveManagement extends Component {
                                                 {role.roleId.name}<br />
                                             </React.Fragment>
                                         )) : null}</td>
-                                        <td>{translate(`sabbatical.${x.status}`)}</td>
+                                        <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('sabbatical.edit_sabbatical')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.delete_annual_leave')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={translate('sabbatical.delete_sabbatical')}
+                                                content={translate('human_resource.annual_leave.delete_annual_leave')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.startDate.replace(/-/gi, "/") + " - " + x.endDate.replace(/-/gi, "/")

@@ -12,6 +12,9 @@ class ContactTab extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
         const { name, value } = e.target;
+        this.setState({
+            [name]: value,
+        })
         this.props.handleChange(name, value);
     }
     // Function bắt sự kiện thay đổi điện thoại đi động 1

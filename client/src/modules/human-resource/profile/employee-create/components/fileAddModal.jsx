@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
-class ModalAddFile extends Component {
+class FileAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nameFile: "",
-            discFile: "",
+            name: "",
+            description: "",
             number: "",
             status: "submitted",
             file: "",
-            urlFile: " ",
-            fileUpload: " "
+            urlFile: "",
+            fileUpload: ""
         }
     }
     // Bắt sự kiện thay đổi file đính kèm
@@ -53,7 +53,7 @@ class ModalAddFile extends Component {
                 return {
                     ...state,
                     errorOnNameFile: msg,
-                    nameFile: value,
+                    name: value,
                 }
             });
         }
@@ -72,7 +72,7 @@ class ModalAddFile extends Component {
                 return {
                     ...state,
                     errorOnDiscFile: msg,
-                    discFile: value,
+                    description: value,
                 }
             });
         }
@@ -101,7 +101,7 @@ class ModalAddFile extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateNameFile(this.state.nameFile, false) && this.validateDiscFile(this.state.discFile, false) &&
+            this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) &&
             this.validateNumberFile(this.state.number, false);
         return result;
     }
@@ -113,7 +113,7 @@ class ModalAddFile extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { nameFile, discFile, number, status,
+        const { name, description, number, status,
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
         return (
             <React.Fragment>
@@ -128,12 +128,12 @@ class ModalAddFile extends Component {
                     <form className="form-group" id={`form-create-file-${id}`}>
                         <div className={`form-group ${errorOnNameFile === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_employee.file_name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="nameFile" value={nameFile} onChange={this.handleNameFileChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
                         <div className={`form-group ${errorOnDiscFile === undefined ? "" : "has-error"}`}>
                             <label>{translate('table.description')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="discFile" value={discFile} onChange={this.handleDiscFileChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
                         <div className="row">
@@ -161,5 +161,5 @@ class ModalAddFile extends Component {
         );
     }
 };
-const addFile = connect(null, null)(withTranslate(ModalAddFile));
-export { addFile as ModalAddFile };
+const addModal = connect(null, null)(withTranslate(FileAddModal));
+export { addModal as FileAddModal };

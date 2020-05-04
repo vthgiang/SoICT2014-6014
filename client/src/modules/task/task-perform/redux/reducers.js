@@ -116,20 +116,6 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.GET_ACTIONCOMMENT_REQUEST:
-            return {
-                ...state,
-                loading: true
-            };
-        case performTaskConstants.GET_ACTIONCOMMENT_SUCCESS:
-            return {
-                ...state,
-                actioncomments: action.actionComments.data.content
-            };
-        case performTaskConstants.GET_ACTIONCOMMENT_FAILURE:
-            return {
-                error: action.error
-            };
         case performTaskConstants.GET_TASKACTION_REQUEST:
             return {
                 ...state,
@@ -152,10 +138,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS:
             return {
                 ...state,
-                actioncomments: [
-                    ...state.actioncomments,
-                    action.newComment.data.content
-                ]
+                taskactions : action.newComment.data.content
             };
         case performTaskConstants.ADDNEW_ACTIONCOMMENT_FAILURE:
             return {
@@ -167,13 +150,9 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
-            console.log(action.newAction.data.content)
              return {
                 ...state,
-                taskactions:[
-                    ...state.taskactions,
-                    action.newAction.data.content
-                ]
+                taskactions : action.newAction.data.content
             }
         case performTaskConstants.ADDNEW_TASKACTION_FAILURE:
             return {
@@ -182,20 +161,12 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.EDIT_ACTIONCOMMENT_REQUEST:
             return {
                 ...state,
-                actioncomments: state.actioncomments.map(comment =>
-                    comment._id === action.id
-                        ? { ...comment, editing: true }
-                        : comment
-                )
+                editing : true
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS:
-            console.log( action.newComment.data);
             return {
                 ...state,
-                actioncomments: state.actioncomments.map(comment =>
-                    comment._id === action.newComment.data.content._id
-                        ? action.newComment.data.content : comment
-                )
+                taskactions : action.newComment.data.content
             };
         case performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE:
             return {
@@ -204,18 +175,12 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.EDIT_TASKACTION_REQUEST:
             return {
                 ...state,
-                taskactions: state.taskactions.map(action =>
-                    action._id === action.id
-                        ? { ...action, editing: true }
-                        : action
-                )
+                editing :true
             };
         case performTaskConstants.EDIT_TASKACTION_SUCCESS:
             return {
                 ...state,
-                taskactions: state.taskactions.map(action1=>
-                    action1._id === action.newAction.data.content._id ? 
-                    action.newAction.data.content : action1)
+                taskactions : action.newAction.data.content
             };
         case performTaskConstants.EDIT_TASKACTION_FAILURE:
             return {
@@ -224,29 +189,24 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.DELETE_ACTIONCOMMENT_REQUEST:
             return {
                 ...state,
-                actioncomments: state.actioncomments.map(comment =>
-                    comment._id === action.id
-                        ? { ...comment, deleting: true }
-                        : comment
-                )
+                deleting : true
             };
         case performTaskConstants.DELETE_ACTIONCOMMENT_SUCCESS:
+            
             return {
                 ...state,
-                actioncomments: state.actioncomments.filter(comment => comment._id !== action.id)
+                taskactions : action.task.data.content
             };
         case performTaskConstants.DELETE_TASKACTION_REQUEST:
             return {
                 ...state,
-                taskactions: state.taskactions.map(action1=>
-                    action1._id=== action.id?
-                    {...action1,deleting: true}:action1)
+                deleting : true
             }
         case performTaskConstants.DELETE_TASKACTION_SUCCESS:
             
             return {
                 ...state,
-                taskactions: state.taskactions.filter(action1 => action1._id !== action.id)
+                taskactions : action.task.data.content
             }
         case performTaskConstants.DELETE_TASKACTION_FAILURE:
             return {

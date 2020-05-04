@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker } from '../../../../../common-components';
 import {
-    ModalImportFileBHXH, ModalAddBHXH,
-    ModalEditBHXH
+    ModalImportFileBHXH, SocialInsuranceAddModal,
+    SocialInsuranceEditModal
 } from './combinedContent';
 
 
@@ -28,6 +28,9 @@ class InsurranceTab extends Component {
 
     handleChange = (e) => {
         const { name, value } = e.target;
+        this.setState({
+            [name]: value
+        })
         this.props.handleChange(name, value);
     }
     // Bắt sự kiện thay đổi ngày có hiệu lực
@@ -46,7 +49,7 @@ class InsurranceTab extends Component {
                 ...data
             }]
         })
-        this.props.handleAddBHXH(this.state.socialInsuranceDetails);
+        this.props.handleAddBHXH(this.state.socialInsuranceDetails, data);
     }
     // function chỉnh sửa thông tin quá trình đóng BHXH
     handleEditBHXH = async (data) => {
@@ -55,17 +58,18 @@ class InsurranceTab extends Component {
         await this.setState({
             socialInsuranceDetails: socialInsuranceDetails
         })
-        this.props.handleEditBHXH(this.state.socialInsuranceDetails);
+        this.props.handleEditBHXH(this.state.socialInsuranceDetails, data);
     }
     // Function bắt sự kiện xoá quá trình đóng BHXH
     delete = async (index) => {
         var socialInsuranceDetails = this.state.socialInsuranceDetails;
+        var data = socialInsuranceDetails[index];
         socialInsuranceDetails.splice(index, 1);
         await this.setState({
             ...this.state,
             socialInsuranceDetails: [...socialInsuranceDetails]
         })
-        this.props.handleDeleteBHXH(this.state.socialInsuranceDetails);
+        this.props.handleDeleteBHXH(this.state.socialInsuranceDetails, data);
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
@@ -127,7 +131,7 @@ class InsurranceTab extends Component {
                             <div className="col-md-12">
                                 <h4 className="row col-md-6">{translate('manage_employee.bhxh_process')}:</h4>
                                 <ModalImportFileBHXH index={this.state.key} />
-                                <ModalAddBHXH handleChange={this.handleAddBHXH} id={`addBHXH${id}`} />
+                                <SocialInsuranceAddModal handleChange={this.handleAddBHXH} id={`addBHXH${id}`} />
                                 <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
                                     <thead>
                                         <tr>
@@ -135,7 +139,7 @@ class InsurranceTab extends Component {
                                             <th>{translate('manage_employee.to_month_year')}</th>
                                             <th>{translate('manage_employee.unit')}</th>
                                             <th>{translate('table.position')}</th>
-                                            <th style={{width:'120px'}}>{translate('table.action')}</th>
+                                            <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -163,7 +167,7 @@ class InsurranceTab extends Component {
                 </div>
                 {
                     this.state.currentRow !== undefined &&
-                    <ModalEditBHXH
+                    <SocialInsuranceEditModal
                         id={`editBHXH${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
                         company={this.state.currentRow.company}

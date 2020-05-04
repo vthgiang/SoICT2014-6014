@@ -212,7 +212,7 @@ class TabTaskContent extends Component {
         if (status.length === 0) status = "[]";
         if (unit.length === 0) unit = "[]";
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "consulted") {
@@ -235,7 +235,7 @@ class TabTaskContent extends Component {
         var status = window.$("#multiSelectStatus").val();
         var content = this.props.role;
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "consulted") {
@@ -272,15 +272,7 @@ class TabTaskContent extends Component {
                 showModal: id
             }
         })
-        console.log('id---perform-->', id);
-        // var responsible=this.getResponsibleOfItem(data, this.state.showModal);
-        // var unit=this.getUnitIdOfItem(data, this.state.showModal);
-        window.$(`#modelPerformTask${id}`).modal('show')
-        // var element = document.getElementsByTagName("BODY")[0];
-        // element.classList.add("modal-open");
-        // var modal = document.getElementById(`modelPerformTask${id}`);
-        // modal.classList.add("in");
-        // modal.style = "display: block; padding-right: 17px;";
+        window.$(`#modelPerformTask${id}`).modal('show');
     }
     handleCheckClickAddSubTask = async (id) => {
         await this.setState(state => {
@@ -289,7 +281,6 @@ class TabTaskContent extends Component {
                 showAddSubTask: id
             }
         });
-        console.log('id---add-->', id);
         window.$(`#addNewTask${id}`).modal('show')
     }
 

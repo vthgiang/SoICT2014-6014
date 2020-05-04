@@ -84,7 +84,7 @@ export function kpimembers(state = {}, action) {
     case kpiMemberConstants.APPROVE_KPIMEMBER_SUCCESS:
       return {
         ...state,
-        currentKPI: action.payload.kpimember,
+        currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item=>
           item._id===action.payload.kpimember._id?action.payload.kpimember:item),
         isLoading: false
@@ -112,7 +112,7 @@ export function kpimembers(state = {}, action) {
           currentKPI: {
             ...state.currentKPI,
             listtarget: state.currentKPI.listtarget.map(target =>
-              target._id === action.payload.target._id
+              target._id === action.payload
                 ? action.payload.target : target)
           },
           isLoading: false
@@ -132,7 +132,7 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         editing: false,
-        currentKPI: action.payload.newKPI,
+        currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item=>
           item._id===action.payload.newKPI._id?action.payload.newKPI:item),
         isLoading: false
@@ -155,7 +155,7 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: false,
-        tasks: action.payload.content, 
+        tasks: action.payload, 
       };
 
     //----------------------------------------------
@@ -167,7 +167,7 @@ export function kpimembers(state = {}, action) {
       case kpiMemberConstants.SET_POINTKPI_SUCCESS:
         return {
             ...state,
-            currentKPI : action.payload.content,
+            currentKPI : action.payload,
         };
       case kpiMemberConstants.SET_POINTKPI_FAILURE:
         return { 

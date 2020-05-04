@@ -3,9 +3,9 @@ const { LogInfo, LogError } = require('../../../logs');
 
 
 // TODO: Xóa bớt các phương thức không dùng???
-exports.get = async (req, res) => {
+exports.getAllPriveleges = async (req, res) => {
     try {
-        var roles = await PrivilegeService.get(req, res);
+        var roles = await PrivilegeService.getAllPriveleges(req, res);
         
         res.status(200).json(roles);
     } catch (error) {
@@ -14,9 +14,9 @@ exports.get = async (req, res) => {
     }
 };
 
-exports.create = async (req, res) => {
+exports.createPrivelege = async (req, res) => {
     try {
-        var role = await PrivilegeService.create(req, res);
+        var role = await PrivilegeService.createPrivelege(req, res);
 
         res.status(200).json(role);
     } catch (error) {
@@ -25,9 +25,9 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.show = async (req, res) => {
+exports.getPrivelege = async (req, res) => {
     try {
-        var role = await PrivilegeService.getById(req, res);
+        var role = await PrivilegeService.Privelege(req, res);
         
         res.status(200).json(role);
     } catch (error) {
@@ -36,9 +36,9 @@ exports.show = async (req, res) => {
     }
 };
 
-exports.edit = async (req, res) => {
+exports.editPrivelege = async (req, res) => {
     try {
-        var role = await PrivilegeService.edit(req, res);
+        var role = await PrivilegeService.editPrivelege(req, res);
         
         res.status(200).json(role);
     } catch (error) {
@@ -47,9 +47,9 @@ exports.edit = async (req, res) => {
     }
 };
 
-exports.delete = async (req, res) => {
+exports.deletePrivelege = async (req, res) => {
     try {
-        var role = await PrivilegeService.delete(req, res);
+        var role = await PrivilegeService.deletePrivelege(req, res);
         
         res.status(200).json(role);
     } catch (error) {
@@ -58,7 +58,7 @@ exports.delete = async (req, res) => {
     }
 };
 
-exports.addRoleToLink = async (req, res) => {
+exports.addLinkThatRoleCanAccess = async (req, res) => {
     try {
         var role = await PrivilegeService.addLinkThatRoleCanAccess(req.body.idLink, req.body.idRole);
         
@@ -69,9 +69,9 @@ exports.addRoleToLink = async (req, res) => {
     }
 };
 
-exports.getLinksRoleCanAccess = async (req, res) => {
+exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
-        var links = await PrivilegeService.getLinksRoleCanAccess(req.params.idRole);
+        var links = await PrivilegeService.getLinksThatRoleCanAccess(req.params.idRole);
         
         res.status(200).json(links);
     } catch (error) {

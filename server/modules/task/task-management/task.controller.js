@@ -4,9 +4,9 @@ const {  LogInfo,  LogError } = require('../../../logs');
 /**
  * Lấy tất cả các công việc
  */
-exports.getAllTask = async (req, res) => {
+exports.getAllTasks = async (req, res) => {
     try {
-        var tasks = TaskManagementService.getAllTask(req, res);
+        var tasks = TaskManagementService.getAllTasks(req, res);
         await LogInfo(req.user.email, ` get all tasks `,req.user.company);
         res.status(200).json({
             success: true, 
@@ -26,9 +26,9 @@ exports.getAllTask = async (req, res) => {
 /**
  *  Lấy công việc theo id
  */
-exports.getTaskById = async (req, res) => {
+exports.getTask = async (req, res) => {
     try {
-        var task = await TaskManagementService.getTaskById(req.params.id);
+        var task = await TaskManagementService.getTask(req.params.id);
         await LogInfo(req.user.email, ` get task by id `,req.user.company);
         res.status(200).json({
             success: true,
@@ -46,11 +46,11 @@ exports.getTaskById = async (req, res) => {
 };
 
 /**
- * Lấy công việc theo chức danh
+ * Lấy công việc tạo bởi một người dùng
  */
-exports.getTaskByRole = async (req, res) => {
+exports.getAllTasksCreatedByUser = async (req, res) => {
     try {
-        var tasks= await TaskManagementService.getByRole(req.params.role,req.params.id);
+        var tasks= await TaskManagementService.getTasksCreatedByUser(req.params.id);
         await LogInfo(req.user.email, ` get task by role `,req.user.company)
         res.status(200).json({
             success: true,
@@ -71,9 +71,9 @@ exports.getTaskByRole = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người thực hiện chính
  */
-exports.getResponsibleTaskByUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
     try {
-        var responsibleTasks = await TaskManagementService.getResponsibleTaskByUser(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
         await await LogInfo(req.user.email, ` get task responsible by user `,req.user.company)
         res.status(200).json({
             success:true,
@@ -93,9 +93,9 @@ exports.getResponsibleTaskByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người phê duyệt
  */
-exports.getAccountableTaskByUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasAccountableRole = async (req, res) => {
     try {
-        var accountableTasks = await TaskManagementService.getAccountableTaskByUser(req.params.perPage,req.params.number,req.params.unit,req.params.status,req.params.user);
+        var accountableTasks = await TaskManagementService.getPaginatedTasksThatUserHasAccountableRole(req.params.perPage,req.params.number,req.params.unit,req.params.status,req.params.user);
         await LogInfo(req.user.email, ` get task accountable by user  `,req.user.company)
         // res.status(200).json(accountableTasks);
         res.status(200).json({
@@ -116,9 +116,9 @@ exports.getAccountableTaskByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người hỗ trợ
  */
-exports.getConsultedTaskByUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasConsultedRole = async (req, res) => {
     try {
-        var consultedTasks = await  TaskManagementService.getConsultedTaskByUser(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var consultedTasks = await  TaskManagementService.getPaginatedTasksThatUserHasConsultedRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
         await LogInfo(req.user.email, ` get task consulted by user `,req.user.company)
         res.status(200).json({
             success:true,
@@ -138,9 +138,9 @@ exports.getConsultedTaskByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người tạo
  */
-exports.getCreatorTaskByUser = async (req, res) => {
+exports.getPaginatedTasksCreatedByUser = async (req, res) => {
     try {
-        var creatorTasks = await  TaskManagementService.getCreatorTaskByUser(req.params.perPage,req.params.number,req.params.unit,req.params.status,req.params.user);
+        var creatorTasks = await  TaskManagementService.getPaginatedTasksCreatedByUser(req.params.perPage,req.params.number,req.params.unit,req.params.status,req.params.user);
         await LogInfo(req.user.email, ` get task creator by user `,req.user.company)
         res.status(200).json({
             success:true,
@@ -160,9 +160,9 @@ exports.getCreatorTaskByUser = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người quan sát
  */
-exports.getInformedTaskByUser = async (req, res) => {
+exports.getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
     try {
-        var informedTasks = await TaskManagementService.getInformedTaskByUser(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
+        var informedTasks = await TaskManagementService.getPaginatedTasksThatUserHasInformedRole(req.params.perPage,req.params.number,req.params.unit,req.params.user,req.params.status);
         await LogInfo(req.user.email, ` get task informed by user `,req.user.company)
         res.status(200).json({
             success:true,
@@ -182,9 +182,9 @@ exports.getInformedTaskByUser = async (req, res) => {
 /**
  * Tạo một công việc mới
  */
-exports.create = async (req, res) => {
+exports.createTask = async (req, res) => {
     try {
-        var task = await TaskManagementService.create(req.body.parent,req.body.startDate,req.body.endDate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.taskTemplate,req.body.role,req.body.kpi,req.body.responsibleEmployees,req.body.accountableEmployees,req.body.consultedEmployees,req.body.informedEmployees); 
+        var task = await TaskManagementService.createTask(req.body.parent,req.body.startDate,req.body.endDate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.taskTemplate,req.body.role,req.body.kpi,req.body.responsibleEmployees,req.body.accountableEmployees,req.body.consultedEmployees,req.body.informedEmployees); 
         console.log(req.body);
         await LogInfo(req.user.email, ` create task `,req.user.company)
         res.status(200).json({
@@ -204,9 +204,9 @@ exports.create = async (req, res) => {
 /**
  *  Xóa một công việc đã thiết lập
  */
-exports.delete = async (req, res) => {
+exports.deleteTask = async (req, res) => {
     try {
-        TaskManagementService.delete(req.params.id);
+        TaskManagementService.deleteTask(req.params.id);
         await LogInfo(req.user.email, ` delete task  `,req.user.company)
         res.status(200).json({
             success: true,
@@ -224,9 +224,9 @@ exports.delete = async (req, res) => {
 /**
  * Chinh sua trang thai cua cong viec
  */
-exports.editStatusOfTask = async (req, res) => {
+exports.editTaskStatus = async (req, res) => {
     try {
-        var task = await TaskManagementService.editStatusOfTask(req.params.id, req.body.status);
+        var task = await TaskManagementService.editTaskStatus(req.params.id, req.body.status);
         // await LogInfo(req.user.email, ` edit status of task  `,req.user.company);
         res.status(200).json({
             success: true,

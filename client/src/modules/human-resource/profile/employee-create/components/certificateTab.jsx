@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import {
-    ModalAddCertificate, ModalAddCertificateShort,
-    ModalEditCertificate, ModalEditCertificateShort,
+    DegreeAddModal, CertificateAddModal,
+    DegreeEditModal, CertificateEditModal,
 } from './combinedContent';
 
 class CertificateTab extends Component {
@@ -33,64 +33,66 @@ class CertificateTab extends Component {
     }
 
     // Function thêm thông tin bằng cấp
-    handleAddCertificate = async (data) => {
+    handleAddDegree = async (data) => {
         let { degrees } = this.state;
         await this.setState({
             degrees: [...degrees, {
                 ...data
             }]
         })
-        this.props.handleAddCertificate(this.state.certificate)
+        this.props.handleAddDegree(this.state.degrees, data)
 
     }
     // Function chỉnh sửa thông tin bằng cấp
-    handleEditCertificate = async (data) => {
+    handleEditDegree = async (data) => {
         const { degrees } = this.state;
         degrees[data.index] = data;
         await this.setState({
             degrees: degrees
         })
-        this.props.handleEditCertificate(this.state.degrees)
+        this.props.handleEditDegree(this.state.degrees, data)
     }
 
     // Function thêm thông tin chứng chỉ
-    handleAddCertificateShort = async (data) => {
+    handleAddCertificate = async (data) => {
         let { certificates } = this.state;
         await this.setState({
             certificates: [...certificates, {
                 ...data
             }]
         })
-        this.props.handleAddCertificateShort(this.state.certificates)
+        this.props.handleAddCertificate(this.state.certificates, data)
     }
     // Function chỉnh sửa thông tin chứng chỉ
-    handleEditCertificateShort = async (data) => {
+    handleEditCertificate = async (data) => {
         const { certificates } = this.state;
         certificates[data.index] = data;
         await this.setState({
             certificates: certificates
         })
-        this.props.handleEditCertificateShort(this.state.certificates)
+        this.props.handleEditCertificate(this.state.certificates, data)
     }
     // Function xoá bằng cấp
-    delete = async (index) => {
+    handleDeleteDegree = async (index) => {
         var { degrees } = this.state;
+        var data = degrees[index];
         degrees.splice(index, 1);
         await this.setState({
             ...this.state,
             degrees: [...degrees]
         })
-        this.props.handleDeleteCertificate(this.state.degrees)
+        this.props.handleDeleteDegree(this.state.degrees, data)
     }
     // Function xoá chứng chỉ
-    deleteShort = async (index) => {
+    handleDeleteCertificate = async (index) => {
         var { certificates } = this.state;
+        var data = certificates[index];
         certificates.splice(index, 1);
         await this.setState({
             ...this.state,
             certificates: [...certificates]
         })
-        this.props.handleDeleteCertificateShort(this.state.certificates)
+        this.props.handleDeleteCertificate(this.state.certificates, data)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -113,7 +115,7 @@ class CertificateTab extends Component {
                 <div className="box-body">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.diploma')}</h4></legend>
-                        <ModalAddCertificate handleChange={this.handleAddCertificate} id={`addCertificate${id}`} />
+                        <DegreeAddModal handleChange={this.handleAddDegree} id={`addCertificate${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
@@ -138,7 +140,7 @@ class CertificateTab extends Component {
                                             </td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_diploma')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDegree(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}
@@ -150,7 +152,7 @@ class CertificateTab extends Component {
                     </fieldset>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.certificate')}</h4></legend>
-                        <ModalAddCertificateShort handleChange={this.handleAddCertificateShort} id={`addCertificateShort${id}`} />
+                        <CertificateAddModal handleChange={this.handleAddCertificate} id={`addCertificateShort${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -174,7 +176,7 @@ class CertificateTab extends Component {
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td>
                                                 <a onClick={() => this.handleEditShort(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_certificate')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteShort(index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteCertificate(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}
@@ -187,32 +189,32 @@ class CertificateTab extends Component {
                 </div>
                 {
                     this.state.currentRow !== undefined &&
-                    <ModalEditCertificate
+                    <DegreeEditModal
                         id={`editCertificate${this.state.currentRow.index}`}
                         index={this.state.currentRow.index}
-                        nameCertificate={this.state.currentRow.nameCertificate}
-                        addressCertificate={this.state.currentRow.addressCertificate}
-                        yearCertificate={this.state.currentRow.yearCertificate}
-                        typeCertificate={this.state.currentRow.typeCertificate}
+                        name={this.state.currentRow.name}
+                        issuedBy={this.state.currentRow.issuedBy}
+                        year={this.state.currentRow.year}
+                        degreeType={this.state.currentRow.degreeType}
                         file={this.state.currentRow.file}
                         urlFile={this.state.currentRow.urlFile}
                         fileUpload={this.state.currentRow.fileUpload}
-                        handleChange={this.handleEditCertificate}
+                        handleChange={this.handleEditDegree}
                     />
                 }
                 {
                     this.state.currentRowcertificates !== undefined &&
-                    <ModalEditCertificateShort
+                    <CertificateEditModal
                         id={`editCertificateShort${this.state.currentRowcertificates.index}`}
                         index={this.state.currentRowcertificates.index}
-                        nameCertificateShort={this.state.currentRowcertificates.nameCertificateShort}
-                        unit={this.state.currentRowcertificates.unit}
+                        name={this.state.currentRowcertificates.name}
+                        issuedBy={this.state.currentRowcertificates.issuedBy}
                         startDate={this.state.currentRowcertificates.startDate}
                         endDate={this.state.currentRowcertificates.endDate}
                         file={this.state.currentRowcertificates.file}
                         urlFile={this.state.currentRowcertificates.urlFile}
                         fileUpload={this.state.currentRowcertificates.fileUpload}
-                        handleChange={this.handleEditCertificateShort}
+                        handleChange={this.handleEditCertificate}
                     />
                 }
             </div>

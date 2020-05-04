@@ -21,6 +21,9 @@ class ExperienceTab extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
         const { name, value } = e.target;
+        this.setState({
+            [name]: value,
+        })
         this.props.handleChange(name, value);
     }
 
@@ -32,7 +35,7 @@ class ExperienceTab extends Component {
                 ...data
             }]
         })
-        this.props.handleAddExperience(this.state.experiences);
+        this.props.handleAddExperience(this.state.experiences, data);
     }
     // Function chỉnh sửa kinh nghiệm làm việc
     handleEditExperience = async (data) => {
@@ -42,17 +45,18 @@ class ExperienceTab extends Component {
             ...this.state,
             experiences: experiences
         });
-        this.props.handleEditExperience(this.state.experiences);
+        this.props.handleEditExperience(this.state.experiences, data);
     }
     // Function xoá kinh nghiệm làm việc
     delete = async (index) => {
         var { experiences } = this.state;
+        var data = experiences[index];
         experiences.splice(index, 1);
         await this.setState({
             ...this.state,
             experiences: [...experiences]
         })
-        this.props.handleDeleteExperience(this.state.experiences);
+        this.props.handleDeleteExperience(this.state.experiences, data);
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
@@ -80,7 +84,7 @@ class ExperienceTab extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.academic_level')}</h4></legend>
                         <div className="form-group">
                             <label>{translate('manage_employee.educational_level')}<span className="text-red">&#42;</span></label>
-                            <select className="form-control" name="cultural" value={educationalLevel} onChange={this.handleChange}>
+                            <select className="form-control" name="educationalLevel" value={educationalLevel} onChange={this.handleChange}>
                                 <option value="12/12">12/12</option>
                                 <option value="11/12">11/12</option>
                                 <option value="10/12">10/12</option>
@@ -88,12 +92,12 @@ class ExperienceTab extends Component {
                             </select>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="foreignLanguage ">{translate('manage_employee.language_level')}</label>
+                            <label >{translate('manage_employee.language_level')}</label>
                             <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('manage_employee.language_level')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="educational ">{translate('manage_employee.qualification')}</label>
-                            <select className="form-control" name="educational" value={professionalSkill} onChange={this.handleChange}>
+                            <label>{translate('manage_employee.qualification')}</label>
+                            <select className="form-control" name="professionalSkill" value={professionalSkill} onChange={this.handleChange}>
                                 <option value="intermediate_degree">{translate('manage_employee.intermediate_degree')}</option>
                                 <option value="colleges">{translate('manage_employee.colleges')}</option>
                                 <option value="university">{translate('manage_employee.university')}</option>

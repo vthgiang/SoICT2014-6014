@@ -50,7 +50,7 @@ exports.createRole = async (req, res) => {
     try {
         var role = await RoleService.createRole(req.body, req.user.company._id);
         await RoleService.editRelationshipUserRole(role._id, req.body.users);
-        var data = await RoleService.getRoleById(role._id);
+        var data = await RoleService.getRole(role._id);
         
         LogInfo(req.user.email, 'CREATE_ROLE', req.user.company);
         res.status(200).json({
@@ -69,9 +69,9 @@ exports.createRole = async (req, res) => {
     }
 };
 
-exports.getRoleById = async (req, res) => {
+exports.getRole = async (req, res) => {
     try {
-        var role = await RoleService.getRoleById(req.params.id);
+        var role = await RoleService.getRole(req.params.id);
         
         LogInfo(req.user.email, 'SHOW_ROLE_INFORMATION', req.user.company);
         res.status(200).json({
@@ -94,7 +94,7 @@ exports.editRole = async (req, res) => {
     try {
         await RoleService.editRelationshipUserRole(req.params.id, req.body.users);
         var role = await RoleService.editRole(req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
-        var data = await RoleService.getRoleById(role._id);
+        var data = await RoleService.getRole(role._id);
         
         LogInfo(req.user.email, 'EDIT_ROLE', req.user.company);
         res.status(200).json({

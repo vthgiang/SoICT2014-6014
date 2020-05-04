@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { EmployeeInfoActions } from '../redux/actions';
-import { EmployeeManagerActions } from '../../employee-management/redux/actions'
+import { EmployeeManagerActions } from '../../employee-management/redux/actions';
+import { convertToFormData } from '../../../../../helpers/convertToFormData';
+import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 class UpdateEmployee extends Component {
@@ -10,7 +13,7 @@ class UpdateEmployee extends Component {
         super(props);
         this.state = {
             img: "",
-            avatar: "",
+            // avatar: "",
             check: false,
             informationEmployee: null,
         };
@@ -21,11 +24,19 @@ class UpdateEmployee extends Component {
     }
     // Bắt sự kiện thay đổi avatar
     handleUpload = (e) => {
+        const { employees } = this.props.employeesInfo;
         var file = e.target.files[0];
         if (file !== undefined) {
             var fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
+                if (this.state.informationEmployee === null) {
+                    this.setState({
+                        informationEmployee: { ...employees[0] },
+                        img: fileLoad.result,
+                        avatar: file
+                    })
+                }
                 this.setState({
                     img: fileLoad.result,
                     avatar: file
@@ -71,43 +82,55 @@ class UpdateEmployee extends Component {
         if (informationEmployee === null && this.state.avatar === "") {
             toast.warning(translate('error.no_change_data'), { containerId: 'toast-notification' });
         } else {
-            if (check === true) {
-                var updateAvater = false;
-                if (this.state.avatar !== "") {
-                    let employeeNumber = this.props.employeesInfo.employee.map(x => x.employeeNumber);
-                    let formData = new FormData();
-                    formData.append('fileUpload', this.state.avatar);
-                    await this.props.uploadAvatar(employeeNumber, formData)
-                        .then(res => {
-                            updateAvater = res.success;
-                        }).catch(err => {
-                            toast.error(translate('error.edit_infor_personal_false'), { containerId: 'toast-notification' });
-                        });
-                } else {
-                    updateAvater = true
-                }
-                if (informationEmployee !== null && updateAvater === true) {
-                    this.props.updatePersonalInformation(informationEmployee)
-                        // .then(res => {
-                        //     toast.success(translate('error.edit_infor_personal_success'), { containerId: 'toast-notification' });
-                        // }).catch(err => {
-                        //     if (err.response.data.message) {
-                        //         if (translate(`error.${err.response.data.message}`) !== undefined)
-                        //             toast.warning(translate(`error.${err.response.data.message}`), { containerId: 'toast-notification' });
-                        //         else
-                        //             toast.warning(err.response.data.message, { containerId: 'toast-notification' });
-                        //     } else
-                        //         toast.error(translate('error.edit_infor_personal_false'), { containerId: 'toast-notification' });
-                        // })
-                } else {
-                    if (informationEmployee === null && updateAvater === true) {
-                        toast.success(translate('error.edit_infor_personal_success'), { containerId: 'toast-notification' });
-                    }
-                }
-            } else {
+            if (check === false) {
                 toast.warning(translate('error.guaranteed_infor_to_update'), { containerId: 'toast-notification' });
+            } else {
+                let formData = convertToFormData(informationEmployee) !== null ? convertToFormData(informationEmployee) : new FormData();
+                formData.append('fileAvatar', this.state.avatar);
+                this.props.updatePersonalInformation(formData);
             }
         }
+
+        // if (informationEmployee === null && this.state.avatar === "") {
+        //     toast.warning(translate('error.no_change_data'), { containerId: 'toast-notification' });
+        // } else {
+        //     
+        //         var updateAvater = false;
+        //         
+        //             let employeeNumber = this.props.employeesInfo.employee.map(x => x.employeeNumber);
+        //             let formData = new FormData();
+        //             formData.append('fileUpload', this.state.avatar);
+        //             await this.props.uploadAvatar(employeeNumber, formData)
+        //                 .then(res => {
+        //                     updateAvater = res.success;
+        //                 }).catch(err => {
+        //                     toast.error(translate('error.edit_infor_personal_false'), { containerId: 'toast-notification' });
+        //                 });
+        //         } else {
+        //             updateAvater = true
+        //         }
+        //         if (informationEmployee !== null && updateAvater === true) {
+        //             this.props.updatePersonalInformation(informationEmployee)
+        //             // .then(res => {
+        //             //     toast.success(translate('error.edit_infor_personal_success'), { containerId: 'toast-notification' });
+        //             // }).catch(err => {
+        //             //     if (err.response.data.message) {
+        //             //         if (translate(`error.${err.response.data.message}`) !== undefined)
+        //             //             toast.warning(translate(`error.${err.response.data.message}`), { containerId: 'toast-notification' });
+        //             //         else
+        //             //             toast.warning(err.response.data.message, { containerId: 'toast-notification' });
+        //             //     } else
+        //             //         toast.error(translate('error.edit_infor_personal_false'), { containerId: 'toast-notification' });
+        //             // })
+        //         } else {
+        //             if (informationEmployee === null && updateAvater === true) {
+        //                 toast.success(translate('error.edit_infor_personal_success'), { containerId: 'toast-notification' });
+        //             }
+        //         }
+        //     } else {
+        //         
+        //     }
+        // }
     }
 
     render() {
@@ -129,7 +152,7 @@ class UpdateEmployee extends Component {
                                     <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_basic_infor')}</h4></legend>
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
-                                            <img className="attachment-img avarta" src={this.state.img !== "" ? this.state.img : x.avatar} alt="Attachment" />
+                                            <img className="attachment-img avarta" src={this.state.img !== "" ? this.state.img : (LOCAL_SERVER_API + x.avatar)} alt="Attachment" />
                                         </div>
                                         <div className="upload btn btn-default ">
                                             {translate('manage_employee.upload')}
@@ -199,31 +222,31 @@ class UpdateEmployee extends Component {
                                 </fieldset>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_contact_infor')}</h4></legend>
-                                    <div className="col-md-12 col-ms-12 col-xs-12">
+                                    <div className="col-md-12">
                                         <div className="row">
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="phoneNumber">{translate('manage_employee.mobile_phone_1')}</label>
-                                                <input type="text" className="form-control " name="phoneNumber" id="phoneNumber" defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label >{translate('manage_employee.mobile_phone_1')}</label>
+                                                <input type="text" className="form-control " name="phoneNumber"  defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={this.handleChange} />
                                             </div>
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="phoneNumber2">{translate('manage_employee.mobile_phone_2')}</label>
-                                                <input type="text" className="form-control " name="phoneNumber2" id="phoneNumber2" defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label>{translate('manage_employee.mobile_phone_2')}</label>
+                                                <input type="text" className="form-control " name="phoneNumber2"  defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-12 col-ms-12 col-xs-12">
+                                    <div className="col-md-12">
                                         <div className="row">
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="personalEmail">{translate('manage_employee.personal_email_1')}</label>
-                                                <input type="text" className="form-control " name="personalEmail" id="personalEmail" defaultValue={x.personalEmail} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label >{translate('manage_employee.personal_email_1')}</label>
+                                                <input type="text" className="form-control " name="personalEmail"  defaultValue={x.personalEmail} onChange={this.handleChange} />
                                             </div>
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="personalEmail2">{translate('manage_employee.personal_email_2')}</label>
-                                                <input type="text" className="form-control " name="personalEmail2" id="personalEmail2" defaultValue={x.personalEmail2} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label>{translate('manage_employee.personal_email_2')}</label>
+                                                <input type="text" className="form-control " name="personalEmail2" defaultValue={x.personalEmail2} onChange={this.handleChange} />
                                             </div>
-                                            <div className="form-group col-md-4 col-ms-12 col-xs-12">
-                                                <label htmlFor="homePhone">{translate('manage_employee.home_phone')}</label>
-                                                <input type="text" className="form-control " name="homePhone" id="homePhone" defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={this.handleChange} />
+                                            <div className="form-group col-md-4">
+                                                <label>{translate('manage_employee.home_phone')}</label>
+                                                <input type="text" className="form-control " name="homePhone"  defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -232,7 +255,7 @@ class UpdateEmployee extends Component {
                                             <legend className="scheduler-border">{translate('manage_employee.emergency_contact')}</legend>
                                             <div className="col-md-6">
                                                 <div className="form-group" >
-                                                    <label htmlFor="emergencyContactPerson">{translate('manage_employee.full_name')}</label>
+                                                    <label >{translate('manage_employee.full_name')}</label>
                                                     <input type="text" className="form-control " name="emergencyContactPerson" id="emergencyContactPerson" defaultValue={x.emergencyContactPerson} onChange={this.handleChange} />
                                                 </div>
                                                 <div className="form-group" >
@@ -347,7 +370,7 @@ function mapState(state) {
 const actionCreator = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
     updatePersonalInformation: EmployeeInfoActions.updatePersonalInformation,
-    uploadAvatar: EmployeeManagerActions.uploadAvatar,
+    //uploadAvatar: EmployeeManagerActions.uploadAvatar,
 };
 const updateEmployee = connect(mapState, actionCreator)(withTranslate(UpdateEmployee));
 export { updateEmployee as UpdateEmployee };

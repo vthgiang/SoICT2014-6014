@@ -3,19 +3,19 @@ const { LogInfo, LogError } = require('../../../logs');
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý mẫu công việc
 // Lấy tất cả mẫu công việc
-exports.get = (req, res) => {
-    return TaskTemplateService.get(req, res);
+exports.getAllTaskTemplates = (req, res) => {
+    return TaskTemplateService.getAllTaskTemplates(req, res);
 }
 
 // Lấy mẫu công việc theo id
-exports.getById = (req, res) => {
-    return TaskTemplateService.getById(req, res);
+exports.getTaskTemplate = (req, res) => {
+    return TaskTemplateService.getTaskTemplate(req, res);
 }
 
-// Lấy mẫu công việc theo vai trò
-exports.getByRole = (req, res) => {
+// Lấy mẫu công việc mà một UserRole có quyền xem
+exports.getTaskTemplatesOfUserRole = (req, res) => {
     try {
-        var tasks = TaskTemplateService.getByRole(req.params.id);
+        var tasks = TaskTemplateService.getTaskTemplatesOfUserRole(req.params.id);
         LogInfo(req.user.email, `Get task templates by role ${req.params.id}`, req.user.company);
         res.status(200).json(tasks);
     } catch (error) {
@@ -25,11 +25,11 @@ exports.getByRole = (req, res) => {
 }
 
 // Lấy mẫu công việc theo người dùng
-exports.getByUser = async (req, res) => {
+exports.searchTaskTemplates = async (req, res) => {
     try {
         var pageNumber = Number(req.body.pageNumber);
         var noResultsPerPage = Number(req.body.noResultsPerPage);
-        var data = await TaskTemplateService.getByUser(req.body.id, pageNumber, noResultsPerPage, req.body.arrayUnit, req.body.name);
+        var data = await TaskTemplateService.searchTaskTemplates(req.body.id, pageNumber, noResultsPerPage, req.body.arrayUnit, req.body.name);
         LogInfo(req.user.email, `Get task templates by user ${req.body.id}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {
@@ -42,9 +42,9 @@ exports.getByUser = async (req, res) => {
 }
 
 // Tạo một mẫu công việc
-exports.create = async (req, res) => {
+exports.createTaskTemplate = async (req, res) => {
     try {
-        var data = await TaskTemplateService.create(req.body);
+        var data = await TaskTemplateService.createTaskTemplate(req.body);
         await LogInfo(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {
@@ -54,9 +54,9 @@ exports.create = async (req, res) => {
 }
 
 // Xóa một mẫu công việc
-exports.delete = async (req, res) => {
+exports.deleteTaskTemplate = async (req, res) => {
     try {
-        var data = await TaskTemplateService.delete(req.params.id);
+        var data = await TaskTemplateService.deleteTaskTemplate(req.params.id);
         await LogInfo(req.user.email, `Delete task templates ${req.params.id}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {
@@ -65,15 +65,10 @@ exports.delete = async (req, res) => {
     }
 }
 
-// api test dữ liệu
-exports.test = (req, res) => {
-    return TaskTemplateService.test(req, res);
-}
-
 //api sửa 1 lỗi công việc
-exports.edit = async(req, res) => {
+exports.editTaskTemplate = async(req, res) => {
     try {
-        var data = await TaskTemplateService.edit(req.body,req.params.id);
+        var data = await TaskTemplateService.editTaskTemplate(req.body,req.params.id);
         await LogInfo(req.user.email, `Edit task templates ${req.body.name}`, req.user.company);
         res.status(200).json(data);
     } catch (error) {

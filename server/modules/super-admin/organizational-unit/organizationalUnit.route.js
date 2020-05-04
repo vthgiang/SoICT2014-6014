@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const DepartmentController = require('./organizationalUnit.controller');
+const OrganizationalUnitController = require('./organizationalUnit.controller');
 const { auth } = require('../../../middleware');
 
-router.get("/", auth, DepartmentController.getAllOrganizationalUnits);
-router.post("/", auth, DepartmentController.createOrganizationalUnit);
-router.get("/:id", auth, DepartmentController.show);
-router.patch("/:id", auth, DepartmentController.edit);
-router.delete("/:id", auth, DepartmentController.delete);
+router.get("/", auth, OrganizationalUnitController.getAllOrganizationalUnits);
+router.post("/", auth, OrganizationalUnitController.createOrganizationalUnit);
+router.get("/:id", auth, OrganizationalUnitController.getOrganizationalUnit);
+router.patch("/:id", auth, OrganizationalUnitController.editOrganizationalUnit);
+router.delete("/:id", auth, OrganizationalUnitController.deleteOrganizationalUnit);
 
-router.get('/department-of-user/:id', auth, DepartmentController.getDepartmentOfUser);
-router.get('/departments-that-user-is-dean/:id', auth, DepartmentController.getDepartmentsThatUserIsDean);
+router.get('/department-of-user/:id', auth, OrganizationalUnitController.getOrganizationalUnitsOfUser);
+router.get('/departments-that-user-is-dean/:id', auth, OrganizationalUnitController.getOrganizationalUnitsThatUserIsDean);
 
 module.exports = router;

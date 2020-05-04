@@ -24,13 +24,13 @@ export const EmployeeCreateValidator = {
     validateExperienceStartDate,
     validateExperienceEndDate,
 
+    validateNameDegree,
+    validateIssuedByDegree,
+    validateYearDegree,
     validateNameCertificate,
-    validateAddressCertificate,
-    validateYearCertificate,
-    validateNameCertificateShort,
-    validateUnitCertificateShort,
-    validateStartDateCertificateShort,
-    validateEndDateCertificateShort,
+    validateIssuedByCertificate,
+    validateStartDateCertificate,
+    validateEndDateCertificate,
 
     validateStartDateContract,
     validateNameContract,
@@ -173,7 +173,7 @@ function validateExperienceEndDate(value, translate) {
 }
 
 // Validate TabCertificateContent (bằng cấp và chứng chỉ)
-function validateNameCertificate(value, translate) {
+function validateNameDegree(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Tên bằng cấp không được để trống";
@@ -181,7 +181,7 @@ function validateNameCertificate(value, translate) {
     return msg;
 }
 
-function validateAddressCertificate(value, translate) {
+function validateIssuedByDegree(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Nơi đào tạo không được để trống";
@@ -189,7 +189,7 @@ function validateAddressCertificate(value, translate) {
     return msg;
 }
 
-function validateYearCertificate(value, translate) {
+function validateYearDegree(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Năm tốt nghiệp không được để trống";
@@ -197,7 +197,7 @@ function validateYearCertificate(value, translate) {
     return msg;
 }
 
-function validateNameCertificateShort(value, translate) {
+function validateNameCertificate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Tên chứng chỉ không được để trống";
@@ -205,7 +205,7 @@ function validateNameCertificateShort(value, translate) {
     return msg;
 }
 
-function validateUnitCertificateShort(value, translate) {
+function validateIssuedByCertificate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Nơi cấp không được để trống";
@@ -213,7 +213,7 @@ function validateUnitCertificateShort(value, translate) {
     return msg;
 }
 
-function validateStartDateCertificateShort(value, translate) {
+function validateStartDateCertificate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày cấp không được để trống";
@@ -221,7 +221,7 @@ function validateStartDateCertificateShort(value, translate) {
     return msg;
 }
 
-function validateEndDateCertificateShort(value, translate) {
+function validateEndDateCertificate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày hết hạn không được để trống";

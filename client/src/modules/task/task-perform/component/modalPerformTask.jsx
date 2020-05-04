@@ -12,7 +12,6 @@ import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { managerKpiActions } from "../../../kpi/employee/management/redux/actions";
-// import { taskManagementActions, performTaskAction, UserActions, kpiPersonalActions } from '../../../redux-actions/CombineActions';
 import ModalApproveTask from "./modalApproveTask";
 import { ButtonModal } from '../../../../common-components';
 
@@ -25,7 +24,7 @@ class ModalPerformTask extends Component {
 
         super(props);
         this.state = {
-            currentUser: idUser,//fix---------------localStorage.getItem('id')-------------------
+            currentUser: idUser,
             selected: "taskAction",
             extendDescription: false,
             editDescription: false,
@@ -43,7 +42,7 @@ class ModalPerformTask extends Component {
             showChildComment: "",
             newComment: {
                 task: this.props.id,
-                creator: idUser,//fix---------------localStorage.getItem("id")-------------------
+                creator: idUser,
                 parent: null,
                 content: "",
                 file: null,
@@ -59,7 +58,7 @@ class ModalPerformTask extends Component {
                 task: this.props.id,
                 startTimer: "",
                 stopTimer: null,
-                user: idUser,//fix---------------localStorage.getItem("id")-------------------
+                user: idUser,
                 time: 0,
             },
             resultTask: 0,
@@ -74,11 +73,9 @@ class ModalPerformTask extends Component {
         this.approvepoint = [];
     }
     componentDidUpdate() {
-    console.log('id---->', this.props.id);
         if (this.props.id !== undefined){
-            console.log('id---->', this.props.id);
             let script3 = document.createElement('script');
-            script3.src = '../lib/main/js/CoCauToChuc.js';//fix /lib/main.....................................
+            script3.src = '../lib/main/js/CoCauToChuc.js';
             script3.async = true;
             script3.defer = true;
             document.body.appendChild(script3);
@@ -113,17 +110,12 @@ class ModalPerformTask extends Component {
                     }), 1000);
                 }
             }
-            // this.props.getTaskById(this.props.id);
-            // this.props.getActionComments(this.props.id);
-            // this.props.getTaskActions(this.props.id);
-            // this.props.getStatusTimer(this.props.id);
-            // this.props.getLogTimer(this.props.id);
         }
         
     }
     componentDidMount() {
         let script2 = document.createElement('script');
-        script2.src = '../lib/main/js/uploadfile/custom.js';//fix-------------------------------------------------------------
+        script2.src = '../lib/main/js/uploadfile/custom.js';
         script2.async = true;
         script2.defer = true;
         document.body.appendChild(script2);
@@ -143,8 +135,6 @@ class ModalPerformTask extends Component {
         if(nextProps.id !== this.state.id ){
             console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
             this.props.getLogTimer(nextProps.id);
-            // this.props.getAllKPIPersonalByMember(nextProps.responsible);
-            // this.props.getAllUserOfDepartment(this.props.unit);
             this.props.getTaskById(nextProps.id);
             this.props.getActionComments(nextProps.id);
             this.props.getTaskActions(nextProps.id);
@@ -162,7 +152,7 @@ class ModalPerformTask extends Component {
         // this.props.getTaskById(this.props.id);
         // this.props.getActionComments(this.props.id);
         // this.props.getTaskActions(this.props.id);
-        // this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
+        // this.props.getStatusTimer(this.props.id);
     }
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -1438,7 +1428,7 @@ class ModalPerformTask extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, KPIPersonalManager } = state;//cho là overviewKpiPersonal
+    const { tasks, performtasks, user, KPIPersonalManager } = state;
     return { tasks, performtasks, user, KPIPersonalManager };
 }
 
@@ -1460,7 +1450,7 @@ const actionCreators = {
     getLogTimer: performTaskAction.getLogTimerTask,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    //kpi member actions ko thì cho vào managerKpiActions (của personal) cũng đc
+    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);
 export { connectedModalPerformTask as ModalPerformTask };

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { SalaryFormValidator } from '../../../salary/components/combinedContent';
-class ModalEditSalary extends Component {
+class SalaryEditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -145,10 +145,7 @@ class ModalEditSalary extends Component {
         return result;
     }
     // Function bắt sự kiện lưu bảng lương
-    save = async () => {
-        await this.setState({
-            mainSalary: this.state.mainSalary + this.state.unit
-        })
+    save = () => {
         if (this.isFormValidated()) {
             return this.props.handleChange(this.state);
         }
@@ -239,5 +236,5 @@ class ModalEditSalary extends Component {
     }
 };
 
-const editSalary = connect(null, null)(withTranslate(ModalEditSalary));
-export { editSalary as ModalEditSalary };
+const editModal = connect(null, null)(withTranslate(SalaryEditModal));
+export { editModal as SalaryEditModal };
