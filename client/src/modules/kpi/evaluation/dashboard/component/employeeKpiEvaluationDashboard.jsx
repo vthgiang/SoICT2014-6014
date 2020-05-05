@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { kpiMemberActions } from '../redux/actions';
+import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
 import Swal from 'sweetalert2';
 import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
  
@@ -14,8 +14,8 @@ class DashBoardKPIMember extends Component {
                 role: localStorage.getItem("currentRole"),
                 user: "",
                 status: 4,
-                starttime: this.formatDate(Date.now()),
-                endtime: this.formatDate(Date.now())
+                startDate: this.formatDate(Date.now()),
+                endDate: this.formatDate(Date.now())
             },
             showApproveModal: "",
             showEvaluateModal: ""
@@ -26,8 +26,8 @@ class DashBoardKPIMember extends Component {
             role: localStorage.getItem("currentRole"),
             user: "all",
             status: 4,
-            starttime: this.formatDate(Date.now()),
-            endtime: this.formatDate(Date.now())
+            startDate: this.formatDate(Date.now()),
+            endDate: this.formatDate(Date.now())
         }
         // Lấy tất cả nhân viên của phòng ban
  
@@ -101,17 +101,17 @@ class DashBoardKPIMember extends Component {
                     ...state.infosearch,
                     user: this.user.value,
                     status: this.status.value,
-                    starttime: this.starttime.value,
-                    endtime: this.endtime.value
+                    startDate: this.startDate.value,
+                    endDate: this.endDate.value
                 }
             }
         })
         const { infosearch } = this.state;
-        if (infosearch.role && infosearch.user && infosearch.status && infosearch.starttime && infosearch.endtime) {
-            var starttime = infosearch.starttime.split("-");
-            var startdate = new Date(starttime[1], starttime[0], 0);
-            var endtime = infosearch.endtime.split("-");
-            var enddate = new Date(endtime[1], endtime[0], 28);
+        if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
+            var startDate = infosearch.startDate.split("-");
+            var startdate = new Date(startDate[1], startDate[0], 0);
+            var endDate = infosearch.endDate.split("-");
+            var enddate = new Date(endDate[1], endDate[0], 28);
             if (Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
@@ -156,18 +156,18 @@ class DashBoardKPIMember extends Component {
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
         var listkpi;
-        var kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
+        var kpiApproved, automaticPoint, employeePoint, approvedPoint, targetA, targetC, targetOther, misspoint;
         if (kpimembers.kpimembers) {
             listkpi = kpimembers.kpimembers;
             kpiApproved = listkpi.filter(item => item.status === 3);
-            systempoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.systempoint }
+            automaticPoint = kpiApproved.map(item => {
+                return { label: this.formatDate(item.date), y: item.automaticPoint }
             }).reverse();
-            mypoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.mypoint }
+            employeePoint = kpiApproved.map(item => {
+                return { label: this.formatDate(item.date), y: item.employeePoint }
             }).reverse();
-            approverpoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.approverpoint }
+            approvedPoint = kpiApproved.map(item => {
+                return { label: this.formatDate(item.date), y: item.approvedPoint }
             }).reverse();
         }
         const options1 = {
@@ -190,18 +190,18 @@ class DashBoardKPIMember extends Component {
                 type: "spline",
                 name: "Hệ thống đánh giá",
                 showInLegend: true,
-                dataPoints: systempoint
+                dataPoints: automaticPoint
             },
             {
                 type: "spline",
                 name: "Cá nhân tự đánh giá",
                 showInLegend: true,
-                dataPoints: mypoint
+                dataPoints: employeePoint
             }, {
                 type: "spline",
                 name: "Quản lý đánh giá",
                 showInLegend: true,
-                dataPoints: approverpoint
+                dataPoints: approvedPoint
             }]
         }
         return (
@@ -268,7 +268,7 @@ class DashBoardKPIMember extends Component {
                                                 <span className="label label-danger">8 nhân viên xuất sắc nhất</span>
                                                 <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
                                                 </button>
-                                                {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-times" />
+                                                {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-dates" />
                                                 </button> */}
                                             </div>
                                         </div>
@@ -410,7 +410,7 @@ class DashBoardKPIMember extends Component {
                                                             {/* <div className="input-group-addon"> */}
                                                                 {/* <i className="fa fa-calendar" /> */}
                                                              {/* </div> */}
-                                                            <input type="text" className="form-control" ref={input => this.starttime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
+                                                            <input type="text" className="form-control" ref={input => this.startDate = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
                                                         {/* </div> */}
                                                     </div>
                                                     <div className="form-group" >
@@ -419,7 +419,7 @@ class DashBoardKPIMember extends Component {
                                                             {/* <div className="input-group-addon"> */}
                                                                 {/* <i className="fa fa-calendar" /> */}
                                                             {/* </div> */}
-                                                            <input type="text" className="form-control" ref={input => this.endtime = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker6" data-date-format="mm-yyyy" />
+                                                            <input type="text" className="form-control" ref={input => this.endDate = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
                                                         {/* </div> */}
                                                     </div>
                                                     
@@ -460,7 +460,7 @@ class DashBoardKPIMember extends Component {
                                             </button>
                                             <button type="button" className="btn btn-box-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
                                                 <i className="fa fa-comments" /></button>
-                                            {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-times" /></button> */}
+                                            {/* <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-dates" /></button> */}
                                         </div>
                                     </div>
                                     <div className="box-body" style={{ display: "none" }}>
@@ -468,7 +468,7 @@ class DashBoardKPIMember extends Component {
                                             <div className="direct-chat-msg">
                                                 <div className="direct-chat-info clearfix">
                                                     <span className="direct-chat-name pull-left">Alexander Pierce</span>
-                                                    <span className="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
+                                                    <span className="direct-chat-datestamp pull-right">23 Jan 2:00 pm</span>
                                                 </div>
                                                 <img className="direct-chat-img" src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Message Avatar User" />{/* /.direct-chat-img */}
                                                 <div className="direct-chat-text">
@@ -478,7 +478,7 @@ class DashBoardKPIMember extends Component {
                                             <div className="direct-chat-msg right">
                                                 <div className="direct-chat-info clearfix">
                                                     <span className="direct-chat-name pull-right">Sarah Bullock</span>
-                                                    <span className="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
+                                                    <span className="direct-chat-datestamp pull-left">23 Jan 2:05 pm</span>
                                                 </div>
                                                 <img className="direct-chat-img" src="/lib/adminLTE/dist/img/user3-128x128.jpg" alt="Message Avatar User" />{/* /.direct-chat-img */}
                                                 <div className="direct-chat-text">
