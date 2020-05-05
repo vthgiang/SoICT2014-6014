@@ -10,5 +10,5 @@ function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/roles-default-management`,
         method: 'GET',
-    }, false, 'system_admin.root_role');
+    }, false, true, 'system_admin.root_role');
 }

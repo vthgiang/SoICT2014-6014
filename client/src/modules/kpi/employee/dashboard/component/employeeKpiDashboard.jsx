@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ModalDetailEmployeeKpiSet } from './employeeKpiDetailModal';
 import { connect } from 'react-redux';
 import { dashboardEmployeeKpiSetActions } from '../redux/actions';
+import { managerKpiActions } from '../../management/redux/actions';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 import { ModalCopyEmployeeKpiSet } from './employeeKpiCopyModal';
 
@@ -58,9 +59,9 @@ class DashBoardEmployeeKpiSet extends Component {
     render() {
         var listkpi;
         var currentKPI, currentTargets, kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
-        const { dashboardEmployeeKpiSet } = this.props;
-        if (dashboardEmployeeKpiSet.employeeKpiSet) {
-            listkpi = dashboardEmployeeKpiSet.employeeKpiSet;
+        const { KPIPersonalManager } = this.props;
+        if (KPIPersonalManager.kpipersonals) {
+            listkpi = KPIPersonalManager.kpipersonals;
             if(typeof listkpi !== "undefined" && listkpi.length !== 0){//listkpi.content
                 kpiApproved = listkpi.filter(item => item.status === 3);
                 currentKPI = listkpi.filter(item => item.status !== 3);
@@ -225,12 +226,12 @@ class DashBoardEmployeeKpiSet extends Component {
 }
 
 function mapState(state) {
-    const { dashboardEmployeeKpiSet } = state;
-    return { dashboardEmployeeKpiSet };
+    const { KPIPersonalManager } = state;
+    return { KPIPersonalManager };
 }
 
 const actionCreators = {
-    getEmployeeKpiSetByMember: dashboardEmployeeKpiSetActions.getEmployeeKpiSetByMember
+    getEmployeeKpiSetByMember: managerKpiActions.getAllKPIPersonalByMember
 };
 const connectedDashBoardEmployeeKpiSet = connect(mapState, actionCreators)(DashBoardEmployeeKpiSet);
 export { connectedDashBoardEmployeeKpiSet as DashBoardEmployeeKpiSet };

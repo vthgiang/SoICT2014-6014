@@ -20,7 +20,7 @@ function getNotificationReceivered() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/receivered/${id}`,
         method: 'GET',
-    }, false, 'notification');
+    }, false, true, 'notification');
 }
 
 function getNotificationSent() {
@@ -31,7 +31,7 @@ function getNotificationSent() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
         method: 'GET',
-    }, false, 'notification');
+    }, false, true, 'notification');
 }
 
 function create(data) {
@@ -39,7 +39,7 @@ function create(data) {
         url: `${ LOCAL_SERVER_API }/notifications`,
         method: 'POST',
         data,
-    }, true, 'notification');
+    }, true, true, 'notification');
 }
 
 function deleteNotificationReceivered(notificationId) {
@@ -50,12 +50,12 @@ function deleteNotificationReceivered(notificationId) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/receivered/${userId}/${notificationId}`,
         method: 'DELETE',
-    }, true, 'notification');
+    }, true, true, 'notification');
 }
 
 function deleteNotificationSent(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
         method: 'DELETE',
-    }, true, 'notification');
+    }, true, true, 'notification');
 }

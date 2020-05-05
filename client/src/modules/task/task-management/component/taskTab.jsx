@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DataTableSetting, PaginateBar } from '../../../../common-components';
+import { TreeTable } from '../../../../common-components';
 
 class TabTaskContent extends Component {
     constructor(props) {
@@ -17,12 +18,12 @@ class TabTaskContent extends Component {
             startTimer: false,
             currentTimer: "",
             currentPage: 1,
-            showModal: "",
-            showAddSubTask: ""
+            // showModal: "",
+            // showAddSubTask: ""
         };
     }
     componentDidMount() {
-        this.props.getDepartment();//fix ở prj mới rồi--------------localStorage.getItem('id')------------------
+        this.props.getDepartment();
         var content = this.props.role;
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null);
@@ -211,7 +212,7 @@ class TabTaskContent extends Component {
         if (status.length === 0) status = "[]";
         if (unit.length === 0) unit = "[]";
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "consulted") {
@@ -234,7 +235,7 @@ class TabTaskContent extends Component {
         var status = window.$("#multiSelectStatus").val();
         var content = this.props.role;
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "consulted") {
@@ -271,11 +272,7 @@ class TabTaskContent extends Component {
                 showModal: id
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`modelPerformTask${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$(`#modelPerformTask${id}`).modal('show');
     }
     handleCheckClickAddSubTask = async (id) => {
         await this.setState(state => {
@@ -286,6 +283,25 @@ class TabTaskContent extends Component {
         });
         window.$(`#addNewTask${id}`).modal('show')
     }
+
+    getResponsibleOfItem = (data,id) => {
+        data.map(item => {
+            if(id === item._id){
+                return item.responsibleEmployees
+            }
+        })
+    }
+
+    getUnitIdOfItem = (data, id) => {
+        data.map(item => {
+            if(id === item._id){
+                console.log('--item--', item);
+                console.log('item.organizationalUnit._id', item.organizationalUnit._id);
+                return item.organizationalUnit._id
+            }
+        })
+    }
+
     render() {
         var currentTasks, units = [];
         var pageTotals;
@@ -297,6 +313,53 @@ class TabTaskContent extends Component {
         }
         if (department.unitofuser) units = department.unitofuser;
         const items = [];
+
+        // khởi tạo dữ liệu TreeTable
+        var column = [
+            { name: "Tên công việc", key: "name" },
+            { name: "Đơn vị", key: "organization" },
+            { name: "Độ ưu tiên", key: "priority" },
+            { name: "Ngày bắt đầu", key: "startDate" },
+            { name: "Ngày kết thúc", key: "endDate" },
+            { name: "Trạng thái", key: "status" },
+            { name: "Tiến độ", key: "progress" },
+            { name: "Thời gian thực hiện", key: "totalLoggedTime" }
+        ];
+        var data = [];
+        if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
+            var dataTemp = currentTasks;
+            for (let n in dataTemp) {
+                data[n] = {
+                    ...dataTemp[n],
+                    name: dataTemp[n].name,
+                    organization: dataTemp[n].organizationalUnit.name,
+                    priority: dataTemp[n].priority,
+                    startDate: this.formatDate(dataTemp[n].startDate),
+                    endDate: this.formatDate(dataTemp[n].endDate),
+                    status: dataTemp[n].status,
+                    progress: dataTemp[n].progress + "%",
+                    totalLoggedTime: this.convertTime(dataTemp[n].totalLoggedTime),
+                    parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
+                }
+            }
+            if (this.props.role === "creator" || this.props.role === "informed") {
+                for (let i in data) {
+                    data[i] = { ...data[i], action: ["edit", ["add", "store"]] }
+                }
+            }
+            if (this.props.role === "responsible" || this.props.role === "consulted") {
+                for (let i in data) {
+                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", "store"]] }
+                }
+            }
+
+            if (this.props.role === "accountable") {
+                for (let i in data) {
+                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", "store", "delete"]] }
+                }
+            }
+        }
+
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -390,72 +453,49 @@ class TabTaskContent extends Component {
                         setLimit={this.setLimit}
                         hideColumnOption={true}
                     />
-                    <div id="tree-table-container">
-                        <table id="tree-table" className="table table-hover table-bordered table-striped">
-                            <thead>
-                                <tr id="task">
-                                    <th style={{ width: "300px" }} title="Tên công việc">Tên công việc</th>
-                                    <th title="Đơn vị">Đơn vị</th>
-                                    <th title="Độ ưu tiên">Độ ưu tiên</th>
-                                    <th title="Ngày bắt đầu">Bắt đầu</th>
-                                    <th title="Ngày kết thúc">Kết thúc</th>
-                                    <th title="Trạng thái">Trạng thái</th>
-                                    <th title="Tiến độ">Tiến độ</th>
-                                    <th title="Thời gian thực hiện">Thời gian</th>
-                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody className="task-table">
-                                {
-                                    (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) ?
-                                        this.list_to_tree(currentTasks).map(item =>
-                                            <tr key={item._id} data-id={item._id} data-parent={item.parent === null ? item.parent : item.parent._id} data-level={item.level}>
-                                                <td title={item.name} data-column="name">{item.name}</td>
-                                                <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
-                                                <td title={item.priority}>{item.priority}</td>
-                                                <td title={this.formatDate(item.startDate)}>{this.formatDate(item.startDate)}</td>
-                                                <td title={this.formatDate(item.endDate)}>{this.formatDate(item.endDate)}</td>
-                                                <td title={item.status}>{item.status}</td>
-                                                <td title={item.progress + "%"}>{item.progress + "%"}</td>
-                                                <td title={this.convertTime(item.totalLoggedTime)}>{this.convertTime(item.totalLoggedTime)}</td>
-                                                <td>
-                                                    <a href={`#modelPerformTask${item._id}`} className="edit" data-toggle="modal" onClick={() => this.handleShowModal(item._id)} title={"Bắt đầu" + item.name}><i className="material-icons">edit</i></a>
-                                                    {
-                                                        this.state.showModal === item._id &&
 
-                                                        <ModalPerformTask
-                                                            responsible={item.responsibleEmployees}
-                                                            unit={item.organizationalUnit._id}
-                                                            id={item._id}
-                                                            role={this.props.role}
-                                                        />
-                                                    }
-                                                    {
-                                                        this.props.role !== "creator" && this.props.role !== "informed"
-                                                        && <a href="#abc" className={startTimer && currentTimer === item._id ? "edit" : "timer"} id="task-timer" title="Bắt đầu bấm giờ" onClick={() => this.handleCountTime(item._id)}><i className="material-icons">timer</i></a>
-                                                    }
-                                                    <button type="button" data-toggle="collapse" data-target={`#actionTask${item._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
-                                                    <div id={`actionTask${item._id}`} className="collapse">
-                                                        <a href={`#addNewTask${item._id}`} onClick={() => this.handleCheckClickAddSubTask(item._id)} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
-                                                        <a href="#abc" className="all_inbox" title="Lưu công việc này vào kho"><i className="material-icons">all_inbox</i></a>
-                                                        {
-                                                            this.props.role === "accountable" &&
-                                                            <a href="#abc" className="delete" onClick={() => this.handleAction(item._id)} title="Xóa công việc này"><i className="material-icons"></i></a>
-                                                        }
-                                                    </div>
-                                                    {
-                                                        this.state.showAddSubTask === item._id &&
-                                                        <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
-                                                    }
-                                                    {/* <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} /> */}
-                                                </td>
-                                            </tr>
-                                        ) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
-                                }
-                            </tbody>
-                        </table>
+                    <div id="tree-table-container">
+                        <TreeTable
+                            behaviour="show-children"
+                            column={column}
+                            data={data}
+                            titleAction={{
+                                edit: "Bắt đầu công việc",
+                                delete: "Xóa công việc",
+                                store: "Lưu vào kho",
+                                add: "Thêm công việc con",
+                                startTimer: "Bắt đầu bấm giờ",
+                            }}
+                            funcEdit={this.handleShowModal}
+                            funcAdd={this.handleCheckClickAddSubTask}
+                            funcStartTimer={this.handleCountTime}
+                            // funcStore={this.handleStore}
+                            // funcDelete={this.handleDelete}
+                        />
 
                     </div>
+                    {
+                        // this.state.showModal !== undefined &&
+
+                        <ModalPerformTask
+                            // responsible={item.responsibleEmployees}
+                            // unit={item.organizationalUnit._id}
+                            // responsible={this.getResponsibleOfItem(data, this.state.showModal)}
+                            // unit={this.getUnitIdOfItem(data, this.state.showModal)}
+                            id={this.state.showModal}
+                            role={this.props.role}
+                        />
+                    }
+
+                    {
+                        this.state.showAddSubTask !== undefined &&
+                        <ModalAddTask
+                            currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)}
+                            id={this.state.showAddSubTask}
+                            role={this.props.role}
+                        />
+                    }
+                  
 
                     <PaginateBar
                         pageTotal={tasks.pages}

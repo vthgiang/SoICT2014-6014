@@ -27,7 +27,7 @@ function getCurrentKPIUnit(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`,
         method: 'GET',
-    }, false, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, false, true, 'kpi.organizational_unit');
 }
 
 // Lấy KPI đơn vị cha
@@ -35,7 +35,7 @@ function getKPIParent(parentUnit) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/parent/${parentUnit}`,
         method: 'GET',
-    }, false, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, false, true, 'kpi.organizational_unit');
 }
 
 // Khởi tạo KPI đơn vị 
@@ -50,7 +50,7 @@ async function addKPIUnit(newKPI) {
         url: `${LOCAL_SERVER_API}/kpiunits/create`,
         method: 'POST',
         data: newKPI
-    }, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set_modal');
+    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set_modal');
 }
 
 // Thêm mục tiêu cho KPI đơn vị 
@@ -59,7 +59,7 @@ function addTargetKPIUnit(newTarget) {
         url: `${LOCAL_SERVER_API}/kpiunits/create-target`,
         method: 'POST',
         data: newTarget
-    }, true, 'kpi.organizational_unit.create_organizational_unit_kpi_modal');
+    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_modal');
 }
 
 // Chỉnh sửa KPI đơn vị
@@ -73,7 +73,7 @@ async function editKPIUnit(id, newKPI) {
         url: `${LOCAL_SERVER_API}/kpiunits/${id}`,
         method: 'PUT',
         data: newKPI
-    }, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
 
 // Chỉnh sửa trạng thái của KPI đơn vị
@@ -81,7 +81,7 @@ function editStatusKPIUnit(id, status) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/status/${id}/${status}`,
         method: 'PUT',
-    }, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
 
 
@@ -91,7 +91,7 @@ function editTargetKPIUnit(id, newTarget) {
         url: `${LOCAL_SERVER_API}/kpiunits/target/${id}`,
         method: 'PUT',
         data: newTarget
-    }, true, 'kpi.organizational_unit.edit_target_kpi_modal');
+    }, true, true, 'kpi.organizational_unit.edit_target_kpi_modal');
 }
 
 
@@ -100,7 +100,7 @@ function deleteKPIUnit(id) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/${id}`,
         method: 'DELETE'
-    }, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
 
 // xóa mục tiêu của KPI đơn vị
@@ -109,5 +109,5 @@ function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/target/${kpiunit}/${id}`,
         method: 'DELETE'
-    }, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
