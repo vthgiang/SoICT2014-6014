@@ -68,6 +68,19 @@ class ModalDetailKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
+    formatDay(date){
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day,month, year].join('-');
+    }
     render() {
         var list;
         var myTask = [];
@@ -150,6 +163,8 @@ class ModalDetailKPIPersonal extends Component {
                                                             <th>Tên công việc</th>
                                                             <th>Đơn vị</th>
                                                             <th>Mô tả công việc</th>
+                                                            <th>Độ ưu tiên</th>
+                                                            <th>Thời gian thực hiện</th>
                                                             <th>Người tạo</th>
                                                             <th>Người phê duyệt</th>
                                                             <th>Người hỗ trợ</th>
@@ -168,9 +183,11 @@ class ModalDetailKPIPersonal extends Component {
                                                                         <td>{itemTask.name}</td>
                                                                         <td>{itemTask.organizationalUnit.name}</td>
                                                                         <td>{itemTask.description}</td>
+                                                                        <td>{itemTask.priority}</td>
+                                                                        <td>{this.formatDay(itemTask.startDate) + "-" +this.formatDay(itemTask.endDate) }</td>
                                                                         <td>{itemTask.creator.name}</td>
-                                                                        <td>{itemTask.accountableEmployees.name}</td>
-                                                                        <td>{itemTask.consultedEmployees.name}</td>
+                                                                        <td>{itemTask.accountableEmployees[0].name}</td>
+                                                                        <td>{itemTask.consultedEmployees[0].name}</td>
                                                                         <td>{itemTask.status}</td>
                                                                         {/* <td>{itemTask.evaluations[0]. === 0 ? 0 : itemTask.point}</td> */}
                                                                     </tr>)) : <tr><td colSpan={5}>Không có dữ liệu thỏa mãn điều kiện</td></tr>
