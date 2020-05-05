@@ -16,7 +16,7 @@ exports.get = async (id) => {
         ]
     });
     console.log(department);
-    var kpiunits = await KPIUnit.find({organizationalUnit : department._id }).sort({ 'time': 'desc' }).skip(0).limit(12)
+    var kpiunits = await KPIUnit.find({organizationalUnit : department._id }).sort({ 'date': 'desc' }).skip(0).limit(12)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpiunits;   
