@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { withTranslate } from 'react-redux-multilingual';
+import { withTranslate } from 'react-redux-multilingual';
 import { performTaskAction } from '../redux/actions';
 import { DialogModal, ErrorLabel, ButtonModal } from '../../../../common-components';
 import { taskManagementActions } from '../../task-management/redux/actions';
@@ -11,11 +11,11 @@ class ModalApproveTask extends Component {
         this.state = {}
         this.save = this.save.bind(this);
     }
-    
+
     componentWillMount() {
         this.props.getTaskById(this.props.taskID);
     }
-    
+
     addResult = (taskID, evaluateID, evaluationDate) => { // tạo mới result task rồi thêm vào db, cập nhật lại result trong task
         var { currentUser, role } = this.props;
         //1-responsible, 2-accountable, 3-consulted
@@ -34,7 +34,7 @@ class ModalApproveTask extends Component {
             });
         } else if (role === "consulted") {
             return this.props.createResult({
-             
+
                 result: {
                     employee: currentUser,
                     automaticPoint: this.state.automaticPoint,
@@ -49,7 +49,7 @@ class ModalApproveTask extends Component {
         } else if (role === "accountable") {
             var employeePoint = this.state.employeePoint3;
             return this.props.createResult({
-   
+
                 result: {
                     employee: currentUser,
                     automaticPoint: this.state.automaticPoint,
@@ -85,11 +85,11 @@ class ModalApproveTask extends Component {
                 employee: task && task.consultedEmployees[0]._id,
                 roleMember: "consulted"
             }
-        ]; 
+        ];
         return this.props.editResultTask(listResult, taskID);
     }
 
-    handleChangePercent= async () => {
+    handleChangePercent = async () => {
         await this.setState(state => {
             var percent = parseInt(this.percent.value);
             var a = this.validatePoint(percent)
@@ -164,14 +164,15 @@ class ModalApproveTask extends Component {
             }
         });
     }
-    
+
     validatePoint = (value) => {
+        var { translate } = this.props;
         let msg = undefined;
         if (value < 0 || value > 100) {
-            msg = "Giá trị không được vượt quá khoảng 0-100";
+            msg = translate('task.task_perform.modal_approve_task.err_range');
         }
         if (isNaN(value)) {
-            msg = "Giá trị không được để trống";
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
     }
@@ -184,9 +185,9 @@ class ModalApproveTask extends Component {
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
 
         var evaluate = task.evaluations;
-        var evaluationDate = evaluate[evaluate.length -1].date;
-        var evaluateID = evaluate[evaluate.length -1]._id;
-        var oldResults = evaluate[evaluate.length -1].results;
+        var evaluationDate = evaluate[evaluate.length - 1].date;
+        var evaluateID = evaluate[evaluate.length - 1]._id;
+        var oldResults = evaluate[evaluate.length - 1].results;
 
         if (role === "responsible") {
             var status = { status: "WaitForApproval" };
@@ -216,8 +217,8 @@ class ModalApproveTask extends Component {
             // });
             if (task && task.evaluations.length) {
                 var evaluate = task.evaluations;
-                var resultArr = evaluate[evaluate.length -1].results;
-                if(resultArr.length !== 0){
+                var resultArr = evaluate[evaluate.length - 1].results;
+                if (resultArr.length !== 0) {
                     var listResult = resultArr;
                     console.log('---result--', resultArr);
                     listResult.map((item) => {
@@ -267,6 +268,7 @@ class ModalApproveTask extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         const { currentUser, role, resultTask } = this.props;
         var { automaticPoint, employeePoint1, employeePoint2, employeePoint3, approvedPoint1, approvedPoint2 } = this.state;
         var { errorOnApprovedPoint, errorOnConsultedApprovedPoint, errorOnConsultedEmployeePoint, errorOnPercent, errorOnResponsibleApprovedPoint, errorOnResponsibleEmployeePoint, errorOnAutomaticPoint } = this.state;
@@ -278,9 +280,9 @@ class ModalApproveTask extends Component {
                     size="50"
                     modalID={`modal-approve-task-${this.props.taskID}`}
                     formID="form-approve-task"
-                    title="Yêu cầu kết thúc công việc"
-                    msg_success="Yêu cầu kết thúc công việc thành công"
-                    msg_faile="Yêu cầu kết thúc công việc không thành công"
+                    title={translate('task.task_perform.modal_approve_task.title')}
+                    msg_success={translate('task.task_perform.modal_approve_task.msg_success')}
+                    msg_faile={translate('task.task_perform.modal_approve_task.msg_faile')}
                     func={this.save}
                 >
                     {/* <div className="form-inline" > */}
@@ -288,9 +290,9 @@ class ModalApproveTask extends Component {
 
 
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin công việc*:</legend>
+                            <legend className="scheduler-border">{translate('task.task_perform.modal_approve_task.task_info')}*:</legend>
                             <div className={`form-group ${errorOnPercent === undefined ? "" : "has-error"}`}>
-                                <label className="form-control-static" htmlfor="percent">Công việc hoàn thành(%):</label>
+                                <label className="form-control-static" htmlfor="percent">{translate('task.task_perform.modal_approve_task.percent')}(%):</label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -304,7 +306,7 @@ class ModalApproveTask extends Component {
                                 <ErrorLabel content={errorOnPercent} />
                             </div>
                             <div className={`form-group ${errorOnAutomaticPoint === undefined ? "" : "has-error"}`}>
-                                <label className="form-control-static" htmlfor="automaticPoint">Điểm hệ thống:</label>
+                                <label className="form-control-static" htmlfor="automaticPoint">{translate('task.task_perform.modal_approve_task.auto_point')}:</label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -321,9 +323,9 @@ class ModalApproveTask extends Component {
 
                         {(role === "responsible" || role === "accountable") &&
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Vai trò người thực hiện:</legend>
+                                <legend className="scheduler-border">{translate('task.task_perform.modal_approve_task.responsible')}:</legend>
                                 <div className={`form-group ${errorOnResponsibleEmployeePoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="employeePoint1">Điểm tự đánh giá:</label>
+                                    <label className="form-control-static" htmlfor="employeePoint1">{translate('task.task_perform.modal_approve_task.employee_point')}</label>
                                     <input
                                         type="number"
                                         className="form-control"
@@ -337,7 +339,7 @@ class ModalApproveTask extends Component {
                                     <ErrorLabel content={errorOnResponsibleEmployeePoint} />
                                 </div>
                                 <div className={`form-group ${errorOnResponsibleApprovedPoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="approvedPoint1">Điểm quản lý đánh giá:</label>
+                                    <label className="form-control-static" htmlfor="approvedPoint1">{translate('task.task_perform.modal_approve_task.approved_point')}</label>
                                     <input
                                         type="number"
                                         className="form-control"
@@ -355,9 +357,9 @@ class ModalApproveTask extends Component {
 
                         {(role === "consulted" || role === "accountable") &&
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Vai trò người hỗ trợ:</legend>
+                                <legend className="scheduler-border">{translate('task.task_perform.modal_approve_task.consulted')}:</legend>
                                 <div className={`form-group ${errorOnConsultedEmployeePoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="employeePoint2">Điểm tự đánh giá:</label>
+                                    <label className="form-control-static" htmlfor="employeePoint2">{translate('task.task_perform.modal_approve_task.employee_point')}:</label>
                                     <input
                                         type="number"
                                         className="form-control"
@@ -371,7 +373,7 @@ class ModalApproveTask extends Component {
                                     <ErrorLabel content={errorOnConsultedEmployeePoint} />
                                 </div>
                                 <div className={`form-group ${errorOnConsultedApprovedPoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="approvedPoint2">Điểm quản lý đánh giá:</label>
+                                    <label className="form-control-static" htmlfor="approvedPoint2">{translate('task.task_perform.modal_approve_task.approved_point')}:</label>
                                     <input
                                         type="number"
                                         className="form-control"
@@ -388,9 +390,9 @@ class ModalApproveTask extends Component {
                         }
                         {(role === "accountable") &&
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Vai trò người phê duyệt:</legend>
+                                <legend className="scheduler-border">{translate('task.task_perform.modal_approve_task.accountable')}:</legend>
                                 <div className={`form-group ${errorOnApprovedPoint === undefined ? "" : "has-error"}`}>
-                                    <label className="form-control-static" htmlfor="employeePoint3">Điểm tự đánh giá:</label>
+                                    <label className="form-control-static" htmlfor="employeePoint3">{translate('task.task_perform.modal_approve_task.employee_point')}:</label>
                                     <input
                                         type="number"
                                         className="form-control"
@@ -427,4 +429,7 @@ const getState = {
     editStatusOfTask: taskManagementActions.editStatusOfTask
 }
 
-export default connect(mapState, getState)(ModalApproveTask); 
+const modalApproveTask = connect(mapState, getState)(withTranslate(ModalApproveTask));
+export { modalApproveTask as ModalApproveTask }
+
+
