@@ -108,19 +108,19 @@ class KPIUnitManager extends Component {
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.result }
+                    return { label: this.formatDate(item.date), y: item.result }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[0].result }
+                    return { label: this.formatDate(item.date), y: item.listtarget[0].result }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[1].result }
+                    return { label: this.formatDate(item.date), y: item.listtarget[1].result }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
+                    return { label: this.formatDate(item.date), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (100 - item.result) }
+                    return { label: this.formatDate(item.date), y: (100 - item.result) }
                 }).reverse();
             };
             
@@ -156,7 +156,7 @@ class KPIUnitManager extends Component {
                             <tr key={index+1}>
                                 <td title={index+1}>{index + 1}</td>
                                 <td>{item.creator.name}</td>
-                                <td>{this.formatDate(item.time)}</td>
+                                <td>{this.formatDate(item.date)}</td>
                                 <td>{item.kpis.length}</td>
                                 <td>{item.result}</td>
                                 <td>

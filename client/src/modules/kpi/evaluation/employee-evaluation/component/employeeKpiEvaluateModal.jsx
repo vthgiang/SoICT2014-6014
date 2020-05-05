@@ -7,21 +7,16 @@ class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: '5dcadf02f0343012f09c1193',
+            organizationalUnit:"",
             content: "",
             name:"",
-            unit:"",
-            description:"description",
+            description:"",
             point:0,
             status:0
         };
     }
     componentDidMount() {
-        // get kpi member member
         this.props.getKPIMemberById(this.props.id);
-        //get task list
-        // var id ="5e84b34398c1184fa4ebdc41";
-        // this.props.getTaskById(id);
     }
  
  
@@ -93,7 +88,7 @@ class ModalMemberEvaluate extends Component {
         if(typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         
         if (kpimembers.currentKPI) {
-            list = kpimembers.currentKPI.listtarget;
+            list = kpimembers.currentKPI.kpis;
         }
  
         return (
@@ -179,11 +174,11 @@ class ModalMemberEvaluate extends Component {
                                                                 <tr key ={index}>
                                                                     <td>{index+1}</td>
                                                                     <td>{itemTask.name}</td>                                                                   
-                                                                    <td>{itemTask.unit.name}</td>
+                                                                    <td>{itemTask.organizationalUnit.name}</td>
                                                                     <td>{itemTask.description}</td>
                                                                     <td>{itemTask.status}</td>
-                                                                    <td>{itemTask.point === 0 ? 0 : itemTask.point}</td>
-                                                            </tr>)) : <tr><td colSpan={5}>Không có dữ liệu thỏa mãn điều kiện</td></tr>
+                                                                    <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td>
+                                                            </tr>)) : <tr><td colSpan={6}>Không có dữ liệu</td></tr>
                                                         }
  
                                                     </tbody>

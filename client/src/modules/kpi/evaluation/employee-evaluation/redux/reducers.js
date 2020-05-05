@@ -99,7 +99,7 @@ export function kpimembers(state = {}, action) {
         ...state,
         currentKPI: {
           ...state.currentKPI,
-          listtarget: state.currentKPI.listtarget.map(target =>
+          kpis: state.currentKPI.kpis.map(target =>
             target._id === action.id
               ? { ...target, editing: true }
               : target)
@@ -111,7 +111,7 @@ export function kpimembers(state = {}, action) {
           ...state,
           currentKPI: {
             ...state.currentKPI,
-            listtarget: state.currentKPI.listtarget.map(target =>
+            kpis: state.currentKPI.kpis.map(target =>
               target._id === action.payload
                 ? action.payload.target : target)
           },
