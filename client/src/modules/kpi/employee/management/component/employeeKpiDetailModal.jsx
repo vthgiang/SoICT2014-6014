@@ -173,7 +173,7 @@ class ModalDetailKPIPersonal extends Component {
                                                                         <td>{itemTask.consultedEmployees.name}</td>
                                                                         <td>{itemTask.status}</td>
                                                                         {/* <td>{itemTask.evaluations[0]. === 0 ? 0 : itemTask.point}</td> */}
-                                                                    </tr>)) : <tr><td colSpan={5}>Không có dữ liệu thỏa mãn điều kiện</td></tr>
+                                                                    </tr>)) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
                                                         }
                                                     </tbody>
                                                 </table>

@@ -202,7 +202,7 @@ class ModalMemberApprove extends Component {
         const { kpimembers } = this.props;
         const { checkInput } = this.state;
         if (kpimembers.currentKPI) kpimember = kpimembers.currentKPI;
-        if (kpimembers.kpimember) kpimember = kpimembers.kpimember;
+        if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
         return (
             <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">
@@ -275,7 +275,7 @@ class ModalMemberApprove extends Component {
                                                         <td>{item.parent.name}</td>
                                                         <td>{item.criteria}</td>
                                                         <td>{this.state.edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
-                                                        <td>{item.approverpoint}</td>
+                                                        <td>{item.approvedPoint}</td>
                                                     </tr>
                                                 ) : <tr><td colSpan={5}>Không có dữ liệu phù hợp</td></tr>
                                             }
