@@ -136,12 +136,12 @@ class KPIUnitManager extends Component {
                     <table id="example1" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th tittle="STT">STT</th>
+                                <th title="STT">STT</th>
                                 <th title="Người tạo">Người tạo</th>
                                 <th title="Thời gian">Thời gian</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                <th tittle="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
+                                <th title="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
                                     {}}>Xem chi tiết</th>
                                 <th tittle="Tạo KPI tháng mới" style={this.checkPermisson(currentUnit && currentUnit[0].dean)?
                                     {} : {}}>Tạo KPI tháng mới</th>
