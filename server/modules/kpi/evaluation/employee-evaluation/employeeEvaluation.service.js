@@ -2,7 +2,7 @@ const KPIPersonal = require('../../../../models/kpi/employeeKpiSet.model');
 const Department = require('../../../../models/super-admin/organizationalUnit.model');
 const Task= require('../../../../models/task/task.model'); 
 const DetailKPIPersonal= require('../../../../models/kpi/employeeKpi.model')
-
+const mongoose = require("mongoose");
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
 exports.getKPIAllMember = async (data) => {
     var department = await Department.findOne({
@@ -146,10 +146,40 @@ exports.getById = async (id) => {
 }
 
 exports.getTaskById= async (id) =>{
-    var task = await Task.find({'evaluations.kpis.kpis': id}) 
-    .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
+    // var task = await Task.find({'evaluations.kpis.kpis': id}) 
+    // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
     
-    return task;
+    var task = await Task.aggregate([
+        {
+            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(id)}
+           },
+         {
+             $unwind: "$evaluations"
+           },
+         {
+             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
+             },
+         {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
+         {$match: { month: 5}},
+         {$match: {year: 2020}},
+         {$unwind:"$results"},
+         {
+             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$taskID"},{status : "$status"}, "$results"]}}
+             },
+            {
+                $lookup: {
+                     from: "users",
+                     localField: "employee",
+                        foreignField: "_id",
+                     as: "employee"
+                    
+                    }
+                },
+               {$unwind : "$employee"}
+        
+           ])
+    
+    return task
 }
 
 exports.getSystemPoint= async(id)=>{
@@ -175,3 +205,4 @@ exports.setPointKPI = async(id_kpi, id_target, data) =>{
     .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
 }
+// id, date id_employee, role, point

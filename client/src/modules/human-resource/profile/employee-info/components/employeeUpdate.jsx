@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeInfoActions } from '../redux/actions';
-import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 import { convertToFormData } from '../../../../../helpers/convertToFormData';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';

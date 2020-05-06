@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {
-    ContractAddModal, ContractEditModal,
-} from './combinedContent';
+import { LOCAL_SERVER_API } from '../../../../../env';
+import { ContractAddModal, ContractEditModal } from './combinedContent';
 
 class ContractTab extends Component {
     constructor(props) {
@@ -96,10 +95,10 @@ class ContractTab extends Component {
                                             <td>{x.startDate}</td>
                                             <td>{x.endDate}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                <a href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_contract')} ><i className="material-icons">edit</i></a>
-                                                <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("contract", index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("contract", index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}
@@ -138,7 +137,7 @@ class ContractTab extends Component {
                                             <td><input type="text" style={{ width: "100%" }} /></td>
                                             <td>{x.status}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("course", index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete("course", index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}

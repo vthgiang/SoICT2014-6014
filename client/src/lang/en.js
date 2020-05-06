@@ -1009,6 +1009,35 @@ export default {
                     edit_infor_personal_success: 'Update information personal success',
                     edit_infor_personal_false: 'Update infor personal false',
                     
+                },
+
+                employee_management: {
+                    // Thông điệp trả về từ server
+                    get_list_employee_success: 'Get list employee success',
+                    get_list_employee_false: 'Get list employee false',
+                    create_employee_success: 'Create employee success',
+                    create_employee_false: 'Create employee false',
+                    delete_employee_success: 'Delete employee success',
+                    delete_employee_false: 'Delete employee false',
+                    edit_employee_success: 'Edit employee success',
+                    edit_employee_false: 'Edit employee false',
+                    employee_number_required: 'Employee number required',
+                    email_in_company_required: 'Email in company required',
+                    employee_number_have_exist: 'Employee number have exist',
+                    email_in_company_have_exist: 'Email in company have exist',
+                    employee_timesheet_id_required: 'Employee timesheet id required',
+                    full_name_required: 'Full name required',
+                    birthdate_required: 'Birthdate required',
+                    identity_card_number_required: 'Identity card number required',
+                    identity_card_date_required: 'Identity card date required',
+                    identity_card_address_required: 'Identity card address required',
+                    phone_number_required: 'Phone number required',
+                    tax_date_of_issue_required: 'Tax date of issue required',
+                    tax_number_required: 'Tax number required',
+                    tax_representative_required: 'Tax representative required',
+                    tax_authority_required: 'Tax authority required',
+
+
                 }
             }
         },

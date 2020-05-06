@@ -68,7 +68,7 @@ class ModalDetailKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
-    formatDay(date){
+    formatDay(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -79,14 +79,14 @@ class ModalDetailKPIPersonal extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [day,month, year].join('-');
+        return [day, month, year].join('-');
     }
     render() {
         var list;
         var myTask = [];
         const { kpimembers, kpipersonal } = this.props;
-        console.log("============",kpimembers.tasks)
-        if(typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
+        console.log("============", kpimembers.tasks)
+        if (typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         if (kpipersonal.kpis) list = kpipersonal.kpis;
         return (
             <div className="modal modal-full fade" id={"detailKPIPersonal" + kpipersonal._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -169,7 +169,7 @@ class ModalDetailKPIPersonal extends Component {
                                                             <th>Người phê duyệt</th>
                                                             <th>Người hỗ trợ</th>
                                                             <th>Trạng thái</th>
-                                                            <th>Kết quả đánh giá</th>
+                                                            <th>Điểm quan trọng</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -184,12 +184,12 @@ class ModalDetailKPIPersonal extends Component {
                                                                         <td>{itemTask.organizationalUnit.name}</td>
                                                                         <td>{itemTask.description}</td>
                                                                         <td>{itemTask.priority}</td>
-                                                                        <td>{this.formatDay(itemTask.startDate) + "-" +this.formatDay(itemTask.endDate) }</td>
+                                                                        <td>{this.formatDay(itemTask.startDate) + "-" + this.formatDay(itemTask.endDate)}</td>
                                                                         <td>{itemTask.creator.name}</td>
                                                                         <td>{itemTask.accountableEmployees[0].name}</td>
                                                                         <td>{itemTask.consultedEmployees[0].name}</td>
                                                                         <td>{itemTask.status}</td>
-                                                                        {/* <td>{itemTask.evaluations[0]. === 0 ? 0 : itemTask.point}</td> */}
+                                                                        <td></td>
                                                                     </tr>)) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
                                                         }
                                                     </tbody>
@@ -212,8 +212,8 @@ class ModalDetailKPIPersonal extends Component {
 }
 
 function mapState(state) {
-    const { managerKpiUnit,kpimembers } = state;
-    return { managerKpiUnit,kpimembers };
+    const { managerKpiUnit, kpimembers } = state;
+    return { managerKpiUnit, kpimembers };
 }
 
 const actionCreators = {
