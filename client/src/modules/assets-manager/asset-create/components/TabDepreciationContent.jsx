@@ -28,7 +28,7 @@ class TabDepreciationContent extends Component {
                 return {
                     ...state,
                     errorOnStartDepreciation: msg,
-                    assetNumber: value,
+                    startDepreciation: value,
                 }
             });
             this.props.handleChange("startDepreciation", value);

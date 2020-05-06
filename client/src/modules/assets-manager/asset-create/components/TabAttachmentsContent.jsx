@@ -34,27 +34,29 @@ class TabAttachmentsContent extends Component {
                 ...data
             }]
         })
-        this.props.handleAddFile(this.state.file)
+        this.props.handleAddFile(this.state.file, data)
 
     }
     // Function chỉnh sửa thông tin tài liệu đính kèm
-    handleEditFile = async (data) => {
-        const { file } = this.state;
-        file[data.index] = data;
+    handleEditFile = async (index) => {
+        var { file } = this.state;
+        var data = file[index];
+        file.splice(index, 1);
         await this.setState({
             file: file
         })
-        this.props.handleEditFile(this.state.file)
+        this.props.handleEditFile(this.state.file, data)
     }
     // Function xóa tài liệu đính kèm
-    delete = async (index) => {
+    handleDeleteFile = async (index) => {
         var { file } = this.state;
+        var data = file[index];
         file.splice(index, 1);
         await this.setState({
             ...this.state,
             file: [...file]
         })
-        this.props.handleDeleteFile(this.state.file)
+        this.props.handleDeleteFile(this.state.file, data)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -106,7 +108,7 @@ class TabAttachmentsContent extends Component {
                                                 <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td >
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_file')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     ))}

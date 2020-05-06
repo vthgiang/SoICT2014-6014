@@ -17,7 +17,7 @@ exports.searchAssetTypes = async (data, company) => {
     };
 
     var totalList = await AssetType.count(keySearch);
-    var listAssetTypes = await AssetType.find(keySearch).sort({'createDate': 'desc'}).skip(data.page).limit(data.limit);
+    var listAssetTypes = await AssetType.find(keySearch).sort({'createDate': 'desc'}).skip(data.page).limit(data.limit).populate('parent');
 
     return {totalList, listAssetTypes};
 //

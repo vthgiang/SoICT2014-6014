@@ -80,13 +80,14 @@ function checkAssetNumber(assetNumber) {
 
 
 // Tạo mới một tài sản mới
-function addNewAsset(asset) {
+function addNewAsset(assetNew) {
     return dispatch => {
-        dispatch(request(asset));
+        dispatch(request(assetNew));
 
-        AssetService.addNewAsset(asset)
+        AssetService.addNewAsset(assetNew)
             .then(
                 asset => {
+                    dispatch(getAllAsset());
                     dispatch(success(asset));
                 },
                 error => {

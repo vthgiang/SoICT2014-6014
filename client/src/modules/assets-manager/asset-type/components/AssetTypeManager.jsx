@@ -90,16 +90,16 @@ class AssetTypeManager extends Component {
         if (this.props.assetType.isLoading === false) {
             listAssetTypes = this.props.assetType.listAssetTypes;
         }
-        if(this.props.assetType.listAssetTypes.length ){
-            listAssetTypes = this.props.assetType.listAssetTypes.map(assetType =>{
-                this.props.assetType.listAssetTypes.forEach(item=>{
-                    if(assetType.parent === item._id){
-                        assetType.parent= item.typeName
-                    }
-                })
-                return assetType;
-            })
-        }
+        // if(this.props.assetType.listAssetTypes.length ){
+        //     listAssetTypes = this.props.assetType.listAssetTypes.map(assetType =>{
+        //         this.props.assetType.listAssetTypes.forEach(item=>{
+        //             if(assetType.parent === item._id){
+        //                 assetType.parent= item.typeName
+        //             }
+        //         })
+        //         return assetType;
+        //     })
+        // }
         var pageTotal = ((this.props.assetType.totalList % this.state.limit) === 0) ?
             parseInt(this.props.assetType.totalList / this.state.limit) :
             parseInt((this.props.assetType.totalList / this.state.limit) + 1);
@@ -158,7 +158,7 @@ class AssetTypeManager extends Component {
                                 <td>{x.typeNumber}</td>
                                 <td>{x.typeName}</td>
                                 <td>{x.timeDepreciation}</td>
-                                <td>{x.parent}</td>
+                                <td>{x.parent ? x.parent.typeName : ''}</td>
                                 <td>{x.description}</td>
                                 <td style={{textAlign: "center"}}>
                                     <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin loại tài sản"><i

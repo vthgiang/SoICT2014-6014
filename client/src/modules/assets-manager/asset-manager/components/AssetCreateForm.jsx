@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withTranslate} from 'react-redux-multilingual';
 import {ButtonModal, DialogModal} from '../../../../common-components';
+
 import {RepairUpgradeActions} from '../../repair-upgrade/redux/actions';
 import {DistributeTransferActions} from '../../distribute-transfer/redux/actions';
 import {AssetManagerActions} from '../../asset-manager/redux/actions';
@@ -89,6 +90,7 @@ class AssetCreateForm extends Component {
 
 // Function thêm thông tin tài liệu đính kèm
     handleChangeFile = (data) => {
+        console.log('file', data);
         this.setState({
             file: data
         })
@@ -102,12 +104,15 @@ class AssetCreateForm extends Component {
     // function thêm mới thông tin tài sản
     save = async () => {
         let assetNew = this.state.assetNew;
+        assetNew = {...assetNew,company: this.props.auth.user.company._id};
         let {file} = this.state;
+
         // cập nhật lại state trước khi add asset
         await this.setState({
             assetNew: {
                 ...assetNew,
                 file: file.filter(file => (file.fileUpload === " "))
+
             }
         })
         // kiểm tra việc nhập các trường bắt buộc
@@ -129,7 +134,8 @@ class AssetCreateForm extends Component {
             this.notifyerror("Bạn chưa nhập thời gian bắt đầu trích khấu hao");
         } else if (!assetNew.timeDepreciation) {
             this.notifyerror("Bạn chưa nhập thời gian trích khấu hao");
-        }else {
+        } else {
+            console.log('assetNew', assetNew);
             await this.props.addNewAsset(assetNew);
 
             // lưu avatar
@@ -247,8 +253,8 @@ class AssetCreateForm extends Component {
 };
 
 function mapState(state) {
-    const {assetsManager, RepairUpgrade, DistributeTransfer} = state;
-    return {assetsManager, RepairUpgrade, DistributeTransfer};
+    const {assetsManager, RepairUpgrade, DistributeTransfer, auth} = state;
+    return {assetsManager, RepairUpgrade, DistributeTransfer, auth};
 };
 
 const actionCreators = {

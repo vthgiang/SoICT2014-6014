@@ -12,7 +12,7 @@
  * 10. Tình trạng: status (String)
  * 11. Mô tả: description
  * 12. Thông tin chi tiết (để lưu các trường dữ liệu cần thêm đối với mỗi tài sản): detailInfo [ 1. Tên trường dữ liệu :nameField (String); 2. Giá trị trường dữ liệu: value (String); 3. đơn vị tính: unit (String)]
- * 13. Thông tin khấu hao: [ 
+ * 13. Thông tin khấu hao: [
  *     //phần này bạn xem xét giúp mình có cần phải lưu trữ các giá trị: Nguyên giá, thời gian kết thúc trích khấu hao, mức độ KH tb năm/tháng hay ko ? Vì Nguyên giá nó thay đổi khi mà tài sản có sự phát sinh nâng cấp, thời gian kết thúc khấu hao thay đổi khi thời gian bắt đầu và thời gian trích khấu hay thay đổi, Giá trị KH tb tháng/năm thì cũng thay đổi theo nguyên giá
  *                           1. Nguyên giá: assetCosts = initialPrice(giá trị ban đầu)+ upgradeCosts (chi phí nâng cấp bên model repairUpgrade.model.js)
  *                           2. Thời gian bắt đầu trích khấu hao: startDepreciation = defaultValue(ngày nhập/ngày mua) (vẫn có thể tự nhập giá trị khác)
@@ -60,43 +60,57 @@ const AssetSchema = new Schema({
     manager: {//7.Người quản lý
         type: Schema.Types.ObjectId,
         ref: User,
-        required: true
+        // required: true
     },
-    location: { //8.vị trí
+    person: {//8.Người được giao sử dụng
+        type: Schema.Types.ObjectId,
+        ref: User,
+        // required: true
+    },
+    dateStartUse: { //9.Người được giao sử dụng từ ngày
+        type: String,
+        defaut: Date.now,
+        // required: true
+    },
+    dateEndUse: { //10.Người được giao sử dụng đến ngày
+        type: String,
+        defaut: Date.now,
+        // required: true
+    },
+    location: { //11.vị trí
         type: String,
         required: true
     },
-    initialPrice: { //9.giá trị ban đầu
+    initialPrice: { //12.giá trị ban đầu
         type: String,
         required: true
     },
-    status: { //10.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
+    status: { //13.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
     },
-    description: { //11.mô tả
+    description: { //14.mô tả
         type: String,
     },
-    
-    detailInfo: [{//thông tin chi tiết
+
+    detailInfo: [{//15.thông tin chi tiết
         nameField: String,// tên trường dữ liệu
-        value: String, //giá trị 
+        value: String, //giá trị
     }],
 
-    startDepreciation: {//thời gian bắt đầu trích khấu hao (VD: 20-02-2020)
+    startDepreciation: {//16.thời gian bắt đầu trích khấu hao (VD: 20-02-2020)
         type: String,
     },
-    timeDeprecition: { // thời gian trích khấu hao (VD: 5 năm)
-        type: String,
+    timeDepreciation: { //17. thời gian trích khấu hao (VD: 5 năm) à. mình viế sai. đây rồi
+        type: String, // nay dung lk.
     },
 
-    numberFile: { //mã hồ sơ lưu trữ
+    numberFile: { //18.mã hồ sơ lưu trữ
         type: String
     },
-    file: [{ // các file đính kèm
+    file: [{ //19. các file đính kèm
         nameFile: String,
         discFile: String,
         number: String,
-        file: String,
         urlFile: String
     }],
     createDate: {
@@ -107,7 +121,7 @@ const AssetSchema = new Schema({
         type: Date,
         default: Date.now
     }
-    
+
 });
 
 module.exports = Asset = mongoose.model("assets", AssetSchema);

@@ -6,10 +6,13 @@ export const AssetCreateValidator = {
     /** Thông tin chung */
     validateAssetNumber, //mã tài sản
     validateDatePurchase, //ngày nhập
+    validateDateStartUse, //ngày bát đầu
+    validateDateEndUse, //ngày kết thúc
     validateAssetName, //tên tài sản
     validateAssetType, //loại tài sản
     validateLocation, //vị trí tài sản
     validateManager, //người quản lý
+    validatePerson, //người sử dụng
     validateInitialPrice, //giá trị ban đầu
     validateNameField, //tên trường dữ liệu
     validateValue, //giá trị
@@ -93,6 +96,33 @@ function validateManager(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Người quản lý không được để trống";
+    }
+    return msg;
+}
+
+//kiểm tra người sử dụng
+function validatePerson(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Người quản lý không được để trống";
+    }
+    return msg;
+}
+
+//kiểm tra ngày nhập
+function validateDateStartUse(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày nhập không được để trống";
+    }
+    return msg;
+}
+
+//kiểm tra ngày nhập
+function validateDateEndUse(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày nhập không được để trống";
     }
     return msg;
 }

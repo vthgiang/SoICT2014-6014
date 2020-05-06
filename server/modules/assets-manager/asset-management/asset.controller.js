@@ -74,11 +74,13 @@ exports.checkAssetNumber = async (req, res) => {
 
 // Tạo tài sản mới
 exports.create = async (req, res) => {
+    console.log(req.body);
     try {
-        var data = await AssetService.create(req.body);
-        res.status(200).json({
-            message: "success",
-            content: data
+        await AssetService.create(req.body).save((err, data) => {
+            res.status(200).json({
+                message: "success",
+                content: data
+            });
         });
     } catch (error) {
         res.status(400).json({

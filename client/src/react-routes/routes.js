@@ -70,6 +70,7 @@ import ManagerAssetType from "../modules/assets-manager/asset-type/components";
 import ManagerRepairUpgrade from "../modules/assets-manager/repair-upgrade/components";
 import ManagerDistributeTransfer from "../modules/assets-manager/distribute-transfer/components";
 import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
+import ManagerAssetAssigned from "../modules/assets-manager/asset-assgined-management/components";
 import ManagerAsset from "../modules/assets-manager/asset-manager/components";
 import {AssetCreatePage} from '../modules/assets-manager/asset-create/components/AssetCreatePage';
 
@@ -682,6 +683,22 @@ class Routes extends Component {
                         pageName={ 'recommend_equipment_procurement' }
                         layout={ Layout }
                         component={ RecommendProcure }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.assetsManager.isLoading }
+                        key={ 'manage-assigned-asset' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/manage-assigned-asset', name: 'manage_assigned_asset', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/manage-assigned-asset' }
+                        path={ '/manage-assigned-asset' }
+                        pageName={ 'manage_assigned_asset' }
+                        layout={ Layout }
+                        component={ ManagerAssetAssigned }
                     />
 
                     {/** Quản lý */}

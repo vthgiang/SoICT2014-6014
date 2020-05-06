@@ -10,7 +10,6 @@ class ModalAddFile extends Component {
             nameFile: "",
             discFile: "",
             number: "",
-            file: "",
             urlFile: " ",
             fileUpload: " "
         }
@@ -128,13 +127,13 @@ class ModalAddFile extends Component {
                             <input type="text" className="form-control" name="discFile" value={discFile} onChange={this.handleDiscFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
-                        
+
                             <div className={`form-group ${errorOnNumberFile === undefined ? "" : "has-error"}`}>
                                 <label>Số lượng<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnNumberFile} />
                             </div>
-                            
+
                         <div className="form-group">
                             <label htmlFor="file">File đính kèm</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
