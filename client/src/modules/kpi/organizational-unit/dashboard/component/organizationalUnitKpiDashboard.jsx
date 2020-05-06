@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { dashboardActions } from '../redux/actions';
+import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { managerActions } from '../../management/redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
