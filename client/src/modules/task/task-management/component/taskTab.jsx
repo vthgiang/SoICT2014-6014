@@ -284,9 +284,9 @@ class TabTaskContent extends Component {
         window.$(`#addNewTask${id}`).modal('show')
     }
 
-    getResponsibleOfItem = (data,id) => {
+    getResponsibleOfItem = (data, id) => {
         data.map(item => {
-            if(id === item._id){
+            if (id === item._id) {
                 return item.responsibleEmployees
             }
         })
@@ -294,9 +294,7 @@ class TabTaskContent extends Component {
 
     getUnitIdOfItem = (data, id) => {
         data.map(item => {
-            if(id === item._id){
-                console.log('--item--', item);
-                console.log('item.organizationalUnit._id', item.organizationalUnit._id);
+            if (id === item._id) {
                 return item.organizationalUnit._id
             }
         })
@@ -316,14 +314,14 @@ class TabTaskContent extends Component {
 
         // khởi tạo dữ liệu TreeTable
         var column = [
-            { name: "Tên công việc", key: "name" },
-            { name: "Đơn vị", key: "organization" },
-            { name: "Độ ưu tiên", key: "priority" },
-            { name: "Ngày bắt đầu", key: "startDate" },
-            { name: "Ngày kết thúc", key: "endDate" },
-            { name: "Trạng thái", key: "status" },
-            { name: "Tiến độ", key: "progress" },
-            { name: "Thời gian thực hiện", key: "totalLoggedTime" }
+            { name: translate('task.task_management.col_name'), key: "name" },
+            { name: translate('task.task_management.col_organization'), key: "organization" },
+            { name: translate('task.task_management.col_priority'), key: "priority" },
+            { name: translate('task.task_management.col_start_date'), key: "startDate" },
+            { name: translate('task.task_management.col_end_date'), key: "endDate" },
+            { name: translate('task.task_management.col_status'), key: "status" },
+            { name: translate('task.task_management.col_progress'), key: "progress" },
+            { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
         ];
         var data = [];
         if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
@@ -366,71 +364,78 @@ class TabTaskContent extends Component {
 
                     <div style={{ height: "40px" }}>
                         {this.props.role !== "informed" &&
-                            <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một công việc" data-target="#addNewTask" data-backdrop="static" data-keyboard="false">Thêm mới</button>
+                            <button type="button" className="btn btn-success pull-right" data-toggle="modal" title={translate('task.task_management.add_title')} data-target="#addNewTask" data-backdrop="static" data-keyboard="false">{translate('task.task_management.add_task')}</button>
                         }
                         <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id="" />
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>Đơn vị</label>
+                            <label>{translate('task.task_management.department')}</label>
                             {units &&
                                 <SelectMulti id="multiSelectUnit1"
                                     defaultValue={units.map(item => { return item._id })}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
-                                    options={{ nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị" }}>
+                                    options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                 </SelectMulti>
                             }
                         </div>
                         <div className="form-group">
-                            <label>Trạng thái</label>
-                            <SelectMulti id="multiSelectStatus" defaultValue={["Đang chờ", "Đang thực hiện"]}
+                            <label>{translate('task.task_management.status')}</label>
+                            <SelectMulti id="multiSelectStatus" defaultValue={[
+                                translate('task.task_management.inprocess')
+                            ]}
                                 items={[
-                                    { value: "Đang chờ", text: "Đang chờ" },
-                                    { value: "Đang thực hiện", text: "Đang thực hiện" },
-                                    { value: "Quá hạn", text: "Quá hạn" },
-                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Đã hoàn thành", text: "Đã hoàn thành" },
-                                    { value: "Đã hủy", text: "Đã hủy" },
-                                    { value: "Tạm dừng", text: "Tạm dừng" }
+                                    { value: "Inprocess", text: translate('task.task_management.inprocess') },
+                                    { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+                                    { value: "Finished", text: translate('task.task_management.finished') },
+                                    { value: "Delayed", text: translate('task.task_management.delayed') },
+                                    { value: "Canceled", text: translate('task.task_management.canceled') }
                                 ]}
-                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Tất cả các trạng thái" }}>
+                                options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
                             </SelectMulti>
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>Độ ưu tiên</label>
-                            <SelectMulti id="multiSelectPriority" defaultValue={["Cao", "Trung bình", "Thấp"]}
+                            <label>{translate('task.task_management.priority')}</label>
+                            <SelectMulti id="multiSelectPriority" defaultValue={[
+                                translate('task.task_management.high'),
+                                translate('task.task_management.normal'),
+                                translate('task.task_management.low')
+                            ]}
                                 items={[
-                                    { value: "Cao", text: "Cao" },
-                                    { value: "Trung bình", text: "Trung bình" },
-                                    { value: "Thấp", text: "Thấp" }
+                                    { value: "Cao", text: translate('task.task_management.high') },
+                                    { value: "Trung bình", text: translate('task.task_management.normal') },
+                                    { value: "Thấp", text: translate('task.task_management.low') }
                                 ]}
-                                options={{ nonSelectedText: "Chọn mức độ ưu tiên", allSelectedText: "Tất cả các mức" }}>
+                                options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label>Đặc tính</label>
-                            <SelectMulti id="multiSelectCharacteristic" defaultValue={["Lưu trong kho", "Tháng hiện tại"]}
+                            <label>{translate('task.task_management.special')}</label>
+                            <SelectMulti id="multiSelectCharacteristic" defaultValue={[
+                                translate('task.task_management.store'),
+                                translate('task.task_management.current_month')
+                            ]}
                                 items={[
-                                    { value: "Lưu trong kho", text: "Lưu trong kho" },
-                                    { value: "Tháng hiện tại", text: "Tháng hiện tại" }
+                                    { value: "Lưu trong kho", text: translate('task.task_management.stored') },
+                                    { value: "Tháng hiện tại", text: translate('task.task_management.current_month') }
                                 ]}
-                                options={{ nonSelectedText: "Chọn đặc tính", allSelectedText: "Tất cả các đặc tính" }}>
+                                options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
                             </SelectMulti>
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>Tên công việc</label>
-                            <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
+                            <label>{translate('task.task_management.name')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} />
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
                         </div>
                     </div>
 
@@ -440,14 +445,14 @@ class TabTaskContent extends Component {
                         tableContainerId="tree-table-container"
                         tableWidth="1300px"
                         columnArr={[
-                            'Tên công việc',
-                            'Đơn vị',
-                            'Độ ưu tiên',
-                            'Ngày bắt đầu',
-                            'Ngày kết thúc',
-                            'Trạng thái',
-                            'Tiến độ',
-                            'Thời gian thực hiện'
+                            translate('task.task_management.col_name'),
+                            translate('task.task_management.col_organization'),
+                            translate('task.task_management.col_priority'),
+                            translate('task.task_management.col_start_date'),
+                            translate('task.task_management.col_end_date'),
+                            translate('task.task_management.col_status'),
+                            translate('task.task_management.col_progress'),
+                            translate('task.task_management.col_logged_time')
                         ]}
                         limit={this.state.perPage}
                         setLimit={this.setLimit}
@@ -460,11 +465,11 @@ class TabTaskContent extends Component {
                             column={column}
                             data={data}
                             titleAction={{
-                                edit: "Bắt đầu công việc",
-                                delete: "Xóa công việc",
-                                store: "Lưu vào kho",
-                                add: "Thêm công việc con",
-                                startTimer: "Bắt đầu bấm giờ",
+                                edit: translate('task.task_management.action_edit'),
+                                delete: translate('task.task_management.action_delete'),
+                                store: translate('task.task_management.action_store'),
+                                add: translate('task.task_management.action_add'),
+                                startTimer: translate('task.task_management.action_start_timer'),
                             }}
                             funcEdit={this.handleShowModal}
                             funcAdd={this.handleCheckClickAddSubTask}
@@ -495,7 +500,7 @@ class TabTaskContent extends Component {
                             role={this.props.role}
                         />
                     }
-                  
+
 
                     <PaginateBar
                         pageTotal={tasks.pages}

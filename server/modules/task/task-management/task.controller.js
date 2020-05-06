@@ -185,7 +185,6 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
 exports.createTask = async (req, res) => {
     try {
         var task = await TaskManagementService.createTask(req.body.parent,req.body.startDate,req.body.endDate,req.body.unit,req.body.creator,req.body.name,req.body.description,req.body.priority,req.body.taskTemplate,req.body.role,req.body.kpi,req.body.responsibleEmployees,req.body.accountableEmployees,req.body.consultedEmployees,req.body.informedEmployees); 
-        console.log(req.body);
         await LogInfo(req.user.email, ` create task `,req.user.company)
         res.status(200).json({
             success:true,
@@ -227,14 +226,14 @@ exports.deleteTask = async (req, res) => {
 exports.editTaskStatus = async (req, res) => {
     try {
         var task = await TaskManagementService.editTaskStatus(req.params.id, req.body.status);
-        // await LogInfo(req.user.email, ` edit status of task  `,req.user.company);
+        await LogInfo(req.user.email, ` edit status of task  `,req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_status_of_task_success'],
             content: task
         })
     } catch (error) {
-        // await LogError(req.user.email, ` edit status of task `,req.user.company);
+        await LogError(req.user.email, ` edit status of task `,req.user.company);
         res.status(400).json({
             success: false,
             messages: ['edit_status_of_task_fail'],

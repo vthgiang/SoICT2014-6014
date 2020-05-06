@@ -19,8 +19,8 @@ class KPIMember extends Component {
                 role: localStorage.getItem("currentRole"),
                 user: "",
                 status: 4,
-                starttime: this.formatDate(Date.now()),
-                endtime: this.formatDate(Date.now())
+                startDate: this.formatDate(Date.now()),
+                endDate: this.formatDate(Date.now())
             },
             showApproveModal: "",
             showEvaluateModal: ""
@@ -31,8 +31,8 @@ class KPIMember extends Component {
             role: localStorage.getItem("currentRole"),
             user: "all",
             status: 4,
-            starttime: this.formatDate(Date.now()),
-            endtime: this.formatDate(Date.now())
+            startDate: this.formatDate(Date.now()),
+            endDate: this.formatDate(Date.now())
         }
         // Lấy tất cả nhân viên của phòng ban
 
@@ -106,17 +106,17 @@ class KPIMember extends Component {
                     ...state.infosearch,
                     user: this.user.value,
                     status: this.status.value,
-                    starttime: this.starttime.value,
-                    endtime: this.endtime.value
+                    startDate: this.startDate.value,
+                    endDate: this.endDate.value
                 }
             }
         })
         const { infosearch } = this.state;
-        if (infosearch.role && infosearch.user && infosearch.status && infosearch.starttime && infosearch.endtime) {
-            var starttime = infosearch.starttime.split("-");
-            var startdate = new Date(starttime[1], starttime[0], 0);
-            var endtime = infosearch.endtime.split("-");
-            var enddate = new Date(endtime[1], endtime[0], 28);
+        if (infosearch.role && infosearch.user && infosearch.status && infosearch.startDate && infosearch.endDate) {
+            var startDate = infosearch.startDate.split("-");
+            var startdate = new Date(startDate[1], startDate[0], 0);
+            var endDate = infosearch.endDate.split("-");
+            var enddate = new Date(endDate[1], endDate[0], 28);
             if (Date.parse(startdate) > Date.parse(enddate)) {
                 Swal.fire({
                     title: "Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!",
@@ -161,18 +161,18 @@ class KPIMember extends Component {
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
         var listkpi;
-        var kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
+        var kpiApproved, automaticPoint, employeePoint, approvedPoint, targetA, targetC, targetOther, misspoint;
         if (kpimembers.kpimembers) {
             listkpi = kpimembers.kpimembers;
             kpiApproved = listkpi.filter(item => item.status === 3);
-            systempoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.systempoint }
+            automaticPoint = kpiApproved.map(item => {
+                return { label: this.formatDate(item.date), y: item.automaticPoint }
             }).reverse();
-            mypoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.mypoint }
+            employeePoint = kpiApproved.map(item => {
+                return { label: this.formatDate(item.date), y: item.employeePoint }
             }).reverse();
-            approverpoint = kpiApproved.map(item => {
-                return { label: this.formatDate(item.time), y: item.approverpoint }
+            approvedPoint = kpiApproved.map(item => {
+                return { label: this.formatDate(item.date), y: item.approvedPoint }
             }).reverse();
         }
         const options1 = {
@@ -195,18 +195,18 @@ class KPIMember extends Component {
                 type: "spline",
                 name: "Hệ thống đánh giá",
                 showInLegend: true,
-                dataPoints: systempoint
+                dataPoints: automaticPoint
             },
             {
                 type: "spline",
                 name: "Cá nhân tự đánh giá",
                 showInLegend: true,
-                dataPoints: mypoint
+                dataPoints: employeePoint
             }, {
                 type: "spline",
                 name: "Quản lý đánh giá",
                 showInLegend: true,
-                dataPoints: approverpoint
+                dataPoints: approvedPoint
             }]
         }
         return (
@@ -245,15 +245,15 @@ class KPIMember extends Component {
                         <div className="form-group">
                             <label>Từ tháng:</label>
 
-                            <input type="text" className="form-control" ref={input=> this.starttime = input}
-                            defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
+                            <input type="text" className="form-control" ref={input=> this.startDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
 
                         </div>
                         <div className="form-group">
                             <label>Đến tháng:</label>
 
-                            <input type="text" className="form-control" ref={input=> this.endtime = input}
-                            defaultValue={this.formatDate(Date.now())} name="time" id="datepicker6" data-date-format="mm-yyyy" />
+                            <input type="text" className="form-control" ref={input=> this.endDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
                             <div className="form-group">
                             <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
                                 kiếm</button>
@@ -285,11 +285,11 @@ class KPIMember extends Component {
                             kpimember.map((item, index) =>
                             <tr key={index + 1}>
                             <td title={index+1}>{index + 1}</td>
-                            <td title={this.formatDate(item.time)}>{this.formatDate(item.time)}</td>
+                            <td title={this.formatDate(item.date)}>{this.formatDate(item.date)}</td>
                             <td title="">{item.creator.name}</td>
                             <td title="">{item.kpis.length}</td>
                             <td title="">{this.checkStatusKPI(item.status)}</td>
-                            <td title="">{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</td>
+                            <td title="">{item.approvedPoint === -1 ? "Chưa đánh giá" : item.approvedPoint}</td>
                             <td>
                                 <a href="#abc" onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>

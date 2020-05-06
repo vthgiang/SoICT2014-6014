@@ -19,17 +19,25 @@ const OrganizationalUnitKpiSchema = new Schema({
         type: String,
         required: true
     },
-    result: {
-        type: Number,
-        default: 0
-    },
     // Đánh đấu các mục tiêu mặc định khi thiết lập kpi cá nhân: 
     // 0 là không phải mục tiêu mặc định
     // 1 là mục tiêu mặc đinh cho vai trò A (người phê duyệt)
     // 2 là mục tiêu mặc định cho vai trò C (Người hỗ trợ)
-    default: {
+    type: {
         type: Number,
         default: 0
+    },
+    automaticPoint: { // Điểm tự động
+        type: Number,
+        default: null
+    },
+    employeePoint: { // Điểm nhân viên tự đánh giá
+        type: Number,
+        default: null
+    },
+    approvedPoint: {
+        type: Number,
+        default: null
     }
 });
 

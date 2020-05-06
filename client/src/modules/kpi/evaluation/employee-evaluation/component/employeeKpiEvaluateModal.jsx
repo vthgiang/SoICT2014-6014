@@ -7,21 +7,16 @@ class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            unit: '5dcadf02f0343012f09c1193',
+            organizationalUnit:"",
             content: "",
             name:"",
-            unit:"",
-            description:"description",
+            description:"",
             point:0,
             status:0
         };
     }
     componentDidMount() {
-        // get kpi member member
         this.props.getKPIMemberById(this.props.id);
-        //get task list
-        // var id ="5e84b34398c1184fa4ebdc41";
-        // this.props.getTaskById(id);
     }
  
  
@@ -93,7 +88,7 @@ class ModalMemberEvaluate extends Component {
         if(typeof kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         
         if (kpimembers.currentKPI) {
-            list = kpimembers.currentKPI.listtarget;
+            list = kpimembers.currentKPI.kpis;
         }
  
         return (
@@ -129,45 +124,46 @@ class ModalMemberEvaluate extends Component {
                                 {
                                     list && list.map(item => {
                                         if (item._id === this.state.content) return <React.Fragment key={item._id}>
-                                            <div className="header-content-right">
-                                                <div className="col-sm-12" style={{ fontWeight: "500" }}>
-                                                    <h4>Thông tin mục tiêu</h4>
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Tiêu chí đính giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.criteria}</label>
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Trọng số:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.weight}</label>
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Hệ thống đánh giá:</label>
-                                                    <label className="col-sm-10" style={{ fontWeight: "400" }}>{item.systempoint === null ? 0 : item.systempoint}/{item.weight}</label>
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Quản lý đánh giá:</label>
-                                                    <input type="number" min="0" max={item.weight} className="col-sm-4"ref={input => this.approvepoint = input} defaultValue="0" name="value" />
-                                                </div>
-                                                <div className="col-sm-12">
-                                                    <label className="col-sm-2" style={{ fontWeight: "400" }}>Tự đánh giá:</label>
-                                                    <label className="col-sm-4" style={{ fontWeight: "400" }}>{item.mypoint === null ? 0 : item.mypoint}/{item.weight}</label>
-                                                    <button className="col-sm-2 col-sm-offset-4 btn btn-success" onClick={()=> this.handleSetPointKPI(this.props.id ,item._id, this.approvepoint.value)}>Lưu</button>
-                                                </div>
-                                            </div>
+                                            <div className="qlcv">
+                                                <h4>Thông tin mục tiêu</h4>
+                                                    <div className="col-sm-12">
+                                                        <label style={{width: "150px"}}>Tiêu chí đính giá:</label>
+                                                        <label >{item.criteria}</label>
+                                                    </div>
+                                                
+                                                    <div className="col-sm-12">
+                                                        <label style={{width: "150px"}}>Hệ thống đánh giá:</label>
+                                                        <label >{item.systempoint === null ? 0 : item.systempoint}{item.weight}</label>
+                                                    </div>
+                                                    <div className="col-sm-12">
+                                                        <label style={{width: "150px"}}>Tự đánh giá:</label>
+                                                        <label >{item.mypoint === null ? 0 : item.mypoint}{item.weight}</label>
+                                                    </div>
+                                                    <div className="col-sm-12">
+                                                        <label style={{width: "150px"}}>Trọng số:</label>
+                                                        <label style={{display: "inline" }}>{item.weight}</label>
+                                                    </div>
+                                                    <div className="form-inline">
+                                                        <label style={{width: "150px"}}>Quản lý đánh giá:</label>
+                                                        <input type="number" min="0" max={item.weight} className="form-control" ref={input => this.approvepoint = input} defaultValue="0" name="value" style={{width:"50px"}} />
+                                                    </div>
+                                                    <div className="form-inline">
+                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item._id, this.approvepoint.value)}>Lưu</button>
+                                                    </div>
+                                             </div>
                                             <div className="body-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
-                                                <table id="example1" className="table table-bordered table-striped">
+                                                <table id="example1" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th style={{ width: "20px" }}>Stt</th>
-                                                            <th>Tên công việc</th>
-                                                            <th>Đơn vị</th>
-                                                            <th>Mô tả công việc</th>
-                                                            <th>Trạng thái</th>
-                                                            <th>Kết quả đánh giá</th>
+                                                            <th title ="STT" style={{ width: "20px" }}>Stt</th>
+                                                            <th title="Tên công việc">Tên công việc</th>
+                                                            <th title="Đơn vị">Đơn vị</th>
+                                                            <th title="Mô tả công việc">Mô tả công việc</th>
+                                                            <th title="Trạng thái">Trạng thái</th>
+                                                            <th title="Kết quả đánh giá">Kết quả đánh giá</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -179,11 +175,11 @@ class ModalMemberEvaluate extends Component {
                                                                 <tr key ={index}>
                                                                     <td>{index+1}</td>
                                                                     <td>{itemTask.name}</td>                                                                   
-                                                                    <td>{itemTask.unit.name}</td>
+                                                                    <td>{itemTask.organizationalUnit.name}</td>
                                                                     <td>{itemTask.description}</td>
                                                                     <td>{itemTask.status}</td>
-                                                                    <td>{itemTask.point === 0 ? 0 : itemTask.point}</td>
-                                                            </tr>)) : <tr><td colSpan={5}>Không có dữ liệu thỏa mãn điều kiện</td></tr>
+                                                                    <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td>
+                                                            </tr>)) : <tr><td colSpan={6}>Không có dữ liệu</td></tr>
                                                         }
  
                                                     </tbody>
