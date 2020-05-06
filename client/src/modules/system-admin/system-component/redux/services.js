@@ -16,7 +16,7 @@ function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'GET',
-    }, false, 'system_admin.system_component');
+    }, false, true, 'system_admin.system_component');
 }
 
 function getPaginate(data) {  
@@ -24,14 +24,14 @@ function getPaginate(data) {
         url: `${ LOCAL_SERVER_API }/components-default-management/paginate`,
         method: 'POST',
         data,
-    }, false, 'system_admin.system_component');
+    }, false, true, 'system_admin.system_component');
 }
 
 function show(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'GET',
-    }, false, 'system_admin.system_component');
+    }, false, true, 'system_admin.system_component');
 }
 
 function create(data) {
@@ -39,7 +39,7 @@ function create(data) {
         url: `${ LOCAL_SERVER_API }/components-default-management`,
         method: 'POST',
         data,
-    }, true, 'system_admin.system_component');
+    }, true, true, 'system_admin.system_component');
 }
 
 function edit(id, data) {
@@ -47,12 +47,12 @@ function edit(id, data) {
         url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'PATCH',
         data,
-    }, true, 'system_admin.system_component');
+    }, true, true, 'system_admin.system_component');
 }
 
 function destroy(id, component) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/components-default-management/${id}`,
         method: 'DELETE',
-    }, true, 'system_admin.system_component');
+    }, true, true, 'system_admin.system_component');
 }

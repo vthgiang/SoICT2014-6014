@@ -134,7 +134,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addemployeeKpiSet: dashboardEmployeeKpiSetActions.addemployeeKpiSet
 };
 const connectedModalCopyEmployeeKpiSet = connect(mapState, actionCreators)(ModalCopyEmployeeKpiSet);
 export { connectedModalCopyEmployeeKpiSet as ModalCopyEmployeeKpiSet };

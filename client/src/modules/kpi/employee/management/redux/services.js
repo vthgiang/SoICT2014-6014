@@ -22,7 +22,7 @@ async function getAllKPIPersonalByMember() {//member
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/user/${id}`,
         method: 'GET',
-    }, false, 'kpi.employee.manager')
+    }, false, true, 'kpi.employee.manager')
 
 }
 
@@ -31,7 +31,7 @@ function getAllKPIPersonalByUserID(member) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/user/${member}`,
         method: 'GET',
-    }, false, 'kpi.employee.manager' )
+    }, false, true, 'kpi.employee.manager' )
 }
 
 // Lấy tất cả kpi cá nhân
@@ -39,5 +39,5 @@ function getAllKPIPersonalOfTask(member) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/kpipersonals/task/${member}`,
         method: 'GET',
-    }, false,'kpi.employee.manager')
+    }, false, true, 'kpi.employee.manager')
 }

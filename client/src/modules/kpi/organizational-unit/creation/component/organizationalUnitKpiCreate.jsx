@@ -341,7 +341,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} data-toggle="modal" data-target={`#editTargetKPIUnit${item._id}`} data-backdrop="static" data-keyboard="false"><i className="material-icons"></i></a>
                                                             <OrganizationalUnitKpiEditTargetModal target={item} organizationalUnit={currentUnit && currentUnit[0]} />
-                                                            {item.default === 0 ?
+                                                            {item.type === 0 ?
                                                                 <a href="#abc" className="delete" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete_title')} onClick={() => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id)}>
                                                                     <i className="material-icons"></i>
                                                                 </a> :

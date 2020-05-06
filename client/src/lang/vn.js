@@ -512,7 +512,7 @@ export default {
             kpi_unit_overview: 'Tổng quan KPI đơn vị',
             kpi_unit_dashboard: 'Dashboard KPI đơn vị',
             kpi_unit_manager: 'Quản lý KPI đơn vị',
-            kpi_member_manager: 'Quản lý KPI nhân viên',
+            kpi_member_manager: 'Đánh giá KPI nhân viên',
             kpi_member_dashboard: 'DashBoard KPI nhân viên',
             kpi_personal_create: 'Khởi tạo KPI cá nhân',
             kpi_personal_evaluate: 'Dữ liệu KPI cá nhân',
@@ -1194,6 +1194,62 @@ export default {
                 create_task_fail: 'không thể tạo công việc mới',
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
+
+                responsible: 'Thực hiện chính',
+                accountable: 'Phê duyệt',
+                consulted: 'Hỗ trợ thực hiện',
+                creator: 'Thiết lập',
+                informed: 'Quan sát',
+
+                add_task: 'Thêm mới',
+                add_title: 'Thêm mới một công việc',
+                add_subtask: 'Thêm công việc con',
+
+                department: 'Đơn vị',
+                select_department: 'Chọn đơn vị',
+                select_all_department: 'Tất cả các đơn vị',
+
+                status: 'Trạng thái',
+                select_status: 'Chon trang thái',
+                select_all_status: 'Chọn tất cả trạng thái',
+                inprocess: 'Đang thực hiện',
+                wait_for_approval: 'Chờ phê duyệt',
+                finished: 'Đã hoàn thành',
+                delayed: 'Tạm hoãn',
+                canceled: 'Bị hủy',
+
+                priority: 'Độ ưu tiên',
+                select_priority: 'Chọn mức độ ưu tiên',
+                select_all_priority: 'Chọn tất cả các mức',
+                high: 'Cao',
+                normal: 'Trung bình',
+                low: 'Thấp',
+
+                special: 'Đặc tính',
+                select_all_special: 'Chọn tất cả các đặc tính',
+                select_special: 'Chọn đặc tính',
+                stored: 'Lưu trong kho',
+                current_month: 'Tháng hiện tại',
+
+                name: "Tên công việc",
+                search_by_name: 'Tìm kiếm theo tên',
+                search: "Tìm kiếm",
+
+                col_name: 'Tên công việc',
+                col_organization: 'Đơn vị',
+                col_priority: 'Độ ưu tiên',
+                col_start_date: 'Ngày bắt đầu',
+                col_end_date: 'Ngày kết thúc',
+                col_status: 'Trạng thái',
+                col_progress: 'Tiến độ',
+                col_logged_time: 'Thời gian thực hiện',
+
+                action_edit: 'Băt đầu công việc',
+                action_delete: 'Xóa công việc',
+                action_store: 'Lưu vào kho',
+                action_add: 'Thêm công việc con',
+                action_start_timer: 'Bắt đầu bấm giờ'
+
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -1236,6 +1292,28 @@ export default {
                 create_result_info_task_fail: 'Tạo result info task thất bại',
                 create_result_infomation_task_fail: 'Tạo result infomation task thất bại',
                 edit_result_infomation_task_fail: 'Sửa result infomation task thất bại',
+
+                // modal approve task
+                modal_approve_task: {
+                    title: 'Yêu cầu kết thúc công việc',
+                    msg_success: 'Đánh giá công việc thành công',
+                    msg_false: 'Không đánh giá được công việc',
+
+                    task_info: 'Thông tin công việc',
+                    percent: 'Công việc hoàn thành',
+                    
+                    auto_point: 'Điểm hệ thống',
+                    employee_point: 'Điểm tự đánh giá',
+                    approved_point: 'Điểm quản lí đánh giá',
+
+                    responsible: 'Vai trog người thực hiện',
+                    consulted: 'Vai trò người hỗ trợ',
+                    accountable: 'Vai trò người phê duyệt',
+
+                    err_range: 'Giá trị không được vượt quá khoảng 0-100',
+                    err_empty: "Giá trị không được để trống"
+                }
+
             },
             task_template: {
                 // TODO: code_mesage_task_template

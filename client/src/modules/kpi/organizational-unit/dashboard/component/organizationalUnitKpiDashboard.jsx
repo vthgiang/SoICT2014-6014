@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { dashboardActions } from '../redux/actions';
+import { managerActions } from '../../management/redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 // import { ModalCopyKPIUnit } from './ModalCopyKPIUnit';
-
+import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
 class OrganizationalUnitKpiDashboard extends Component {
     constructor(props) {
         super(props);
@@ -87,10 +88,12 @@ class OrganizationalUnitKpiDashboard extends Component {
         var currentRole = localStorage.getItem("currentRole");
         return (currentRole === deanCurrentUnit);
     }
+
     render() {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
-        const { department, dashboardKpiUnit } = this.props;
+        const { department, managerKpiUnit } = this.props;
+        
         if (department.unitofuser) {
             unitList = department.unitofuser;
             currentUnit = unitList.filter(item =>
@@ -99,31 +102,31 @@ class OrganizationalUnitKpiDashboard extends Component {
                 || item.employee === this.state.currentRole);
         }
         
-        if (dashboardKpiUnit.kpis) {
-            listkpi = dashboardKpiUnit.kpis;
+        if (managerKpiUnit.kpis) {
+            listkpi = managerKpiUnit.kpis;
             if(typeof listkpi !== "undefined" && listkpi.length !== 0)//listkpi.content
             {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.result }
+                    return { label: this.formatDate(item.date), y: item.result }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.kpis[0].result }
+                    return { label: this.formatDate(item.date), y: item.kpis[0].result }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.kpis[1].result }
+                    return { label: this.formatDate(item.date), y: item.kpis[1].result }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
+                    return { label: this.formatDate(item.date), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (100 - item.result) }
+                    return { label: this.formatDate(item.date), y: (100 - item.result) }
                 }).reverse();
             };
-            
         }
+        
         const options1 = {
             animationEnabled: true,
             exportEnabled: true,
@@ -207,82 +210,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                 dataPoints: currentTargets
             }]
         }
-        const options4 = {
-            exportEnabled: true,
-            animationEnabled: true,
-            theme: "light2", //"light1", "dark1", "dark2"
-            title: {
-                text: "Xu hướng thực hiện mục tiêu của nhân viên"
-            },
-            axisY: {
-                interval: 10,
-                suffix: "%"
-            },
-            toolTip: {
-                shared: true
-            },
-            data: [{
-                type: "stackedBar100",
-                toolTipContent: "{label}<br><b>{name}:</b> {y} (#percent%)",
-                showInLegend: true,
-                name: "Mục tiêu số 1",
-                dataPoints: [
-                    { y: 27, label: "Thời gian thực hiện" },
-                    { y: 12, label: "Số lượng công việc" },
-                    { y: 6, label: "Người tham gia" },
-                    { y: 8, label: "Mục tiêu con" },
-                    { y: 10, label: "Trọng số" }
-                ]
-            },{
-                type: "stackedBar100",
-                toolTipContent: "{label}<br><b>{name}:</b> {y} (#percent%)",
-                showInLegend: true,
-                name: "Mục tiêu số 2",
-                dataPoints: [
-                    { y: 115, label: "Thời gian thực hiện" },
-                    { y: 27, label: "Số lượng công việc" },
-                    { y: 14, label: "Người tham gia" },
-                    { y: 21, label: "Mục tiêu con" },
-                    { y: 20, label: "Trọng số" }
-                ]
-            },{
-                type: "stackedBar100",
-                toolTipContent: "{label}<br><b>{name}:</b> {y} (#percent%)",
-                showInLegend: true,
-                name: "Mục tiêu số 3",
-                dataPoints: [
-                    { y: 175, label: "Thời gian thực hiện" },
-                    { y: 47, label: "Số lượng công việc" },
-                    { y: 17, label: "Người tham gia" },
-                    { y: 25, label: "Mục tiêu con" },
-                    { y: 30, label: "Trọng số" }
-                ]
-            },{
-                type: "stackedBar100",
-                toolTipContent: "{label}<br><b>{name}:</b> {y} (#percent%)",
-                showInLegend: true,
-                name: "Mục tiêu số 4",
-                dataPoints: [
-                    { y: 47, label: "Thời gian thực hiện" },
-                    { y: 15, label: "Số lượng công việc" },
-                    { y: 7, label: "Người tham gia" },
-                    { y: 9, label: "Mục tiêu con" },
-                    { y: 20, label: "Trọng số" }
-                ]
-            },{
-                type: "stackedBar100",
-                toolTipContent: "{label}<br><b>{name}:</b> {y} (#percent%)",
-                showInLegend: true,
-                name: "Mục tiêu số 5",
-                dataPoints: [
-                    { y: 54, label: "Thời gian thực hiện" },
-                    { y: 13, label: "Số lượng công việc" },
-                    { y: 8, label: "Người tham gia" },
-                    { y: 11, label: "Mục tiêu con" },
-                    { y: 20, label: "Trọng số" }
-                ]
-            }
-        ]}
+        
         return (
             <div className="table-wrapper box">
                     <section className="content">
@@ -293,9 +221,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 </div>
                             </div>
                             <div className="col-xs-12">
-                                <div className="box box-primary">
-                                    <CanvasJSReact options={options4} />
-                                </div>
+                                <TrendsInOrganizationalUnitKpiChart/>
                             </div>
                             <div className="col-xs-6">
                                 <div className="box box-primary">
@@ -315,14 +241,13 @@ class OrganizationalUnitKpiDashboard extends Component {
 }
 
 function mapState(state) {
-    const { department, dashboardKpiUnit } = state;
-    return { department, dashboardKpiUnit };
+    const { department, managerKpiUnit } = state;
+    return { department, managerKpiUnit };
 }
 
 const actionCreators = {
     getDepartment: DepartmentActions.getDepartmentOfUser,
-    getAllKPIUnit: dashboardActions.getAllKPIUnit,
-    refreshData: dashboardActions.evaluateKPIUnit
+    getAllKPIUnit: managerActions.getAllKPIUnit,
 };
 const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(OrganizationalUnitKpiDashboard);
 export { connectedOrganizationalUnitKpiDashboard as OrganizationalUnitKpiDashboard };

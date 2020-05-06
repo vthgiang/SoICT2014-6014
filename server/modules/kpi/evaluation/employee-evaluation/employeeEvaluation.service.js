@@ -2,7 +2,7 @@ const KPIPersonal = require('../../../../models/kpi/employeeKpiSet.model');
 const Department = require('../../../../models/super-admin/organizationalUnit.model');
 const Task= require('../../../../models/task/task.model'); 
 const DetailKPIPersonal= require('../../../../models/kpi/employeeKpi.model')
-
+const mongoose = require("mongoose");
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
 exports.getKPIAllMember = async (data) => {
     var department = await Department.findOne({
@@ -13,29 +13,29 @@ exports.getKPIAllMember = async (data) => {
         ]
     });
     var kpipersonals;
-    var starttime = data.starttime.split("-");
-    var startdate = new Date(starttime[1], starttime[0], 0);
-    var endtime = data.endtime.split("-");
-    var enddate = new Date(endtime[1], endtime[0], 28);
+    var startDate = data.startDate.split("-");
+    var startdate = new Date(startDate[1], startDate[0], 0);
+    var endDate = data.endDate.split("-");
+    var enddate = new Date(endDate[1], endDate[0], 28);
     var status = parseInt(data.status);
     
     if (data.user === "all") {
         if (status === 5) {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
-                time: { "$gte": startdate, "$lt": enddate }
+                date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else if (status === 4) {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
                 status: { $ne: 3 },
-                time: { "$gte": startdate, "$lt": enddate }
+                date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
                 status: status,
-                time: { "$gte": startdate, "$lt": enddate }
+                date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         }
     } else {
@@ -43,21 +43,21 @@ exports.getKPIAllMember = async (data) => {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
                 creator: data.user,
-                time: { "$gte": startdate, "$lt": enddate }
+                date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else if (status === 4) {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
                 creator: data.user,
                 status: { $ne: 3 },
-                time: { "$gte": startdate, "$lt": enddate }
+                date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         } else {
             kpipersonals = await KPIPersonal.find({
                 organizationalUnit: department._id,
                 creator: data.user,
                 status: status,
-                time: { "$gte": startdate, "$lt": enddate }
+                date: { "$gte": startdate, "$lt": enddate }
             }).skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
         }
     }
@@ -68,7 +68,7 @@ exports.getKPIAllMember = async (data) => {
 exports.getByMember = async (creatorID) => {
 
     var kpipersonals = await KPIPersonal.find({ creator: { $in: creatorID.split(",") } })
-        .sort({ 'time': 'desc' })
+        .sort({ 'date': 'desc' })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis" });
     return kpipersonals;
@@ -76,9 +76,9 @@ exports.getByMember = async (creatorID) => {
 
 // Lấy tất cả kpi cá nhân theo tháng
 exports.getByMonth = async (data) => {
-    var time = data.time.split("-");
-    var month = new Date(time[1], time[0], 0);
-    var kpipersonals = await KPIPersonal.findOne({ creator: data.id, time: month })
+    var date = data.date.split("-");
+    var month = new Date(date[1], date[0], 0);
+    var kpipersonals = await KPIPersonal.findOne({ creator: data.id, date: month })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonals;
@@ -146,10 +146,40 @@ exports.getById = async (id) => {
 }
 
 exports.getTaskById= async (id) =>{
-    var task = await Task.find({kpi: id}) 
-    .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
+    // var task = await Task.find({'evaluations.kpis.kpis': id}) 
+    // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
     
-    return task;
+    var task = await Task.aggregate([
+        {
+            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(id)}
+           },
+         {
+             $unwind: "$evaluations"
+           },
+         {
+             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
+             },
+         {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
+         {$match: { month: 5}},
+         {$match: {year: 2020}},
+         {$unwind:"$results"},
+         {
+             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$taskID"},{status : "$status"}, "$results"]}}
+             },
+            {
+                $lookup: {
+                     from: "users",
+                     localField: "employee",
+                        foreignField: "_id",
+                     as: "employee"
+                    
+                    }
+                },
+               {$unwind : "$employee"}
+        
+           ])
+    
+    return task
 }
 
 exports.getSystemPoint= async(id)=>{
@@ -175,3 +205,4 @@ exports.setPointKPI = async(id_kpi, id_target, data) =>{
     .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
 }
+// id, date id_employee, role, point

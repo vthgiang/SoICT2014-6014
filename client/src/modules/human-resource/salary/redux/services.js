@@ -19,7 +19,7 @@ function searchSalary(data) {
         url: `${ LOCAL_SERVER_API }/salary/paginate`,
         method: 'POST',
         data: data
-    }, false, 'human_resource.salary');
+    }, false, true, 'human_resource.salary');
 }
 
 /**
@@ -31,7 +31,7 @@ function createSalary(data) {
         url: `${ LOCAL_SERVER_API }/salary/create`,
         method: 'POST',
         data: data,
-    }, true, 'human_resource.salary');
+    }, true, true, 'human_resource.salary');
 }
 
 /**
@@ -42,7 +42,7 @@ function deleteSalary(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/${id}`,
         method: 'DELETE',
-    }, true, 'human_resource.salary');
+    }, true, true, 'human_resource.salary');
 }
 
 /**
@@ -55,7 +55,7 @@ function updateSalary(id, data) {
         url: `${ LOCAL_SERVER_API }/salary/${id}`,
         method: 'PUT',
         data: data,
-    }, true, 'human_resource.salary');
+    }, true, true, 'human_resource.salary');
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương 
@@ -63,7 +63,7 @@ function checkSalary(employeeNumber, month) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/salary/checkSalary/${employeeNumber}/${month}`,
         method: 'GET',
-    }, false, 'human_resource.salary');
+    }, false, true, 'human_resource.salary');
 }
 
 // Kiểm tra sự tồn tại của bảng lương nhân viên theo tháng lương trong array
@@ -72,7 +72,7 @@ function checkArraySalary(data) {
         url: `${ LOCAL_SERVER_API }/salary/checkArraySalary`,
         method: 'POST',
         data: data,
-    }, false, 'human_resource.salary');
+    }, false, true, 'human_resource.salary');
 }
 
 // Import lương nhân viên
@@ -81,5 +81,5 @@ function importSalary(data) {
         url: `${ LOCAL_SERVER_API }/salary/import`,
         method: 'POST',
         data: data,
-    }, false, 'human_resource.salary');
+    }, false, true, 'human_resource.salary');
 }

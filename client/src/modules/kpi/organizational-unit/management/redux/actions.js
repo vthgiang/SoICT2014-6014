@@ -3,9 +3,7 @@ import { managerServices } from "./services";
 
 export const managerActions = {
     getAllKPIUnit,
-    getCurrentKPIUnit,
     getChildTargetOfCurrentTarget,
-    addKPIUnit,
     evaluateKPIUnit,
 }
 
@@ -32,27 +30,6 @@ function getAllKPIUnit(id) {
 }
 
 
-// lấy kpi đơn vị hiện tại
-function getCurrentKPIUnit(id) {
-    return dispatch => {
-        dispatch({type: managerConstants.GETCURRENT_KPIUNIT_REQUEST});
-
-        managerServices.getCurrentKPIUnit(id)
-            .then(res =>{
-                dispatch({
-                    type: managerConstants.GETCURRENT_KPIUNIT_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: managerConstants.GETCURRENT_KPIUNIT_FAILURE,
-                    payload: error
-                })
-            })
-    }
-}
-
 // lấy mục tiêu con của mục tiêu hiện tại
 function getChildTargetOfCurrentTarget(id) {
     return dispatch => {
@@ -73,28 +50,6 @@ function getChildTargetOfCurrentTarget(id) {
             })
     }
 }
-
-// Khởi tạo KPI đơn vị
-function addKPIUnit(newKPI) {
-    return dispatch => {
-        dispatch({type: managerConstants.ADD_KPIUNIT_REQUEST});
-
-        managerServices.addKPIUnit(newKPI)
-            .then(res => {
-                dispatch({
-                    type: managerConstants.ADD_KPIUNIT_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: managerConstants.ADD_KPIUNIT_FAILURE,
-                    payload: error
-                })
-            })
-    }
-}
-
 
 // Cập nhật dữ liệu cho kpi đơn vị
 function evaluateKPIUnit(id) {

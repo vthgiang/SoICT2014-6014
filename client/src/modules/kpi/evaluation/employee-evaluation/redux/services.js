@@ -22,9 +22,9 @@ export const kpiMemberServices = {
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.starttime}/${infosearch.endtime}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
         method: 'GET',
-    },false,'kpi.evaluation');
+    }, false, true, 'kpi.evaluation');
 }
 // Lấy tất cả kpi cá nhân
 async function getAllKPIMemberByMember() {
@@ -34,7 +34,7 @@ async function getAllKPIMemberByMember() {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/user/${member}`,
         method: 'GET',
-    },false,'kpi.evaluation');
+    }, false, true, 'kpi.evaluation');
 }
  
 // Lấy KPI cá nhân của nhân vien theo id
@@ -42,14 +42,14 @@ function getKPIMemberById(id) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/${id}`,
         method: 'GET',
-    },false,'kpi.evaluation');
+    }, false, true, 'kpi.evaluation');
 }
 // Lấy KPI cá nhân của nhân vien theo tháng
-function getKPIMemberByMonth(id, time) {
+function getKPIMemberByMonth(id, date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/member/${id}/${time}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/member/${id}/${date}`,
         method: 'GET',
-    },false,'kpi.evaluation')
+    }, false, true, 'kpi.evaluation')
 }
  
 // Phê duyệt kpi cá nhân
@@ -57,7 +57,7 @@ function approveKPIMember(id) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/approve/${id}`,
         method: 'PUT',
-    },true,'kpi.evaluation');
+    }, true, true, 'kpi.evaluation');
 }
  
 // Chỉnh sửa mục tiêu KPI cá nhân
@@ -66,21 +66,21 @@ function editTargetKPIMember(id, newTarget) {
         url:`${LOCAL_SERVER_API}/kpimembers/target/${id}`,
         method: 'PUT',
         data: newTarget
-    },true,'kpi.evaluation')
+    }, true, true, 'kpi.evaluation')
 }
 // chỉnh sửa trạng thái của kpi cá nhân
 function editStatusTarget(id, status) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/status-target/${id}/${status}`,
         method: 'PUT',
-    },true,'kpi.evaluation');
+    }, true, true, 'kpi.evaluation');
 }
  
 function getTaskById(id) {
     return sendRequest({
         url:`${LOCAL_SERVER_API}/kpimembers/task/${id}`,
         method: 'GET',
-    },false,'kpi.evaluation')
+    }, false, true, 'kpi.evaluation')
 }
  
 // chỉnh sửa approvepoint
@@ -90,5 +90,5 @@ function setPointKPI(id_kpi, id_target, newPoint){
         url:`${LOCAL_SERVER_API}/kpimembers/appovepoint/${id_kpi}/${id_target}`,
         method: 'PUT',
         data: newPoint
-    },true,'kpi.evaluation')
+    }, true, true, 'kpi.evaluation')
 }

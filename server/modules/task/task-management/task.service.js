@@ -15,12 +15,24 @@ const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, Organizat
 exports.getTask = async (id) => {
     //req.params.id
     var task = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees parent" });        
-    return {
-        "info": task,
-        "actions": task.taskActions,
-        "informations": task.taskInformations
-    };
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" });        
+    if(task.taskTemplate === null){
+        return {
+            "info": task,
+            // "actions": task.taskActions,
+            // "informations": task.taskInformations
+        };
+    } else {
+        var task2 = await Task.findById(id)
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
+        .populate({path: "taskActions.creator"});
+        return {
+            "info": task2,
+            "actions": task2.taskActions,
+            "informations": task2.taskInformations
+        };
+    }
+        
 }
 
 /**
@@ -183,6 +195,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (perpageId,numberId,uni
 /**
  * Tạo công việc mới
  */
+
+
 exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,descriptionId,priorityId,taskTemplateId,roleId,kpiId,responsibleId,accountableId,consultedId,informedId) => {
     // Lấy thông tin công việc cha
         var level = 1;
@@ -196,12 +210,22 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         var startDate = new Date(startTime[2], startTime[1]-1, startTime[0]);
         var endTime = endDateId.split("-");
         var endDate = new Date(endTime[2], endTime[1]-1, endTime[0]);
+        
         if(taskTemplateId !== null){
-            var taskTemplate = TaskTemplate.findById(taskTemplateId)
+            var taskTemplate = await TaskTemplate.findById(taskTemplateId);
+            var taskActions = taskTemplate.taskActions;
+
+            // taskActions.forEach(item => {
+            //     item = {
+            //         ...item,
+            //         creator: taskTemplate.creator
+            //     }
+            // });
+            
         }
-        console.log(taskTemplate);
+
         var evaluations = [{
-            date: startDate,
+            // date: startDate,
             kpis : kpiId,
             results : [],
             taskInformations: taskTemplate?taskTemplate.taskInformations:[],
@@ -215,8 +239,9 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
             startDate: startDate,
             endDate: endDate,
             priority: priorityId,
+            taskTemplate: taskTemplate ? taskTemplate : null,
             taskInformations: taskTemplate?taskTemplate.taskInformations:[],
-            taskActions: taskTemplate?taskTemplate.taskActions:[],
+            taskActions: taskTemplate?taskActions:[],
             role: roleId,
             parent: parentId,
             level: level,

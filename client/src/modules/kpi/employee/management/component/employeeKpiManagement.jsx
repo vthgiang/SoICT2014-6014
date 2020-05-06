@@ -107,11 +107,11 @@ class KPIPersonalManager extends Component {
                                             {(typeof listkpi !== "undefined" && listkpi.length !== 0) ?
                                                 listkpi.map((item, index) =>
                                                     <tr key={index}>
-                                                        <td>{this.formatDate(item.time)}</td>
+                                                        <td>{this.formatDate(item.date)}</td>
                                                         <td>{item.kpis.length}</td>
-                                                        <td>{item.systempoint === null ? "Chưa đánh giá" : item.systempoint}</td>
-                                                        <td>{item.mypoint === null ? "Chưa đánh giá" : item.mypoint}</td>
-                                                        <td>{item.approverpoint === null ? "Chưa đánh giá" : item.approverpoint}</td>
+                                                        <td>{item.automaticPoint === null ? "Chưa đánh giá" : item.automaticPoint}</td>
+                                                        <td>{item.employeePoint === null ? "Chưa đánh giá" : item.employeePoint}</td>
+                                                        <td>{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                                                         <td>
                                                             <a href={`#detailKPIPersonal${item._id}`} data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Xem chi tiết KPI tháng này" ><i className="material-icons">view_list</i></a>
                                                             <ModalDetailKPIPersonal kpipersonal={item} />

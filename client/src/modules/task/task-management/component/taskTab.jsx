@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DataTableSetting, PaginateBar } from '../../../../common-components';
+import { TreeTable } from '../../../../common-components';
 
 class TabTaskContent extends Component {
     constructor(props) {
@@ -17,12 +18,12 @@ class TabTaskContent extends Component {
             startTimer: false,
             currentTimer: "",
             currentPage: 1,
-            showModal: "",
-            showAddSubTask: ""
+            // showModal: "",
+            // showAddSubTask: ""
         };
     }
     componentDidMount() {
-        this.props.getDepartment();//fix ở prj mới rồi--------------localStorage.getItem('id')------------------
+        this.props.getDepartment();
         var content = this.props.role;
         if (content === "responsible") {
             this.props.getResponsibleTaskByUser("[]", "1", "20", "[]", "[]", "[]", null);
@@ -211,7 +212,7 @@ class TabTaskContent extends Component {
         if (status.length === 0) status = "[]";
         if (unit.length === 0) unit = "[]";
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(unit, 1, perPage, status, "[]", "[]", null);
         } else if (content === "consulted") {
@@ -234,7 +235,7 @@ class TabTaskContent extends Component {
         var status = window.$("#multiSelectStatus").val();
         var content = this.props.role;
         if (content === "responsible") {
-            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);//-------fix--localStorage.getItem('id') bên service
+            this.props.getResponsibleTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "accountable") {
             this.props.getAccountableTaskByUser(unit, 1, 20, status, "[]", "[]", null);
         } else if (content === "consulted") {
@@ -271,11 +272,7 @@ class TabTaskContent extends Component {
                 showModal: id
             }
         })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`modelPerformTask${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
+        window.$(`#modelPerformTask${id}`).modal('show');
     }
     handleCheckClickAddSubTask = async (id) => {
         await this.setState(state => {
@@ -286,6 +283,23 @@ class TabTaskContent extends Component {
         });
         window.$(`#addNewTask${id}`).modal('show')
     }
+
+    getResponsibleOfItem = (data, id) => {
+        data.map(item => {
+            if (id === item._id) {
+                return item.responsibleEmployees
+            }
+        })
+    }
+
+    getUnitIdOfItem = (data, id) => {
+        data.map(item => {
+            if (id === item._id) {
+                return item.organizationalUnit._id
+            }
+        })
+    }
+
     render() {
         var currentTasks, units = [];
         var pageTotals;
@@ -297,77 +311,131 @@ class TabTaskContent extends Component {
         }
         if (department.unitofuser) units = department.unitofuser;
         const items = [];
+
+        // khởi tạo dữ liệu TreeTable
+        var column = [
+            { name: translate('task.task_management.col_name'), key: "name" },
+            { name: translate('task.task_management.col_organization'), key: "organization" },
+            { name: translate('task.task_management.col_priority'), key: "priority" },
+            { name: translate('task.task_management.col_start_date'), key: "startDate" },
+            { name: translate('task.task_management.col_end_date'), key: "endDate" },
+            { name: translate('task.task_management.col_status'), key: "status" },
+            { name: translate('task.task_management.col_progress'), key: "progress" },
+            { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
+        ];
+        var data = [];
+        if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
+            var dataTemp = currentTasks;
+            for (let n in dataTemp) {
+                data[n] = {
+                    ...dataTemp[n],
+                    name: dataTemp[n].name,
+                    organization: dataTemp[n].organizationalUnit.name,
+                    priority: dataTemp[n].priority,
+                    startDate: this.formatDate(dataTemp[n].startDate),
+                    endDate: this.formatDate(dataTemp[n].endDate),
+                    status: dataTemp[n].status,
+                    progress: dataTemp[n].progress + "%",
+                    totalLoggedTime: this.convertTime(dataTemp[n].totalLoggedTime),
+                    parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
+                }
+            }
+            if (this.props.role === "creator" || this.props.role === "informed") {
+                for (let i in data) {
+                    data[i] = { ...data[i], action: ["edit", ["add", "store"]] }
+                }
+            }
+            if (this.props.role === "responsible" || this.props.role === "consulted") {
+                for (let i in data) {
+                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", "store"]] }
+                }
+            }
+
+            if (this.props.role === "accountable") {
+                for (let i in data) {
+                    data[i] = { ...data[i], action: ["edit", "startTimer", ["add", "store", "delete"]] }
+                }
+            }
+        }
+
         return (
             <React.Fragment>
                 <div className="qlcv">
 
                     <div style={{ height: "40px" }}>
                         {this.props.role !== "informed" &&
-                            <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một công việc" data-target="#addNewTask" data-backdrop="static" data-keyboard="false">Thêm mới</button>
+                            <button type="button" className="btn btn-success pull-right" data-toggle="modal" title={translate('task.task_management.add_title')} data-target="#addNewTask" data-backdrop="static" data-keyboard="false">{translate('task.task_management.add_task')}</button>
                         }
                         <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id="" />
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>Đơn vị</label>
+                            <label>{translate('task.task_management.department')}</label>
                             {units &&
                                 <SelectMulti id="multiSelectUnit1"
                                     defaultValue={units.map(item => { return item._id })}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
-                                    options={{ nonSelectedText: "Chọn đơn vị", allSelectedText: "Tất cả các đơn vị" }}>
+                                    options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                 </SelectMulti>
                             }
                         </div>
                         <div className="form-group">
-                            <label>Trạng thái</label>
-                            <SelectMulti id="multiSelectStatus" defaultValue={["Đang chờ", "Đang thực hiện"]}
+                            <label>{translate('task.task_management.status')}</label>
+                            <SelectMulti id="multiSelectStatus" defaultValue={[
+                                translate('task.task_management.inprocess')
+                            ]}
                                 items={[
-                                    { value: "Đang chờ", text: "Đang chờ" },
-                                    { value: "Đang thực hiện", text: "Đang thực hiện" },
-                                    { value: "Quá hạn", text: "Quá hạn" },
-                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Đã hoàn thành", text: "Đã hoàn thành" },
-                                    { value: "Đã hủy", text: "Đã hủy" },
-                                    { value: "Tạm dừng", text: "Tạm dừng" }
+                                    { value: "Inprocess", text: translate('task.task_management.inprocess') },
+                                    { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+                                    { value: "Finished", text: translate('task.task_management.finished') },
+                                    { value: "Delayed", text: translate('task.task_management.delayed') },
+                                    { value: "Canceled", text: translate('task.task_management.canceled') }
                                 ]}
-                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Tất cả các trạng thái" }}>
+                                options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
                             </SelectMulti>
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>Độ ưu tiên</label>
-                            <SelectMulti id="multiSelectPriority" defaultValue={["Cao", "Trung bình", "Thấp"]}
+                            <label>{translate('task.task_management.priority')}</label>
+                            <SelectMulti id="multiSelectPriority" defaultValue={[
+                                translate('task.task_management.high'),
+                                translate('task.task_management.normal'),
+                                translate('task.task_management.low')
+                            ]}
                                 items={[
-                                    { value: "Cao", text: "Cao" },
-                                    { value: "Trung bình", text: "Trung bình" },
-                                    { value: "Thấp", text: "Thấp" }
+                                    { value: "Cao", text: translate('task.task_management.high') },
+                                    { value: "Trung bình", text: translate('task.task_management.normal') },
+                                    { value: "Thấp", text: translate('task.task_management.low') }
                                 ]}
-                                options={{ nonSelectedText: "Chọn mức độ ưu tiên", allSelectedText: "Tất cả các mức" }}>
+                                options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label>Đặc tính</label>
-                            <SelectMulti id="multiSelectCharacteristic" defaultValue={["Lưu trong kho", "Tháng hiện tại"]}
+                            <label>{translate('task.task_management.special')}</label>
+                            <SelectMulti id="multiSelectCharacteristic" defaultValue={[
+                                translate('task.task_management.store'),
+                                translate('task.task_management.current_month')
+                            ]}
                                 items={[
-                                    { value: "Lưu trong kho", text: "Lưu trong kho" },
-                                    { value: "Tháng hiện tại", text: "Tháng hiện tại" }
+                                    { value: "Lưu trong kho", text: translate('task.task_management.stored') },
+                                    { value: "Tháng hiện tại", text: translate('task.task_management.current_month') }
                                 ]}
-                                options={{ nonSelectedText: "Chọn đặc tính", allSelectedText: "Tất cả các đặc tính" }}>
+                                options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
                             </SelectMulti>
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>Tên công việc</label>
-                            <input className="form-control" type="text" placeholder="Tìm kiếm theo tên" />
+                            <label>{translate('task.task_management.name')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} />
                         </div>
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
                         </div>
                     </div>
 
@@ -377,85 +445,62 @@ class TabTaskContent extends Component {
                         tableContainerId="tree-table-container"
                         tableWidth="1300px"
                         columnArr={[
-                            'Tên công việc',
-                            'Đơn vị',
-                            'Độ ưu tiên',
-                            'Ngày bắt đầu',
-                            'Ngày kết thúc',
-                            'Trạng thái',
-                            'Tiến độ',
-                            'Thời gian thực hiện'
+                            translate('task.task_management.col_name'),
+                            translate('task.task_management.col_organization'),
+                            translate('task.task_management.col_priority'),
+                            translate('task.task_management.col_start_date'),
+                            translate('task.task_management.col_end_date'),
+                            translate('task.task_management.col_status'),
+                            translate('task.task_management.col_progress'),
+                            translate('task.task_management.col_logged_time')
                         ]}
                         limit={this.state.perPage}
                         setLimit={this.setLimit}
                         hideColumnOption={true}
                     />
-                    <div id="tree-table-container">
-                        <table id="tree-table" className="table table-hover table-bordered table-striped">
-                            <thead>
-                                <tr id="task">
-                                    <th style={{ width: "300px" }} title="Tên công việc">Tên công việc</th>
-                                    <th title="Đơn vị">Đơn vị</th>
-                                    <th title="Độ ưu tiên">Độ ưu tiên</th>
-                                    <th title="Ngày bắt đầu">Bắt đầu</th>
-                                    <th title="Ngày kết thúc">Kết thúc</th>
-                                    <th title="Trạng thái">Trạng thái</th>
-                                    <th title="Tiến độ">Tiến độ</th>
-                                    <th title="Thời gian thực hiện">Thời gian</th>
-                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody className="task-table">
-                                {
-                                    (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) ?
-                                        this.list_to_tree(currentTasks).map(item =>
-                                            <tr key={item._id} data-id={item._id} data-parent={item.parent === null ? item.parent : item.parent._id} data-level={item.level}>
-                                                <td title={item.name} data-column="name">{item.name}</td>
-                                                <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
-                                                <td title={item.priority}>{item.priority}</td>
-                                                <td title={this.formatDate(item.startDate)}>{this.formatDate(item.startDate)}</td>
-                                                <td title={this.formatDate(item.endDate)}>{this.formatDate(item.endDate)}</td>
-                                                <td title={item.status}>{item.status}</td>
-                                                <td title={item.progress + "%"}>{item.progress + "%"}</td>
-                                                <td title={this.convertTime(item.totalLoggedTime)}>{this.convertTime(item.totalLoggedTime)}</td>
-                                                <td>
-                                                    <a href={`#modelPerformTask${item._id}`} className="edit" data-toggle="modal" onClick={() => this.handleShowModal(item._id)} title={"Bắt đầu" + item.name}><i className="material-icons">edit</i></a>
-                                                    {
-                                                        this.state.showModal === item._id &&
 
-                                                        <ModalPerformTask
-                                                            responsible={item.responsibleEmployees}
-                                                            unit={item.organizationalUnit._id}
-                                                            id={item._id}
-                                                            role={this.props.role}
-                                                        />
-                                                    }
-                                                    {
-                                                        this.props.role !== "creator" && this.props.role !== "informed"
-                                                        && <a href="#abc" className={startTimer && currentTimer === item._id ? "edit" : "timer"} id="task-timer" title="Bắt đầu bấm giờ" onClick={() => this.handleCountTime(item._id)}><i className="material-icons">timer</i></a>
-                                                    }
-                                                    <button type="button" data-toggle="collapse" data-target={`#actionTask${item._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
-                                                    <div id={`actionTask${item._id}`} className="collapse">
-                                                        <a href={`#addNewTask${item._id}`} onClick={() => this.handleCheckClickAddSubTask(item._id)} data-toggle="modal" className="add_circle" title="Thêm công việc con cho công việc này"><i className="material-icons">add_circle</i></a>
-                                                        <a href="#abc" className="all_inbox" title="Lưu công việc này vào kho"><i className="material-icons">all_inbox</i></a>
-                                                        {
-                                                            this.props.role === "accountable" &&
-                                                            <a href="#abc" className="delete" onClick={() => this.handleAction(item._id)} title="Xóa công việc này"><i className="material-icons"></i></a>
-                                                        }
-                                                    </div>
-                                                    {
-                                                        this.state.showAddSubTask === item._id &&
-                                                        <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} />
-                                                    }
-                                                    {/* <ModalAddTask currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} id={item._id} role={this.props.role} /> */}
-                                                </td>
-                                            </tr>
-                                        ) : <tr><td colSpan={9}>Không có dữ liệu</td></tr>
-                                }
-                            </tbody>
-                        </table>
+                    <div id="tree-table-container">
+                        <TreeTable
+                            behaviour="show-children"
+                            column={column}
+                            data={data}
+                            titleAction={{
+                                edit: translate('task.task_management.action_edit'),
+                                delete: translate('task.task_management.action_delete'),
+                                store: translate('task.task_management.action_store'),
+                                add: translate('task.task_management.action_add'),
+                                startTimer: translate('task.task_management.action_start_timer'),
+                            }}
+                            funcEdit={this.handleShowModal}
+                            funcAdd={this.handleCheckClickAddSubTask}
+                            funcStartTimer={this.handleCountTime}
+                            // funcStore={this.handleStore}
+                            // funcDelete={this.handleDelete}
+                        />
 
                     </div>
+                    {
+                        // this.state.showModal !== undefined &&
+
+                        <ModalPerformTask
+                            // responsible={item.responsibleEmployees}
+                            // unit={item.organizationalUnit._id}
+                            // responsible={this.getResponsibleOfItem(data, this.state.showModal)}
+                            // unit={this.getUnitIdOfItem(data, this.state.showModal)}
+                            id={this.state.showModal}
+                            role={this.props.role}
+                        />
+                    }
+
+                    {
+                        this.state.showAddSubTask !== undefined &&
+                        <ModalAddTask
+                            currentTasks={(typeof currentTasks !== 'undefined' && currentTasks.length !== 0) && this.list_to_tree(currentTasks)}
+                            id={this.state.showAddSubTask}
+                            role={this.props.role}
+                        />
+                    }
+
 
                     <PaginateBar
                         pageTotal={tasks.pages}

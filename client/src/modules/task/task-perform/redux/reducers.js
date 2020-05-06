@@ -11,7 +11,7 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 adding: false,
-                currentTask: action.task.content
+                currentTask: action.task.data.content
             };
         case performTaskConstants.CREATE_RESULT_TASK_FAILURE:
             return {
@@ -24,7 +24,7 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.EDIT_RESULT_TASK_SUCCESS:
             return {
                 ...state,
-                resulttask: action.resultTask.content
+                resulttask: action.resultTask.data.content
             };
         case performTaskConstants.EDIT_RESULT_TASK_FAILURE:
             return {
