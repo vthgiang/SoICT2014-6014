@@ -189,7 +189,6 @@ class EmployeeCreatePage extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { translate } = this.props;
         return (
             <div className=" qlcv">
@@ -299,8 +298,8 @@ class EmployeeCreatePage extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, Salary, Discipline, Sabbatical } = state;
-    return { employeesManager, Salary, Discipline, Sabbatical };
+    const { employeesManager} = state;
+    return { employeesManager};
 };
 
 const actionCreators = {
