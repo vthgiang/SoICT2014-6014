@@ -1,1 +1,0 @@
-Thư mục này dùng để lưu trữ các tài liệu đính kèm trong module quản lý nhân sự
