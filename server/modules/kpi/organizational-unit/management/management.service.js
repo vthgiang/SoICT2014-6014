@@ -25,7 +25,7 @@ exports.get = async (id) => {
 // Lấy tất cả mục tiêu con của mục tiêu hiện tại
 exports.getChildTargetByParentId = async (id) => {
     //req.params.id
-    var childTarget = await DetailKPIUnit.find({parent: id});
+    var childTarget = await DetailKPIPersonal.find({parent: id});
     return childTarget;   
 }
 

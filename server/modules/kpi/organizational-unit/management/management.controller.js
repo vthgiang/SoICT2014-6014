@@ -27,7 +27,7 @@ exports.get =async (req, res) => {
 // Lấy tất cả các mục tiêu con của mục tiêu hiện tại
 exports.getChildTargetByParentId =async (req, res) => {
     try {
-        var childTarget = await managerService.getChildTargetByParentId(id);
+        var childTarget = await managerService.getChildTargetByParentId(req.params.id);
         LogInfo(req.user.email, ' get child target by parent id ',req.user.company)
         res.status(200).json({
             success: true,
