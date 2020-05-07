@@ -22,7 +22,7 @@ export const kpiMemberServices = {
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.starttime}/${infosearch.endtime}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
@@ -45,9 +45,9 @@ function getKPIMemberById(id) {
     }, false, true, 'kpi.evaluation');
 }
 // Lấy KPI cá nhân của nhân vien theo tháng
-function getKPIMemberByMonth(id, time) {
+function getKPIMemberByMonth(id, date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/member/${id}/${time}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/member/${id}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }

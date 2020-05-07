@@ -21,13 +21,21 @@ class DialogModal extends Component {
         });
         if(reset) document.getElementById(this.props.formID).reset();
         window.$(`#${this.props.modalID}`).modal("hide");
+
+        if (this.props.afterClose !== undefined){
+            this.props.afterClose()
+        }
     }
 
     save = () => {
-        const {closeOnSave = true, resetOnSave = false} = this.props;
+        const {closeOnSave = true, resetOnSave = false, afterSave} = this.props;
         this.props.func();
         if (closeOnSave){
             this.closeModal(resetOnSave);
+        }
+
+        if (afterSave !== undefined){
+            afterSave()
         }
     }
 

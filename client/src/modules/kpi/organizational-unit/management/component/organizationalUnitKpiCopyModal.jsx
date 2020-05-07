@@ -17,7 +17,7 @@ class ModalCopyKPIUnit extends Component {
         this.state = {
             kpiunit: {
                 unit: "",
-                time: this.formatDate(Date.now()),
+                date: this.formatDate(Date.now()),
                 creator: "" //localStorage.getItem("id")
             }
         };
@@ -60,7 +60,7 @@ class ModalCopyKPIUnit extends Component {
             }
         })
         var { kpiunit } = this.state;
-        if (kpiunit.unit && kpiunit.time ) {//&& kpiunit.creater
+        if (kpiunit.unit && kpiunit.date ) {//&& kpiunit.creater
             Swal.fire({
                 title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                 type: 'warning',
@@ -88,7 +88,7 @@ class ModalCopyKPIUnit extends Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal"  onClick={() => this.handleCloseModal(kpiunit._id)} aria-hidden="true">×</button>
-                            <h3 className="modal-title">Thiết lập KPI tháng mới từ KPI tháng {this.formatDate(kpiunit.time)}</h3>
+                            <h3 className="modal-title">Thiết lập KPI tháng mới từ KPI tháng {this.formatDate(kpiunit.date)}</h3>
                         </div>
                         <div className="modal-body">
                             <div className="form-group">
@@ -101,7 +101,7 @@ class ModalCopyKPIUnit extends Component {
                                     <div className="input-group-addon">
                                         <i className="fa fa-calendar" />
                                     </div>
-                                    <input type="text" className="form-control pull-right" ref={input => this.time = input} defaultValue={this.formatDate(Date.now())} name="time" id="datepicker2" data-date-format="mm-yyyy" />
+                                    <input type="text" className="form-control pull-right" ref={input => this.date = input} defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
                                 </div>
                             </div>
                             <div className="form-group" >
@@ -132,7 +132,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addKPIUnit: managerActions.addKPIUnit
 };
 const connectedModalCopyKPIUnit = connect(mapState, actionCreators)(ModalCopyKPIUnit);
 export { connectedModalCopyKPIUnit as ModalCopyKPIUnit };

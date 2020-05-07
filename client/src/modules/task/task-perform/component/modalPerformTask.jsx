@@ -12,7 +12,7 @@ import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { managerKpiActions } from "../../../kpi/employee/management/redux/actions";
-import ModalApproveTask from "./modalApproveTask";
+import { ModalApproveTask } from "./modalApproveTask";
 import { ButtonModal } from '../../../../common-components';
 
 class ModalPerformTask extends Component {
@@ -73,7 +73,7 @@ class ModalPerformTask extends Component {
         this.approvepoint = [];
     }
     componentDidUpdate() {
-        if (this.props.id !== undefined){
+        if (this.props.id !== undefined) {
             let script3 = document.createElement('script');
             script3.src = '../lib/main/js/CoCauToChuc.js';
             script3.async = true;
@@ -111,7 +111,7 @@ class ModalPerformTask extends Component {
                 }
             }
         }
-        
+
     }
     componentDidMount() {
         let script2 = document.createElement('script');
@@ -121,8 +121,8 @@ class ModalPerformTask extends Component {
         document.body.appendChild(script2);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.id !== prevState.id){
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
                 id: nextProps.id
@@ -131,8 +131,8 @@ class ModalPerformTask extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        
-        if(nextProps.id !== this.state.id ){
+
+        if (nextProps.id !== this.state.id) {
             // console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
             this.props.getLogTimer(nextProps.id);
             this.props.getTaskById(nextProps.id);
@@ -434,7 +434,7 @@ class ModalPerformTask extends Component {
                     ...state.newComment,
                     parent: id,
                     content: this.contentComment[index].value,
-                    taskActionId : id
+                    taskActionId: id
                 }
             }
         })
@@ -675,7 +675,7 @@ class ModalPerformTask extends Component {
         const { time } = this.state.timer;
         const { tasks, performtasks, user, KPIPersonalManager } = this.props;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        
+
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
             actions = tasks.task.actions;

@@ -23,32 +23,22 @@ export const EmployeeManagerActions = {
 // Lấy danh sách nhân viên
 function getAllEmployee(data) {
     return dispatch => {
-        dispatch(request());
-        EmployeeService.getAll(data)
-            .then(
-                employees => dispatch(success(employees)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
-
-    function request() {
-        return {
+        dispatch({
             type: EmployeeConstants.GETALL_REQUEST
-        };
-    };
-
-    function success(employees) {
-        return {
-            type: EmployeeConstants.GETALL_SUCCESS,
-            employees
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EmployeeConstants.GETALL_FAILURE,
-            error
-        };
+        });
+        EmployeeService.getAll(data)
+            .then(res => {
+                dispatch({
+                    type: EmployeeConstants.GETALL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EmployeeConstants.GETALL_FAILURE,
+                    error: err.response.data
+                });
+            })
     };
 }
 
@@ -119,38 +109,23 @@ function checkEmail(email) {
 // Tạo mới một nhân viên mới
 function addNewEmployee(employee) {
     return dispatch => {
-        dispatch(request(employee));
+        dispatch({
+            type: EmployeeConstants.ADDEMPLOYEE_REQUEST
+        });
 
         EmployeeService.addNewEmployee(employee)
-            .then(
-                employee => {
-                    dispatch(success(employee));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                }
-            );
-    };
-
-    function request(employee) {
-        return {
-            type: EmployeeConstants.ADDEMPLOYEE_REQUEST,
-            employee
-        }
-    };
-
-    function success(employee) {
-        return {
-            type: EmployeeConstants.ADDEMPLOYEE_SUCCESS,
-            employee
-        }
-    };
-
-    function failure(error) {
-        return {
-            type: EmployeeConstants.ADDEMPLOYEE_FAILURE,
-            error
-        }
+            .then(res => {
+                dispatch({
+                    type: EmployeeConstants.ADDEMPLOYEE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EmployeeConstants.ADDEMPLOYEE_FAILURE,
+                    error: err.response.data
+                });
+            })
     };
 }
 
@@ -191,6 +166,30 @@ function updateInformationEmployee(id, informationEmployee) {
     };
 
 }
+
+// Xoá thông tin nhân viên
+function deleteEmployee(id) {
+    return dispatch => {
+        dispatch({
+            type: EmployeeConstants.DELETE_EMPLOYEE_REQUEST
+        });
+
+        EmployeeService.deleteEmployee(id)
+            .then(res => {
+                dispatch({
+                    type: EmployeeConstants.DELETE_EMPLOYEE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EmployeeConstants.DELETE_EMPLOYEE_FAILURE,
+                    error: err.response
+                });
+            })
+    }
+}
+
 
 // Cập nhật ảnh đại diện
 function uploadAvatar(employeeNumber, fileUpload) {
@@ -342,38 +341,6 @@ function updateFile(employeeNumber, fileUpload) {
     };
 }
 
-// Xoá thông tin nhân viên
-function deleteEmployee(id) {
-    return dispatch => {
-        dispatch(request());
-
-        EmployeeService.deleteEmployee(id)
-            .then(
-                employeeDelete => dispatch(success(employeeDelete)),
-                error => dispatch(failure(error.toString()))
-            );
-    }
-
-    function request() {
-        return {
-            type: EmployeeConstants.DELETE_EMPLOYEE_REQUEST,
-        };
-    };
-
-    function success(employeeDelete) {
-        return {
-            type: EmployeeConstants.DELETE_EMPLOYEE_SUCCESS,
-            employeeDelete
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EmployeeConstants.DELETE_EMPLOYEE_FAILURE,
-            error
-        };
-    };
-}
 
 // Kiểm tra sự tồn tại của MSNV trong array
 function checkArrayMSNV(arrayMSNV) {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { managerActions } from '../redux/actions';
+import { createUnitKpiActions } from '../../creation/redux/actions'
 
 class ModalDetailKPI extends Component {
     componentDidMount() {
@@ -26,8 +27,8 @@ class ModalDetailKPI extends Component {
     }
     render() {
         var currentKPI;
-        const { managerKpiUnit, kpiunit } = this.props;
-        if (managerKpiUnit.currentKPI) currentKPI = managerKpiUnit.currentKPI;
+        const { createKpiUnit, kpiunit } = this.props;
+        if (createKpiUnit.currentKPI) currentKPI = createKpiUnit.currentKPI;
         return (
             <div className="modal modal-full fade" id={"dataResultTask" + this.props.kpiunit._id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -225,12 +226,12 @@ class ModalDetailKPI extends Component {
 }
 
 function mapState(state) {
-    const { managerKpiUnit } = state;
-    return { managerKpiUnit };
+    const { createKpiUnit } = state;
+    return { createKpiUnit };
 }
 
 const actionCreators = {
-    getCurrentKPIUnit: managerActions.getCurrentKPIUnit,
+    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
     getChildTarget: managerActions.getChildTargetOfCurrentTarget
 };
 const connectedModalDetailKPI = connect(mapState, actionCreators)(ModalDetailKPI);

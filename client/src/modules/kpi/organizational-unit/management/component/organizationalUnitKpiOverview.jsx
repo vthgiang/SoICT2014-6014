@@ -17,7 +17,6 @@ class KPIUnitManager extends Component {
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id')
         this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
-        this.handleResizeColumn();
     }
     componentDidUpdate() {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
@@ -29,34 +28,6 @@ class KPIUnitManager extends Component {
                 }
             })
         }
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     formatDate(date) {
         var d = new Date(date),
@@ -108,19 +79,19 @@ class KPIUnitManager extends Component {
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.result }
+                    return { label: this.formatDate(item.date), y: item.result }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[0].result }
+                    return { label: this.formatDate(item.date), y: item.listtarget[0].result }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[1].result }
+                    return { label: this.formatDate(item.date), y: item.listtarget[1].result }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
+                    return { label: this.formatDate(item.date), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (100 - item.result) }
+                    return { label: this.formatDate(item.date), y: (100 - item.result) }
                 }).reverse();
             };
             
@@ -128,20 +99,20 @@ class KPIUnitManager extends Component {
         return (
             <React.Fragment>
             <div className="box">
-                <div className="box-body qlcv">
-                    <DataTableSetting class="pull-right" tableId="tree-table" tableContainerId="tree-table-container"
-                        tableWidth="1300px" columnArr={[ 'STT' ,'Người tạo', 'Thời gian' , 'Số lượng mục tiêu'
-                        , 'Kết quả đánh giá' ,'Xem chi tiết' , 'Tạo KPI tháng mới' , 'Cập nhật' ]} limit={this.state.perPage}
-                        setLimit={this.setLimit} hideColumnOption={true} />
-                    <table id="example1" className="table table-hover table-bordered">
+                <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
+                    columnArr={[ 'STT', 'Người tạo', 'Thời gian', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
+                    limit={this.state.perPage}
+                    setLimit={this.setLimit} hideColumnOption={true} />
+                <div className="box-body qlcv" id="kpiTableContainer">
+                    <table id="kpiTable" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th tittle="STT">STT</th>
+                                <th title="STT">STT</th>
                                 <th title="Người tạo">Người tạo</th>
                                 <th title="Thời gian">Thời gian</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                <th tittle="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
+                                <th title="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
                                     {}}>Xem chi tiết</th>
                                 <th tittle="Tạo KPI tháng mới" style={this.checkPermisson(currentUnit && currentUnit[0].dean)?
                                     {} : {}}>Tạo KPI tháng mới</th>
@@ -156,7 +127,7 @@ class KPIUnitManager extends Component {
                             <tr key={index+1}>
                                 <td title={index+1}>{index + 1}</td>
                                 <td>{item.creator.name}</td>
-                                <td>{this.formatDate(item.time)}</td>
+                                <td>{this.formatDate(item.date)}</td>
                                 <td>{item.kpis.length}</td>
                                 <td>{item.result}</td>
                                 <td>

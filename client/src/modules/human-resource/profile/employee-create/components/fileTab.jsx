@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { LOCAL_SERVER_API } from '../../../../../env';
 import { FileAddModal, FileEditModal } from './combinedContent';
 
 class FileTab extends Component {
@@ -118,20 +119,22 @@ class FileTab extends Component {
                             </thead>
                             <tbody>
                                 {(typeof files !== 'undefined' && files.length !== 0) &&
-                                    files.map((x, index) => (
-                                        <tr key={index}>
+                                    files.map((x, index) => {
+                                        return <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
                                             <td>{(typeof x.file === 'undefined' || x.file.length === 0) ? translate('manage_employee.no_files') :
-                                                <a href={x.urlFile} target="_blank"><u>{x.file}</u></a>}</td>
+                                                <a href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`} target="_blank"><u>{x.file}</u></a>}</td>
                                             <td >
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_file')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
-                                    ))}
+                                    }
+
+                                    )}
                             </tbody>
                         </table>
                         {

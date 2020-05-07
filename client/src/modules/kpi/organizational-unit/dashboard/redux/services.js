@@ -7,60 +7,15 @@ import {
 } from '../../../../../config';
 import jwt from 'jsonwebtoken';
 import { sendRequest} from '../../../../../helpers/requestHelper'
-export const dashboardServices = {
-    getAllKPIUnit,
-    // getCurrentKPIUnit,
-    // getChildTargetOfCurrentTarget,
-    // addKPIUnit,
-    evaluateKPIUnit,
+
+export const dashboardOrganizationalUnitKpiServices = {
+    getChildTargetOfOrganizationalUnitKpis
 }
 
-// Lấy tất cả KPI đơn vị
-function getAllKPIUnit(id) {
+/** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
+function getChildTargetOfOrganizationalUnitKpis(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/unit/${id}`,
-        method: 'GET',
-    }, false, true, 'kpi.organizational_unit');
-
+        url: `${LOCAL_SERVER_API}/kpiunits/childTargets/${id}`,
+        method: 'GET'
+    }, false)
 }
-
-// Lấy KPI đơn vị hiện tại
-// function getCurrentKPIUnit(id) {
-//     const requestOptions = {
-//         method: 'GET',
-//         headers: AuthenticateHeader()
-//     };
-
-//     return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
-// }
-
-// Lấy tất cả KPI đơn vị
-// function getChildTargetOfCurrentTarget(id) {
-//     const requestOptions = {
-//         method: 'GET',
-//         headers: AuthenticateHeader()
-//     };
-
-//     return fetch(`${LOCAL_SERVER_API}/kpiunits/child-target/${id}`, requestOptions).then(handleResponse);
-// }
-
-// Khởi tạo KPI đơn vị 
-// function addKPIUnit(newKPI) {
-//     const requestOptions = {
-//         method: 'POST',
-//         headers: AuthenticateHeader(),
-//         body: JSON.stringify(newKPI)
-//     };
-
-//     return fetch(`${LOCAL_SERVER_API}/kpiunits/create`, requestOptions).then(handleResponse);
-// }
-
-
-// Cập nhật dữ liệu cho KPI đơn vị
-function evaluateKPIUnit(id) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
-        method: 'PUT',
-    }, false, true, 'kpi.organizational_unit');
-}
-

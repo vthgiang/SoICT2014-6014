@@ -14,7 +14,7 @@ exports.getKPIAllMember = async (req, res) => {
         await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
         res.status(400).json({
             messages: ['get_all_kpi_member_fail'],
-            message: error
+            content: error
         });
     }
 };
