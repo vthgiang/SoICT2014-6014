@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { PaginateBar, DeleteNotification } from '../../../common-components';
 import { NotificationActions } from '../redux/actions';
+import NotificationReceiveredInfo from './notificationReiceiveredInfo';
+import NotificationSentInfo from './notificationSentInfo';
+import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
 
 class NotificationTable extends Component {
     constructor(props) {
@@ -14,6 +17,31 @@ class NotificationTable extends Component {
         const {translate, notifications, auth} = this.props;
         return ( 
             <React.Fragment>
+                {
+                    this.state.currentRow !== undefined &&
+                    <React.Fragment>
+                        <NotificationReceiveredInfo
+                            notificationId={this.state.currentRow._id}
+                            notificationTitle={this.state.currentRow.title}
+                            notificationContent={this.state.currentRow.content}
+                            notificationLevel={this.state.currentRow.level}
+                            notificationSender={this.state.currentRow.sender}
+                            notificationReaded={this.state.currentRow.readed}
+                            notificationCreatedAt={this.state.currentRow.createdAt}
+                        />
+                        <NotificationSentInfo
+                            notificationId={this.state.currentRow._id}
+                            notificationTitle={this.state.currentRow.title}
+                            notificationContent={this.state.currentRow.content}
+                            notificationLevel={this.state.currentRow.level}
+                            notificationSender={this.state.currentRow.sender}
+                            notificationReaded={this.state.currentRow.readed}
+                            notificationCreatedAt={this.state.currentRow.createdAt}
+                            notificationOrganizationalUnits={this.state.currentRow.organizationalUnits}
+                            notificationUsers={this.state.currentRow.users}
+                        />
+                    </React.Fragment>
+                }
                 <div className="box" role="tabpanel">
                     {/* Tab panes */}
                     <div className="tab-content">
@@ -23,26 +51,20 @@ class NotificationTable extends Component {
                                     <table className="table table-hover table-striped">
                                     <tbody>
                                         {
-                                            notifications.listReceivered.length > 0 ? 
-                                            notifications.listReceivered.map(notification => 
+                                            notifications.receivered.list.length > 0 ? 
+                                            notifications.receivered.list.map(notification => 
                                                 <tr key={notification._id}>
                                                     <td>
-                                                        <i className={
-                                                            notification.level === 'info' ? 'material-icons text-blue' :
-                                                            notification.level === 'general' ? 'material-icons text-green' :
-                                                            notification.level === 'important' ? 'material-icons text-orange' : 'material-icons text-red'
-                                                        }>
-                                                            {
-                                                                notification.level === 'info' ? 'info' :
-                                                                notification.level === 'general' ? 'notification' :
-                                                                notification.level === 'important' ? 'warning' : 'new_releases'
-                                                            }
-                                                        </i><strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
+                                                        <strong> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title} </strong>
+                                                        {
+                                                            !notification.readed && <span className="label bg-green">Mới</span>
+                                                        }
                                                     </td>
                                                     <td>
-                                                        <i style={{fontSize: '14px'}}>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</i>
+                                                        <p>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</p>
                                                     </td>
                                                     <td style={{width: '5px'}}>
+                                                    <a onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
                                                     <DeleteNotification 
                                                         content={translate('notification.delete')}
                                                         data={{ id: notification._id, info: notification.title }}
@@ -67,45 +89,24 @@ class NotificationTable extends Component {
                         { this.checkHasComponent('create-notification') &&   
                         <div role="tabpanel" className="tab-pane" id="notification-sent">
                             <div className="box-header with-border">
-                                <div className="col-md-6">
-                                    <div className="form-group col-md-3" style={{ paddingLeft: 0, paddingTop: '5px' }}>
-                                        <label>Nội dung</label>
-                                    </div>
-                                    <div className="form-group col-md-9" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <input className="form-control" type="text" placeholder={translate('searchByValue')} ref={this.value}/>
-                                    </div>
-                                </div>
-                                <div className="col-md-1">
-                                    <div className="form-group" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                                        <button type="button" className="btn btn-success" title={translate('form.search')}>{translate('form.search')}</button>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div className="box-body">
                                 <div className="table-responsive mailbox-messages" style={{minHeight: '300px'}}>
                                     <table className="table table-hover table-striped">
                                     <tbody>
                                         {
-                                            notifications.listSent.length > 0 ? 
-                                            notifications.listSent.map(notification => 
+                                            notifications.sent.list.length > 0 ? 
+                                            notifications.sent.list.map(notification => 
                                                 <tr key={notification._id}>
                                                     <td>
-                                                        <i className={
-                                                            notification.level === 'info' ? 'material-icons text-blue' :
-                                                            notification.level === 'general' ? 'material-icons text-green' :
-                                                            notification.level === 'important' ? 'material-icons text-orange' : 'material-icons text-red'
-                                                        }>
-                                                            {
-                                                                notification.level === 'info' ? 'info' :
-                                                                notification.level === 'general' ? 'notification' :
-                                                                notification.level === 'important' ? 'warning' : 'new_releases'
-                                                            }
-                                                        </i><strong style={{fontSize:'14px'}}> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
+                                                        <strong> {notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</strong>
                                                     </td>
                                                     <td>
-                                                        <i style={{fontSize: '14px'}}>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</i>
+                                                    <p>{notification.content.length > 80 ? `${notification.content.slice(0, 80)}...`: notification.content}</p>
                                                     </td>
                                                     <td style={{width: '5px'}}>
+                                                        <a onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
                                                         <DeleteNotification 
                                                             content={translate('notification.delete')}
                                                             data={{ id: notification._id, info: notification.title }}
@@ -132,14 +133,35 @@ class NotificationTable extends Component {
         );
     }
     
+    handleEdit = async (notification) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: notification
+            }
+        });
+        !notification.readed && await this.props.readedNotification(notification._id)
+        window.$('#modal-notification-receivered').modal('show');
+    }
+
+    showNotificationInformation = async (notification) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: notification
+            }
+        });
+        window.$('#modal-notification-sent').modal('show');
+    }
+
     convertContent = (content) => {
         const newContent = content.slice(0,24);
         return newContent.concat(newContent, ' ... ');
     }
 
     componentDidMount(){
-        this.props.getReceivered();
-        this.props.getSent();
+        this.props.getAllManualNotifications();
+        this.props.getAllNotifications();
     }
 
     checkHasComponent = (name) => {
@@ -155,9 +177,13 @@ class NotificationTable extends Component {
 
 const mapState = state => state;
 const actions = {
+    getAllManualNotifications: NotificationActions.getAllManualNotifications,
+    getAllNotifications: NotificationActions.getAllNotifications,
+
     getReceivered: NotificationActions.getNotificationReceivered,
     getSent: NotificationActions.getNotificationSent,
     deleteNotificationReceivered: NotificationActions.deleteNotificationReceivered,
-    deleteNotificationSent: NotificationActions.deleteNotificationSent
+    deleteNotificationSent: NotificationActions.deleteNotificationSent,
+    readedNotification: NotificationActions.readedNotification
 }
 export default connect(mapState, actions)(withTranslate(NotificationTable));

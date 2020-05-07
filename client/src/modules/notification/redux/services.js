@@ -1,61 +1,40 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
 import { getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const NotificationServices = {
-    getNotificationReceivered,
-    getNotificationSent,
+    getAllManualNotifications,
+    getAllNotifications,
     create,
-    deleteNotificationReceivered,
-    deleteNotificationSent
+    readedNotification
 };
 
-function getNotificationReceivered() {
-    const token = getStorage();
-    const verified = jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
-
+function getAllManualNotifications() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/receivered/${id}`,
+        url: `${ LOCAL_SERVER_API }/notifications/get`,
         method: 'GET',
-    }, false, true, 'notification');
+    }, false, false, 'notification');
 }
 
-function getNotificationSent() {
-    const token = getStorage();
-    const verified = jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
-
+function getAllNotifications() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
+        url: `${ LOCAL_SERVER_API }/notifications/get-notifications`,
         method: 'GET',
-    }, false, true, 'notification');
+    }, false, false, 'notification');
 }
 
 function create(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications`,
+        url: `${ LOCAL_SERVER_API }/notifications/create`,
         method: 'POST',
         data,
     }, true, true, 'notification');
 }
 
-function deleteNotificationReceivered(notificationId) {
-    const token = getStorage();
-    const verified = jwt.verify(token, TOKEN_SECRET);
-    var userId = verified._id;
-
+function readedNotification(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/receivered/${userId}/${notificationId}`,
-        method: 'DELETE',
-    }, true, true, 'notification');
-}
-
-function deleteNotificationSent(id) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/sent/${id}`,
-        method: 'DELETE',
-    }, true, true, 'notification');
+        url: `${ LOCAL_SERVER_API }/notifications/readed/${id}`,
+        method: 'PATCH',
+    }, false, false, 'notification');
 }

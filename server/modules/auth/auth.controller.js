@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
         await LogError(req.body.email, 'LOGIN');
         res.status(400).json({
             success: false,
-            essages: Array.isArray(error) ? error : ['login_faile'],
+            messages: Array.isArray(error) ? error : ['login_faile'],
             content: error
         });
     }

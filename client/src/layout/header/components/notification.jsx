@@ -12,8 +12,8 @@ class Notification extends Component {
     }
 
     componentDidMount(){
-        this.props.getNotificationReceivered();
-        this.props.getNotificationSent();
+        this.props.getAllManualNotifications();
+        this.props.getAllNotifications();
     }
 
     render() { 
@@ -23,18 +23,26 @@ class Notification extends Component {
                 <li className="dropdown notifications-menu">
                     <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
                         <i className="fa fa-bell-o" />
-                        <span className="label label-warning">{notifications.listReceivered.length}</span>
+                        <span className="label label-warning">{notifications.receivered.list.filter(notification => !notification.readed).length}</span>
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>
-                        <li className="header text-center"> {notifications.listReceivered.length} {translate('notification.news')}</li>
+                        <li className="header text-center"><strong className="text-red">{notifications.receivered.list.filter(notification => !notification.readed).length}</strong>{translate('notification.news')}</li>
                         <li>
                             <ul className="menu">
-                                <li>
-                                    <a href="#abc">
-                                        <i className="fa fa-warning text-yellow" /> Very long description here that may not fit into the
-                                        page and may cause design problems
-                                    </a>
-                                </li>
+                                {
+                                    notifications.receivered.list.filter(notification => !notification.readed).map(notification => {
+                                        return <li>
+                                            <a href="#abc">
+                                                {
+                                                    notification.level === 'info' ? <i className="fa fa-info-circle text-blue"/> :
+                                                    notification.level === 'general' ? <i className="fa fa-bell text-green" /> :
+                                                    notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> : <i className="fa fa-close text-red" />
+                                                }
+                                                {notification.title}
+                                            </a>
+                                        </li>
+                                    })
+                                }
                             </ul>
                         </li>
                         <li className="footer"><Link to="/notifications">{translate('notification.see_all')}</Link></li>
@@ -50,8 +58,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = { 
-    getNotificationReceivered: NotificationActions.getNotificationReceivered,
-    getNotificationSent: NotificationActions.getNotificationSent
+    getAllManualNotifications: NotificationActions.getAllManualNotifications,
+    getAllNotifications: NotificationActions.getAllNotifications
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Notification));

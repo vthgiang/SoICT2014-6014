@@ -339,6 +339,9 @@ export default {
 
         notification: {
             title: 'Tiêu đề',
+            news: 'Thông báo mới',
+            see_all: 'Xem tất cả',
+            total: 'Tổng số',
             type: {
                 title: 'Loại thông báo',
                 info: 'Thông tin',
@@ -347,6 +350,7 @@ export default {
                 emergency: 'Thông báo khẩn',
             },
             content: 'Nội dung thông báo',
+            sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
 
@@ -354,6 +358,7 @@ export default {
             receivered: 'Đã nhận',
             sent: 'Đã tạo',
             note: 'Chú thích',
+            info: 'Thông tin thông báo',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',

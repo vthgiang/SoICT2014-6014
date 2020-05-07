@@ -2,41 +2,42 @@ import { NotificationServices } from "./services";
 import { NotificationConstants } from "./constants";
 
 export const NotificationActions = {
-    getNotificationReceivered,
-    getNotificationSent,
+    getAllManualNotifications,
+    getAllNotifications,
     create,
-    deleteNotificationReceivered,
-    deleteNotificationSent
+    readedNotification
 }
 
-function getNotificationReceivered(){
+function getAllManualNotifications(){
     return dispatch => {
-        dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_REQUEST});
+        dispatch({ type: NotificationConstants.GET_MANUAL_NOTIFICATIONS_REQUEST});
         NotificationServices
-            .getNotificationReceivered()
+            .getAllManualNotifications()
             .then(res => {
                 dispatch({
-                    type: NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_SUCCESS,
+                    type: NotificationConstants.GET_MANUAL_NOTIFICATIONS_SUCCESS,
                     payload: res.data.content //danh sách các notification
                 });
             })
             .catch(err => {
+                dispatch({ type: NotificationConstants.GET_MANUAL_NOTIFICATIONS_FAILE});
             })
     }
 }
 
-function getNotificationSent(){
+function getAllNotifications(){
     return dispatch => {
-        dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_SENT_REQUEST});
+        dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_REQUEST});
         NotificationServices
-            .getNotificationSent()
+            .getAllNotifications()
             .then(res => {
                 dispatch({
-                    type: NotificationConstants.GET_NOTIFICATIONS_SENT_SUCCESS,
+                    type: NotificationConstants.GET_NOTIFICATIONS_SUCCESS,
                     payload: res.data.content //danh sách các notification
                 });
             })
             .catch(err => {
+                dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_FAILE});
             })
     }
 }
@@ -53,40 +54,24 @@ function create(data){
                 });
             })
             .catch(err => {
+                dispatch({ type: NotificationConstants.CREATE_NOTIFICATION_FAILE});
             })
     }
 }
 
-function deleteNotificationReceivered(notificationId){
+function readedNotification(id){
     return dispatch => {
-        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_REQUEST});
+        dispatch({ type: NotificationConstants.READED_NOTIFICATION_REQUEST});
         NotificationServices
-            .deleteNotificationReceivered(notificationId)
+            .readedNotification(id)
             .then(res => {
                 dispatch({
-                    type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_SUCCESS,
-                    payload: notificationId
+                    type: NotificationConstants.READED_NOTIFICATION_SUCCESS,
+                    payload: res.data.content
                 });
             })
             .catch(err => {
-                dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_FAILE});
-            })
-    }
-}
-
-function deleteNotificationSent(id){
-    return dispatch => {
-        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_SENT_REQUEST});
-        NotificationServices
-            .deleteNotificationSent(id)
-            .then(res => {
-                dispatch({
-                    type: NotificationConstants.DELETE_NOTIFICATION_SENT_SUCCESS,
-                    payload: id
-                });
-            })
-            .catch(err => {
-                dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_SENT_FAILE});
+                dispatch({ type: NotificationConstants.READED_NOTIFICATION_FAILE});
             })
     }
 }

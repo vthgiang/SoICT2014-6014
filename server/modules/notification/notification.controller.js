@@ -1,46 +1,45 @@
 const NotificationServices = require('./notification.service');
-const UserServices = require('../super-admin/user/user.service');
 const { LogInfo, LogError } = require('../../logs');
 
-exports.getAllNotifications = async (req, res) => {
+exports.getAllManualNotifications = async (req, res) => {
     try {
-        var notifications = await NotificationServices.getAllNotifications(req.user.company._id);
+        const manualNotifications = await NotificationServices.getAllManualNotifications(req.user._id);
 
-        await LogInfo(req.user.email, 'GET_NOTIFICATIONS', req.user.company._id );
+        await LogInfo(req.user.email, 'GET_MANUAL_NOTIFICATIONS', req.user.company._id );
         res.status(200).json({
             success: true,
-            messages: ['get_all_notifications_success'],
-            content: notifications
+            messages: ['get_all_manual_notifications_success'],
+            content: manualNotifications
         });
     } catch (error) {
-        await LogError(req.user.email, 'GET_NOTIFICATIONS', req.user.company._id );
+        await LogError(req.user.email, 'GET_MANUAL_NOTIFICATIONS', req.user.company._id );
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_all_notifications_faile'],
+            messages: Array.isArray(error) ? error : ['get_all_manual_notifications__faile'],
             content: error
         })
     }
 };
 
-exports.getPaginatedNotifications = async (req, res) => {
+exports.getPaginateManualNotifications = async (req, res) => {
     try {
         var { limit, page } = req.body;
         delete req.body.limit;
         delete req.body.page;
-        var notifications = await NotificationServices.getPaginatedNotifications(req.user.company._id, limit, page, req.body);
+        var notifications = await NotificationServices.getPaginateManualNotifications(req.user._id, limit, page, req.body);
 
-        await LogInfo(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id );
+        await LogInfo(req.user.email, 'PAGINATE_MANUAL_NOTIFICATIONS', req.user.company._id );
         res.status(200).json({
             success: true,
-            messages: ['paginate_notifications_success'],
+            messages: ['paginate_manual_notifications_success'],
             content: notifications
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'GET_PAGINATE_NOTIFICATIONS', req.user.company._id );
+        await LogError(req.user.email, 'PAGINATE_MANUAL_NOTIFICATIONS', req.user.company._id );
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['paginate_notifications_faile'],
+            messages: Array.isArray(error) ? error : ['paginate_manual_notifications_faile'],
             content: error
         });
     }
@@ -48,15 +47,9 @@ exports.getPaginatedNotifications = async (req, res) => {
 
 exports.createNotification = async (req, res) => {
     try {
-        req.body.creator = req.user._id;
-        const notification = await NotificationServices.createNotification(req.body, req.user.company._id);
-        const {departments} = req.body;
-        
-        for (let i = 0; i < departments.length; i++) {
-            const userArr =  await NotificationServices.getAllUsersInOrganizationalUnit(departments[i]);
-            console.log("users:", userArr)
-            await NotificationServices.noticeToUsers(userArr, notification._id);
-        }
+        const notification = await NotificationServices.createManualNotification(req.body);
+        console.log("fsfsdfsd", notification)
+        await NotificationServices.createNotification(req.user.company._id, req.body, notification._id);
 
         await LogInfo(req.user.email, 'CREATE_NOTIFICATION', req.user.company._id );
         res.status(200).json({
@@ -75,149 +68,172 @@ exports.createNotification = async (req, res) => {
     }
 };
 
-exports.getNotification = async (req, res) => {
+// Lấy tất cả các thông báo mà người dùng nhận được
+exports.getAllNotifications = async (req, res) => {
     try {
-        var notification = await NotificationServices.getNotificationById(req.params.id);
+        var notification = await NotificationServices.getAllNotifications(req.user._id);
 
-        await LogInfo(req.user.email, 'SHOW_NOTIFICATION', req.user.company._id );
+        await LogInfo(req.user.email, 'GET_ALL_NOTIFICATIONS', req.user.company._id );
         res.status(200).json({
             success: true,
-            messages: ['get_notification_success'],
+            messages: ['get_all_notification_success'],
             content: notification
         })
     } catch (error) {
         
-        await LogError(req.user.email, 'SHOW_NOTIFICATION', req.user.company._id );
+        await LogError(req.user.email, 'GET_ALL_NOTIFICATIONS', req.user.company._id );
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_notification_faile'],
+            messages: Array.isArray(error) ? error : ['get_all_notification_faile'],
             content: error
         })
     }
 };
 
-exports.editNotification = async (req, res) => {
-    try {
-        var notification = await NotificationServices.editNotification(req.params.id, req.body);
+// exports.editNotification = async (req, res) => {
+//     try {
+//         var notification = await NotificationServices.editNotification(req.params.id, req.body);
         
-        await LogInfo(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id );
-        res.status(200).json({
-            success: true,
-            messages: ['edit_notification_success'],
-            content: notification
-        });
-    } catch (error) {
+//         await LogInfo(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id );
+//         res.status(200).json({
+//             success: true,
+//             messages: ['edit_notification_success'],
+//             content: notification
+//         });
+//     } catch (error) {
         
-        await LogError(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id );
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['edit_notification_faile'],
-            content: error
-        });
-    }
-};
+//         await LogError(req.user.email, 'EDIT_NOTIFICATION', req.user.company._id );
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['edit_notification_faile'],
+//             content: error
+//         });
+//     }
+// };
 
-exports.deleteNotification = async (req, res) => {
+// exports.deleteNotification = async (req, res) => {
+//     try {
+//         var notification = await NotificationServices.deleteReceivedNotification(req.params.id);
+
+//         await LogInfo(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
+//         res.status(200).json({
+//             success: true,
+//             messages: ['delete_notification_success'],
+//             content: notification
+//         });
+//     } catch (error) {
+
+//         await LogError(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['delete_notification_faile'],
+//             content: error
+//         })
+//     }
+// };
+
+// exports.getNotificationReceivered = async (req, res) => {
+//     try {
+//         var notifications = await NotificationServices.getAllReceivedNotificationsOfUser(req.params.userId);
+
+//         await LogInfo(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id );
+//         res.status(200).json({
+//             success: true,
+//             messages: ['get_notification_receivered_success'],
+//             content: notifications
+//         });
+//     } catch (error) {
+
+//         await LogError(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id );
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['get_notification_receivered_faile'],
+//             content: error
+//         })
+//     }
+// };
+
+// exports.getNotificationSent = async (req, res) => {
+//     try {
+//         var notifications = await NotificationServices.getAllNotificationsSentByUser(req.params.userId);
+
+//         await LogInfo(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id );
+//         res.status(200).json({
+//             success: true,
+//             messages: ['get_notification_sent_success'],
+//             content: notifications
+//         });
+//     } catch (error) {
+
+//         await LogError(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id );
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['get_notification_sent_faile'],
+//             content: error
+//         })
+//     }
+// };
+
+// exports.deleteNotificationReceivered = async (req, res) => {
+//     try {
+//         var notification = await NotificationServices.deleteReceivedNotification(req.params.userId, req.params.notificationId);
+
+//         await LogInfo(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
+//         res.status(200).json({
+//             success: true,
+//             message: 'delete_notification_receivered_success',
+//             content: notification
+//         });
+//     } catch (error) {
+
+//         await LogError(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['delete_notification_receivered_faile'],
+//             content: error
+//         });
+//     }
+// };
+
+// exports.deleteNotificationSent = async (req, res) => {
+//     try {
+//         var notification = await NotificationServices.deleteSentNotification(req.params.id);
+
+//         await LogInfo(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
+//         res.status(200).json({
+//             success: true,
+//             message: 'delete_notification_sent_success',
+//             content: notification
+//         });
+//     } catch (error) {
+
+//         await LogError(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
+//         res.status(400).json({
+//             success: false,
+//             messages: Array.isArray(error) ? error : ['delete_notification_sent_faile'],
+//             content: error
+//         });
+//     }
+// };
+
+exports.changeNotificationStateToReaded = async (req, res) => {
     try {
-        var notification = await NotificationServices.deleteReceivedNotification(req.params.id);
-
-        await LogInfo(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
+        var notification = await NotificationServices.changeNotificationStateToReaded(req.params.id);
+        console.log("Read notify: ", notification)
+        await LogInfo(req.user.email, 'CHANGE_NOTIFICATION_STATE_TO_READED', req.user.company._id );
         res.status(200).json({
             success: true,
-            messages: ['delete_notification_success'],
+            message: 'change_notification_state_to_readed_success',
             content: notification
         });
     } catch (error) {
 
-        await LogError(req.user.email, 'DELETE_NOTIFICATION', req.user.company._id );
+        await LogError(req.user.email, 'CHANGE_NOTIFICATION_STATE_TO_READED', req.user.company._id );
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_notification_faile'],
-            content: error
-        })
-    }
-};
-
-exports.getNotificationReceivered = async (req, res) => {
-    try {
-        var notifications = await NotificationServices.getAllReceivedNotificationsOfUser(req.params.userId);
-
-        await LogInfo(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id );
-        res.status(200).json({
-            success: true,
-            messages: ['get_notification_receivered_success'],
-            content: notifications
-        });
-    } catch (error) {
-
-        await LogError(req.user.email, 'GET_NOTIFICATION_RECEIVERED', req.user.company._id );
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_notification_receivered_faile'],
-            content: error
-        })
-    }
-};
-
-exports.getNotificationSent = async (req, res) => {
-    try {
-        var notifications = await NotificationServices.getAllNotificationsSentByUser(req.params.userId);
-
-        await LogInfo(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id );
-        res.status(200).json({
-            success: true,
-            messages: ['get_notification_sent_success'],
-            content: notifications
-        });
-    } catch (error) {
-
-        await LogError(req.user.email, 'GET_NOTIFICATION_SENT', req.user.company._id );
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_notification_sent_faile'],
-            content: error
-        })
-    }
-};
-
-exports.deleteNotificationReceivered = async (req, res) => {
-    try {
-        var notification = await NotificationServices.deleteReceivedNotification(req.params.userId, req.params.notificationId);
-
-        await LogInfo(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
-        res.status(200).json({
-            success: true,
-            message: 'delete_notification_receivered_success',
-            content: notification
-        });
-    } catch (error) {
-
-        await LogError(req.user.email, 'DELETE_NOTIFICATION_RECEIVERED', req.user.company._id );
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['delete_notification_receivered_faile'],
+            messages: Array.isArray(error) ? error : ['change_notification_state_to_readed_faile'],
             content: error
         });
     }
 };
 
-exports.deleteNotificationSent = async (req, res) => {
-    try {
-        var notification = await NotificationServices.deleteSentNotification(req.params.id);
-
-        await LogInfo(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
-        res.status(200).json({
-            success: true,
-            message: 'delete_notification_sent_success',
-            content: notification
-        });
-    } catch (error) {
-
-        await LogError(req.user.email, 'DELETE_NOTIFICATION_SENT', req.user.company._id );
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['delete_notification_sent_faile'],
-            content: error
-        });
-    }
-};

@@ -22,9 +22,6 @@ class NotificationMenu extends Component {
                                 >
                                     <i className="fa fa-download"/>
                                     {translate('notification.receivered')}
-                                    <span className="label label-default pull-right">
-                                        {notifications.listReceivered.length}
-                                    </span>
                                 </a>
                             </li>
                             { this.checkHasComponent('create-notification') &&
@@ -35,9 +32,6 @@ class NotificationMenu extends Component {
                                 >
                                     <i className="fa fa-upload"/>
                                     {translate('notification.sent')}
-                                    <span className="label label-default pull-right">
-                                        {notifications.listSent.length}
-                                    </span>
                                 </a>
                             </li> }
                         </ul>
@@ -49,10 +43,10 @@ class NotificationMenu extends Component {
                     </div>
                     <div className="box-body">
                         <ul className="nav nav-pills nav-stacked">
-                            <li className="text-blue"><i className="material-icons">info</i> {translate('notification.type.info')}</li>
-                            <li className="text-green"><i className="material-icons">notifications</i> {translate('notification.type.general')}</li>
-                            <li className="text-orange"><i className="material-icons">warning</i> {translate('notification.type.important')}</li>
-                            <li className="text-red"><i className="material-icons">new_releases</i> {translate('notification.type.emergency')}</li>
+                            <li className="text-blue"><i className="fa fa-info-circle"/> {translate('notification.type.info')}</li>
+                            <li className="text-green"><i className="fa fa-bell"/> {translate('notification.type.general')}</li>
+                            <li className="text-orange"><i className="fa fa-warning"/> {translate('notification.type.important')}</li>
+                            <li className="text-red"><i className="fa fa-close"/> {translate('notification.type.emergency')}</li>
                         </ul>
                     </div>  
                 </div>
