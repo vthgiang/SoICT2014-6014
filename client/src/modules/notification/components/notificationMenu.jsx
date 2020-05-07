@@ -8,37 +8,24 @@ class NotificationMenu extends Component {
         this.state = {  }
     }
 
+    showTabReceivered = () => {
+        window.$('#tab-notification-sent').hide();
+        window.$('#tab-notification-receivered').show();
+    }
+
+    showTabSent = () => {
+        window.$('#tab-notification-receivered').hide();
+        window.$('#tab-notification-sent').show();
+    }
+
     render() { 
-        const { translate, notifications } = this.props;
+        const { translate } = this.props;
         return ( 
             <React.Fragment>
                 <div className="box box-solid">
-                    <div className="box-body no-padding">
-                        <ul className="nav nav-pills nav-stacked">
-                            <li className="active">
-                                <a 
-                                    href="#notification-receivered" 
-                                    data-toggle="tab"
-                                >
-                                    <i className="fa fa-download"/>
-                                    {translate('notification.receivered')}
-                                </a>
-                            </li>
-                            { this.checkHasComponent('create-notification') &&
-                            <li>
-                                <a 
-                                    href="#notification-sent" 
-                                    data-toggle="tab"
-                                >
-                                    <i className="fa fa-upload"/>
-                                    {translate('notification.sent')}
-                                </a>
-                            </li> }
-                        </ul>
-                    </div>  
-                </div>
-                <div className="box box-solid">
                     <div className="box-body">
+                        <button onClick={this.showTabReceivered} style={{width: '100%', marginBottom: '5px'}} className="btn btn-default">{translate('notification.receivered')}</button>
+                        <button onClick={this.showTabSent} style={{width: '100%', marginBottom: '15px'}} className="btn btn-default">{translate('notification.sent')}</button>
                         <ul className="nav nav-pills nav-stacked">
                             <li className="text-blue"><i className="fa fa-info-circle"/> {translate('notification.type.info')}</li>
                             <li className="text-green"><i className="fa fa-bell"/> {translate('notification.type.general')}</li>

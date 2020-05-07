@@ -3,8 +3,8 @@ const {OrganizationalUnit, UserRole, Notification, ManualNotification} = require
 /**
  * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
  */
-exports.getAllManualNotifications = async (creatorId) => { //id cua cong ty do
-    return await ManualNotification.find({ creator: creatorId })
+exports.getAllManualNotifications = async (creator) => { //id cua cong ty do
+    return await ManualNotification.find({ creator })
         .populate([
             {path: 'users', model: User},
             {path: 'organizationalUnits', model: OrganizationalUnit}
@@ -12,15 +12,19 @@ exports.getAllManualNotifications = async (creatorId) => { //id cua cong ty do
 }
 
 /**
- * Phân trang danh sách các thông báo
+ * Phân trang danh sách các thông báo đã được tạo bởi admin, giám đốc ..
  */
-exports.getPaginateManualNotifications = async (creator, limit, page, data={}) => {
-    const newData = await Object.assign({ creator }, data );
-    return await Notification
-        .paginate( newData , { 
+exports.paginateManualNotifications = async (creator, limit, page) => {
+    return await ManualNotification
+        .paginate( {creator} , { 
             page, 
-            limit
-        }).sort({createdAt: -1});
+            limit,
+            sort: { createdAt: -1 }, 
+            populate: [
+                {path: 'users', model: User},
+                {path: 'organizationalUnits', model: OrganizationalUnit}
+            ]
+        });
 }
 
 /**
@@ -113,71 +117,17 @@ exports.getAllNotifications = async (user) => {
     return await Notification.find({user}).sort({createdAt: -1});
 }
 
-// /**
-//  * Thông báo đến người dùng
-//  */
-// exports.noticeToUsers = async (userArr, notificationId) => {
-//     const data = userArr.map(userId => {
-//         return {
-//             userId,
-//             notificationId
-//         };
-//     });
-
-//     return await NotificationUser.insertMany(data);
-// }
-
-// /**
-//  * Xóa thông báo đã nhận 
-//  */
-// exports.deleteReceivedNotification = async (id) => {
-//     return true;
-// }
-
-// /**
-//  * Lấy tất cả thông báo đã nhận
-//  */
-// exports.getAllReceivedNotificationsOfUser = async (userId) => {
-//     const data = await NotificationUser
-//         .find({userId})
-//         .populate([{ path: 'notificationId', model: Notification }]);
-    
-//     return data.map(res => {
-//         return {
-//             _id: res.notificationId._id,
-//             title: res.notificationId.title,
-//             content: res.notificationId.content,
-//             level: res.notificationId.level,
-//             readed: res.readed,
-//             date: res.notificationId.createdAt
-//         }
-//     })
-// }
-
-// /**
-//  * Lấy tất cả thông báo đã tạo và gửi đi
-//  */
-// exports.getAllNotificationsSentByUser = async (userId) => {
-//     var notifications = await Notification.find({creator: userId});
-
-//     return notifications;
-// }
-
-// /**
-//  * Xóa thông báo đã nhận
-//  */
-// exports.deleteReceivedNotification = async (userId, notificationId) => {
-//     return await NotificationUser.deleteOne({userId, notificationId});
-// }
-
-// /**
-//  * Xóa thông báo đã gửi
-//  */
-// exports.deleteSentNotification = async (notificationId) => {
-//     await NotificationUser.deleteMany({notificationId});
-
-//     return await Notification.deleteOne({_id: notificationId});
-// }
+/**
+ * Phân trang danh sách các thông báo của người dùng nhận được
+ */
+exports.paginateNotifications = async (user, limit, page) => {
+    return await Notification
+        .paginate( {user} , { 
+            page, 
+            limit,
+            sort: { createdAt: -1 }
+        });
+}
 
 /**
  * Đánh dấu thông báo nhận đã được đọc
@@ -188,4 +138,18 @@ exports.changeNotificationStateToReaded = async (notificationId) => {
     await notification.save();
 
     return notification;
+}
+
+/**
+ * Xóa manual notification
+ */
+exports.deleteManualNotification = async (notificationId) => {
+    return await ManualNotification.deleteOne({_id: notificationId});
+}
+
+/**
+ * Xóa notification của user
+ */
+exports.deleteNotification = async (notificationId) => {
+    return await Notification.deleteOne({_id: notificationId});
 }

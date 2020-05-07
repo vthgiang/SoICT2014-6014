@@ -35,16 +35,16 @@ class NotificationReiceiverdInfo extends Component {
             <DialogModal
                     func={this.save} isLoading={notifications.isLoading}
                     modalID={`modal-notification-receivered`}
-                    title={notificationTitle}
+                    title={translate('notification.title')}
                     hasSaveButton={false} hasNote={false}
             >
                 <div className="qlcv">
                     <div className="form-inline">
                         <div className="form-group" style={{fontSize: '18px'}}>
                             <div className="inline">{
-                                notificationLevel === 'info' ? <i className="fa fa-info-circle text-blue"> {translate(`notification.type.${notificationLevel}`)} </i> :
-                                notificationLevel === 'general' ? <i className="fa fa-bell text-green">{translate(`notification.type.${notificationLevel}`)}</i> :
-                                notificationLevel === 'important' ? <i className="fa fa-warning text-orange">{translate(`notification.type.${notificationLevel}`)}</i> : <i className="fa fa-close text-red">{translate(`notification.type.${notificationLevel}`)}</i>
+                                notificationLevel === 'info' ? <i className="fa fa-info-circle text-blue"> {notificationTitle} </i> :
+                                notificationLevel === 'general' ? <i className="fa fa-bell text-green"> {notificationTitle}</i> :
+                                notificationLevel === 'important' ? <i className="fa fa-warning text-orange"> {notificationTitle}</i> : <i className="fa fa-close text-red"> {notificationTitle}`)}</i>
                             }</div>
                         </div>
                     </div>

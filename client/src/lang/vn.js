@@ -342,7 +342,7 @@ export default {
         },
 
         notification: {
-            title: 'Tiêu đề',
+            title: 'Thông báo',
             news: 'Thông báo mới',
             see_all: 'Xem tất cả',
             total: 'Tổng số',
@@ -361,22 +361,19 @@ export default {
             from: 'từ', at: 'lúc',
 
             add: 'Tạo thông báo',
-            receivered: 'Đã nhận',
-            sent: 'Đã tạo',
+            receivered: 'Thông báo đã nhận',
+            sent: 'Thông báo đã tạo',
             note: 'Chú thích',
             info: 'Thông tin thông báo',
+            delete: 'Xóa thông báo',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',
             create_notification_faile: 'Tạo thông báo thất bại',
-            edit_notification_success: 'Chỉnh sửa thông báo thành công',
-            edit_notification_faile: 'Chỉnh sửa thông báo thất bại',
             delete_notification_success: 'Xóa thông báo thành công',
             delete_notification_faile: 'Xóa thông báo thất bại',
-            delete_notification_receivered_success: 'Xóa thông báo thành công',
-            delete_notification_receivered_faile: 'Xóa thông báo thất bại',
-            delete_notification_sent_success: 'Xóa thông báo thành công',
-            delete_notification_sent_faile: 'Xóa thông báo thất bại',
+            delete_manual_notification_success: 'Xóa thông báo thành công',
+            delete_manual_notification_faile: 'Xóa thông báo thất bại',
         },
 
         not_found: {

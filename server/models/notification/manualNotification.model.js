@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 /** 
  * Schema lưu trữ thông tin khi admin/giám đốc muốn tạo thông báo đến các phòng ban.
@@ -38,5 +39,5 @@ const ManualNotificationSchema = new Schema({
     timestamps: true,
     toJSON: { virtuals: true }
 });
-
+ManualNotificationSchema.plugin(mongoosePaginate);
 module.exports = ManualNotification = mongoose.model("manual_notifications", ManualNotificationSchema);

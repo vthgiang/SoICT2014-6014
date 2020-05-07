@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DeleteNotification } from '../../../common-components';
+import { DeleteNotification, PaginateBar } from '../../../common-components';
 import { NotificationActions } from '../redux/actions';
 import NotificationReceiveredInfo from './notificationReiceiveredInfo';
 
 class TabNotificationReceivered extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            limit: 7, page: 1
+        }
     }
     render() { 
-        const {translate, notifications, auth} = this.props;
+        const {translate, notifications} = this.props;
         return ( 
             <React.Fragment>
                 {
@@ -26,37 +28,40 @@ class TabNotificationReceivered extends Component {
                         notificationCreatedAt={this.state.currentRow.createdAt}
                     />
                 }
-                <div role="tabpanel" className="tab-pane active" id="notification-receivered">
-                    <div className="box-body" style={{height: "430px"}}>
-                        <ul className="todo-list">
-                        {
-                            notifications.receivered.list.length > 0 ? 
-                            notifications.receivered.list.map(notification => 
-                                <li>
-                                    {!notification.readed &&<small className="label label-danger"><i className="fa fa-clock-o" /> Mới</small>}
-                                    <span className="text"><b>{notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</b></span> - 
-                                    <span className="text" style={{color: '#6B6B6B'}}>{notification.content.length > 40 ? `${notification.content.slice(0, 40)}...`: notification.content}</span>
-                                    <div className="tools">
-                                        <a href={`#${notification.title}`} type="button" onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
-                                        <DeleteNotification 
-                                            content={translate('notification.delete')}
-                                            data={{ id: notification._id, info: notification.title }}
-                                            func={this.props.deleteNotificationReceivered}
-                                        />
-                                    </div>
-                                </li>
-                            ): notifications.isLoading ?
-                            translate('general.loading'):
-                            translate('general.no_data')
-                        }
-                        </ul>
-                    </div>
-                    <div className="box-footer no-padding">
-                        
-                    </div>
+                <div id="tab-notification-receivered" className="box-body" style={{display: 'block'}}>
+                    <h4 className="text-center"><b>{translate('notification.receivered')}</b></h4>
+                    <ul className="todo-list" style={{border: '1px solid #D2D6DE', minHeight: '300px', }}>
+                    {
+                        notifications.receivered.paginate.length > 0 ? 
+                        notifications.receivered.paginate.map(notification => 
+                            <li key={notification._id}>
+                                {!notification.readed &&<small className="label label-danger"><i className="fa fa-clock-o" /> Mới</small>}
+                                <span className="text"><b>{notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</b></span> - 
+                                <span className="text" style={{color: '#6B6B6B'}}>{notification.content.length > 40 ? `${notification.content.slice(0, 40)}...`: notification.content}</span>
+                                <div className="tools">
+                                    <a href={`#${notification.title}`} type="button" onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                    <DeleteNotification 
+                                        content={translate('notification.delete')}
+                                        data={{ id: notification._id, info: notification.title }}
+                                        func={this.props.deleteNotification}
+                                    />
+                                </div>
+                            </li>
+                        ): notifications.isLoading ?
+                        translate('general.loading'):
+                        translate('general.no_data')
+                    }
+                    </ul>
+                    <PaginateBar pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage}/>
                 </div>
             </React.Fragment>
          );
+    }
+
+    setPage = (pageNumber) => {
+        this.setState({ page: pageNumber });
+        const data = { limit: this.state.limit, page: pageNumber };
+        this.props.paginateNotifications(data);
     }
 
     handleEdit = async (notification) => {
@@ -76,13 +81,16 @@ class TabNotificationReceivered extends Component {
     }
 
     componentDidMount(){
-        this.props.getAllNotifications();
+        this.props.paginateNotifications({
+            limit: this.state.limit, page: this.state.page
+        });
     }
 }
  
 const mapState = state => state;
 const actions = {
-    getAllNotifications: NotificationActions.getAllNotifications,
+    paginateNotifications: NotificationActions.paginateNotifications,
+    deleteNotification: NotificationActions.deleteNotification,
     readedNotification: NotificationActions.readedNotification
 }
 export default connect(mapState, actions)(withTranslate(TabNotificationReceivered));

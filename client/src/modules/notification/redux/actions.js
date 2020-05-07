@@ -3,9 +3,13 @@ import { NotificationConstants } from "./constants";
 
 export const NotificationActions = {
     getAllManualNotifications,
+    paginateManualNotifications,
     getAllNotifications,
+    paginateNotifications,
     create,
-    readedNotification
+    readedNotification,
+    deleteManualNotification,
+    deleteNotification
 }
 
 function getAllManualNotifications(){
@@ -25,6 +29,23 @@ function getAllManualNotifications(){
     }
 }
 
+function paginateManualNotifications(data){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_REQUEST});
+        NotificationServices
+            .paginateManualNotifications(data)
+            .then(res => {
+                dispatch({
+                    type: NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_SUCCESS,
+                    payload: res.data.content //danh sách các notification
+                });
+            })
+            .catch(err => {
+                dispatch({ type: NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_FAILE});
+            })
+    }
+}
+
 function getAllNotifications(){
     return dispatch => {
         dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_REQUEST});
@@ -38,6 +59,23 @@ function getAllNotifications(){
             })
             .catch(err => {
                 dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_FAILE});
+            })
+    }
+}
+
+function paginateNotifications(data){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.PAGINATE_NOTIFICATIONS_REQUEST});
+        NotificationServices
+            .paginateNotifications(data)
+            .then(res => {
+                dispatch({
+                    type: NotificationConstants.PAGINATE_NOTIFICATIONS_SUCCESS,
+                    payload: res.data.content //danh sách các notification
+                });
+            })
+            .catch(err => {
+                dispatch({ type: NotificationConstants.PAGINATE_NOTIFICATIONS_FAILE});
             })
     }
 }
@@ -72,6 +110,40 @@ function readedNotification(id){
             })
             .catch(err => {
                 dispatch({ type: NotificationConstants.READED_NOTIFICATION_FAILE});
+            })
+    }
+}
+
+function deleteManualNotification(id){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.DELETE_MANUAL_NOTIFICATION_REQUEST});
+        NotificationServices
+            .deleteManualNotification(id)
+            .then(res => {
+                dispatch({
+                    type: NotificationConstants.DELETE_MANUAL_NOTIFICATION_SUCCESS,
+                    payload: id
+                });
+            })
+            .catch(err => {
+                dispatch({ type: NotificationConstants.DELETE_MANUAL_NOTIFICATION_FAILE});
+            })
+    }
+}
+
+function deleteNotification(id){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_REQUEST});
+        NotificationServices
+            .deleteNotification(id)
+            .then(res => {
+                dispatch({
+                    type: NotificationConstants.DELETE_NOTIFICATION_SUCCESS,
+                    payload: id
+                });
+            })
+            .catch(err => {
+                dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_FAILE});
             })
     }
 }
