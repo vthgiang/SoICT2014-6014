@@ -121,6 +121,10 @@ export default {
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
+            },
+            date_time: {
+                day: 'ngày', month: 'tháng', year: 'năm',
+                hour: 'giờ', minute: 'phút'
             }
         },
 
@@ -342,6 +346,7 @@ export default {
             news: 'Thông báo mới',
             see_all: 'Xem tất cả',
             total: 'Tổng số',
+            level: 'loại thông báo',
             type: {
                 title: 'Loại thông báo',
                 info: 'Thông tin',
@@ -353,6 +358,7 @@ export default {
             sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
+            from: 'từ', at: 'lúc',
 
             add: 'Tạo thông báo',
             receivered: 'Đã nhận',

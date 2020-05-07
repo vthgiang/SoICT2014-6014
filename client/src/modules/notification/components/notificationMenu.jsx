@@ -38,9 +38,6 @@ class NotificationMenu extends Component {
                     </div>  
                 </div>
                 <div className="box box-solid">
-                    <div className="box-header with-border">
-                        <strong className="box-title">{translate('notification.note')}</strong>
-                    </div>
                     <div className="box-body">
                         <ul className="nav nav-pills nav-stacked">
                             <li className="text-blue"><i className="fa fa-info-circle"/> {translate('notification.type.info')}</li>

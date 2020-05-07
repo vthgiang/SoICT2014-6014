@@ -34,6 +34,9 @@ const ManualNotificationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'organizational_units',
     }]
+},{
+    timestamps: true,
+    toJSON: { virtuals: true }
 });
 
 module.exports = ManualNotification = mongoose.model("manual_notifications", ManualNotificationSchema);

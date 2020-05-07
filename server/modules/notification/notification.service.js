@@ -5,11 +5,10 @@ const {OrganizationalUnit, UserRole, Notification, ManualNotification} = require
  */
 exports.getAllManualNotifications = async (creatorId) => { //id cua cong ty do
     return await ManualNotification.find({ creator: creatorId })
-        .sort({createdAt: -1})
         .populate([
             {path: 'users', model: User},
             {path: 'organizationalUnits', model: OrganizationalUnit}
-        ]);
+        ]).sort({createdAt: -1});
 }
 
 /**
@@ -18,11 +17,10 @@ exports.getAllManualNotifications = async (creatorId) => { //id cua cong ty do
 exports.getPaginateManualNotifications = async (creator, limit, page, data={}) => {
     const newData = await Object.assign({ creator }, data );
     return await Notification
-        .sort({createdAt: -1})
         .paginate( newData , { 
             page, 
             limit
-        });
+        }).sort({createdAt: -1});
 }
 
 /**
@@ -32,7 +30,7 @@ exports.getPaginateManualNotifications = async (creator, limit, page, data={}) =
  */
 exports.createManualNotification = async (data) => {
     
-    return await ManualNotification.create({
+    const notify = await ManualNotification.create({
         creator: data.creator,
         sender: data.sender,
         title: data.title,
@@ -41,6 +39,11 @@ exports.createManualNotification = async (data) => {
         users: data.users,
         organizationalUnits: data.organizationalUnits
     });
+
+    return await ManualNotification.findById(notify._id).populate([
+        {path: 'users', model: User},
+        {path: 'organizationalUnits', model: OrganizationalUnit}
+    ]);
 }
 
 /**
@@ -107,7 +110,7 @@ exports.createNotification = async (company, data, manualNotification=undefined)
  * @user id của user đó
  */
 exports.getAllNotifications = async (user) => {
-    return await Notification.find({user}).sort({readed: 1});
+    return await Notification.find({user}).sort({createdAt: -1});
 }
 
 // /**

@@ -48,7 +48,6 @@ exports.getPaginateManualNotifications = async (req, res) => {
 exports.createNotification = async (req, res) => {
     try {
         const notification = await NotificationServices.createManualNotification(req.body);
-        console.log("fsfsdfsd", notification)
         await NotificationServices.createNotification(req.user.company._id, req.body, notification._id);
 
         await LogInfo(req.user.email, 'CREATE_NOTIFICATION', req.user.company._id );
