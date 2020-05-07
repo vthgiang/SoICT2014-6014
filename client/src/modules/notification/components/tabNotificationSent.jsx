@@ -27,6 +27,8 @@ class TabNotificationSent extends Component {
                         notificationSender={this.state.currentRow.sender}
                         notificationReaded={this.state.currentRow.readed}
                         notificationCreatedAt={this.state.currentRow.createdAt}
+                        notificationOrganizationalUnits={this.state.currentRow.organizationalUnits}
+                        notificationUsers={this.state.currentRow.users}
                     />
                 }
                 <div id="tab-notification-sent" className="box-body" style={{display: 'none'}}>
@@ -39,7 +41,7 @@ class TabNotificationSent extends Component {
                             <span className="text"><b>{notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</b></span> - 
                                 <span className="text" style={{color: '#6B6B6B'}}>{notification.content.length > 40 ? `${notification.content.slice(0, 40)}...`: notification.content}</span>
                                 <div className="tools">
-                                    <a href={`#${notification.title}`} type="button" onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                    <a onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
                                     <DeleteNotification 
                                         content={translate('notification.delete')}
                                         data={{ id: notification._id, info: notification.title }}
@@ -71,6 +73,7 @@ class TabNotificationSent extends Component {
                 currentRow: notification
             }
         });
+        
         window.$('#modal-notification-sent').modal('show');
     }
 

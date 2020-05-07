@@ -31,12 +31,13 @@ class NotificationSentInfo extends Component {
     }
 
     render() { 
-        const {notifications, translate, departments} = this.props;
+        const {notifications, translate} = this.props;
         const {notificationTitle, notificationLevel, notificationContent, notificationSender, notificationCreatedAt, notificationUsers, notificationOrganizationalUnits} = this.state;
+        
         return ( 
             <DialogModal
-                    size='50' func={this.save} isLoading={notifications.isLoading}
-                    modalID={`modal-notification-sent`}
+                    func={this.save} isLoading={notifications.isLoading}
+                    modalID='modal-notification-sent'
                     title={translate('notification.title')}
                     hasSaveButton={false} hasNote={false}
             >
@@ -69,7 +70,7 @@ class NotificationSentInfo extends Component {
                         <React.Fragment>
                             <p><b>{translate('notification.departments')}</b></p>
                             <ul>{
-                                notificationOrganizationalUnits.map(organizationalUnit=><li>{organizationalUnit.name}</li>)
+                                notificationOrganizationalUnits.map(organizationalUnit=><li key={organizationalUnit._id}>{organizationalUnit.name}</li>)
                             }</ul>
                         </React.Fragment>
                     }
@@ -79,7 +80,7 @@ class NotificationSentInfo extends Component {
                             <p><b>{translate('notification.users')}</b></p>
                             <ul>{
                                     
-                                notificationUsers.map(user=><li>{user.name}</li>)
+                                notificationUsers.map(user=><li key={user._id}>{user.name}</li>)
                             }</ul>
                         </React.Fragment>
                     }

@@ -129,7 +129,7 @@ class NotificationCreate extends Component {
 
     render() { 
         const {translate, department, user} = this.props;
-        console.log("state notification: ", this.state)
+        
         return ( 
             <React.Fragment>
                 <a style={{width: '100%', marginBottom: '15px'}} className="btn btn-success" title={translate('notification.add_title')} data-toggle="modal" href='#modal-create-notification'>{translate('notification.add')}</a>
