@@ -8,9 +8,9 @@ class DateTimeConverter extends Component {
         this.state = {  }
     }
 
-    convertDateTime = (time) => {
+    convertDateTime = (time, type) => {
         const {translate} = this.props;
-
+        
         var data = new Date(time);
         var day = data.getDate();
         var month = data.getMonth()+1;
@@ -18,20 +18,30 @@ class DateTimeConverter extends Component {
         var hour = data.getHours();
         var minute = data.getMinutes();
         
-        var dmy = `${translate('general.date_time.day')} ${day} ${translate('general.date_time.month')} ${month} ${translate('general.date_time.year')} ${year}`;
-        var hm = `${hour} ${translate('general.date_time.hour')} ${minute} ${translate('general.date_time.minute')}`
-        return <i>{hm}, {dmy}</i>;
+        switch(type){
+            case 1:
+                var timeNow = new Date();
+                var dayNow = timeNow.getDate();
+                if(day === dayNow)
+                    return `${translate('general.date_time.today')}, ${hour}:${minute}`
+                else
+                    return `${day}/${month}/${year}`
+
+            case 2: 
+                var dmy = `${translate('general.date_time.day')} ${day} ${translate('general.date_time.month')} ${month} ${translate('general.date_time.year')} ${year}`;
+                var hm = `${hour} ${translate('general.date_time.hour')} ${minute} ${translate('general.date_time.minute')}`
+                return `${hm}, ${dmy}`; 
+            
+            default:
+                return `${hour}:${minute} ${day}/${month}/${year}`;
+        }
     }
 
+
     render() { 
-        const {dateTime} = this.props;
-        return ( 
-            <span>
-                {
-                    this.convertDateTime(dateTime)
-                }
-            </span>
-         );
+        const {dateTime, type=0} = this.props;
+
+        return <span>{this.convertDateTime(dateTime, type)}</span>;
     }
 }
  

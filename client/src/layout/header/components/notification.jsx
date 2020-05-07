@@ -31,7 +31,7 @@ class Notification extends Component {
                             <ul className="menu">
                                 {
                                     notifications.receivered.list.filter(notification => !notification.readed).map(notification => {
-                                        return <li>
+                                        return <li key={notification._id}>
                                             <a href="#abc">
                                                 {
                                                     notification.level === 'info' ? <i className="fa fa-info-circle text-blue"/> :

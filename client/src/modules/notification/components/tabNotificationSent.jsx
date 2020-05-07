@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DeleteNotification, PaginateBar } from '../../../common-components';
+import { DeleteNotification, PaginateBar, DateTimeConverter } from '../../../common-components';
 import { NotificationActions } from '../redux/actions';
 import NotificationSentInfo from './notificationSentInfo';
 
@@ -38,10 +38,11 @@ class TabNotificationSent extends Component {
                         notifications.sent.paginate.length > 0 ? 
                         notifications.sent.paginate.map(notification => 
                             <li key={notification._id}>
+                            <DateTimeConverter dateTime={notification.createdAt} type={1}/>
                             <span className="text"><b>{notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</b></span> - 
                                 <span className="text" style={{color: '#6B6B6B'}}>{notification.content.length > 40 ? `${notification.content.slice(0, 40)}...`: notification.content}</span>
                                 <div className="tools">
-                                    <a onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                    <a href='#' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
                                     <DeleteNotification 
                                         content={translate('notification.delete')}
                                         data={{ id: notification._id, info: notification.title }}

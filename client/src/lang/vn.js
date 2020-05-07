@@ -124,7 +124,8 @@ export default {
             },
             date_time: {
                 day: 'ngày', month: 'tháng', year: 'năm',
-                hour: 'giờ', minute: 'phút'
+                hour: 'giờ', minute: 'phút',
+                today: 'Hôm nay',
             }
         },
 
