@@ -24,8 +24,14 @@ class NotificationMenu extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-body">
-                        <button onClick={this.showTabReceivered} style={{width: '100%', marginBottom: '5px'}} className="btn btn-default">{translate('notification.receivered')}</button>
-                        <button onClick={this.showTabSent} style={{width: '100%', marginBottom: '15px'}} className="btn btn-default">{translate('notification.sent')}</button>
+                        {
+                            this.checkHasComponent('create-notification') &&
+                            <React.Fragment>
+                                <button onClick={this.showTabReceivered} style={{width: '100%', marginBottom: '5px'}} className="btn btn-default">{translate('notification.receivered')}</button>
+                                <button onClick={this.showTabSent} style={{width: '100%', marginBottom: '15px'}} className="btn btn-default">{translate('notification.sent')}</button>
+                            </React.Fragment>
+                        }
+                        
                         <ul className="nav nav-pills nav-stacked">
                             <li className="text-blue"><i className="fa fa-info-circle"/> {translate('notification.type.info')}</li>
                             <li className="text-green"><i className="fa fa-bell"/> {translate('notification.type.general')}</li>

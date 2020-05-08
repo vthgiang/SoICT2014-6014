@@ -1,61 +1,85 @@
 import React, { Component } from 'react';
-import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
 import { DialogModal, ErrorLabel } from '../../../common-components';
 import { LOCAL_SERVER_API } from '../../../env';
 import { Validator } from './validator';
-import { auth } from '../../../modules/auth/redux/reducers';
+import CropImage from './cropImage';
 
 class ModalChangeUserInformation extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
+
+    showCropImageSpace= () => {
+        window.$('#modal-crop-user-image').modal('show');
+    }
+
+    getImage = (img) => {
+        console.log("src ", img)
+        this.setState({
+            img: img
+        })
+        fetch(img)
+            .then(res => res.blob())
+            .then(blob => {
+                const file = new File([blob], 'avatar.png', blob)
+                this.setState({
+                    img: img,
+                    avatar: file
+                })
+            })
+    }
+
     render() { 
         const {translate} = this.props;
         const {userAvatar, userName, userEmail, userNameError, userEmailError} = this.state;
+        console.log("img:", this.state)
         return ( 
-            <DialogModal
-                modalID="modal-profile"
-                formID="form-profile"
-                title={translate('auth.profile.title')}
-                msg_success={translate('auth.profile.edit_success')}
-                msg_faile={translate('auth.profile.edit_faile')}
-                func={this.changeInformation}
-                disableSubmit={!this.isFormValidated()}
-            >
-                <form id="form-profile">
-                    
-                    <div className="row">
-                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <div className="form-group text-center">
-                                <img className="user-profile-avatar" src={
-                                    this.state.img !== undefined ? 
-                                    this.state.img : 
-                                    (LOCAL_SERVER_API+this.props.auth.user.avatar)}/>
-                                <div className="upload btn btn-default">
-                                    Cập nhật
-                                    <input className="upload" type="file" name="avatar" onChange={this.handleUpload} />
+            <React.Fragment>
+                <DialogModal
+                    modalID="modal-profile"
+                    formID="form-profile"
+                    title={translate('auth.profile.title')}
+                    msg_success={translate('auth.profile.edit_success')}
+                    msg_faile={translate('auth.profile.edit_faile')}
+                    func={this.changeInformation}
+                    disableSubmit={!this.isFormValidated()}
+                >
+                    <form id="form-profile">
+                        {/* User information */}
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className="form-group text-center">
+                                    <img className="user-profile-avatar" src={
+                                        this.state.img !== undefined ? 
+                                        this.state.img : 
+                                        (LOCAL_SERVER_API+this.props.auth.user.avatar)}/>
+                                    <div className="upload btn btn-default" onClick={this.showCropImageSpace}>
+                                        Thay đổi
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                                <div className={`form-group ${userNameError===undefined?"":"has-error"}`}>
+                                    <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="name" value={userName} onChange={this.handleChangeName}/>
+                                    <ErrorLabel content={userNameError}/>
+                                </div>
+                                <div className={`form-group ${userEmailError===undefined?"":"has-error"}`}>
+                                    <label>{ translate('auth.profile.email') }<span className="text-red">*</span></label>
+                                    <input type="email" className="form-control" name="email" onChange={this.handleEmail} value={userEmail}/>
+                                    <ErrorLabel content={userEmailError}/>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                            <div className={`form-group ${userNameError===undefined?"":"has-error"}`}>
-                                <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="name" value={userName} onChange={this.handleChangeName}/>
-                                <ErrorLabel content={userNameError}/>
-                            </div>
-                            <div className={`form-group ${userEmailError===undefined?"":"has-error"}`}>
-                                <label>{ translate('auth.profile.email') }<span className="text-red">*</span></label>
-                                <input type="email" className="form-control" name="email" onChange={this.handleEmail} value={userEmail}/>
-                                <ErrorLabel content={userEmailError}/>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </DialogModal>
+                    </form>
+                </DialogModal>
+                {/* Crop image */}
+                <CropImage getImage={this.getImage}/>
+            </React.Fragment>
          );
     }
 
@@ -84,23 +108,12 @@ class ModalChangeUserInformation extends Component {
         if(this.isFormValidated()) return this.props.changeInformation(formdata);
             
     }
-    
-    handleUpload = (event) => {
-        var file = event.target.files[0];
-        var fileLoad = new FileReader();
-        fileLoad.readAsDataURL(file);
-        fileLoad.onload = () => {
-            this.setState({
-                img: fileLoad.result,
-                avatar: file
-            })
-        };
-    }
 
     handleChangeName = (e) => {
         const {value} = e.target;
         this.validateUserName(value, true);
     }
+    
     validateUserName = (value, willUpdateState=true) => {
         let msg = Validator.validateName(value)
         if (willUpdateState){

@@ -44,7 +44,7 @@ class NotificationReiceiverdInfo extends Component {
                             <div className="inline">{
                                 notificationLevel === 'info' ? <i className="fa fa-info-circle text-blue"> {notificationTitle} </i> :
                                 notificationLevel === 'general' ? <i className="fa fa-bell text-green"> {notificationTitle}</i> :
-                                notificationLevel === 'important' ? <i className="fa fa-warning text-orange"> {notificationTitle}</i> : <i className="fa fa-close text-red"> {notificationTitle}`)}</i>
+                                notificationLevel === 'important' ? <i className="fa fa-warning text-orange"> {notificationTitle}</i> : <i className="fa fa-close text-red"> {notificationTitle}</i>
                             }</div>
                         </div>
                     </div>
