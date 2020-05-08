@@ -1,5 +1,5 @@
 const DistributeTransfer = require('../../../models/asset/distributeTransfer.model');
-
+const { Asset, UserRole } = require('../../../models').schema;
 /**
  * Lấy danh sách phiếu sửa chữa - thay thế - nâng cấp
  * Hiện tại đang lấy theo mã công ty
@@ -18,22 +18,29 @@ exports.searchDistributeTransfers = async (company) => {
  */
 exports.createDistributeTransfer = async (data, company) => {
     console.log(data);
-    var createDistributeTransfer = await DistributeTransfer.create({
-        company: company,
-        distributeNumber: data.distributeNumber,
-        dateCreate: data.dateCreate,
-        type: data.type,
-        place: data.place,
-        // handoverMan: data.handoverMan,
-        handoverMan: null,
-        // receiver: data.receiver,
-        receiver: null,
-        asset: null,
-        nowLocation: data.nowLocation,
-        nextLocation: data.nextLocation,
-        reason: data.reason,
-    });
-    return createDistributeTransfer;
+
+    // Lấy thông tin tài sản theo mã tài sản
+    var assetInfo = await Asset.findOne({ assetNumber: data.assetNumber, company: company }, { _id: 1, emailInCompany: 1 });
+    if (assetInfo !== null) {
+        var createDistributeTransfer = await DistributeTransfer.create({
+            asset: assetInfo._id,
+            company: company,
+            distributeNumber: data.distributeNumber,
+            dateCreate: data.dateCreate,
+            type: data.type,
+            place: data.place,
+            manager: data.manager,
+            handoverMan: data.handoverMan,
+            receiver: data.receiver,
+            dateStartUse: data.dateStartUse,
+            dateEndUse: data.dateEndUse,
+            nowLocation: data.nowLocation,
+            nextLocation: data.nextLocation,
+            reason: data.reason,
+        });
+        return createDistributeTransfer;
+    } else return null;
+
 }
 
 /**
@@ -51,29 +58,36 @@ exports.deleteDistributeTransfer = async (id) => {
  * @id: id phiếu sửa chữa - thay thế - nâng cấp muốn update
  */
 exports.updateDistributeTransfer = async (id, data) => {
-    var distributeTransferChange = {
-        distributeNumber: data.distributeNumber,
-        dateCreate: data.dateCreate,
-        type: data.type,
-        place: data.place,
-        // handoverMan: data.handoverMan,
-        handoverMan: null,
-        // receiver: data.receiver,
-        receiver: null,
-        asset: null,
-        nowLocation: data.nowLocation,
-        nextLocation: data.nextLocation,
-        reason: data.reason,
-    };
-    // Cập nhật thông tin phiếu sửa chữa - thay thế - nâng cấp vào database
-    await DistributeTransfer.findOneAndUpdate({
-        _id: id
-    }, {
-        $set: distributeTransferChange
-    });
-    return await DistributeTransfer.findOne({
-        _id: id
-    })
+
+    // Lấy thông tin tài sản theo mã tài sản
+    var assetInfo = await Asset.findOne({ assetNumber: data.assetNumber, company: company }, { _id: 1, emailInCompany: 1 });
+    if (assetInfo !== null) {
+        var distributeTransferChange = {
+            asset: assetInfo._id,
+            distributeNumber: data.distributeNumber,
+            dateCreate: data.dateCreate,
+            type: data.type,
+            place: data.place,
+            manager: data.manager,
+            handoverMan: data.handoverMan,
+            receiver: data.receiver,
+            dateStartUse: data.dateStartUse,
+            dateEndUse: data.dateEndUse,
+            nowLocation: data.nowLocation,
+            nextLocation: data.nextLocation,
+            reason: data.reason,
+        };
+
+        // Cập nhật thông tin phiếu sửa chữa - thay thế - nâng cấp vào database
+        await DistributeTransfer.findOneAndUpdate({
+            _id: id
+        }, {
+            $set: distributeTransferChange
+        });
+        return await DistributeTransfer.findOne({
+            _id: id
+        })
+    }else return null;
 }
 
 // Kiểm tra sự tồn tại của mã phiếu

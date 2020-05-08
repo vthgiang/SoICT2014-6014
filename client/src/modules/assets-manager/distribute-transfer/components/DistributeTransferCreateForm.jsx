@@ -35,7 +35,7 @@ class DistributeTransferCreateForm extends Component {
         return [day, month, year].join('-');
     }
 
-    //1. Bắt sự kiện thay đổi mã phiếu
+    //Bắt sự kiện thay đổi mã phiếu
     handleDistributeNumberChange = (e) => {
         let value = e.target.value;
         this.validateDistributeNumber(value, true);
@@ -54,7 +54,7 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-    //2. Bắt sự kiện thay đổi "Ngày lập"
+    //Bắt sự kiện thay đổi "Ngày lập"
     handleDateCreateChange = (value) => {
         this.validateDateCreate(value, true);
     }
@@ -72,7 +72,7 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-    //3. Bắt sự kiện thay đổi loại phiếu
+    //Bắt sự kiện thay đổi loại phiếu
     handleTypeChange = (e) => {
         let value = e.target.value;
         this.setState({
@@ -81,7 +81,7 @@ class DistributeTransferCreateForm extends Component {
         })
     }
 
-    //4. Bắt sự kiện thay đổi "Địa điểm bàn giao"
+    //Bắt sự kiện thay đổi "Địa điểm bàn giao"
     handlePlaceChange = (e) => {
         let value = e.target.value;
         this.validatePlace(value, true);
@@ -100,7 +100,26 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-    //5. Bắt sự kiện thay đổi "Người bàn giao"
+    //Bắt sự kiện thay đổi "Người quản lý"
+    handleManagerChange = (e) => {
+        let value = e.target.value;
+        this.validateHandoverMan(value, true);
+    }
+    validateHandoverMan = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateHandoverMan(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnHandoverMan: msg,
+                    manager: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    //Bắt sự kiện thay đổi "Người bàn giao"
     handleHandoverManChange = (e) => {
         let value = e.target.value;
         this.validateHandoverMan(value, true);
@@ -119,7 +138,7 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-    //6. Bắt sự kiện thay đổi "Người tiếp nhận"
+    //Bắt sự kiện thay đổi "Người tiếp nhận"
     handleReceiverChange = (e) => {
         let value = e.target.value;
         this.validateReceiver(value, true);
@@ -138,7 +157,43 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-    //7. Bắt sự kiện thay đổi "Mã tài sản"
+    //Bắt sự kiện thay đổi "Thời gian sử dụng từ ngày"
+    handleDateStartUseChange = (value) => {
+        this.validateDateCreate(value, true);
+    }
+    validateDateCreate = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateDateCreate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnDateCreate: msg,
+                    dateStartUse: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Bắt sự kiện thay đổi "Thời gian sử dụng đến ngày"
+    handleDateEndUseChange = (value) => {
+        this.validateDateCreate(value, true);
+    }
+    validateDateCreate = (value, willUpdateState = true) => {
+        let msg = DistributeTransferFromValidator.validateDateCreate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnDateCreate: msg,
+                    dateEndUse: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    //Bắt sự kiện thay đổi "Mã tài sản"
     handleAssetNumberChange = (e) => {
         let value = e.target.value;
         this.validateAssetNumber(value, true);
@@ -157,7 +212,7 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-    //8. Bắt sự kiện thay đổi "Vị trí tiếp theo của tài sản"
+    //Bắt sự kiện thay đổi "Vị trí tiếp theo của tài sản"
     handleNextLocationChange = (e) => {
         let value = e.target.value;
         this.validateNextLocation(value, true);
@@ -176,7 +231,7 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-    //8. Bắt sự kiện thay đổi "Nội dung"
+    //Bắt sự kiện thay đổi "Nội dung"
     handleReasonChange = (e) => {
         let value = e.target.value;
         this.validateReason(value, true);
@@ -195,16 +250,13 @@ class DistributeTransferCreateForm extends Component {
         return msg === undefined;
     }
 
-
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
             this.validateDistributeNumber(this.state.distributeNumber, false) &&
             this.validateDateCreate(this.state.dateCreate, false) &&
-            // this.validateAssetNumber(this.state.assetNumber, false) &&
+            this.validateAssetNumber(this.state.assetNumber, false) &&
             this.validatePlace(this.state.place, false) &&
-            // this.validateHandoverMan(this.state.handoverMan, false) &&
-            // this.validateReceiver(this.state.receiver, false) &&
             this.validateNextLocation(this.state.nextLocation, false) &&
             this.validateReason(this.state.reason, false)
         return result;
@@ -219,8 +271,9 @@ class DistributeTransferCreateForm extends Component {
 
     render() {
         const { translate, distributeTransfer } = this.props;
-        const { distributeNumber, dateCreate, type, place, assetNumber, assetName, handoverMan, deparment, position, receiver, deparment1, position1, reason, nowLocation, nextLocation,
-            errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnAssetNumber, errorOnHandoverMan, errorOnReceiver, errorOnNextLocation, errorOnReason } = this.state;
+        const { distributeNumber, dateCreate, type, place, assetNumber, assetName, manager, positionManager, 
+                handoverMan, positionHandoverMan, receiver, positionReceiver, dateStartUse, dateEndUse, reason, nowLocation, nextLocation,
+                errorOnDistributeNumber, errorOnDateCreate, errorOnPlace, errorOnAssetNumber, errorOnHandoverMan, errorOnReceiver, errorOnNextLocation, errorOnReason } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-distributetransfer" button_name="Thêm mới phiếu" title="Thêm mới phiếu cấp phát - điều chuyển - thu hồi" />
@@ -241,6 +294,7 @@ class DistributeTransferCreateForm extends Component {
                                     <input type="text" className="form-control" name="distributeNumber" value={distributeNumber} onChange={this.handleDistributeNumberChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnDistributeNumber} />
                                 </div>
+
                                 <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
@@ -250,75 +304,100 @@ class DistributeTransferCreateForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>
+
                                 <div className="form-group">
                                     <label>Phân loại</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="distribute">Cấp phát</option>
-                                        <option value="transfer">Điều chuyển</option>
-                                        <option value="revoke">Thu hồi</option>
+                                        <option value="Cấp phát">Cấp phát</option>
+                                        <option value="Điều chuyển">Điều chuyển</option>
+                                        <option value="Thu hồi">Thu hồi</option>
                                     </select>
                                 </div>
+
                                 <div className={`form-group ${errorOnPlace === undefined ? "" : "has-error"}`}>
                                     <label>Địa điểm bàn giao<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="place" value={place} onChange={this.handlePlaceChange} autoComplete="off" placeholder="Địa điểm bàn giao" />
                                     <ErrorLabel content={errorOnPlace} />
                                 </div>
-                                {/* <div className={`form-group ${errorOnHandoverMan === undefined ? "" : "has-error"}`}> */}
-                                <div className="form-group">
-                                    <label>Người bàn giao<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="handoverMan" value={handoverMan} onChange={this.handleHandoverManChange} autoComplete="off" placeholder="Người bàn giao" />
-                                    {/* <ErrorLabel content={errorOnHandoverMan} /> */}
-                                </div>
-                                <div className="form-group">
-                                    <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="department" value={deparment} />
-                                </div>
-                                <div className="form-group">
-                                    <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position" value={position} />
-                                </div>
-                            </div>
 
-                            <div className="col-sm-6">
-                                {/* <div className={`form-group ${errorOnReceiver === undefined ? "" : "has-error"}`}> */}
-                                <div className="form-group">
-                                    <label>Người tiếp nhận<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="receiver" value={receiver} onChange={this.handleReceiverChange} autoComplete="off" placeholder="Người tiếp nhận" />
-                                    {/* <ErrorLabel content={errorOnReceiver} /> */}
-                                </div>
-                                <div className="form-group">
-                                    <label>Đơn vị</label>
-                                    <input type="text" className="form-control" name="deparment1" value={deparment1} />
-                                </div>
-                                <div className="form-group">
-                                    <label>Chức vụ</label>
-                                    <input type="text" className="form-control" name="position1" value={position1} />
-                                </div>
-                                {/* <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}> */}
-                                <div className="form-group">
+                                <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}>
                                     <label>Mã tài sản<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Mã tài sản" />
-                                    {/* <ErrorLabel content={errorOnAssetNumber} /> */}
                                 </div>
+
                                 <div className="form-group">
                                     <label>Tên tài sản</label>
                                     <input type="text" className="form-control" name="assetName" value={assetName} autoComplete="off" placeholder="Tên tài sản" />
                                 </div>
+
                                 <div className="form-group">
                                     <label>Vị trí ban đầu của tài sản</label>
                                     <input type="text" className="form-control" name="nowLocation" value={nowLocation} autoComplete="off" placeholder="Vị trí ban đầu của tài sản" />
                                 </div>
+
+                                <div className="form-group">
+                                    <label>Người quản lý tài sản<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="manager" value={manager} onChange={this.handleManagerChange} autoComplete="off" placeholder="Người quản lý tài sản" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Chức vụ người quản lý</label>
+                                    <input type="text" className="form-control" name="positionManager" value={positionManager} />
+                                </div>
+                            </div>
+
+                            <div className="col-sm-6">
+                                <div className="form-group">
+                                    <label>Người bàn giao<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="handoverMan" value={handoverMan} onChange={this.handleHandoverManChange} autoComplete="off" placeholder="Người bàn giao" />
+                                </div>
+                                
+                                <div className="form-group">
+                                    <label>Chức vụ người bàn giao</label>
+                                    <input type="text" className="form-control" name="positionHandoverMan" value={positionHandoverMan} />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Người tiếp nhận<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="receiver" value={receiver} onChange={this.handleReceiverChange} autoComplete="off" placeholder="Người tiếp nhận" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Chức vụ người tiếp nhận</label>
+                                    <input type="text" className="form-control" name="positionReceiver" value={positionReceiver} />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Thời gian sử dụng từ ngày</label>
+                                    <DatePicker
+                                        id="create_start_use"
+                                        value={dateStartUse}
+                                        onChange={this.handleDateStartUseChange}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Thời gian sử dụng đến ngày</label>
+                                    <DatePicker
+                                        id="create_end_use"
+                                        value={dateEndUse}
+                                        onChange={this.handleDateEndUseChange}
+                                    />
+                                </div>
+
                                 <div className={`form-group ${errorOnNextLocation === undefined ? "" : "has-error"}`}>
                                     <label>Vị trí tiếp theo của tài sản<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="nextLocation" value={nextLocation} onChange={this.handleNextLocationChange} autoComplete="off" placeholder="Vị trí tiếp theo của tài sản" />
                                     <ErrorLabel content={errorOnNextLocation} />
                                 </div>
+
+                                <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
+                                    <label>Nội dung<span className="text-red">*</span></label>
+                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off" placeholder="Nội dung"></textarea>
+                                    <ErrorLabel content={errorOnReason} />
+                                </div>
                             </div>
-                            <div className={`form-group col-sm-12 ${errorOnReason === undefined ? "" : "has-error"}`}>
-                                <label>Nội dung<span className="text-red">*</span></label>
-                                <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off" placeholder="Nội dung"></textarea>
-                                <ErrorLabel content={errorOnReason} />
-                            </div>
+                            
                         </div>
                     </form>
                 </DialogModal>

@@ -30,7 +30,11 @@ const DistributeTransferSchema = new Schema({
     place : {// vị trí bàn giao
         type: String
     },
-    handoverMan : {//người ban giao là người đang quản lý tài sản, lấy id từ model asset: manager
+    manager : {//người quản lý tài sản là người đang quản lý tài sản, lấy id từ model asset: manager
+        type: Schema.Types.ObjectId,
+        ref: User
+    },
+    handoverMan : {//người ban giao là người đang quản lý tài sản, lấy id từ model asset: person
         type: Schema.Types.ObjectId,
         ref: User
     },
@@ -39,11 +43,42 @@ const DistributeTransferSchema = new Schema({
         ref: User
     },
 
-    nowLocation :{//vị trí ban đầu của tài sản là vị trí hiện tại lúc chưa cấp phát - điều chuyển - thu hồi
-        type: String, // vị trí hiện tại của tài sản, lấy từ model asset
+    /**
+     * Vị trí ban đầu của tài sản
+     * Giải thích: lấy dữ liệu từ field position trong db asset
+     * và lưu vào field nowLocation trong db distributeTransfer
+     */
+    nowLocation :{
+        type: String,
     },
-    
-    nextLocation :{//vị trí tiếp theo của tài sản
+
+    /**
+     * Vị trí tiếp theo của tài sản
+     * Giải thích: khi cập nhật vị trí tiếp theo của tài sản, 
+     * vừa cập nhật dữ liệu vào field nextLocation trong db distributeTransfer
+     * vừa cập nhật dữ liệu vào field location trong db asset
+     */
+    nextLocation :{
+        type: String,
+        required: true
+    },
+
+    /**
+     * Thời gian sử dụng từ ngày
+     * Khi cập nhật dữ liệu, vừa cập nhật dữ liệu vào field dateStartUse trong db asset
+     * vừa cập nhật dữ liệu vào field dateStartUse trong db distributeTransfer
+     */
+    dateStartUse: {
+        type: String,
+        required: true
+    },
+
+    /**
+     * Thời gian sử dụng đến ngày
+     * Khi cập nhật dữ liệu, vừa cập nhật dữ liệu vào field dateEndUse trong db asset
+     * vừa cập nhật dữ liệu vào field dateEndUse trong db distributeTransfer
+     */
+    dateEndUse: {
         type: String,
         required: true
     },

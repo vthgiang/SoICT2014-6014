@@ -158,7 +158,7 @@ class AssetTypeManager extends Component {
                                 <td>{x.typeNumber}</td>
                                 <td>{x.typeName}</td>
                                 <td>{x.timeDepreciation}</td>
-                                <td>{x.parent ? x.parent.typeName : ''}</td>
+                                <td>{x.parent ? x.parent.typeNumber + " - " + x.parent.typeName : ''}</td>
                                 <td>{x.description}</td>
                                 <td style={{textAlign: "center"}}>
                                     <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin loại tài sản"><i

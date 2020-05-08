@@ -155,7 +155,7 @@ class AssetTypeCreateForm extends Component {
                             <label>Loại tài sản cha</label>
                             <select id="drops" className="form-control" name="parent" onChange={(e) => this.setState({parent: e.target.value})}>
                                 {assetType.listAssetTypes.length ? assetType.listAssetTypes.map((item, index) => (
-                                    <option key={index} value={item._id}>{item.typeName}</option>
+                                    <option key={index} value={item._id}>{item.typeNumber + " - " + item.typeName}</option>
                                 )) : null}
 
                             </select>
