@@ -8,6 +8,7 @@ const Company = require('../models/system-admin/company.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 const {data, checkServicePermission} = require('./servicesPermission');
 const multer = require('multer');
+const fs = require('fs');
 
 /**
  * ****************************************
@@ -143,33 +144,30 @@ exports.authFunc = (checkPage=true) => {
 
 exports.auth = this.authFunc();
 
-exports.uploadAvatar = multer({ storage: multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, './upload/avatars')
-        },
-        filename: function (req, file, cb) {
-            cb(null, `${Date.now()}_${req.user._id}_${file.originalname}`)
-        }
-    }) 
-});
 
 /**
- * Viết lại middleware check và lấy dữ liệu về file mà client người đến
+ * Middleware check và lấy dữ liệu về file mà client người đến
  * name - tên của thuộc tính lưu dữ liệu file trong data mà client gửi lên
  * path đường dẫn đến thư mục muốn lưu file
  */
 exports.uploadFile = (name, path, multiple=false) => {
+    var dir = `./upload${path}`;
+    
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
 
-    const uploadAvatar = multer({ storage: multer.diskStorage({
+    const getFile = multer({ storage: multer.diskStorage({
             destination: function (req, file, cb) {
-                cb(null, `./upload`+path)
+                cb(null, `./upload`+path);
             },
             filename: function (req, file, cb) {
-                cb(null, `${Date.now()}_${req.user._id}_${file.originalname}`)
+                var fileName = `${Date.now()}${req.user._id}`;
+                cb(null, `${fileName}.png`);
             }
         }) 
     });
 
-    return !multiple ? uploadAvatar.single(name) : uploadAvatar.array(name, 10);
+    return !multiple ? getFile.single(name) : getFile.array(name, 10);
 
 }
