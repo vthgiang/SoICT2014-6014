@@ -126,6 +126,7 @@ function updateInformationAsset(id, informationAsset) {
         AssetService.updateInformationAsset(id, informationAsset)
             .then(
                 informationAsset => {
+                    dispatch(getAllAsset());
                     dispatch(success(informationAsset));
                 },
                 error => {

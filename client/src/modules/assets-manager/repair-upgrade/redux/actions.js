@@ -39,6 +39,15 @@ function createNewRepairUpgrade(data) {
         });
         RepairUpgradeService.createNewRepairUpgrade(data)
             .then(res => {
+                dispatch(searchRepairUpgrades({
+                    repairNumber: "",
+                    // assetNumber: "",
+                    month: "",
+                    type: null,
+                    status: null,
+                    page: 0,
+                    limit: 5,
+                }))
                 dispatch({
                     type: RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_SUCCESS,
                     payload: res.data.content
@@ -83,6 +92,15 @@ function updateRepairUpgrade(id, infoRepairUpgrade) {
         });
         RepairUpgradeService.updateRepairUpgrade(id, infoRepairUpgrade)
             .then(res => {
+                dispatch(searchRepairUpgrades({
+                    repairNumber: "",
+                    // assetNumber: "",
+                    month: "",
+                    type: null,
+                    status: null,
+                    page: 0,
+                    limit: 5,
+                }))
                 dispatch({
                     type: RepairUpgradeConstants.UPDATE_REPAIR_UPGRADE_SUCCESS,
                     payload: res.data.content

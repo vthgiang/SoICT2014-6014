@@ -102,11 +102,7 @@ function validateManager(value, translate) {
 
 //kiểm tra người sử dụng
 function validatePerson(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Người quản lý không được để trống";
-    }
-    return msg;
+    return undefined;
 }
 
 //kiểm tra ngày nhập

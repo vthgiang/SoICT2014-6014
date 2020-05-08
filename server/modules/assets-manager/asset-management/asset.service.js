@@ -33,7 +33,7 @@ exports.searchAssetProfiles = async (data, company) => {
     // Lấy danh sách tài sản
     var totalList = await Asset.count(keySearch);
     var listAssets = await Asset.find(keySearch, {field1: 1, emailInCompany: 1})
-        .sort({'createdAt': 'desc'});
+        .sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
     var data = [];
     var positionManager = {};
     var newAssetManager = {};
@@ -44,12 +44,16 @@ exports.searchAssetProfiles = async (data, company) => {
         if (asset.length) {
 
             positionManager = await UserRole.find({userId: asset[0].manager._id}).populate('roleId');
-            positionPerson = await UserRole.find({userId: asset[0].person._id}).populate('roleId');
+            if(asset[0].person !== null) positionPerson = await UserRole.find({userId: asset[0].person._id}).populate('roleId');
             if (Object.keys(positionManager) && Object.keys(positionPerson)) {
                 newAssetManager = asset[0].manager.toObject();
-                newAssetPerson = asset[0].person.toObject();
+
                 newAssetManager.position = positionManager.pop().roleId;
-                newAssetPerson.position = positionPerson.pop().roleId;
+                if(asset[0].person !== null) {
+                    newAssetPerson = asset[0].person.toObject();
+                    newAssetPerson.position = positionPerson.pop().roleId;
+                }
+
             }
         }
         var repairUpgrade = await RepairUpgrade.find({asset: listAssets[n]._id})
@@ -68,7 +72,9 @@ exports.create = (data) => {
 
 // Cập nhât thông tin tài sản theo id
 exports.updateInfoAsset = async (id, data) => {
-
+    return Asset.findByIdAndUpdate(id, data, {
+        new: true
+    });
 }
 
 // Cập nhật(thêm mới) Avatar tài sản

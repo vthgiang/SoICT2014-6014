@@ -119,6 +119,12 @@ class AssetManager extends Component {
 
     // Function bắt sự kiện tìm kiếm
     handleSunmitSearch = async () => {
+        if (this.state.month === "") {
+        await this.setState({
+            ...this.state,
+        })
+        }
+
         this.props.getAllAsset(this.state);
     }
 
@@ -167,7 +173,7 @@ class AssetManager extends Component {
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetNumber" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off"/>
                         </div>
                     </div>
                     <div className="form-inline">

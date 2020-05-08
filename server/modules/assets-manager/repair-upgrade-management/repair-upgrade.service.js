@@ -3,11 +3,20 @@ const RepairUpgrade = require('../../../models/asset/repairUpgrade.model');
 /**
  * Lấy danh sách phiếu sửa chữa - thay thế - nâng cấp
  */
-exports.searchRepairUpgrades = async (company) => {
+exports.searchRepairUpgrades = async (data, company) => {
+    var keySearch = {company: company};
+
+    // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
+    if (data.repairNumber !== "") {
+        keySearch = {...keySearch, repairNumber: {$regex: data.repairNumber, $options: "i"}}
+    }
+
+    var totalList = await RepairUpgrade.count(keySearch);
     var listRepairUpgrades = await RepairUpgrade.find({
         company: company
-    })
-    return listRepairUpgrades;
+    }).populate('asset').sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
+
+    return {totalList, listRepairUpgrades};
 }
 
 /**
@@ -21,7 +30,7 @@ exports.createRepairUpgrade = async (data, company) => {
         repairNumber: data.repairNumber,
         dateCreate: data.dateCreate,
         type: data.type,
-        asset: null,
+        asset: data.asset,
         reason: data.reason,
         repairDate: data.repairDate,
         completeDate: data.completeDate,
@@ -50,7 +59,7 @@ exports.updateRepairUpgrade = async (id, data) => {
         repairNumber: data.repairNumber,
         dateCreate: data.dateCreate,
         type: data.type,
-        asset: null,
+        asset: data.asset,
         reason: data.reason,
         repairDate: data.repairDate,
         completeDate: data.completeDate,

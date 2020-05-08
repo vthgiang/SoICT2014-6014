@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
-import { RepairUpgradeFromValidator } from './RepairUpgradeFromValidator';
-import { RepairUpgradeActions } from '../redux/actions';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
+import {DatePicker, DialogModal, ErrorLabel} from '../../../../common-components';
+import {RepairUpgradeFromValidator} from './RepairUpgradeFromValidator';
+import {RepairUpgradeActions} from '../redux/actions';
+
 class RepairUpgradeEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            assetIndex: ''
+        };
     }
-    
+
     // Bắt sự kiện thay đổi "Ngày lập"
     handleDateCreateChange = (value) => {
         this.validateDateCreate(value, true);
@@ -28,17 +31,19 @@ class RepairUpgradeEditForm extends Component {
         return msg === undefined;
     }
 
-        // Bắt sự kiện thay đổi loại phiếu
-        handleTypeChange = (e) => {
-            let value = e.target.value;
-            this.setState({
-                ...this.state,
-                type: value
-            })
-        }
+    // Bắt sự kiện thay đổi loại phiếu
+    handleTypeChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            type: value
+        })
+    }
 
     // Bắt sự kiện thay đổi "Mã tài sản"
     handleAssetNumberChange = (e) => {
+        const selectedIndex = e.target.options.selectedIndex;
+        this.setState({assetIndex: e.target.options[selectedIndex].getAttribute('data-key')});
         let value = e.target.value;
         this.validateAssetNumber(value, true);
     }
@@ -49,7 +54,7 @@ class RepairUpgradeEditForm extends Component {
                 return {
                     ...state,
                     errorOnAssetNumber: msg,
-                    assetNumber: value,
+                    asset: value,
                 }
             });
         }
@@ -141,10 +146,12 @@ class RepairUpgradeEditForm extends Component {
     }
 
     save = () => {
+        console.log(this.state);
         if (this.isFormValidated()) {
             return this.props.updateRepairUpgrade(this.state._id, this.state);
         }
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -154,6 +161,7 @@ class RepairUpgradeEditForm extends Component {
                 dateCreate: nextProps.dateCreate,
                 type: nextProps.type,
                 assetNumber: nextProps.assetNumber,
+                assetId: nextProps.assetId,
                 assetName: nextProps.assetName,
                 reason: nextProps.reason,
                 repairDate: nextProps.repairDate,
@@ -172,9 +180,12 @@ class RepairUpgradeEditForm extends Component {
     }
 
     render() {
-        const { translate, repairUpgrade } = this.props;
-        const { repairNumber, dateCreate, type, assetNumber, assetName, reason, repairDate, completeDate, cost,  status,
-                errorOnDateCreate, errorOnAssetNumber, errorOnReason, errorOnRepairDate, errorOnCost } = this.state;
+        const {translate, repairUpgrade, assetsManager,} = this.props;
+        const {
+            repairNumber, dateCreate, type, assetNumber, assetName, reason, repairDate, completeDate, cost, status,
+            errorOnDateCreate, errorOnAssetNumber, errorOnReason, errorOnRepairDate, errorOnCost, assetId
+        } = this.state;
+        console.log('assetId', assetId);
         return (
             <React.Fragment>
                 <DialogModal
@@ -200,7 +211,7 @@ class RepairUpgradeEditForm extends Component {
                                         value={dateCreate}
                                         onChange={this.handleDateCreateChange}
                                     />
-                                    <ErrorLabel content={errorOnDateCreate} />
+                                    <ErrorLabel content={errorOnDateCreate}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Phân loại</label>
@@ -210,23 +221,34 @@ class RepairUpgradeEditForm extends Component {
                                         <option value="Nâng cấp">Nâng cấp</option>
                                     </select>
                                 </div>
-                                
+
                                 {/* <div className={`form-group ${errorOnAssetNumber === undefined ? "" : "has-error"}`}> */}
                                 <div className="form-group">
                                     <label>Mã tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="assetNumber" value={assetNumber} onChange={this.handleAssetNumberChange} autoComplete="off" placeholder="Mã tài sản" />
+                                    <select id="drops1" className="form-control" name="asset" defaultValue={assetId ? assetId : ''}
+                                            placeholder="Please Select"
+                                            onChange={this.handleAssetNumberChange}>
+                                        <option value="" disabled>Please Select</option>
+                                        {assetsManager.allAsset ? assetsManager.allAsset.map((item, index) => {
+                                            return (
+                                                <option data-key={index} key={index} value={item.asset._id}>{item.asset.assetNumber}</option>
+                                            )
+                                        }) : null}
+                                    </select>
                                     {/* <ErrorLabel content={errorOnAssetNumber} /> */}
                                 </div>
                                 <div className="form-group">
                                     <label>Tên tài sản</label>
-                                    <input type="text" className="form-control" name="assetName" value={assetName} disabled/>
+                                    <input disabled type="text" className="form-control" name="assetName"
+                                           value={this.state.assetIndex !== '' ? assetsManager.allAsset[this.state.assetIndex].asset.assetName : assetName ? assetName : ''}/>
                                 </div>
                             </div>
                             <div className="col-sm-6">
                                 <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
                                     <label>Nội dung<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off" placeholder="Nội dung"></textarea>
-                                    <ErrorLabel content={errorOnReason} />
+                                    <textarea className="form-control" rows="3" style={{height: 34}} name="reason" value={reason} onChange={this.handleReasonChange} autoComplete="off"
+                                              placeholder="Nội dung"></textarea>
+                                    <ErrorLabel content={errorOnReason}/>
                                 </div>
                                 <div className={`form-group ${errorOnRepairDate === undefined ? "" : "has-error"}`}>
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
@@ -235,7 +257,7 @@ class RepairUpgradeEditForm extends Component {
                                         value={repairDate}
                                         onChange={this.handleRepairDateChange}
                                     />
-                                    <ErrorLabel content={errorOnRepairDate} />
+                                    <ErrorLabel content={errorOnRepairDate}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Ngày hoàn thành</label>
@@ -247,9 +269,10 @@ class RepairUpgradeEditForm extends Component {
                                 </div>
                                 <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"}`}>
                                     <label>Chi phí<span className="text-red">*</span></label>
-                                    <input style={{ display: "inline", width: "93%" }} type="number" className="form-control" name="cost" value={ cost } onChange={this.handleCostChange} autoComplete="off" placeholder="Chi phí" />
-                                    <label style={{ height: 34, display: "inline", width: "5%"}}>  VNĐ</label>
-                                    <ErrorLabel content={errorOnCost} />
+                                    <input style={{display: "inline", width: "93%"}} type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange} autoComplete="off"
+                                           placeholder="Chi phí"/>
+                                    <label style={{height: 34, display: "inline", width: "5%"}}> VNĐ</label>
+                                    <ErrorLabel content={errorOnCost}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Trạng thái</label>
@@ -269,8 +292,8 @@ class RepairUpgradeEditForm extends Component {
 };
 
 function mapState(state) {
-    const { repairUpgrade } = state;
-    return { repairUpgrade };
+    const {repairUpgrade, assetsManager} = state;
+    return {repairUpgrade, assetsManager};
 };
 
 const actionCreators = {
@@ -278,4 +301,4 @@ const actionCreators = {
 };
 
 const editRepairUpgrade = connect(mapState, actionCreators)(withTranslate(RepairUpgradeEditForm));
-export { editRepairUpgrade as RepairUpgradeEditForm };
+export {editRepairUpgrade as RepairUpgradeEditForm};

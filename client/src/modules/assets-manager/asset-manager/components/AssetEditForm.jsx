@@ -64,6 +64,11 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
+        let dataUpdate = {}
+        if(this.state.assetNew !== undefined){
+            dataUpdate = {...this.state.asset,...this.state.assetNew};
+            this.props.updateInformationAsset(this.state.asset._id,dataUpdate);
+        }
 
     }
 
@@ -161,21 +166,20 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    // updateInformationAsset: AssetManagerActions.updateInformationAsset,
-    // getAllAsset: AssetManagerActions.getAllAsset,
-    // uploadAvatar: AssetManagerActions.uploadAvatar,
-    // checkAssetNumber: AssetManagerActions.checkAssetNumber,
+    updateInformationAsset: AssetManagerActions.updateInformationAsset,
+    getAllAsset: AssetManagerActions.getAllAsset,
+    uploadAvatar: AssetManagerActions.uploadAvatar,
+    checkAssetNumber: AssetManagerActions.checkAssetNumber,
+    updateFile: AssetManagerActions.updateFile,
 
-    // updateFile: AssetManagerActions.updateFile,
+    createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
+    createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
 
-    // createNewRepairUpgrade: RepairUpgradeActions.createNewRepairUpgrade,
-    // createNewDistributeTransfer: DistributeTransferActions.createNewDistributeTransfer,
+    updateRepairUpgrade: RepairUpgradeActions.updateRepairUpgrade,
+    updateDistributeTransfer: DistributeTransferActions.updateDistributeTransfer,
 
-    // updateRepairUpgrade: RepairUpgradeActions.updateRepairUpgrade,
-    // updateDistributeTransfer: DistributeTransferActions.updateDistributeTransfer,
-
-    // deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
-    // deleteDistributeTransfer: DistributeTransferActions.deleteDistributeTransfer,
+    deleteRepairUpgrade: RepairUpgradeActions.deleteRepairUpgrade,
+    deleteDistributeTransfer: DistributeTransferActions.deleteDistributeTransfer,
 };
 const editForm = connect(mapState, actionCreators)(withTranslate(AssetEditForm));
 export {editForm as AssetEditForm};

@@ -20,8 +20,8 @@ export function repairUpgrade(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listRepairUpgrades: action.payload,
-                //totalList: action.payload.totalList,
+                listRepairUpgrades: action.payload.listRepairUpgrades,
+                totalList: action.payload.totalList,
             };
         case RepairUpgradeConstants.CREATE_REPAIR_UPGRADE_SUCCESS:
             return {

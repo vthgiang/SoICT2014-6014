@@ -46,6 +46,7 @@ exports.uploadAvatar = uploadAvatar.single("fileUpload");
  * Lấy danh sách tài sản
  */
 exports.searchAssetProfiles = async (req, res) => {
+    console.log('req.user.company._id',req.user.company._id);
     try {
         var allAssets = await AssetService.searchAssetProfiles(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_ASSET', req.user.company);
