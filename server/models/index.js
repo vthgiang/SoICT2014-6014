@@ -20,7 +20,7 @@ const OrganizationalUnitKpi = require('./kpi/organizationalUnitKpi.model');
 const OrganizationalUnitKpiSet = require('./kpi/organizationalUnitKpiSet.model');
 
 const Notification = require('./notification/notification.model');
-const NotificationUser = require('./notification/notificationUser.model');
+const ManualNotification = require('./notification/manualNotification.model');
 
 const Action = require('./super-admin/action.model');
 const Component = require('./super-admin/component.model');
@@ -80,7 +80,7 @@ exports.schema = {
     OrganizationalUnitKpiSet,
 
     Notification,
-    NotificationUser,
+    ManualNotification,
 
     Action,
     Component,

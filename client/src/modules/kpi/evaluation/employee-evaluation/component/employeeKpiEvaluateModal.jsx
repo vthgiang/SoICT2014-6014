@@ -51,6 +51,32 @@ class ModalMemberEvaluate extends Component {
             });
         });
     }
+    formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+    formatMonth(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
     handleChangeContent = async (id) => {
         // this.props.getTaskById(id);
         await this.setState(state => {
@@ -90,7 +116,7 @@ class ModalMemberEvaluate extends Component {
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
- 
+        console.log(kpimembers.tasks)
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -101,7 +127,7 @@ class ModalMemberEvaluate extends Component {
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>
                             </button>
-                            <h3 className="modal-title" id="myModalLabel">Thông tin chi tiết kpi nhân viên {this.props.name}</h3>
+        <h3 className="modal-title" id="myModalLabel"> KPI  {this.props.name}, tháng {this.formatMonth(kpimembers.kpimembers[0].date)}</h3>
                         </div>
                         {/* Modal Body */}
                         <div className="modal-body modal-body-perform-task" >
@@ -160,10 +186,14 @@ class ModalMemberEvaluate extends Component {
                                                         <tr>
                                                             <th title ="STT" style={{ width: "20px" }}>Stt</th>
                                                             <th title="Tên công việc">Tên công việc</th>
-                                                            <th title="Đơn vị">Đơn vị</th>
-                                                            <th title="Mô tả công việc">Mô tả công việc</th>
+                                                            <th title="Thời gian">Thời gian</th>
+                                                            <th title="Tên">Tên</th>
+                                                            <th title="Vai trò">Vai trò</th>
                                                             <th title="Trạng thái">Trạng thái</th>
-                                                            <th title="Kết quả đánh giá">Kết quả đánh giá</th>
+                                                            <th title="Đóng góp">Đóng góp</th>
+                                                            <th title="Point">Điểm</th>
+                                                            <th title="Level">Level</th>
+                                                            {/* <th title="Kết quả đánh giá">Kết quả đánh giá</th> */}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -175,10 +205,19 @@ class ModalMemberEvaluate extends Component {
                                                                 <tr key ={index}>
                                                                     <td>{index+1}</td>
                                                                     <td>{itemTask.name}</td>                                                                   
-                                                                    <td>{itemTask.organizationalUnit.name}</td>
-                                                                    <td>{itemTask.description}</td>
+                                                                    <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
+                                                                    <td>{itemTask.employee.name}</td>
+                                                                    <td>{itemTask.role}</td>
                                                                     <td>{itemTask.status}</td>
-                                                                    <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td>
+                                                                    <td>{itemTask.contribution}</td>
+                                                                    <td>{itemTask.automaticPoint + '-' +itemTask.employeePoint+ '-'+itemTask.approvedPoint }</td>
+                                                                    <td><div class="d-flex justify-content-center my-4">
+                                                                    <form class="range-field w-10">
+                                                                        <input id="slider11" class="border-0" type="range" min="0" max="10" />
+                                                                    </form>
+                                                                    <span class="font-weight-bold text-primary ml-2 mt-1 valueSpan"></span>
+                                                                    </div></td>
+                                                                    {/* <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td> */}
                                                             </tr>)) : <tr><td colSpan={6}>Không có dữ liệu</td></tr>
                                                         }
  

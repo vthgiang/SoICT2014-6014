@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
-import { managerActions } from '../../management/redux/actions';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 
 class TrendsInOrganizationalUnitKpiChart extends Component {
@@ -15,9 +15,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     
     componentDidMount() {
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
-        this.props.getChildTargetOfCurrentTarget('5eb05fada9eb290b40a57e62');
+        this.props.getChildTargetOfOrganizationalUnitKpis(localStorage.getItem('currentRole'))
     }
-
+    
     setTypeData = () => {
         return { 
             type: "stackedBar100",
@@ -40,15 +40,12 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         
     }
 
-    setNumberOfParticipantData = (numberOfParticipants) => {
-        return { y: numberOfParticipants, label: "Người tham gia" }
+    setNumberOfParticipantData = (numberOfParticipant) => {
+        return { y: numberOfParticipant, label: "Người tham gia" }
     }
 
-    setNumberOfChildKpiData = (organizationalUnitKpi) => {
-        this.props.getChildTargetOfCurrentTarget(organizationalUnitKpi);
-        // const {managerKpiUnit} = this.props;
-        // var employeeKi = managerKpiUnit.childtarget;
-        // return employeeKi
+    setNumberOfChildKpiData = (numberOfChildKpi) => {
+        return { y: numberOfChildKpi, label: "Số Kpi con" }
     }
     
     setWeightData = (weight) => {
@@ -56,26 +53,43 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        var data1, data2, data,  numberOfChildKpi, listOrganizationalUnitKpi;
+        var numberOfParticipant, numberOfChildKpi, data2, data, listOrganizationalUnitKpi, listChildTarget;
         var key = -1;
-        const { createKpiUnit, managerKpiUnit } = this.props;
+        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         if (createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
-
-        if(listOrganizationalUnitKpi === undefined){
-            data1 = []
-        } else {
-            data1 = listOrganizationalUnitKpi.map(x => {
-                return this.setNumberOfParticipantData(5)
-            })
+        if (dashboardOrganizationalUnitKpi.childTargets) {
+            listChildTarget = dashboardOrganizationalUnitKpi.childTargets
         }
         
+        if(listOrganizationalUnitKpi === undefined){
+            numberOfParticipant = [];
+            numberOfChildKpi = []
+        } else {
+            numberOfParticipant = listOrganizationalUnitKpi.map(x => {
+                return this.setNumberOfParticipantData(5);
+            });
+            numberOfChildKpi = listOrganizationalUnitKpi.map(parent => {
+                var count;
+                if(listChildTarget !== undefined){
+                    listChildTarget.filter(item => item._id === parent._id).map(x => {
+                        count = x.count
+                    })
+                }
+                if(count === undefined){
+                    return this.setNumberOfChildKpiData(0);
+                } else {
+                    return this.setNumberOfChildKpiData(count);
+                }
+            })
+        }
+
         if(listOrganizationalUnitKpi === undefined){
             data2 = []
         } else {
             data2 = listOrganizationalUnitKpi.map(x => {
-                return [this.setExecutionTimeData(5)].concat(this.setNumberOfTaskData(5))
+                return [this.setExecutionTimeData(5)].concat(this.setNumberOfTaskData(5));
             })
         }
 
@@ -89,8 +103,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                         this.setNameData(x.name),
                         Object.assign(
                             {dataPoints: [
-                                data1[key],
-                                //numberOfChildKpi[key],
+                                numberOfParticipant[key],
+                                numberOfChildKpi[key],
                                 this.setWeightData(x.weight)
                             ].concat(data2[key])}
                         )
@@ -98,7 +112,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             })
             key = -1;
         }
-
         const trends = {
             exportEnabled: true,
             animationEnabled: true,
@@ -124,12 +137,12 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 }
 
 function mapState(state) {
-    const { createKpiUnit, managerKpiUnit } = state;
-    return { createKpiUnit, managerKpiUnit };
+    const { createKpiUnit, managerKpiUnit, dashboardOrganizationalUnitKpi } = state;
+    return { createKpiUnit, managerKpiUnit, dashboardOrganizationalUnitKpi };
 }
 const actions = {
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
-    getChildTargetOfCurrentTarget: managerActions.getChildTargetOfCurrentTarget
+    getChildTargetOfOrganizationalUnitKpis: dashboardOrganizationalUnitKpiActions.getChildTargetOfOrganizationalUnitKpis
 }
 
 const connectedTrendsInOrganizationalUnitKpiChart = connect(mapState, actions)(TrendsInOrganizationalUnitKpiChart);

@@ -121,6 +121,11 @@ export default {
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
+            },
+            date_time: {
+                day: 'ngày', month: 'tháng', year: 'năm',
+                hour: 'giờ', minute: 'phút',
+                today: 'Hôm nay',
             }
         },
 
@@ -338,7 +343,11 @@ export default {
         },
 
         notification: {
-            title: 'Tiêu đề',
+            title: 'Thông báo',
+            news: 'Thông báo mới',
+            see_all: 'Xem tất cả',
+            total: 'Tổng số',
+            level: 'loại thông báo',
             type: {
                 title: 'Loại thông báo',
                 info: 'Thông tin',
@@ -347,25 +356,25 @@ export default {
                 emergency: 'Thông báo khẩn',
             },
             content: 'Nội dung thông báo',
+            sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
+            from: 'từ', at: 'lúc',
 
             add: 'Tạo thông báo',
-            receivered: 'Đã nhận',
-            sent: 'Đã tạo',
+            receivered: 'Thông báo đã nhận',
+            sent: 'Thông báo đã tạo',
             note: 'Chú thích',
+            info: 'Thông tin thông báo',
+            delete: 'Xóa thông báo',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',
             create_notification_faile: 'Tạo thông báo thất bại',
-            edit_notification_success: 'Chỉnh sửa thông báo thành công',
-            edit_notification_faile: 'Chỉnh sửa thông báo thất bại',
             delete_notification_success: 'Xóa thông báo thành công',
             delete_notification_faile: 'Xóa thông báo thất bại',
-            delete_notification_receivered_success: 'Xóa thông báo thành công',
-            delete_notification_receivered_faile: 'Xóa thông báo thất bại',
-            delete_notification_sent_success: 'Xóa thông báo thành công',
-            delete_notification_sent_faile: 'Xóa thông báo thất bại',
+            delete_manual_notification_success: 'Xóa thông báo thành công',
+            delete_manual_notification_faile: 'Xóa thông báo thất bại',
         },
 
         not_found: {
@@ -398,7 +407,7 @@ export default {
             yes: 'CÓ',
             no: 'KHÔNG',
             no_data: 'Không có dữ liệu',
-            field_invalid: "Giá trị trường nhập vào không hợp lệ. Vui lòng kiểm tra lại!",
+            field_invalid: 'Giá trị trường nhập vào không hợp lệ. Vui lòng kiểm tra lại!',
             loading: 'Đang tải dữ liệu ...'
         },
 
@@ -1130,7 +1139,7 @@ export default {
 
             // Quản lý thông tin nhân viên
             profile: {
-                // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
+                // Nhóm dùng chung cho chức năng quản lý tông tin nhân viên
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
@@ -1143,6 +1152,34 @@ export default {
                     get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
                     edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
                     edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
+                },
+
+                employee_management: {
+                    // Thông điệp trả về từ server
+                    get_list_employee_success: 'Lấy danh sách nhân viên thành công',
+                    get_list_employee_false: 'Lấy danh sách nhân viên thất bại',
+                    create_employee_success: 'Thêm mới nhân viên thành công',
+                    create_employee_false: 'Thêm mới nhân viên thất bại',
+                    delete_employee_success: 'Xoá thông tin nhân viên thành công',
+                    delete_employee_false: 'Xoá thông tin nhân viên thất bại',
+                    edit_employee_success: 'Chỉnh sửa thông tin nhân viên thành công',
+                    edit_employee_false: 'Chỉnh sửa thông tin nhân viên thất bại',
+                    employee_number_required: 'Mã nhân viên không được để trống',
+                    email_in_company_required: 'Email công ty không được để trống',
+                    employee_number_have_exist: 'Mã nhân viên đã tồn tại',
+                    email_in_company_have_exist: 'Email công ty đã tồn tại',
+                    employee_timesheet_id_required: 'Mã số chấm công không được để trống',
+                    full_name_required: 'Họ và tên không được để trống',
+                    birthdate_required: 'Ngày sinh không được để trống',
+                    identity_card_number_required: 'Số chứng minh thư/hộ chiếu không được để trống',
+                    identity_card_date_required: 'Ngày cấp chứng minh thư/hộ chiếu không được để trống',
+                    identity_card_address_required: 'Nơi cấp chứng minh thư/hộ chiếu không được để trống',
+                    phone_number_required: 'Điện thoại di động 1',
+                    tax_date_of_issue_required: 'Ngày hoạt động không được để trống',
+                    tax_number_required: 'Mã số thuế không được để trống',
+                    tax_representative_required: 'Người đại diện không được để trống',
+                    tax_authority_required: 'Cơ quan quản lý thuế không được để trống',
+                    temporary_residence_required: 'Địa chỉ Chỗ ở hiện tại không được để trống',
                 }
             }
         },

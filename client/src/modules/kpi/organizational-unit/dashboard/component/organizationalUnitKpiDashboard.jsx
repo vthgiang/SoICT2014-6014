@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { dashboardActions } from '../redux/actions';
+import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { managerActions } from '../../management/redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
@@ -93,6 +93,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
         const { department, managerKpiUnit } = this.props;
+        
         if (department.unitofuser) {
             unitList = department.unitofuser;
             currentUnit = unitList.filter(item =>
@@ -107,21 +108,21 @@ class OrganizationalUnitKpiDashboard extends Component {
             {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
-                currentTargets = currentKPI.map(item => { return { y: item.weight, name: item.name } });
+                currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.result }
+                    return { label: this.formatDate(item.date), y: item.result }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.kpis[0].result }
+                    return { label: this.formatDate(item.date), y: item.kpis[0].result }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.kpis[1].result }
+                    return { label: this.formatDate(item.date), y: item.kpis[1].result }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
+                    return { label: this.formatDate(item.date), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (100 - item.result) }
+                    return { label: this.formatDate(item.date), y: (100 - item.result) }
                 }).reverse();
             };
         }

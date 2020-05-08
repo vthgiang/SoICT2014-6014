@@ -485,7 +485,7 @@ class Routes extends Component {
                         component={ KPIUnitEvaluate }
                     />
                     <PrivateRoute 
-                        isLoading={ this.props.dashboardKpiUnit.isLoading }
+                        isLoading={ this.props.dashboardOrganizationalUnitKpi.isLoading }
                         key={ 'kpi-unit-dashboard' }
                         arrPage={[
                             { link: '/', name:'home', icon: 'fa fa-home'},

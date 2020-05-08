@@ -8,51 +8,29 @@ class NotificationMenu extends Component {
         this.state = {  }
     }
 
+    showTabReceivered = () => {
+        window.$('#tab-notification-sent').hide();
+        window.$('#tab-notification-receivered').show();
+    }
+
+    showTabSent = () => {
+        window.$('#tab-notification-receivered').hide();
+        window.$('#tab-notification-sent').show();
+    }
+
     render() { 
-        const { translate, notifications } = this.props;
+        const { translate } = this.props;
         return ( 
             <React.Fragment>
                 <div className="box box-solid">
-                    <div className="box-body no-padding">
-                        <ul className="nav nav-pills nav-stacked">
-                            <li className="active">
-                                <a 
-                                    href="#notification-receivered" 
-                                    data-toggle="tab"
-                                >
-                                    <i className="fa fa-download"/>
-                                    {translate('notification.receivered')}
-                                    <span className="label label-default pull-right">
-                                        {notifications.listReceivered.length}
-                                    </span>
-                                </a>
-                            </li>
-                            { this.checkHasComponent('create-notification') &&
-                            <li>
-                                <a 
-                                    href="#notification-sent" 
-                                    data-toggle="tab"
-                                >
-                                    <i className="fa fa-upload"/>
-                                    {translate('notification.sent')}
-                                    <span className="label label-default pull-right">
-                                        {notifications.listSent.length}
-                                    </span>
-                                </a>
-                            </li> }
-                        </ul>
-                    </div>  
-                </div>
-                <div className="box box-solid">
-                    <div className="box-header with-border">
-                        <strong className="box-title">{translate('notification.note')}</strong>
-                    </div>
                     <div className="box-body">
+                        <button onClick={this.showTabReceivered} style={{width: '100%', marginBottom: '5px'}} className="btn btn-default">{translate('notification.receivered')}</button>
+                        <button onClick={this.showTabSent} style={{width: '100%', marginBottom: '15px'}} className="btn btn-default">{translate('notification.sent')}</button>
                         <ul className="nav nav-pills nav-stacked">
-                            <li className="text-blue"><i className="material-icons">info</i> {translate('notification.type.info')}</li>
-                            <li className="text-green"><i className="material-icons">notifications</i> {translate('notification.type.general')}</li>
-                            <li className="text-orange"><i className="material-icons">warning</i> {translate('notification.type.important')}</li>
-                            <li className="text-red"><i className="material-icons">new_releases</i> {translate('notification.type.emergency')}</li>
+                            <li className="text-blue"><i className="fa fa-info-circle"/> {translate('notification.type.info')}</li>
+                            <li className="text-green"><i className="fa fa-bell"/> {translate('notification.type.general')}</li>
+                            <li className="text-orange"><i className="fa fa-warning"/> {translate('notification.type.important')}</li>
+                            <li className="text-red"><i className="fa fa-close"/> {translate('notification.type.emergency')}</li>
                         </ul>
                     </div>  
                 </div>

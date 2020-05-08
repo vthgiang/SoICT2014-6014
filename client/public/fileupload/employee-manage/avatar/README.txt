@@ -1,1 +1,0 @@
-Thư mục này dùng để lưu trữ AVARTA cảu nhân viên trong module quản lý nhân sự

@@ -266,3 +266,16 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
 
     return users;
 }
+
+/**
+ * Kiểm tra sự tồn tại của tài khoản
+ * @email : email người dung
+ */
+exports.checkUserExited = async (email) => {
+    var user = User.find({email : email},{field1: 1});
+    var checkUser = false;
+    if (user.length !== 0) {
+        checkUser = true
+    }
+    return checkUser;
+}

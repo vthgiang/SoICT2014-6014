@@ -242,9 +242,13 @@ class GeneralTab extends Component {
                         </div>
                     </div>
                     <div className="pull-right col-lg-8 col-md-8 col-ms-12  ">
-                        <div className="row col-lg-12 col-md-12 col-ms-12 col-xs-12">
-                            <p >(<span className="text-red">*</span>): <span className="text-red">{translate('modal.note')}</span></p>
-                        </div>
+                        {
+                            id === 'page_general' &&
+                            <div className="row col-lg-12 col-md-12 col-ms-12 col-xs-12">
+                                <p >(<span className="text-red">*</span>): <span className="text-red">{translate('modal.note')}</span></p>
+                            </div>
+                        }
+
                         <div className="row">
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
                                 <label>{translate('manage_employee.staff_number')}<span className="text-red">*</span></label>
