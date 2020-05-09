@@ -34,24 +34,34 @@ class TabNotificationReceivered extends Component {
                     {
                         notifications.receivered.paginate.length > 0 ? 
                         notifications.receivered.paginate.map(notification => 
-                            <li key={notification._id}>
-                                {!notification.readed &&<small className="label label-danger"><i className="fa fa-clock-o" /> Mới</small>}
-                                <DateTimeConverter dateTime={notification.createdAt} type={1}/>
-                                <span className="text"><b>{notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</b></span> - 
-                                <span className="text" style={{color: '#6B6B6B'}}>{notification.content.length > 40 ? `${notification.content.slice(0, 40)}...`: notification.content}</span>
-                                
-                                <div className="tools">
-                                    <a href='#' onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
-                                    <DeleteNotification 
-                                        content={translate('notification.delete')}
-                                        data={{ id: notification._id, info: notification.title }}
-                                        func={this.props.deleteNotification}
-                                    />
+                            <li key={notification._id} style={{border: "none"}}>
+                                <div style={{marginBottom: 5}}>
+                                    {
+                                        notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"/> :
+                                        notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
+                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                        <i className="fa fa-fw fa-bomb text-red" />
+                                    }
+                                    <DateTimeConverter dateTime={notification.createdAt} type={1}/>
+                                    {notification.readed?
+                                        <div className="label" style={{width: 30, display:"inline-block", margin: "0 0 0 5px"}}></div>:
+                                        <div className="label label-danger" style={{width: 30, display:"inline-block", margin: "0 0 0 5px"}}>Mới</div>
+                                    }
+                                    <div className="tools">
+                                        <a href="#" onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                        <DeleteNotification 
+                                            content={translate('notification.delete')}
+                                            data={{ id: notification._id, info: notification.title }}
+                                            func={this.props.deleteNotification}
+                                        />
+                                    </div>
                                 </div>
+                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> - {notification.content}</span>
+                                
                             </li>
                         ): notifications.isLoading ?
-                        translate('general.loading'):
-                        translate('general.no_data')
+                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:
+                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
                     }
                     </ul>
                     <PaginateBar pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage}/>

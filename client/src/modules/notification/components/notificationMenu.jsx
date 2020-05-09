@@ -33,10 +33,10 @@ class NotificationMenu extends Component {
                         }
                         
                         <ul className="nav nav-pills nav-stacked">
-                            <li className="text-blue"><i className="fa fa-info-circle"/> {translate('notification.type.info')}</li>
-                            <li className="text-green"><i className="fa fa-bell"/> {translate('notification.type.general')}</li>
-                            <li className="text-orange"><i className="fa fa-warning"/> {translate('notification.type.important')}</li>
-                            <li className="text-red"><i className="fa fa-close"/> {translate('notification.type.emergency')}</li>
+                            <li className="text-blue"><i className="fa fa-info-circle" style={{margin: 10}}/> {translate('notification.type.info')}</li>
+                            <li className="text-green"><i className="fa fa-bell" style={{margin: 10}}/> {translate('notification.type.general')}</li>
+                            <li className="text-orange"><i className="fa fa-warning" style={{margin: 10}}/> {translate('notification.type.important')}</li>
+                            <li className="text-red"><i className="fa fa-bomb" style={{margin: 10}}/> {translate('notification.type.emergency')}</li>
                         </ul>
                     </div>  
                 </div>

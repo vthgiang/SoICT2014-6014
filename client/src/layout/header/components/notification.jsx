@@ -25,7 +25,7 @@ class Notification extends Component {
                         <span className="label label-warning">{notifications.receivered.list.filter(notification => !notification.readed).length}</span>
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>
-                        <li className="header text-center"><strong className="text-red">{notifications.receivered.list.filter(notification => !notification.readed).length}</strong>{translate('notification.news')}</li>
+                        <li className="header text-center"><strong className="text-red">{notifications.receivered.list.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
                         <li>
                             <ul className="menu">
                                 {
@@ -35,7 +35,8 @@ class Notification extends Component {
                                                 {
                                                     notification.level === 'info' ? <i className="fa fa-info-circle text-blue"/> :
                                                     notification.level === 'general' ? <i className="fa fa-bell text-green" /> :
-                                                    notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> : <i className="fa fa-close text-red" />
+                                                    notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
+                                                    <i className="fa fa-bomb text-red" />
                                                 }
                                                 {notification.title}
                                             </a>
