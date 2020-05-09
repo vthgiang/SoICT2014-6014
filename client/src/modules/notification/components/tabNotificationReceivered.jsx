@@ -29,7 +29,7 @@ class TabNotificationReceivered extends Component {
                     />
                 }
                 <div id="tab-notification-receivered" style={{display: 'block'}}>
-                    <ul className="todo-list" style={{ minHeight: '300px', }}>
+                    <ul className="todo-list">
                     {
                         notifications.receivered.paginate.length > 0 ? 
                         notifications.receivered.paginate.map(notification => 

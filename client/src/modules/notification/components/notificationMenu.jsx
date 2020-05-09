@@ -39,10 +39,10 @@ class NotificationMenu extends Component {
                         <div className="box-body">
                             <ul className="nav nav-pills nav-stacked">
                                 <li className={`${this.state.showReceived?"active":""}`}>
-                                    <a href="#" onClick={this.showTabReceivered}><i className="fa fa-inbox"/>{translate('notification.receivered')}</a>
+                                    <a href="#" onClick={this.showTabReceivered}><i className="fa fa-fw fa-inbox"/>{translate('notification.receivered')}</a>
                                 </li>
                                 <li className={`${this.state.showReceived?"":"active"}`}>
-                                    <a href="#" onClick={this.showTabSent}><i className="fa fa-envelope-o"/>{translate('notification.sent')}</a>
+                                    <a href="#" onClick={this.showTabSent}><i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}</a>
                                 </li>
                             </ul>
                         </div>  
@@ -52,10 +52,10 @@ class NotificationMenu extends Component {
                 <div className="box box-solid">
                     <div className="box-body">
                         <ul className="nav nav-pills nav-stacked">
-                            <li><a href="" className="text-blue"><i className="fa fa-info-circle text-blue" /> {translate('notification.type.info')}</a></li>
-                            <li><a href="" className="text-green"><i className="fa fa-bell" /> {translate('notification.type.general')}</a></li>
-                            <li><a href="" className="text-orange"><i className="fa fa-warning" /> {translate('notification.type.important')}</a></li>
-                            <li><a href="" className="text-red"><i className="fa fa-bomb" /> {translate('notification.type.emergency')}</a></li>
+                            <li><a href="" className="text-blue"><i className="fa fa-fw fa-info-circle text-blue" /> {translate('notification.type.info')}</a></li>
+                            <li><a href="" className="text-green"><i className="fa fa-fw fa-bell" /> {translate('notification.type.general')}</a></li>
+                            <li><a href="" className="text-orange"><i className="fa fa-fw fa-warning" /> {translate('notification.type.important')}</a></li>
+                            <li><a href="" className="text-red"><i className="fa fa-fw fa-bomb" /> {translate('notification.type.emergency')}</a></li>
                         </ul>
                     </div>
                 </div>

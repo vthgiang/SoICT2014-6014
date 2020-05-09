@@ -32,7 +32,7 @@ class TabNotificationSent extends Component {
                     />
                 }
                 <div id="tab-notification-sent" style={{display: 'none'}}>
-                    <ul className="todo-list" style={{ minHeight: '300px', }}>
+                    <ul className="todo-list">
                     {
                         notifications.sent.paginate.length > 0 ? 
                         notifications.sent.paginate.map(notification => 
