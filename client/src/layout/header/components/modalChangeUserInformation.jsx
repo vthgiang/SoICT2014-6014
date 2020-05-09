@@ -59,7 +59,7 @@ class ModalChangeUserInformation extends Component {
                                         this.state.img : 
                                         (LOCAL_SERVER_API+this.props.auth.user.avatar)}
                                     />
-                                    <button type="button" className="edit" onClick={this.showCropImageSpace}><i className="fa fa-image" style={{color: 'white'}}></i></button>
+                                    <button type="button" className="edit-option" onClick={this.showCropImageSpace}><i className="fa fa-image" style={{color: 'white'}}></i></button>
                                 </div>
                             </div>
                             <div className="col-xs-6 col-sm-8 col-md-8 col-lg-8">
