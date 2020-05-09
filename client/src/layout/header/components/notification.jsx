@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { AuthActions } from '../../../modules/auth/redux/actions';
 import { NotificationActions } from '../../../modules/notification/redux/actions';
 
 class Notification extends Component {

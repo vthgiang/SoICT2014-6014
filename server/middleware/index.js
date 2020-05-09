@@ -9,6 +9,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const {data, checkServicePermission} = require('./servicesPermission');
 const multer = require('multer');
 const fs = require('fs');
+const CryptoJS = require("crypto-js");
 
 /**
  * ****************************************
@@ -163,7 +164,8 @@ exports.uploadFile = (name, path, multiple=false) => {
             },
             filename: function (req, file, cb) {
                 var fileName = `${Date.now()}${req.user._id}`;
-                cb(null, `${fileName}.png`);
+                var hash = CryptoJS.MD5(fileName).toString() + fileName;
+                cb(null, `${hash}.png`);
             }
         }) 
     });
