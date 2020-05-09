@@ -31,13 +31,12 @@ class TabNotificationSent extends Component {
                         notificationUsers={this.state.currentRow.users}
                     />
                 }
-                <div id="tab-notification-sent" className="box-body" style={{display: 'none'}}>
-                    <h4 className="text-center"><b>{translate('notification.sent')}</b></h4>
-                    <ul className="todo-list" style={{border: '1px solid #D2D6DE', minHeight: '300px', }}>
+                <div id="tab-notification-sent" style={{display: 'none'}}>
+                    <ul className="todo-list" style={{ minHeight: '300px', }}>
                     {
                         notifications.sent.paginate.length > 0 ? 
                         notifications.sent.paginate.map(notification => 
-                            <li key={notification._id}  style={{border: "none"}}>
+                            <li key={notification._id}  style={{border: "none", backgroundColor: "white"}}>
 
                                 <div style={{marginBottom: 5}}>
                                     {

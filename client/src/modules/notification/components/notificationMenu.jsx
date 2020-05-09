@@ -5,40 +5,59 @@ import { withTranslate } from 'react-redux-multilingual';
 class NotificationMenu extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { showReceived: true }
     }
 
     showTabReceivered = () => {
         window.$('#tab-notification-sent').hide();
         window.$('#tab-notification-receivered').show();
+        this.setState(state => {
+            return {
+                ...state,
+                showReceived: true,
+            }
+        });
     }
 
     showTabSent = () => {
         window.$('#tab-notification-receivered').hide();
         window.$('#tab-notification-sent').show();
+        this.setState(state => {
+            return {
+                ...state,
+                showReceived: false,
+            }
+        });
     }
 
     render() { 
         const { translate } = this.props;
         return ( 
             <React.Fragment>
+                {this.checkHasComponent('create-notification') &&
+                    <div className="box box-solid">
+                        <div className="box-body">
+                            <ul className="nav nav-pills nav-stacked">
+                                <li className={`${this.state.showReceived?"active":""}`}>
+                                    <a href="#" onClick={this.showTabReceivered}><i className="fa fa-inbox"/>{translate('notification.receivered')}</a>
+                                </li>
+                                <li className={`${this.state.showReceived?"":"active"}`}>
+                                    <a href="#" onClick={this.showTabSent}><i className="fa fa-envelope-o"/>{translate('notification.sent')}</a>
+                                </li>
+                            </ul>
+                        </div>  
+                    </div>
+                }
+
                 <div className="box box-solid">
                     <div className="box-body">
-                        {
-                            this.checkHasComponent('create-notification') &&
-                            <React.Fragment>
-                                <button onClick={this.showTabReceivered} style={{width: '100%', marginBottom: '5px'}} className="btn btn-default">{translate('notification.receivered')}</button>
-                                <button onClick={this.showTabSent} style={{width: '100%', marginBottom: '15px'}} className="btn btn-default">{translate('notification.sent')}</button>
-                            </React.Fragment>
-                        }
-                        
                         <ul className="nav nav-pills nav-stacked">
-                            <li className="text-blue"><i className="fa fa-info-circle" style={{margin: 10}}/> {translate('notification.type.info')}</li>
-                            <li className="text-green"><i className="fa fa-bell" style={{margin: 10}}/> {translate('notification.type.general')}</li>
-                            <li className="text-orange"><i className="fa fa-warning" style={{margin: 10}}/> {translate('notification.type.important')}</li>
-                            <li className="text-red"><i className="fa fa-bomb" style={{margin: 10}}/> {translate('notification.type.emergency')}</li>
+                            <li><a href="" className="text-blue"><i className="fa fa-info-circle text-blue" /> {translate('notification.type.info')}</a></li>
+                            <li><a href="" className="text-green"><i className="fa fa-bell" /> {translate('notification.type.general')}</a></li>
+                            <li><a href="" className="text-orange"><i className="fa fa-warning" /> {translate('notification.type.important')}</a></li>
+                            <li><a href="" className="text-red"><i className="fa fa-bomb" /> {translate('notification.type.emergency')}</a></li>
                         </ul>
-                    </div>  
+                    </div>
                 </div>
             </React.Fragment>
          );

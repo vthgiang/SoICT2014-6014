@@ -28,13 +28,12 @@ class TabNotificationReceivered extends Component {
                         notificationCreatedAt={this.state.currentRow.createdAt}
                     />
                 }
-                <div id="tab-notification-receivered" className="box-body" style={{display: 'block'}}>
-                    <h4 className="text-center"><b>{translate('notification.receivered')}</b></h4>
-                    <ul className="todo-list" style={{border: '1px solid #D2D6DE', minHeight: '300px', }}>
+                <div id="tab-notification-receivered" style={{display: 'block'}}>
+                    <ul className="todo-list" style={{ minHeight: '300px', }}>
                     {
                         notifications.receivered.paginate.length > 0 ? 
                         notifications.receivered.paginate.map(notification => 
-                            <li key={notification._id} style={{border: "none"}}>
+                            <li key={notification._id} style={{border: "none", backgroundColor: "white"}}>
                                 <div style={{marginBottom: 5}}>
                                     {
                                         notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"/> :
