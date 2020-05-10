@@ -263,11 +263,11 @@ class KPIMember extends Component {
 
                         </div>
 
-                        <DataTableSetting class="pull-right" tableId="tree-table" tableContainerId="tree-table-container" tableWidth="1300px"
+                        <DataTableSetting class="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
                         columnArr={[ 'STT' , 'Thời gian' , 'Tên nhân viên' , 'Số lượng mục tiêu' , 'Trạng thái KPI' , 'Kết quả'
                         , 'Phê duyệt' , 'Đánh giá' ]} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
 
-                        <table id="myTable" className="table table-hover table-bordered">
+                        <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
                             <tr>
                             <th title="STT">STT</th>
