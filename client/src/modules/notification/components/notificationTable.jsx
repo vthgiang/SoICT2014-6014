@@ -15,7 +15,7 @@ class NotificationTable extends Component {
         
         return ( 
             <React.Fragment>
-                <div className="box" role="tabpanel">
+                <div className="" role="tabpanel">
                     <div className="tab-content">
                         <TabNotificationReceivered/>
                         { 

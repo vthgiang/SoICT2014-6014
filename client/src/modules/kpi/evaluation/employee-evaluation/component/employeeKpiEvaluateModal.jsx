@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
- 
+import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
@@ -77,16 +77,15 @@ class ModalMemberEvaluate extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent = async (id) => {
-        // this.props.getTaskById(id);
+    handleChangeContent = async (id, date) => {
         await this.setState(state => {
-            this.props.getTaskById(id);
+            this.props.getTaskById(id, date);
+            console.log("--Lay dc ko nhi--",this.props.getTaskById(id, date));
             return {
                 ...state,
                 content: id
             }
         });
-        // console.log(this.state);
  
     }
  
@@ -116,7 +115,6 @@ class ModalMemberEvaluate extends Component {
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
-        console.log(kpimembers.tasks)
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -127,7 +125,7 @@ class ModalMemberEvaluate extends Component {
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>
                             </button>
-        <h3 className="modal-title" id="myModalLabel"> KPI  {this.props.name}, tháng {this.formatMonth(kpimembers.kpimembers[0].date)}</h3>
+                        <h3 className="modal-title" id="myModalLabel"> KPI  {this.props.name}, tháng {this.formatMonth(this.props.date)}</h3>
                         </div>
                         {/* Modal Body */}
                         <div className="modal-body modal-body-perform-task" >
@@ -138,7 +136,7 @@ class ModalMemberEvaluate extends Component {
                                 <div className="content-left-modal" id="style-1" style={{ width: "24.5%" }}>
                                     <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
                                         {list && list.map((item, index) =>
-                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id)} className="list-group-item" key={index}>
+                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.date)} className="list-group-item" key={index}>
                                                 {item.name}&nbsp;
                                                 <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small>
                                                 {/* <span className="badge">{15 + index}</span> */}
@@ -176,19 +174,24 @@ class ModalMemberEvaluate extends Component {
                                                     <div className="form-inline">
                                                         <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item._id, this.approvepoint.value)}>Lưu</button>
                                                     </div>
-                                             </div>
+                                            </div>
                                             <div className="body-content-right">
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
-                                                <table id="example1" className="table table-hover table-bordered">
+                                                
+                                                <DataTableSetting class="pull-right" tableId="kpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                                columnArr={[ 'STT' ,'Tên công việc', 'Thời gian' , 'Trạng thái' , 'Đóng góp' , 'Point' , 'Level']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+
+                                                <table id="kpiEvaluate" className="table table-hover table-bordered"></table>
+                                                <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th title ="STT" style={{ width: "20px" }}>Stt</th>
                                                             <th title="Tên công việc">Tên công việc</th>
                                                             <th title="Thời gian">Thời gian</th>
-                                                            <th title="Tên">Tên</th>
-                                                            <th title="Vai trò">Vai trò</th>
+                                                            {/* <th title="Tên">Tên</th>
+                                                            <th title="Vai trò">Vai trò</th> */}
                                                             <th title="Trạng thái">Trạng thái</th>
                                                             <th title="Đóng góp">Đóng góp</th>
                                                             <th title="Point">Điểm</th>
