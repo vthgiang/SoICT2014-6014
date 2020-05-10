@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions} from '../redux/actions';
-
+import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 class ModalMemberApprove extends Component {
     constructor(props) {
         super(props);
@@ -297,7 +297,10 @@ class ModalMemberApprove extends Component {
                                     <h4 style={{display: "inline"}}><b>KPI tháng này</b></h4>
                                     <button className="btn btn-success" style={{marginLeft: "80%"}}>Duyệt toàn bộ KPI</button>
                                 </div>}
-                                <table className="table table-bordered table-striped">
+                                
+                                <DataTableSetting class="pull-right" tableId="kpiApprove" tableContainerId="tree-table-container" tableWidth="1300px"
+                                columnArr={[ 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Trạng thái' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+                                <table id ="kpiApprove" className="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th title="Tên mục tiêu" style={{ width: "252px" }}>Tên mục tiêu</th>

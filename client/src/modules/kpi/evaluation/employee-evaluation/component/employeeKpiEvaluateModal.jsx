@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
- 
+import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
@@ -181,14 +181,19 @@ class ModalMemberEvaluate extends Component {
                                                 <div className="col-sm-12" style={{ fontWeight: "500" }}>
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
-                                                <table id="example1" className="table table-hover table-bordered">
+                                                
+                                                <DataTableSetting class="pull-right" tableId="kpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                                columnArr={[ 'STT' ,'Tên công việc', 'Thời gian' , 'Trạng thái' , 'Đóng góp' , 'Point' , 'Level']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+
+                                                <table id="kpiEvaluate" className="table table-hover table-bordered"></table>
+                                                <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th title ="STT" style={{ width: "20px" }}>Stt</th>
                                                             <th title="Tên công việc">Tên công việc</th>
                                                             <th title="Thời gian">Thời gian</th>
-                                                            <th title="Tên">Tên</th>
-                                                            <th title="Vai trò">Vai trò</th>
+                                                            {/* <th title="Tên">Tên</th>
+                                                            <th title="Vai trò">Vai trò</th> */}
                                                             <th title="Trạng thái">Trạng thái</th>
                                                             <th title="Đóng góp">Đóng góp</th>
                                                             <th title="Point">Điểm</th>
