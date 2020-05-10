@@ -6,6 +6,7 @@ import { DialogModal, ErrorLabel } from '../../../common-components';
 import { LOCAL_SERVER_API } from '../../../env';
 import { Validator } from './validator';
 import CropImage from './cropImage';
+import './cropImage.css'
 
 class ModalChangeUserInformation extends Component {
     constructor(props) {
@@ -51,18 +52,17 @@ class ModalChangeUserInformation extends Component {
                     <form id="form-profile">
                         {/* User information */}
                         <div className="row">
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className="form-group text-center">
-                                    <img className="user-profile-avatar" src={
+                            <div className="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+                                <div className="profile-pic">
+                                    <img className="user-avatar" src={
                                         this.state.img !== undefined ? 
                                         this.state.img : 
-                                        (LOCAL_SERVER_API+this.props.auth.user.avatar)}/>
-                                    <div className="upload btn btn-default" onClick={this.showCropImageSpace}>
-                                        Thay đổi
-                                    </div>
+                                        (LOCAL_SERVER_API+this.props.auth.user.avatar)}
+                                    />
+                                    <button type="button" className="edit-option" onClick={this.showCropImageSpace}><i className="fa fa-image" style={{color: 'white'}}></i></button>
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                            <div className="col-xs-6 col-sm-8 col-md-8 col-lg-8">
                                 <div className={`form-group ${userNameError===undefined?"":"has-error"}`}>
                                     <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="name" value={userName} onChange={this.handleChangeName}/>

@@ -4,6 +4,7 @@ const {loginValidation} = require('./auth.validation');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
 const { Privilege, Role, User, UserRole } = require('../../models').schema;
+const fs = require('fs');
 
 /**
  * Phương thức đăng nhập
@@ -173,14 +174,18 @@ exports.resetPassword = async (otp, email, password) => {
     return user;
 }
 
-exports.changeInformation = async (id, name, email, avatar=null) => {
+exports.changeInformation = async (id, name, email, avatar=undefined) => {
     var user = await User.findById(id).populate([
         { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
         { path: 'company' }
     ]);
+    var deleteAvatar = '.'+user.avatar; console.log("file: ", deleteAvatar);
     user.email = email;
     user.name = name;
-    user.avatar = avatar;
+    if(avatar !== undefined){
+        if(deleteAvatar !== './upload/avatars/user.png' && fs.existsSync(deleteAvatar)) fs.unlinkSync(deleteAvatar);
+        user.avatar = avatar;
+    };
     await user.save();
 
     return user;
