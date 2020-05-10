@@ -20,7 +20,7 @@
 	display: inline-block;
 }
 
-.profile-pic:hover .edit {
+.profile-pic:hover .edit-option {
     display: block;
     font-size: 24px;
 }
