@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import './cropImage.css';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 class CropImage extends Component {
     constructor(props) {
@@ -9,8 +12,8 @@ class CropImage extends Component {
             src: null,
             crop: {
                 unit: '%',
-                width: 30,
-                aspect: 9 / 9,
+                width: 50,
+                aspect: 4 / 4,
             }, }
     }
     
@@ -95,38 +98,33 @@ class CropImage extends Component {
 
     render() {
         const { crop, croppedImageUrl, src } = this.state;
-    
+        const {translate} = this.props;
         return (
             <div className="modal fade" id="modal-crop-user-image">
-                <div className="modal-dialog" style={{width: '75%'}}>
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <div className="modal-title">
-                                <input type="file" accept="image/*" onChange={this.onSelectFile} />
-                            </div>
-                        </div>
-                        <div className="modal-body">
-                            
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3" style={{padding: '10px'}}>
-                                    <img src={this.state.croppedImageUrl} style={{width: '100%', padding: '10px'}}/>
-                                </div>
-                                <div className="col-xs-12 col-sm-9 col-md-9 col-lg-9">
-                                    {src && (
-                                    <ReactCrop
-                                        src={src}
-                                        crop={crop}
-                                        ruleOfThirds
-                                        onImageLoaded={this.onImageLoaded}
-                                        onComplete={this.onCropComplete}
-                                        onChange={this.onCropChange}
-                                    />)}
+                <div className="modal-dialog crop-image-modal">
+                    <div className="modal-content crop-content">
+                        {src && 
+                            <div className="box-body">
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3" style={{padding: '10px'}}>
+                                        <img src={croppedImageUrl} style={{width: '100%', padding: '10px'}}/>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+                                        <ReactCrop
+                                            src={src}
+                                            crop={crop}
+                                            ruleOfThirds
+                                            onImageLoaded={this.onImageLoaded}
+                                            onComplete={this.onCropComplete}
+                                            onChange={this.onCropChange}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-success" onClick={this.saveCropImage}><i className="fa fa-save"></i></button>
+                            <input className="pull-left" type="file" accept="image/*" onChange={this.onSelectFile} />
+                            <button className="btn btn-primary pull-right" onClick={this.saveCropImage}>{translate('general.accept')}</button>
                         </div>
                     </div>
                 </div>
@@ -136,4 +134,5 @@ class CropImage extends Component {
     }
 }
  
-export default CropImage;
+const mapStateToProps = state => state;
+export default connect(mapStateToProps)(withTranslate(CropImage));

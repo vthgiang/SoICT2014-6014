@@ -31,4 +31,7 @@ router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 // đánh giá điểm của kpi
 router.put('/appovepoint/:id_kpi/:id_target', KPIPersonalController.setPointKPI);
 
+// đánh giá độ quan trọng của công việc
+router.put('/taskLevel/:id', KPIPersonalController.setTaskImportanceLevel);
+
 module.exports = router;
