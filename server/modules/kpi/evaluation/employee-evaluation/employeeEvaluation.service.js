@@ -231,12 +231,12 @@ exports.setTaskImportanceLevel = async(id,data)=>{
         {
              $unwind: "$evaluations"
         },
-         {
+        {
              $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
         },
-         {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
-         {$match: { month: date[1]}},
-         {$match: {year:date[0]}},
+        {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
+        {$match: { month: date[1]}},
+        {$match: {year:date[0]}},
          
            ])
     console.log(task.id);
