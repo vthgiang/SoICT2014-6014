@@ -135,7 +135,7 @@ exports.editStatusTarget = async (req, res) => {
 
 exports.getTaskById= async(req, res) => {
     try {
-        const kpimembers = await KPIMemberService.getTaskById(req.params.id);
+        const kpimembers = await KPIMemberService.getTaskById(req.params);
         await LogInfo(req.user.email, `Get task by Id`, req.user.company);
         res.status(200).json({
             success: true,

@@ -145,13 +145,15 @@ exports.getById = async (id) => {
     return kpipersonal;
 }
 
-exports.getTaskById= async (id) =>{
+exports.getTaskById= async (data) =>{
     // var task = await Task.find({'evaluations.kpis.kpis': id}) 
     // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
-    
+    var date = data.date.split("-");
+    var monthkpi = parseInt( date[1]);
+    var yearkpi= parseInt(date[0]);
     var task = await Task.aggregate([
         {
-            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(id)}
+            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(data.id)}
            },
          {
              $unwind: "$evaluations"
@@ -160,8 +162,8 @@ exports.getTaskById= async (id) =>{
              $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
              },
          {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
-         {$match: { month: 5}},
-         {$match: {year: 2020}},
+         {$match: { month: monthkpi}},
+         {$match: {year: yearkpi}},
          {$unwind:"$results"},
          {
              $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$taskID"},{status : "$status"}, "$results"]}}
