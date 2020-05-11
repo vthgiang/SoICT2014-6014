@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import ComponentInfoForm from './componentInfoForm';
-import { PaginateBar, DataTableSetting, SearchBar } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar, ToolTip } from '../../../../common-components';
 import { LinkActions } from '../../link/redux/actions';
 import { RoleActions } from '../../role/redux/actions';
 
@@ -76,32 +76,7 @@ class TableComponent extends Component {
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
                                     <td>{ component.description }</td>
-                                    <td>{
-                                        component.roles.map((role, index, arr) => {
-                                            if(arr.length < 4){
-                                                if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                else return `${role.roleId.name}`
-                                            }else{
-                                                if(index < 3 ){
-                                                    return `${role.roleId.name}, `
-                                                }
-                                            }
-                                        })
-                                    }{
-                                        component.roles.length >=4 &&
-                                        <React.Fragment>
-                                            <div className="tooltip2">...
-                                                <span className="tooltip2text">
-                                                    {
-                                                        component.roles.map((role, index, arr) => {
-                                                            if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                            else return `${role.roleId.name}`
-                                                        })
-                                                    }
-                                                </span>
-                                            </div>
-                                        </React.Fragment>
-                                    }</td>
+                                    <td><ToolTip dataTooltip={component.roles.map(role => role.roleId.name)}/></td>
                                     <td style={{ textAlign: 'center'}}>
                                         <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
                                     </td>

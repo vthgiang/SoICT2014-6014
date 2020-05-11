@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { LinkActions } from '../redux/actions';
-import { DeleteNotification } from '../../../../common-components';
+import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../common-components';
 import LinkInfoForm from './linkInfoForm';
-import { SearchBar } from '../../../../common-components';
-import { DataTableSetting } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components';
 
 class ManageLink extends Component {
     constructor(props) {
@@ -72,34 +69,7 @@ class ManageLink extends Component {
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
                                             <td>{ link.description }</td>
-                                            <td>{
-                                                link.roles.map((role, index, arr) => {
-                                                    if(arr.length < 4){
-                                                        if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                        else return `${role.roleId.name}`
-                                                    }else{
-                                                        if(index < 3 ){
-                                                            return `${role.roleId.name}, `
-                                                        }
-                                                    }
-                                                })
-                                            }{
-                                                link.roles.length >=4 &&
-                                                
-                                                <React.Fragment>
-                                                    <div className="tooltip2">...
-                                                        <span className="tooltip2text">
-                                                            {
-                                                                link.roles.map((role, index, arr) => {
-                                                                    if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                                    else return `${role.roleId.name}`
-                                                                })
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                </React.Fragment>
-                                            }
-                                            </td>
+                                            <td><ToolTip dataTooltip={link.roles.map(role => role.roleId.name)}/></td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a className="edit" onClick={() => this.handleEdit(link)}><i className="material-icons">edit</i></a>
                                             </td>
