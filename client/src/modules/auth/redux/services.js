@@ -1,8 +1,7 @@
-import axios from 'axios';
 import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
-import { AuthenticateHeader, FingerPrint, getStorage } from '../../../config';
+import { getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
-import { sendRequest } from '../../../helpers/requestHelper';
+import { sendRequest, sendRequestPublic } from '../../../helpers/requestHelper';
 
 export const AuthService = {
     login,
@@ -19,15 +18,11 @@ export const AuthService = {
 };
 
 async function login(user) {
-    const finger = await FingerPrint();
-    const requestOptions = {
+    return sendRequestPublic({
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
-        data: user,
-        headers: FingerPrint()
-    };
-
-    return axios(requestOptions);
+        data: user
+    }, false, true, 'auth')
 }
 
 function logout() {
@@ -82,7 +77,7 @@ function changePassword(data) {
 
 async function getLinksOfRole(idRole) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/get-links-of-role/${idRole}`,
+        url: `${ LOCAL_SERVER_API }/auth/get-links-that-role-can-access/${idRole}`,
         method: 'GET',
     }, false, true, 'auth');
 }
@@ -93,23 +88,23 @@ async function refresh() {
     var id = verified._id;
     
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
+        url: `${ LOCAL_SERVER_API }/auth/get-profile/${id}`,
         method: 'GET',
     }, false, true, 'auth');
 }
 
 function forgotPassword(email) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/forgot-password`,
+    return sendRequestPublic({
+        url: `${ LOCAL_SERVER_API }/auth/forget-password`,
         method: 'POST',
         data: {
             email
         }
-    }, false, true, 'auth');
+    }, true, true, 'auth');
 }
 
 function resetPassword(otp, email, password) {
-    return sendRequest({
+    return sendRequestPublic({
         url: `${ LOCAL_SERVER_API }/auth/reset-password`,
         method: 'POST',
         data: {
@@ -117,7 +112,7 @@ function resetPassword(otp, email, password) {
             email,
             password
         }
-    }, false, true, 'auth');
+    }, true, true, 'auth');
 }
 
 function getComponentOfUserInLink(currentRole, linkId) {

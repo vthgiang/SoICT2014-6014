@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
         await LogError(req.body.email, 'LOGIN');
         res.status(400).json({
             success: false,
-            essages: Array.isArray(error) ? error : ['login_faile'],
+            messages: Array.isArray(error) ? error : ['login_faile'],
             content: error
         });
     }
@@ -108,7 +108,11 @@ exports.resetPassword = async (req, res) => {
 
 exports.changeInformation = async (req, res) => {
     try {
-        const avatar = `/${req.file.path}`;
+        var avatar;
+        if(req.file !== undefined){
+            var path = req.file.destination +'/'+ req.file.filename;
+            avatar = path.substr(1, path.length)
+        }
         const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
 
         await LogInfo(req.user.email, 'CHANGE_USER_INFORMATION', req.user.company);

@@ -4,6 +4,7 @@ const {loginValidation} = require('./auth.validation');
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
 const { Privilege, Role, User, UserRole } = require('../../models').schema;
+const fs = require('fs');
 
 /**
  * Phương thức đăng nhập
@@ -20,7 +21,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             { path: 'company' }
         ]);
 
-    if(!user) throw "email_invalid";
+    if(!user) throw ["email_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);
     if(!validPass) {
         if(user.active) user.status = user.status + 1;
@@ -28,17 +29,17 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
             user.active = false;
             user.status = 0;
             user.save();
-            throw 'wrong5_block';
+            throw ['wrong5_block'];
         }
         user.save();
-        throw 'password_invalid';
+        throw ['password_invalid'];
     }
-    if(user.roles.length < 1) throw 'acc_have_not_role'
+    if(user.roles.length < 1) throw ['acc_have_not_role'];
     if(user.roles[0].roleId.name !== 'System Admin'){ 
         
         //Không phải phiên đăng nhập của system admin 
-        if(!user.active) throw { message: 'acc_blocked'};
-        if(!user.company.active) throw 'service_off'
+        if(!user.active) throw ['acc_blocked'];
+        if(!user.company.active) throw ['service_off']
     
         const token = await jwt.sign(
             {
@@ -114,9 +115,9 @@ exports.logoutAllAccount = async (id) => {
  */
 exports.forgetPassword = async (email) => {
     var user = await User.findOne({ email });
-    if(user === null) throw("email_not_found");
+    if(user === null) throw["email_invalid"];
     var code = await generator.generate({ length: 6, numbers: true });
-    user.reset_password_token = code;
+    user.resetPasswordToken = code;
     user.save();
     var transporter = await nodemailer.createTransport({
         service: 'Gmail',
@@ -162,24 +163,29 @@ exports.forgetPassword = async (email) => {
 
 //Thiết lập lại mật khẩu tài khoản người dùng ------------------------------//
 exports.resetPassword = async (otp, email, password) => {
-    var user = await User.findOne({ email, reset_password_token: otp });
-    if(user === null) return false;
+    var user = await User.findOne({ email, resetPasswordToken: otp });
+    if(user === null) throw ['otp_invalid'];
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
     user.password = hash;
-    user.save();
+    user.resetPasswordToken=undefined;
+    await user.save();
 
-    return true;
+    return user;
 }
 
-exports.changeInformation = async (id, name, email, avatar=null) => {
+exports.changeInformation = async (id, name, email, avatar=undefined) => {
     var user = await User.findById(id).populate([
         { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
         { path: 'company' }
     ]);
+    var deleteAvatar = '.'+user.avatar; console.log("file: ", deleteAvatar);
     user.email = email;
     user.name = name;
-    user.avatar = avatar;
+    if(avatar !== undefined){
+        if(deleteAvatar !== './upload/avatars/user.png' && fs.existsSync(deleteAvatar)) fs.unlinkSync(deleteAvatar);
+        user.avatar = avatar;
+    };
     await user.save();
 
     return user;
@@ -192,7 +198,7 @@ exports.changePassword = async (id, password, new_password) => {
     ]);
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
-    if(!validPass) throw ({message: 'password_invalid'});
+    if(!validPass) throw ['password_invalid'];
 
     // Lưu mật khẩu mới
     const salt = await bcrypt.genSaltSync(10);
@@ -225,7 +231,7 @@ exports.getProfile = async (id) => {
             { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
             { path: 'company' }
         ]);
-    if(user === null) throw({message: 'user_not_found'});
+    if(user === null) throw['user_not_found'];
     
     return user;
 }

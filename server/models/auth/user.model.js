@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const Company = require('../system-admin/company.model');
 const UserRole = require('./userRole.model');
-const NotificationUser = require('../notification/notificationUser.model');
 
 // Create Schema
 const UserSchema = new Schema({
@@ -57,12 +55,6 @@ const UserSchema = new Schema({
 
 UserSchema.virtual('roles', {
     ref: UserRole,
-    localField: '_id',
-    foreignField: 'userId'
-});
-
-UserSchema.virtual('notifications', {
-    ref: NotificationUser,
     localField: '_id',
     foreignField: 'userId'
 });

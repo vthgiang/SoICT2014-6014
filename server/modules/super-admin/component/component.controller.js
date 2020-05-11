@@ -101,12 +101,13 @@ exports.editComponent = async (req, res) => {
     try {
         await ComponentService.relationshipComponentRole(req.params.id, req.body.roles);
         const component = await ComponentService.editComponent(req.params.id, req.body);
-        
+        const resComponent = await ComponentService.getComponent(component._id);
+
         await LogInfo(req.user.email, 'EDIT_COMPONENT', req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_component_success'],
-            content: component
+            content: resComponent
         });
     } catch (error) {
         

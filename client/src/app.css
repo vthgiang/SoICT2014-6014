@@ -67,6 +67,10 @@ table tbody tr th { /* Hiện thông báo không có dữ liệu */
 }
 
 
+/* Kích thước icon mặc định */
+.material-icons{
+    font-size: 19px;
+}
 
 
 /*
@@ -79,10 +83,6 @@ table.table td:last-child, table.table th:last-child { /* Căn giữa cho cột 
 table.table td a {
     cursor: pointer;
     margin-right: 5px;
-}
-
-table.table td i {
-    font-size: 19px;
 }
 
 table.table td a.add {
@@ -161,4 +161,13 @@ legend.scheduler-border {
     border-bottom:none;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 18px;
+}
+
+
+
+/* Text bị ẩn khi quá độ dài cho phép */
+.threedots {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

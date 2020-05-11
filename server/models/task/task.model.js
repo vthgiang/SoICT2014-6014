@@ -179,7 +179,6 @@ const TaskSchema = new Schema({
         },
         description: { // Mô tả ngắn gọn việc đã làm khi log 
             type: String,
-            required: true
         }
     }],
     totalLoggedTime: { // Tổng thời gian timesheetLog. Cập nhật mỗi khi người dùng lưu lại thời gian bấm giờ (khi họ nhấn nút stop)

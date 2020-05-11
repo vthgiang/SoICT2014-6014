@@ -8,8 +8,6 @@ class CompanyManageComponent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            componentName: 'noname',
-            componentLink: 'nolink',
             limit: 5,
             page: 1,
             option: 'name',
@@ -54,10 +52,10 @@ class CompanyManageComponent extends Component {
                                 <select
                                     className="form-control"
                                     style={{width: '100%'}}
-                                    onChange={this.handleName}
+                                    onChange={(e)=>this.handleName(e, componentsDefault)}
                                     value={this.state.componentName}
                                 >
-                                    <option key="noname" value="noname" disabled> --- Chọn component ---</option>
+                                    <option key="noname" value="noname"> --- Chọn component ---</option>
                                     {
                                         componentsDefault.list.map(componentDefault => 
                                         <option 
@@ -68,27 +66,8 @@ class CompanyManageComponent extends Component {
                                     }
                                 </select>
                             </td>
-                            <td>
-                                <select
-                                    className="form-control"
-                                    style={{width: '100%'}}
-                                    onChange={this.handleLink}
-                                    value={this.state.componentLink}
-                                >
-                                    <option key="nolink" value="nolink" disabled> --- Chọn trang ---</option>
-                                    {
-                                        company.item.links.list.map(link => 
-                                        <option 
-                                            key={link._id} 
-                                            value={link._id}
-                                        >{link.url}</option>)
-                                    }
-                                </select>
-                            </td>
-                            <td className={componentDescriptionError===undefined?"":"has-error"}>
-                                <input className="form-control" onChange={this.handleComponentDescription}/>
-                                <ErrorLabel content={componentDescriptionError}/>
-                            </td>
+                            <td>{this.state.componentLink}</td>
+                            <td>{this.state.componentDescription}</td>
                             <td>
                                 {
                                     this.isFormCreateLinkValidated() ?
@@ -110,8 +89,8 @@ class CompanyManageComponent extends Component {
                                 </tr> 
                             ) : (
                                 company.item.components.isLoading ?
-                                <tr><td colSpan='3'>{translate('confirm.loading')}</td></tr>:
-                                <tr><td colSpan='3'>{translate('confirm.no_data')}</td></tr>
+                                <tr><td colSpan='4'>{translate('confirm.loading')}</td></tr>:
+                                <tr><td colSpan='4'>{translate('confirm.no_data')}</td></tr>
                             )
                         }
                     </tbody>
@@ -148,8 +127,8 @@ class CompanyManageComponent extends Component {
 
     // Kiem tra thong tin da validated het chua?
     isFormCreateLinkValidated = () => {
-        const {componentName, componentDescription, componentDescriptionError} = this.state;
-        if(componentDescriptionError === undefined && componentName !== "noname" && componentDescription !== undefined) return true;
+        const {componentName } = this.state;
+        if(componentName !== undefined) return true;
         else return false; 
     }
 
@@ -177,34 +156,18 @@ class CompanyManageComponent extends Component {
         return this.props.deleteComponent(companyId, componentId);
     }
     
-    handleName= (e) => {
+    handleName= (e, componentsDefault) => {
         const value = e.target.value;
-        this.setState({componentName: value});
-    }
-
-    handleLink= (e) => {
-        const value = e.target.value;
-        this.setState({componentLink: value});
-    }
-
-    // Xu ly thay doi va validate cho description link của công ty
-    handleComponentDescription= (e) => {
-        const value = e.target.value;
-        this.validateComponentDescription(value, true);
-    }
-
-    validateComponentDescription = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateDescription(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
+        for (let index = 0; index < componentsDefault.list.length; index++) {
+            const componentDefault = componentsDefault.list[index];
+            if(value === componentDefault.name){
+                this.setState({
+                    componentName: componentDefault.name,
+                    componentLink: componentDefault.link.url,
+                    componentDescription: componentDefault.description
+                });
+            }
         }
-        return msg === undefined;
     }
     
     setOption = (title, option) => {

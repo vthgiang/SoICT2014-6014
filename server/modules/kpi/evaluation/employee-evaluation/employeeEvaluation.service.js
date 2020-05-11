@@ -145,13 +145,15 @@ exports.getById = async (id) => {
     return kpipersonal;
 }
 
-exports.getTaskById= async (id) =>{
+exports.getTaskById= async (data) =>{
     // var task = await Task.find({'evaluations.kpis.kpis': id}) 
     // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
-    
+    var date = data.date.split("-");
+    var monthkpi = parseInt( date[1]);
+    var yearkpi= parseInt(date[0]);
     var task = await Task.aggregate([
         {
-            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(id)}
+            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(data.id)}
            },
          {
              $unwind: "$evaluations"
@@ -160,8 +162,8 @@ exports.getTaskById= async (id) =>{
              $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
              },
          {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
-         {$match: { month: 5}},
-         {$match: {year: 2020}},
+         {$match: { month: monthkpi}},
+         {$match: {year: yearkpi}},
          {$unwind:"$results"},
          {
              $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$taskID"},{status : "$status"}, "$results"]}}
@@ -204,5 +206,61 @@ exports.setPointKPI = async(id_kpi, id_target, data) =>{
     .populate("organizationalUnit creator approver")
     .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
-}
+};
 // id, date id_employee, role, point
+/* 
+      var date = data.date.split("-");
+    var month = new Date(date[1], date[0], 0);
+    var kpipersonals = await KPIPersonal.findOne({ creator: data.id, date: month })
+        .populate("organizationalUnit creator approver")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
+    return kpipersonals;
+*/
+exports.setTaskImportanceLevel = async(id,data)=>{
+    console.log(data);
+    console.log(id);
+    var date = data.date.split("-");
+    console.log("---------", date);
+    var month = new Date(date[1], date[0], 0);
+
+    console.log(month);
+    
+    var task = await Task.aggregate([
+        {
+            $match: {_id :  mongoose.Types.ObjectId(id)}
+        },
+        {
+             $unwind: "$evaluations"
+        },
+        {
+             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
+        },
+        {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
+        {$match: { month: date[1]}},
+        {$match: {year:date[0]}},
+         
+           ])
+    console.log(task.id);
+    var setPoint = await Task.findOneAndUpdate(
+            {
+                 "evaluation._id" : task._id,
+                "evaluations.results.employee" : "5eacf3666bf8ee5458811b89",
+        },
+        {
+            $set:{"evaluations.$.results.$[elem].taskImportanceLevel" : data.point}
+        },
+        {
+            arrayFilters: [
+                {
+                    "elem.employee": data.employeeId
+                }
+            ]
+        });
+
+
+    return setPoint;
+
+}
+
+
+

@@ -49,4 +49,4 @@ const EmployeeKpiSchema = new Schema({
     }
 });
 
-module.exports = EmployeeKpi = mongoose.model("empoloyee_kpis", EmployeeKpiSchema);
+module.exports = EmployeeKpi = mongoose.model("employee_kpis", EmployeeKpiSchema);

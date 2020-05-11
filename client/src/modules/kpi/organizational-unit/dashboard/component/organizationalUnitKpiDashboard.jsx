@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { dashboardActions } from '../redux/actions';
+import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { managerActions } from '../../management/redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
@@ -220,9 +220,17 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <CanvasJSReact options={options2} />
                                 </div>
                             </div>
-                            <div className="col-xs-12">
-                                <TrendsInOrganizationalUnitKpiChart/>
-                            </div>
+
+                            {managerKpiUnit.kpis ?
+                                <div className="col-xs-12">
+                                    <TrendsInOrganizationalUnitKpiChart/>
+                                </div>
+                                : <div className="col-xs-12 box box-primary" style={ {textAlign: 'center'}}>
+                                    <h1>Xu hướng thực hiện mục tiêu của nhân viên</h1>
+                                    <h4>Chưa khởi tạo tập Kpi đơn vị</h4>
+                                </div>
+                            }   
+                            
                             <div className="col-xs-6">
                                 <div className="box box-primary">
                                     <CanvasJSReact options={options1} />

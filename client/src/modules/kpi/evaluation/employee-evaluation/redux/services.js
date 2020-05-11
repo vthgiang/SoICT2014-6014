@@ -18,6 +18,7 @@ export const kpiMemberServices = {
     editStatusTarget,
     getTaskById,
     setPointKPI,
+    setkpiImportantLevel
 };
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 function getAllKPIMemberOfUnit(infosearch) {
@@ -76,9 +77,9 @@ function editStatusTarget(id, status) {
     }, true, true, 'kpi.evaluation');
 }
  
-function getTaskById(id) {
+function getTaskById(id, date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }
@@ -90,5 +91,14 @@ function setPointKPI(id_kpi, id_target, newPoint){
         url:`${LOCAL_SERVER_API}/kpimembers/appovepoint/${id_kpi}/${id_target}`,
         method: 'PUT',
         data: newPoint
+    }, true, true, 'kpi.evaluation')
+}
+
+// Tính điểm KPI
+function setkpiImportantLevel(id_kpi, kpiImportantLevel){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpimembers/importantlevel/${id_kpi}`,
+        method: 'PUT',
+        data: kpiImportantLevel
     }, true, true, 'kpi.evaluation')
 }

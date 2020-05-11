@@ -12,8 +12,8 @@ class ComponentInfoForm extends Component {
     }
 
     render() { 
-        const { translate, role } = this.props;
-        const {componentId, componentName, componentDescription, componentRoles, componentDescriptionError} = this.state;
+        const { translate, role, link } = this.props;
+        const {componentId, componentName, componentDescription, componentLink, componentRoles, componentDescriptionError} = this.state;
         return ( 
             <React.Fragment><DialogModal
                     size='50' func={this.save}
@@ -33,6 +33,18 @@ class ComponentInfoForm extends Component {
                             <label>{ translate('table.description') }</label>
                             <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
                             <ErrorLabel content={componentDescriptionError}/>
+                        </div>
+                        <div className="form-group">
+                            <label>{ translate('manage_component.link') }</label>
+                            <SelectBox
+                                id={`component-link-${componentId}`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {link.list.map( link => {return {value: link._id, text: link.url}})}
+                                onChange={this.handleComponentLink}
+                                value={componentLink}
+                                multiple={false}
+                            />
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_component.roles') }</label>
@@ -71,6 +83,12 @@ class ComponentInfoForm extends Component {
         return msg === undefined;
     }
 
+    handleComponentLink = (value) => {
+        this.setState({
+            componentLink: value[0]
+        });
+    }
+
     handleComponentRoles = (value) => {
         this.setState({
             componentRoles: value
@@ -80,6 +98,7 @@ class ComponentInfoForm extends Component {
     save = () => {
         const component = {
             name: this.state.componentName,
+            link: this.state.componentLink,
             description: this.state.componentDescription,
             roles: this.state.componentRoles
         };
@@ -100,6 +119,7 @@ class ComponentInfoForm extends Component {
                 ...prevState,
                 componentId: nextProps.componentId,
                 componentName: nextProps.componentName,
+                componentLink: nextProps.componentLink,
                 componentDescription: nextProps.componentDescription,
                 componentRoles: nextProps.componentRoles,
                 componentDescriptionError: undefined,

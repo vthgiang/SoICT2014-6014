@@ -174,6 +174,22 @@ export function kpimembers(state = {}, action) {
           error: action.payload
         };
     //----------------------------------------------------------------
+   
+    case  kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST:
+        return {
+          ...state,
+        editing: true
+        };
+      case kpiMemberConstants.TASK_IMPORTANT_LEVEL_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE:
+        return { 
+          error: action.payload
+        };
+    //----------------------------------------------------------------
 
 
 

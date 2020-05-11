@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
-
-const Company= require('../system-admin/company.model');
-const Link= require('../super-admin/link.model');
 const Privilege= require('../auth/privilege.model');
 
 
@@ -18,11 +15,11 @@ const ComponentSchema = new Schema({
     },
     link: {
         type: Schema.Types.ObjectId,
-        ref: Link
+        ref: 'links'
     },
     company: {
         type: Schema.Types.ObjectId,
-        ref: Company
+        ref: 'companies'
     }
 },{
     timestamps: true,
