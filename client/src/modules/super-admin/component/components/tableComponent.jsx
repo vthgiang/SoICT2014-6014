@@ -35,6 +35,7 @@ class TableComponent extends Component {
                     <ComponentInfoForm 
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
+                        componentLink={ currentRow.link._id }
                         componentDescription={ currentRow.description }
                         componentRoles={ currentRow.roles.map(role => role.roleId._id) }
                     />
@@ -53,6 +54,7 @@ class TableComponent extends Component {
                     <thead>
                         <tr>
                             <th>{ translate('manage_component.name') }</th>
+                            <th>{ translate('manage_component.link') }</th>
                             <th>{ translate('manage_component.description') }</th>
                             <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
@@ -60,6 +62,7 @@ class TableComponent extends Component {
                                 <DataTableSetting 
                                     columnArr={[
                                         translate('manage_component.name'),
+                                        translate('manage_component.link'),
                                         translate('manage_component.description'),
                                         translate('manage_component.roles')
                                     ]}
@@ -75,6 +78,7 @@ class TableComponent extends Component {
                             component.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
+                                    <td>{ component.link !== undefined ? component.link.url : null }</td>
                                     <td>{ component.description }</td>
                                     <td><ToolTip dataTooltip={component.roles.map(role => role.roleId.name)}/></td>
                                     <td style={{ textAlign: 'center'}}>
@@ -82,8 +86,8 @@ class TableComponent extends Component {
                                     </td>
                                 </tr>
                             ): component.isLoading ?
-                            <tr><td colSpan={"4"}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={"4"}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

@@ -1,6 +1,6 @@
 const CompanyService = require('./company.service');
 const { LogInfo, LogError } = require('../../../logs');
-const { ROOT_ROLES: PREDEFINED_ROLES } = require('../../../seed/terms');
+const { ROOT_ROLES: PREDEFINED_ROLES, CATEGORY_LINKS } = require('../../../seed/terms');
 
 exports.getAllCompanies = async (req, res) => {
     try {
@@ -161,7 +161,7 @@ exports.getCompanyLinks = async (req, res) => {
 
 exports.addCompanyLink = async (req, res) => {
     try {
-        const link = await CompanyService.addCompanyLink(req.params.id, req.body.url, req.body.description);
+        const link = await CompanyService.addCompanyLink(req.params.id, req.body);
         
         LogInfo(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(200).json({
@@ -203,7 +203,7 @@ exports.deleteCompanyLink = async (req, res) => {
 
 exports.addCompanyComponent = async (req, res) => {
     try {
-        const component = await CompanyService.addCompanyComponent(req.params.id, req.body.name, req.body.description, req.body.link);
+        const component = await CompanyService.addCompanyComponent(req.params.id, req.body);
         const resComponent = await CompanyService.getComponentById(component._id);  
 
         LogInfo(req.user.email, 'ADD_NEW_COMPONENT_FOR_COMPANY');
@@ -329,6 +329,24 @@ exports.getPaginatedCompanyComponents = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_components_paginate_of_company_faile'],
+            content: error
+        });
+    }
+};
+
+exports.getAllLinkCategories = async (req, res) => {
+    try {
+        await LogInfo(req.user.email, 'GET_ALL_LINK_CATEGORIES');
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_link_categories_success'],
+            content: CATEGORY_LINKS
+        });
+    } catch (error) {
+        await LogInfo(req.user.email, 'GET_ALL_LINK_CATEGORIES');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_all_link_categories_faile'],
             content: error
         });
     }

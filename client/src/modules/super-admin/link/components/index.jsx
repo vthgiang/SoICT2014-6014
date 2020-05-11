@@ -36,6 +36,7 @@ class ManageLink extends Component {
                         <SearchBar 
                             columns={[
                                 { title: translate('manage_link.url'), value:'url' },
+                                { title: translate('manage_link.category'), value:'category' },
                                 { title: translate('manage_link.description'), value:'description' },
                             ]}
                             option={this.state.option}
@@ -47,6 +48,7 @@ class ManageLink extends Component {
                             <thead>
                                 <tr>
                                     <th>{ translate('manage_link.url') }</th>
+                                    <th>{ translate('manage_link.category') }</th>
                                     <th>{ translate('manage_link.description') }</th>
                                     <th>{ translate('manage_link.roles') }</th>
                                     <th style={{width: "120px"}}>
@@ -68,6 +70,7 @@ class ManageLink extends Component {
                                     link.listPaginate.length > 0 ? link.listPaginate.map( link => 
                                         <tr key={link._id}>
                                             <td>{ link.url }</td>
+                                            <td>{ link.category }</td>
                                             <td>{ link.description }</td>
                                             <td><ToolTip dataTooltip={link.roles.map(role => role.roleId.name)}/></td>
                                             <td style={{ textAlign: 'center' }}>
