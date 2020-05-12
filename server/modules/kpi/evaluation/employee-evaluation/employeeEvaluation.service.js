@@ -1,7 +1,7 @@
 const KPIPersonal = require('../../../../models/kpi/employeeKpiSet.model');
 const Department = require('../../../../models/super-admin/organizationalUnit.model');
-const Task= require('../../../../models/task/task.model'); 
-const DetailKPIPersonal= require('../../../../models/kpi/employeeKpi.model')
+const Task = require('../../../../models/task/task.model');
+const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model')
 const mongoose = require("mongoose");
 // Lấy tất cả KPI cá nhân hiện tại của một phòng ban
 exports.getKPIAllMember = async (data) => {
@@ -18,7 +18,7 @@ exports.getKPIAllMember = async (data) => {
     var endDate = data.endDate.split("-");
     var enddate = new Date(endDate[1], endDate[0], 28);
     var status = parseInt(data.status);
-    
+
     if (data.user === "all") {
         if (status === 5) {
             kpipersonals = await KPIPersonal.find({
@@ -98,8 +98,8 @@ exports.approveAllTarget = async (id) => {
     kpipersonal = await kpipersonal.populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    return [kpipersonal,targets];
-    
+    return [kpipersonal, targets];
+
 }
 
 // Phê duyệt từng mục tiêu
@@ -123,7 +123,7 @@ exports.editStatusTarget = async (data) => {
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
-    
+
 }
 
 // Chỉnh sửa mục tiêu của KPI cá nhân
@@ -145,119 +145,128 @@ exports.getById = async (id) => {
     return kpipersonal;
 }
 
-exports.getTaskById= async (id) =>{
+exports.getTaskById = async (id,data) => {
     // var task = await Task.find({'evaluations.kpis.kpis': id}) 
     // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
-    //var date = data.date.split("-");
-    //var month = new Date(date[1], date[0], 0);
+    var date = data.date.split("-");
+    var month = new Date(date[1], date[0], 0);
     var task = await Task.aggregate([
         {
-            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(id)}
-           },
-         {
-             $unwind: "$evaluations"
-           },
-         {
-             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
-             },
-         {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
-         {$match: { month: 5}},
-         {$match: {year: 2020}},
-         {$unwind:"$results"},
-         {
-             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$taskID"},{status : "$status"}, "$results"]}}
-             },
-            {
-                $lookup: {
-                     from: "users",
-                     localField: "employee",
-                        foreignField: "_id",
-                     as: "employee"
-                    
-                    }
-                },
-               {$unwind : "$employee"}
-        
-           ])
-    
+            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(id) }
+        },
+        {
+            $unwind: "$evaluations"
+        },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" }, { taskID: "$_id" }, { status: "$status" }, "$evaluations"] } }
+        },
+        { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
+        { $match: { month: 5 } },
+        { $match: { year: 2020 } },
+        { $unwind: "$results" },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" }, { taskID: "$taskID" }, { status: "$status" }, "$results"] } }
+        },
+        { $match: { employee: mongoose.Types.ObjectId(id) } },
+        { $match: { role: "Responsible" } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee"
+
+            }
+        },
+        { $unwind: "$employee" }
+
+    ]);
+
+
     return task
 }
 
-exports.getSystemPoint= async(id)=>{
+exports.getSystemPoint = async (id) => {
     var task = await Task.find({ kpi: id })
-    .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
-    var kpi= await DetailKPIPersonal.findById(id);
-    
-    var sum = 0,i=0;
-    for (i=0; i<task.length;i++){
-        sum +=task[i].point;
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
+    var kpi = await DetailKPIPersonal.findById(id);
+
+    var sum = 0, i = 0;
+    for (i = 0; i < task.length; i++) {
+        sum += task[i].point;
     }
-    
-    var systempoint= sum/task.length*kpi.weight/100;
-    
-    var kpipersonal= await DetailKPIPersonal.findByIdAndUpdate(id, { $set: { systempoint: systempoint} }, { new: true });
+
+    var systempoint = sum / task.length * kpi.weight / 100;
+
+    var kpipersonal = await DetailKPIPersonal.findByIdAndUpdate(id, { $set: { systempoint: systempoint } }, { new: true });
     return kpipersonal;
 }
 
-exports.setPointKPI = async(id_kpi, id_target, data) =>{
-    var kpi = await DetailKPIPersonal.findByIdAndUpdate(id_target, {$set: {approverpoint: data.point}}, {new: true} );
+exports.setPointKPI = async (id_kpi, id_target, data) => {
+    var kpi = await DetailKPIPersonal.findByIdAndUpdate(id_target, { $set: { approverpoint: data.point } }, { new: true });
     var kpipersonal = await KPIPersonal.findById(id_kpi)
-    .populate("organizationalUnit creator approver")
-    .populate({ path: "kpis", populate: { path: 'parent' } });
+        .populate("organizationalUnit creator approver")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
 };
 // id, date id_employee, role, point
 /* 
-      var date = data.date.split("-");
+    var date = data.date.split("-");
     var month = new Date(date[1], date[0], 0);
     var kpipersonals = await KPIPersonal.findOne({ creator: data.id, date: month })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonals;
 */
-exports.setTaskImportanceLevel = async(id,data)=>{
+exports.setTaskImportanceLevel = async (id, data) => {
     console.log(data);
-    console.log(id);
-    var date = data.date.split("-");
-    console.log("---------", date);
-    var month = new Date(date[1], date[0], 0);
+    var result = []; 
+    for(const element of data){
+        // find task
+        console.log("ID ++++++++", element.taskId);
+        var date = await element.date.split("-");
+        console.log("---------", date);
 
-    console.log(month);
-    
-    var task = await Task.aggregate([
-        {
-            $match: {_id :  mongoose.Types.ObjectId(id)}
-        },
-        {
-             $unwind: "$evaluations"
-        },
-        {
-             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
-        },
-        {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
-        {$match: { month: date[1]}},
-        {$match: {year:date[0]}},
-         
-           ])
-    console.log(task.id);
-    var setPoint = await Task.findOneAndUpdate(
+        var task = await Task.aggregate([
             {
-                 "evaluation._id" : task._id,
-                "evaluations.results.employee" : "5eacf3666bf8ee5458811b89",
-        },
-        {
-            $set:{"evaluations.$.results.$[elem].taskImportanceLevel" : data.point}
-        },
-        {
-            arrayFilters: [
-                {
-                    "elem.employee": data.employeeId
-                }
-            ]
-        });
+                $match: { _id: mongoose.Types.ObjectId(element.taskId) }
+            },
+            {
+                $unwind: "$evaluations"
+            },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskID: "$_id" }, { status: "$status" }, "$evaluations"] } }
+            },
+            { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
+            { $match: { month: 5 } },
+            { $match: { year: 2020 } },
 
+        ])
+        // ket qua tra ve la mang 1 phan tu
+        console.log("taskkkkk", task[0]._id);
 
-    return setPoint;
+        // update taskImportanceLevel
+
+        var setPoint = await Task.findOneAndUpdate(
+            {
+                "evaluations._id": task[0]._id,
+                "evaluations.results.employee": "5eacf3666bf8ee5458811b89",
+            },
+            {
+                $set: { "evaluations.$.results.$[elem].taskImportanceLevel": element.point }
+            },
+            {
+                arrayFilters: [
+                    {
+                        "elem.employee": element.employeeId
+                    }
+                ]
+            });
+      await result.push(setPoint);
+    };
+    // tinh diem kpi ca nhan 
+
+    return result;
 
 }
 
