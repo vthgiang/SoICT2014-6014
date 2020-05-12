@@ -160,6 +160,7 @@ class KPIMember extends Component {
         const { user, kpimembers } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
+
         var listkpi;
         var kpiApproved, automaticPoint, employeePoint, approvedPoint, targetA, targetC, targetOther, misspoint;
         if (kpimembers.kpimembers) {
@@ -264,8 +265,18 @@ class KPIMember extends Component {
                         </div>
 
                         <DataTableSetting class="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
-                        columnArr={[ 'STT' , 'Thời gian' , 'Tên nhân viên' , 'Số lượng mục tiêu' , 'Trạng thái KPI' , 'Kết quả'
-                        , 'Phê duyệt' , 'Đánh giá' ]} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+                        columnArr={[ 
+                            'STT' , 
+                            'Thời gian' , 
+                            'Tên nhân viên' , 
+                            'Số lượng mục tiêu' , 
+                            'Trạng thái KPI' , 
+                            'Kết quả', 
+                            'Phê duyệt' , 
+                            'Đánh giá' ]} 
+                            limit={this.state.perPage} 
+                            setLimit={this.setLimit} 
+                            hideColumnOption={true} />
 
                         <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
@@ -300,7 +311,7 @@ class KPIMember extends Component {
                                 <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
                                 className="copy" title="Đánh giá kpi nhân viên này"><i className="fa fa-list"></i></a>
                                 {this.state.showEvaluateModal === item._id ?
-                                <ModalMemberEvaluate name={item.creator.name} id={item._id} /> : null}
+                                <ModalMemberEvaluate name={item.creator.name} id={item._id} date={item.date}/> : null}
                             </td>
                             </tr>
                             ) : <tr>

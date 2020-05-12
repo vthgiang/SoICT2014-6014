@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import ComponentInfoForm from './componentInfoForm';
-import { PaginateBar, DataTableSetting, SearchBar } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar, ToolTip } from '../../../../common-components';
 import { LinkActions } from '../../link/redux/actions';
 import { RoleActions } from '../../role/redux/actions';
 
@@ -35,6 +35,7 @@ class TableComponent extends Component {
                     <ComponentInfoForm 
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
+                        componentLink={ currentRow.link._id }
                         componentDescription={ currentRow.description }
                         componentRoles={ currentRow.roles.map(role => role.roleId._id) }
                     />
@@ -53,6 +54,7 @@ class TableComponent extends Component {
                     <thead>
                         <tr>
                             <th>{ translate('manage_component.name') }</th>
+                            <th>{ translate('manage_component.link') }</th>
                             <th>{ translate('manage_component.description') }</th>
                             <th>{ translate('manage_component.roles') }</th>
                             <th style={{width: "120px"}}>
@@ -60,6 +62,7 @@ class TableComponent extends Component {
                                 <DataTableSetting 
                                     columnArr={[
                                         translate('manage_component.name'),
+                                        translate('manage_component.link'),
                                         translate('manage_component.description'),
                                         translate('manage_component.roles')
                                     ]}
@@ -75,40 +78,16 @@ class TableComponent extends Component {
                             component.listPaginate.map( component => 
                                 <tr key={component._id}>
                                     <td>{ component.name }</td>
+                                    <td>{ component.link !== undefined ? component.link.url : null }</td>
                                     <td>{ component.description }</td>
-                                    <td>{
-                                        component.roles.map((role, index, arr) => {
-                                            if(arr.length < 4){
-                                                if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                else return `${role.roleId.name}`
-                                            }else{
-                                                if(index < 3 ){
-                                                    return `${role.roleId.name}, `
-                                                }
-                                            }
-                                        })
-                                    }{
-                                        component.roles.length >=4 &&
-                                        <React.Fragment>
-                                            <div className="tooltip2">...
-                                                <span className="tooltip2text">
-                                                    {
-                                                        component.roles.map((role, index, arr) => {
-                                                            if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                            else return `${role.roleId.name}`
-                                                        })
-                                                    }
-                                                </span>
-                                            </div>
-                                        </React.Fragment>
-                                    }</td>
+                                    <td><ToolTip dataTooltip={component.roles.map(role => role.roleId.name)}/></td>
                                     <td style={{ textAlign: 'center'}}>
                                         <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
                                     </td>
                                 </tr>
                             ): component.isLoading ?
-                            <tr><td colSpan={"4"}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={"4"}>{translate('confirm.no_data')}</td></tr>
+                            <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr>:
+                            <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>

@@ -24,7 +24,7 @@ router.put('/target/:id', auth, KPIPersonalController.editTarget);
 router.put('/status-target/:id/:status', auth, KPIPersonalController.editStatusTarget);
 
 // lấy task cho kpi
-router.get('/task/:id', auth, KPIPersonalController.getTaskById);
+router.get('/task/:id/:employeeId/:date',  KPIPersonalController.getTaskById);
 
 router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 
