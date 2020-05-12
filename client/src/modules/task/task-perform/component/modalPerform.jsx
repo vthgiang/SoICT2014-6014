@@ -25,7 +25,6 @@ class ModalPerform extends Component {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
-       
         return (
             <React.Fragment>
                 <DialogModal
