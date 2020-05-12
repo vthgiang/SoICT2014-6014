@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
+
 import { kpiMemberActions } from '../redux/actions';
-import CanvasJSReact from '../../../../../chart/canvasjs.react';
 import {PaginateBar, DataTableSetting } from '../../../../../common-components';
+import CanvasJSReact from '../../../../../chart/canvasjs.react';
 class ModalMemberEvaluate extends Component {
     constructor(props) {
         super(props);
@@ -77,10 +79,10 @@ class ModalMemberEvaluate extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent = async (id, date) => {
+    handleChangeContent = async (id, employeeId,date) => {
         await this.setState(state => {
-            this.props.getTaskById(id, date);
-            console.log("--Lay dc ko nhi--",this.props.getTaskById(id, date));
+            this.props.getTaskById(id, employeeId,date);
+            console.log("--Lay dc ko nhi--",this.props.getTaskById(id, employeeId,date));
             return {
                 ...state,
                 content: id
@@ -115,6 +117,7 @@ class ModalMemberEvaluate extends Component {
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
+        console.log('-------------', this.props);
         return (
             <div className="modal modal-full fade" id={"memberEvaluate" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full modal-tasktemplate">
@@ -136,7 +139,7 @@ class ModalMemberEvaluate extends Component {
                                 <div className="content-left-modal" id="style-1" style={{ width: "24.5%" }}>
                                     <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
                                         {list && list.map((item, index) =>
-                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.date)} className="list-group-item" key={index}>
+                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.id,this.props.date)} className="list-group-item" key={index}>
                                                 {item.name}&nbsp;
                                                 <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small>
                                                 {/* <span className="badge">{15 + index}</span> */}
@@ -172,7 +175,7 @@ class ModalMemberEvaluate extends Component {
                                                         <input type="number" min="0" max={item.weight} className="form-control" ref={input => this.approvepoint = input} defaultValue="0" name="value" style={{width:"50px"}} />
                                                     </div> */}
                                                     <div className="form-inline">
-                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item._id, this.approvepoint.value)}>Tính điểm KPI</button>
+                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item.creator._id, this.approvepoint.value)}>Tính điểm KPI</button>
                                                     </div>
                                             </div>
                                             <div className="body-content-right">

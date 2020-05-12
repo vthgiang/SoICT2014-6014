@@ -1,12 +1,14 @@
-import {handleResponse} from '../../../../../helpers/handleResponse';
-import {
-    TOKEN_SECRET, LOCAL_SERVER_API
-} from '../../../../../env';
+import jwt from 'jsonwebtoken';
+
+import axios from 'axios';
+
 import {
     getStorage,AuthenticateHeader
 } from '../../../../../config';
-import jwt from 'jsonwebtoken';
-import axios from 'axios';
+import {
+    TOKEN_SECRET, LOCAL_SERVER_API
+} from '../../../../../env';
+import {handleResponse} from '../../../../../helpers/handleResponse';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const kpiMemberServices = {
     getAllKPIMemberOfUnit,
@@ -77,9 +79,9 @@ function editStatusTarget(id, status) {
     }, true, true, 'kpi.evaluation');
 }
  
-function getTaskById(id, date) {
+function getTaskById(id, employeeId,date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${date}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }
