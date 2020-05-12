@@ -12,7 +12,7 @@ router.get('/user/:member', auth, KPIPersonalController.getByMember);
 router.get('/:id',auth,  KPIPersonalController.getById);
 
 // Lấy kpi cá nhân theo tháng
-router.get('/member/:id/:time', auth, KPIPersonalController.getByMonth);
+router.get('/member/:id/:date', auth, KPIPersonalController.getByMonth);
 
 // phê duyệt tất cả mục tiêu của kpi cá nhân
 router.put('/approve/:id', auth, KPIPersonalController.approveAllTarget);
@@ -24,7 +24,7 @@ router.put('/target/:id', auth, KPIPersonalController.editTarget);
 router.put('/status-target/:id/:status', auth, KPIPersonalController.editStatusTarget);
 
 // lấy task cho kpi
-router.get('/task/:id/:date', auth, KPIPersonalController.getTaskById);
+router.get('/task/:id/:employeeId/:date',  KPIPersonalController.getTaskById);
 
 router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 // sửa đường dẫn sau khi vào project mới
 import {taskTemplateActions} from '../redux/actions'
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
@@ -184,11 +184,11 @@ class TaskTemplate extends Component {
     render() {
         const { translate } = this.props;
         var list, pageTotal, units = [], currentUnit;
-        const { tasktemplates, department } = this.props;
+        const { tasktemplates, user } = this.props;
         const { currentPage } = this.state;
         if (tasktemplates.pageTotal) pageTotal = tasktemplates.pageTotal;
-        if (department.unitofuser) {
-            units = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
                 item.dean === localStorage.getItem("currentRole")
                 || item.viceDean === localStorage.getItem("currentRole")
@@ -291,13 +291,13 @@ class TaskTemplate extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, department, auth } = state;
-    return { tasktemplates, department, auth };
+    const { tasktemplates, user, auth } = state;
+    return { tasktemplates, user, auth };
 }
 
 const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-    getDepartment: DepartmentActions.getDepartmentOfUser,
+    getDepartment: UserActions.getDepartmentOfUser,
     _delete: taskTemplateActions._delete
 };
 const connectedTaskTemplate = connect(mapState, actionCreators)( withTranslate(TaskTemplate));

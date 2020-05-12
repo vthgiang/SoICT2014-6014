@@ -6,7 +6,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * Lấy danh sách các đơn vị trong công ty
  * @id id công ty
  */
-exports.getAllOrganizationalUnits = async (id) => {
+exports.getOrganizationalUnits = async (id) => {
     return await OrganizationalUnit
         .find({ company: id })
         .populate([
@@ -20,7 +20,7 @@ exports.getAllOrganizationalUnits = async (id) => {
  * Lấy thông tin các đơn vị của công ty theo dạng CÂY 
  * @id id công ty
  */
-exports.getAllOrganizationalUnitsAsTree = async (id) => {
+exports.getOrganizationalUnitsAsTree = async (id) => {
     const data = await OrganizationalUnit.find({ company: id }).populate([
         { path: 'dean', model: Role },
         { path: 'viceDean', model: Role },
@@ -126,23 +126,6 @@ exports.deleteOrganizationalUnit = async(departmentId) => {
     }
 }
 
-/**
- * Lấy tất cả các đơn vị tổ chức một user thuộc về
- * @userId id của user
- */
-exports.getOrganizationalUnitsOfUser = async (userId) => {
-    const roles = await UserRole.find({ userId });
-    const newRoles = roles.map( role => role.roleId);
-    const departments = await OrganizationalUnit.find({
-        $or: [
-            {'dean': { $in: newRoles }}, 
-            {'viceDean':{ $in: newRoles }}, 
-            {'employee':{ $in: newRoles }}
-        ]  
-    });
-
-    return departments;
-}
 
 /**
  * SERVICE: Lấy thông tin của đơn vị và các role trong đơn vị đó của user

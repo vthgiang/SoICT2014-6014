@@ -37,8 +37,9 @@ class KPIMember extends Component {
         // Lấy tất cả nhân viên của phòng ban
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        // this.props.getAllKPIMember("5eb66b993a31572b68ac4b32");//---------localStorage.getItem("id")--------
         this.props.getAllKPIMemberOfUnit(infosearch);
-        this.props.getAllKPIMember();//---------localStorage.getItem("id")--------
+        
         let script = document.createElement('script');
         script.src = '../lib/main/js/GridTableVers1.js';
         script.async = true;
@@ -46,6 +47,7 @@ class KPIMember extends Component {
         document.body.appendChild(script);
         this.handleResizeColumn();
     }
+
     handleResizeColumn = () => {
         window.$(function () {
             var pressed = false;
@@ -160,7 +162,6 @@ class KPIMember extends Component {
         const { user, kpimembers } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
-
         var listkpi;
         var kpiApproved, automaticPoint, employeePoint, approvedPoint, targetA, targetC, targetOther, misspoint;
         if (kpimembers.kpimembers) {
@@ -265,8 +266,18 @@ class KPIMember extends Component {
                         </div>
 
                         <DataTableSetting class="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
-                        columnArr={[ 'STT' , 'Thời gian' , 'Tên nhân viên' , 'Số lượng mục tiêu' , 'Trạng thái KPI' , 'Kết quả'
-                        , 'Phê duyệt' , 'Đánh giá' ]} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+                        columnArr={[ 
+                            'STT' , 
+                            'Thời gian' , 
+                            'Tên nhân viên' , 
+                            'Số lượng mục tiêu' , 
+                            'Trạng thái KPI' , 
+                            'Kết quả', 
+                            'Phê duyệt' , 
+                            'Đánh giá' ]} 
+                            limit={this.state.perPage} 
+                            setLimit={this.setLimit} 
+                            hideColumnOption={true} />
 
                         <table id="kpiManagement" className="table table-hover table-bordered">
                         <thead>
@@ -290,7 +301,7 @@ class KPIMember extends Component {
                             <td title="">{item.creator.name}</td>
                             <td title="">{item.kpis.length}</td>
                             <td title="">{this.checkStatusKPI(item.status)}</td>
-                            <td title="">{item.approvedPoint === -1 ? "Chưa đánh giá" : item.approvedPoint}</td>
+                            <td title="">{item.approvedPoint === null ? "Chưa đánh giá" : item.approvedPoint}</td>
                             <td>
                                 <a href="#abc" onClick={()=> this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                 title="Phê duyệt kpi nhân viên này"><i className="fa fa-bullseye"></i></a>
