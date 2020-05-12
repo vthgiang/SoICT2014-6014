@@ -145,84 +145,37 @@ exports.getById = async (id) => {
     return kpipersonal;
 }
 
-<<<<<<< HEAD
-exports.getTaskById = async (id,data) => {
+exports.getTaskById = async (data) => {
     // var task = await Task.find({'evaluations.kpis.kpis': id}) 
     // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
     var date = data.date.split("-");
-    var month = new Date(date[1], date[0], 0);
-    var task = await Task.aggregate([
-        {
-            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(id) }
-        },
-        {
-            $unwind: "$evaluations"
-        },
-        {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" }, { taskID: "$_id" }, { status: "$status" }, "$evaluations"] } }
-        },
-        { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-        { $match: { month: 5 } },
-        { $match: { year: 2020 } },
-        { $unwind: "$results" },
-        {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" }, { taskID: "$taskID" }, { status: "$status" }, "$results"] } }
-        },
-        { $match: { employee: mongoose.Types.ObjectId(id) } },
-        { $match: { role: "Responsible" } },
-        {
-            $lookup: {
-                from: "users",
-                localField: "employee",
-                foreignField: "_id",
-                as: "employee"
+    var monthkpi = parseInt(date[1]);
+    var yearkpi = parseInt(date[0]);
 
-            }
-        },
-        { $unwind: "$employee" }
+    // tìm kiếm các công việc cần được đánh giá trong tháng
+    var task = await getResultTaskByMonth(data);
 
-    ]);
+    // tính điểm taskImportanceLevel:
+    console.log(task);
+    var calcPoint = await task.map(item => {
+        var prior;
+        console.log('aaaaaaaaa', item);
+        if (item.priority === "Cao") prior = 3;
+        else if (item.priority === "Trung bình") prior = 2;
+        else prior = 1;
+        item.taskImportanceLevel = 3 * (prior / 3) + 3 * item.contribution / 100;
+    });
+    console.log("----", task);
 
+    // update importanceLevel arr
+    for(var element of task){
+        var setPoint = await updateTaskImportanceLevel(element.taskId, element.employee._id, element.taskImportanceLevel, data.date);
+    }
 
-=======
-exports.getTaskById= async (data) =>{
-    // var task = await Task.find({'evaluations.kpis.kpis': id}) 
-    // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
-    var date = data.date.split("-");
-    var monthkpi = parseInt( date[1]);
-    var yearkpi= parseInt(date[0]);
-    var task = await Task.aggregate([
-        {
-            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(data.id)}
-           },
-         {
-             $unwind: "$evaluations"
-           },
-         {
-             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
-             },
-         {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
-         {$match: { month: monthkpi}},
-         {$match: {year: yearkpi}},
-         {$unwind:"$results"},
-         {
-             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$taskID"},{status : "$status"}, "$results"]}}
-             },
-            {
-                $lookup: {
-                     from: "users",
-                     localField: "employee",
-                        foreignField: "_id",
-                     as: "employee"
-                    
-                    }
-                },
-               {$unwind : "$employee"}
-        
-           ])
-    
->>>>>>> a4dde5c309a3aef7704aa3bd70eeb7b35a0f0bed
-    return task
+    // get task 
+    var resultTask = await getResultTaskByMonth(data);
+
+    return resultTask;
 }
 
 exports.getSystemPoint = async (id) => {
@@ -248,60 +201,15 @@ exports.setPointKPI = async (id_kpi, id_target, data) => {
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
 };
-// id, date id_employee, role, point
-/* 
-    var date = data.date.split("-");
-    var month = new Date(date[1], date[0], 0);
-    var kpipersonals = await KPIPersonal.findOne({ creator: data.id, date: month })
-        .populate("organizationalUnit creator approver")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
-    return kpipersonals;
-*/
+
 exports.setTaskImportanceLevel = async (id, data) => {
-    console.log(data);
-    var result = []; 
-    for(const element of data){
-        // find task
-        console.log("ID ++++++++", element.taskId);
-        var date = await element.date.split("-");
-        console.log("---------", date);
+    // data body co taskId, date, point employeeId
+  //  console.log(data);
+    var result = [];
+    for (const element of data) {
 
-        var task = await Task.aggregate([
-            {
-                $match: { _id: mongoose.Types.ObjectId(element.taskId) }
-            },
-            {
-                $unwind: "$evaluations"
-            },
-            {
-                $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskID: "$_id" }, { status: "$status" }, "$evaluations"] } }
-            },
-            { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-            { $match: { month: 5 } },
-            { $match: { year: 2020 } },
-
-        ])
-        // ket qua tra ve la mang 1 phan tu
-        console.log("taskkkkk", task[0]._id);
-
-        // update taskImportanceLevel
-
-        var setPoint = await Task.findOneAndUpdate(
-            {
-                "evaluations._id": task[0]._id,
-                "evaluations.results.employee": "5eacf3666bf8ee5458811b89",
-            },
-            {
-                $set: { "evaluations.$.results.$[elem].taskImportanceLevel": element.point }
-            },
-            {
-                arrayFilters: [
-                    {
-                        "elem.employee": element.employeeId
-                    }
-                ]
-            });
-      await result.push(setPoint);
+        var setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, element.point, element.date);
+        await result.push(setPoint);
     };
     // tinh diem kpi ca nhan 
 
@@ -309,5 +217,86 @@ exports.setTaskImportanceLevel = async (id, data) => {
 
 }
 
+async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
+    // id la _id tháng trong evaluation trong task
+    // trong data có điểm taskImportanceLevel và id của nhân viên cần chỉnh sửa
+    // find task
+    console.log("ID ++++++++", taskId);
+    var date = await date.split("-");
+    console.log("---------", date);
 
+    // find task
+    var task = await Task.aggregate([
+        {
+            $match: { _id: mongoose.Types.ObjectId(taskId) }
+        },
+        {
+            $unwind: "$evaluations"
+        },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
+        },
+        { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
+        { $match: { month: 5 } },
+        { $match: { year: 2020 } },
+
+    ])
+    // ket qua tra ve la mang 1 phan tu
+    console.log("taskkkkk", task[0]._id);
+
+    // update
+    var setPoint = await Task.findOneAndUpdate(
+        {
+            "evaluations._id": task[0]._id,
+            "evaluations.results.employee": "5eacf3666bf8ee5458811b89",
+        },
+        {
+            $set: { "evaluations.$.results.$[elem].taskImportanceLevel": point }
+        },
+        {
+            arrayFilters: [
+                {
+                    "elem.employee": employeeId
+                }
+            ]
+        });
+    return setPoint;
+}
+
+async function getResultTaskByMonth(data) {
+    var date = data.date.split("-");
+    var monthkpi = parseInt(date[1]);
+    var yearkpi = parseInt(date[0]);
+    var task = await Task.aggregate([
+        {
+            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }
+        },
+        {
+            $unwind: "$evaluations"
+        },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { taskId: "$_id" }, { priority: "$priority" }, { endDate: "$endDate" }, { taskId: "$_id" }, { status: "$status" }, "$evaluations"] } }
+        },
+        { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
+        { $match: { month: monthkpi } },
+        { $match: { year: yearkpi } },
+        { $unwind: "$results" },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { endDate: "$endDate" }, { taskId: "$_id" }, { priority: "$priority" }, { taskId: "$taskId" }, { status: "$status" }, "$results"] } }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee"
+
+            }
+        },
+        { $unwind: "$employee" },
+        { $match: { 'employee._id': mongoose.Types.ObjectId(data.employeeId) } }
+
+    ]);
+    return task;
+}
 
