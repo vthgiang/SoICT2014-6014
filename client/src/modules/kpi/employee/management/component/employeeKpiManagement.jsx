@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { managerKpiActions  } from '../redux/actions';
 import CanvasJSReact from '../../../../../chart/canvasjs.react';
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
+import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 
 class KPIPersonalManager extends Component {
     UNSAFE_componentWillMount() {
@@ -85,28 +86,42 @@ class KPIPersonalManager extends Component {
                         </ol>
                     </section> */}
                 {/* <section className="content"> */}
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <div className="box">
-                                <div className="box-header">
+                    {/* <div className="row"> */}
+                            {/* <div className="box"> */}
+                                <div className="col-sm-12" style={{ fontWeight: "500" }}>
                                     <h3 className="box-title">Bảng thống kê kpi cá nhân hàng tháng</h3>
                                 </div>
-                                <div className="box-body">
-                                    <table id="example4" className="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Thời gian</th>
-                                                <th>Số lượng mục tiêu</th>
-                                                <th>Hệ thống đánh giá</th>
-                                                <th>Kết quả tự đánh giá</th>
-                                                <th>Quản lý đánh giá</th>
-                                                <th style={{ width: "100px" }}>Hành động</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                <DataTableSetting class="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
+                                                columnArr={[ 
+                                                    'STT' ,
+                                                    'Thời gian' , 
+                                                    'Số lượng mục tiêu' , 
+                                                    'Hệ thống đánh giá' ,
+                                                    'Kết quả tự đánh giá' ,
+                                                    'Quản lý đánh giá',
+                                                    'Hành động']} 
+                                                limit={this.state.perPage} 
+                                                setLimit={this.setLimit} 
+                                                hideColumnOption={true} />
+
+                                                {/* <table id="kpiEmployeeManagement" className="table table-hover table-bordered"></table> */}
+                                                <table id="kpiEmployeeManagement" className="table table-hover table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th title="STT" style={{ width: "20px" }}>STT</th>
+                                                            <th title="Thời gian">Thời gian</th>
+                                                            <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
+                                                            <th title="Hệ thống đánh giá">Hệ thống đánh giá</th>
+                                                            <th title="Kết quả tự đánh giá">Kết quả tự đánh giá</th>
+                                                            <th title="Quản lý đánh giá">Quản lý đánh giá</th>
+                                                            <th title="Hành động">Hành động</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
                                             {(typeof listkpi !== "undefined" && listkpi.length !== 0) ?
                                                 listkpi.map((item, index) =>
                                                     <tr key={index}>
+                                                        <td>{index+1}</td>
                                                         <td>{this.formatDate(item.date)}</td>
                                                         <td>{item.kpis.length}</td>
                                                         <td>{item.automaticPoint === null ? "Chưa đánh giá" : item.automaticPoint}</td>
@@ -124,13 +139,13 @@ class KPIPersonalManager extends Component {
                                     </table>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        // </div>
+                    // </div>
                                         
-                </div>
-                {/* </section> */}
-                {/* </div> */}
-            </div>
+            //     </div>
+            //     {/* </section> */}
+            //     {/* </div> */}
+            // </div>
         )
     }
 
