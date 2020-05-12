@@ -4,6 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { performTaskAction } from './../redux/actions';
 import { taskManagementActions } from './../../task-management/redux/actions';
 import { ModalEditTask } from './modalEditTask';
+import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
+import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
+import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
 
 
 import Swal from 'sweetalert2';
@@ -327,13 +330,37 @@ class DetailTaskTab extends Component {
 
     handleShowEdit = async (id) => {
         console.log('id', id);
-        await this.setState(state=>{
+        await this.setState(state => {
             return {
                 ...state,
-                showEdit : id
+                showEdit: id
             }
         });
         window.$(`#modal-edit-task-editTask${id}`).modal('show');
+
+    }
+    handleShowEndTask = async (id, role) => {
+        console.log('End id', id);
+        console.log('ENd role', role);
+        await this.setState(state => {
+            return {
+                ...state,
+                showEndTask: id
+            }
+        });
+        window.$(`#modal-evaluate-task-by-${role}-${id}`).modal('show');
+
+    }
+    handleShowEvaluate = async (id, role) => {
+        console.log('id', id);
+        console.log('role', role);
+        await this.setState(state => {
+            return {
+                ...state,
+                showEvaluate: id
+            }
+        });
+        window.$(`#modal-evaluate-task-by-${role}-${id}`).modal('show');
 
     }
 
@@ -364,15 +391,10 @@ class DetailTaskTab extends Component {
                 </a>
                 <OrganizationalUnitKpiAddTargetModal organizationalUnitKpiSetId={currentKPI._id} organizationalUnit={currentKPI.organizationalUnit} /> */}
                 <div style={{ marginLeft: "-10px" }}>
-                    <a className="btn btn-app" onClick={()=>this.handleShowEdit(this.props.id)} data-backdrop="static" data-keyboard="false" title="Chỉnh sửa thông tin chung">
+                    <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id)} data-backdrop="static" data-keyboard="false" title="Chỉnh sửa thông tin chung">
                         <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
                     </a>
-                    {
-                        (this.state.showEdit === this.props.id) &&
-                        <ModalEditTask
-                            id={`editTask${this.props.id}`}
-                        />
-                    }
+
                     {/* TODO: modal edit task */}
 
                     {/* <i class="material-icons">add</i> */}
@@ -380,14 +402,14 @@ class DetailTaskTab extends Component {
                         <i class="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true"></i>Bấm giờ
                     </a>
 
-                    <a className="btn btn-app" data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Kết thúc công việc">
+                    <a className="btn btn-app" onClick={() => this.handleShowEndTask(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Kết thúc công việc">
                         <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>Kết thúc
                     </a>
 
-                    <a className="btn btn-app" data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Đánh giá công việc">
+                    <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Đánh giá công việc">
                         <i className="fa fa-check-square-o" style={{ fontSize: "16px" }}></i>Đánh giá
                     </a>
-                    
+
                 </div>
                 <br />
                 <div>
@@ -530,9 +552,10 @@ class DetailTaskTab extends Component {
                                                 </div> */}
 
                                         {
-                                            (task && task.evaluations) &&
-                                            task.evaluations.map(eva => {
-                                                if (eva.results) {
+                                            (task && task.evaluations.length !== 0) ?
+
+                                            (task.evaluations.map(eva => {
+                                                if (eva.results.length !== 0) {
                                                     return <div>
                                                         <strong>Đánh giá ngày: <span>( {this.formatDate(eva.date)} )</span></strong>
 
@@ -564,6 +587,30 @@ class DetailTaskTab extends Component {
                                                             }
                                                         </div>
                                                         <br />
+                                                        <div style={{ marginLeft: "10px" }}>
+                                                            {/* KPI */}
+                                                            {(eva.kpis.length !== 0) &&
+                                                                (
+                                                                    eva.kpis.map(item => {
+                                                                        return <div>
+                                                                            <p>KPI &nbsp; {item.employee.name}: &nbsp;</p>
+                                                                            {(item.kpis.length !== 0) ?
+                                                                                <ol>
+                                                                                    {
+                                                                                        item.kpis.map(kpi => {
+                                                                                            return <div>
+                                                                                                <li>{kpi.name}</li>
+                                                                                            </div>
+                                                                                        })
+                                                                                    }
+                                                                                </ol>
+                                                                                : <p>Chưa liên kết công việc với KPI</p>
+                                                                            }
+                                                                        </div>
+                                                                    })
+                                                                )
+                                                            }
+                                                        </div>
                                                     </div>
                                                 }
                                                 else {
@@ -592,7 +639,7 @@ class DetailTaskTab extends Component {
                                                         }
                                                     </div>
                                                 }
-                                            })
+                                            })): <p>Chưa đánh giá công viêc</p>
                                         }
                                     </div>
                                 </fieldset>
@@ -602,6 +649,64 @@ class DetailTaskTab extends Component {
 
                     </div>
                 </div>
+                {
+                    (this.props.id && this.state.showEdit === this.props.id) &&
+                    <ModalEditTask
+                        id={`editTask${this.props.id}`}
+                    />
+                }
+
+
+                {
+                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "responsible") &&
+                    <EvaluateByResponsibleEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Đánh giá công việc với vai trò người thực hiện'
+                    />
+                }
+                {
+                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "accountable") &&
+                    <EvaluateByAccountableEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Đánh giá công việc với vai trò người phê duyệt'
+                    />
+                }
+                {
+                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "consulted") &&
+                    <EvaluateByConsultedEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Đánh giá công việc với vai trò người hỗ trợ'
+                    />
+                }
+
+
+                {
+                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "responsible") &&
+                    <EvaluateByResponsibleEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Kết thúc công việc với vai trò người thực hiện'
+                    />
+                }
+                {
+                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "accountable") &&
+                    <EvaluateByAccountableEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Kết thúc công việc với vai trò người phê duyệt'
+                    />
+                }
+                {
+                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "consulted") &&
+                    <EvaluateByConsultedEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Kết thúc công việc với vai trò người hỗ trợ'
+                    />
+                }
             </div>
         );
     }
