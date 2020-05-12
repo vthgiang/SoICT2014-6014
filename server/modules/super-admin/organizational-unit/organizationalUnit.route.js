@@ -9,6 +9,4 @@ router.get("/:id", auth, OrganizationalUnitController.getOrganizationalUnit);
 router.patch("/:id", auth, OrganizationalUnitController.editOrganizationalUnit);
 router.delete("/:id", auth, OrganizationalUnitController.deleteOrganizationalUnit);
 
-router.get('/department-of-user/:id', auth, OrganizationalUnitController.getOrganizationalUnitsOfUser);
-
 module.exports = router;

@@ -9,7 +9,6 @@ export const DepartmentServices = {
     create,
     edit,
     destroy,
-    getDepartmentOfUser,
     getDepartmentsThatUserIsDean,
 };
 
@@ -43,16 +42,6 @@ function destroy(departmentId) {
     }, true, true, 'super_admin.organization_unit');
 }
 
-async function getDepartmentOfUser() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
-    
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/organizational-units/department-of-user/${id}`,
-        method: 'GET',
-    }, false, true, 'super_admin.organization_unit');
-}
 
 async function getDepartmentsThatUserIsDean(currentRole) {
     const token = getStorage();

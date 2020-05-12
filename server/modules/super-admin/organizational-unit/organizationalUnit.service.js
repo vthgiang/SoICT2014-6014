@@ -126,23 +126,6 @@ exports.deleteOrganizationalUnit = async(departmentId) => {
     }
 }
 
-/**
- * Lấy tất cả các đơn vị tổ chức một user thuộc về
- * @userId id của user
- */
-exports.getOrganizationalUnitsOfUser = async (userId) => {
-    const roles = await UserRole.find({ userId });
-    const newRoles = roles.map( role => role.roleId);
-    const departments = await OrganizationalUnit.find({
-        $or: [
-            {'dean': { $in: newRoles }}, 
-            {'viceDean':{ $in: newRoles }}, 
-            {'employee':{ $in: newRoles }}
-        ]  
-    });
-
-    return departments;
-}
 
 /**
  * SERVICE: Lấy thông tin của đơn vị và các role trong đơn vị đó của user
