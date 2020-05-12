@@ -658,7 +658,7 @@ class DetailTaskTab extends Component {
 
 
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "responsible") &&
+                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={this.props.id}
                         role={this.props.role}
@@ -666,7 +666,7 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "accountable") &&
+                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "accountable") &&
                     <EvaluateByAccountableEmployee
                         id={this.props.id}
                         role={this.props.role}
@@ -674,7 +674,7 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "consulted") &&
+                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "consulted") &&
                     <EvaluateByConsultedEmployee
                         id={this.props.id}
                         role={this.props.role}
@@ -684,7 +684,7 @@ class DetailTaskTab extends Component {
 
 
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "responsible") &&
+                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={this.props.id}
                         role={this.props.role}
@@ -692,7 +692,7 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "accountable") &&
+                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "accountable") &&
                     <EvaluateByAccountableEmployee
                         id={this.props.id}
                         role={this.props.role}
@@ -700,7 +700,7 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (this.props.id && this.state.showEvaluate === this.props.id && this.props.role === "consulted") &&
+                    (this.props.id && this.state.showEndTask === this.props.id && this.props.role === "consulted") &&
                     <EvaluateByConsultedEmployee
                         id={this.props.id}
                         role={this.props.role}
