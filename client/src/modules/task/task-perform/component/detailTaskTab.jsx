@@ -454,7 +454,7 @@ class DetailTaskTab extends Component {
                                             <p>Người thực hiện:</p>
                                             <ul>
                                                 {
-                                                    (task && task.responsibleEmployees) &&
+                                                    (task && task.responsibleEmployees.length !== 0) &&
                                                     task.responsibleEmployees.map(item => {
                                                         if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                                                             return <li><u>{item.name}</u></li>
@@ -468,7 +468,7 @@ class DetailTaskTab extends Component {
                                             <p>Người phê duyệt:</p>
                                             <ul>
                                                 {
-                                                    (task && task.accountableEmployees) &&
+                                                    (task && task.accountableEmployees.length !== 0) &&
                                                     task.accountableEmployees.map(item => {
                                                         if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                                                             return <li><u>{item.name}</u></li>
@@ -480,12 +480,12 @@ class DetailTaskTab extends Component {
                                             </ul>
 
                                             {
-                                                (task && task.consultedEmployees) &&
+                                                (task && task.consultedEmployees.length !== 0) &&
                                                 <React-Fragment>
                                                     <p>Người phê duyệt:</p>
                                                     <ul>
                                                         {
-                                                            (task && task.consultedEmployees) &&
+                                                            (task && task.consultedEmployees.length !== 0) &&
                                                             task.consultedEmployees.map(item => {
                                                                 if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                                                                     return <li><u>{item.name}</u></li>
@@ -498,12 +498,12 @@ class DetailTaskTab extends Component {
                                                 </React-Fragment>
                                             }
                                             {
-                                                (task && task.informedEmployees) &&
+                                                (task && task.informedEmployees.length !== 0) &&
                                                 <React-Fragment>
                                                     <p>Người phê duyệt:</p>
                                                     <ul>
                                                         {
-                                                            (task && task.informedEmployees) &&
+                                                            (task && task.informedEmployees.length !== 0) &&
                                                             task.informedEmployees.map(item => {
                                                                 if (task.inactiveEmployees.indexOf(item._id) !== -1) {
                                                                     return <li><u>{item.name}</u></li>
@@ -525,7 +525,7 @@ class DetailTaskTab extends Component {
                                         <div style={{ marginLeft: "10px" }}>
                                             <p>Mức độ hoàn thành: {task && task.progress}%</p>
                                             {
-                                                (task && task.taskInformations) &&
+                                                (task && task.taskInformations.length !== 0) &&
                                                 task.taskInformations.map(info => {
                                                     return <div>
                                                         <p>{info.name}&nbsp;-&nbsp;Giá trị: {info.value}</p>
