@@ -43,6 +43,7 @@ export function sendRequest(options, showSuccessAlert=false, showFailAlert=true,
         url: options.url, 
         method: options.method,
         data: options.data,
+        params: options.params,
         headers: AuthenticateHeader()
     };
 
@@ -94,6 +95,7 @@ export function sendRequestPublic(options, showSuccessAlert=false, showFailAlert
         url: options.url, 
         method: options.method,
         data: options.data,
+        params: options.params,
         headers: {
             'fingerprint': fingerprint,
         }
