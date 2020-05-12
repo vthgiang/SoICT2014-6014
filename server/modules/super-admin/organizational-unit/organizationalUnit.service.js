@@ -6,7 +6,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * Lấy danh sách các đơn vị trong công ty
  * @id id công ty
  */
-exports.getAllOrganizationalUnits = async (id) => {
+exports.getOrganizationalUnits = async (id) => {
     return await OrganizationalUnit
         .find({ company: id })
         .populate([
@@ -20,7 +20,7 @@ exports.getAllOrganizationalUnits = async (id) => {
  * Lấy thông tin các đơn vị của công ty theo dạng CÂY 
  * @id id công ty
  */
-exports.getAllOrganizationalUnitsAsTree = async (id) => {
+exports.getOrganizationalUnitsAsTree = async (id) => {
     const data = await OrganizationalUnit.find({ company: id }).populate([
         { path: 'dean', model: Role },
         { path: 'viceDean', model: Role },

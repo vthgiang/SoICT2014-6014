@@ -6,7 +6,6 @@ export const DepartmentActions = {
     create,
     edit,
     destroy,
-    getAll,
     getDepartmentOfUser,
     getDepartmentsThatUserIsDean,
 }
@@ -80,21 +79,6 @@ function destroy(departmentId){
     }
 }
 
-function getAll() {
-    return dispatch => {
-        dispatch(request());
-
-        DepartmentServices.getAll()
-            .then(
-                departments => dispatch(success(departments)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
-
-    function request() { return { type: DepartmentConstants.GETALL_REQUEST} }
-    function success(departments) { return { type: DepartmentConstants.GETALL_SUCCESS, departments } }
-    function failure(error) { return { type: DepartmentConstants.GETALL_FAILURE, error } }
-}
 function getDepartmentOfUser() {
     return dispatch => {
         dispatch(request());

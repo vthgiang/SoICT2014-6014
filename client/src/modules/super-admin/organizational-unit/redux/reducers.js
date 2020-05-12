@@ -86,28 +86,6 @@ export function department(state = initState, action) {
                 isLoading: false
             };
 
-        case DepartmentConstants.GETALL_REQUEST:
-
-            return {
-                ...state,
-                isLoading: true
-            };
-
-        case DepartmentConstants.GETALL_SUCCESS:
-
-            return {
-                ...state,
-                items: action.departments.data.content,
-                isLoading: false
-            };
-
-        case DepartmentConstants.GETALL_FAILURE:
-
-            return { 
-                ...state,
-                isLoading: false,
-                error: action.error
-            };
         case DepartmentConstants.GETDEPARTMENT_OFUSER_REQUEST:
 
             return {
