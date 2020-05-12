@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { IntlActions } from 'react-redux-multilingual';
-
+import moment from "moment"
 class Language extends Component {
     constructor(props) {
         super(props);
@@ -51,9 +51,11 @@ const mapDispatchToProps = (dispatch, props) => { //lưu các users lên store
     return {
         setLanguageVietNam: () => {
             localStorage.setItem('lang', 'vn');
+            moment.locale("vi")
             dispatch(IntlActions.setLocale('vn'));
         },
         setLanguageEnglish: () => {
+            moment.locale("en")
             localStorage.setItem('lang', 'en');
             dispatch(IntlActions.setLocale('en'));
         },
