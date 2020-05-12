@@ -25,7 +25,14 @@ export const performTaskService = {
     addTaskAction,
     getTaskAction,
     editTaskAction,
-    deleteTaskAction
+    deleteTaskAction,
+    createTaskComment,
+    getTaskComments,
+    editTaskComment,
+    deleteTaskComment,
+    createCommentOfTaskComment,
+    editCommentOfTaskComment,
+    deleteCommentOfTaskComment
 };
 /**
  * // example for axios
@@ -129,14 +136,13 @@ function addActionComment(newComment) {
         data : newComment
     }, true, true, 'task.task_perform');
 }
-function addTaskAction(newAction){
+function addTaskAction(newAction){ 
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/task-action/create`,
         method : 'POST',
         data : newAction
     }, true, true, 'task.task_perform');
 }
-
 // edit comment task
 function editActionComment(id, newComment) {
     return sendRequest({
@@ -155,6 +161,8 @@ function editTaskAction(id,newAction) {
 
 // delete comment task
 function deleteActionComment(id,task) {
+    console.log(id);
+    console.log(task);
     return sendRequest({
         url:`${LOCAL_SERVER_API}/performtask/action-comment/${task}/${id}`,
         method: 'DELETE'
@@ -166,4 +174,53 @@ function deleteTaskAction(id,task){
         url:`${LOCAL_SERVER_API}/performtask/task-action/${task}/${id}`,
         method:'DELETE'
     }, true, true, 'task.task_perform');
+}
+function createTaskComment(newComment){
+    console.log(newComment)
+    return sendRequest({
+        url : `${LOCAL_SERVER_API}/performtask/task-comment/create`,
+        method : 'POST',
+        data: newComment
+    },true,'task.task_perform')
+}
+function getTaskComments(id){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/task-comment/${id}`,
+        method: 'GET',
+    },false,'task.task_perform')
+}
+function editTaskComment(id,newComment){
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/task-comment/${id}`,
+        method: 'PUT',
+        data: newComment
+    },true,'task.task_perform')
+}
+function deleteTaskComment(id,task){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-comment/${task}/${id}`,
+        method: 'DELETE'
+    },true,'task.task_perform')
+}
+function createCommentOfTaskComment(newComment){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/create`,
+        method: 'POST',
+        data: newComment
+    },true,'task.task_perform')
+}
+function editCommentOfTaskComment(id,newComment){
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/${id}`,
+        method : 'PUT',
+        data: newComment
+    },true,'task.task_perform')
+}
+function deleteCommentOfTaskComment(id,task){
+    console.log(task)
+    console.log(id)
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/performtask/task-comment/comment/${id}/${task}`,
+        method : 'DELETE',
+    },true,'task.task_perform')
 }
