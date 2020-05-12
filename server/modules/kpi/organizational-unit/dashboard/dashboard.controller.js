@@ -1,7 +1,9 @@
 const { LogInfo, LogError } = require('../../../../logs');
 const DashboardOrganizationalUnitService = require('./dashboard.service');
 
-/** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
+/**
+ * Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
+ */
 exports.getChildTargetOfOrganizationalUnitKpis =async (req, res) => {
     try {
         var childTargets = await DashboardOrganizationalUnitService.getChildTargetOfOrganizationalUnitKpis(req.params.id);

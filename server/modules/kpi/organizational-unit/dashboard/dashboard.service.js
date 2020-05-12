@@ -1,6 +1,9 @@
 const { OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, EmployeeKpi, Department } = require('../../../../models/index').schema;
 
-/** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
+/**
+ * Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
+ * @id Id của role người dùng
+ */
 exports.getChildTargetOfOrganizationalUnitKpis = async (id) => {
     var organizationalUnit = await OrganizationalUnit.findOne({
         $or: [

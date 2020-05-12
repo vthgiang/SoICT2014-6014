@@ -109,8 +109,9 @@ class OrganizationalUnitKpiDashboard extends Component {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
+
                 datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.result }
+                    return { label: this.formatDate(item.date), y: item.automaticPoint }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
                     return { label: this.formatDate(item.date), y: item.kpis[0].result }
