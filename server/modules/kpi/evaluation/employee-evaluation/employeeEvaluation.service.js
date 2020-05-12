@@ -220,7 +220,6 @@ exports.setTaskImportanceLevel = async(id,data)=>{
     console.log(data);
     console.log(id);
     var date = data.date.split("-");
-    console.log("---------", date);
     var month = new Date(date[1], date[0], 0);
 
     console.log(month);

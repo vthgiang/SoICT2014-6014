@@ -117,7 +117,7 @@ exports.editTarget = async (req, res) => {
 // Phê duyệt từng mục tiêu của KPI req.params.id  status: req.params.status
 exports.editStatusTarget = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.editStatusTarget(req.params.id);
+        const kpimembers = await KPIMemberService.editStatusTarget(req.params);
         await LogInfo(req.user.email, `Edit status target`, req.user.company);
         res.status(200).json({
             success: true,

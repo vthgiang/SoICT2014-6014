@@ -12,7 +12,7 @@ router.get('/user/:member', auth, KPIPersonalController.getByMember);
 router.get('/:id',auth,  KPIPersonalController.getById);
 
 // Lấy kpi cá nhân theo tháng
-router.get('/member/:id/:time', auth, KPIPersonalController.getByMonth);
+router.get('/member/:id/:date', auth, KPIPersonalController.getByMonth);
 
 // phê duyệt tất cả mục tiêu của kpi cá nhân
 router.put('/approve/:id', auth, KPIPersonalController.approveAllTarget);
