@@ -124,7 +124,7 @@ app.use("/notifications", notifications);
 
 app.use("/component", component);
 app.use("/link", link);
-app.use("/department", organizationalUnit);
+app.use("/organizational-units", organizationalUnit);
 app.use("/privilege", privilege);
 app.use("/role", role);
 app.use("/user", user);

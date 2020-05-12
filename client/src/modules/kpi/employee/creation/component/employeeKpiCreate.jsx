@@ -411,8 +411,8 @@ class CreateEmployeeKpiSet extends Component {
         const { commenting, editing, editingTarget } = this.state;
         const { department, createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
 
-        if (department.unitofuser) {
-            unitList = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item => (
                 item.dean === this.state.currentRole
                 || item.employee === this.state.currentRole
@@ -641,7 +641,7 @@ function mapState(state) {
 
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    getDepartment: DepartmentActions.getDepartmentOfUser,
+    getDepartment: UserActions.getDepartmentOfUser,
     getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
     deleteEmployeeKpi: createKpiSetActions.deleteEmployeeKpi,
     editEmployeeKpiSet: createKpiSetActions.editEmployeeKpiSet,

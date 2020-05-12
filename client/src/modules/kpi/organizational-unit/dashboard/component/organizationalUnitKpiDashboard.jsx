@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { managerActions } from '../../management/redux/actions';
 // import { ModalDetailKPI } from './ModalDetailKPI';
@@ -92,10 +92,10 @@ class OrganizationalUnitKpiDashboard extends Component {
     render() {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
-        const { department, managerKpiUnit } = this.props;
+        const { user, managerKpiUnit } = this.props;
         
-        if (department.unitofuser) {
-            unitList = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -109,8 +109,9 @@ class OrganizationalUnitKpiDashboard extends Component {
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
+
                 datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.date), y: item.result }
+                    return { label: this.formatDate(item.date), y: item.automaticPoint }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
                     return { label: this.formatDate(item.date), y: item.kpis[0].result }
@@ -249,12 +250,12 @@ class OrganizationalUnitKpiDashboard extends Component {
 }
 
 function mapState(state) {
-    const { department, managerKpiUnit } = state;
-    return { department, managerKpiUnit };
+    const { user, managerKpiUnit } = state;
+    return { user, managerKpiUnit };
 }
 
 const actionCreators = {
-    getDepartment: DepartmentActions.getDepartmentOfUser,
+    getDepartment: UserActions.getDepartmentOfUser,
     getAllKPIUnit: managerActions.getAllKPIUnit,
 };
 const connectedOrganizationalUnitKpiDashboard = connect(mapState, actionCreators)(OrganizationalUnitKpiDashboard);

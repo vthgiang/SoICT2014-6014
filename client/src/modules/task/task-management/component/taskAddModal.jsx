@@ -193,13 +193,13 @@ class ModalAddTask extends Component {
     render() {
         var units, currentUnit, userdepartments, listTaskTemplate, currentTemplate, listKPIPersonal;
         const { newTask, submitted } = this.state;
-        const { department, tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
+        const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
         if (tasktemplates.items) {
             listTaskTemplate = tasktemplates.items; // listTaskTemplate = tasktemplates.items;
             currentTemplate = listTaskTemplate.filter(item => item.resourceId._id === this.state.currentTemplate);
         }
-        if (department.unitofuser) {
-            units = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -494,14 +494,14 @@ class ModalAddTask extends Component {
 }
 
 function mapState(state) {
-    const { department, tasktemplates, tasks, user, KPIPersonalManager } = state;//fix--------------kpipersonals-->KPIPersonalManager-------department(s)----------
-    return { department, tasktemplates, tasks, user, KPIPersonalManager };
+    const { tasktemplates, tasks, user, KPIPersonalManager } = state;//fix--------------kpipersonals-->KPIPersonalManager-------department(s)----------
+    return { tasktemplates, tasks, user, KPIPersonalManager };
 }
 
 const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     addTask: taskManagementActions.addTask,
-    getDepartment: DepartmentActions.getDepartmentOfUser,//có r
+    getDepartment: UserActions.getDepartmentOfUser,//có r
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,//có r
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số

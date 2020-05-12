@@ -16,7 +16,9 @@ import { ModalApproveTask } from "./modalApproveTask";
 import { ButtonModal } from '../../../../common-components';
 import moment from 'moment'
 import 'moment/locale/vi'
-
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
+import './perform.css'
 class ModalPerformTask extends Component {
     constructor(props) {
 
@@ -536,7 +538,7 @@ class ModalPerformTask extends Component {
         this.contentAction[index].value = "";
     }
     //Thêm mới bình luận của công việc
-    submitTaskComment = async (e,index,taskId) => {
+    submitTaskComment = async (e,id,index,taskId) => {
         e.preventDefault();
         await this.setState(state => {
             return {
@@ -576,6 +578,7 @@ class ModalPerformTask extends Component {
         this.contentCommentOfTaskComment[index].value = "";
     }
     handleEditActionComment = async (id) => {
+
         await this.setState(state => {
             return {
                 ...state,
@@ -584,6 +587,7 @@ class ModalPerformTask extends Component {
         })
     }
     handleEditAction = async (id) => {
+        console.log("HAHAHAHA")
         await this.setState(state => {
             return {
                 ...state,
@@ -817,10 +821,9 @@ class ModalPerformTask extends Component {
         });
         window.$(`#modal-approve-task-${id}`).modal('show');
     }
-
+    
     render() {
         // console.log('props--->', this.props);
-        moment.locale("vi");
         var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
@@ -1301,123 +1304,145 @@ class ModalPerformTask extends Component {
                                             taskActions.map(item => {
                                                 // if (item.parent === null)
                                                 return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "1.5%", marginLeft: "15px", }} key={item._id}>
-                                                    <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
-                                                        <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
-                                                        <span className="username">
-                                                            <a href="#abc">{item.creator.name}</a>
-                                                        </span>
-                                                        <p style={{ marginBottom: "4px", marginLeft: "60px" }}>&nbsp;{item.description}</p>
-                                                        <span className="description">{moment(item.createdAt).locale("vi").fromNow()}</span>
+                                                    <div className="row">
+                                                    <div className="user-block col-sm-2" style={{ display: "inline-block", marginBottom: "0px",marginRight:"-25px" }}>
+                                                    <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
                                                     </div>
-                                                    {(item.creator._id === this.state.currentUser && this.props.role === "responsible") &&
-                                                        <div className="action-comment " style={{ display: "inline-block" }}>
-                                                            <a href="#abc" title="Sửa hành động" className="edit" onClick={() => this.handleEditAction(item._id)}><i className="material-icons">edit</i></a>
-                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id,task._id)}><i className="material-icons">delete</i></a>
-                                                        </div>
-                                                    }
-                                                    {this.props.role === "accountable" &&
-                                                        <div className="action-comment" style={{ display: "inline-block" }}>
-                                                            <a href="#abc" title="Đạt" className="add_circle"><i className="material-icons">check_circle_outline</i></a>
-                                                            <a href="#abc" title="Không đạt" className="delete"><i className="material-icons">highlight_off</i></a>
-                                                        </div>
-                                                    }
-                                                    <div className="comment-content" style={{ marginLeft: "8%" }}>
-                                                        {editAction === item._id ?
-                                                            <React.Fragment>
-                                                                {/* Chỉnh sửa nội dung hoạt động của công việc*/}
-                                                                <textarea
-                                                                    style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd' }}
-                                                                    defaultValue={item.description}
-                                                                    ref={input => this.newContentAction[item._id] = input}
-                                                                />
-                                                                <div className="row action-post">
-                                                                    <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                    <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</button>
-                                                                    <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</button>
-                                                                </div>
-                                                            </React.Fragment> :
+                                                    <div className="col-sm-9" style= {{backgroundColor:"#f2f3f5", borderRadius:"18px", marginRight:"10px", width:"78.4%"}}>    
+                                                    <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
+                                                        <span className="username" style={{marginLeft:"0px"}} >
+                                                            <a href="#abc">{}</a>
+                                                        </span>
+                                                        <p style={{ marginBottom: "2px", marginLeft:"15px",marginTop:"2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{item.description}</p>
+                                                        <div className="row" style={{width:"300%",marginLeft:"0px", marginBottom:"0px"}} >
+                                                            <span className="description col-sm-5" style={{marginLeft:"0px"}}>{moment(item.createdAt).fromNow()}</span>
+                                                            <div className="comment-content">
                                                             <React.Fragment>
                                                                 {/* Hiển thị nội dung hoạt động cho công việc*/}
                                                                 <div className="attach-file" style={{ marginTop: "-10px" }}>
                                                                     {/* <a href={item.file.url} download>{item.file.name}</a> */}
                                                                 </div>
-                                                                <ul className="list-inline">
-                                                                    <li className="pull-right">
+                                                                <ul className="list-inline" style={{marginTop:'10px'}}>
+                                                                    <li className="">
                                                                         <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
                                                                             <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.length}) &nbsp;
                                                                             {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
                                                                         </a>
                                                                     </li>
                                                                 </ul>
-                                                                {/* Hiển thị bình luận cho hoạt động */}
-                                                                {showChildComment === item._id &&
-                                                                    <div className="comment-content-child">
-                                                                        {item.comments.map(child => {
-                                                                            console.log("Lap lan 1");
-                                                                            return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
-                                                                                <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
-                                                                                    <img className="img-circle img-bordered-sm"
-                                                                                        src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
-                                                                                        style={{ height: "30px", width: "30px" }} />
+                                                            </React.Fragment>
+                                                            </div>
+                                                        </div>     
+                                                    </div>
+                                                    </div>
+                                                    <div class="btn-group dropright">
+                                                        <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                            <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                            </svg>
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                            <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditAction(item._id)} >Sửa hành động</button>
+                                                            <div class="dropdown-divider"></div>
+                                                            <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteTaskAction(item._id,task._id)} >Xóa hành động</button>
+                                                            <div class="dropdown-divider"></div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    {/*Chỉnh sửa nội dung hoạt động của công việc */}
+                                                    {editAction === item._id &&
+                                                        <React.Fragment>
+                                                            <div style= {{marginTop:"3%",marginLeft:"10%",width:"82%"}}>
+                                                                <textarea
+                                                                    style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px" }}
+                                                                    defaultValue={item.description}
+                                                                    ref={input => this.newContentAction[item._id] = input}
+                                                                />
+                                                                <div className="row action-post">
+                                                                    <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                    <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</button>
+                                                                    <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</button>
+                                                                </div>
+                                                            </div>
+                                                        </React.Fragment>}
+                                                    {/* Hiển thị bình luận cho hoạt động */}
+                                                    {showChildComment === item._id &&
+                                                                <div className="comment-content-child">
+                                                                    {item.comments.map(child => {
+                                                                        console.log("Lap lan 1");
+                                                                        return <div className="col-sm-12 form-group margin-bottom-none" key={child._id} style={{marginTop:"10px",marginLeft:"25px"}}>
+                                                                            <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
+                                                                                <img className="img-circle img-bordered-sm"
+                                                                                    src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
+                                                                                    style={{ height: "30px", width: "30px" }} />
+                                                                            </div>
+                                                                            <div className="col-sm-11" style={{ marginBottom: "10px",borderRadius:"15px",backgroundColor:"#f2f3f5",width:"80%",marginLeft:"17px" }} >
+                                                                                <span className="username">
+                                                                                    <a href="#abc">{item.creator.name}</a>
+                                                                                </span>
+                                                                                <p style={{ marginBottom: "-2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{child.content}</p>
+                                                                                {/* <a href={child.file.url} download>{child.file.name}</a> */}
+                                                                                <span className="description">{moment(child.createdAt).fromNow()}</span>
+                                                                    
+                                                                            </div>
+                                                                            {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
+                                                                                <div class="btn-group dropright">
+                                                                                <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                                                    <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                                                    </svg>
+                                                                                </button>
+                                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                                                    <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
+                                                                                    <div class="dropdown-divider"></div>
+                                                                                    <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteActionComment(child._id,task._id)} >Xóa bình luận</button>
+                                                                                    <div class="dropdown-divider"></div>
                                                                                 </div>
-                                                                                <div className="col-sm-11" style={{ marginBottom: "10px" }} >
-                                                                                    <span className="username">
-                                                                                        <a href="#abc">{item.creator.name}</a>
-                                                                                    </span>
-                                                                                    <p style={{ marginBottom: "-2px" }}>&nbsp;{child.content}</p>
-                                                                                    {/* <a href={child.file.url} download>{child.file.name}</a> */}
-                                                                                    <span className="description">19:30 19-11-2019</span>
-                                                                                    {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
-                                                                                        <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id,task._id)}><i className="material-icons">delete</i></a>
-                                                                                        </div>
-                                                                                    }
-                                                                                    {editComment === child._id &&
-                                                                                        <React.Fragment>
+                                                                            </div>  
+                                                                            }
+                                                                            {editComment === child._id &&
+                                                                                    <React.Fragment>
+                                                                                        <div style ={{width:"83%",marginLeft:"8.2%"}}>
                                                                                             <textarea
-                                                                                                style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px" }}
+                                                                                                style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius:"18px" }}
                                                                                                 defaultValue={child.content}
                                                                                                 ref={input => this.newContentCommentOfAction[child._id] = input}
                                                                                             />
                                                                                             <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
-                                                                                                <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                                <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                                <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                                                <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
                                                                                                 <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
                                                                                             </div>
-                                                                                        </React.Fragment>
-                                                                                    }
-                                                                                </div>
-                                                                            </div>;
-                                                                            return true;
-                                                                        })
-                                                                        }
-                                                                        {/*Thêm bình luận cho hoạt động */}
-                                                                        <div className="comment-child-action">
-                                                                            <form className="form-horizontal">
-                                                                                <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px" }}>
-                                                                                    <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                                                                        <img className="img-circle img-bordered-sm"
-                                                                                            src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
-                                                                                            style={{ height: "30px", width: "30px" }} />
-                                                                                    </div>
-                                                                                    <div className="col-sm-11" >
-                                                                                        <textarea placeholder="Hãy nhập nội dung bình luận"
-                                                                                            style={{ width: '100%', height: 40, fontSize: 13, border: '1px solid #dddddd' }} ref={input => this.contentCommentOfAction[item._id] = input} />
-                                                                                        <div className="row action-post" style={{ width: "107%" }}>
-                                                                                            <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                            <button type="submit" style={{ width: "20%", marginRight: "2%", textAlign: "center" }} className="col-xs-2 col-xs-offset-7 btn btn-success btn-sm" onClick={(e) => this.submitComment(e, item._id, item._id,task._id)}>Gửi bình luận  </button>
-                                                                                            <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleComment}>Hủy bỏ</button>
                                                                                         </div>
+                                                                                    </React.Fragment>
+                                                                                }
+                                                                        </div>;
+                                                                        return true;
+                                                                    })
+                                                                    }
+                                                                    {/*Thêm bình luận cho hoạt động */}
+                                                                    <div className="comment-child-action">
+                                                                        <form className="form-horizontal">
+                                                                            <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px", marginLeft:"4.8%" }}>
+                                                                                <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
+                                                                                    <img className="img-circle img-bordered-sm"
+                                                                                        src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
+                                                                                        style={{ height: "30px", width: "30px" }} />
+                                                                                </div>
+                                                                                <div className="col-sm-11" >
+                                                                                    <textarea placeholder="Hãy nhập nội dung bình luận" id="textarea-action-comment"
+                                                                                        style={{ width: '92.5%', height: 40, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px",marginLeft:"1%"}} ref={input => this.contentCommentOfAction[item._id] = input} />
+                                                                                    <div className="row action-post" style={{ width: "107%" }}>
+                                                                                        <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} style={{marginLeft:"1%"}} />
+                                                                                        <button type="submit" style={{ width: "20%", marginRight: "2%", textAlign: "center" ,marginLeft:"52.8%"}} className="col-xs-2 col-xs-offset-7 btn btn-success btn-sm" onClick={(e) => this.submitComment(e, item._id, item._id,task._id)}>Gửi bình luận  </button>
+                                                                                        <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleComment}>Hủy bỏ</button>
                                                                                     </div>
                                                                                 </div>
-                                                                            </form>
-                                                                        </div>
+                                                                            </div>
+                                                                        </form>
                                                                     </div>
-                                                                }
-                                                            </React.Fragment>
-                                                        }
-                                                    </div>
+                                                                </div>
+                                                            }
                                                 </div>;
                                                 return true;
                                             }) : null
@@ -1428,13 +1453,13 @@ class ModalPerformTask extends Component {
                                                 <div className="form-group margin-bottom-none">
                                                     <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                         <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
-                                                    </div>
+                                                    </div> 
                                                     <div className="col-sm-8" >
                                                         <textarea placeholder="Hãy nhập nội dung hoạt động"
-                                                            style={{ width: '60%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
+                                                            style={{ width: '52%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
                                                              ref={input => this.contentAction[0] = input} />
             
-                                                            <div className="row action-post" style={{ width: "69.5%" }}>
+                                                            <div className="row action-post" style={{ width: "63.4%" }}>
                                                                 <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
                                                                 <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitAction(e, null, 0,task._id)}>Thêm hoạt động</button>
                                                                 <button style={{ width: "13%", }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleAction}>Hủy bỏ</button>
@@ -1446,146 +1471,167 @@ class ModalPerformTask extends Component {
                                     {/* Chuyển qua tab trao đổi */}
                                     <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
                                     {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
-                                            // Hiển thị bình luận của công việc
-                                            taskComments.map(item => {
-                                                // if (item.parent === null)
-                                                return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "1.5%", marginLeft: "15px" }} key={item._id}>
-                                                    <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
-                                                        <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" style={{marginRight:"0.5%"}} />
-                                                        <span className="username">
-                                                            <a href="#abc">{item.creator.name}</a>
-                                                        </span>
-                                                        <p style={{ marginBottom: "4px", marginLeft: "60px" }}>&nbsp;{item.content}</p>
-                                                        <span className="description">19:30 19-11-2022</span>
+                                        taskComments.map(item => {
+                                            // if (item.parent === null)
+                                            return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "1.5%", marginLeft: "15px", }} key={item._id}>
+                                                <div className="row">
+                                                <div className="user-block col-sm-2" style={{ display: "inline-block", marginBottom: "0px",marginRight:"-25px" }}>
+                                                <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
+                                                </div>
+                                                <div className="col-sm-9" style= {{backgroundColor:"#f2f3f5", borderRadius:"18px", marginRight:"10px", width:"78.4%"}}>    
+                                                <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
+                                                    <span className="username" style={{marginLeft:"0px"}} >
+                                                        <a href="#abc">{item.creator.name}</a>
+                                                    </span>
+                                                    <p style={{ marginBottom: "2px", marginLeft:"15px",marginTop:"2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{item.content}</p>
+                                                    <div className="row" style={{width:"300%",marginLeft:"0px", marginBottom:"0px"}} >
+                                                        <span className="description col-sm-5" style={{marginLeft:"0px"}}>{moment(item.createdAt).fromNow()}</span>
+                                                        <div className="comment-content">
+                                                        <React.Fragment>
+                                                            {/* Hiển thị nội dung hoạt động cho công việc*/}
+                                                            <div className="attach-file" style={{ marginTop: "-10px" }}>
+                                                                {/* <a href={item.file.url} download>{item.file.name}</a> */}
+                                                            </div>
+                                                            <ul className="list-inline" style={{marginTop:'10px'}}>
+                                                                <li className="">
+                                                                    <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}>
+                                                                        <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.length}) &nbsp;
+                                                                        {showChildTaskComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </React.Fragment>
+                                                        </div>
+                                                    </div>     
+                                                </div>
+                                                </div>
+                                                <div class="btn-group dropright">
+                                                    <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                        <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                        <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
+                                                        <div class="dropdown-divider"></div>
+                                                        <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteTaskComment(item._id,task._id)} >Xóa bình luận</button>
+                                                        <div class="dropdown-divider"></div>
                                                     </div>
-                                                    {(item.creator._id === this.state.currentUser && this.props.role === "responsible") &&
-                                                        <div className="action-comment " style={{ display: "inline-block" }}>
-                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditTaskComment(item._id)}><i className="material-icons">edit</i></a>
-                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteTaskComment(item._id,task._id)}><i className="material-icons">delete</i></a>
+                                                </div>
+                                                </div>
+                                                {/*Chỉnh sửa nội dung hoạt động của công việc */}
+                                                {editTaskComment === item._id &&
+                                                    <React.Fragment>
+                                                        <div style= {{marginTop:"3%",marginLeft:"10%",width:"82%"}}>
+                                                            <textarea
+                                                                style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px" }}
+                                                                defaultValue={item.content}
+                                                                ref={input => this.newContentTaskComment[item._id] = input}
+                                                            />
+                                                            <div className="row action-post">
+                                                                <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</button>
+                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</button>
+                                                            </div>
                                                         </div>
-                                                    }
-                                                    {this.props.role === "accountable" &&
-                                                        <div className="action-comment" style={{ display: "inline-block" }}>
-                                                            <a href="#abc" title="Đạt" className="add_circle"><i className="material-icons">check_circle_outline</i></a>
-                                                            <a href="#abc" title="Không đạt" className="delete"><i className="material-icons">highlight_off</i></a>
-                                                        </div>
-                                                    }
-                                                    <div className="comment-content" style={{ marginLeft: "8%" }}>
-                                                        {editTaskComment === item._id ?
-                                                            <React.Fragment>
-                                                                {/* Chỉnh sửa nội dung bình luận của công việc  */}
-                                                                <textarea
-                                                                    style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd' }}
-                                                                    defaultValue={item.content}
-                                                                    ref={input => this.newContentTaskComment[item._id] = input}
-                                                                />
-                                                                <div className="row action-post">
-                                                                    <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                    <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</button>
-                                                                    <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</button>
-                                                                </div>
-                                                            </React.Fragment> :
-                                                            <React.Fragment>
-                                                                {/* Hiển thị nội dung bình luận của bình luận công việc */}
-                                                                <div className="attach-file" style={{ marginTop: "-10px" }}>
-                                                                    {/* <a href={item.file.url} download>{item.file.name}</a> */}
-                                                                </div>
-                                                                <ul className="list-inline">
-                                                                    <li className="pull-right">
-                                                                        <a href="#abc" title="Xem bình luận của bình luận" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}>
-                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.length}) &nbsp;
-                                                                            {showChildTaskComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
-                                                                        </a>
-                                                                    </li>
-                                                                </ul>
-                                                                {/* Hiển thị bình luận cho bình luận công việc */}
-                                                                {showChildTaskComment === item._id &&
-                                                                    <div className="comment-content-child">
-                                                                        {item.comments.map(child => {
-                                                                            return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
-                                                                                <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
-                                                                                    <img className="img-circle img-bordered-sm"
-                                                                                        src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
-                                                                                        style={{ height: "30px", width: "30px" }} />
-                                                                                </div>
-                                                                                <div className="col-sm-11" style={{ marginBottom: "10px" }} >
-                                                                                    <span className="username">
-                                                                                        <a href="#abc">{item.creator.name}</a>
-                                                                                    </span>
-                                                                                    <p style={{ marginBottom: "-2px" }}>&nbsp;{child.content}</p>
-                                                                                    {/* <a href={child.file.url} download>{child.file.name}</a> */}
-                                                                                    <span className="description">19:30 19-11-2019</span>
-                                                                                    {(child.creator._id === this.state.currentUser) &&
-                                                                                        <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditCommentOfTaskComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteCommentOfTaskComment(child._id,task._id)}><i className="material-icons">delete</i></a>
-                                                                                        </div>
-                                                                                    }
-                                                                                    {editCommentOfTaskComment === child._id &&
-                                                                                        <React.Fragment>
-                                                                                            <textarea
-                                                                                                style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px" }}
-                                                                                                defaultValue={child.content}
-                                                                                                ref={input => this.newContentCommentOfTaskComment[child._id] = input}
-                                                                                            />
-                                                                                            <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
-                                                                                                <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                                <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
-                                                                                            </div>
-                                                                                        </React.Fragment>
-                                                                                    }
-                                                                                </div>
-                                                                            </div>;
-                                                                            return true;
-                                                                        })
-                                                                        }
-                                                                        {/* Thêm bình luận cho bình luận của công việc */}
-                                                                        <div className="comment-child-action">
-                                                                            <form className="form-horizontal">
-                                                                                <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px" }}>
-                                                                                    <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                                                                        <img className="img-circle img-bordered-sm"
-                                                                                            src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
-                                                                                            style={{ height: "30px", width: "30px" }} />
-                                                                                    </div>
-                                                                                    <div className="col-sm-11" >
-                                                                                        <textarea placeholder="Hãy nhập nội dung bình luận"
-                                                                                            style={{ width: '100%', height: 40, fontSize: 13, border: '1px solid #dddddd' }} ref={input => this.contentCommentOfTaskComment[item._id] = input} />
-                                                                                        <div className="row action-post" style={{ width: "107%" }}>
-                                                                                            <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                            <button type="submit" style={{ width: "20%", marginRight: "2%", textAlign: "center" }} className="col-xs-2 col-xs-offset-7 btn btn-success btn-sm" onClick={(e) => this.submitCommentOfTaskComment(e, item._id, item._id,task._id)}>Gửi bình luận  </button>
-                                                                                            <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" >Hủy bỏ</button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </form>
+                                                    </React.Fragment>}
+                                                {/* Hiển thị bình luận cho hoạt động */}
+                                                {showChildTaskComment === item._id &&
+                                                            <div className="comment-content-child">
+                                                                {item.comments.map(child => {
+                                                                    return <div className="col-sm-12 form-group margin-bottom-none" key={child._id} style={{marginTop:"10px",marginLeft:"25px"}}>
+                                                                        <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
+                                                                            <img className="img-circle img-bordered-sm"
+                                                                                src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
+                                                                                style={{ height: "30px", width: "30px" }} />
                                                                         </div>
-                                                                    </div>
+                                                                        <div className="col-sm-11" style={{ marginBottom: "10px",borderRadius:"15px",backgroundColor:"#f2f3f5",width:"80%",marginLeft:"17px" }} >
+                                                                            <span className="username">
+                                                                                <a href="#abc">{item.creator.name}</a>
+                                                                            </span>
+                                                                            <p style={{ marginBottom: "-2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{child.content}</p>
+                                                                            {/* <a href={child.file.url} download>{child.file.name}</a> */}
+                                                                            <span className="description">{moment(child.createdAt).fromNow()}</span>
+                                                                
+                                                                        </div>
+                                                                        {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
+                                                                            <div class="btn-group dropright">
+                                                                            <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                                                <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                                                </svg>
+                                                                            </button>
+                                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                                                <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</button>
+                                                                                <div class="dropdown-divider"></div>
+                                                                                <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteCommentOfTaskComment(child._id,task._id)} >Xóa bình luận</button>
+                                                                                <div class="dropdown-divider"></div>
+                                                                            </div>
+                                                                        </div>  
+                                                                        }
+                                                                        {editCommentOfTaskComment === child._id &&
+                                                                                <React.Fragment>
+                                                                                    <div style ={{width:"83%",marginLeft:"8.2%"}}>
+                                                                                        <textarea
+                                                                                            style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius:"18px" }}
+                                                                                            defaultValue={child.content}
+                                                                                            ref={input => this.newContentCommentOfTaskComment[child._id] = input}
+                                                                                        />
+                                                                                        <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
+                                                                                            <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                                            <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                            <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </React.Fragment>
+                                                                            }
+                                                                    </div>;
+                                                                    return true;
+                                                                })
                                                                 }
-                                                            </React.Fragment>
+                                                                {/*Thêm bình luận cho bình luận */}
+                                                                <div className="comment-child-action">
+                                                                    <form className="form-horizontal">
+                                                                        <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px", marginLeft:"4.8%" }}>
+                                                                            <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
+                                                                                <img className="img-circle img-bordered-sm"
+                                                                                    src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
+                                                                                    style={{ height: "30px", width: "30px" }} />
+                                                                            </div>
+                                                                            <div className="col-sm-11" >
+                                                                                <textarea placeholder="Hãy nhập nội dung bình luận" id="textarea-action-comment"
+                                                                                    style={{ width: '92.5%', height: 40, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px",marginLeft:"1%"}} ref={input => this.contentCommentOfTaskComment[item._id] = input} />
+                                                                                <div className="row action-post" style={{ width: "107%" }}>
+                                                                                    <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} style={{marginLeft:"1%"}} />
+                                                                                    <button type="submit" style={{ width: "20%", marginRight: "2%", textAlign: "center" ,marginLeft:"52.8%"}} className="col-xs-2 col-xs-offset-7 btn btn-success btn-sm" onClick={(e) => this.submitCommentOfTaskComment(e, item._id, item._id,task._id)}>Gửi bình luận  </button>
+                                                                                    <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" >Hủy bỏ</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
                                                         }
-                                                    </div>
-                                                </div>;
-                                                return true;
-                                            }) : null
-                                        }
-                                        {/* Thêm hoạt động cho công việc không theo mẫu */}
-                                        {this.props.role === "responsible" &&
+                                            </div>;
+                                            return true;
+                                        }) : null
+                                    }
+                                    {/* Thêm bình luận cho công việc*/}
+                                    {this.props.role === "responsible" &&
                                             <form className="form-horizontal" style={{ paddingTop: "2%" }}>
                                                 <div className="form-group margin-bottom-none">
                                                     <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                         <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
-                                                    </div>
+                                                    </div> 
                                                     <div className="col-sm-8" >
                                                         <textarea placeholder="Hãy nhập nội dung hoạt động"
-                                                            style={{ width: '60%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
+                                                            style={{ width: '52%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
                                                              ref={input => this.contentTaskComment[0] = input} />
             
-                                                            <div className="row action-post" style={{ width: "69.5%" }}>
+                                                            <div className="row action-post" style={{ width: "63.4%" }}>
                                                                 <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitTaskComment(e, 0,task._id)}>Thêm hoạt động</button>
-                                                                <button style={{ width: "13%", }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleCommentTask}>Hủy bỏ</button>
+                                                                <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitTaskComment(e, null, 0,task._id)}>Thêm hoạt động</button>
+                                                                <button style={{ width: "13%", }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleAction}>Hủy bỏ</button>
                                                             </div>
                                                     </div>
                                                 </div>

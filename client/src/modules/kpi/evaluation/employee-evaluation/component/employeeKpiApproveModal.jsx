@@ -58,6 +58,8 @@ class ModalMemberApprove extends Component {
         })
     }
     handleSaveEdit = async (target) => {
+        // console.log("--tar--", target);
+        // console.log("--wweight--", this.newWeight[target._id].value);
         await this.setState(state=>{
             return{
                 ...state,
@@ -69,6 +71,8 @@ class ModalMemberApprove extends Component {
         })
         const {newTarget} = this.state;
         if(this.newWeight[target._id].value!==""){
+            // console.log("--IdTarget--", target._id);
+            // console.log("--NewTarget--", newTarget);
             this.props.editTarget(target._id, newTarget);
             await this.setState(state=>{
                 return{
@@ -226,9 +230,11 @@ class ModalMemberApprove extends Component {
                                 <h3 className="modal-title" id="myModalLabel">Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
                             </div>
                             <div className="col-sm-5" style={{ marginTop: "-5px", marginLeft: "7%" }}>
-                                {this.state.compare ? <button className="col-sm-3 btn btn-success" style={{marginLeft:"48%"}} onClick={() => this.handleCompare()}>Tắt so sánh</button>
-                                    : <button className="col-sm-3 btn btn-success" style={{ marginLeft: "30%" }} onClick={() => this.handleCompare(kpimember.creator._id)}>So sánh với KPI cũ</button>}
-                                <button className="col-sm-3 btn btn-success" style={{ marginLeft: "10px" }} onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>
+                                <div className="row">
+                                    {this.state.compare ? <button className="col-sm-3 btn btn-success" style={{marginLeft:"48%"}} onClick={() => this.handleCompare()}>Tắt so sánh</button>
+                                        : <button className="col-sm-3 btn btn-success" style={{ marginLeft: "30%" }} onClick={() => this.handleCompare(kpimember.creator._id)}>So sánh với KPI cũ</button>}
+                                    <button className="col-sm-3 btn btn-success" style={{ marginLeft: "10px" }} onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>
+                                </div>
                             </div>
                         </div>
                         <div className="modal-body modal-body-perform-task" >
