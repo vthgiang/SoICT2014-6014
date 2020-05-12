@@ -24,7 +24,11 @@ router.put('/target/:id', auth, KPIPersonalController.editTarget);
 router.put('/status-target/:id/:status', auth, KPIPersonalController.editStatusTarget);
 
 // lấy task cho kpi
+<<<<<<< HEAD
 router.get('/task/:id', KPIPersonalController.getTaskById);
+=======
+router.get('/task/:id/:date', auth, KPIPersonalController.getTaskById);
+>>>>>>> a4dde5c309a3aef7704aa3bd70eeb7b35a0f0bed
 
 router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 

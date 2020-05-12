@@ -214,7 +214,7 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         if(taskTemplateId !== null){
             var taskTemplate = await TaskTemplate.findById(taskTemplateId);
             var taskActions = taskTemplate.taskActions;
-
+            
             // taskActions.forEach(item => {
             //     item = {
             //         ...item,
@@ -256,6 +256,7 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
                 taskTemplateId, { $inc: { 'numberOfUse': 1} }, { new: true }
             );
         }
+
         task = await task.populate({path: "organizationalUnit creator parent"}).execPopulate();
         return task;
 }

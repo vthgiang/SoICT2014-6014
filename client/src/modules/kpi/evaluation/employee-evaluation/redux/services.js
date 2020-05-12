@@ -77,9 +77,9 @@ function editStatusTarget(id, status) {
     }, true, true, 'kpi.evaluation');
 }
  
-function getTaskById(id) {
+function getTaskById(id, date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}`,
+        url:`${LOCAL_SERVER_API}/kpimembers/task/${id}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation')
 }

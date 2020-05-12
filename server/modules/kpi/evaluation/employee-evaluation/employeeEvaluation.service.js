@@ -141,10 +141,11 @@ exports.editTarget = async (id, data) => {
 exports.getById = async (id) => {
     var kpipersonal = await KPIPersonal.findById(id)
         .populate("organizationalUnit creator approver")
-        .populate({ path: "evaluation.kpis.kpis", populate: { path: 'parent' } });
+        .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
 }
 
+<<<<<<< HEAD
 exports.getTaskById = async (id,data) => {
     // var task = await Task.find({'evaluations.kpis.kpis': id}) 
     // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
@@ -183,6 +184,44 @@ exports.getTaskById = async (id,data) => {
     ]);
 
 
+=======
+exports.getTaskById= async (data) =>{
+    // var task = await Task.find({'evaluations.kpis.kpis': id}) 
+    // .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate creator" });
+    var date = data.date.split("-");
+    var monthkpi = parseInt( date[1]);
+    var yearkpi= parseInt(date[0]);
+    var task = await Task.aggregate([
+        {
+            $match: {"evaluations.kpis.kpis" :  mongoose.Types.ObjectId(data.id)}
+           },
+         {
+             $unwind: "$evaluations"
+           },
+         {
+             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$_id"},{status : "$status"}, "$evaluations"]}}
+             },
+         {$addFields: {  "month" : {$month: '$date'}, "year" : {$year : '$date'}}},
+         {$match: { month: monthkpi}},
+         {$match: {year: yearkpi}},
+         {$unwind:"$results"},
+         {
+             $replaceRoot:{newRoot: {$mergeObjects: [{name: "$name"},{startDate : "$startDate"},{endDate: "$endDate"},{taskID : "$taskID"},{status : "$status"}, "$results"]}}
+             },
+            {
+                $lookup: {
+                     from: "users",
+                     localField: "employee",
+                        foreignField: "_id",
+                     as: "employee"
+                    
+                    }
+                },
+               {$unwind : "$employee"}
+        
+           ])
+    
+>>>>>>> a4dde5c309a3aef7704aa3bd70eeb7b35a0f0bed
     return task
 }
 

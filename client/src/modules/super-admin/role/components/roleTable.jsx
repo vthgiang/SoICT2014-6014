@@ -4,7 +4,7 @@ import { RoleActions} from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../user/redux/actions';
 import RoleInfoForm from './roleInfoForm';
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
 import RoleCreateForm from './roleCreateForm';
 
 class RoleTable extends Component {
@@ -71,58 +71,8 @@ class RoleTable extends Component {
                             role.listPaginate.map( role => 
                                 <tr key={ `roleList${role._id}` }>
                                     <td> { role.name } </td>
-                                    <td> { 
-                                        role.parents.map((parent, index, arr) => {
-                                            if(arr.length < 4){
-                                                if(index !== arr.length - 1) return `${parent.name}, `;
-                                                else return `${parent.name}`
-                                            }else{
-                                                if(index < 3 ){
-                                                    return `${parent.name}, `
-                                                }
-                                            }
-                                        })
-                                    }{
-                                        role.parents.length >=4 &&
-                                        <React.Fragment>
-                                            <div className="tooltip2">...
-                                                <span className="tooltip2text">
-                                                    {
-                                                        role.parents.map((parent, index, arr) => {
-                                                            if(index !== arr.length - 1) return `${parent.name}, `;
-                                                            else return `${parent.name}`
-                                                        })
-                                                    }
-                                                </span>
-                                            </div>
-                                        </React.Fragment>
-                                    } </td>
-                                    <td> { 
-                                        role.users.map((user, index, arr) => {
-                                            if(arr.length < 3){
-                                                if(index !== arr.length - 1) return `${user.userId !== null ? user.userId.name : null}, `;
-                                                else return `${user.userId !== null ? user.userId.name : null}`
-                                            }else{
-                                                if(index < 2 ){
-                                                    return `${user.userId !== null ? user.userId.name : null}, `
-                                                }
-                                            }
-                                        })
-                                    }{
-                                        role.users.length >=3 &&
-                                        <React.Fragment>
-                                            <div className="tooltip2">...
-                                                <span className="tooltip2text">
-                                                    {
-                                                        role.users.map((user, index, arr) => {
-                                                            if(index !== arr.length - 1) return `${user.userId.name}, `;
-                                                            else return `${user.userId.name}`
-                                                        })
-                                                    }
-                                                </span>
-                                            </div>
-                                        </React.Fragment>
-                                    } </td>
+                                    <td><ToolTip dataTooltip={role.parents.map(parent => parent.name)}/></td>
+                                    <td><ToolTip dataTooltip={role.users.map(user => user.userId !== null ? user.userId.name : null)}/></td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a className="edit" onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
                                         {
