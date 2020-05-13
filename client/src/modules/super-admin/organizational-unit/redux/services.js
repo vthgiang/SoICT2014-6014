@@ -9,21 +9,19 @@ export const DepartmentServices = {
     create,
     edit,
     destroy,
-    getAll,
-    getDepartmentOfUser,
     getDepartmentsThatUserIsDean,
 };
 
 function get() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/department`,
+        url: `${ LOCAL_SERVER_API }/organizational-units`,
         method: 'GET',
     }, false, true, 'super_admin.organization_unit');
 }
 
 function create(department) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/department`,
+        url: `${ LOCAL_SERVER_API }/organizational-units`,
         method: 'POST',
         data: department,
     }, true, true, 'super_admin.organization_unit');
@@ -31,7 +29,7 @@ function create(department) {
 
 function edit(department) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/department/${department._id}`,
+        url: `${ LOCAL_SERVER_API }/organizational-units/${department._id}`,
         method: 'PATCH',
         data: department,
     }, true, true, 'super_admin.organization_unit');
@@ -39,28 +37,11 @@ function edit(department) {
 
 function destroy(departmentId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/department/${departmentId}`,
+        url: `${ LOCAL_SERVER_API }/organizational-units/${departmentId}`,
         method: 'DELETE',
     }, true, true, 'super_admin.organization_unit');
 }
 
-function getAll() {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/departments`,
-        method: 'GET'
-    }, false, true, 'super_admin.organization_unit');
-}
-
-async function getDepartmentOfUser() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
-    
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/department/department-of-user/${id}`,
-        method: 'GET',
-    }, false, true, 'super_admin.organization_unit');
-}
 
 async function getDepartmentsThatUserIsDean(currentRole) {
     const token = getStorage();
@@ -68,8 +49,9 @@ async function getDepartmentsThatUserIsDean(currentRole) {
     var id = verified._id;
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/department/departments-that-user-is-dean/${id}`,
+        url: `${LOCAL_SERVER_API}/organizational-units`,
         method: 'GET',
+        params: {deanOfOrganizationalUnit: id}
     }, false, true, 'super_admin.organization_unit');
 }
 

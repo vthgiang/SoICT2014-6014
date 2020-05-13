@@ -2,8 +2,12 @@ import axios from 'axios';
 import {
     handleResponse
 } from '../../../../../helpers/handleResponse';
-import { LOCAL_SERVER_API } from '../../../../../env';
-import { sendRequest } from '../../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../../env';
+import {
+    sendRequest
+} from '../../../../../helpers/requestHelper';
 import {
     AuthenticateHeader,
     AuthenticateHeaderPATCH
@@ -30,7 +34,7 @@ function getAll(data) {
         url: `${ LOCAL_SERVER_API }/employee/paginate`,
         method: 'POST',
         data: data,
-    }, false, 'human_resource.profile.employee_management');
+    }, false, true, 'human_resource.profile.employee_management');
 }
 
 // Kiểm tra sự tồn tại của MSNV 
@@ -59,7 +63,7 @@ function addNewEmployee(data) {
         url: `${ LOCAL_SERVER_API }/employee`,
         method: 'POST',
         data: data,
-    }, true, 'human_resource.profile.employee_management');
+    }, true, true, 'human_resource.profile.employee_management');
 }
 
 // Cập nhật thông tin nhân viên theo id
@@ -80,7 +84,7 @@ function deleteEmployee(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/employee/${id}`,
         method: 'DELETE',
-    }, true, 'human_resource.profile.employee_management');
+    }, true, true, 'human_resource.profile.employee_management');
 }
 
 

@@ -58,8 +58,6 @@ class ModalMemberApprove extends Component {
         })
     }
     handleSaveEdit = async (target) => {
-        // console.log("--tar--", target);
-        // console.log("--wweight--", this.newWeight[target._id].value);
         await this.setState(state=>{
             return{
                 ...state,
@@ -71,8 +69,6 @@ class ModalMemberApprove extends Component {
         })
         const {newTarget} = this.state;
         if(this.newWeight[target._id].value!==""){
-            // console.log("--IdTarget--", target._id);
-            // console.log("--NewTarget--", newTarget);
             this.props.editTarget(target._id, newTarget);
             await this.setState(state=>{
                 return{

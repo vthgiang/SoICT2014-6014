@@ -14,11 +14,13 @@ exports.getAllManualNotifications = async (creator) => { //id cua cong ty do
 /**
  * Phân trang danh sách các thông báo đã được tạo bởi admin, giám đốc ..
  */
-exports.paginateManualNotifications = async (creator, limit, page) => {
+exports.paginateManualNotifications = async (creator, data) => {
+    var info = Object.assign({creator}, data.content);
+    console.log("info: ",data.limit, data.page, info)
     return await ManualNotification
-        .paginate( {creator} , { 
-            page, 
-            limit,
+        .paginate( info , { 
+            page: data.page, 
+            limit: data.limit,
             sort: { createdAt: -1 }, 
             populate: [
                 {path: 'users', model: User},
@@ -120,11 +122,14 @@ exports.getAllNotifications = async (user) => {
 /**
  * Phân trang danh sách các thông báo của người dùng nhận được
  */
-exports.paginateNotifications = async (user, limit, page) => {
+exports.paginateNotifications = async (user, data) => {
+    console.log()
+    var info = Object.assign({user}, data.content);
+    console.log("info notification: ",data.limit, data.page, info)
     return await Notification
-        .paginate( {user} , { 
-            page, 
-            limit,
+        .paginate( info , { 
+            page: data.page, 
+            limit: data.limit,
             sort: { createdAt: -1 }
         });
 }

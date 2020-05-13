@@ -14,4 +14,7 @@ router.get("/same-department/:id", auth, UserController.getAllUsersInSameOrganiz
 
 router.get("/users-of-department/:id", auth, UserController.getAllUsersInOrganizationalUnit);
 
+router.get('/:id/organizational-units', auth, UserController.getOrganizationalUnitsOfUser);
+
+
 module.exports = router;

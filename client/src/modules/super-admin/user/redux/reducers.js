@@ -199,6 +199,29 @@ export function user(state = initState, action) {
                 error: action.error
             };
 
+        
+
+        case UserConstants.GETDEPARTMENT_OFUSER_REQUEST:
+
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case UserConstants.GETDEPARTMENT_OFUSER_SUCCESS:
+            return {
+                ...state,
+                organizationalUnitsOfUser: action.departments.data.content,
+                isLoading: false
+            };
+
+        case UserConstants.GETDEPARTMENT_OFUSER_FAILURE:
+
+            return { 
+                ...state,
+                error: action.error,
+                isLoading: false
+            };
         default:
             return state;
     }
