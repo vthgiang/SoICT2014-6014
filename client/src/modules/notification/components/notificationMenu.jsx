@@ -53,6 +53,9 @@ class NotificationMenu extends Component {
 
     render() { 
         const { translate } = this.props;
+        const { showReceived } = this.state;
+        const sentLevel = this.props.notifications.sent.level;
+        const receiveredLevel = this.props.notifications.receivered.level;
 
         return ( 
             <React.Fragment>
@@ -68,14 +71,48 @@ class NotificationMenu extends Component {
                 }
 
                 <div className="box box-solid">
-                    <div className="box-body">
-                        <ul className="nav nav-pills nav-stacked">
-                            <li onClick={()=>this.setLevel("info")}><a href="#" className="text-blue"><i className="fa fa-fw fa-info-circle text-blue" /> {translate('notification.type.info')}</a></li>
-                            <li onClick={()=>this.setLevel("general")}><a href="#" className="text-green"><i className="fa fa-fw fa-bell" /> {translate('notification.type.general')}</a></li>
-                            <li onClick={()=>this.setLevel("important")}><a href="#" className="text-orange"><i className="fa fa-fw fa-warning" /> {translate('notification.type.important')}</a></li>
-                            <li onClick={()=>this.setLevel("emergency")}><a href="#" className="text-red"><i className="fa fa-fw fa-bomb" /> {translate('notification.type.emergency')}</a></li>
-                        </ul>
-                    </div>
+                    <ul className="nav nav-pills nav-stacked">
+                        <li onClick={()=>this.setLevel("info")} className={
+                            !showReceived ?
+                            (sentLevel === 'info' ? "active-notification-button" : null ):
+                            (receiveredLevel === 'info' ? "active-notification-button" : null )
+                        }>
+                            <a href="#" className="text-blue">
+                                <i className="fa fa-fw fa-info-circle text-blue" /> 
+                                {translate('notification.type.info')}
+                            </a>
+                        </li>
+                        <li onClick={()=>this.setLevel("general")} className={
+                            !showReceived ?
+                            (sentLevel === 'general' ? "active-notification-button" : null ):
+                            (receiveredLevel === 'general' ? "active-notification-button" : null )
+                        }>
+                            <a href="#" className="text-green">
+                                <i className="fa fa-fw fa-bell" /> 
+                                {translate('notification.type.general')}
+                            </a>
+                        </li>
+                        <li onClick={()=>this.setLevel("important")} className={
+                            !showReceived ?
+                            (sentLevel === 'important' ? "active-notification-button" : null ):
+                            (receiveredLevel === 'important' ? "active-notification-button" : null )
+                        }>
+                            <a href="#" className="text-orange">
+                                <i className="fa fa-fw fa-warning" /> 
+                                {translate('notification.type.important')}
+                            </a>
+                        </li>
+                        <li onClick={()=>this.setLevel("emergency")} className={
+                            !showReceived ?
+                            (sentLevel === 'emergency' ? "active-notification-button" : null ):
+                            (receiveredLevel === 'emergency' ? "active-notification-button" : null )
+                        }>
+                            <a href="#" className="text-red">
+                                <i className="fa fa-fw fa-bomb" /> 
+                                {translate('notification.type.emergency')}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </React.Fragment>
          );

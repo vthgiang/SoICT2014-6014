@@ -92,6 +92,7 @@ class TabNotificationReceivered extends Component {
     }
 
     componentDidMount(){
+        this.props.getAllNotifications();
         this.props.paginateNotifications({
             limit: this.state.limit, page: this.state.page,
             content: {level: this.props.notifications.receivered.level}
@@ -101,6 +102,7 @@ class TabNotificationReceivered extends Component {
  
 const mapState = state => state;
 const actions = {
+    getAllNotifications: NotificationActions.getAllNotifications,
     paginateNotifications: NotificationActions.paginateNotifications,
     deleteNotification: NotificationActions.deleteNotification,
     readedNotification: NotificationActions.readedNotification

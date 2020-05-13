@@ -93,6 +93,7 @@ class TabNotificationSent extends Component {
     }
 
     componentDidMount(){
+        this.props.getAllManualNotifications();
         this.props.paginateManualNotifications({
             limit: this.state.limit, 
             page: this.state.page,
@@ -103,6 +104,7 @@ class TabNotificationSent extends Component {
  
 const mapState = state => state;
 const actions = {
+    getAllManualNotifications: NotificationActions.getAllManualNotifications,
     paginateManualNotifications: NotificationActions.paginateManualNotifications,
     deleteManualNotification: NotificationActions.deleteManualNotification
 }

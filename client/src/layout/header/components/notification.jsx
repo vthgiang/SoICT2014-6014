@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { NotificationActions } from '../../../modules/notification/redux/actions';
+import { DateTimeConverter } from '../../../common-components';
 
 class Notification extends Component {
     constructor(props) {
@@ -39,6 +40,7 @@ class Notification extends Component {
                                                     <i className="fa fa-bomb text-red" />
                                                 }
                                                 {notification.title}
+                                                <b style={{fontSize: '11px'}} className="pull-right"><DateTimeConverter dateTime={notification.createdAt} type={1}/></b>
                                             </a>
                                         </li>
                                     })
