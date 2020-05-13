@@ -108,7 +108,11 @@ exports.resetPassword = async (req, res) => {
 
 exports.changeInformation = async (req, res) => {
     try {
-        const avatar = `/${req.file.path}`;
+        var avatar;
+        if(req.file !== undefined){
+            var path = req.file.destination +'/'+ req.file.filename;
+            avatar = path.substr(1, path.length)
+        }
         const profile = await AuthService.changeInformation(req.params.id, req.body.name, req.body.email, avatar);
 
         await LogInfo(req.user.email, 'CHANGE_USER_INFORMATION', req.user.company);

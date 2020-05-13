@@ -46,10 +46,16 @@ class ContractAddModal extends Component {
                     fileUpload: file,
                 })
             };
+        } else {
+            this.setState({
+                file: "",
+                urlFile: "",
+                fileUpload: ""
+            })
         }
     }
     // Bắt sự kiện thay đổi tên hợp đồng lao động
-    handleNameContract =(e)=>{
+    handleNameContract = (e) => {
         let { value } = e.target;
         this.validateNameContract(value, true);
     }
@@ -67,7 +73,7 @@ class ContractAddModal extends Component {
         return msg === undefined;
     }
     // Bắt sự kiện thay đổi tên hợp đồng lao động
-    handleTypeContract =(e)=>{
+    handleTypeContract = (e) => {
         let { value } = e.target;
         this.validateTypeContract(value, true);
     }
@@ -128,13 +134,13 @@ class ContractAddModal extends Component {
     isFormValidated = () => {
         let result =
             this.validateStartDateContract(this.state.startDate, false) && this.validateEndDateCertificateShort(this.state.endDate, false) &&
-            this.validateNameContract(this.state.name, false) && this.validateTypeContract(this.state.contractType, false) ;
+            this.validateNameContract(this.state.name, false) && this.validateTypeContract(this.state.contractType, false);
         return result;
     }
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.handleChange(this.state);
+            this.props.handleChange(this.state);
         }
     }
     render() {

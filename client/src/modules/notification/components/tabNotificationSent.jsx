@@ -31,28 +31,37 @@ class TabNotificationSent extends Component {
                         notificationUsers={this.state.currentRow.users}
                     />
                 }
-                <div id="tab-notification-sent" className="box-body" style={{display: 'none'}}>
-                    <h4 className="text-center"><b>{translate('notification.sent')}</b></h4>
-                    <ul className="todo-list" style={{border: '1px solid #D2D6DE', minHeight: '300px', }}>
+                <div id="tab-notification-sent" style={{display: 'none'}}>
+                    <ul className="todo-list">
                     {
                         notifications.sent.paginate.length > 0 ? 
                         notifications.sent.paginate.map(notification => 
-                            <li key={notification._id}>
-                            <DateTimeConverter dateTime={notification.createdAt} type={1}/>
-                            <span className="text"><b>{notification.title.length > 40 ? `${notification.title.slice(0, 40)}...`: notification.title}</b></span> - 
-                                <span className="text" style={{color: '#6B6B6B'}}>{notification.content.length > 40 ? `${notification.content.slice(0, 40)}...`: notification.content}</span>
-                                <div className="tools">
-                                    <a href='#' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
-                                    <DeleteNotification 
-                                        content={translate('notification.delete')}
-                                        data={{ id: notification._id, info: notification.title }}
-                                        func={this.props.deleteManualNotification}
-                                    />
+                            <li key={notification._id}  style={{border: "none", backgroundColor: "white"}}>
+
+                                <div style={{marginBottom: 5}}>
+                                    {
+                                        notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"/> :
+                                        notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
+                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                        <i className="fa fa-fw fa-bomb text-red" />
+                                    }
+                                    <DateTimeConverter dateTime={notification.createdAt} type={1}/>
+                                    
+                                    <div className="tools">
+                                        <a href='#' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                        <DeleteNotification 
+                                            content={translate('notification.delete')}
+                                            data={{ id: notification._id, info: notification.title }}
+                                            func={this.props.deleteManualNotification}
+                                        />
+                                    </div>
                                 </div>
+                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> - {notification.content}</span>
+                                
                             </li>
                         ): notifications.isLoading ?
-                        translate('general.loading'):
-                        translate('general.no_data')
+                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:
+                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
                     }
                     </ul>
                     <PaginateBar pageTotal={notifications.sent.totalPages} currentPage={notifications.sent.page} func={this.setPage}/>

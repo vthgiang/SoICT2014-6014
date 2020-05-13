@@ -246,10 +246,14 @@ class Routes extends Component {
                     <PrivateRoute
                         isLoading={ false }
                         key={ 'manage-document' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/documents-management', name: 'manage_document', icon:'fa fa-folder-open' }
+                        ]}
                         auth={ auth }
                         exact={ true }
-                        link={ '/documents-managements' }
-                        path={ '/documents-managements' }
+                        link={ '/documents-management' }
+                        path={ '/documents-management' }
                         pageName={ 'manage_document' }
                         layout={ Layout }
                         component={ ManageFormDocument }

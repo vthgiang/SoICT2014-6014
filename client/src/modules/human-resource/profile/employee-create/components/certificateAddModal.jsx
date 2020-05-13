@@ -47,6 +47,13 @@ class CertificateAddModal extends Component {
                 })
             };
         }
+        else {
+            this.setState({
+                file: "",
+                urlFile: "",
+                fileUpload: ""
+            })
+        }
     }
     // Bắt sự kiên thay đổi tên chứng chỉ
     handleNameChange = (e) => {

@@ -178,13 +178,15 @@ exports.createEmployee = async (req, res) => {
                     res.status(400).json({ success: false, messages: ["email_in_company_have_exist"], content:{ inputData: req.body } });
                 } else {
                     var data = await EmployeeService.createEmployee(req.body, req.user.company._id, fileInfo);
-                    let checkUser = await UserService.checkUser(req.body.emailInCompany);
+                    let checkUser = await UserService.checkUserExited(req.body.emailInCompany);
+                    console.log(checkUser);
                     if(checkUser === false){
                         let userInfo = {
                             email: req.body.emailInCompany,
                             name: req.body.fullName
                         }
-                        await UserService.createUser(userInfo, req.user.company._id)
+                        let user = await UserService.createUser(userInfo, req.user.company._id);
+                        console.log(user)
                     }
                     await LogInfo(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
                     res.status(200).json({success: true, messages: ["create_employee_success"], content: data });
