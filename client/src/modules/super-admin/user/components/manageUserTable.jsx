@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { UserActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 import UserEditForm from './userEditForm';
-import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip } from '../../../../common-components';
 import UserCreateForm from './userCreateForm';
 
 class ManageUserTable extends Component {
@@ -86,32 +86,7 @@ class ManageUserTable extends Component {
                                 >
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    <td>{
-                                        u.roles.map((role, index, arr) => {
-                                            if(arr.length < 4){
-                                                if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                else return `${role.roleId.name}`
-                                            }else{
-                                                if(index < 3 ){
-                                                    return `${role.roleId.name}, `
-                                                }
-                                            }
-                                        })
-                                    }{
-                                        u.roles.length >=4 &&
-                                        <React.Fragment>
-                                            <div className="tooltip2">...
-                                                <span className="tooltip2text">
-                                                    {
-                                                        u.roles.map((role, index, arr) => {
-                                                            if(index !== arr.length - 1) return `${role.roleId.name}, `;
-                                                            else return `${role.roleId.name}`
-                                                        })
-                                                    }
-                                                </span>
-                                            </div>
-                                        </React.Fragment>
-                                    }</td>
+                                    <td><ToolTip dataTooltip={u.roles.map(role => role.roleId.name)}/></td>
                                     <td>{u.active 
                                         ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.enable')} </p>
                                         : <p><i className="fa fa-circle text-danger" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.disable')} </p>}</td>

@@ -3,6 +3,7 @@ import { AuthenticateHeader } from '../config';
 import ServerResponseAlert from '../modules/alert/components/serverResponseAlert';
 import { toast } from 'react-toastify';
 import React from 'react';
+import getBrowserFingerprint from 'get-browser-fingerprint';
 
 /**
  * Check có xảy ra lỗi liên quan đến xác thực người dùng hay không?
@@ -36,12 +37,13 @@ const showAuthResponseAlertAndRedirectToLoginPage = async () => {
  * @method : phương thức gọi
  * @data : data truyền đi - có thể có hoặc không
  */
-export function sendRequest(options, showAlert=false, module, successTitle='general.success', errorTitle='general.error') {
-
+export function sendRequest(options, showSuccessAlert=false, showFailAlert=true, module, successTitle='general.success', errorTitle='general.error') {
+    
     const requestOptions = {
         url: options.url, 
         method: options.method,
         data: options.data,
+        params: options.params,
         headers: AuthenticateHeader()
     };
 
@@ -49,7 +51,7 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
         console.log("message: ", messages)
 
-        showAlert && toast.success(
+        showSuccessAlert && toast.success(
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
@@ -65,7 +67,61 @@ export function sendRequest(options, showAlert=false, module, successTitle='gene
             if(checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
             else{
-                toast.error(
+                showFailAlert && toast.error(
+                    <ServerResponseAlert
+                        type='error'
+                        title={errorTitle}
+                        content={messages.map(message => `${module}.${message}`)}
+                    />, 
+                    {containerId: 'toast-notification'}
+                );
+            }
+        }
+
+        return Promise.reject(err);
+    })
+}
+
+/**
+ * Hàm gọi request đến server cho những api không đòi hỏi xác thực
+ * @url : url của api gọi đến
+ * @method : phương thức gọi
+ * @data : data truyền đi - có thể có hoặc không
+ */
+export function sendRequestPublic(options, showSuccessAlert=false, showFailAlert=true, module, successTitle='general.success', errorTitle='general.error') {
+
+    const fingerprint = getBrowserFingerprint();
+    const requestOptions = {
+        url: options.url, 
+        method: options.method,
+        data: options.data,
+        params: options.params,
+        headers: {
+            'fingerprint': fingerprint,
+        }
+    };
+
+    return axios(requestOptions).then(res => {
+        const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
+        console.log("message: ", messages)
+
+        showSuccessAlert && toast.success(
+            <ServerResponseAlert
+                type='success'
+                title={successTitle}
+                content={messages.map(message => `${module}.${message}`)}
+            />, 
+            {containerId: 'toast-notification'});
+
+        return Promise.resolve(res);
+    }).catch(err => {
+        const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+        console.log("message error: ", messages)
+        if(messages){
+            if(checkErrorAuth(messages[0]))
+                showAuthResponseAlertAndRedirectToLoginPage();
+            else{
+                showFailAlert && toast.error(
                     <ServerResponseAlert
                         type='error'
                         title={errorTitle}

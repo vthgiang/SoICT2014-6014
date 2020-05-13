@@ -3,7 +3,7 @@ const router = express.Router();
 const KPIPersonalController = require("./employeeEvaluation.controller");
 const { auth } = require('../../../../middleware');
 // Tìm kiếm KPI nhân viên
-router.get('/all-member/:role/:user/:status/:starttime/:endtime', auth, KPIPersonalController.getKPIAllMember);
+router.get('/all-member/:role/:user/:status/:startDate/:endDate', auth, KPIPersonalController.getKPIAllMember);
 
 // get all kpi personal
 router.get('/user/:member', auth, KPIPersonalController.getByMember);
@@ -12,7 +12,7 @@ router.get('/user/:member', auth, KPIPersonalController.getByMember);
 router.get('/:id',auth,  KPIPersonalController.getById);
 
 // Lấy kpi cá nhân theo tháng
-router.get('/member/:id/:time', auth, KPIPersonalController.getByMonth);
+router.get('/member/:id/:date', auth, KPIPersonalController.getByMonth);
 
 // phê duyệt tất cả mục tiêu của kpi cá nhân
 router.put('/approve/:id', auth, KPIPersonalController.approveAllTarget);
@@ -24,11 +24,14 @@ router.put('/target/:id', auth, KPIPersonalController.editTarget);
 router.put('/status-target/:id/:status', auth, KPIPersonalController.editStatusTarget);
 
 // lấy task cho kpi
-router.get('/task/:id',  KPIPersonalController.getTaskById);
+router.get('/task/:id/:employeeId/:date',  KPIPersonalController.getTaskById);
 
 router.get('/detailkpi/:id', auth, KPIPersonalController.getSystemPoint);
 
 // đánh giá điểm của kpi
 router.put('/appovepoint/:id_kpi/:id_target', KPIPersonalController.setPointKPI);
+
+// đánh giá độ quan trọng của công việc
+router.put('/taskLevel/:id', KPIPersonalController.setTaskImportanceLevel);
 
 module.exports = router;

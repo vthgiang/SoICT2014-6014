@@ -95,11 +95,13 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case  kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
+      console.log("----kpis---", state.currentKPI.kpis);
+      console.log("--id--", action.id);
       return {
         ...state,
         currentKPI: {
           ...state.currentKPI,
-          listtarget: state.currentKPI.listtarget.map(target =>
+          kpis: state.currentKPI.kpis.map(target =>
             target._id === action.id
               ? { ...target, editing: true }
               : target)
@@ -111,10 +113,11 @@ export function kpimembers(state = {}, action) {
           ...state,
           currentKPI: {
             ...state.currentKPI,
-            listtarget: state.currentKPI.listtarget.map(target =>
-              target._id === action.payload
-                ? action.payload.target : target)
+            kpis: state.currentKPI.kpis.map(target =>
+              target._id === action.payload._id
+                ? action.payload : target)
           },
+          target: action.payload,
           isLoading: false
       };
     case kpiMemberConstants.EDITTARGET_KPIMEMBER_FAILURE:
@@ -134,7 +137,7 @@ export function kpimembers(state = {}, action) {
         editing: false,
         currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item=>
-          item._id===action.payload.newKPI._id?action.payload.newKPI:item),
+          item._id===action.payload._id?action.payload:item),
         isLoading: false
       };
     case kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_FAILURE:
@@ -146,10 +149,10 @@ export function kpimembers(state = {}, action) {
       return { 
         error: action.payload
         };
-    case  kpiMemberConstants.GET_TASK_BYID_REQUEST: // đợi tí xem lại :))
+    case  kpiMemberConstants.GET_TASK_BYID_REQUEST: 
       return {
         ...state,
-        loading: true // hình như đang nhầm đoạn này :)) ok b
+        loading: true 
         };
     case  kpiMemberConstants.GET_TASK_BYID_SUCCESS:
       return {
@@ -170,6 +173,22 @@ export function kpimembers(state = {}, action) {
             currentKPI : action.payload,
         };
       case kpiMemberConstants.SET_POINTKPI_FAILURE:
+        return { 
+          error: action.payload
+        };
+    //----------------------------------------------------------------
+   
+    case  kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST:
+        return {
+          ...state,
+        editing: true
+        };
+      case kpiMemberConstants.TASK_IMPORTANT_LEVEL_SUCCESS:
+        return {
+            ...state,
+            currentKPI : action.payload,
+        };
+      case kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE:
         return { 
           error: action.payload
         };

@@ -9,7 +9,8 @@ export const kpiMemberActions = {
     editTargetKPIMember,
     editStatusTarget,
     getTaskById,
-    setPointKPI
+    setPointKPI,
+    setkpiImportantLevel
 };
  
 // Lấy tất cả KPI cá nhân
@@ -33,11 +34,11 @@ function getAllKPIMemberOfUnit(infosearch) {
     };
 }
 // Lấy tất cả KPI cá nhân
-function getAllKPIMemberByMember() { //member
+function getAllKPIMemberByMember(member) { //member
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
  
-        kpiMemberServices.getAllKPIMemberByMember()
+        kpiMemberServices.getAllKPIMemberByMember(member)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS,
@@ -126,9 +127,9 @@ function approveKPIMember(id) {
 // Chỉnh sửa mục tiêu KPI cá nhân
 function editTargetKPIMember(id, newTarget) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST});
+        dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST, id});
  
-        kpiMemberServices.approveKPIMember(id,newTarget)
+        kpiMemberServices.editTargetKPIMember(id, newTarget)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.EDITTARGET_KPIMEMBER_SUCCESS,
@@ -165,11 +166,11 @@ function editStatusTarget(id, status) {
     };
 }
 
-function getTaskById(id) {
+function getTaskById(id, employeeId, date) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.GET_TASK_BYID_REQUEST});
  
-        kpiMemberServices.getTaskById(id)
+        kpiMemberServices.getTaskById(id, employeeId, date)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.GET_TASK_BYID_SUCCESS,
@@ -199,6 +200,26 @@ function setPointKPI(id_kpi, id_target, newPoint) {
             .catch(error => {
                 dispatch({
                     type: kpiMemberConstants.SET_POINTKPI_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+
+function setkpiImportantLevel(id_kpi,date) {
+    return dispatch => {
+        dispatch({type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST});
+ 
+        kpiMemberServices.setkpiImportantLevel(id_kpi,date)
+            .then(res=>{
+                dispatch({
+                    type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE,
                     payload: error
                 })
             })

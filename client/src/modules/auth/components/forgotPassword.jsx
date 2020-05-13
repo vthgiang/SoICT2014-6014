@@ -25,15 +25,15 @@ class ForgotPassword extends Component {
     }
 
     forgotPassword = (email) => {
-        this.props.forgotPassword(email)
-            .catch(err => {
-                this.setState(state => {
-                    return {
-                        ...state,
-                        forgotPasswordRequestError: err.response.data.message
-                    }
-                })
-            })
+        this.props.forgotPassword(email);
+            // .catch(err => {
+            //     this.setState(state => {
+            //         return {
+            //             ...state,
+            //             forgotPasswordRequestError: err.response.data.message
+            //         }
+            //     })
+            // })
     }
 
     resetPassword = () => {
@@ -57,14 +57,7 @@ class ForgotPassword extends Component {
                     {
                         !auth.forgotPassword ?
                         <React.Fragment>
-                            <div className="modal-body">
-                                {
-                                    this.state.forgotPasswordRequestError !== undefined &&
-                                    <div className="alert alert-danger alert-dismissible">
-                                        <p><strong>{ this.state.forgotPasswordRequestError }</strong></p>
-                                    </div>
-                                }
-                                <div className="form-group">
+                            <div className="modal-body"><div className="form-group">
                                     <label>{ translate('form.email') }</label>
                                     <input type="text" className="form-control" name="email" onChange={ this.handleChange }/><br/>
                                 </div>

@@ -25,7 +25,7 @@ function getListDiscipline(data) {
         url: `${ LOCAL_SERVER_API }/discipline/paginate`,
         method: 'POST',
         data: data
-    }, false, 'human_resource.commendation_discipline.discipline');
+    }, false, true, 'human_resource.commendation_discipline.discipline');
 }
 
 /**
@@ -37,7 +37,7 @@ function createNewDiscipline(data) {
         url: `${ LOCAL_SERVER_API }/discipline/create`,
         method: 'POST',
         data: data
-    }, true, 'human_resource.commendation_discipline.discipline');
+    }, true, true, 'human_resource.commendation_discipline.discipline');
 }
 
 /**
@@ -48,7 +48,7 @@ function deleteDiscipline(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/discipline/${id}`,
         method: 'DELETE',
-    }, true, 'human_resource.commendation_discipline.discipline');
+    }, true, true, 'human_resource.commendation_discipline.discipline');
 }
 
 /**
@@ -61,7 +61,7 @@ function updateDiscipline(id, data) {
         url: `${ LOCAL_SERVER_API }/discipline/${id}`,
         method: 'PUT',
         data: data,
-    }, true, 'human_resource.commendation_discipline.discipline');
+    }, true, true, 'human_resource.commendation_discipline.discipline');
 }
 /**
  * End
@@ -82,7 +82,7 @@ function getListPraise(data) {
         url: `${ LOCAL_SERVER_API }/praise/paginate`,
         method: 'POST',
         data: data
-    }, false, 'human_resource.commendation_discipline.commendation');
+    }, false, true, 'human_resource.commendation_discipline.commendation');
 }
 
 /**
@@ -94,7 +94,7 @@ function createNewPraise(data) {
         url: `${ LOCAL_SERVER_API }/praise/create`,
         method: 'POST',
         data: data
-    }, true, 'human_resource.commendation_discipline.commendation');
+    }, true, true, 'human_resource.commendation_discipline.commendation');
 }
 
 /**
@@ -105,7 +105,7 @@ function deletePraise(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/praise/${id}`,
         method: 'DELETE',
-    }, true, 'human_resource.commendation_discipline.commendation');
+    }, true, true, 'human_resource.commendation_discipline.commendation');
 }
 /**
  * Cập nhật thông tin khen thưởng
@@ -117,7 +117,7 @@ function updatePraise(id, data) {
         url: `${ LOCAL_SERVER_API }/praise/${id}`,
         method: 'PUT',
         data: data,
-    }, true, 'human_resource.commendation_discipline.commendation');
+    }, true, true, 'human_resource.commendation_discipline.commendation');
 }
 /**
  * End

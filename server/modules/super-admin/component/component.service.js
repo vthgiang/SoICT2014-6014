@@ -8,7 +8,10 @@ exports.getAllComponents = async (id) => {
 
     return await Component
         .find({ company: id })
-        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
+        .populate([
+            { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
+            { path: 'link', model: Link },
+        ]);
 }
 
 /**
@@ -26,6 +29,7 @@ exports.getPaginatedComponents = async (company, limit, page, data={}) => {
             limit,
             populate: [
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }},
+                { path: 'link', model: Link },
             ]
         });
 }
@@ -38,7 +42,10 @@ exports.getComponent = async (id) => {
 
     return await Component
         .findById(id)
-        .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
+        .populate([
+            { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
+            { path: 'link', model: Link },
+        ]);
 }
 
 /**
@@ -62,14 +69,16 @@ exports.createComponent = async(data) => {
  * @data dữ liệu
  */
 exports.editComponent = async(id, data) => {
+    console.log("data component: ", data)
     const component = await Component
         .findById(id)
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 
     component.name = data.name;
+    component.link = data.link;
     component.description = data.description;
     component.company = data.company ? data.company : component.company;
-    component.save();
+    await component.save();
 
     return component;
 }

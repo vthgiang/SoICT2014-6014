@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeInfoActions } from '../redux/actions';
-import { EmployeeManagerActions } from '../../employee-management/redux/actions';
-import { convertToFormData } from '../../../../../helpers/convertToFormData';
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -85,7 +84,7 @@ class UpdateEmployee extends Component {
             if (check === false) {
                 toast.warning(translate('error.guaranteed_infor_to_update'), { containerId: 'toast-notification' });
             } else {
-                let formData = convertToFormData(informationEmployee) !== null ? convertToFormData(informationEmployee) : new FormData();
+                let formData = convertJsonObjectToFormData(informationEmployee) !== null ? convertJsonObjectToFormData(informationEmployee) : new FormData();
                 formData.append('fileAvatar', this.state.avatar);
                 this.props.updatePersonalInformation(formData);
             }

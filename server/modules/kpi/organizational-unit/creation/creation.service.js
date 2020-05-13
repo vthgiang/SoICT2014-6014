@@ -23,6 +23,8 @@ exports.getOrganizationalUnitKpiSet = async (id) => {
 
 /**
  * Chỉnh sửa thông tin chung của tập KPI đơn vị
+ * @dateString thời gian mới 
+ * @id Id của tập KPI đơn vị
  */
 exports.editOrganizationalUnitKpiSet = async (dateString, id) => {
     //req.body.time,req.params.id
@@ -35,7 +37,7 @@ exports.editOrganizationalUnitKpiSet = async (dateString, id) => {
 
 /**
  * Lấy tập KPI đơn vị của đơn vị cha của đơn vị ứng với role người dùng
- * @id: role người dùng
+ * @id Id role người dùng
  */
 exports.getParentOrganizationalUnitKpiSet = async (id) => {
     //req.params.id,
@@ -78,7 +80,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
     if (organizationalUnit.parent !== null) {
         var organizationalUnitParent = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: organizationalUnit.parent, status: 1 }).populate("kpis");
         var defaultTarget;
-        if (organizationalUnitParent.kpis) defaultTarget = organizationalUnitParent.kpis.filter(item => item.default !== 0);//default Target là nhưng mục tiêu có default !== 0
+        if (organizationalUnitParent.kpis) defaultTarget = organizationalUnitParent.kpis.filter(item => item.type !== 0);//default Target là nhưng mục tiêu có default !== 0
         if (defaultTarget !== []) {
             var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
                 var defaultT = await OrganizationalUnitKpi.create({
@@ -86,7 +88,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
                     parent: item._id,
                     weight: 5,
                     criteria: item.criteria,
-                    default: item.default
+                    type: item.type
                 })
                 return defaultT._id;
             }))
@@ -100,7 +102,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
             parent: null,
             weight: 5,
             criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-            default: 1
+            type: 1
         })
         organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
             organizationalUnitKpi, { $push: { kpis: targetA._id } }, { new: true }
@@ -110,7 +112,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
             parent: null,
             weight: 5,
             criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-            default: 2
+            type: 2
         })
         organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
             organizationalUnitKpi, { $push: { kpis: targetC._id } }, { new: true }
@@ -162,17 +164,20 @@ exports.editOrganizationalUnitKpi = async (data, id) => {
 
 /**
  * Xóa KPI đơn vị
+ * @id Id của KPI đơn vị
+ * @organizationalUnitKpiSetId Id của tập KPI đơn vị
  */
 exports.deleteOrganizationalUnitKpi = async (id, organizationalUnitKpiSetId) => {
-    var target = await OrganizationalUnitKpi.findByIdAndDelete(id);
+    var organizationalUnitKpi = await OrganizationalUnitKpi.findByIdAndDelete(id);
     var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(organizationalUnitKpiSetId, { $pull: { kpis: id } }, { new: true });
     organizationalUnitKpiSet = await organizationalUnitKpiSet.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return organizationalUnitKpiSet;
-        
 }
 
 /**
- * Chỉnh sửa trạng thái của KPI đơn vị
+ * Chỉnh sửa trạng thái của tập KPI đơn vị
+ * @id Id của tập KPI đơn vị
+ * @statusId trạng thái mới của tập KPI đơn vị
  */
 exports.editOrganizationalUnitKpiSetStatus = async (id, statusId) => {
     var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
@@ -182,6 +187,7 @@ exports.editOrganizationalUnitKpiSetStatus = async (id, statusId) => {
 
 /**
  * Xóa tập KPI đơn vị
+ * @id Id của tập KPI đơn vị
  */
 exports.deleteOrganizationalUnitKpiSet = async (id) => {
     //req.params.id

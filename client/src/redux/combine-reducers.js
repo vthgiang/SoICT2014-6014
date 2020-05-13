@@ -22,7 +22,7 @@ import {notifications} from '../modules/notification/redux/reducers';
 
 
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
-import { dashboardKpiUnit } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
+import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
 
 import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
@@ -31,6 +31,8 @@ import {dashboardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/redux/r
 
 import {tasktemplates} from '../modules/task/task-template/redux/reducers';
 import {kpimembers} from '../modules/kpi/evaluation/employee-evaluation/redux/reducers';
+
+import {dashboardEvaluationEmployeeKpiSet} from '../modules/kpi/evaluation/dashboard/redux/reducers';
 
 import { performtasks } from "../modules/task/task-perform/redux/reducers";
 import { tasks } from "../modules/task/task-management/redux/reducers";
@@ -65,7 +67,7 @@ const appReducer = combineReducers(Object.assign({
 
     // kpi-unit
     createKpiUnit,
-    dashboardKpiUnit,
+    dashboardOrganizationalUnitKpi,
     managerKpiUnit,
 
     //kpi-personal
@@ -80,7 +82,8 @@ const appReducer = combineReducers(Object.assign({
     tasks,
     performtasks,
     // kpi members
-    kpimembers
+    kpimembers,
+    dashboardEvaluationEmployeeKpiSet
 }, { Intl }));
 
 const rootReducer = (state, action) => {

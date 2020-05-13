@@ -103,6 +103,7 @@ export default {
             save: 'Lưu',
             close: 'Đóng',
             accept: 'Xác nhận',
+            cancel: 'Hủy',
             yes: 'Có',
             no: 'Không',
             loading: 'Đang tải dữ liệu',
@@ -125,6 +126,9 @@ export default {
         },
 
         auth: {
+            validator: {
+                confirm_password_invalid: 'Mật khẩu không trùng khớp. Vui lòng kiểm tra lại',
+            },
             security: {
                 label: 'Bảo mật',
                 title: 'Thay đổi mật khẩu người dùng',
@@ -142,15 +146,23 @@ export default {
                 email: 'Địa chỉ email',
                 password: 'Mật khẩu mới',
                 confirm: 'Xác thực mật khẩu',
-                edit_success: 'Chỉnh sửa thông tin người dùng thành công',
-                edit_faile: 'Chỉnh sửa thông tin người dùng thất bại'
+                otp: 'OTP'
             },
 
             // Thông điệp nhận từ server
             change_user_information_success: 'Thay đổi thông tin người dùng thành công',
             change_user_information_faile: 'Thay đổi thông tin người dùng thất bại',
             change_user_password_success: 'Thay đổi mật khẩu thành công',
-            change_user_password_faile: 'Thay đổi mật khẩu thất bại'
+            change_user_password_faile: 'Thay đổi mật khẩu thất bại',
+            user_not_found: 'Không tìm thấy thông tin người dùng',
+            email_invalid: 'Email không hợp lệ', email_not_found: 'Email này chưa được đăng kí trên hệ thống',
+            password_invalid: 'Mật khẩu không chính xác',
+            acc_blocked: 'Tài khoản này đã bị tạm khóa',
+            acc_have_not_role: 'Tài khoản chưa được phân quyền trên hệ thống',
+            wrong5_block: 'Bạn đã nhập sai mật khẩu 5 lần. Tài khoản của bạn đã bị tạm khóa',
+            request_forgot_password_success: 'Yêu cầu thay đổi mật khẩu thành công. Hệ thống đã gửi yêu cầu xác nhận thay đổi mật khẩu vào email của bạn',
+            reset_password_success: 'Thiết lập mật khẩu thành công',
+            otp_invalid: 'Yêu cầu thiết lập lại mật khẩu không hợp lệ'
         },
 
         system_admin: {
@@ -338,7 +350,11 @@ export default {
         },
 
         notification: {
-            title: 'Tiêu đề',
+            title: 'Thông báo',
+            news: 'Thông báo mới',
+            see_all: 'Xem tất cả',
+            total: 'Tổng số',
+            level: 'loại thông báo',
             type: {
                 title: 'Loại thông báo',
                 info: 'Thông tin',
@@ -347,25 +363,25 @@ export default {
                 emergency: 'Thông báo khẩn',
             },
             content: 'Nội dung thông báo',
+            sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
+            from: 'từ', at: 'lúc',
 
             add: 'Tạo thông báo',
-            receivered: 'Đã nhận',
-            sent: 'Đã tạo',
+            receivered: 'Thông báo đã nhận',
+            sent: 'Thông báo đã tạo',
             note: 'Chú thích',
+            info: 'Thông tin thông báo',
+            delete: 'Xóa thông báo',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',
             create_notification_faile: 'Tạo thông báo thất bại',
-            edit_notification_success: 'Chỉnh sửa thông báo thành công',
-            edit_notification_faile: 'Chỉnh sửa thông báo thất bại',
             delete_notification_success: 'Xóa thông báo thành công',
             delete_notification_faile: 'Xóa thông báo thất bại',
-            delete_notification_receivered_success: 'Xóa thông báo thành công',
-            delete_notification_receivered_faile: 'Xóa thông báo thất bại',
-            delete_notification_sent_success: 'Xóa thông báo thành công',
-            delete_notification_sent_faile: 'Xóa thông báo thất bại',
+            delete_manual_notification_success: 'Xóa thông báo thành công',
+            delete_manual_notification_faile: 'Xóa thông báo thất bại',
         },
 
         not_found: {
@@ -398,7 +414,7 @@ export default {
             yes: 'CÓ',
             no: 'KHÔNG',
             no_data: 'Không có dữ liệu',
-            field_invalid: "Giá trị trường nhập vào không hợp lệ. Vui lòng kiểm tra lại!",
+            field_invalid: 'Giá trị trường nhập vào không hợp lệ. Vui lòng kiểm tra lại!',
             loading: 'Đang tải dữ liệu ...'
         },
 
@@ -1108,7 +1124,7 @@ export default {
 
             // Quản lý thông tin nhân viên
             profile: {
-                // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
+                // Nhóm dùng chung cho chức năng quản lý tông tin nhân viên
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
@@ -1121,6 +1137,34 @@ export default {
                     get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
                     edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
                     edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
+                },
+
+                employee_management: {
+                    // Thông điệp trả về từ server
+                    get_list_employee_success: 'Lấy danh sách nhân viên thành công',
+                    get_list_employee_false: 'Lấy danh sách nhân viên thất bại',
+                    create_employee_success: 'Thêm mới nhân viên thành công',
+                    create_employee_false: 'Thêm mới nhân viên thất bại',
+                    delete_employee_success: 'Xoá thông tin nhân viên thành công',
+                    delete_employee_false: 'Xoá thông tin nhân viên thất bại',
+                    edit_employee_success: 'Chỉnh sửa thông tin nhân viên thành công',
+                    edit_employee_false: 'Chỉnh sửa thông tin nhân viên thất bại',
+                    employee_number_required: 'Mã nhân viên không được để trống',
+                    email_in_company_required: 'Email công ty không được để trống',
+                    employee_number_have_exist: 'Mã nhân viên đã tồn tại',
+                    email_in_company_have_exist: 'Email công ty đã tồn tại',
+                    employee_timesheet_id_required: 'Mã số chấm công không được để trống',
+                    full_name_required: 'Họ và tên không được để trống',
+                    birthdate_required: 'Ngày sinh không được để trống',
+                    identity_card_number_required: 'Số chứng minh thư/hộ chiếu không được để trống',
+                    identity_card_date_required: 'Ngày cấp chứng minh thư/hộ chiếu không được để trống',
+                    identity_card_address_required: 'Nơi cấp chứng minh thư/hộ chiếu không được để trống',
+                    phone_number_required: 'Điện thoại di động 1',
+                    tax_date_of_issue_required: 'Ngày hoạt động không được để trống',
+                    tax_number_required: 'Mã số thuế không được để trống',
+                    tax_representative_required: 'Người đại diện không được để trống',
+                    tax_authority_required: 'Cơ quan quản lý thuế không được để trống',
+                    temporary_residence_required: 'Địa chỉ Chỗ ở hiện tại không được để trống',
                 }
             }
         },
@@ -1166,6 +1210,62 @@ export default {
                 create_task_fail: 'không thể tạo công việc mới',
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
+
+                responsible: 'Thực hiện chính',
+                accountable: 'Phê duyệt',
+                consulted: 'Hỗ trợ thực hiện',
+                creator: 'Thiết lập',
+                informed: 'Quan sát',
+
+                add_task: 'Thêm mới',
+                add_title: 'Thêm mới một công việc',
+                add_subtask: 'Thêm công việc con',
+
+                department: 'Đơn vị',
+                select_department: 'Chọn đơn vị',
+                select_all_department: 'Tất cả các đơn vị',
+
+                status: 'Trạng thái',
+                select_status: 'Chon trang thái',
+                select_all_status: 'Chọn tất cả trạng thái',
+                inprocess: 'Đang thực hiện',
+                wait_for_approval: 'Chờ phê duyệt',
+                finished: 'Đã hoàn thành',
+                delayed: 'Tạm hoãn',
+                canceled: 'Bị hủy',
+
+                priority: 'Độ ưu tiên',
+                select_priority: 'Chọn mức độ ưu tiên',
+                select_all_priority: 'Chọn tất cả các mức',
+                high: 'Cao',
+                normal: 'Trung bình',
+                low: 'Thấp',
+
+                special: 'Đặc tính',
+                select_all_special: 'Chọn tất cả các đặc tính',
+                select_special: 'Chọn đặc tính',
+                stored: 'Lưu trong kho',
+                current_month: 'Tháng hiện tại',
+
+                name: "Tên công việc",
+                search_by_name: 'Tìm kiếm theo tên',
+                search: "Tìm kiếm",
+
+                col_name: 'Tên công việc',
+                col_organization: 'Đơn vị',
+                col_priority: 'Độ ưu tiên',
+                col_start_date: 'Ngày bắt đầu',
+                col_end_date: 'Ngày kết thúc',
+                col_status: 'Trạng thái',
+                col_progress: 'Tiến độ',
+                col_logged_time: 'Thời gian thực hiện',
+
+                action_edit: 'Băt đầu công việc',
+                action_delete: 'Xóa công việc',
+                action_store: 'Lưu vào kho',
+                action_add: 'Thêm công việc con',
+                action_start_timer: 'Bắt đầu bấm giờ'
+
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -1208,6 +1308,28 @@ export default {
                 create_result_info_task_fail: 'Tạo result info task thất bại',
                 create_result_infomation_task_fail: 'Tạo result infomation task thất bại',
                 edit_result_infomation_task_fail: 'Sửa result infomation task thất bại',
+
+                // modal approve task
+                modal_approve_task: {
+                    title: 'Yêu cầu kết thúc công việc',
+                    msg_success: 'Đánh giá công việc thành công',
+                    msg_false: 'Không đánh giá được công việc',
+
+                    task_info: 'Thông tin công việc',
+                    percent: 'Công việc hoàn thành',
+                    
+                    auto_point: 'Điểm hệ thống',
+                    employee_point: 'Điểm tự đánh giá',
+                    approved_point: 'Điểm quản lí đánh giá',
+
+                    responsible: 'Vai trog người thực hiện',
+                    consulted: 'Vai trò người hỗ trợ',
+                    accountable: 'Vai trò người phê duyệt',
+
+                    err_range: 'Giá trị không được vượt quá khoảng 0-100',
+                    err_empty: "Giá trị không được để trống"
+                }
+
             },
             task_template: {
                 // TODO: code_mesage_task_template

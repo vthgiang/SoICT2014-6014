@@ -1009,6 +1009,35 @@ export default {
                     edit_infor_personal_success: 'Update information personal success',
                     edit_infor_personal_false: 'Update infor personal false',
                     
+                },
+
+                employee_management: {
+                    // Thông điệp trả về từ server
+                    get_list_employee_success: 'Get list employee success',
+                    get_list_employee_false: 'Get list employee false',
+                    create_employee_success: 'Create employee success',
+                    create_employee_false: 'Create employee false',
+                    delete_employee_success: 'Delete employee success',
+                    delete_employee_false: 'Delete employee false',
+                    edit_employee_success: 'Edit employee success',
+                    edit_employee_false: 'Edit employee false',
+                    employee_number_required: 'Employee number required',
+                    email_in_company_required: 'Email in company required',
+                    employee_number_have_exist: 'Employee number have exist',
+                    email_in_company_have_exist: 'Email in company have exist',
+                    employee_timesheet_id_required: 'Employee timesheet id required',
+                    full_name_required: 'Full name required',
+                    birthdate_required: 'Birthdate required',
+                    identity_card_number_required: 'Identity card number required',
+                    identity_card_date_required: 'Identity card date required',
+                    identity_card_address_required: 'Identity card address required',
+                    phone_number_required: 'Phone number required',
+                    tax_date_of_issue_required: 'Tax date of issue required',
+                    tax_number_required: 'Tax number required',
+                    tax_representative_required: 'Tax representative required',
+                    tax_authority_required: 'Tax authority required',
+
+
                 }
             }
         },
@@ -1062,6 +1091,61 @@ export default {
                 create_task_fail: "Can't create new task",
                 delete_fail: "Can't delete task successfully",
                 edit_status_of_task_fail: "Can't edit status of task",
+
+                responsible: 'Responsible',
+                accountable: 'Acountable',
+                consulted: 'Consulted',
+                creator: 'Creator',
+                informed: 'informed',
+
+                add_task: 'Add task',
+                add_title: 'Add a new task',
+                add_subtask: 'Add sub task',
+
+                department: 'Department',
+                select_department: 'Select department',
+                select_all_department: 'Selected all',
+
+                status: 'Status',
+                select_status: 'Select status',
+                select_all_status: 'Selected all',
+                inprocess: 'In process',
+                wait_for_approval: 'Wait for approval',
+                finished: 'Finished',
+                delayed: 'Delayed',
+                canceled: 'Canceled',
+
+                priority: 'Priority',
+                select_priority: 'Select priority',
+                select_all_priority: 'Selected all',
+                high: 'High',
+                normal: 'Normal',
+                low: 'Low',
+
+                special: 'Special',
+                select_all_special: 'Selected all',
+                select_special: 'Select special',
+                stored: 'Stored',
+                current_month: 'Current month',
+
+                name: "Name of task",
+                search_by_name: 'Search by name',
+                search: "Search",
+
+                col_name: 'Name of task',
+                col_organization: 'Department',
+                col_priority: 'Priority',
+                col_start_date: 'Start date',
+                col_end_date: 'End date',
+                col_status: 'Status',
+                col_progress: 'Progress',
+                col_logged_time: 'Tatal logged time',
+
+                action_edit: 'Start working',
+                action_delete: 'Delete task',
+                action_store: 'Store task',
+                action_add: 'Add new subtask',
+                action_start_timer: 'Start timer'
             },
             task_perform: {
                 // TODO: code_mesage_task_perform
@@ -1105,7 +1189,26 @@ export default {
                 create_result_infomation_task_success: 'Create result infomation task fail',
                 edit_result_infomation_task_success: 'Edit result infomation task fail',
 
+                // modal approve task
+                modal_approve_task: {
+                    title: 'Request to finish task',
+                    msg_success: 'Approved success',
+                    msg_faile: 'Approved failure',
 
+                    task_info: 'Information of task',
+                    percent: 'Progress of task',
+                    
+                    auto_point: 'Automatic point',
+                    employee_point: 'Employee point',
+                    approved_point: 'Accountable point',
+
+                    responsible: 'Responsible role',
+                    consulted: 'Consulted role',
+                    accountable: 'Accountable role',
+
+                    err_range: 'Value must be between 0 and 100',
+                    err_empty: "Value must be filled"
+                }
             },
             task_template: {
                 // TODO: code_mesage_task_template

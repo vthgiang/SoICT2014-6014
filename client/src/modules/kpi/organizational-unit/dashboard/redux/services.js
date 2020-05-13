@@ -7,60 +7,24 @@ import {
 } from '../../../../../config';
 import jwt from 'jsonwebtoken';
 import { sendRequest} from '../../../../../helpers/requestHelper'
-export const dashboardServices = {
-    getAllKPIUnit,
-    // getCurrentKPIUnit,
-    // getChildTargetOfCurrentTarget,
-    // addKPIUnit,
-    evaluateKPIUnit,
+
+export const dashboardOrganizationalUnitKpiServices = {
+    getAllChildTargetOfOrganizationalUnitKpis,
+    getAllTaskOfOrganizationalUnit
 }
 
-// Lấy tất cả KPI đơn vị
-function getAllKPIUnit(id) {
+/** Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại */
+function getAllChildTargetOfOrganizationalUnitKpis(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/unit/${id}`,
-        method: 'GET',
-    },false,'kpi.organizational_unit');
-
+        url: `${LOCAL_SERVER_API}/kpiunits/childTargets/${id}`,
+        method: 'GET'
+    }, false)
 }
 
-// Lấy KPI đơn vị hiện tại
-// function getCurrentKPIUnit(id) {
-//     const requestOptions = {
-//         method: 'GET',
-//         headers: AuthenticateHeader()
-//     };
-
-//     return fetch(`${LOCAL_SERVER_API}/kpiunits/current-unit/role/${id}`, requestOptions).then(handleResponse);
-// }
-
-// Lấy tất cả KPI đơn vị
-// function getChildTargetOfCurrentTarget(id) {
-//     const requestOptions = {
-//         method: 'GET',
-//         headers: AuthenticateHeader()
-//     };
-
-//     return fetch(`${LOCAL_SERVER_API}/kpiunits/child-target/${id}`, requestOptions).then(handleResponse);
-// }
-
-// Khởi tạo KPI đơn vị 
-// function addKPIUnit(newKPI) {
-//     const requestOptions = {
-//         method: 'POST',
-//         headers: AuthenticateHeader(),
-//         body: JSON.stringify(newKPI)
-//     };
-
-//     return fetch(`${LOCAL_SERVER_API}/kpiunits/create`, requestOptions).then(handleResponse);
-// }
-
-
-// Cập nhật dữ liệu cho KPI đơn vị
-function evaluateKPIUnit(id) {
+/** Lấy tất cả task của organizationalUnit hiện tại (chỉ lấy phần evaluations của tháng hiện tại) */
+function getAllTaskOfOrganizationalUnit(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
-        method: 'PUT',
-    },false,'kpi.organizational_unit');
+        url: `${LOCAL_SERVER_API}/kpiunits/tasks/${id}`,
+        method: 'GET'
+    }, false)
 }
-

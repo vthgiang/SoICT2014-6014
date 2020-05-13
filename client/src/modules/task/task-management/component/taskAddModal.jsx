@@ -7,18 +7,12 @@ import {
     getStorage
 } from '../../../../config';
 import jwt from 'jsonwebtoken';
-// import { DepartmentActions, UserActions, managerKpiActions } from '../../../../redux-actions/CombineActions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
-// import { taskTemplateActions } from '../../../../redux-actions/CombineActions';//đợi nhóm Khoa--------------------------------------
 import { taskManagementActions } from '../redux/actions';
 
-
-// const token = getStorage();
-// const verified = await jwt.verify(token, TOKEN_SECRET);
-// var id = verified._id;
 
 class ModalAddTask extends Component {
 
@@ -80,17 +74,17 @@ class ModalAddTask extends Component {
         const verified = await jwt.verify(token, TOKEN_SECRET);
         var idUser = verified._id;
         var listTaskTemplate;
-        
+
         var ckTemplate = false;
 
-        const {  tasktemplates } = this.props;
+        const { tasktemplates } = this.props;
         if (tasktemplates.items) listTaskTemplate = tasktemplates.items;
-        if (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0){
+        if (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) {
             ckTemplate = true;
-        } 
+        }
 
         await this.setState(state => {
-            
+
             return {
                 ...state,
                 newTask: {
@@ -102,7 +96,7 @@ class ModalAddTask extends Component {
                     endDate: this.endDate.value,
                     priority: this.priority.value,
                     unit: this.unit.value,
-                    taskTemplate: (ckTemplate && this.tasktemplate.value !== "") ? this.tasktemplate.value : null,
+                    taskTemplate: (ckTemplate && this.taskTemplate.value !== "") ? this.taskTemplate.value : null,
                     role: localStorage.getItem("currentRole"),
                     parent: this.parent.value !== "" ? this.parent.value : null,
                     kpi: kpi,
@@ -142,7 +136,7 @@ class ModalAddTask extends Component {
                     }
                 });
             } else {
-                this.props.addTask(newTask);//fix loi creater - sửa bên service ----------------------------------------------------------------
+                this.props.addTask(newTask);
                 await this.setState(state => {
                     return {
                         ...state,
@@ -164,7 +158,7 @@ class ModalAddTask extends Component {
         const verified = await jwt.verify(token, TOKEN_SECRET);
         var idUser = verified._id;
         var role = this.props.role;
-        var currentUser = idUser;//fix----------------------localStorage.getItem("id")-----------------------------
+        var currentUser = idUser;
         if (roleTask === role) {
             return [...listUser, currentUser];
         }
@@ -199,13 +193,13 @@ class ModalAddTask extends Component {
     render() {
         var units, currentUnit, userdepartments, listTaskTemplate, currentTemplate, listKPIPersonal;
         const { newTask, submitted } = this.state;
-        const { department, tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
+        const { tasktemplates, user, KPIPersonalManager } = this.props; //kpipersonals
         if (tasktemplates.items) {
             listTaskTemplate = tasktemplates.items; // listTaskTemplate = tasktemplates.items;
             currentTemplate = listTaskTemplate.filter(item => item.resourceId._id === this.state.currentTemplate);
         }
-        if (department.unitofuser) {
-            units = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -407,7 +401,7 @@ class ModalAddTask extends Component {
                                                 <div className="col-sm-4 help-block">Hãy chọn đơn vị</div>
                                             }
                                         </div>
-                                        
+
 
                                         {/* 
 
@@ -429,28 +423,28 @@ class ModalAddTask extends Component {
                                         </div>
                                         
                                         */}<div className="form-group  has-feedback">
-                                        {
-                                            
+                                            {
+
                                                 (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) ?
-                                                <div>
-                                                    <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
-                                                    <div className="col-sm-10" style={{ width: '100%' }}>
-                                                    {
-                                                    (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) &&
-                                                        <select className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskTemplate} ref={input => this.taskTemplate = input}>
-                                                            <option value="">--Hãy chọn mẫu công việc--</option>
+                                                    <div>
+                                                        <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Mẫu công việc</label>
+                                                        <div className="col-sm-10" style={{ width: '100%' }}>
                                                             {
-                                                                listTaskTemplate.map(item => {
-                                                                    return <option key={item.resourceId._id} value={item.resourceId._id}>{item.resourceId.name}</option>
-                                                                })
+                                                                (typeof listTaskTemplate !== "undefined" && listTaskTemplate.length !== 0) &&
+                                                                <select className="form-control" style={{ width: '100%' }} onChange={this.handleChangeTaskTemplate} ref={input => this.taskTemplate = input}>
+                                                                    <option value="">--Hãy chọn mẫu công việc--</option>
+                                                                    {
+                                                                        listTaskTemplate.map(item => {
+                                                                            return <option key={item.resourceId._id} value={item.resourceId._id}>{item.resourceId.name}</option>
+                                                                        })
+                                                                    }
+                                                                </select>
                                                             }
-                                                        </select>
-                                                    }
-                                                    </div>
-                                                </div>: null
-                                            
-                                        }
-                                       </div>
+                                                        </div>
+                                                    </div> : null
+
+                                            }
+                                        </div>
                                         <div className="form-group  has-feedback">
                                             <label className="col-sm-4 control-label" style={{ width: '100%', textAlign: 'left' }}>Công việc cha</label>
                                             <div className="col-sm-10" style={{ width: '100%' }}>
@@ -470,8 +464,8 @@ class ModalAddTask extends Component {
                                                 <select className="form-control select2" multiple="multiple" ref="kpi" data-placeholder="Select a State" style={{ width: '100%' }} >
                                                     {listKPIPersonal &&
                                                         listKPIPersonal.map(item => {
-                                                            return <optgroup label={item.creater.name} key={item._id}>
-                                                                {item.listtarget.map(x => {
+                                                            return <optgroup label={item.creator.name} key={item._id}>
+                                                                {item.kpis.map(x => {
                                                                     return <option key={x._id} value={x._id}>{x.name}</option>
                                                                 })}
                                                             </optgroup>
@@ -500,14 +494,14 @@ class ModalAddTask extends Component {
 }
 
 function mapState(state) {
-    const { department, tasktemplates, tasks, user, KPIPersonalManager } = state;//fix--------------kpipersonals-->KPIPersonalManager-------department(s)----------
-    return { department, tasktemplates, tasks, user, KPIPersonalManager };
+    const { tasktemplates, tasks, user, KPIPersonalManager } = state;//fix--------------kpipersonals-->KPIPersonalManager-------department(s)----------
+    return { tasktemplates, tasks, user, KPIPersonalManager };
 }
 
 const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     addTask: taskManagementActions.addTask,
-    getDepartment: DepartmentActions.getDepartmentOfUser,//có r
+    getDepartment: UserActions.getDepartmentOfUser,//có r
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,//có r
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,//chưa có
     // getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalByMember//KPIPersonalManager----managerKpiActions //bị khác với hàm dùng trong kpioverview-có tham số

@@ -19,24 +19,6 @@ export function managerKpiUnit (state = {}, action){
             error: action.payload,
             isLoading: false
           };
-        case managerConstants.GETCURRENT_KPIUNIT_REQUEST:
-          return {
-            ...state,
-            loading: true,
-            isLoading: true
-          };
-        case managerConstants.GETCURRENT_KPIUNIT_SUCCESS:
-          return {
-            ...state,
-            loading: false,
-            currentKPI: action.payload,
-            isLoading: false
-          };
-        case managerConstants.GETCURRENT_KPIUNIT_FAILURE:
-          return {
-            error: action.payload,
-            isLoading: false
-          };
         case managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST:
           return {
             ...state,
@@ -55,26 +37,6 @@ export function managerKpiUnit (state = {}, action){
             error: action.payload,
             isLoading: false
           };
-        
-        case managerConstants.ADD_KPIUNIT_REQUEST:
-          return {
-            ...state,
-            adding: true,
-            isLoading: false
-          };
-        case managerConstants.ADD_KPIUNIT_SUCCESS:
-          return {
-            ...state,
-            adding: false,
-            currentKPI: action.payload,
-            isLoading: false
-          };
-        case managerConstants.ADD_KPIUNIT_FAILURE:
-          return {
-            error: action.payload,
-            isLoading: false
-          };
-        
         case managerConstants.EVALUATE_KPIUNIT_REQUEST:
           return {
             ...state,

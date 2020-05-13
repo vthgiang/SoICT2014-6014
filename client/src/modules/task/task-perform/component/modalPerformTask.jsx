@@ -12,20 +12,22 @@ import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { managerKpiActions } from "../../../kpi/employee/management/redux/actions";
-// import { taskManagementActions, performTaskAction, UserActions, kpiPersonalActions } from '../../../redux-actions/CombineActions';
-import ModalApproveTask from "./modalApproveTask";
+import { ModalApproveTask } from "./modalApproveTask";
 import { ButtonModal } from '../../../../common-components';
-
+import moment from 'moment'
+import 'moment/locale/vi'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
+// import './perform.css' 
 class ModalPerformTask extends Component {
     constructor(props) {
 
         const token = getStorage();
         const verified = jwt.verify(token, TOKEN_SECRET);
         var idUser = verified._id;
-
         super(props);
         this.state = {
-            currentUser: idUser,//fix---------------localStorage.getItem('id')-------------------
+            currentUser: idUser,
             selected: "taskAction",
             extendDescription: false,
             editDescription: false,
@@ -38,94 +40,157 @@ class ModalPerformTask extends Component {
             action: false,
             editComment: "",
             editAction: "",
+            editTaskComment: "",
+            editCommentOfTaskComment: "",
             startTimer: false,
             pauseTimer: false,
             showChildComment: "",
-            newComment: {
-                task: this.props.id,
-                creator: idUser,//fix---------------localStorage.getItem("id")-------------------
-                parent: null,
+            showChildTaskComment: "",
+            newCommentOfAction: {
+                //task: this.props.id,
+                creator: idUser,
                 content: "",
                 file: null,
                 taskActionId: null
             },
             newAction: {
-                task: this.props.id,
+                //task: this.props.id,
                 creator: idUser,
                 content: "",
                 file: null
             },
+            newTaskComment: {
+                creator: idUser,
+                content: "",
+                file: null
+            },
+            newCommentOfTaskComment: {
+                creator: idUser,
+                content: "",
+                file : null
+            },
+            showEdit: false,
             timer: {
-                task: this.props.id,
+                //task: this.props.id,
                 startTimer: "",
                 stopTimer: null,
-                user: idUser,//fix---------------localStorage.getItem("id")-------------------
+                user: idUser,
                 time: 0,
             },
             resultTask: 0,
             showModal: ""
         };
-        this.contentComment = [];
-        this.newContentComment = [];
+        this.contentTaskComment= [];
+        this.contentCommentOfAction= [];
+        this.newContentCommentOfAction = [];
         this.contentAction = [];
         this.newContentAction = [];
+        this.newContentTaskComment= [];
+        this.contentCommentOfTaskComment= [];
+        this.newContentCommentOfTaskComment= [];
         this.onHandleChangeFile = this.onHandleChangeFile.bind(this);
+        this.showEdit = this.showEdit.bind(this);
+        this.closeEdit = this.closeEdit.bind(this);
         this.mypoint = [];
         this.approvepoint = [];
     }
     componentDidUpdate() {
-        let script3 = document.createElement('script');
-        script3.src = '../lib/main/js/CoCauToChuc.js';//fix /lib/main.....................................
-        script3.async = true;
-        script3.defer = true;
-        document.body.appendChild(script3);
-        const { performtasks } = this.props;
-        var currentTimer;
-        if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
-        if (currentTimer && this.state.timer.startTimer === "") {
-            this.setState(state => {
-                return {
-                    ...state,
-                    timer: {
-                        ...currentTimer,
-                        startTimer: currentTimer.startTimer - currentTimer.time
-                    },
-                    startTimer: true,
-                    pauseTimer: currentTimer.pause,
-                }
-            })
-            //Chỉnh giao diện
-            document.getElementById("start-timer-task").style.width = "20%";
-            document.getElementById("btn-approve").style.marginLeft = "50%";
-            // Setup thời thời gian chạy
-            if (currentTimer.pause === false) {
-                this.timer = setInterval(() => this.setState(state => {
+        if (this.props.id !== undefined) {
+            let script3 = document.createElement('script');
+            script3.src = '../lib/main/js/CoCauToChuc.js';
+            script3.async = true;
+            script3.defer = true;
+            document.body.appendChild(script3);
+            const { performtasks } = this.props;
+            var currentTimer;
+            if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
+            if (currentTimer && this.state.timer.startTimer === "") {
+                this.setState(state => {
                     return {
                         ...state,
                         timer: {
-                            ...state.timer,
-                            time: Date.now() - this.state.timer.startTimer,
+                            ...currentTimer,
+                            startTimer: currentTimer.startTimer - currentTimer.time
                         },
+                        startTimer: true,
+                        pauseTimer: currentTimer.pause,
                     }
-                }), 1000);
+                })
+                //Chỉnh giao diện
+                document.getElementById("start-timer-task").style.width = "20%";
+                document.getElementById("btn-approve").style.marginLeft = "50%";
+                // Setup thời thời gian chạy
+                if (currentTimer.pause === false) {
+                    this.timer = setInterval(() => this.setState(state => {
+                        return {
+                            ...state,
+                            timer: {
+                                ...state.timer,
+                                time: Date.now() - this.state.timer.startTimer,
+                            },
+                        }
+                    }), 1000);
+                }
             }
         }
+
     }
     componentDidMount() {
         let script2 = document.createElement('script');
-        script2.src = '../lib/main/js/uploadfile/custom.js';//fix-------------------------------------------------------------
+        script2.src = '../lib/main/js/uploadfile/custom.js';
         script2.async = true;
         script2.defer = true;
         document.body.appendChild(script2);
     }
-    UNSAFE_componentWillMount() {
-        this.props.getLogTimer(this.props.id);
-        this.props.getAllKPIPersonalByMember(this.props.responsible);
-        this.props.getAllUserOfDepartment(this.props.unit);
-        this.props.getTaskById(this.props.id);
-        this.props.getTaskActions(this.props.id);
-        this.props.getStatusTimer(this.props.id);//fix hàm bên services---------------------------------------------------
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id
+            }
+        }
     }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+
+        if (nextProps.id !== this.state.id) {
+            // console.log('nextProps.id !== this.state.id', nextProps.id ,this.state.id, nextState.id);
+            this.props.getLogTimer(nextProps.id);
+            this.props.getTaskById(nextProps.id);
+            this.props.getTaskActions(nextProps.id);
+            this.props.getStatusTimer(nextProps.id);
+            this.props.getTaskComments(nextProps.id)
+            // return true;
+        }
+        return true;
+    }
+
+    UNSAFE_componentWillMount() {
+        // this.props.getLogTimer(this.props.id);
+        // this.props.getAllKPIPersonalByMember(this.props.responsible);
+        // this.props.getAllUserOfDepartment(this.props.unit);
+        // this.props.getTaskById(this.props.id);
+        // this.props.getTaskActions(this.props.id);
+        // this.props.getStatusTimer(this.props.id);
+    }
+    showEdit(event) {
+        event.preventDefault();
+        
+        this.setState({ showEdit: true }, () => {
+          document.addEventListener('click', this.closeEdit);
+        });
+    }
+    closeEdit(event) {
+    
+        if (!this.dropdownEdit.contains(event.target)) {
+          
+          this.setState({ showEdit: false }, () => {
+            document.removeEventListener('click', this.closeEdit);
+          });  
+          
+        }
+      }
     handleChangeContent = async (content) => {
         await this.setState(state => {
             return {
@@ -367,7 +432,33 @@ class ModalPerformTask extends Component {
                 }
             })
         }
+    }
+    handleShowChildTaskComment = async (id) => {
+        var showChildTaskComment = this.state.showChildTaskComment;
+        if (showChildTaskComment === id) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    showChildTaskComment: ""
+                }
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    showChildTaskComment: id
+                }
+            })
+        }
 
+    }
+    handleEditCommentOfTaskComment = async(id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                editCommentOfTaskComment: id
+            }
+        })
     }
     formatDate(date) {
         var d = new Date(date),
@@ -399,33 +490,35 @@ class ModalPerformTask extends Component {
         modal.classList.remove("in");
         modal.style = "display: none;";
     }
-    submitComment = async (e, id, index) => {
+    submitComment = async (e, id, index,taskId) => {
         e.preventDefault();
         await this.setState(state => {
             return {
                 ...state,
-                newComment: {
-                    ...state.newComment,
-                    parent: id,
-                    content: this.contentComment[index].value,
-                    taskActionId : id
+                newCommentOfAction: {
+                    ...state.newCommentOfAction,
+                    content: this.contentCommentOfAction[index].value,
+                    taskActionId: id,
+                    task: taskId
                 }
             }
         })
-        var { newComment } = this.state;
+        var { newCommentOfAction } = this.state;
+        console.log(newCommentOfAction)
         // const data = new FormData();
         // data.append("task", newComment.task);
         // data.append("creator", newComment.creator);
         // data.append("parent", newComment.parent);
         // data.append("content", newComment.content);
         //  data.append("file", newComment.file);
-        if (newComment.task && newComment.content && newComment.creator) {
-            this.props.addActionComment(newComment);
+        if (newCommentOfAction.task && newCommentOfAction.content && newCommentOfAction.creator) {
+
+            this.props.addActionComment(newCommentOfAction);
         }
-        this.contentComment[index].value = "";
+        this.contentCommentOfAction[index].value = "";
     }
     //Thêm mới hoạt động
-    submitAction = async (e, id, index) => {
+    submitAction = async (e, id, index,taskId) => {
         e.preventDefault();
         await this.setState(state => {
             return {
@@ -433,16 +526,59 @@ class ModalPerformTask extends Component {
                 newAction: {
                     ...state.newAction,
                     content: this.contentAction[index].value,
+                    task: taskId
                 }
             }
         })
         var { newAction } = this.state;
         if (newAction.content && newAction.creator) {
+            console.log(newAction)
             this.props.addTaskAction(newAction);
         }
         this.contentAction[index].value = "";
     }
+    //Thêm mới bình luận của công việc
+    submitTaskComment = async (e,id,index,taskId) => {
+        e.preventDefault();
+        await this.setState(state => {
+            return {
+                ...state,
+                newTaskComment: {
+                    ...state.newTaskComment,
+                    content: this.contentTaskComment[index].value,
+                    task: taskId
+                }
+            }
+        })
+        var { newTaskComment } = this.state;
+        console.log(newTaskComment)
+        if (newTaskComment.content && newTaskComment.creator) {
+            this.props.createTaskComment(newTaskComment);
+        }
+        this.contentTaskComment[index].value = "";
+    }
+    submitCommentOfTaskComment = async (e,id,index,taskId) => {
+        e.preventDefault();
+        await this.setState(state => {
+            return {
+                ...state,
+                newCommentOfTaskComment: {
+                    ...state.newCommentOfTaskComment,
+                    content: this.contentCommentOfTaskComment[index].value,
+                    task: taskId,
+                    id: id
+                }
+            }
+        })
+        var { newCommentOfTaskComment } = this.state;
+        console.log(newCommentOfTaskComment)
+        if (newCommentOfTaskComment.content && newCommentOfTaskComment.creator) {
+            this.props.createCommentOfTaskComment(newCommentOfTaskComment);
+        }
+        this.contentCommentOfTaskComment[index].value = "";
+    }
     handleEditActionComment = async (id) => {
+
         await this.setState(state => {
             return {
                 ...state,
@@ -451,6 +587,7 @@ class ModalPerformTask extends Component {
         })
     }
     handleEditAction = async (id) => {
+        console.log("HAHAHAHA")
         await this.setState(state => {
             return {
                 ...state,
@@ -458,24 +595,31 @@ class ModalPerformTask extends Component {
             }
         })
     }
+    handleEditTaskComment = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                editTaskComment: id
+            }
+        })
+    }
     //Lưu hoạt động
-
     handleSaveEditActionComment = async (e, index) => {
         e.preventDefault();
         await this.setState(state => {
             return {
                 ...state,
-                newComment: {
-                    ...state.newComment,
-                    content: this.newContentComment[index].value,
+                newCommentOfAction: {
+                    ...state.newCommentOfAction,
+                    content: this.newContentCommentOfAction[index].value,
                     // file:
                 },
                 editComment: ""
             }
         })
-        var { newComment } = this.state;
-        if (newComment.content) {
-            this.props.editActionComment(index, newComment);
+        var { newCommentOfAction } = this.state;
+        if (newCommentOfAction.content) {
+            this.props.editActionComment(index, newCommentOfAction);
         }
     }
     handleSaveEditAction = async (e, index) => {
@@ -494,6 +638,44 @@ class ModalPerformTask extends Component {
         var { newAction } = this.state;
         if (newAction.content) {
             this.props.editTaskAction(index, newAction);
+        }
+    }
+    handleSaveEditTaskComment = async (e,index) => {
+        e.preventDefault();
+        await this.setState(state => {
+            return {
+                ...state,
+                newTaskComment: {
+                    ...state.newTaskComment,
+                    content: this.newContentTaskComment[index].value,
+                    // file:
+                },
+                editTaskComment: ""
+            }
+        })
+        var { newTaskComment } = this.state;
+        if (newTaskComment.content) {
+            this.props.editTaskComment(index, newTaskComment);
+        }
+    }
+    handleSaveEditCommentOfTaskComment = async (e,index) => {
+        e.preventDefault();
+        await this.setState(state => {
+            return {
+                ...state,
+                newCommentOfTaskComment: {
+                    ...state.newCommentOfTaskComment,
+                    content: this.newContentCommentOfTaskComment[index].value,
+                    id : index
+                    // file:
+                },
+                editCommentOfTaskComment: ""
+            }
+        })
+        var { newCommentOfTaskComment } = this.state;
+        console.log(newCommentOfTaskComment)
+        if (newCommentOfTaskComment.content) {
+            this.props.editCommentOfTaskComment(index, newCommentOfTaskComment);
         }
     }
     onHandleChangeFile = (event) => {
@@ -639,21 +821,22 @@ class ModalPerformTask extends Component {
         });
         window.$(`#modal-approve-task-${id}`).modal('show');
     }
-
+    
     render() {
-        var task, actionComments, taskActions, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
+        // console.log('props--->', this.props);
+        var task, actionComments, taskActions,taskComments, actions, informations, currentTimer, userdepartments, listKPIPersonal, logTimer;
         var statusTask;
         const { selected, extendDescription, editDescription, extendInformation, extendRACI, extendKPI, extendApproveRessult, extendInfoByTemplate } = this.state;
-        const { comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action } = this.state;
+        const { comment, editComment, startTimer, showChildComment, pauseTimer, editAction, action,editTaskComment,showChildTaskComment,editCommentOfTaskComment } = this.state;
         const { time } = this.state.timer;
-        const { tasks, performtasks, user, KPIPersonalManager } = this.props;
+        const { tasks, performtasks, user, KPIPersonalManager } = this.props;   
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task.info;
-        
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
         if (typeof tasks.task !== 'undefined' && tasks.task !== null && tasks.task.info.taskTemplate !== null) {
             actions = tasks.task.actions;
             informations = tasks.task.informations;
         }
+        if (typeof performtasks.taskcomments !== 'undefined' && performtasks.taskcomments !== null) taskComments = performtasks.taskcomments;
         if (typeof performtasks.taskactions !== 'undefined' && performtasks.taskactions !== null) taskActions = performtasks.taskactions;
         if (typeof performtasks.currentTimer !== "undefined") currentTimer = performtasks.currentTimer;
         if (performtasks.logtimer) logTimer = performtasks.logtimer;
@@ -1108,103 +1291,320 @@ class ModalPerformTask extends Component {
                             </form>
                             <div className="nav-tabs-custom">
                                 <ul className="nav nav-tabs" style={{ borderTop: "solid", borderWidth: "thin", borderColor: "aliceblue", width: "60%" }}>
-                                    <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">Hoạt động</a></li>
-                                    <li><a href="#actionComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">Trao đổi</a></li>
+                                    <li className="active"><a href="#taskAction" onClick={() => this.handleChangeContent("taskAction")} data-toggle="tab">Hoạt động()</a></li>
+                                        <li><a href="#actionComment" onClick={() => this.handleChangeContent("actionComment")} data-toggle="tab">Trao đổi()</a></li>
                                     <li><a href="#documentTask" onClick={() => this.handleChangeContent("documentTask")} data-toggle="tab">Tài liệu</a></li>
                                     <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">Công việc con</a></li>
                                     <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">Lịch sử bấm giờ</a></li>
                                 </ul>
                                 <div className="tab-content">
                                     <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
-                                        {/* Hoạt động của công việc theo mẫu */}
-                                        {actions &&
-                                            actions.map((item, index) =>
-                                                <div className="post clearfix" style={{ width: "50%" }} key={item._id}>
-                                                    <div className="col-sm-11">
-                                                        <div className="user-block" style={{ display: "inline-block", marginBottom: "0px", textAlign: 'left', width: "100%", marginTop: "-1%", marginLeft: "15px" }}>
-                                                            <p>{index + 1 + ". "}{item.name}</p>
-                                                        </div>
-                                                        {/* Phê duyệt hoạt động theo mẫu */}
-                                                        {this.props.role === "accountable" &&
-                                                            <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                <a href="#abc" title="Đạt" className="add_circle"><i className="material-icons">check_circle_outline</i></a>
-                                                                <a href="#abc" title="Không đạt" className="delete"><i className="material-icons">highlight_off</i></a>
+                                        {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
+                                            // Hiển thị hoạt động của công việc
+                                            taskActions.map(item => {
+                                                // if (item.parent === null)
+                                                return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "1.5%", marginLeft: "15px", }} key={item._id}>
+                                                    <div className="row">
+                                                    <div className="user-block col-sm-2" style={{ display: "inline-block", marginBottom: "0px",marginRight:"-25px" }}>
+                                                    <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
+                                                    </div>
+                                                    <div className="col-sm-9" style= {{backgroundColor:"#f2f3f5", borderRadius:"18px", marginRight:"10px", width:"78.4%"}}>    
+                                                    <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
+                                                        <span className="username" style={{marginLeft:"0px"}} >
+                                                            <a href="#abc">{}</a>
+                                                        </span>
+                                                        <p style={{ marginBottom: "2px", marginLeft:"15px",marginTop:"2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{item.description}</p>
+                                                        <div className="row" style={{width:"300%",marginLeft:"0px", marginBottom:"0px"}} >
+                                                            <span className="description col-sm-5" style={{marginLeft:"0px"}}>{moment(item.createdAt).fromNow()}</span>
+                                                            <div className="comment-content">
+                                                            <React.Fragment>
+                                                                {/* Hiển thị nội dung hoạt động cho công việc*/}
+                                                                <div className="attach-file" style={{ marginTop: "-10px" }}>
+                                                                    {/* <a href={item.file.url} download>{item.file.name}</a> */}
+                                                                </div>
+                                                                <ul className="list-inline" style={{marginTop:'10px'}}>
+                                                                    <li className="">
+                                                                        <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
+                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.length}) &nbsp;
+                                                                            {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </React.Fragment>
                                                             </div>
-                                                        }
-                                                        {/* Hành động mở bình luận của hoạt động */}
-                                                        <div className="action-comment" style={{ display: "inline-block", textAlign: 'left', width: "100%", marginTop: "-1%", marginLeft: "10px" }}>
-                                                            <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
-                                                                {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
-                                                            </a>
+                                                        </div>     
+                                                    </div>
+                                                    </div>
+                                                    <div class="btn-group dropright">
+                                                        <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                            <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                            </svg>
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                            <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditAction(item._id)} >Sửa hành động</button>
+                                                            <div class="dropdown-divider"></div>
+                                                            <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteTaskAction(item._id,task._id)} >Xóa hành động</button>
+                                                            <div class="dropdown-divider"></div>
                                                         </div>
                                                     </div>
-                                                    <div className="col-sm-1">
-                                                        {/* Xác nhận hoàn thành hành động của người thực hiện */}
-                                                        {item.approve !== 1 && this.props.role === "responsible" &&
-                                                            <div className="action-comment" title="Xác nhận đã hoàn thành hoạt động này" style={{ display: "inline-block" }}>
-                                                                <i className="material-icons" style={{ color: "blue", fontWeight: "bold" }}>check</i>
-                                                            </div>
-                                                        }
                                                     </div>
-                                                    <React.Fragment>
-                                                        {/* Hiển thị bình luận cho hoạt động của công việc theo mẫu */}
-                                                        {showChildComment === item._id &&
-                                                            <div className="comment-content-child">
-                                                                {
-                                                                    item.comments.map(child => {
-                                                                        if (child.parent === item._id) return <div className="col-sm-12 " key={child._id} style={{ marginBottom: "10px" }}>
-                                                                            <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
+                                                    {/*Chỉnh sửa nội dung hoạt động của công việc */}
+                                                    {editAction === item._id &&
+                                                        <React.Fragment>
+                                                            <div style= {{marginTop:"3%",marginLeft:"10%",width:"82%"}}>
+                                                                <textarea
+                                                                    style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px" }}
+                                                                    defaultValue={item.description}
+                                                                    ref={input => this.newContentAction[item._id] = input}
+                                                                />
+                                                                <div className="row action-post">
+                                                                    <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                    <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</button>
+                                                                    <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</button>
+                                                                </div>
+                                                            </div>
+                                                        </React.Fragment>}
+                                                    {/* Hiển thị bình luận cho hoạt động */}
+                                                    {showChildComment === item._id &&
+                                                                <div className="comment-content-child">
+                                                                    {item.comments.map(child => {
+                                                                        console.log("Lap lan 1");
+                                                                        return <div className="col-sm-12 form-group margin-bottom-none" key={child._id} style={{marginTop:"10px",marginLeft:"25px"}}>
+                                                                            <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
                                                                                     src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
                                                                                     style={{ height: "30px", width: "30px" }} />
                                                                             </div>
-                                                                            <div className="col-sm-10" style={{ marginLeft: "-20%" }} >
-                                                                                <p style={{ marginBottom: "-4px", marginLeft: "-60px" }}>&nbsp;{child.content}</p>
-                                                                                {/*<a href={item.file.url} download>{item.file.name}</a>*/}
-                                                                                <span className="description">19:30 19-11-2020</span>
-                                                                                {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
-                                                                                    <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                        <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                        <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id)}><i className="material-icons">delete</i></a>
-                                                                                    </div>
-                                                                                }
+                                                                            <div className="col-sm-11" style={{ marginBottom: "10px",borderRadius:"15px",backgroundColor:"#f2f3f5",width:"80%",marginLeft:"17px" }} >
+                                                                                <span className="username">
+                                                                                    <a href="#abc">{item.creator.name}</a>
+                                                                                </span>
+                                                                                <p style={{ marginBottom: "-2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{child.content}</p>
+                                                                                {/* <a href={child.file.url} download>{child.file.name}</a> */}
+                                                                                <span className="description">{moment(child.createdAt).fromNow()}</span>
+                                                                    
                                                                             </div>
-                                                                            {editComment === child._id &&
-                                                                                <React.Fragment>
-                                                                                    <textarea
-                                                                                        style={{ width: '87%', height: 50, fontSize: 13, border: '1px solid #dddddd' }}
-                                                                                        defaultValue={child.content}
-                                                                                        ref={input => this.newContentComment[child._id] = input}
-                                                                                    />
-                                                                                    <div className="row action-post" style={{ marginLeft: "40px", marginRight: "18px" }}>
-                                                                                        <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                        <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                                        <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
-                                                                                    </div>
-                                                                                </React.Fragment>
+                                                                            {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
+                                                                                <div class="btn-group dropright">
+                                                                                <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                                                    <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                                                    </svg>
+                                                                                </button>
+                                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                                                    <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditActionComment(child._id)} >Sửa bình luận</button>
+                                                                                    <div class="dropdown-divider"></div>
+                                                                                    <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteActionComment(child._id,task._id)} >Xóa bình luận</button>
+                                                                                    <div class="dropdown-divider"></div>
+                                                                                </div>
+                                                                            </div>  
                                                                             }
+                                                                            {editComment === child._id &&
+                                                                                    <React.Fragment>
+                                                                                        <div style ={{width:"83%",marginLeft:"8.2%"}}>
+                                                                                            <textarea
+                                                                                                style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius:"18px" }}
+                                                                                                defaultValue={child.content}
+                                                                                                ref={input => this.newContentCommentOfAction[child._id] = input}
+                                                                                            />
+                                                                                            <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
+                                                                                                <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                                                <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </React.Fragment>
+                                                                                }
                                                                         </div>;
                                                                         return true;
                                                                     })
+                                                                    }
+                                                                    {/*Thêm bình luận cho hoạt động */}
+                                                                    <div className="comment-child-action">
+                                                                        <form className="form-horizontal">
+                                                                            <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px", marginLeft:"4.8%" }}>
+                                                                                <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
+                                                                                    <img className="img-circle img-bordered-sm"
+                                                                                        src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
+                                                                                        style={{ height: "30px", width: "30px" }} />
+                                                                                </div>
+                                                                                <div className="col-sm-11" >
+                                                                                    <textarea placeholder="Hãy nhập nội dung bình luận" id="textarea-action-comment"
+                                                                                        style={{ width: '92.5%', height: 40, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px",marginLeft:"1%"}} ref={input => this.contentCommentOfAction[item._id] = input} />
+                                                                                    <div className="row action-post" style={{ width: "107%" }}>
+                                                                                        <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} style={{marginLeft:"1%"}} />
+                                                                                        <button type="submit" style={{ width: "20%", marginRight: "2%", textAlign: "center" ,marginLeft:"52.8%"}} className="col-xs-2 col-xs-offset-7 btn btn-success btn-sm" onClick={(e) => this.submitComment(e, item._id, item._id,task._id)}>Gửi bình luận  </button>
+                                                                                        <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleComment}>Hủy bỏ</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                </div>;
+                                                return true;
+                                            }) : null
+                                        }
+                                        {/* Thêm hoạt động cho công việc*/}
+                                        {this.props.role === "responsible" &&
+                                            <form className="form-horizontal" style={{ paddingTop: "2%" }}>
+                                                <div className="form-group margin-bottom-none">
+                                                    <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
+                                                        <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
+                                                    </div> 
+                                                    <div className="col-sm-8" >
+                                                        <textarea placeholder="Hãy nhập nội dung hoạt động"
+                                                            style={{ width: '52%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
+                                                             ref={input => this.contentAction[0] = input} />
+            
+                                                            <div className="row action-post" style={{ width: "63.4%" }}>
+                                                                <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitAction(e, null, 0,task._id)}>Thêm hoạt động</button>
+                                                                <button style={{ width: "13%", }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleAction}>Hủy bỏ</button>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </form>}
+                                    </div>
+                                    {/* Chuyển qua tab trao đổi */}
+                                    <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
+                                    {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
+                                        taskComments.map(item => {
+                                            // if (item.parent === null)
+                                            return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "1.5%", marginLeft: "15px", }} key={item._id}>
+                                                <div className="row">
+                                                <div className="user-block col-sm-2" style={{ display: "inline-block", marginBottom: "0px",marginRight:"-25px" }}>
+                                                <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
+                                                </div>
+                                                <div className="col-sm-9" style= {{backgroundColor:"#f2f3f5", borderRadius:"18px", marginRight:"10px", width:"78.4%"}}>    
+                                                <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
+                                                    <span className="username" style={{marginLeft:"0px"}} >
+                                                        <a href="#abc">{item.creator.name}</a>
+                                                    </span>
+                                                    <p style={{ marginBottom: "2px", marginLeft:"15px",marginTop:"2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{item.content}</p>
+                                                    <div className="row" style={{width:"300%",marginLeft:"0px", marginBottom:"0px"}} >
+                                                        <span className="description col-sm-5" style={{marginLeft:"0px"}}>{moment(item.createdAt).fromNow()}</span>
+                                                        <div className="comment-content">
+                                                        <React.Fragment>
+                                                            {/* Hiển thị nội dung hoạt động cho công việc*/}
+                                                            <div className="attach-file" style={{ marginTop: "-10px" }}>
+                                                                {/* <a href={item.file.url} download>{item.file.name}</a> */}
+                                                            </div>
+                                                            <ul className="list-inline" style={{marginTop:'10px'}}>
+                                                                <li className="">
+                                                                    <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}>
+                                                                        <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.length}) &nbsp;
+                                                                        {showChildTaskComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </React.Fragment>
+                                                        </div>
+                                                    </div>     
+                                                </div>
+                                                </div>
+                                                <div class="btn-group dropright">
+                                                    <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                        <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                        <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditTaskComment(item._id)} >Sửa bình luận</button>
+                                                        <div class="dropdown-divider"></div>
+                                                        <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteTaskComment(item._id,task._id)} >Xóa bình luận</button>
+                                                        <div class="dropdown-divider"></div>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                {/*Chỉnh sửa nội dung hoạt động của công việc */}
+                                                {editTaskComment === item._id &&
+                                                    <React.Fragment>
+                                                        <div style= {{marginTop:"3%",marginLeft:"10%",width:"82%"}}>
+                                                            <textarea
+                                                                style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px" }}
+                                                                defaultValue={item.content}
+                                                                ref={input => this.newContentTaskComment[item._id] = input}
+                                                            />
+                                                            <div className="row action-post">
+                                                                <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditTaskComment(e, item._id)}>Gửi chỉnh sửa</button>
+                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditTaskComment(e)}>Hủy bỏ</button>
+                                                            </div>
+                                                        </div>
+                                                    </React.Fragment>}
+                                                {/* Hiển thị bình luận cho hoạt động */}
+                                                {showChildTaskComment === item._id &&
+                                                            <div className="comment-content-child">
+                                                                {item.comments.map(child => {
+                                                                    return <div className="col-sm-12 form-group margin-bottom-none" key={child._id} style={{marginTop:"10px",marginLeft:"25px"}}>
+                                                                        <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
+                                                                            <img className="img-circle img-bordered-sm"
+                                                                                src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
+                                                                                style={{ height: "30px", width: "30px" }} />
+                                                                        </div>
+                                                                        <div className="col-sm-11" style={{ marginBottom: "10px",borderRadius:"15px",backgroundColor:"#f2f3f5",width:"80%",marginLeft:"17px" }} >
+                                                                            <span className="username">
+                                                                                <a href="#abc">{item.creator.name}</a>
+                                                                            </span>
+                                                                            <p style={{ marginBottom: "-2px" ,fontFamily: 'inherit Helvetica, Arial, sans-serif',fontSize:"13px" }}>&nbsp;{child.content}</p>
+                                                                            {/* <a href={child.file.url} download>{child.file.name}</a> */}
+                                                                            <span className="description">{moment(child.createdAt).fromNow()}</span>
+                                                                
+                                                                        </div>
+                                                                        {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
+                                                                            <div class="btn-group dropright">
+                                                                            <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{marginTop:"10px",backgroundColor: "transparent",}}  >
+                                                                                <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/>
+                                                                                </svg>
+                                                                            </button>
+                                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{borderRadius:"6px"}}>
+                                                                                <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.handleEditCommentOfTaskComment(child._id)} >Sửa bình luận</button>
+                                                                                <div class="dropdown-divider"></div>
+                                                                                <button class="dropdown-item btn-primary-outline" type="button" style={{background:"none",border:"none"}} onClick={() => this.props.deleteCommentOfTaskComment(child._id,task._id)} >Xóa bình luận</button>
+                                                                                <div class="dropdown-divider"></div>
+                                                                            </div>
+                                                                        </div>  
+                                                                        }
+                                                                        {editCommentOfTaskComment === child._id &&
+                                                                                <React.Fragment>
+                                                                                    <div style ={{width:"83%",marginLeft:"8.2%"}}>
+                                                                                        <textarea
+                                                                                            style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px", borderRadius:"18px" }}
+                                                                                            defaultValue={child.content}
+                                                                                            ref={input => this.newContentCommentOfTaskComment[child._id] = input}
+                                                                                        />
+                                                                                        <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
+                                                                                            <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
+                                                                                            <button style={{ width: "20%", marginRight: "2%" }} className="col-xs-3 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditCommentOfTaskComment(e, child._id)}>Gửi chỉnh sửa</button>
+                                                                                            <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditCommentOfTaskComment(e)}>Hủy bỏ</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </React.Fragment>
+                                                                            }
+                                                                    </div>;
+                                                                    return true;
+                                                                })
                                                                 }
-                                                                {/* Thêm bình luận cho hoạt động của công việc theo mẫu */}
-
+                                                                {/*Thêm bình luận cho bình luận */}
                                                                 <div className="comment-child-action">
-                                                                    <form className="form-horizontal" style={{ paddingTop: "1%" }}>
-                                                                        <div className="col-sm-12 margin-bottom-none">
-                                                                            <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
+                                                                    <form className="form-horizontal">
+                                                                        <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px", marginLeft:"4.8%" }}>
+                                                                            <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                                                 <img className="img-circle img-bordered-sm"
-                                                                                    //adminLTE/dist/img/user3-128x128.jpg
                                                                                     src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
                                                                                     style={{ height: "30px", width: "30px" }} />
                                                                             </div>
-                                                                            <div className="col-sm-11" style={{ marginLeft: "9px" }} >
-                                                                                <textarea placeholder="Hãy nhập nội dung bình luận"
-                                                                                    style={{ width: '100%', height: 50, fontSize: 13, border: '1px solid #dddddd' }} ref={input => this.contentComment[item._id] = input} />
+                                                                            <div className="col-sm-11" >
+                                                                                <textarea placeholder="Hãy nhập nội dung bình luận" id="textarea-action-comment"
+                                                                                    style={{ width: '92.5%', height: 40, fontSize: 13, border: '1px solid #dddddd',borderRadius:"18px",marginLeft:"1%"}} ref={input => this.contentCommentOfTaskComment[item._id] = input} />
                                                                                 <div className="row action-post" style={{ width: "107%" }}>
-                                                                                    <input className="col-xs-7" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                    <button style={{ width: "20%", marginRight: "2%", textAlign: "center" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.submitComment(e, item._id, item._id)}>Gửi bình luận</button>
-                                                                                    <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleComment}>Hủy bỏ</button>
+                                                                                    <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} style={{marginLeft:"1%"}} />
+                                                                                    <button type="submit" style={{ width: "20%", marginRight: "2%", textAlign: "center" ,marginLeft:"52.8%"}} className="col-xs-2 col-xs-offset-7 btn btn-success btn-sm" onClick={(e) => this.submitCommentOfTaskComment(e, item._id, item._id,task._id)}>Gửi bình luận  </button>
+                                                                                    <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" >Hủy bỏ</button>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1212,158 +1612,30 @@ class ModalPerformTask extends Component {
                                                                 </div>
                                                             </div>
                                                         }
-                                                    </React.Fragment>
-                                                </div>)
-                                        }
-                                        {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
-                                            // Hiển thị hoạt động của công việc không theo mẫu
-                                            taskActions.map(item => {
-                                                // if (item.parent === null)
-                                                return <div className="post clearfix" style={{ textAlign: 'left', width: "40%", marginTop: "5%", marginLeft: "15px" }} key={item._id}>
-                                                    <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
-                                                        <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
-                                                        <span className="username">
-                                                            <a href="#abc">{item.creator.name}</a>
-                                                        </span>
-                                                        <p style={{ marginBottom: "4px", marginLeft: "60px" }}>&nbsp;{item.content}</p>
-                                                        <span className="description">19:30 19-11-2021</span>
-                                                    </div>
-                                                    {(item.creator._id === this.state.currentUser && this.props.role === "responsible") &&
-                                                        <div className="action-comment " style={{ display: "inline-block" }}>
-                                                            <a href="#abc" title="Sửa hành động" className="edit" onClick={() => this.handleEditAction(item._id)}><i className="material-icons">edit</i></a>
-                                                            <a href="#abc" title="Xóa hành động" className="delete" onClick={() => this.props.deleteTaskAction(item._id,this.props.id)}><i className="material-icons">delete</i></a>
-                                                        </div>
-                                                    }
-                                                    {this.props.role === "accountable" &&
-                                                        <div className="action-comment" style={{ display: "inline-block" }}>
-                                                            <a href="#abc" title="Đạt" className="add_circle"><i className="material-icons">check_circle_outline</i></a>
-                                                            <a href="#abc" title="Không đạt" className="delete"><i className="material-icons">highlight_off</i></a>
-                                                        </div>
-                                                    }
-                                                    <div className="comment-content" style={{ marginLeft: "8%" }}>
-                                                        {editAction === item._id ?
-                                                            <React.Fragment>
-                                                                {/* Chỉnh sửa nội dung hoạt động của công việc không theo mẫu */}
-                                                                <textarea
-                                                                    style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd' }}
-                                                                    defaultValue={item.content}
-                                                                    ref={input => this.newContentAction[item._id] = input}
-                                                                />
-                                                                <div className="row action-post">
-                                                                    <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                    <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditAction(e, item._id)}>Gửi chỉnh sửa</button>
-                                                                    <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditAction(e)}>Hủy bỏ</button>
-                                                                </div>
-                                                            </React.Fragment> :
-                                                            <React.Fragment>
-                                                                {/* Hiển thị nội dung hoạt động cho công việc không theo mẫu */}
-                                                                <div className="attach-file" style={{ marginTop: "-10px" }}>
-                                                                    {/* <a href={item.file.url} download>{item.file.name}</a> */}
-                                                                </div>
-                                                                <ul className="list-inline">
-                                                                    <li className="pull-right">
-                                                                        <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}>
-                                                                            <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.filter(child => child.parent === item._id).reduce(sum => sum + 1, 0)}) &nbsp;
-                                                                            {showChildComment === item._id ? <i className="fa fa-angle-up" /> : <i className="fa  fa-angle-down" />}
-                                                                        </a>
-                                                                    </li>
-                                                                </ul>
-                                                                {/* Hiển thị bình luận cho hoạt động không theo mẫu */}
-                                                                {showChildComment === item._id &&
-                                                                    <div className="comment-content-child">
-                                                                        {item.comments.map(child => {
-                                                                            if (child.parent === item._id) return <div className="col-sm-12 form-group margin-bottom-none" key={child._id}>
-                                                                                <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "2%" }}>
-                                                                                    <img className="img-circle img-bordered-sm"
-                                                                                        src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
-                                                                                        style={{ height: "30px", width: "30px" }} />
-                                                                                </div>
-                                                                                <div className="col-sm-11" style={{ marginBottom: "10px" }} >
-                                                                                    <span className="username">
-                                                                                        <a href="#abc">{item.creator.name}</a>
-                                                                                    </span>
-                                                                                    <p style={{ marginBottom: "-2px" }}>&nbsp;{child.content}</p>
-                                                                                    {/* <a href={child.file.url} download>{child.file.name}</a> */}
-                                                                                    <span className="description">19:30 19-11-2019</span>
-                                                                                    {(child.creator._id === this.state.currentUser || child.creator === this.state.currentUser) &&
-                                                                                        <div className="action-comment" style={{ display: "inline-block" }}>
-                                                                                            <a href="#abc" title="Sửa bình luận" className="edit" onClick={() => this.handleEditActionComment(child._id)}><i className="material-icons">edit</i></a>
-                                                                                            <a href="#abc" title="Xóa bình luận" className="delete" onClick={() => this.props.deleteActionComment(child._id,this.props.id)}><i className="material-icons">delete</i></a>
-                                                                                        </div>
-                                                                                    }
-                                                                                    {editComment === child._id &&
-                                                                                        <React.Fragment>
-                                                                                            <textarea
-                                                                                                style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "5px" }}
-                                                                                                defaultValue={child.content}
-                                                                                                ref={input => this.newContentComment[child._id] = input}
-                                                                                            />
-                                                                                            <div className="row action-post" style={{ marginRight: "-4px", marginBottom: "10px", marginLeft: "5px" }}>
-                                                                                                <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                                <button style={{ width: "15%", marginRight: "2%" }} className="col-xs-2 btn btn-success btn-sm" onClick={(e) => this.handleSaveEditActionComment(e, child._id)}>Gửi chỉnh sửa</button>
-                                                                                                <button style={{ width: "15%" }} className="col-xs-2 btn btn-default btn-sm" onClick={(e) => this.handleEditActionComment(e)}>Hủy bỏ</button>
-                                                                                            </div>
-                                                                                        </React.Fragment>
-                                                                                    }
-                                                                                </div>
-                                                                            </div>;
-                                                                            return true;
-                                                                        })
-                                                                        }
-                                                                        <div className="comment-child-action">
-                                                                            <form className="form-horizontal">
-                                                                                <div className="col-sm-12 margin-bottom-none" style={{ marginTop: "10px" }}>
-                                                                                    <div className="col-sm-1 user-block" style={{ width: "4%", marginTop: "1%" }}>
-                                                                                        <img className="img-circle img-bordered-sm"
-                                                                                            src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar"
-                                                                                            style={{ height: "30px", width: "30px" }} />
-                                                                                    </div>
-                                                                                    <div className="col-sm-11" >
-                                                                                        <textarea placeholder="Hãy nhập nội dung bình luận"
-                                                                                            style={{ width: '100%', height: 40, fontSize: 13, border: '1px solid #dddddd' }} ref={input => this.contentComment[item._id] = input} />
-                                                                                        <div className="row action-post" style={{ width: "107%" }}>
-                                                                                            <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-                                                                                            <button type="submit" style={{ width: "20%", marginRight: "2%", textAlign: "center" }} className="col-xs-2 col-xs-offset-7 btn btn-success btn-sm" onClick={(e) => this.submitComment(e, item._id, item._id)}>Gửi bình luận  </button>
-                                                                                            <button style={{ width: "16%" }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleComment}>Hủy bỏ</button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                }
-                                                            </React.Fragment>
-                                                        }
-                                                    </div>
-                                                </div>;
-                                                return true;
-                                            }) : null
-                                        }
-                                        {/* Thêm hoạt động cho công việc không theo mẫu */}
-                                        {this.props.role === "responsible" &&
+                                            </div>;
+                                            return true;
+                                        }) : null
+                                    }
+                                    {/* Thêm bình luận cho công việc*/}
+                                    {this.props.role === "responsible" &&
                                             <form className="form-horizontal" style={{ paddingTop: "2%" }}>
                                                 <div className="form-group margin-bottom-none">
                                                     <div className="col-sm-2 user-block" style={{ width: "4%", marginTop: "1%" }}>
                                                         <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
-                                                    </div>
+                                                    </div> 
                                                     <div className="col-sm-8" >
                                                         <textarea placeholder="Hãy nhập nội dung hoạt động"
-                                                            style={{ width: '60%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "-360px" }}
-                                                            onClick={this.handleAction} ref={input => this.contentAction[0] = input} />
-                                                        {action &&
-                                                            <div className="row action-post" style={{ width: "69.5%" }}>
+                                                            style={{ width: '52%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
+                                                             ref={input => this.contentTaskComment[0] = input} />
+            
+                                                            <div className="row action-post" style={{ width: "63.4%" }}>
                                                                 <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
-
-                                                                <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitAction(e, null, 0)}>Thêm hoạt động</button>
+                                                                <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitTaskComment(e, null, 0,task._id)}>Thêm hoạt động</button>
                                                                 <button style={{ width: "13%", }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleAction}>Hủy bỏ</button>
-                                                            </div>}
+                                                            </div>
                                                     </div>
                                                 </div>
                                             </form>}
-                                    </div>
-                                    {/* Chuyển qua tab trao đổi */}
-                                    <div className={selected === "actionComment" ? "active tab-pane" : "tab-pane"} id="actionComment">
-                                        <div>Tab trao đổi</div>
                                     </div>
                                     {/* Chuyển qua tab tài liệu */}
                                     <div className={selected === "documentTask" ? "active tab-pane" : "tab-pane"} id="documentTask">
@@ -1398,11 +1670,12 @@ class ModalPerformTask extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, KPIPersonalManager } = state;//cho là overviewKpiPersonal
+    const { tasks, performtasks, user, KPIPersonalManager } = state;
     return { tasks, performtasks, user, KPIPersonalManager };
 }
 
 const actionCreators = {
+
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getTaskById: taskManagementActions.getTaskById,
     addActionComment: performTaskAction.addActionComment,
@@ -1419,7 +1692,14 @@ const actionCreators = {
     getLogTimer: performTaskAction.getLogTimerTask,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,    //kpi member actions ko thì cho vào managerKpiActions (của personal) cũng đc
+    getAllKPIPersonalByMember: managerKpiActions.getAllKPIPersonalOfResponsible,
+    getTaskComments: performTaskAction.getTaskComments,
+    editTaskComment: performTaskAction.editTaskComment,
+    deleteTaskComment: performTaskAction.deleteTaskComment,
+    createTaskComment: performTaskAction.createTaskComment,
+    createCommentOfTaskComment: performTaskAction.createCommentOfTaskComment,
+    editCommentOfTaskComment: performTaskAction.editCommentOfTaskComment,
+    deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment
 };
 const connectedModalPerformTask = connect(mapState, actionCreators)(ModalPerformTask);
 export { connectedModalPerformTask as ModalPerformTask };

@@ -1,5 +1,4 @@
 import getBrowserFingerprint from 'get-browser-fingerprint';
-// import Fingerprint2 from 'fingerprintjs2';
 
 export const clearStorage = () => {
     localStorage.removeItem('currentRole');

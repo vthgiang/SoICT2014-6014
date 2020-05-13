@@ -186,6 +186,7 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
     const dataLinks = systemLinks.map( link => {
         return {
             url: link.url,
+            category: link.category,
             description: link.description,
             company: companyId
         };
@@ -218,9 +219,6 @@ exports.createCompanyLinks = async(companyId, linkArr, roleArr) => {
         }
     }
     await Privilege.insertMany(dataPrivilege);
-    const activeLinks = await SystemLink.find({_id: { $in: linkArr }});
-    const data = await activeLinks.map(link => link.url);
-    await Link.updateMany({ url: { $in: data }},{ active: true });
 
     return await Link.find({company: companyId}).populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }});
 } 
@@ -311,15 +309,16 @@ exports.editCompanySuperAdmin = async(companyId, superAdminEmail) => {
  * @linkUrl đường dẫn cho link muốn tạo
  * @linkDescription mô tả về link
  */
-exports.addCompanyLink = async(companyId, linkUrl, linkDescription) => {
+exports.addCompanyLink = async(companyId, data) => {
     const check = await Link.findOne({
         company: companyId,
-        url: linkUrl
+        url: data.url
     });
     if(check !== null) throw['url_exist'];
     const newLink = await Link.create({
-        url: linkUrl,
-        description: linkDescription,
+        url: data.url,
+        description: data.description,
+        category: data.category,
         company: companyId
     });
 
@@ -350,16 +349,17 @@ exports.deleteCompanyLink = async(companyId, linkId) => {
  * @componentDescription mô tả về component
  * @linkId id của link được chứa component này
  */
-exports.addCompanyComponent = async(companyId, componentName, componentDescription, linkId) => {
+exports.addCompanyComponent = async(companyId, data) => {
     const check = await Component.findOne({
         company: companyId,
-        name: componentName
+        name: data.name
     });
     if(check !== null) throw['component_exist'];
+    const link = await Link.findOne({company: companyId, url: data.link});
     const newComponent = await Component.create({
-        name: componentName,
-        description: componentDescription,
-        link: linkId,
+        name: data.name,
+        description: data.description,
+        link: link._id,
         company: companyId
     });
 

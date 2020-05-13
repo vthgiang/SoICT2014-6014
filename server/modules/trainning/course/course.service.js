@@ -1,40 +1,47 @@
-const Course = require('../../../models/training/course.model');
-const EducationProgram = require('../../../models/training/educationProgram.model');
+const {
+    EducationProgram,
+    Course
+} = require('../../../models').schema;
 
-//Lấy danh sách khoá học 
+/**
+ * Lấy danh sách khoá học theo key
+ * @data : dữ liệu key tìm kiếm
+ * @company : Id công ty
+ */
 exports.searchCourses = async (data, company) => {
     var keySearch = {
         company: company
     }
+    console.log(data);
     // Bắt sựu kiện mã khoá đào tạo khác ""
-    if (data.numberCourse !== "") {
+    if (data.courseId !== "") {
         keySearch = {
             ...keySearch,
-            numberCourse: {
-                $regex: data.numberCourse,
+            courseId: {
+                $regex: data.courseId,
                 $options: "i"
             }
         }
     }
-    // Bắt sựu kiện loại đào tạo khác All
-    if (data.typeCourse !== "All") {
+    // Bắt sựu kiện loại đào tạo khác null
+    if (data.type !== null) {
         keySearch = {
             ...keySearch,
-            typeCourse: data.typeCourse
+            type: data.type
         }
     }
     var totalList = await Course.count(keySearch);
-    var allList = await Course.find(keySearch)
+    var listCourses = await Course.find(keySearch)
         .skip(data.page).limit(data.limit)
         .populate({
             path: 'educationProgram',
             model: EducationProgram
         });
-    var content = {
+    console.log(listCourses);
+    return {
         totalList,
-        allList
+        listCourses
     }
-    return content;
 }
 
 /** Lấy danh sách khóa học của một chương trình đào tạo */

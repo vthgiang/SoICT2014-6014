@@ -267,8 +267,8 @@ class ModalAddTaskTemplate extends Component {
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
         
-        if (department.unitofuser) {
-            units = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
             currentUnit = units.find(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -496,7 +496,7 @@ function mapState(state) {
 
 const actionCreators = {
     addNewTemplate: taskTemplateActions.addTaskTemplate,
-    getDepartment: DepartmentActions.getDepartmentOfUser,
+    getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,

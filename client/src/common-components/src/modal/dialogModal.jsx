@@ -21,13 +21,21 @@ class DialogModal extends Component {
         });
         if(reset) document.getElementById(this.props.formID).reset();
         window.$(`#${this.props.modalID}`).modal("hide");
+
+        if (this.props.afterClose !== undefined){
+            this.props.afterClose()
+        }
     }
 
     save = () => {
-        const {closeOnSave = true, resetOnSave = false} = this.props;
+        const {closeOnSave = true, resetOnSave = false, afterSave} = this.props;
         this.props.func();
         if (closeOnSave){
             this.closeModal(resetOnSave);
+        }
+
+        if (afterSave !== undefined){
+            afterSave()
         }
     }
 
@@ -41,7 +49,7 @@ class DialogModal extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth} = this.props;
+        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth, hasNote=true, bodyStyle={}} = this.props;
         return ( 
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -51,13 +59,15 @@ class DialogModal extends Component {
                                 <button type="button" className="close" onClick={()=>this.closeModal(resetOnClose)}>&times;</button>
                                 <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
-                            <div className="modal-body text-left">
+                            <div className="modal-body text-left" style={bodyStyle}>
                                 {this.props.children}
                             </div>
                             <div className="modal-footer">
                                 <div className="row">
                                     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                        <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
+                                        {
+                                            hasNote && <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
+                                        }
                                     </div>
                                     <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         {

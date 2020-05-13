@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit } = require('../../../models/index').schema;
+const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User } = require('../../../models/index').schema;
 
 /**
  * Lấy tất cả các công việc
@@ -14,13 +14,38 @@ const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, Organizat
  */
 exports.getTask = async (id) => {
     //req.params.id
-    var task = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees parent" });        
-    return {
-        "info": task,
-        "actions": task.taskActions,
-        "informations": task.taskInformations
-    };
+    var superTask = await Task.findById(id)
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })   
+        .populate("evaluations.results.employee")
+        .populate("evaluations.kpis.employee")
+        .populate("evaluations.kpis.kpis")
+
+    var task = await Task.findById(id).populate([
+        {path: "parent", select: "name"},
+        {path: "organizationalUnit", model: OrganizationalUnit},
+        {path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: "evaluations.results.employee", select: "name email _id"},
+        {path: "evaluations.kpis.employee", select: "name email _id"},
+        {path: "evaluations.kpis.kpis"}
+    ])
+    
+    if(task.taskTemplate === null){
+        return {
+            "info": task,
+            // "actions": task.taskActions,
+            // "informations": task.taskInformations
+        };
+    } else {
+        var task2 = await Task.findById(id)
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
+        .populate({path: "taskActions.creator", model: User, select: "name email"});
+        return {
+            "info": task,
+            "actions": task2.taskActions,
+            "informations": task2.taskInformations
+        };
+    }
+        
 }
 
 /**
@@ -183,6 +208,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (perpageId,numberId,uni
 /**
  * Tạo công việc mới
  */
+
+
 exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,nameId,descriptionId,priorityId,taskTemplateId,roleId,kpiId,responsibleId,accountableId,consultedId,informedId) => {
     // Lấy thông tin công việc cha
         var level = 1;
@@ -196,12 +223,20 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         var startDate = new Date(startTime[2], startTime[1]-1, startTime[0]);
         var endTime = endDateId.split("-");
         var endDate = new Date(endTime[2], endTime[1]-1, endTime[0]);
+        
         if(taskTemplateId !== null){
-            var taskTemplate = TaskTemplate.findById(taskTemplateId)
+            var taskTemplate = await TaskTemplate.findById(taskTemplateId);
+            var taskActions = taskTemplate.taskActions;
+            taskActions.toObject();
+            taskActions.forEach(item => {
+                item.creator=creatorId
+                delete item._id
+            });
+
         }
-        console.log(taskTemplate);
+        console.log(taskActions)
         var evaluations = [{
-            date: startDate,
+            // date: startDate,
             kpis : kpiId,
             results : [],
             taskInformations: taskTemplate?taskTemplate.taskInformations:[],
@@ -215,8 +250,9 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
             startDate: startDate,
             endDate: endDate,
             priority: priorityId,
+            taskTemplate: taskTemplate ? taskTemplate : null,
             taskInformations: taskTemplate?taskTemplate.taskInformations:[],
-            taskActions: taskTemplate?taskTemplate.taskActions:[],
+            taskActions: taskTemplate?taskActions:[],
             role: roleId,
             parent: parentId,
             level: level,
@@ -226,12 +262,16 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
             consultedEmployees: consultedId,
             informedEmployees: informedId,
         });
+
         if(taskTemplateId !== null){
             var taskTemplate = await TaskTemplate.findByIdAndUpdate(
                 taskTemplateId, { $inc: { 'numberOfUse': 1} }, { new: true }
             );
         }
-        task = await task.populate({path: "organizationalUnit creator parent"}).execPopulate();
+        
+        task = await task.populate({path: "organizationalUnit creator parent"},
+        )
+        console.log("HAHHAHA")
         return task;
 }
 

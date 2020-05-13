@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { managerActions } from '../redux/actions';
 import { ModalDetailKPI } from './organizationalUnitKpiDetailModal';
 import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';
@@ -17,7 +17,6 @@ class KPIUnitManager extends Component {
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id')
         this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
-        this.handleResizeColumn();
     }
     componentDidUpdate() {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
@@ -29,34 +28,6 @@ class KPIUnitManager extends Component {
                 }
             })
         }
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     formatDate(date) {
         var d = new Date(date),
@@ -71,6 +42,7 @@ class KPIUnitManager extends Component {
 
         return [month, year].join('-');
     }
+    handleSearchData(){};
     showModalCopy = async (id) => {
         await this.setState(state => {
             return {
@@ -91,10 +63,10 @@ class KPIUnitManager extends Component {
     render() {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
-        const { department, managerKpiUnit } = this.props;
+        const { user, managerKpiUnit } = this.props;
         
-        if (department.unitofuser) {
-            unitList = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -108,40 +80,85 @@ class KPIUnitManager extends Component {
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 currentTargets =currentKPI[0].kpis.map(item => { return { y: item.weight, name: item.name } });
                 datachat1 = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.result }
+                    return { label: this.formatDate(item.date), y: item.result }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[0].result }
+                    return { label: this.formatDate(item.date), y: item.listtarget[0].result }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: item.listtarget[1].result }
+                    return { label: this.formatDate(item.date), y: item.listtarget[1].result }
                 }).reverse();
                 targetOther = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
+                    return { label: this.formatDate(item.date), y: (item.result - item.listtarget[0].result - item.listtarget[1].result) }
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
-                    return { label: this.formatDate(item.time), y: (100 - item.result) }
+                    return { label: this.formatDate(item.date), y: (100 - item.result) }
                 }).reverse();
             };
             
         }
+        console.log("listkpi---", listkpi);
         return (
             <React.Fragment>
             <div className="box">
+                
                 <div className="box-body qlcv">
-                    <DataTableSetting class="pull-right" tableId="tree-table" tableContainerId="tree-table-container"
-                        tableWidth="1300px" columnArr={[ 'STT' ,'Người tạo', 'Thời gian' , 'Số lượng mục tiêu'
-                        , 'Kết quả đánh giá' ,'Xem chi tiết' , 'Tạo KPI tháng mới' , 'Cập nhật' ]} limit={this.state.perPage}
-                        setLimit={this.setLimit} hideColumnOption={true} />
-                    <table id="example1" className="table table-hover table-bordered">
+                <div className="form-inline">
+                        <div className="form-group">
+                            <label>Người tạo:</label>
+                            <select defaultValue={4} className="form-control" ref={input=> this.status = input}>
+                            <option value={0}>Nguyễn Văn An</option>
+                            <option value={1}>Tất cả</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Trạng thái:</label>
+                            <select defaultValue={4} className="form-control" ref={input=> this.status = input}>
+                            <option value={0}>Đang thiết lập</option>
+                            <option value={1}>Chờ phê duyệt</option>
+                            <option value={2}>Đã kích hoạt</option>
+                            <option value={3}>Đã kết thúc</option>
+                            <option value={4}>Đang hoạt động</option>
+                            <option value={5}>Tất cả các trạng thái</option>
+                            </select>
+                        </div>
+                        </div>
+
+                        <div className="form-inline">
+                        <div className="form-group">
+                            <label>Từ tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.startDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
+
+                        </div>
+                        <div className="form-group">
+                            <label>Đến tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.endDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
+                            <div className="form-group">
+                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
+                                kiếm</button>
+                            </div>
+
+                        </div>
+
+                        </div>
+
+                <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
+                    columnArr={[ 'STT', 'Người tạo', 'Thời gian', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
+                    limit={this.state.perPage}
+                    setLimit={this.setLimit} hideColumnOption={true} />
+                    <table id="kpiTable" className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th tittle="STT">STT</th>
+                                <th title="STT">STT</th>
                                 <th title="Người tạo">Người tạo</th>
                                 <th title="Thời gian">Thời gian</th>
                                 <th title="Số lượng mục tiêu">Số lượng mục tiêu</th>
                                 <th title="Kết quả đánh giá">Kết quả đánh giá</th>
-                                <th tittle="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
+                                <th title="Xem chi tiết" style={this.checkPermisson(currentUnit && currentUnit[0].dean)? {} :
                                     {}}>Xem chi tiết</th>
                                 <th tittle="Tạo KPI tháng mới" style={this.checkPermisson(currentUnit && currentUnit[0].dean)?
                                     {} : {}}>Tạo KPI tháng mới</th>
@@ -156,9 +173,9 @@ class KPIUnitManager extends Component {
                             <tr key={index+1}>
                                 <td title={index+1}>{index + 1}</td>
                                 <td>{item.creator.name}</td>
-                                <td>{this.formatDate(item.time)}</td>
+                                <td>{this.formatDate(item.date)}</td>
                                 <td>{item.kpis.length}</td>
-                                <td>{item.result}</td>
+                                <td>{item.result=== null ? "Chưa đánh giá" : item.result}</td>
                                 <td>
                                     <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static"
                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
@@ -196,12 +213,12 @@ class KPIUnitManager extends Component {
 }
 
 function mapState(state) {
-    const { department, managerKpiUnit } = state;
-    return { department, managerKpiUnit };
+    const { user, managerKpiUnit } = state;
+    return { user, managerKpiUnit };
 }
 
 const actionCreators = {
-    getDepartment: DepartmentActions.getDepartmentOfUser,
+    getDepartment: UserActions.getDepartmentOfUser,
     getAllKPIUnit: managerActions.getAllKPIUnit,
     refreshData: managerActions.evaluateKPIUnit
 };

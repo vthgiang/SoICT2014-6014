@@ -2,7 +2,12 @@ import axios from 'axios';
 import {
     handleResponse
 } from '../../../../../helpers/handleResponse';
-import { LOCAL_SERVER_API } from '../../../../../env';
+import {
+    LOCAL_SERVER_API
+} from '../../../../../env';
+import {
+    sendRequest
+} from '../../../../../helpers/requestHelper';
 import {
     AuthenticateHeader,
     AuthenticateHeaderPATCH
@@ -25,13 +30,11 @@ export const EmployeeService = {
 
 // Lấy danh sách nhân viên
 function getAll(data) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/employee/paginate`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    }
-
-    return fetch(`${ LOCAL_SERVER_API }/employee/paginate`, requestOptions).then(handleResponse);
+        data: data,
+    }, false, true, 'human_resource.profile.employee_management');
 }
 
 // Kiểm tra sự tồn tại của MSNV 
@@ -55,15 +58,12 @@ function checkEmail(email) {
 }
 
 // Thêm mới thông tin nhân viên
-function addNewEmployee(newEmployee) {
-    const requestOptions = {
+function addNewEmployee(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/employee`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(newEmployee)
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/employee`, requestOptions).then(handleResponse)
-
+        data: data,
+    }, true, true, 'human_resource.profile.employee_management');
 }
 
 // Cập nhật thông tin nhân viên theo id
@@ -74,6 +74,17 @@ function updateInformationEmployee(id, data) {
         body: JSON.stringify(data)
     };
     return fetch(`${ LOCAL_SERVER_API }/employee/update/${id}`, requestOptions).then(handleResponse);
+}
+
+/**
+ * Xoá thông tin nhân viên
+ * @id : id thông tin nhân viên cần xoá
+ */
+function deleteEmployee(id) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/employee/${id}`,
+        method: 'DELETE',
+    }, true, true, 'human_resource.profile.employee_management');
 }
 
 
@@ -140,15 +151,7 @@ function updateFile(employeeNumber, fileUpload) {
 
 }
 
-// Xoá thông tin nhân viên
-function deleteEmployee(id) {
-    const requestOptions = {
-        method: 'DELETE',
-        headers: AuthenticateHeader(),
-    };
 
-    return fetch(`${ LOCAL_SERVER_API }/employee/${id}`, requestOptions).then(handleResponse);
-}
 
 // Kiểm tra sự tồn tại của MSNV trong array 
 function checkArrayMSNV(arrayMSNV) {

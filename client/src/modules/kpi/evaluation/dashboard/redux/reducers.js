@@ -1,42 +1,27 @@
-import { kpiMemberConstants } from "./constants";
+import { dashboardEmployeeKpiConstants } from "./constants";
  
-export function kpimembers(state = {}, action) {
+export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
   switch (action.type) {
-    case  kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST:
+    case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_REQUEST:
       return {
         loading: true,
         isLoading: true
       };
-    case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_SUCCESS:
+
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_SUCCESS:      
       return {
         ...state,
         loading: false,
-        kpimembers: action.payload,
+        employeeKpiSets: action.payload,
         isLoading: false
       };
-    case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE:
+
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_FAILURE:
       return { 
         error: action.payload,
         isLoading: false
       };
-    case  kpiMemberConstants.GETALL_KPIMEMBER_REQUEST:
-      return {
-        ...state,
-        loading: true,
-        isLoading: true
-      };
-    case kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        kpimembers: action.payload,
-        isLoading: false
-      };
-    case kpiMemberConstants.GETALL_KPIMEMBER_FAILURE:
-      return { 
-        error: action.payload,
-        isLoading: false
-      };
+
     default:
       return state
   }

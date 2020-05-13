@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUnitKpiActions } from '../redux/actions.js';
-import { DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions} from '../../../../super-admin/user/redux/actions';
 import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddTargetModal';
 import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateModal';
 import Swal from 'sweetalert2';
@@ -240,10 +240,10 @@ class OrganizationalUnitKpiCreate extends Component {
     
     render() {
         var unitList, currentUnit, currentKPI;
-        const { department, createKpiUnit } = this.props;
+        const { user, createKpiUnit } = this.props;
         const { editing } = this.state;
-        if (department.unitofuser) {
-            unitList = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -341,7 +341,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} data-toggle="modal" data-target={`#editTargetKPIUnit${item._id}`} data-backdrop="static" data-keyboard="false"><i className="material-icons"></i></a>
                                                             <OrganizationalUnitKpiEditTargetModal target={item} organizationalUnit={currentUnit && currentUnit[0]} />
-                                                            {item.default === 0 ?
+                                                            {item.type === 0 ?
                                                                 <a href="#abc" className="delete" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete_title')} onClick={() => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id)}>
                                                                     <i className="material-icons"></i>
                                                                 </a> :
@@ -397,12 +397,12 @@ class OrganizationalUnitKpiCreate extends Component {
 }
 
 function mapState(state) {
-    const { department, createKpiUnit } = state;
-    return { department, createKpiUnit };
+    const { createKpiUnit, user } = state;
+    return { createKpiUnit, user };
 }
 
 const actionCreators = {
-    getDepartment: DepartmentActions.getDepartmentOfUser,
+    getDepartment: UserActions.getDepartmentOfUser,
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
     editKPIUnit: createUnitKpiActions.editKPIUnit,
     deleteKPIUnit: createUnitKpiActions.deleteKPIUnit,

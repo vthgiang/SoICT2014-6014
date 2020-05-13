@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions} from '../redux/actions';
-
+import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 class ModalMemberApprove extends Component {
     constructor(props) {
         super(props);
@@ -198,11 +198,21 @@ class ModalMemberApprove extends Component {
         }
     }
     render() {
-        var kpimember, kpimember;
+        var kpimember;
         const { kpimembers } = this.props;
         const { checkInput } = this.state;
         if (kpimembers.currentKPI) kpimember = kpimembers.currentKPI;
-        if (kpimembers.kpimember) kpimember = kpimembers.kpimember;
+        if (kpimembers.kpimembers){
+            var arrkpimember = kpimembers.kpimembers;
+            arrkpimember.forEach(item => {
+                var datekpi= item.date.split('-');
+                var date= new Date();
+                if((date.getMonth()+1)==datekpi[1] && date.getFullYear()==datekpi[2]){
+                    kpimember= item;
+                }
+            });
+        } 
+
         return (
             <div className="modal modal-full fade" id={"memberKPIApprove" + this.props.id} tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog-full">
@@ -216,9 +226,11 @@ class ModalMemberApprove extends Component {
                                 <h3 className="modal-title" id="myModalLabel">Phê duyệt KPI nhân viên {kpimember && kpimember.creator.name}</h3>
                             </div>
                             <div className="col-sm-5" style={{ marginTop: "-5px", marginLeft: "7%" }}>
-                                {this.state.compare ? <button className="col-sm-3 btn btn-success" style={{marginLeft:"48%"}} onClick={() => this.handleCompare()}>Tắt so sánh</button>
-                                    : <button className="col-sm-3 btn btn-success" style={{ marginLeft: "48%" }} onClick={() => this.handleCompare(kpimember.creator._id)}>So sánh với KPI cũ</button>}
-                                <button className="col-sm-3 btn btn-success" style={{ marginLeft: "10px" }} onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>
+                                <div className="row">
+                                    {this.state.compare ? <button className="col-sm-3 btn btn-success" style={{marginLeft:"48%"}} onClick={() => this.handleCompare()}>Tắt so sánh</button>
+                                        : <button className="col-sm-3 btn btn-success" style={{ marginLeft: "30%" }} onClick={() => this.handleCompare(kpimember.creator._id)}>So sánh với KPI cũ</button>}
+                                    <button className="col-sm-3 btn btn-success" style={{ marginLeft: "10px" }} onClick={()=>this.handleApproveKPI(kpimember._id, kpimember.kpis)}>Duyệt toàn bộ KPI</button>
+                                </div>
                             </div>
                         </div>
                         <div className="modal-body modal-body-perform-task" >
@@ -230,7 +242,7 @@ class ModalMemberApprove extends Component {
                                 </div>
                                 <div className="col-xs-12">
                                     <label className="col-sm-2"><b>Thời gian:</b></label>
-                                    <label className="col-sm-10">{kpimember && this.formatDate(kpimember.time)}</label>
+                                    <label className="col-sm-10">{kpimember && this.formatDate(kpimember.date)}</label>
                                 </div>
                                 <div className="col-xs-12" style={{ marginBottom: "10px" }}>
                                     <label className="col-sm-2">Số mục tiêu:</label>
@@ -275,7 +287,7 @@ class ModalMemberApprove extends Component {
                                                         <td>{item.parent.name}</td>
                                                         <td>{item.criteria}</td>
                                                         <td>{this.state.edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
-                                                        <td>{item.approverpoint}</td>
+                                                        <td>{item.approvedPoint}</td>
                                                     </tr>
                                                 ) : <tr><td colSpan={5}>Không có dữ liệu phù hợp</td></tr>
                                             }
@@ -285,9 +297,12 @@ class ModalMemberApprove extends Component {
                             <div className="col-xs-12">
                                 {this.state.compare && <div style={{marginBottom: "5px"}}>
                                     <h4 style={{display: "inline"}}><b>KPI tháng này</b></h4>
-                                    {/* <button className="btn btn-success" style={{marginLeft: "80%"}}>Duyệt toàn bộ KPI</button> */}
+                                    <button className="btn btn-success" style={{marginLeft: "80%"}}>Duyệt toàn bộ KPI</button>
                                 </div>}
-                                <table className="table table-bordered table-striped">
+                                
+                                <DataTableSetting class="pull-right" tableId="kpiApprove" tableContainerId="tree-table-container" tableWidth="1300px"
+                                columnArr={[ 'Tên mục tiêu' ,'Mục tiêu đơn vị', 'Tiêu chí đánh giá' , 'Trọng số' , 'Trạng thái' , 'Hành động']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+                                <table id ="kpiApprove" className="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th title="Tên mục tiêu" style={{ width: "252px" }}>Tên mục tiêu</th>

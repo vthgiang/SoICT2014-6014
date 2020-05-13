@@ -1,97 +1,72 @@
 import {
     EducationConstants
 } from './constants';
+const initState = {
+    isLoading: false,
+    listAll: [],
+    listEducations: [],
+    totalList: "",
+    error: "",
+}
 
-export function education(state = {}, action) {
+export function education(state = initState, action) {
     switch (action.type) {
         case EducationConstants.GET_LIST_ALL_EDUCATION_REQUEST:
+        case EducationConstants.GET_LISTEDUCATION_REQUEST:
+        case EducationConstants.CREATE_EDUCATION_REQUEST:
+        case EducationConstants.DELETE_EDUCATION_REQUEST:
+        case EducationConstants.UPDATE_EDUCATION_REQUEST:
             return {
                 ...state,
-                isLoading: true,
-
+                isLoading: true
             };
         case EducationConstants.GET_LIST_ALL_EDUCATION_SUCCESS:
             return {
                 ...state,
-                listAll: action.listAll.content,
+                listAll: action.payload,
                     isLoading: false,
-            };
-        case EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-        case EducationConstants.GET_LISTEDUCATION_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
-
             };
         case EducationConstants.GET_LISTEDUCATION_SUCCESS:
             return {
                 ...state,
-                listEducation: action.listEducation.content.allList,
-                    totalList: action.listEducation.content.totalList,
+                listEducations: action.payload.listEducations,
+                    totalList: action.payload.totalList,
                     isLoading: false,
-            };
-        case EducationConstants.GET_LISTEDUCATION_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-        case EducationConstants.CREATE_EDUCATION_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
             };
         case EducationConstants.CREATE_EDUCATION_SUCCESS:
             return {
                 ...state,
-                listEducation: [
-                        ...state.listEducation,
-                        action.newEducation.content
+                listEducations: [
+                        ...state.listEducations,
+                        action.payload
                     ],
                     isLoading: false,
             };
-        case EducationConstants.CREATE_EDUCATION_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-        case EducationConstants.DELETE_EDUCATION_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
-            };
         case EducationConstants.DELETE_EDUCATION_SUCCESS:
+            console.log(action.payload);
             return {
                 ...state,
-                listEducation: state.listEducation.filter(education => education._id !== action.deleteEducation.content._id),
+                listEducations: state.listEducations.filter(education => education._id !== action.payload._id),
                     isLoading: false,
-            };
-        case EducationConstants.DELETE_EDUCATION_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
-        case EducationConstants.UPDATE_EDUCATION_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
             };
         case EducationConstants.UPDATE_EDUCATION_SUCCESS:
             return {
                 ...state,
-                listEducation: state.listEducation.map(education =>
-                        education._id === action.updateEducation.content._id ?
-                        action.updateEducation.content : education
+                listEducations: state.listEducations.map(education =>
+                        education._id === action.payload._id ?
+                        action.payload : education
                     ),
                     isLoading: false,
             };
+        case EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE:
+        case EducationConstants.GET_LISTEDUCATION_FAILURE:
+        case EducationConstants.CREATE_EDUCATION_FAILURE:
+        case EducationConstants.DELETE_EDUCATION_FAILURE:
         case EducationConstants.UPDATE_EDUCATION_FAILURE:
             return {
-                error: action.error,
+                ...state,
                 isLoading: false,
+                    error: action.error.message
             };
         default:
             return state

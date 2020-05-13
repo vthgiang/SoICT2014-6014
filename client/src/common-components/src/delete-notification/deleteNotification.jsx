@@ -23,16 +23,11 @@ class DeleteNotification extends Component {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            cancelButtonText: this.props.translate('confirm.no'),
-            confirmButtonText: this.props.translate('confirm.yes'),
+            cancelButtonText: this.props.translate('general.no'),
+            confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                const handleFunction = func(data.id);
-                if(handleFunction !== undefined){
-                    handleFunction
-                        .then(res => toast.success(res.message, {containerId: 'toast-notification'}))
-                        .catch(err => toast.error(err.response.data.message, {containerId: 'toast-notification'}))
-                }
+                func(data.id);
             }
         })
     }

@@ -50,6 +50,8 @@ const CourseSchema = new Schema({
         ref: EducationProgram,
         required: true
     },
-})
+}, {
+    timestamps: true,
+});
 
 module.exports = Course = mongoose.model("courses", CourseSchema);

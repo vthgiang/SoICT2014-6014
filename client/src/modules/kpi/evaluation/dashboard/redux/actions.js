@@ -1,49 +1,28 @@
-import { kpiMemberConstants } from "./constants";
-import { kpiMemberServices } from "./services";
-export const kpiMemberActions = {
-    getAllKPIMemberOfUnit,
-    getAllKPIMemberByMember,
+import {  dashboardEmployeeKpiConstants } from "./constants";
+import {  dashboardEmployeeKpiService } from "./services";
+
+export const DashboardEvaluationEmployeeKpiSetAction = {
+    getAllEmployeeKpiSetOfUnit
 };
 
 // Lấy tất cả KPI cá nhân
-function getAllKPIMemberOfUnit(infosearch) {
+function getAllEmployeeKpiSetOfUnit(role) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST});
-        kpiMemberServices.getAllKPIMemberOfUnit(infosearch)
-            .then(res=>{
+        dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_REQUEST});
+ 
+        dashboardEmployeeKpiService.getAllEmployeeKpiSetOfUnit(role)
+            .then(res=>{                
                 dispatch({
-                    type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_SUCCESS,
+                    type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_SUCCESS,
                     payload: res.data.content
                 })
             })
-            .catch(error=>{
+            .catch(error => {
                 dispatch({
-                    type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE,
+                    type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_FAILURE,
                     payload: error
                 })
             })
     };
 }
-// Lấy tất cả KPI cá nhân
-function getAllKPIMemberByMember() { //member
-    return dispatch => {
-        dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
-        kpiMemberServices.getAllKPIMemberByMember()
-            .then(res=>{
-                dispatch({
-                    type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error =>{
-                dispatch({
-                    type: kpiMemberConstants.GETALL_KPIMEMBER_FAILURE,
-                    payload: error
-                })
-            })
-    };
-
-}
-
-
 

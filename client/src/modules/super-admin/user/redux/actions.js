@@ -10,7 +10,8 @@ export const UserActions = {
     getRoleSameDepartment,
     getAllUserOfCompany,
     getAllUserOfDepartment,
-    getAllUserSameDepartment
+    getAllUserSameDepartment,
+    getDepartmentOfUser,
 };
 
 function get(){
@@ -190,4 +191,20 @@ function getAllUserSameDepartment(currentRole) {
     function request(id) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST, id } }
     function success(users) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_SUCCESS, users } }
     function failure(error) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE, error } }
+}
+
+function getDepartmentOfUser() {
+    return dispatch => {
+        dispatch(request());
+
+        UserServices.getDepartmentOfUser()
+            .then(
+                departments => dispatch(success(departments)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() { return { type: UserConstants.GETDEPARTMENT_OFUSER_REQUEST} }
+    function success(departments) { return { type: UserConstants.GETDEPARTMENT_OFUSER_SUCCESS, departments } }
+    function failure(error) { return { type: UserConstants.GETDEPARTMENT_OFUSER_FAILURE, error } }
 }

@@ -18,14 +18,14 @@ class SelectMulti extends Component {
     }
 
     static isEqual = (items1, items2) => {
-        if(!items1 || !items2){
+        if (!items1 || !items2) {
             return false;
         }
-        if (items1.length !== items2.length){
+        if (items1.length !== items2.length) {
             return false;
         }
-        for (let i=0; i<items1.length; ++i){
-            if (items1[i].value !== items2[i].value){
+        for (let i = 0; i < items1.length; ++i) {
+            if (items1[i].value !== items2[i].value) {
                 return false;
             }
         }
@@ -43,7 +43,7 @@ class SelectMulti extends Component {
                 onChange(value);
             }
         })
-        
+
     }
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
@@ -57,8 +57,8 @@ class SelectMulti extends Component {
         window.$("#" + id).multiselect('select', this.state.value);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.id !== prevState.id || !SelectMulti.isEqual(nextProps.items, prevState.items)){
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id || !SelectMulti.isEqual(nextProps.items, prevState.items)) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
@@ -69,7 +69,7 @@ class SelectMulti extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState){
+    shouldComponentUpdate(nextProps, nextState) {
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi
         if (nextProps.id !== this.state.id || !SelectMulti.isEqual(nextProps.items, this.state.items))
             return true;
@@ -77,15 +77,15 @@ class SelectMulti extends Component {
     }
 
     render() {
-        const { id, items } = this.props;
+        const { id, items, display } = this.props;
         return (
             <React.Fragment>
-                <div className="selectmulti">
-                <select className="form-control" style ={{display: "none"}} ref="selectmulti" id={id} multiple="multiple" value={this.state.value} onChange={()=>{}}>
-                    {items.map(item => {
-                        return <option key={item.value} value={item.value}>{item.text}</option>
-                    })}
-                </select>
+                <div className={`selectmulti ${display}`}>
+                    <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={this.state.value} onChange={() => { }}>
+                        {items.map(item => {
+                            return <option key={item.value} value={item.value}>{item.text}</option>
+                        })}
+                    </select>
                 </div>
             </React.Fragment>
         );

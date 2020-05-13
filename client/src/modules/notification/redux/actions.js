@@ -2,41 +2,82 @@ import { NotificationServices } from "./services";
 import { NotificationConstants } from "./constants";
 
 export const NotificationActions = {
-    getNotificationReceivered,
-    getNotificationSent,
+    getAllManualNotifications,
+    paginateManualNotifications,
+    getAllNotifications,
+    paginateNotifications,
     create,
-    deleteNotificationReceivered,
-    deleteNotificationSent
+    readedNotification,
+    deleteManualNotification,
+    deleteNotification,
+    setLevelNotificationReceivered,
+    setLevelNotificationSent
 }
 
-function getNotificationReceivered(){
+function getAllManualNotifications(){
     return dispatch => {
-        dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_REQUEST});
+        dispatch({ type: NotificationConstants.GET_MANUAL_NOTIFICATIONS_REQUEST});
         NotificationServices
-            .getNotificationReceivered()
+            .getAllManualNotifications()
             .then(res => {
                 dispatch({
-                    type: NotificationConstants.GET_NOTIFICATIONS_RECEIVERED_SUCCESS,
+                    type: NotificationConstants.GET_MANUAL_NOTIFICATIONS_SUCCESS,
                     payload: res.data.content //danh sách các notification
                 });
             })
             .catch(err => {
+                dispatch({ type: NotificationConstants.GET_MANUAL_NOTIFICATIONS_FAILE});
             })
     }
 }
 
-function getNotificationSent(){
+function paginateManualNotifications(data){
     return dispatch => {
-        dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_SENT_REQUEST});
+        dispatch({ type: NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_REQUEST});
         NotificationServices
-            .getNotificationSent()
+            .paginateManualNotifications(data)
             .then(res => {
                 dispatch({
-                    type: NotificationConstants.GET_NOTIFICATIONS_SENT_SUCCESS,
+                    type: NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_SUCCESS,
                     payload: res.data.content //danh sách các notification
                 });
             })
             .catch(err => {
+                dispatch({ type: NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_FAILE});
+            })
+    }
+}
+
+function getAllNotifications(){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_REQUEST});
+        NotificationServices
+            .getAllNotifications()
+            .then(res => {
+                dispatch({
+                    type: NotificationConstants.GET_NOTIFICATIONS_SUCCESS,
+                    payload: res.data.content //danh sách các notification
+                });
+            })
+            .catch(err => {
+                dispatch({ type: NotificationConstants.GET_NOTIFICATIONS_FAILE});
+            })
+    }
+}
+
+function paginateNotifications(data){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.PAGINATE_NOTIFICATIONS_REQUEST});
+        NotificationServices
+            .paginateNotifications(data)
+            .then(res => {
+                dispatch({
+                    type: NotificationConstants.PAGINATE_NOTIFICATIONS_SUCCESS,
+                    payload: res.data.content //danh sách các notification
+                });
+            })
+            .catch(err => {
+                dispatch({ type: NotificationConstants.PAGINATE_NOTIFICATIONS_FAILE});
             })
     }
 }
@@ -53,40 +94,66 @@ function create(data){
                 });
             })
             .catch(err => {
+                dispatch({ type: NotificationConstants.CREATE_NOTIFICATION_FAILE});
             })
     }
 }
 
-function deleteNotificationReceivered(notificationId){
+function readedNotification(id){
     return dispatch => {
-        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_REQUEST});
+        dispatch({ type: NotificationConstants.READED_NOTIFICATION_REQUEST});
         NotificationServices
-            .deleteNotificationReceivered(notificationId)
+            .readedNotification(id)
             .then(res => {
                 dispatch({
-                    type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_SUCCESS,
-                    payload: notificationId
+                    type: NotificationConstants.READED_NOTIFICATION_SUCCESS,
+                    payload: res.data.content
                 });
             })
             .catch(err => {
-                dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_RECEIVERED_FAILE});
+                dispatch({ type: NotificationConstants.READED_NOTIFICATION_FAILE});
             })
     }
 }
 
-function deleteNotificationSent(id){
+function deleteManualNotification(id){
     return dispatch => {
-        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_SENT_REQUEST});
+        dispatch({ type: NotificationConstants.DELETE_MANUAL_NOTIFICATION_REQUEST});
         NotificationServices
-            .deleteNotificationSent(id)
+            .deleteManualNotification(id)
             .then(res => {
                 dispatch({
-                    type: NotificationConstants.DELETE_NOTIFICATION_SENT_SUCCESS,
+                    type: NotificationConstants.DELETE_MANUAL_NOTIFICATION_SUCCESS,
                     payload: id
                 });
             })
             .catch(err => {
-                dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_SENT_FAILE});
+                dispatch({ type: NotificationConstants.DELETE_MANUAL_NOTIFICATION_FAILE});
             })
     }
+}
+
+function deleteNotification(id){
+    return dispatch => {
+        dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_REQUEST});
+        NotificationServices
+            .deleteNotification(id)
+            .then(res => {
+                dispatch({
+                    type: NotificationConstants.DELETE_NOTIFICATION_SUCCESS,
+                    payload: id
+                });
+            })
+            .catch(err => {
+                dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_FAILE});
+            })
+    }
+}
+
+function setLevelNotificationReceivered(level=undefined){
+    return dispatch => dispatch({ type: NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_RECEIVERED, level});
+}
+
+function setLevelNotificationSent(level=undefined){
+    return dispatch => dispatch({ type: NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_SENT, level});
 }

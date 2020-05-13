@@ -87,7 +87,7 @@ const TaskSchema = new Schema({
         ref: User
     }],
     evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
-        date: { // Tháng đánh giá
+        date: { // Lưu ngày đánh giá. Khi muốn match công việc trong 1 KPI thì chỉ lấy tháng
             type: Date
         },
         kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
@@ -125,10 +125,13 @@ const TaskSchema = new Schema({
                 type: Number,
                 default: 0
             },
+            contribution: { // % Đóng góp: 0->100
+                type: Number
+            },
             taskImportanceLevel: { // Mức độ quan trọng của công việc với người được đánh giá, từ 0-10, dùng trong công thức tính điểm KPI
-                type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc
+                type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                 default: 5,
-            }
+            },
         }],
         taskInformations: [{ // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             code: { // Mã thuộc tính công việc dùng trong công thức (nếu công việc theo mẫu)
@@ -176,7 +179,6 @@ const TaskSchema = new Schema({
         },
         description: { // Mô tả ngắn gọn việc đã làm khi log 
             type: String,
-            required: true
         }
     }],
     totalLoggedTime: { // Tổng thời gian timesheetLog. Cập nhật mỗi khi người dùng lưu lại thời gian bấm giờ (khi họ nhấn nút stop)
@@ -214,15 +216,21 @@ const TaskSchema = new Schema({
             type: Schema.Types.Mixed,
         }
     }],
-    taskActions: [{
-        creator:{
+    taskActions: [{ // Khi task theo tempate nào đó, sẽ copy hết actions trong template vào đây
+        creator:{ // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
             type:Schema.Types.ObjectId,
             ref : User,
-            required:true
         },
-        content:{
+        name: {
             type: String,
-            required:true
+        },
+        description: {
+            type: String,
+            required: true
+        },
+        mandatory: { // Hoạt động này bắt buộc hay không?
+            type: Boolean,
+            default: true,
         },
         createdAt:{
             type: Date,
@@ -232,15 +240,15 @@ const TaskSchema = new Schema({
             type: Date,
             default: Date.now
         },
-        files: [{ // Các files đi kèm actions
-            name: {
-                type: String,
-            },
-            url: {
-                type: String,
-                required: true
-            }
-        }],
+        // files: [{ // Các files đi kèm actions
+        //     name: {
+        //         type: String,
+        //     },
+        //     url: {
+        //         type: String,
+        //         required: true
+        //     }
+        // }],
         evaluations:[{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
             creator: {
                 type: Schema.Types.ObjectId,
@@ -273,15 +281,15 @@ const TaskSchema = new Schema({
                 type : Date,
                 default: Date.now
             },
-            files: [{ // Các file đi kèm comments
-                name: {
-                    type: String,
-                },
-                url: {
-                    type: String,
-                    required: true
-                }
-            }],
+            // files: [{ // Các file đi kèm comments
+            //     name: {
+            //         type: String,
+            //     },
+            //     url: {
+            //         type: String,
+            //         required: true
+            //     }
+            // }],
         }],
     }],
     taskComments: [{ // Trao đổi trong tasks
@@ -309,15 +317,15 @@ const TaskSchema = new Schema({
             type : Date,
             default: Date.now
         },
-        files: [{ // Các file đi kèm comments
-            name: {
-                type: String,
-            },
-            url: {
-                type: String,
-                required: true
-            }
-        }],
+        // files: [{ // Các file đi kèm comments
+        //     name: {
+        //         type: String,
+        //     },
+        //     url: {
+        //         type: String,
+        //         required: true
+        //     }
+        // }],
         comments: [{  // Comments của comment
             creator: {
                 type: Schema.Types.ObjectId,
@@ -335,15 +343,15 @@ const TaskSchema = new Schema({
                 type : Date,
                 default: Date.now
             },
-            files: [{ // Các file đi kèm comments
-                name: {
-                    type: String,
-                },
-                url: {
-                    type: String,
-                    required: true
-                }
-            }],
+            // files: [{ // Các file đi kèm comments
+            //     name: {
+            //         type: String,
+            //     },
+            //     url: {
+            //         type: String,
+            //         required: true
+            //     }
+            // }],
         }],
     }]
 }, {

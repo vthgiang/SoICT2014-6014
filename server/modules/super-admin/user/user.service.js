@@ -266,3 +266,35 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
 
     return users;
 }
+
+/**
+ * Kiểm tra sự tồn tại của tài khoản
+ * @email : email người dung
+ */
+exports.checkUserExited = async (email) => {
+    var user = User.findOne({email : email},{field1: 1});
+    var checkUser = false;
+    if (user.length !== 0) {
+        checkUser = true
+    }
+    return checkUser;
+}
+
+
+/**
+ * Lấy tất cả các đơn vị tổ chức một user thuộc về
+ * @userId id của user
+ */
+exports.getOrganizationalUnitsOfUser = async (userId) => {
+    const roles = await UserRole.find({ userId });
+    const newRoles = roles.map( role => role.roleId);
+    const departments = await OrganizationalUnit.find({
+        $or: [
+            {'dean': { $in: newRoles }}, 
+            {'viceDean':{ $in: newRoles }}, 
+            {'employee':{ $in: newRoles }}
+        ]  
+    });
+
+    return departments;
+}

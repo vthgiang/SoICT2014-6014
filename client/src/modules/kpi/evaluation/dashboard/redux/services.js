@@ -7,26 +7,14 @@ import {
 } from '../../../../../config';
 import jwt from 'jsonwebtoken';
 import { sendRequest } from '../../../../../helpers/requestHelper';
-export const kpiMemberServices = {
-    getAllKPIMemberOfUnit,
-    getAllKPIMemberByMember,
+export const dashboardEmployeeKpiService = {
+    getAllEmployeeKpiSetOfUnit
 };
 
 // Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
-function getAllKPIMemberOfUnit(infosearch) {
-    return sendRequest ({
-        url:`${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.starttime}/${infosearch.endtime}`,
+function getAllEmployeeKpiSetOfUnit(role) {    
+    return sendRequest({
+        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/get-all-employee-kpi/${role}`,
         method: 'GET',
-    },false,'kpi.evaluation')
-}
-
-// Lấy tất cả kpi cá nhân
-async function getAllKPIMemberByMember() {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var member = verified._id;
-    return sendRequest ({
-        url:`${LOCAL_SERVER_API}/kpimembers/user/${member}`,
-        method: 'GET',
-    },false,'kpi.evaluation')
+    }, false, true, 'kpi.evaluation');
 }
