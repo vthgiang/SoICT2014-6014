@@ -1,98 +1,111 @@
-const EducationProgram = require('../../../models/training/educationProgram.model');
-const Department = require('../../../models/super-admin/organizationalUnit.model');
-const Course = require('../../../models/training/course.model');
-const Role = require('../../../models/auth/role.model')
 
-// Lấy danh sách tất cả các chương trình đào tạo
+const { EducationProgram, Course, OrganizationalUnit, Role } = require('../../../models').schema;
+
+/**
+ * Lấy danh sách tất cả các chương trình đào tạo
+ * @company : Id công ty
+ */
 exports.getAllEducationPrograms = async (company) => {
     return await EducationProgram.find({
         company: company
     })
 }
 
-//get list educationProgram
+/**
+ * Lấy danh sách chương trinh đào tạo theo key
+ * @data : Dữ liệu key tìm kiếm
+ * @company : Id công ty
+ */
 exports.searchEducationPrograms = async (data, company) => {
     var keySearch = {
         company: company
     }
-    // Bắt sựu kiện đơn vị tìm kiếm khác All 
-    if (data.department !== "All") {
+    // Bắt sựu kiện đơn vị tìm kiếm khác null
+    if (data.organizationalUnit !== null) {
         keySearch = {
             ...keySearch,
-            unitEducation: data.department
+            applyForOrganizationalUnits: {$in: data.organizationalUnit} 
         }
     }
-    if (data.position !== "All") {
+    if (data.position !== null) {
         keySearch = {
             ...keySearch,
-            positionEducation: data.position
+            applyForPositions: {$in: data.position}
         }
     }
     var totalList = await EducationProgram.count(keySearch);
-    var allEducation = await EducationProgram.find(keySearch)
+    var educations = await EducationProgram.find(keySearch)
         .skip(data.page).limit(data.limit)
         .populate([{
-            path: 'unitEducation',
-            model: Department
+            path: 'applyForOrganizationalUnits',
+            model: OrganizationalUnit
         }, {
-            path: 'positionEducation',
+            path: 'applyForPositions',
             model: Role
         }]);
-    var allList = []
-    for (let n in allEducation) {
+    var listEducations = []
+    for (let n in educations) {
         let total = await Course.count({
-            educationProgram: allEducation[n]._id
+            educationProgram: educations[n]._id
         });
-        let listCourse = await Course.find({
-            educationProgram: allEducation[n]._id
+        let listCourses = await Course.find({
+            educationProgram: educations[n]._id
         }).skip(0).limit(5)
-        allList[n] = {
-            ...allEducation[n]._doc,
-            listCourse: listCourse,
+        listEducations[n] = {
+            ...educations[n]._doc,
+            listCourses: listCourses,
             totalList: total
         }
     }
-    var content = {
-        totalList,
-        allList
-    }
-    return content;
+    return {totalList, listEducations}
 }
 
-// add a new educationProgram
+/**
+ * Thêm mới chương trình đào tạo
+ * @data : dữ liệu chương trình đào tạo cần thêm
+ * @company : Id công ty
+ */
 exports.createEducationProgram = async (data, company) => {
-    var education = await EducationProgram.create({
+    var createEducation = await EducationProgram.create({
         company: company,
-        nameEducation: data.nameEducation,
-        numberEducation: data.numberEducation,
-        unitEducation: data.unitEducation,
-        positionEducation: data.positionEducation,
+        name: data.name,
+        programId: data.programId,
+        applyForOrganizationalUnits: data.organizationalUnit,
+        applyForPositions: data.position,
     });
-    var neweducation = await EducationProgram.findById(education._id).populate([{
-        path: 'unitEducation',
-        model: Department
+    var education = await EducationProgram.findById(createEducation._id).populate([{
+        path: 'applyForOrganizationalUnits',
+        model: OrganizationalUnit
     }, {
-        path: 'positionEducation',
+        path: 'applyForPositions',
         model: Role
     }])
-    return neweducation;
+    return education;
 }
 
-// Delete educationProgram
+/**
+ * Xoá chương trình đào tạo
+ * @id : Id chương trình đào tạo cần xoá
+ */
 exports.deleteEducationProgram = async (id) => {
     var educationDelete = await EducationProgram.findOneAndDelete({
         _id: id
     });
+    console.log(educationDelete);
     return educationDelete;
 }
 
-// Update educationProgram
+/**
+ * Cập nhật thông tin chương trình đào tạo
+ * @id : Id chương trình đào tạo cần chỉnh sửa
+ * @data : dữ liệu chỉnh sửa chương trình đào tạo
+ */
 exports.updateEducationProgram = async (id, data) => {
     var eduacationChange = {
-        numberEducation: data.numberEducation,
-        nameEducation: data.nameEducation,
-        unitEducation: data.unitEducation,
-        positionEducation: data.positionEducation
+        name: data.name,
+        programId: data.programId,
+        applyForOrganizationalUnits: data.organizationalUnit,
+        applyForPositions: data.position
     };
     await EducationProgram.findOneAndUpdate({
         _id: id
@@ -103,10 +116,10 @@ exports.updateEducationProgram = async (id, data) => {
     return await EducationProgram.findOne({
         _id: id
     }).populate([{
-        path: 'unitEducation',
-        model: Department
+        path: 'applyForOrganizationalUnits',
+        model: OrganizationalUnit
     }, {
-        path: 'positionEducation',
+        path: 'applyForPositions',
         model: Role
     }]);
 }

@@ -1,10 +1,10 @@
 import {
-    handleResponse
-} from '../../../../helpers/handleResponse';
-import { LOCAL_SERVER_API } from '../../../../env';
+    LOCAL_SERVER_API
+} from '../../../../env';
 import {
-    AuthenticateHeader
-} from '../../../../config';
+    sendRequest
+} from '../../../../helpers/requestHelper';
+
 export const CourseService = {
     getListCourse,
     getCourseByEducation,
@@ -12,58 +12,63 @@ export const CourseService = {
     deleteCourse,
     updateCourse,
 }
-
-// Lấy danh sách các khoá đào tạo 
+/**
+ * Lấy danh sách các khoá đào tạo 
+ * @data : dữ liệu key tìm kiếm
+ */
 function getListCourse(data) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/course/paginate`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/course/paginate`, requestOptions).then(handleResponse);
-
+        data: data,
+    }, false, true, 'human_resource.salary');
 }
 
-// Lấy danh sách các khoá đào tạo theo chương trình đào tạo
+/**
+ * Lấy danh sách các khoá đào tạo theo chương trình đào tạo
+ * @data :  
+ */
 function getCourseByEducation(data) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/course/list`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/course/list`, requestOptions).then(handleResponse);
-
+        data: data,
+    }, false, true, 'human_resource.salary');
 }
 
-// tạo mới một khoá đào tạo
+/**
+ * Tạo mới một khoá đào tạo
+ * @data : Dữ liệu khoá đào tạo
+ */
 function createNewCourse(data) {
-    const requestOptions ={
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/course/`,
         method: 'POST',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/course/`, requestOptions).then(handleResponse);
+        data: data,
+    }, true, true, 'human_resource.salary');
 }
 
-// Xoá một khoá đào tạo
+/**
+ * Xoá khoá đào tạo
+ * @id : Id khoá đào tạo cần xoá
+ */
+// 
 function deleteCourse(id) {
-    const requestOptions = {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/course/${id}`,
         method: 'DELETE',
-        headers: AuthenticateHeader(),
-    };
-
-    return fetch(`${ LOCAL_SERVER_API }/course/${id}`, requestOptions).then(handleResponse);
+    }, true, true, 'human_resource.salary');
 }
 
-// Cập nhật thông tin khoá đào tạo
+/**
+ * Cập nhật thông tin khoá đào tạo
+ * @id : id khoá đào tạo cần chỉnh sửa
+ * @data : dữ liệu chỉnh sửa khoá đào tạo
+ */
 function updateCourse(id, data) {
-    const requestOptions ={
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/course/${id}`,
         method: 'PUT',
-        headers: AuthenticateHeader(),
-        body: JSON.stringify(data)
-    };
-    return fetch(`${ LOCAL_SERVER_API }/course/${id}`, requestOptions).then(handleResponse);
+        data: data,
+    }, true, true, 'human_resource.salary');
 }

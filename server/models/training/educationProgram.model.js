@@ -26,6 +26,7 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
         type: Schema.Types.ObjectId,
         ref: Role
     }]
-})
-
+}, {
+    timestamps: true,
+});
 module.exports = EducationProgram = mongoose.model("education_programs", EducationProgramSchema);

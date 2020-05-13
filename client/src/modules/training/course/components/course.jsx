@@ -1,51 +1,61 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer, toast } from 'react-toastify';
-import { ModalDetailTrainingPlan } from './courseDetailModal';
-import { ModalEditTrainingPlan } from './courseEditModal';
-import { ModalAddTrainingPlan } from './courseAddModal';
+
+import { CourseCreateForm, CourseDetailForm, CourseEditForm } from './combinedContent';
+
+import { DeleteNotification, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CourseActions } from '../redux/actions';
 import { EducationActions } from '../../education-program/redux/actions';
-import { DataTableSetting } from '../../../../common-components';
-import { PaginateBar } from '../../../../common-components/src/paginate-bar/paginateBar';
-import { DeleteNotification } from '../../../../common-components';
 class TrainingPlan extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            numberCourse: "",
-            typeCourse: "All",
+            courseId: "",
+            type: null,
             page: 0,
             limit: 5,
-            hideColumn:[]
         };
         this.handleChange = this.handleChange.bind(this);
     }
     componentDidMount() {
         this.props.getListCourse(this.state);
         this.props.getAllEducation();
-        let script = document.createElement('script');
-        script.src = 'lib/main/js/AddEmployee.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-    componentDidUpdate(){
-        this.hideColumn();
+        this.props.getUser();
     }
 
-    hideColumn = () => {
-        if (this.state.hideColumn.length!==0) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#course-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
+    // Function bắt sự kiện chỉnh sửa chương trình đào tạo
+    handleEdit = async (value) => {
+        await this.setState({
+            ...this.state,
+            currentEditRow: value
+        })
+        window.$('#modal-edit-course').modal('show');
     }
 
-    handleChange(event) {
-        const { name, value } = event.target;
+    // Function bắt sự kiện xem thông tin chương trình đào tạo
+    handleView = async (value) => {
+        await this.setState({
+            ...this.state,
+            currentViewRow: value
+        })
+        window.$('#modal-view-course').modal('show');
+    }
+
+    handleTypeChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            type: value
+        })
+    }
+
+    handleChange(e) {
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         });
@@ -55,10 +65,10 @@ class TrainingPlan extends Component {
         this.props.getListCourse(this.state);
     }
 
-    setLimit = async (number,hideColumn) => {
-        await this.setState({ 
-            limit: parseInt(number),
-            hideColumn: hideColumn });
+    setLimit = async (number) => {
+        await this.setState({
+            limit: parseInt(number)
+        });
         this.props.getListCourse(this.state);
     }
 
@@ -71,8 +81,8 @@ class TrainingPlan extends Component {
     }
 
     render() {
-        var { listCourse } = this.props.course;
-        const { translate } = this.props;
+        var { listCourses } = this.props.course;
+        const { translate, course } = this.props;
         var pageTotal = (this.props.course.totalList % this.state.limit === 0) ?
             parseInt(this.props.course.totalList / this.state.limit) :
             parseInt((this.props.course.totalList / this.state.limit) + 1);
@@ -80,26 +90,30 @@ class TrainingPlan extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                    <CourseCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
-                            <h4 className="box-title">Danh sách các khoá đào tạo: &#96;</h4>
+                            <h4 className="box-title">Danh sách các khoá đào tạo:</h4>
                         </div>
-                        <button type="button" className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addTrainingPlan" >Thêm khoá đào tạo</button>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label htmlFor="numberCourse" style={{width:110}} className="form-control-static">Mã khoá đào tạo:</label>
-                            <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} autoComplete="off" />
+                            <label style={{ width: 110 }} className="form-control-static">Mã khoá đào tạo</label>
+                            <input type="text" className="form-control" name="courseId" onChange={this.handleChange} autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label htmlFor="typeCourse" style={{width:110}} className="form-control-static">Loại đào tạo:</label>
-                            <select className="form-control" defaultValue="All" name="typeCourse" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                <option value="Đào tạo nội bộ">Đào tạo nội bộ</option>
-                                <option value="Đào tạo ngoài">Đào tạo ngoài</option>
-                            </select>
+                            <label style={{ width: 110 }} className="form-control-static">Loại đào tạo</label>
+                            <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
+                                options={{ nonSelectedText: "Chọn loại đào tạo", allSelectedText: "Chọn tất cả loại đào tạo" }}
+                                onChange={this.handleTypeChange}
+                                items={[
+                                    { value: "Đào tạo nội bộ", text: "Đào tạo nội bộ" },
+                                    { value: "Đào tạo ngoài", text: "Đào tạo ngoài" },
+                                ]}
+                            >
+                            </SelectMulti>
                             <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()} title="Tìm kiếm" >Tìm kiếm</button>
                         </div>
                     </div>
@@ -112,7 +126,7 @@ class TrainingPlan extends Component {
                                 <th>Kết thúc</th>
                                 <th>Địa điểm đào tạo</th>
                                 <th>Đơn vị đào tạo</th>
-                                <th style={{ width: '120px'}}>Hành động
+                                <th style={{ width: '120px' }}>Hành động
                                     <DataTableSetting
                                         tableId="course-table"
                                         columnArr={[
@@ -132,54 +146,91 @@ class TrainingPlan extends Component {
                         </thead>
                         <tbody>
                             {
-                                (listCourse.length === 0 || listCourse === []) ? <tr><th colSpan={7-this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
-                                    listCourse.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.numberCourse}</td>
-                                            <td>{x.nameCourse}</td>
-                                            <td>{x.startDate}</td>
-                                            <td>{x.endDate}</td>
-                                            <td>{x.address}</td>
-                                            <td>{x.unitCourse}</td>
-                                            <td>
-                                                <ModalDetailTrainingPlan data={x} />
-                                                <ModalEditTrainingPlan data={x} />
-                                                <DeleteNotification
-                                                    content={{
-                                                        title: "Xoá khoá đào tạo",
-                                                        btnNo: translate('confirm.no'),
-                                                        btnYes: translate('confirm.yes'),
-                                                    }}
-                                                    data={{
-                                                        id: x._id,
-                                                        info: x.nameCourse + " - " + x.numberCourse
-                                                    }}
-                                                    func={this.props.deleteCourse}
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))
+                                (listCourses.length !== 0 && listCourses !== undefined) &&
+                                listCourses.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.courseId}</td>
+                                        <td>{x.name}</td>
+                                        <td>{x.startDate}</td>
+                                        <td>{x.endDate}</td>
+                                        <td>{x.coursePlace}</td>
+                                        <td>{x.offeredBy}</td>
+                                        <td>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="Thông tin khoá đào tạo"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa khoá đào tạo"><i className="material-icons">edit</i></a>
+                                            <DeleteNotification
+                                                content="Xoá khoá đào tạo"
+                                                data={{
+                                                    id: x._id,
+                                                    info: x.name + " - " + x.courseId
+                                                }}
+                                                func={this.props.deleteCourse}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
+                    {course.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listCourses === 'undefined' || listCourses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                <ModalAddTrainingPlan />
-                <ToastContainer />
+                {
+                    this.state.currentEditRow !== undefined &&
+                    <CourseEditForm
+                        _id={this.state.currentEditRow._id}
+                        name={this.state.currentEditRow.name}
+                        courseId={this.state.currentEditRow.courseId}
+                        offeredBy={this.state.currentEditRow.offeredBy}
+                        coursePlace={this.state.currentEditRow.coursePlace}
+                        startDate={this.state.currentEditRow.startDate}
+                        endDate={this.state.currentEditRow.endDate}
+                        cost={this.state.currentEditRow.cost}
+                        lecturer={this.state.currentEditRow.lecturer}
+                        educationProgram={this.state.currentEditRow.educationProgram}
+                        employeeCommitmentTime={this.state.currentEditRow.employeeCommitmentTime}
+                        type={this.state.currentEditRow.type}
+                        unit={this.state.currentEditRow.unit}
+                    />
+                }
+                {
+                    this.state.currentViewRow !== undefined &&
+                    <CourseDetailForm
+                        _id={this.state.currentViewRow._id}
+                        name={this.state.currentViewRow.name}
+                        courseId={this.state.currentViewRow.courseId}
+                        offeredBy={this.state.currentViewRow.offeredBy}
+                        coursePlace={this.state.currentViewRow.coursePlace}
+                        startDate={this.state.currentViewRow.startDate}
+                        endDate={this.state.currentViewRow.endDate}
+                        cost={this.state.currentViewRow.cost}
+                        lecturer={this.state.currentViewRow.lecturer}
+                        educationProgram={this.state.currentViewRow.educationProgram}
+                        employeeCommitmentTime={this.state.currentViewRow.employeeCommitmentTime}
+                        type={this.state.currentViewRow.type}
+                        // listEmployees=""
+                        unit="VND"
+                    />
+                }
+
             </div>
         );
     };
 };
 
 function mapState(state) {
-    const { course } = state;
-    return { course };
+    const { course, education, user } = state;
+    return { course, education, user };
 };
 
 const actionCreators = {
     getListCourse: CourseActions.getListCourse,
     deleteCourse: CourseActions.deleteCourse,
     getAllEducation: EducationActions.getAll,
+    getUser: UserActions.get,
 };
 
 const connectedListCourse = connect(mapState, actionCreators)(withTranslate(TrainingPlan));
