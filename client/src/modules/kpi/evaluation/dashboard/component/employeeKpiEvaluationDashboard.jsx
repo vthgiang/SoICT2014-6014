@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
+import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
 import Swal from 'sweetalert2';
 import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
- 
+import { LOCAL_SERVER_API } from '../../../../../env';
+
 class DashBoardKPIMember extends Component {
     constructor(props) {
         super(props);
@@ -40,6 +42,10 @@ class DashBoardKPIMember extends Component {
         script.defer = true;
         document.body.appendChild(script);
         this.handleResizeColumn();
+
+
+        this.props.getAllEmployeeKpiSetOfUnit(localStorage.getItem("currentRole"));
+        
     }
     handleResizeColumn = () => {
         window.$(function () {
@@ -151,6 +157,22 @@ class DashBoardKPIMember extends Component {
         modal.style = "display: block; padding-right: 17px;";
     }
     render() {
+        var employeeKpiSets;
+        if(this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets !== undefined){
+            employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
+
+            var currentDate = new Date();
+            var currentMonth = currentDate.getMonth();
+            //Lấy các kpi set của tháng trước
+            employeeKpiSets = employeeKpiSets.filter(item => new Date(item.date).getMonth() == currentMonth - 1);
+
+            // Sắp xếp theo chiều giảm dần điểm được phê duyệt
+            employeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
+
+            // Lấy 8 nhân viên có điểm được phê duyệt cao nhất
+            employeeKpiSets = employeeKpiSets.slice(0, 8);
+        }
+
         var userdepartments, kpimember;
         const { user, kpimembers } = this.props;
         if (user.userdepartments) userdepartments = user.userdepartments;
@@ -274,46 +296,17 @@ class DashBoardKPIMember extends Component {
                                         </div>
                                         <div className="box-body no-padding">
                                             <ul className="users-list clearfix">
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user1-128x128.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">Sahara</a>
-                                                    <span className="users-list-date">98</span>
-                                                </li>
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user8-128x128.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">Vân Anh</a>
-                                                    <span className="users-list-date">97</span>
-                                                </li>
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user7-128x128.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">Jane</a>
-                                                    <span className="users-list-date">97</span>
-                                                </li>
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user6-128x128.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">John</a>
-                                                    <span className="users-list-date">96</span>
-                                                </li>
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user2-160x160.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">Alexander</a>
-                                                    <span className="users-list-date">96</span>
-                                                </li>
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user5-128x128.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">Sarah</a>
-                                                    <span className="users-list-date">95</span>
-                                                </li>
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user4-128x128.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">Nora</a>
-                                                    <span className="users-list-date">95</span>
-                                                </li>
-                                                <li>
-                                                    <img src="/lib/adminLTE/dist/img/user3-128x128.jpg" alt="Avatar member" />
-                                                    <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">Nadia</a>
-                                                    <span className="users-list-date">95</span>
-                                                </li>
+                                                {
+                                                    (typeof employeeKpiSets !== 'undefined' && employeeKpiSets.length !== 0) ?
+                                                        employeeKpiSets.map(item =>
+                                                            <li>
+                                                                <img src={ (LOCAL_SERVER_API + item.creator.avatar) } />
+                                                                <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
+                                                                <span className="users-list-date">{item.approvedPoint}</span>
+                                                            </li>
+                                                        )
+                                                    : null
+                                                }
                                             </ul>
                                         </div>
                                         {/* <div className="box-footer text-center">
@@ -608,14 +601,15 @@ class DashBoardKPIMember extends Component {
 }
  
 function mapState(state) {
-    const { user, kpimembers } = state;
-    return { user, kpimembers };
+    const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = state;
+    return { user, kpimembers, dashboardEvaluationEmployeeKpiSet };
 }
  
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
+    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
+    getAllEmployeeKpiSetOfUnit : DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnit
 };
 const connectedKPIMember = connect(mapState, actionCreators)(DashBoardKPIMember);
 export { connectedKPIMember as DashBoardKPIMember };
