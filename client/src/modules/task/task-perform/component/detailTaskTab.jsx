@@ -409,22 +409,22 @@ class DetailTaskTab extends Component {
                     </a>
 
                     <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Đánh giá công việc">
-                        <i className="fa fa-check-square-o" style={{ fontSize: "16px" }}></i>Đánh giá
+                        <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
                     </a>
+
+                    {
+                        (this.state.collapseInfo === false) ?
+                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
+                        </a> :
+                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
+                        </a>
+                    }
 
                 </div>
                 <br />
                 <div>
-
-                    {
-                        (this.state.collapseInfo === false) ?
-                            <a class="btn btn-info" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                                <i class="fa fa-minus-square-o" aria-hidden="true"></i><strong>&nbsp;&nbsp;Thông tin</strong>
-                            </a> :
-                            <a class="btn btn-info" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                                <i class="fa fa-plus-square-o" aria-hidden="true"></i><strong>&nbsp;&nbsp;Thông tin</strong>
-                            </a>
-                    }
 
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p>
