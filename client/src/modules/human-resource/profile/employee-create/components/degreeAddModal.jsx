@@ -31,6 +31,12 @@ class DegreeAddModal extends Component {
                     fileUpload: file,
                 })
             };
+        } else {
+            this.setState({
+                file: "",
+                urlFile: "",
+                fileUpload: ""
+            })
         }
     }
     // Bắt sự kiên thay đổi tên bằng cấp

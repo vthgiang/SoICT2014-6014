@@ -210,7 +210,7 @@ class SalaryCreateForm extends Component {
     // Function bắt sự kiện lưu bảng lương
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.createSalary(this.state);
+            this.props.createSalary(this.state);
         }
     }
 
@@ -224,6 +224,8 @@ class SalaryCreateForm extends Component {
                     size='50' modalID="modal-create-salary" isLoading={salary.isLoading}
                     formID="form-create-salary"
                     title={translate('human_resource.salary.add_salary_title')}
+                    resetOnSave= {true}
+                    resetOnClose = {true}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >

@@ -23,6 +23,12 @@ class ContractEditModal extends Component {
                     fileUpload: file,
                 })
             };
+        } else {
+            this.setState({
+                file: "",
+                urlFile: "",
+                fileUpload: ""
+            })
         }
     }
     // Bắt sự kiện thay đổi tên hợp đồng lao động

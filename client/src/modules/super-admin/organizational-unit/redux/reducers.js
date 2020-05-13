@@ -86,49 +86,6 @@ export function department(state = initState, action) {
                 isLoading: false
             };
 
-        case DepartmentConstants.GETALL_REQUEST:
-
-            return {
-                ...state,
-                isLoading: true
-            };
-
-        case DepartmentConstants.GETALL_SUCCESS:
-
-            return {
-                ...state,
-                items: action.departments.data.content,
-                isLoading: false
-            };
-
-        case DepartmentConstants.GETALL_FAILURE:
-
-            return { 
-                ...state,
-                isLoading: false,
-                error: action.error
-            };
-        case DepartmentConstants.GETDEPARTMENT_OFUSER_REQUEST:
-
-            return {
-                ...state,
-                isLoading: true
-            };
-
-        case DepartmentConstants.GETDEPARTMENT_OFUSER_SUCCESS:
-            return {
-                ...state,
-                unitofuser: action.departments.data.content,
-                isLoading: false
-            };
-
-        case DepartmentConstants.GETDEPARTMENT_OFUSER_FAILURE:
-
-            return { 
-                ...state,
-                error: action.error,
-                isLoading: false
-            };
         
         case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST:
 
