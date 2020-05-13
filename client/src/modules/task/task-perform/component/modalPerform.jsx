@@ -33,12 +33,14 @@ class ModalPerform extends Component {
                     modalID={`modelPerformTask${this.props.id}`}
                     formID="form-perform-task"
                     title={task && task.name}
+                    bodyPaddingTop={false}
+                    bodyPaddingBottom={false}
                     // msg_success={translate('task.task_perform.modal_approve_task.msg_success')}
                     // msg_faile={translate('task.task_perform.modal_approve_task.msg_faile')}
                     // func={this.save}
                 >
-                    <div className="row">
-                        <div className="col-sm-6 box-body" style={{ borderRight: "1px solid #ccc" }}>
+                    <div className="row" style={{height: "100%"}}>
+                        <div className="col-sm-6" style={{ borderRight: "1px solid #ccc", height: "100%", paddingTop: "10px" }}>
                             <DetailTaskTab
                                 id={this.props.id}
                                 role={this.props.role}
@@ -47,7 +49,7 @@ class ModalPerform extends Component {
 
                         {/* end div mô tả... */}
 
-                        <div className="col-sm-6 box-body">
+                        <div className="col-sm-6" style={{paddingTop: "10px"}}>
                             <ActionTab 
                                 id = {this.props.id}
                                 role={this.props.role}
