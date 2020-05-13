@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ModalPerformTask } from '../../task-perform/component/modalPerformTask';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { ModalAddTask } from './taskAddModal';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 
@@ -303,13 +303,13 @@ class TabTaskContent extends Component {
     render() {
         var currentTasks, units = [];
         var pageTotals;
-        const { tasks, department, translate } = this.props;
+        const { tasks, user, translate } = this.props;
         const { startTimer, currentTimer, currentPage } = this.state;
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
             pageTotals = tasks.pages
         }
-        if (department.unitofuser) units = department.unitofuser;
+        if (user.organizationalUnitsOfUser) units = user.organizationalUnitsOfUser;
         const items = [];
 
         // khởi tạo dữ liệu TreeTable
@@ -542,8 +542,8 @@ class TabTaskContent extends Component {
 }
 
 function mapState(state) {
-    const { tasks, department } = state;
-    return { tasks, department };
+    const { tasks, user } = state;
+    return { tasks, user };
 }
 
 const actionCreators = {
@@ -552,7 +552,7 @@ const actionCreators = {
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getDepartment: DepartmentActions.getDepartmentOfUser
+    getDepartment: UserActions.getDepartmentOfUser
 };
 const connectedTabTaskContent = connect(mapState, actionCreators)(withTranslate(TabTaskContent))
 export { connectedTabTaskContent as TabTaskContent };

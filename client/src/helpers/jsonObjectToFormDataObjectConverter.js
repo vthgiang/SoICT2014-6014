@@ -11,20 +11,8 @@ function buildFormData(formData, data, parentKey) {
     }
 }
 
-export function convertToFormData(json) {
-    json = JSON.stringify(json);
-    let obj = {};
+export function convertJsonObjectToFormData(json) {
     const formData = new FormData();
-    if (typeof json === 'string') {
-        try {
-            obj = JSON.parse(json);
-        } catch (err) {
-            console.err(err);
-        }
-    } else if (typeof json === 'object') {
-        obj = json;
-    }
-
-    buildFormData(formData, obj);
+    buildFormData(formData, json);
     return formData;
 }

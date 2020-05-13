@@ -9,7 +9,9 @@ export const NotificationActions = {
     create,
     readedNotification,
     deleteManualNotification,
-    deleteNotification
+    deleteNotification,
+    setLevelNotificationReceivered,
+    setLevelNotificationSent
 }
 
 function getAllManualNotifications(){
@@ -146,4 +148,12 @@ function deleteNotification(id){
                 dispatch({ type: NotificationConstants.DELETE_NOTIFICATION_FAILE});
             })
     }
+}
+
+function setLevelNotificationReceivered(level=undefined){
+    return dispatch => dispatch({ type: NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_RECEIVERED, level});
+}
+
+function setLevelNotificationSent(level=undefined){
+    return dispatch => dispatch({ type: NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_SENT, level});
 }

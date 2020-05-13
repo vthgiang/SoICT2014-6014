@@ -1138,7 +1138,7 @@ export default {
                 col_start_date: 'Start date',
                 col_end_date: 'End date',
                 col_status: 'Status',
-                col_progress: 'Priority',
+                col_progress: 'Progress',
                 col_logged_time: 'Tatal logged time',
 
                 action_edit: 'Start working',

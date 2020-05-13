@@ -132,13 +132,11 @@ class NotificationCreate extends Component {
         
         return ( 
             <React.Fragment>
-                <a style={{width: '100%', marginBottom: '15px'}} className="btn btn-success" title={translate('notification.add_title')} data-toggle="modal" href='#modal-create-notification'>{translate('notification.add')}</a>
+                <a style={{width: '100%', marginBottom: '15px'}} className="btn btn-success" title={translate('notification.add_title')} data-toggle="modal" href='#modal-create-notification' data-backdrop="static">{translate('notification.add')}</a>
                 <DialogModal
                     modalID="modal-create-notification"
                     formID="form-create-notification"
-                    title={translate('notification.add_title')}
-                    msg_success={translate('notification.add_success')}
-                    msg_faile={translate('notification.add_faile')}
+                    title={translate('notification.add')}
                     func={this.save}
                 >
                     <form id="form-create-notification">
