@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { HolidayActions } from '../redux/actions';
-import { ToastContainer } from 'react-toastify';
-import { ModalImportHoliday } from './importHolidayModal';
-import { ModalEditHoliday } from './editHolidayModal';
-import { ModalAddHoliday } from './addHolidayModal';
+
+import { ModalImportHoliday } from './holidayImportForm';
 import { DeleteNotification } from '../../../../common-components';
+import { HolidayEditForm, HolidayCreateForm } from './combinedContent'
+
+import { HolidayActions } from '../redux/actions';
 class ManageHoliday extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
     componentDidMount() {
         this.props.getListHoliday();
     }
@@ -23,6 +27,27 @@ class ManageHoliday extends Component {
             day = '0' + day;
         return [day, month, year].join('/');
     }
+
+    formatDate2(date){
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
+    // Function bắt sự kiện chỉnh sửa thông tin nhân viên
+    handleEdit = async (value) => {
+        await this.setState({
+            ...this.state,
+            currentRow: value
+        })
+        window.$('#modal-edit-holiday').modal('show');
+    }
     render() {
         if (this.props.holiday.listHoliday.length !== 0) {
             var listHoliday = this.props.holiday.listHoliday
@@ -31,12 +56,13 @@ class ManageHoliday extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                    <button type="button" className="btn btn-success pull-right" style={{ marginLeft: 20 }} id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
+                    <HolidayCreateForm />
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <h4 className="box-title">Danh sách lịch nghỉ ngày lễ (ngày tết):</h4>
                         </div>
-                        <button type="button" className="btn btn-success pull-right" id="" title="Chọn tệp để Import" data-toggle="modal" data-target="#modal-importFileSabbatical">Import File</button>
-                        <button type="button" style={{ marginRight: 15 }} className="btn btn-success pull-right" id="" title="Thêm mới lịch nghỉ" data-toggle="modal" data-target="#modal-addHoliday">Thêm mới</button>
+
                     </div>
 
                     <table className="table table-striped table-bordered table-hover">
@@ -56,13 +82,9 @@ class ManageHoliday extends Component {
                                         <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
                                         <td>{x.reason}</td>
                                         <td>
-                                            <ModalEditHoliday data={x} />
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={{
-                                                    title: "Xoá ngày nghỉ lễ (tết)",
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content="Xoá ngày nghỉ lễ (tết)"
                                                 data={{
                                                     id: x._id,
                                                     info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
@@ -75,10 +97,15 @@ class ManageHoliday extends Component {
                         </tbody>
                     </table>
                 </div>
-                <ModalImportHoliday />
-                <ModalEditHoliday />
-                <ModalAddHoliday />
-                <ToastContainer />
+                {
+                    this.state.currentRow !== undefined &&
+                    <HolidayEditForm
+                        _id={this.state.currentRow._id}
+                        startDate={this.formatDate2(this.state.currentRow.startDate)}
+                        endDate={this.formatDate2(this.state.currentRow.endDate)}
+                        reason={this.state.currentRow.reason}
+                    />
+                }
             </div>
         );
     }

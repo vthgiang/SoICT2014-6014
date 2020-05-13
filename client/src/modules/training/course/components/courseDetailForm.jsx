@@ -67,8 +67,6 @@ class CourseDetailForm extends Component {
                                 <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{offeredBy}&nbsp;</span>
                                 <span>- Thuộc chương trình đào tạo</span>
                                 <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;{educationProgram.name}&nbsp;</span>
-
-
                             </div>
                             <div className="form-group">
                                 <span>Thuộc loại</span>
@@ -92,16 +90,32 @@ class CourseDetailForm extends Component {
                                     <th>Mã nhân viên</th>
                                     <th>Tên nhân viên</th>
                                     <th>Kết quả</th>
-                                    <th style={{ width: "120px" }}>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td>MS12365</td>
+                                    <td>Nguyễn Văn A</td>
+                                    <td>Hoàn thành</td>
+                                </tr>
+                                <tr>
+                                    <td>MS12367</td>
+                                    <td>Nguyễn Văn B</td>
+                                    <td>Hoàn thành</td>
+                                </tr>
+                                <tr>
+                                    <td>MS12369</td>
+                                    <td>Nguyễn Văn C</td>
+                                    <td>Chưa hoàn thành</td>
+                                </tr>
                             </tbody>
                         </table>
-                        {course.isLoading ?
+                        {/* {course.isLoading ?
                             <div className="table-info-panel">{translate('confirm.loading')}</div> :
                             (typeof listEmployees === 'undefined' || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
+                        } */}
+
+
 
 
                         {/* <div className="col-md-12">
