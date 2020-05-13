@@ -23,7 +23,7 @@ exports.getAllManualNotifications = async (req, res) => {
 
 exports.paginateManualNotifications = async (req, res) => {
     try {
-        const notifications = await NotificationServices.paginateManualNotifications(req.user._id, req.body.limit, req.body.page);
+        const notifications = await NotificationServices.paginateManualNotifications(req.user._id, req.body);
         await LogInfo(req.user.email, 'PAGINATE_MANUAL_NOTIFICATIONS', req.user.company._id );
         res.status(200).json({
             success: true,
@@ -87,7 +87,7 @@ exports.getAllNotifications = async (req, res) => {
 
 exports.paginateNotifications = async (req, res) => {
     try {
-        const notifications = await NotificationServices.paginateNotifications(req.user._id, req.body.limit, req.body.page);
+        const notifications = await NotificationServices.paginateNotifications(req.user._id, req.body);
         await LogInfo(req.user.email, 'PAGINATE_NOTIFICATIONS', req.user.company._id );
         res.status(200).json({
             success: true,
