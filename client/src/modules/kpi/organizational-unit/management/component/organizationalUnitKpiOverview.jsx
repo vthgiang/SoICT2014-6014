@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { managerActions } from '../redux/actions';
 import { ModalDetailKPI } from './organizationalUnitKpiDetailModal';
 import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';
@@ -17,7 +17,6 @@ class KPIUnitManager extends Component {
     componentDidMount() {
         this.props.getDepartment();//localStorage.getItem('id')
         this.props.getAllKPIUnit(localStorage.getItem("currentRole"));
-        this.handleResizeColumn();
     }
     componentDidUpdate() {
         if (this.state.currentRole !== localStorage.getItem('currentRole')) {
@@ -29,34 +28,6 @@ class KPIUnitManager extends Component {
                 }
             })
         }
-    }
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
-
-            window.$("table thead tr th:not(:last-child)").mousedown(function (e) {
-                start = window.$(this);
-                pressed = true;
-                startX = e.pageX;
-                startWidth = window.$(this).width();
-                window.$(start).addClass("resizing");
-            });
-
-            window.$(document).mousemove(function (e) {
-                if (pressed) {
-                    window.$(start).width(startWidth + (e.pageX - startX));
-                }
-            });
-
-            window.$(document).mouseup(function () {
-                if (pressed) {
-                    window.$(start).removeClass("resizing");
-                    pressed = false;
-                }
-            });
-        });
     }
     formatDate(date) {
         var d = new Date(date),
@@ -91,10 +62,10 @@ class KPIUnitManager extends Component {
     render() {
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit;
-        const { department, managerKpiUnit } = this.props;
+        const { user, managerKpiUnit } = this.props;
         
-        if (department.unitofuser) {
-            unitList = department.unitofuser;
+        if (user.organizationalUnitsOfUser) {
+            unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList.filter(item =>
                 item.dean === this.state.currentRole
                 || item.viceDean === this.state.currentRole
@@ -128,12 +99,12 @@ class KPIUnitManager extends Component {
         return (
             <React.Fragment>
             <div className="box">
-                <div className="box-body qlcv">
-                    <DataTableSetting class="pull-right" tableId="tree-table" tableContainerId="tree-table-container"
-                        tableWidth="1300px" columnArr={[ 'STT' ,'Người tạo', 'Thời gian' , 'Số lượng mục tiêu'
-                        , 'Kết quả đánh giá' ,'Xem chi tiết' , 'Tạo KPI tháng mới' , 'Cập nhật' ]} limit={this.state.perPage}
-                        setLimit={this.setLimit} hideColumnOption={true} />
-                    <table id="example1" className="table table-hover table-bordered">
+                <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
+                    columnArr={[ 'STT', 'Người tạo', 'Thời gian', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
+                    limit={this.state.perPage}
+                    setLimit={this.setLimit} hideColumnOption={true} />
+                <div className="box-body qlcv" id="kpiTableContainer">
+                    <table id="kpiTable" className="table table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th title="STT">STT</th>
@@ -196,12 +167,12 @@ class KPIUnitManager extends Component {
 }
 
 function mapState(state) {
-    const { department, managerKpiUnit } = state;
-    return { department, managerKpiUnit };
+    const { user, managerKpiUnit } = state;
+    return { user, managerKpiUnit };
 }
 
 const actionCreators = {
-    getDepartment: DepartmentActions.getDepartmentOfUser,
+    getDepartment: UserActions.getDepartmentOfUser,
     getAllKPIUnit: managerActions.getAllKPIUnit,
     refreshData: managerActions.evaluateKPIUnit
 };

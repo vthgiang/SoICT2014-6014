@@ -228,14 +228,14 @@ exports.editTaskResult = async (req, res) => {
 exports.getTaskActions = async (req, res) => {
     try {
         var taskActions = await PerformTaskService.getTaskActions(req.params.task);
-        await LogInfo(req.user.email, ` get all task actions  `,req.user.company);
+        //await LogInfo(req.user.email, ` get all task actions  `,req.user.company);
         res.status(200).json({
             success: true,
             messages : ['get_task_actions_success'],
             content : taskActions
         })
     } catch (error) {
-        await LogError(req.user.email, ` get all task actions  `,req.user.company);
+        //await LogError(req.user.email, ` get all task actions  `,req.user.company);
         res.status(400).json({
             success: false,
             messages: ['get_task_actions_fail'],
@@ -247,14 +247,14 @@ exports.getTaskActions = async (req, res) => {
 exports.createTaskAction = async (req,res) => {
     try {
         var taskAction = await PerformTaskService.createTaskAction(req.body);
-        await LogInfo(req.user.email, ` create task action  `,req.user.company)
+        //await LogInfo(req.user.email, ` create task action  `,req.user.company)
         res.status(200).json({
             success: true,
             messages: ['create_task_action_success'],
             content : taskAction
         })
     } catch (error) {
-        await LogError(req.user.email, ` create task action  `,req.user.company)
+        //await LogError(req.user.email, ` create task action  `,req.user.company)
         res.status(400).json({
             success: false,
             messages :['create_task_action_fail'],
@@ -285,14 +285,14 @@ exports.editTaskAction = async (req,res) =>{
 exports.deleteTaskAction = async (req,res)=>{
     try {
         var taskAction = await PerformTaskService.deleteTaskAction(req.params);
-        await LogInfo(req.user.email, ` delete task action  `,req.user.company);
+        //await LogInfo(req.user.email, ` delete task action  `,req.user.company);
         res.status(200).json({
             success: true,
             messages: ['delete_task_action_success'],
             content: taskAction
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete task action  `,req.user.company);
+        //await LogError(req.user.email, ` delete task action  `,req.user.company);
         res.status(400).json({
             success: false,
             messages : ['delete_task_action_fail'],
@@ -362,15 +362,15 @@ exports.editCommentOfTaskAction = async (req, res) => {
 // Xóa bỏ một bình luận hoặc hoạt động
 exports.deleteCommentOfTaskAction = async (req, res) => {
     try {
-        await PerformTaskService.deleteCommentOfTaskAction(req.params);
-        await LogInfo(req.user.email, ` delete action comment  `,req.user.company)
+        var task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
+        //await LogInfo(req.user.email, ` delete action comment  `,req.user.company)
         res.status(200).json({
             success: true,
             messages: ['delete_action_comment_success'],
             content : task
         })
     } catch (error) {
-        await LogError(req.user.email, ` delete action comment  `,req.user.company)
+        //await LogError(req.user.email, ` delete action comment  `,req.user.company)
         res.status(400).json({
             success: false,
             messages : ['delete_action_comment_fail'],
@@ -380,6 +380,9 @@ exports.deleteCommentOfTaskAction = async (req, res) => {
 
 
 }
+/**
+ * Tạo bình luận của công việc
+ */
 exports.createTaskComment = async (req,res) => {
     try {
         var taskComment = await PerformTaskService.createTaskComment(req.body);
@@ -395,4 +398,119 @@ exports.createTaskComment = async (req,res) => {
         })
     }
 }
+/**
+ * Lấy tất cả bình luận công việc
+ */
+exports.getTaskComments = async(req,res) => {
+    try {
+        var taskComment = await PerformTaskService.getTaskComments(req.params);
+        res.status(200).json({
+            success: true,
+            messages: ['Lay thanh cong'],
+            content : taskComment
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['Lay that bai'],
+            content: error
+        })
+    }
+}
+/**
+ * Sửa bình luận của hoạt động
+ */
+exports.editTaskComment = async(req,res) => {
+    try {
+        var taskComment = await PerformTaskService.editTaskComment(req.params,req.body);
+        res.status(200).json({
+            success: true,
+            messages: ['Edit thanh cong'],
+            content : taskComment
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['Edit that bai'],
+            content: error
+        })
+    }
+}
+/**
+ * Xóa bình luận công việc
+ */
+exports.deleteTaskComment = async (req,res) => {
+    try {
+        var taskComment = await PerformTaskService.deleteTaskComment(req.params);
+        res.status(200).json({
+            success: true,
+            messages: ['Xoa thanh cong'],
+            content : taskComment
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['Xoa that bai'],
+            content : error
+        })
+    }
+}
+/**
+ * Tạo bình luận của bình luận công việc
+ */
+exports.createCommentOfTaskComment = async (req,res) => {
+    try {
+        var comment = await PerformTaskService.createCommentOfTaskComment(req.body);
+        res.status(200).json({
+            success: true,
+            messages: ['Tao thanh cong'],
+            content: comment
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['Tao that bai'],
+            content: error
+        })
+    }
+}
+/**
+ * Suửa bình luận của bình luận công việc
+ */
+exports.editCommentOfTaskComment = async(req,res) => {
+    try {
+        console.log("HHAHHA")
+        var comment = await PerformTaskService.editCommentOfTaskComment(req.params,req.body);
+        res.status(200).json({
+            success: true,
+            messages: ['Sua thanh cong'],
+            content: comment
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['Sua that bai'],
+            content: error
+        })
+    }
+}
+/**
+ * Xoa binh luan cua binh luan cong viec
+ */
+exports.deleteCommentOfTaskComment = async(req,res) => {
+    try {
 
+        var comment = await PerformTaskService.deleteCommentOfTaskComment(req.params);
+        res.status(200).json({
+            success: true,
+            messages: ['Xoa thanh cong'],
+            content: comment
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ['Xoa that bai'],
+            content: error
+        })
+    }
+}

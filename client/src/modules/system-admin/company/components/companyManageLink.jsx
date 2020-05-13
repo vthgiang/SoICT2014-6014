@@ -1,14 +1,12 @@
 import React, { Component } from 'react';import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
-import { ErrorLabel, PaginateBar, DataTableSetting, SearchBar} from '../../../../common-components';
-import { CompanyFormValidator } from './companyFormValidator';
+import { PaginateBar, DataTableSetting, SearchBar} from '../../../../common-components';
 
 class CompanyManageLinks extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            linkUrl: "noturl",
             limit: 5,
             page: 1,
             option: 'url',
@@ -18,7 +16,7 @@ class CompanyManageLinks extends Component {
 
     render() { 
         const {translate, company, linksDefault} = this.props;
-        const {companyId, linkDescriptionError} = this.state;
+        const {companyId} = this.state;
         
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
@@ -26,6 +24,7 @@ class CompanyManageLinks extends Component {
                 <SearchBar 
                     columns={[
                         { title: translate('manage_link.url'), value: 'url' },
+                        { title: translate('manage_link.category'), value: 'category' },
                         { title: translate('manage_link.description'), value: 'description' }
                     ]}
                     option={this.state.option}
@@ -36,6 +35,7 @@ class CompanyManageLinks extends Component {
                     <thead>
                         <tr>
                             <th>{ translate('manage_link.url') }</th>
+                            <th>{ translate('manage_link.category') }</th>
                             <th>{ translate('manage_link.description') }</th>
                             <th style={{width: '120px'}}>
                                 {translate('table.action')}
@@ -52,7 +52,7 @@ class CompanyManageLinks extends Component {
                                 <select
                                     className="form-control"
                                     style={{width: '100%'}}
-                                    onChange={this.handleLinkUrl}
+                                    onChange={(e) => this.handleLinkUrl(e, linksDefault)}
                                     value={this.state.linkUrl}
                                 >
                                     <option key="noturl" value="noturl" disabled> --- Chọn url ---</option>
@@ -66,10 +66,8 @@ class CompanyManageLinks extends Component {
                                     }
                                 </select>
                             </td>
-                            <td className={linkDescriptionError===undefined?"":"has-error"}>
-                                <input className="form-control" onChange={this.handleLinkDescription}/>
-                                <ErrorLabel content={linkDescriptionError}/>
-                            </td>
+                            <td>{this.state.linkCategory}</td>
+                            <td>{this.state.linkDescription}</td>
                             <td>
                                 {
                                     this.isFormCreateLinkValidated() ?
@@ -83,6 +81,7 @@ class CompanyManageLinks extends Component {
                             company.item.links.listPaginate.map( link => 
                                 <tr key={link._id}>
                                     <td>{ link.url }</td>
+                                    <td>{ link.category }</td>
                                     <td>{ link.description }</td>
                                     <td>
                                         <a className="delete" onClick={() => this.deleteLink(companyId, link._id)}><i className="material-icons">delete</i></a>
@@ -90,8 +89,8 @@ class CompanyManageLinks extends Component {
                                 </tr> 
                             ) : (
                                 company.item.links.isLoading ?
-                                <tr><td colSpan='3'>{translate('confirm.loading')}</td></tr>:
-                                <tr><td colSpan='3'>{translate('confirm.no_data')}</td></tr>
+                                <tr><td colSpan='4'>{translate('confirm.loading')}</td></tr>:
+                                <tr><td colSpan='4'>{translate('confirm.no_data')}</td></tr>
                             )
                         }
                     </tbody>
@@ -146,11 +145,12 @@ class CompanyManageLinks extends Component {
     }
 
     saveAndCloseLinkForm = async() => {
-        const {companyId, linkUrl, linkDescription} = this.state;
+        const {companyId, linkUrl, linkCategory, linkDescription} = this.state;
         
         await window.$("#add-new-link-default").slideUp();
         return this.props.addNewLink(companyId, {
             url: linkUrl,
+            category: linkCategory,
             description: linkDescription
         });
     }
@@ -160,31 +160,19 @@ class CompanyManageLinks extends Component {
     }
     
     // Xu ly thay doi va validate cho url link moi cho cong ty
-    handleLinkUrl= (e) => {
+    handleLinkUrl= (e, linksDefault) => {
         const value = e.target.value;
-        this.setState({
-            linkUrl: value
-        });
-    }
-
-    // Xu ly thay doi va validate cho description link của công ty
-    handleLinkDescription= (e) => {
-        const value = e.target.value;
-        this.validateLinkDescription(value, true);
-    }
-
-    validateLinkDescription = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateDescription(value);
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkDescriptionError: msg,
-                    linkDescription: value,
-                }
-            });
+        for (let index = 0; index < linksDefault.list.length; index++) {
+            const linkDefault = linksDefault.list[index];
+            if(value === linkDefault.url){
+                this.setState({
+                    linkUrl: linkDefault.url,
+                    linkCategory: linkDefault.category,
+                    linkDescription: linkDefault.description
+                });
+            }
         }
-        return msg === undefined;
+        
     }
     
     setOption = (title, option) => {

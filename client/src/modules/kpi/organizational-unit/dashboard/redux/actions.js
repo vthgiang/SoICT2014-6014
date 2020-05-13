@@ -1,6 +1,49 @@
-import { dashboardConstants } from "./constants";
-import { dashboardServices } from "./services";
+import { dashboardOrganizationalUnitKpiConstants } from "./constants";
+import { dashboardOrganizationalUnitKpiServices } from "./services";
 
-export const dashboardActions = {
+export const dashboardOrganizationalUnitKpiActions = {
+    getAllChildTargetOfOrganizationalUnitKpis,
+    getAllTaskOfOrganizationalUnit
+}
 
+// Lấy tất cả employeeKpi là con của organizationalUnitKpi hiện tại
+function getAllChildTargetOfOrganizationalUnitKpis(id) {
+    return dispatch => {
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_REQUEST });
+
+        dashboardOrganizationalUnitKpiServices.getAllChildTargetOfOrganizationalUnitKpis(id)
+            .then(res => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+// Lấy tất cả task của organizationalUnit hiện tại (chỉ lấy phần evaluations của tháng hiện tại)
+function getAllTaskOfOrganizationalUnit(id) {
+    return dispatch => {
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST });
+
+        dashboardOrganizationalUnitKpiServices.getAllTaskOfOrganizationalUnit(id)
+            .then(res => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
 }

@@ -16,6 +16,9 @@ const LinkSchema = new Schema({
     description: {
         type: String
     },
+    category: {
+        type: String
+    },
     components: [{
         type: Schema.Types.ObjectId,
         ref: Component

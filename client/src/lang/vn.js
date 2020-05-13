@@ -103,6 +103,7 @@ export default {
             save: 'Lưu',
             close: 'Đóng',
             accept: 'Xác nhận',
+            cancel: 'Hủy',
             yes: 'Có',
             no: 'Không',
             loading: 'Đang tải dữ liệu',
@@ -121,10 +122,18 @@ export default {
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
+            },
+            date_time: {
+                day: 'ngày', month: 'tháng', year: 'năm',
+                hour: 'giờ', minute: 'phút',
+                today: 'Hôm nay',
             }
         },
 
         auth: {
+            validator: {
+                confirm_password_invalid: 'Mật khẩu không trùng khớp. Vui lòng kiểm tra lại',
+            },
             security: {
                 label: 'Bảo mật',
                 title: 'Thay đổi mật khẩu người dùng',
@@ -142,15 +151,23 @@ export default {
                 email: 'Địa chỉ email',
                 password: 'Mật khẩu mới',
                 confirm: 'Xác thực mật khẩu',
-                edit_success: 'Chỉnh sửa thông tin người dùng thành công',
-                edit_faile: 'Chỉnh sửa thông tin người dùng thất bại'
+                otp: 'OTP'
             },
 
             // Thông điệp nhận từ server
             change_user_information_success: 'Thay đổi thông tin người dùng thành công',
             change_user_information_faile: 'Thay đổi thông tin người dùng thất bại',
             change_user_password_success: 'Thay đổi mật khẩu thành công',
-            change_user_password_faile: 'Thay đổi mật khẩu thất bại'
+            change_user_password_faile: 'Thay đổi mật khẩu thất bại',
+            user_not_found: 'Không tìm thấy thông tin người dùng',
+            email_invalid: 'Email không hợp lệ', email_not_found: 'Email này chưa được đăng kí trên hệ thống',
+            password_invalid: 'Mật khẩu không chính xác',
+            acc_blocked: 'Tài khoản này đã bị tạm khóa',
+            acc_have_not_role: 'Tài khoản chưa được phân quyền trên hệ thống',
+            wrong5_block: 'Bạn đã nhập sai mật khẩu 5 lần. Tài khoản của bạn đã bị tạm khóa',
+            request_forgot_password_success: 'Yêu cầu thay đổi mật khẩu thành công. Hệ thống đã gửi yêu cầu xác nhận thay đổi mật khẩu vào email của bạn',
+            reset_password_success: 'Thiết lập mật khẩu thành công',
+            otp_invalid: 'Yêu cầu thiết lập lại mật khẩu không hợp lệ'
         },
 
         system_admin: {
@@ -338,7 +355,11 @@ export default {
         },
 
         notification: {
-            title: 'Tiêu đề',
+            title: 'Thông báo',
+            news: 'Thông báo mới',
+            see_all: 'Xem tất cả',
+            total: 'Tổng số',
+            level: 'loại thông báo',
             type: {
                 title: 'Loại thông báo',
                 info: 'Thông tin',
@@ -347,25 +368,25 @@ export default {
                 emergency: 'Thông báo khẩn',
             },
             content: 'Nội dung thông báo',
+            sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
+            from: 'từ', at: 'lúc',
 
             add: 'Tạo thông báo',
-            receivered: 'Đã nhận',
-            sent: 'Đã tạo',
+            receivered: 'Thông báo đã nhận',
+            sent: 'Thông báo đã tạo',
             note: 'Chú thích',
+            info: 'Thông tin thông báo',
+            delete: 'Xóa thông báo',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',
             create_notification_faile: 'Tạo thông báo thất bại',
-            edit_notification_success: 'Chỉnh sửa thông báo thành công',
-            edit_notification_faile: 'Chỉnh sửa thông báo thất bại',
             delete_notification_success: 'Xóa thông báo thành công',
             delete_notification_faile: 'Xóa thông báo thất bại',
-            delete_notification_receivered_success: 'Xóa thông báo thành công',
-            delete_notification_receivered_faile: 'Xóa thông báo thất bại',
-            delete_notification_sent_success: 'Xóa thông báo thành công',
-            delete_notification_sent_faile: 'Xóa thông báo thất bại',
+            delete_manual_notification_success: 'Xóa thông báo thành công',
+            delete_manual_notification_faile: 'Xóa thông báo thất bại',
         },
 
         not_found: {

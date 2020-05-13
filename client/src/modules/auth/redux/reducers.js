@@ -12,6 +12,7 @@ var initState = {
     components: [],
     error: null,
     forgotPassword: false,
+    reset_password: false,
     isLoading: false
 }
 
@@ -109,7 +110,11 @@ export function auth(state = initState, action) {
             };
 
         case AuthConstants.RESET_PASSWORD_SUCCESS:
-            return initState;
+            return {
+                ...state,
+                reset_password: true,
+                isLoading: false
+            };
         
         case AuthConstants.GET_LINKS_OF_ROLE_FAILE:
             return {

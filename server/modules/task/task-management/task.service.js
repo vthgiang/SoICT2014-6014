@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit } = require('../../../models/index').schema;
+const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User } = require('../../../models/index').schema;
 
 /**
  * Lấy tất cả các công việc
@@ -14,8 +14,21 @@ const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, Organizat
  */
 exports.getTask = async (id) => {
     //req.params.id
-    var task = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" });        
+    var superTask = await Task.findById(id)
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })   
+        .populate("evaluations.results.employee")
+        .populate("evaluations.kpis.employee")
+        .populate("evaluations.kpis.kpis")
+
+    var task = await Task.findById(id).populate([
+        {path: "parent", select: "name"},
+        {path: "organizationalUnit", model: OrganizationalUnit},
+        {path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id"},
+        {path: "evaluations.results.employee", select: "name email _id"},
+        {path: "evaluations.kpis.employee", select: "name email _id"},
+        {path: "evaluations.kpis.kpis"}
+    ])
+    
     if(task.taskTemplate === null){
         return {
             "info": task,
@@ -25,9 +38,9 @@ exports.getTask = async (id) => {
     } else {
         var task2 = await Task.findById(id)
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
-        .populate({path: "taskActions.creator"});
+        .populate({path: "taskActions.creator", model: User, select: "name email"});
         return {
-            "info": task2,
+            "info": task,
             "actions": task2.taskActions,
             "informations": task2.taskInformations
         };
@@ -214,7 +227,7 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         if(taskTemplateId !== null){
             var taskTemplate = await TaskTemplate.findById(taskTemplateId);
             var taskActions = taskTemplate.taskActions;
-
+            
             // taskActions.forEach(item => {
             //     item = {
             //         ...item,
@@ -256,6 +269,7 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
                 taskTemplateId, { $inc: { 'numberOfUse': 1} }, { new: true }
             );
         }
+
         task = await task.populate({path: "organizationalUnit creator parent"}).execPopulate();
         return task;
 }

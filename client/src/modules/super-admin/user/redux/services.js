@@ -1,5 +1,8 @@
 import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
+import { TOKEN_SECRET } from '../../../../env';
+import { getStorage } from '../../../../config';
+import jwt from 'jsonwebtoken';
 
 export const UserServices = {
     get,
@@ -12,7 +15,8 @@ export const UserServices = {
     getAllUserOfCompany,
     getAllUserOfDepartment,
     getAllUserSameDepartment,
-    getRoleSameDepartmentOfUser
+    getRoleSameDepartmentOfUser,
+    getDepartmentOfUser,
 };
 
 function get() {
@@ -98,4 +102,15 @@ function getAllUserSameDepartment(id) {
         url: `${LOCAL_SERVER_API}/user/same-department/${id}`,
         method: 'GET',
     }, false, true, 'super_admin.user');
+}
+
+async function getDepartmentOfUser() {
+    const token = getStorage();
+    const verified = await jwt.verify(token, TOKEN_SECRET);
+    var id = verified._id;
+    
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/${id}/organizational-units`,
+        method: 'GET',
+    }, false, true, 'super_admin.organization_unit');
 }

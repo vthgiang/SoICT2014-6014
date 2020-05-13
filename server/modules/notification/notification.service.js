@@ -1,48 +1,59 @@
-const {OrganizationalUnit, UserRole, Notification, NotificationUser} = require('../../models').schema;
+const {OrganizationalUnit, UserRole, Notification, ManualNotification} = require('../../models').schema;
 
 /**
- * Lấy tất cả thông báo
+ * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
  */
-exports.getAllNotifications = async (company) => { //id cua cong ty do
-    return await Notification.find({ company })
+exports.getAllManualNotifications = async (creator) => { //id cua cong ty do
+    return await ManualNotification.find({ creator })
         .populate([
-            { path: 'creater', model: User }
-        ]);
+            {path: 'users', model: User},
+            {path: 'organizationalUnits', model: OrganizationalUnit}
+        ]).sort({createdAt: -1});
 }
 
 /**
- * Phân trang danh sách các thông báo
+ * Phân trang danh sách các thông báo đã được tạo bởi admin, giám đốc ..
  */
-exports.getPaginatedNotifications = async (company, limit, page, data={}) => {
-    const newData = await Object.assign({ company }, data );
-    return await Notification
-        .paginate( newData , { 
+exports.paginateManualNotifications = async (creator, limit, page) => {
+    return await ManualNotification
+        .paginate( {creator} , { 
             page, 
-            limit
+            limit,
+            sort: { createdAt: -1 }, 
+            populate: [
+                {path: 'users', model: User},
+                {path: 'organizationalUnits', model: OrganizationalUnit}
+            ]
         });
 }
 
 /**
- * Lấy thông báo theo id
+ * Tạo thông báo manual notification
+ * @company id của công ty
+ * @data thông tin về thông báo muốn tạo
  */
-exports.getNotificationById = async (id) => {
-    return await Notification.findById(id);
-}
-
-/**
- * Tạo thông báo
- */
-exports.createNotification = async (data, company) => {
+exports.createManualNotification = async (data) => {
     
-    return await Notification.create({
-        company,
+    const notify = await ManualNotification.create({
+        creator: data.creator,
+        sender: data.sender,
         title: data.title,
         level: data.level,
         content: data.content,
-        creator: data.creator
+        users: data.users,
+        organizationalUnits: data.organizationalUnits
     });
+
+    return await ManualNotification.findById(notify._id).populate([
+        {path: 'users', model: User},
+        {path: 'organizationalUnits', model: OrganizationalUnit}
+    ]);
 }
 
+/**
+ * Lấy danh sách các user của organizationalUnit để gửi thông báo
+ * @return trả về một mảng các id các user
+ */
 exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
     var department = await OrganizationalUnit.findById(departmentId)
         .populate([
@@ -59,60 +70,86 @@ exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
 
     return users;
 }
-/**
- * Thông báo đến người dùng
- */
-exports.noticeToUsers = async (userArr, notificationId) => {
-    const data = userArr.map(userId => {
+
+// Tạo notification và gửi đến cho user
+exports.createNotification = async (company, data, manualNotification=undefined) => {
+    const notificationToUsers = data.users.map(user=>{
         return {
-            userId,
-            notificationId
-        };
+            company,
+            title: data.title,
+            level: data.level,
+            content: data.content,
+            creator: data.creator,
+            sender: data.sender,
+            user,
+            manualNotification
+        }
     });
+    
+    const users = await Notification.insertMany(notificationToUsers);
 
-    return await NotificationUser.insertMany(data);
-}
+    for (let i = 0; i < data.organizationalUnits.length; i++) {
+        const organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
+        const userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
+        const notificationToOrganizationalUnits = userArr.map(user => {
+            return {
+                company,
+                title: data.title,
+                level: data.level,
+                content: data.content,
+                creator: data.creator,
+                sender: data.sender,
+                user,
+                manualNotification
+            }
+        });
+        const organs = await Notification.insertMany(notificationToOrganizationalUnits);
+    }
 
-/**
- * Xóa thông báo đã nhận 
- */
-exports.deleteReceivedNotification = async (id) => {
     return true;
 }
 
 /**
- * Lấy tất cả thông báo đã nhận
+ * Lấy tất cả thông báo mà một user nhận được
+ * @user id của user đó
  */
-exports.getAllReceivedNotificationsOfUser = async (userId) => {
-    var data = await NotificationUser
-        .find({userId})
-        .populate([{ path: 'notificationId', model: Notification }]);
-    var notifications = data.map(notifi => notifi.notificationId);
-
-    return notifications;
+exports.getAllNotifications = async (user) => {
+    return await Notification.find({user}).sort({createdAt: -1});
 }
 
 /**
- * Lấy tất cả thông báo đã tạo và gửi đi
+ * Phân trang danh sách các thông báo của người dùng nhận được
  */
-exports.getAllNotificationsSentByUser = async (userId) => {
-    var notifications = await Notification.find({creator: userId});
-
-    return notifications;
+exports.paginateNotifications = async (user, limit, page) => {
+    return await Notification
+        .paginate( {user} , { 
+            page, 
+            limit,
+            sort: { createdAt: -1 }
+        });
 }
 
 /**
- * Xóa thông báo đã nhận
+ * Đánh dấu thông báo nhận đã được đọc
  */
-exports.deleteReceivedNotification = async (userId, notificationId) => {
-    return await NotificationUser.deleteOne({userId, notificationId});
+exports.changeNotificationStateToReaded = async (notificationId) => {
+    const notification = await Notification.findById(notificationId);
+    notification.readed = true;
+    await notification.save();
+
+    return notification;
 }
 
 /**
- * Xóa thông báo đã gửi
+ * Xóa manual notification
  */
-exports.deleteSentNotification = async (notificationId) => {
-    await NotificationUser.deleteMany({notificationId});
+exports.deleteManualNotification = async (notificationId) => {
+    return await ManualNotification.deleteOne({_id: notificationId});
+}
 
+/**
+ * Xóa notification của user
+ */
+exports.deleteNotification = async (notificationId) => {
     return await Notification.deleteOne({_id: notificationId});
 }

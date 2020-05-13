@@ -12,3 +12,5 @@ export * from './src/slim-scroll/slimScroll';
 export * from './src/non-passive-event-listener-warning-fix/nonPassiveEventListenerWarningFix';
 export * from './src/error-label/errorLabel';
 export * from './src/select-box/selectBox';
+export * from './src/date-time-converter';
+export * from './src/tooltip';

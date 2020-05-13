@@ -279,3 +279,22 @@ exports.checkUserExited = async (email) => {
     }
     return checkUser;
 }
+
+
+/**
+ * Lấy tất cả các đơn vị tổ chức một user thuộc về
+ * @userId id của user
+ */
+exports.getOrganizationalUnitsOfUser = async (userId) => {
+    const roles = await UserRole.find({ userId });
+    const newRoles = roles.map( role => role.roleId);
+    const departments = await OrganizationalUnit.find({
+        $or: [
+            {'dean': { $in: newRoles }}, 
+            {'viceDean':{ $in: newRoles }}, 
+            {'employee':{ $in: newRoles }}
+        ]  
+    });
+
+    return departments;
+}

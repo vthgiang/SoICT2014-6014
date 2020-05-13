@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalPerformTask } from '../../task-perform/component/modalPerformTask';
+import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { ModalAddTask } from './taskAddModal';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import Swal from 'sweetalert2';
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DataTableSetting, PaginateBar } from '../../../../common-components';
-import { TreeTable } from '../../../../common-components';
+import { SelectMulti, DataTableSetting, PaginateBar, TreeTable } from '../../../../common-components';
 
 class TabTaskContent extends Component {
     constructor(props) {
@@ -303,13 +303,13 @@ class TabTaskContent extends Component {
     render() {
         var currentTasks, units = [];
         var pageTotals;
-        const { tasks, department, translate } = this.props;
+        const { tasks, user, translate } = this.props;
         const { startTimer, currentTimer, currentPage } = this.state;
         if (tasks.tasks) {
             currentTasks = tasks.tasks;
             pageTotals = tasks.pages
         }
-        if (department.unitofuser) units = department.unitofuser;
+        if (user.organizationalUnitsOfUser) units = user.organizationalUnitsOfUser;
         const items = [];
 
         // khởi tạo dữ liệu TreeTable
@@ -482,6 +482,14 @@ class TabTaskContent extends Component {
                     {
                         // this.state.showModal !== undefined &&
 
+                        <ModalPerform
+                            id={this.state.showModal}
+                            role={this.props.role}
+                        />
+                    }
+                    {/* {
+                        // this.state.showModal !== undefined &&
+
                         <ModalPerformTask
                             // responsible={item.responsibleEmployees}
                             // unit={item.organizationalUnit._id}
@@ -490,7 +498,7 @@ class TabTaskContent extends Component {
                             id={this.state.showModal}
                             role={this.props.role}
                         />
-                    }
+                    } */}
 
                     {
                         this.state.showAddSubTask !== undefined &&
@@ -534,8 +542,8 @@ class TabTaskContent extends Component {
 }
 
 function mapState(state) {
-    const { tasks, department } = state;
-    return { tasks, department };
+    const { tasks, user } = state;
+    return { tasks, user };
 }
 
 const actionCreators = {
@@ -544,7 +552,7 @@ const actionCreators = {
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getDepartment: DepartmentActions.getDepartmentOfUser
+    getDepartment: UserActions.getDepartmentOfUser
 };
 const connectedTabTaskContent = connect(mapState, actionCreators)(withTranslate(TabTaskContent))
 export { connectedTabTaskContent as TabTaskContent };

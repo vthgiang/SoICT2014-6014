@@ -175,3 +175,24 @@ exports.getAllUsersInOrganizationalUnit = async (req, res) => {
         })
     }
 }
+
+exports.getOrganizationalUnitsOfUser = async (req, res) => {
+    try {
+        const department = await UserService.getOrganizationalUnitsOfUser(req.params.id);
+        
+        await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_department_of_user_success'],
+            content: department
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_department_of_user_faile'],
+            content: error
+        });
+    }
+}
