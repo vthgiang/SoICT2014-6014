@@ -12,168 +12,128 @@ export const EducationActions = {
     updateEducation,
 };
 
-// lấy danh sách tất cả các chương trình đào tạo bắt buộc
+/**
+ * Lấy danh sách tất cả các chương trình đào tạo bắt buộc
+ */
 function getAll() {
     return dispatch => {
-        dispatch(request());
+        dispatch({
+            type: EducationConstants.GET_LIST_ALL_EDUCATION_REQUEST
+        });
         EducationService.getAll()
-            .then(
-                listAll => dispatch(success(listAll)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: EducationConstants.GET_LIST_ALL_EDUCATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: EducationConstants.GET_LIST_ALL_EDUCATION_REQUEST,
-        };
-    };
-
-    function success(listAll) {
-        return {
-            type: EducationConstants.GET_LIST_ALL_EDUCATION_SUCCESS,
-            listAll
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EducationConstants.GET_LIST_ALL_EDUCATION_FAILURE,
-            error
-        };
-    };
 }
 
-
-// lấy danh sách các chương trình đào tạo bắt buộc
+/**
+ * Lấy danh sách các chương trình đào tạo theo key
+ * @data : dữ liệu của Key
+ */
 function getListEducation(data) {
     return dispatch => {
-        dispatch(request());
+        dispatch({
+            type: EducationConstants.GET_LISTEDUCATION_REQUEST
+        });
 
         EducationService.getListEducation(data)
-            .then(
-                listEducation => dispatch(success(listEducation)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: EducationConstants.GET_LISTEDUCATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EducationConstants.GET_LISTEDUCATION_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: EducationConstants.GET_LISTEDUCATION_REQUEST,
-        };
-    };
-
-    function success(listEducation) {
-        return {
-            type: EducationConstants.GET_LISTEDUCATION_SUCCESS,
-            listEducation
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EducationConstants.GET_LISTEDUCATION_FAILURE,
-            error
-        };
-    };
 }
 
-// tạo mới chương trình đào tạo bắt buộc
-function createNewEducation(newEducation){
+/**
+ * Tạo mới một chương trình đào tạo
+ * @data : Dữ liệu chương trình đào tạo cần tạo
+ */
+function createNewEducation(data) {
     return dispatch => {
-        dispatch(request(newEducation));
-
-        EducationService.createNewEducation(newEducation)
-            .then(
-                newEducation => dispatch(success(newEducation)),
-                error => dispatch(failure(error.toString()))
-            );
+        dispatch({
+            type: EducationConstants.CREATE_EDUCATION_REQUEST
+        });
+        EducationService.createNewEducation(data)
+            .then(res => {
+                dispatch({
+                    type: EducationConstants.CREATE_EDUCATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EducationConstants.CREATE_EDUCATION_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request(newEducation) {
-        return {
-            type: EducationConstants.CREATE_EDUCATION_REQUEST,
-            newEducation
-        };
-    };
-
-    function success(newEducation) {
-        return {
-            type: EducationConstants.CREATE_EDUCATION_SUCCESS,
-            newEducation
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EducationConstants.CREATE_EDUCATION_FAILURE,
-            error
-        };
-    };
 }
-
-// Xoá một chương trình đào tạo
-function deleteEducation(id){
+/**
+ * Xoá một chương trình đào tạo
+ * @id : Id chương trình đào tạo cần xoá
+ */
+function deleteEducation(id) {
     return dispatch => {
-        dispatch(request());
-
+        dispatch({
+            type: EducationConstants.DELETE_EDUCATION_REQUEST
+        });
         EducationService.deleteEducation(id)
-            .then(
-                deleteEducation => dispatch(success(deleteEducation)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: EducationConstants.DELETE_EDUCATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EducationConstants.DELETE_EDUCATION_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: EducationConstants.DELETE_EDUCATION_REQUEST,
-        };
-    };
-
-    function success(deleteEducation) {
-        return {
-            type: EducationConstants.DELETE_EDUCATION_SUCCESS,
-            deleteEducation
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EducationConstants.DELETE_EDUCATION_FAILURE,
-            error
-        };
-    };
 }
 
-// cập nhật thông tin của chương trình đào tạo
-function updateEducation(id, infoEducation){
+/**
+ * Cập nhật thông tin chương trình đào tạo
+ * @id : Id chương trình đào tạo cần chỉnh sửa
+ * @data : dữ liệu chỉnh sửa chương trình đào tạo
+ */
+function updateEducation(id, data) {
     return dispatch => {
-        dispatch(request());
+        dispatch({
+            type: EducationConstants.UPDATE_EDUCATION_REQUEST
+        });
 
-        EducationService.updateEducation(id, infoEducation)
-            .then(
-                updateEducation => dispatch(success(updateEducation)),
-                error => dispatch(failure(error.toString()))
-            );
+        EducationService.updateEducation(id, data)
+            .then(res => {
+                dispatch({
+                    type: EducationConstants.UPDATE_EDUCATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EducationConstants.UPDATE_EDUCATION_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
-
-    function request() {
-        return {
-            type: EducationConstants.UPDATE_EDUCATION_REQUEST,
-        };
-    };
-
-    function success(updateEducation) {
-        return {
-            type: EducationConstants.UPDATE_EDUCATION_SUCCESS,
-            updateEducation
-        };
-    };
-
-    function failure(error) {
-        return {
-            type: EducationConstants.UPDATE_EDUCATION_FAILURE,
-            error
-        };
-    };
 }

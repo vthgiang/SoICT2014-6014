@@ -1223,20 +1223,20 @@ var sampleCompanyData = async () => {
     console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
     var educationProgram = await EducationProgram.insertMany([{
         company:vnist._id,
-        unitEducation: [
+        applyForOrganizationalUnits: [
             departments[0]._id
         ],
-        positionEducation: [
+        applyForPositions: [
             nvPhongHC._id
         ],
         name: "An toan lao dong",
         programId: "M123",
     }, {
         company:vnist._id,
-        unitEducation: [
+        applyForOrganizationalUnits: [
             departments[0]._id
         ],
-        positionEducation: [
+        applyForPositions: [
             nvPhongHC._id
         ],
         name: "kỹ năng giao tiếp",
