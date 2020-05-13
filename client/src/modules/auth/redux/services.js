@@ -77,7 +77,7 @@ function changePassword(data) {
 
 async function getLinksOfRole(idRole) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/get-links-of-role/${idRole}`,
+        url: `${ LOCAL_SERVER_API }/auth/get-links-that-role-can-access/${idRole}`,
         method: 'GET',
     }, false, true, 'auth');
 }
@@ -88,14 +88,14 @@ async function refresh() {
     var id = verified._id;
     
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/profile/${id}`,
+        url: `${ LOCAL_SERVER_API }/auth/get-profile/${id}`,
         method: 'GET',
     }, false, true, 'auth');
 }
 
 function forgotPassword(email) {
     return sendRequestPublic({
-        url: `${ LOCAL_SERVER_API }/auth/forgot-password`,
+        url: `${ LOCAL_SERVER_API }/auth/forget-password`,
         method: 'POST',
         data: {
             email

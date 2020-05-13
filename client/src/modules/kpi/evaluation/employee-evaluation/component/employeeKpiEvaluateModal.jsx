@@ -155,24 +155,24 @@ class ModalMemberEvaluate extends Component {
                                                         <label >{item.criteria}</label>
                                                     </div>
                                                 
-                                                    <div className="col-sm-12">
+                                                    {/* <div className="col-sm-12">
                                                         <label style={{width: "150px"}}>Hệ thống đánh giá:</label>
                                                         <label >{item.systempoint === null ? 0 : item.systempoint}{item.weight}</label>
                                                     </div>
                                                     <div className="col-sm-12">
                                                         <label style={{width: "150px"}}>Tự đánh giá:</label>
                                                         <label >{item.mypoint === null ? 0 : item.mypoint}{item.weight}</label>
-                                                    </div>
+                                                    </div> */}
                                                     <div className="col-sm-12">
                                                         <label style={{width: "150px"}}>Trọng số:</label>
                                                         <label style={{display: "inline" }}>{item.weight}</label>
                                                     </div>
-                                                    <div className="form-inline">
+                                                    {/* <div className="form-inline">
                                                         <label style={{width: "150px"}}>Quản lý đánh giá:</label>
                                                         <input type="number" min="0" max={item.weight} className="form-control" ref={input => this.approvepoint = input} defaultValue="0" name="value" style={{width:"50px"}} />
-                                                    </div>
+                                                    </div> */}
                                                     <div className="form-inline">
-                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item._id, this.approvepoint.value)}>Lưu</button>
+                                                        <button className="btn btn-success pull-right" onClick={()=> this.handleSetPointKPI(this.props.id ,item._id, this.approvepoint.value)}>Tính điểm KPI</button>
                                                     </div>
                                             </div>
                                             <div className="body-content-right">
@@ -180,23 +180,30 @@ class ModalMemberEvaluate extends Component {
                                                     <h4>Danh sách các công việc</h4>
                                                 </div>
                                                 
-                                                <DataTableSetting class="pull-right" tableId="kpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
-                                                columnArr={[ 'STT' ,'Tên công việc', 'Thời gian' , 'Trạng thái' , 'Đóng góp' , 'Point' , 'Level']} limit={this.state.perPage} setLimit={this.setLimit} hideColumnOption={true} />
+                                                <DataTableSetting class="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                                columnArr={[ 
+                                                    'STT' ,
+                                                    'Tên công việc',
+                                                    'Thời gian' , 
+                                                    'Trạng thái' , 
+                                                    'Đóng góp' ,
+                                                    'Điểm' ,
+                                                    'Độ quan trọng']} 
+                                                limit={this.state.perPage} 
+                                                setLimit={this.setLimit} 
+                                                hideColumnOption={true} />
 
-                                                <table id="kpiEvaluate" className="table table-hover table-bordered"></table>
+                                                {/* <table id="kpiEvaluate" className="table table-hover table-bordered"></table> */}
                                                 <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th title ="STT" style={{ width: "20px" }}>Stt</th>
                                                             <th title="Tên công việc">Tên công việc</th>
                                                             <th title="Thời gian">Thời gian</th>
-                                                            {/* <th title="Tên">Tên</th>
-                                                            <th title="Vai trò">Vai trò</th> */}
                                                             <th title="Trạng thái">Trạng thái</th>
                                                             <th title="Đóng góp">Đóng góp</th>
-                                                            <th title="Point">Điểm</th>
-                                                            <th title="Level">Level</th>
-                                                            {/* <th title="Kết quả đánh giá">Kết quả đánh giá</th> */}
+                                                            <th title="Điểm">Điểm</th>
+                                                            <th title="Độ quan trọng">Độ quan trọng</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -209,19 +216,19 @@ class ModalMemberEvaluate extends Component {
                                                                     <td>{index+1}</td>
                                                                     <td>{itemTask.name}</td>                                                                   
                                                                     <td>{this.formatDate(itemTask.startDate) + "->\n" + this.formatDate(itemTask.endDate)}</td>
-                                                                    <td>{itemTask.employee.name}</td>
-                                                                    <td>{itemTask.role}</td>
                                                                     <td>{itemTask.status}</td>
                                                                     <td>{itemTask.contribution}</td>
                                                                     <td>{itemTask.automaticPoint + '-' +itemTask.employeePoint+ '-'+itemTask.approvedPoint }</td>
-                                                                    <td><div class="d-flex justify-content-center my-4">
-                                                                    <form class="range-field w-10">
-                                                                        <input id="slider11" class="border-0" type="range" min="0" max="10" />
-                                                                    </form>
-                                                                    <span class="font-weight-bold text-primary ml-2 mt-1 valueSpan"></span>
-                                                                    </div></td>
+                                                                    <td>
+                                                                        {/* <div class="d-flex justify-content-center my-4"> */}
+                                                                    {/* <form class="range-field w-10"> */}
+                                                                        <input id="slider11" class="border-0" type="range" min="0" max="10" value={itemTask.taskImportanceLevel} />
+                                                                    {/* </form> */}
+                                                                    {/* <span class="font-weight-bold text-primary ml-2 mt-1 valueSpan"></span> */}
+                                                                    {/* </div> */}
+                                                                    </td>
                                                                     {/* <td>{itemTask.point === -1 ? 'Chưa đánh giá' : itemTask.point}</td> */}
-                                                            </tr>)) : <tr><td colSpan={6}>Không có dữ liệu</td></tr>
+                                                            </tr>)) : <tr><td colSpan={7}>Không có dữ liệu</td></tr>
                                                         }
  
                                                     </tbody>

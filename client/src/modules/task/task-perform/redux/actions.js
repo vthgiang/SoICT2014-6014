@@ -19,7 +19,14 @@ export const performTaskAction = {
     addTaskAction,
     getTaskActions,
     editTaskAction,
-    deleteTaskAction
+    deleteTaskAction,
+    createTaskComment,
+    getTaskComments,
+    editTaskComment,
+    deleteTaskComment,
+    createCommentOfTaskComment,
+    editCommentOfTaskComment,
+    deleteCommentOfTaskComment
 };
 
 // Create result task
@@ -294,4 +301,108 @@ function deleteTaskAction(id,task) {
     function request(id) { return { type: performTaskConstants.DELETE_TASKACTION_REQUEST, id } }
     function success(task) { return { type: performTaskConstants.DELETE_TASKACTION_SUCCESS, task } }
     function failure(id, error) { return { type: performTaskConstants.DELETE_TASKACTION_FAILURE, id, error } }
+}
+
+function createTaskComment(newComment) {
+    return dispatch => {
+        dispatch(request());
+
+        performTaskService.createTaskComment(newComment)
+            .then(
+                newComment => dispatch(success(newComment)),
+                error => dispatch(failure(error))
+            );
+    }
+    function request() { return { type: performTaskConstants.CREATE_TASKCOMMENT_REQUEST} }
+    function success(newComment) { return { type: performTaskConstants.CREATE_TASKCOMMENT_SUCCESS, newComment } }
+    function failure(error) { return { type: performTaskConstants.CREATE_TASKCOMMENT_FAILURE, error } }
+}
+function getTaskComments(task) {
+    console.log("Task"+ task)
+    return dispatch => {
+        dispatch(request(task));
+
+        performTaskService.getTaskComments(task)
+            .then(
+                taskComments => dispatch(success(taskComments)),
+                error => dispatch(failure(error.toString()))
+            )
+    };
+    function request(task) { return { type: performTaskConstants.GET_TASKCOMMENTS_REQUEST, task } }
+    function success(taskComments) { return { type: performTaskConstants.GET_TASKCOMMENTS_SUCCESS, taskComments } }
+    function failure(error) { return { type: performTaskConstants.GET_TASKCOMMENTS_FAILURE, error } }
+}
+function editTaskComment(id, newComment) {
+    return dispatch => {
+        dispatch(request(id));
+        performTaskService.editTaskComment(id, newComment)
+            .then(
+                newComment => {
+                    dispatch(success(newComment));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                }
+            )
+    }
+    function request(id) { return { type: performTaskConstants.EDIT_TASKCOMMENT_REQUEST, id } }
+    function success(newComment) { return { type: performTaskConstants.EDIT_TASKCOMMENT_SUCCESS, newComment } }
+    function failure(error) { return { type: performTaskConstants.EDIT_TASKCOMMENT_FAILURE, error } }
+}
+function deleteTaskComment(id,task) {
+    return dispatch => {
+        dispatch(request(id));
+        performTaskService.deleteTaskComment(id,task)
+        .then(
+            task => dispatch(success(task)),
+            error => dispatch(failure(id, error.toString()))
+        );
+    }
+
+    function request(id) { return { type: performTaskConstants.DELETE_TASKCOMMENT_REQUEST, id } }
+    function success(task) { return { type: performTaskConstants.DELETE_TASKCOMMENT_SUCCESS, task } }
+    function failure(id, error) { return { type: performTaskConstants.DELETE_TASKCOMMENT_FAILURE, id, error } }
+}
+function createCommentOfTaskComment(newComment){
+    return dispatch => {
+        dispatch(request());
+        performTaskService.createCommentOfTaskComment(newComment)
+        .then(
+            newComment => dispatch(success(newComment)),
+            error => dispatch(failure(error.toString()))
+        );
+    }
+
+    function request() { return { type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_REQUEST } }
+    function success(newComment) { return { type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_SUCCESS, newComment } }
+    function failure( error) { return { type: performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
+}
+function editCommentOfTaskComment(id,newComment) {
+    return dispatch => {
+        dispatch(request());
+        performTaskService.editCommentOfTaskComment(id,newComment)
+        .then(
+            newComment => dispatch(success(newComment)),
+            error => dispatch(failure(error.toString()))
+        );
+    }
+
+    function request() { return { type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_REQUEST } }
+    function success(newComment) { return { type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_SUCCESS, newComment } }
+    function failure( error) { return { type: performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
+}
+function deleteCommentOfTaskComment(task,id) {
+    
+    return dispatch => {
+        dispatch(request());
+        performTaskService.deleteCommentOfTaskComment(task,id)
+        .then(
+            comment => dispatch(success(comment)),
+            error => dispatch(failure(error.toString()))
+        );
+    }
+
+    function request() { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_REQUEST } }
+    function success(comment) { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_SUCCESS, comment } }
+    function failure( error) { return { type: performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_FAILURE, error } }
 }

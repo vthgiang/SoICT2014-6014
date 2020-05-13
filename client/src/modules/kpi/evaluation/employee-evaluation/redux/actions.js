@@ -34,11 +34,11 @@ function getAllKPIMemberOfUnit(infosearch) {
     };
 }
 // Lấy tất cả KPI cá nhân
-function getAllKPIMemberByMember() { //member
+function getAllKPIMemberByMember(member) { //member
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
  
-        kpiMemberServices.getAllKPIMemberByMember()
+        kpiMemberServices.getAllKPIMemberByMember(member)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS,
@@ -127,9 +127,9 @@ function approveKPIMember(id) {
 // Chỉnh sửa mục tiêu KPI cá nhân
 function editTargetKPIMember(id, newTarget) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST});
+        dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST, id});
  
-        kpiMemberServices.approveKPIMember(id,newTarget)
+        kpiMemberServices.editTargetKPIMember(id, newTarget)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.EDITTARGET_KPIMEMBER_SUCCESS,

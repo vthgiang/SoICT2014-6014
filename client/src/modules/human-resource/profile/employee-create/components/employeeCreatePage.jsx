@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 
-import { convertToFormData } from '../../../../../helpers/convertToFormData';
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
@@ -171,7 +171,7 @@ class EmployeeCreatePage extends Component {
                 annualLeaves
             }
         })
-        let formData = convertToFormData(this.state.employee);
+        let formData = convertJsonObjectToFormData(this.state.employee);
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
