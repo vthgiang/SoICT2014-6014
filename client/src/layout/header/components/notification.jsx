@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { NotificationActions } from '../../../modules/notification/redux/actions';
-import { DateTimeConverter } from '../../../common-components';
 
 class Notification extends Component {
     constructor(props) {
@@ -22,8 +21,7 @@ class Notification extends Component {
             <React.Fragment>
                 <li className="dropdown notifications-menu">
                     <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
-                        <i className="fa fa-bell-o" />
-                        <span className="label label-warning">{notifications.receivered.list.filter(notification => !notification.readed).length}</span>
+                        <i className="fa fa-bell-o" /><sup><i className="fa fa-circle text-yellow" style={{fontSize: '8px'}}></i></sup>
                     </a>
                     <ul className="dropdown-menu" style={{borderColor: 'gray'}}>
                         <li className="header text-center"><strong className="text-red">{notifications.receivered.list.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
@@ -40,7 +38,6 @@ class Notification extends Component {
                                                     <i className="fa fa-bomb text-red" />
                                                 }
                                                 {notification.title}
-                                                <b style={{fontSize: '11px'}} className="pull-right"><DateTimeConverter dateTime={notification.createdAt} type={1}/></b>
                                             </a>
                                         </li>
                                     })
