@@ -34,11 +34,11 @@ function getAllKPIMemberOfUnit(infosearch) {
     };
 }
 // Lấy tất cả KPI cá nhân
-function getAllKPIMemberByMember() { //member
+function getAllKPIMemberByMember(member) { //member
     return dispatch => {
         dispatch({type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST});
  
-        kpiMemberServices.getAllKPIMemberByMember()
+        kpiMemberServices.getAllKPIMemberByMember(member)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS,
@@ -127,9 +127,9 @@ function approveKPIMember(id) {
 // Chỉnh sửa mục tiêu KPI cá nhân
 function editTargetKPIMember(id, newTarget) {
     return dispatch => {
-        dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST});
+        dispatch({type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST, id});
  
-        kpiMemberServices.approveKPIMember(id,newTarget)
+        kpiMemberServices.editTargetKPIMember(id, newTarget)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.EDITTARGET_KPIMEMBER_SUCCESS,
@@ -166,11 +166,11 @@ function editStatusTarget(id, status) {
     };
 }
 
-function getTaskById(id, date) {
+function getTaskById(id, employeeId, date) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.GET_TASK_BYID_REQUEST});
  
-        kpiMemberServices.getTaskById(id, date)
+        kpiMemberServices.getTaskById(id, employeeId, date)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.GET_TASK_BYID_SUCCESS,

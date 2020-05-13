@@ -33,6 +33,9 @@ const TaskTemplateSchema = new Schema({
             type: Boolean,
             default: true,
             required: true
+        },
+        creator: {
+            type : Schema.Types.ObjectId,
         }
     }],
     taskInformations: [{

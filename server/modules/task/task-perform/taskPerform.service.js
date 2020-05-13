@@ -111,33 +111,6 @@ exports.createCommentOfTaskAction = async (body) => {
                 }
             }
         )
-        // var task = await Task.aggregate([
-        //     {
-        //         $match: { "taskActions._id": mongoose.Types.ObjectId(body.taskActionId) }
-        //     },
-        //     { $unwind: "$taskActions" },
-        //     { $replaceRoot: { newRoot: "$taskActions" } },
-        //     { $match: { "_id": mongoose.Types.ObjectId(body.taskActionId) } },
-        //     { $unwind: "$comments" },
-        //     { $sort: { "comments.createdAt": -1 } },
-        //     {
-        //         $group: {
-        //             _id: null,
-        //             first: { $first: "$$ROOT" }
-        //         }
-        //     },
-        //     { $replaceRoot: { newRoot: "$first.comments" } },
-        //     {
-        //         $lookup: {
-        //             from: "users",
-        //             localField: "creator",
-        //             foreignField: "_id",
-        //             as: "creator"
-
-        //         }
-        //     },
-        //     {$unwind : "$creator"}
-        // ])
         var task = await Task.findOne({"taskActions._id": body.taskActionId}).populate([
             { path: "taskActions.creator", model: User,select: 'name email' },
             { path: "taskActions.comments.creator", model: User, select: 'name email'}
@@ -498,7 +471,7 @@ exports.createCommentOfTaskComment = async (body) => {
             "$push": {
                 "taskComments.$.comments":
                 {
-                    creator: body.creator,
+                    creator: body.creator,  
                     content: body.content,
                     //  file: file._id
                 }

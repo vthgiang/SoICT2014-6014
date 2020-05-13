@@ -143,7 +143,7 @@ class EvaluateByResponsibleEmployee extends Component {
         const { errorOnDate, errorOnPoint, errorOnProgress } = this.state;
         var items = [{value: '123', text: 'Quang'},{value: '789', text: 'Duyên'}]
 
-        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals)? KPIPersonalManager.kpipersonals[0].kpis : [];
+        var listKpi = (KPIPersonalManager && KPIPersonalManager.kpipersonals && KPIPersonalManager.kpipersonals[0])? KPIPersonalManager.kpipersonals[0].kpis : [];
         var task = (tasks && tasks.task)&& tasks.task.info;
         console.log('task ', task);
         return (

@@ -42,6 +42,7 @@ class KPIUnitManager extends Component {
 
         return [month, year].join('-');
     }
+    handleSearchData(){};
     showModalCopy = async (id) => {
         await this.setState(state => {
             return {
@@ -96,14 +97,59 @@ class KPIUnitManager extends Component {
             };
             
         }
+        console.log("listkpi---", listkpi);
         return (
             <React.Fragment>
             <div className="box">
+                
+                <div className="box-body qlcv">
+                <div className="form-inline">
+                        <div className="form-group">
+                            <label>Người tạo:</label>
+                            <select defaultValue={4} className="form-control" ref={input=> this.status = input}>
+                            <option value={0}>Nguyễn Văn An</option>
+                            <option value={1}>Tất cả</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Trạng thái:</label>
+                            <select defaultValue={4} className="form-control" ref={input=> this.status = input}>
+                            <option value={0}>Đang thiết lập</option>
+                            <option value={1}>Chờ phê duyệt</option>
+                            <option value={2}>Đã kích hoạt</option>
+                            <option value={3}>Đã kết thúc</option>
+                            <option value={4}>Đang hoạt động</option>
+                            <option value={5}>Tất cả các trạng thái</option>
+                            </select>
+                        </div>
+                        </div>
+
+                        <div className="form-inline">
+                        <div className="form-group">
+                            <label>Từ tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.startDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
+
+                        </div>
+                        <div className="form-group">
+                            <label>Đến tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.endDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
+                            <div className="form-group">
+                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
+                                kiếm</button>
+                            </div>
+
+                        </div>
+
+                        </div>
+
                 <DataTableSetting class="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
                     columnArr={[ 'STT', 'Người tạo', 'Thời gian', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật' ]}
                     limit={this.state.perPage}
                     setLimit={this.setLimit} hideColumnOption={true} />
-                <div className="box-body qlcv" id="kpiTableContainer">
                     <table id="kpiTable" className="table table-hover table-bordered">
                         <thead>
                             <tr>
@@ -129,7 +175,7 @@ class KPIUnitManager extends Component {
                                 <td>{item.creator.name}</td>
                                 <td>{this.formatDate(item.date)}</td>
                                 <td>{item.kpis.length}</td>
-                                <td>{item.result}</td>
+                                <td>{item.result=== null ? "Chưa đánh giá" : item.result}</td>
                                 <td>
                                     <a href={`#dataResultTask${item._id}`} data-toggle="modal" data-backdrop="static"
                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i

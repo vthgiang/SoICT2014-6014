@@ -122,11 +122,6 @@ export default {
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
-            },
-            date_time: {
-                day: 'ngày', month: 'tháng', year: 'năm',
-                hour: 'giờ', minute: 'phút',
-                today: 'Hôm nay',
             }
         },
 
