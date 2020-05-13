@@ -56,23 +56,15 @@ class NotificationMenu extends Component {
 
         return ( 
             <React.Fragment>
+
                 {this.checkHasComponent('create-notification') &&
-                    <div className="box box-solid">
+                <div className="box box-solid"><div className="box-body no-padding">
                         <ul className="nav nav-pills nav-stacked">
-                            <li onClick={this.showTabReceivered}>
-                                <button className="btn btn-default" style={{padding: '10px', textAlign: 'center', width: '100%'}}>
-                                    {this.state.showReceived && <i className="pull-right fa fa-star text-yellow"/>}
-                                    <i className="fa fa-fw fa-inbox"/>{translate('notification.receivered')}
-                                </button>
-                            </li>
-                            <li onClick={this.showTabSent}>
-                                <button className="btn btn-default" style={{padding: '10px', textAlign: 'center', width: '100%'}}>
-                                    {!this.state.showReceived && <i className="pull-right fa fa-star text-yellow"/>}
-                                    <i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}
-                                </button>
-                            </li>
+                            <li onClick={this.showTabReceivered} className={this.state.showReceived ? "active-notification-button" : null}><a href="#"><i className="fa fa-fw fa-inbox"/>{translate('notification.receivered')}</a></li>
+                            <li onClick={this.showTabSent} className={!this.state.showReceived ? "active-notification-button" : null}><a href="#"><i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}</a></li>
                         </ul>
-                    </div>  
+                    </div>
+                </div> 
                 }
 
                 <div className="box box-solid">

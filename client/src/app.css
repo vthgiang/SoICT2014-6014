@@ -174,3 +174,7 @@ legend.scheduler-border {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.active-notification-button {
+    border-left: 3px solid #3C8DBC;
+}
