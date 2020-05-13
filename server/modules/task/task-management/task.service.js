@@ -227,16 +227,14 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
         if(taskTemplateId !== null){
             var taskTemplate = await TaskTemplate.findById(taskTemplateId);
             var taskActions = taskTemplate.taskActions;
-            
-            // taskActions.forEach(item => {
-            //     item = {
-            //         ...item,
-            //         creator: taskTemplate.creator
-            //     }
-            // });
-            
-        }
+            taskActions.toObject();
+            taskActions.forEach(item => {
+                item.creator=creatorId
+                delete item._id
+            });
 
+        }
+        console.log(taskActions)
         var evaluations = [{
             // date: startDate,
             kpis : kpiId,
@@ -264,13 +262,16 @@ exports.createTask = async (parentId,startDateId,endDateId,unitId,creatorId,name
             consultedEmployees: consultedId,
             informedEmployees: informedId,
         });
+
         if(taskTemplateId !== null){
             var taskTemplate = await TaskTemplate.findByIdAndUpdate(
                 taskTemplateId, { $inc: { 'numberOfUse': 1} }, { new: true }
             );
         }
-
-        task = await task.populate({path: "organizationalUnit creator parent"}).execPopulate();
+        
+        task = await task.populate({path: "organizationalUnit creator parent"},
+        )
+        console.log("HAHHAHA")
         return task;
 }
 

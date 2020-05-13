@@ -5,6 +5,7 @@ import { DialogModal, ErrorLabel, ButtonModal } from '../../../../common-compone
 import { DetailTaskTab } from './detailTaskTab';
 
 import { taskManagementActions } from "../../task-management/redux/actions";
+import { ActionTab } from './actionTab';
 
 class ModalPerform extends Component {
     constructor(props) {
@@ -47,7 +48,10 @@ class ModalPerform extends Component {
                         {/* end div mô tả... */}
 
                         <div className="col-sm-6 box-body">
-                            <h1>TAB ATION TASK</h1>
+                            <ActionTab 
+                                id = {this.props.id}
+                                role={this.props.role}
+                            />
                         </div>
                     </div>
 
