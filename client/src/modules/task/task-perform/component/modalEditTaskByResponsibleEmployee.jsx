@@ -1,15 +1,34 @@
 import React, { Component } from 'react';
-import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-components/index';
+import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components/';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+import { getStorage } from "../../../../config";
+import jwt from "jsonwebtoken";
+import { TOKEN_SECRET } from "../../../../env";
 
 
 class ModalEditTaskByResponsibleEmployee extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+
+        const token = getStorage();
+        const verified = jwt.verify(token, TOKEN_SECRET);
+        let userId = verified._id;
+
+
+        let { tasks } = this.props;
+
+        let task = (tasks && tasks.task) && tasks.task.info;
+        let taskInformation = [{name: "Số nợ cần thu", value: 100},{name: "Số nợ đã thu", value: 60},{name: "Loại thuốc cần thu", value: "Thuốc viên"}];
+        // let taskInformation = task && task.taskInformations;
+
+        this.state = {
+            userId: userId,
+            task: task,
+            taskInformation: taskInformation,
+        }
     }
 
     handleTaskNameChange = event => {
@@ -17,11 +36,10 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         this.validateTaskName(value, true);
     }
 
-
     validateTaskName = (value, willUpdateState) => {
         let errorMessage = undefined;
         if (value === "") {
-            errorMessage = "Hãy điền tên công việc";
+            errorMessage = "Tên công việc không được để trống";
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -40,18 +58,45 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         this.validateTaskDescription(value, true);
     }
 
-
     validateTaskDescription = (value, willUpdateState) => {
         let errorMessage = undefined;
         if (value === "") {
-            errorMessage = "Hãy điền mô tả công việc";
+            errorMessage = "Mô tả công việc không được để trống";
         }
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     taskDescription: value,
-                    errorTaskDescription: errorMessage
+                    errorTaskDescription: errorMessage,
+                }
+            })
+        }
+        return errorMessage === undefined;
+    }
+
+    handleTaskProgressChange = event => {
+        let value = event.target.value;
+        this.validateTaskProgress(value, true);
+    }
+
+    validateTaskProgress = (value, willUpdateState) => {
+        let errorMessage = undefined;
+        if (value === "") {
+            errorMessage = "Hãy nhập mức độ hoàn thành công việc";
+        }
+        if (value !== undefined && isNaN(value)) {
+            errorMessage = "Mức độ hoàn thành phải có định dạng number";
+        }
+        if (value < 0 || value > 100) {
+            errorMessage = "Mức độ hoàn thành phải trong khoảng 0 - 100";
+        }
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    taskProgress: value,
+                    errorTaskProgress: errorMessage,
                 }
             })
         }
@@ -59,7 +104,13 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     isFormValidated = () => {
-        return this.validateTaskName(this.state.taskName, false) && this.validateTaskDescription(this.state.taskDescription, false);
+        return this.validateTaskName(this.state.taskName, false)
+            && this.validateTaskDescription(this.state.taskDescription, false)
+            && this.validateTaskProgress(this.state.taskProgress, false);
+    }
+
+    save = () => {
+        console.log('submitted form edit task');
     }
 
     componentDidMount() {
@@ -67,13 +118,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     render() {
-        const { tasks } = this.props;
-        const task = (tasks && tasks.task) && tasks.task.info;
-        const taskInformation =  task && task.taskInformation;
-
-
-
-        const { errorTaskName, errorTaskDescription } = this.state;
+        const {task, taskInformation } = this.state;
+        const { errorTaskName, errorTaskDescription, errorTaskProgress } = this.state;
 
         return (
             <div>
@@ -94,7 +140,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 <div>
                                     {/*Input for task name*/}
                                     <div className={`form-group ${errorTaskName === undefined ? "" : "has-error"}`}>
-                                        <label>Tên công việc:<span className="text-red">*</span></label>
+                                        <label>Tên công việc<span className="text-red">*</span></label>
                                         <input type="text"
                                                value={this.state.taskName !== undefined ? this.state.taskName : task && task.name}
                                                className="form-control" onChange={this.handleTaskNameChange}/>
@@ -103,7 +149,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     {/*Input for task description*/}
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
-                                        <label>Mô tả công việc:<span className="text-red">*</span></label>
+                                        <label>Mô tả công việc<span className="text-red">*</span></label>
                                         <input type="text"
                                                value={this.state.taskDescription !== undefined ? this.state.taskDescription : task && task.description}
                                                className="form-control" onChange={this.handleTaskDescriptionChange}/>
@@ -116,20 +162,46 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Thông tin chi tiết</legend>
                                 <div>
-                                    {/*Task information*/}
-                                    <strong>Thông tin công việc</strong>
-                                    <div style={{ marginLeft: "10px" }}>
-                                        <p>Mức độ hoàn thành: {task && task.progress}%</p>
-                                        {
-                                            (task && task.taskInformations.length !== 0) &&
-                                            task.taskInformations.map(info => {
-                                                return <div>
-                                                    <p>{info.name}&nbsp;-&nbsp;Giá trị: {info.value}</p>
-                                                </div>
-                                            })
-                                        }
+                                    {/*Mức độ hoàn thành*/}
+                                    <div className={`form-group ${errorTaskProgress === undefined ? "" : "has-error"}`}>
+                                        <label>Mức độ hoàn thành</label>
+                                        <input type="text"
+                                               value={this.state.taskProgress !== undefined ? this.state.taskProgress : task && task.progress}
+                                               className="form-control" onChange={this.handleTaskProgressChange}/>
+                                        <ErrorLabel content={errorTaskProgress}/>
                                     </div>
 
+                                    {/*Task information*/}
+                                    {
+                                        (taskInformation != null && taskInformation.length !== 0) && taskInformation.map((info, index) => {
+                                            return <div
+                                                className={`form-group`}>
+                                                <label>{info.name}</label>
+                                                <input type="text"
+                                                       value={info.value}
+                                                       className="form-control"
+                                                       onChange=""/>
+                                            </div>
+                                        })
+                                    }
+
+
+                                </div>
+
+                                {/*KPI related*/}
+                                <div className="form-group">
+                                    <label>Liên kết KPI</label>
+                                    {
+                                        <SelectBox
+                                            id={`select-kpi-personal`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = {[]}
+                                            onChange=""
+                                            multiple={true}
+                                            value=""
+                                        />
+                                    }
                                 </div>
                             </fieldset>
 
@@ -145,7 +217,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 function mapStateToProps(state) {
     const { tasks } = state;
     return { tasks };
-
 }
 
 const actionGetState = { //dispatchActionToProps
