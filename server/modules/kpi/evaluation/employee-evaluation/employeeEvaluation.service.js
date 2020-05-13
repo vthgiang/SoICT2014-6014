@@ -267,6 +267,7 @@ async function getResultTaskByMonth(data) {
     var date = data.date.split("-");
     var monthkpi = parseInt(date[1]);
     var yearkpi = parseInt(date[0]);
+    console.log("dataaaa", data);
     var task = await Task.aggregate([
         {
             $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }

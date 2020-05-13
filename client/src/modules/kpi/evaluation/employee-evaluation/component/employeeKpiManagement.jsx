@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
+
+import { connect } from 'react-redux';
+
+import Swal from 'sweetalert2';
+
+import { kpiMemberActions } from '../redux/actions';
+import {PaginateBar, DataTableSetting } from '../../../../../common-components';
+import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+
 import { ModalMemberApprove } from './employeeKpiApproveModal';
 import { ModalMemberEvaluate } from './employeeKpiEvaluateModal';
-import { connect } from 'react-redux';
-import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { kpiMemberActions } from '../redux/actions';
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions' ;
-import Swal from 'sweetalert2';
-import CanvasJSReact from '../../../../../chart/canvasjs.react.js';
-import {PaginateBar, DataTableSetting } from '../../../../../common-components';
 // import { withTranslate } from 'react-redux-multilingual';
  
 class KPIMember extends Component {
@@ -312,7 +316,7 @@ class KPIMember extends Component {
                                 <a href="#memberEvaluate1" onClick={()=> this.showEvaluateModal(item._id)} data-toggle="modal"
                                 className="copy" title="Đánh giá kpi nhân viên này"><i className="fa fa-list"></i></a>
                                 {this.state.showEvaluateModal === item._id ?
-                                <ModalMemberEvaluate name={item.creator.name} id={item._id} date={item.date}/> : null}
+                                <ModalMemberEvaluate name={item.creator.name} employeeId={item.creator._id} id={item._id} date={item.date}/> : null}
                             </td>
                             </tr>
                             ) : <tr>

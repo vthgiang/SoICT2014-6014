@@ -33,7 +33,7 @@ class ModalPerform extends Component {
                     modalID={`modelPerformTask${this.props.id}`}
                     formID="form-perform-task"
                     title={task && task.name}
-                    boddyStyle={{paddingTop: "15px", paddingBottom: "15px"}}
+                    bodyStyle={{paddingTop: "0px", paddingBottom: "0px"}}
                     // msg_success={translate('task.task_perform.modal_approve_task.msg_success')}
                     // msg_faile={translate('task.task_perform.modal_approve_task.msg_faile')}
                     // func={this.save}
