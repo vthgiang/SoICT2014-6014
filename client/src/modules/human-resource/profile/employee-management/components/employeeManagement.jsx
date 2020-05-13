@@ -146,9 +146,6 @@ class EmployeeManagement extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <EmployeeCreateForm />
-                    <div className="form-group">
-                        <h4 className="box-title">Danh sách nhân viên:</h4>
-                    </div>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
