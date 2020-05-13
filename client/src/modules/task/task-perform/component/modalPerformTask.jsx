@@ -18,7 +18,7 @@ import moment from 'moment'
 import 'moment/locale/vi'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
-import './perform.css'
+// import './perform.css' 
 class ModalPerformTask extends Component {
     constructor(props) {
 

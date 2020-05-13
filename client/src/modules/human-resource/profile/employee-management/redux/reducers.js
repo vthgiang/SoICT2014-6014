@@ -35,7 +35,7 @@ export function employeesManager(state = initState, action) {
         case EmployeeConstants.ADDEMPLOYEE_SUCCESS:
             return {
                 ...state,
-                newEmployee: action.payload,
+                listEmployee: [...state.listEmployee, action.payload],
                     isLoading: false
             };
         case EmployeeConstants.ADDEMPLOYEE_FAILURE:

@@ -272,7 +272,7 @@ exports.getAllUsersInSameOrganizationalUnitWithUserRole = async(id_role) => {
  * @email : email người dung
  */
 exports.checkUserExited = async (email) => {
-    var user = User.find({email : email},{field1: 1});
+    var user = User.findOne({email : email},{field1: 1});
     var checkUser = false;
     if (user.length !== 0) {
         checkUser = true
