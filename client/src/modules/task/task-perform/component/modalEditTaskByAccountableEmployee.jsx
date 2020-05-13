@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-components/index';
 
 
-class ModalEditTask extends Component {
+class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
         super(props);
@@ -22,14 +22,14 @@ class ModalEditTask extends Component {
                 <React.Fragment>
                     <DialogModal
                         size="50"
-                        modalID={`modal-edit-task-${this.props.id}`}
-                        formID={`form-edit-task-${this.props.id}`}
-                        title="Chỉnh sửa thông tin công việc"
+                        modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
+                        formID={`form-edit-task-by-${this.props.role}-${this.props.id}`}
+                        title={this.props.title}
                         isLoading={false}
                         func={this.save}
                     // disableSubmit={!this.isFormValidated()}
                     >
-                    <form id={`form-edit-task-${this.props.id}`}>
+                    <form id={`form-edit-task-${this.props.role}-${this.props.id}`}>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thông tin cơ bản</legend>
                             <div>
@@ -119,4 +119,4 @@ class ModalEditTask extends Component {
     }
 }
 
-export { ModalEditTask };
+export { ModalEditTaskByAccountableEmployee };
