@@ -154,14 +154,17 @@ export function notifications(state = initState, action) {
                 ...state,
                 sent: {
                     ...state.sent,
+                    list: [action.payload, ...state.sent.list],
                     paginate: [action.payload, ...state.sent.paginate]
                 },
                 isLoading: false
             };
 
         case NotificationConstants.READED_NOTIFICATION_SUCCESS:
-            index = findIndex(state.receivered.paginate, action.payload._id);
-            if(index !== -1) state.receivered.paginate[index] = action.payload;
+            index = findIndex(state.receivered.list, action.payload._id);
+            if(index !== -1) state.receivered.list[index] = action.payload;
+            indexP = findIndex(state.receivered.paginate, action.payload._id);
+            if(indexP !== -1) state.receivered.paginate[indexP] = action.payload;
             return {
                 ...state,
                 isLoading: false
