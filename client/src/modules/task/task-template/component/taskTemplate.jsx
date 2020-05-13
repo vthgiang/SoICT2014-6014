@@ -102,19 +102,21 @@ class TaskTemplate extends Component {
         })
         window.$('#modal-view-tasktemplate').modal('show');
     }
-    handleShowEdit = async (id) => {
+    handleShowEdit = async (template) => {
         await this.setState(state => {
             return {
                 ...state,
-                showEdit: id
+                showEdit: template._id,
+                currentRow : template,
             }
         })
         var element = document.getElementsByTagName("BODY")[0];
         element.classList.add("modal-open");
-        var modal = document.getElementById(`editTaskTemplate${id}`);
+        var modal = document.getElementById(`editTaskTemplate${template._id}`);
         modal.classList.add("in");
         modal.style = "display: block; padding-right: 17px;";
     }
+
 
 
     //Xoa tasktemplate theo id
@@ -273,10 +275,11 @@ class TaskTemplate extends Component {
                                                 {this.state.showView===item.resourceId._id&&<ModalViewTaskTemplate id={item.resourceId._id} />}
                                                 {this.checkPermisson(currentUnit && currentUnit[0].dean) &&
                                                     <React.Fragment>
-                                                        <a onClick={()=>this.handleShowEdit(item.resourceId._id)} data-toggle="modal" className="edit" title="Sửa mẫu công việc này"><i className="material-icons"></i></a>
+                                                        <a onClick={()=>this.handleShowEdit(item.resourceId)} data-toggle="modal" className="edit" title="Sửa mẫu công việc này"><i className="material-icons"></i></a>
                                                         <a onClick={()=>this.handleDelete(item.resourceId._id, item.resourceId.numberOfUse)} className="delete" title="Xóa mẫu công việc này"><i className="material-icons"></i></a>
                                                     </React.Fragment>}
-                                                {this.state.showEdit===item.resourceId._id&&<ModalEditTaskTemplate id={item.resourceId._id} />}
+                                                    {this.state.showEdit===item.resourceId._id&&this.state.currentRow&&<ModalEditTaskTemplate id={item.resourceId._id} 
+                                                                                                                                taskTemplate = {this.state.currentRow}/>}
                                             </td>
                                         </tr>
                                     ) : <tr><td colSpan={6}><center>Không có dữ liệu</center></td></tr>
