@@ -80,6 +80,7 @@ class ModalMemberEvaluate extends Component {
         return [month, year].join('-');
     }
     handleChangeContent = async (id, employeeId,date) => {
+        console.log('====', id, employeeId,date);
         await this.setState(state => {
             this.props.getTaskById(id, employeeId,date);
             console.log("--Lay dc ko nhi--",this.props.getTaskById(id, employeeId,date));
@@ -139,7 +140,7 @@ class ModalMemberEvaluate extends Component {
                                 <div className="content-left-modal" id="style-1" style={{ width: "24.5%" }}>
                                     <div className="scroll-content" style={{ borderRight: "3px solid #ddd" }}>
                                         {list && list.map((item, index) =>
-                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.id,this.props.date)} className="list-group-item" key={index}>
+                                            <a href="#abc" style={{ color: "black" }} onClick={() => this.handleChangeContent(item._id, this.props.employeeId,this.props.date)} className="list-group-item" key={index}>
                                                 {item.name}&nbsp;
                                                 <small style={{ float: "right", textDecoration: "underline", color: "blue" }}>(9 công việc - 0 điểm)</small>
                                                 {/* <span className="badge">{15 + index}</span> */}

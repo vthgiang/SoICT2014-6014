@@ -166,11 +166,11 @@ function editStatusTarget(id, status) {
     };
 }
 
-function getTaskById(id, date) {
+function getTaskById(id, employeeId, date) {
     return dispatch => {
         dispatch({type: kpiMemberConstants.GET_TASK_BYID_REQUEST});
  
-        kpiMemberServices.getTaskById(id, date)
+        kpiMemberServices.getTaskById(id, employeeId, date)
             .then(res=>{
                 dispatch({
                     type: kpiMemberConstants.GET_TASK_BYID_SUCCESS,
