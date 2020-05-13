@@ -4,20 +4,17 @@ const {
     LogError
 } = require('../../../logs');
 
-// Lấy danh sách khoá đào tạo
+/**
+ * Lấy danh sách khoá đào tạo
+ */
 exports.searchCourses = async (req, res) => {
     try {
-        var allList = await CourseService.searchCourses(req.body, req.user.company._id);
+        var listCourses = await CourseService.searchCourses(req.body, req.user.company._id);
         await LogInfo(req.user.email, 'GET_LIST_COURSE', req.user.company);
-        res.status(200).json({
-            message: "success",
-            content: allList
-        });
+        res.status(200).json({ success: true, messages:["get_list_course_success"], content: listCourses});
     } catch (error) {
         await LogError(req.user.email, 'GET_LIST_COURSE', req.user.company);
-        res.status(400).json({
-            message: error
-        });
+        res.status(400).json({success: false, messages:["get_list_course_faile"], content: {error: error}});
     }
 }
 

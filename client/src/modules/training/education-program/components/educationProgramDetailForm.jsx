@@ -67,9 +67,9 @@ class EducationProgramDetailForm extends Component {
                     formID="form-view-education"
                     title={`Thông tin chương trình đào tạo: ${name} - ${programId}`}
                     func={this.save}
-                    disableSubmit={false}
+                    hasSaveButton={false}
                     size={75}
-                // disableSubmit={!this.isFormValidated()}
+                    maxWidth={850}
                 >
                     <form className="form-group" id="form-view-education" >
                         <div className="qlcv">
@@ -80,13 +80,13 @@ class EducationProgramDetailForm extends Component {
                             </div>
                             <div className="form-inline" >
                                 <div className="form-group">
-                                    <label className="form-control-static">Khoá đào tạo</label>
+                                    <label style={{ width: 110 }} className="form-control-static">Mã khoá đào tạo</label>
                                     <input type="text" className="form-control" name="numberCourse" onChange={this.handleChange} />
                                 </div>
                             </div>
                             <div className="form-inline" style={{ marginBottom: 10 }}>
                                 <div className="form-group">
-                                    <label className="form-control-static">Loại đào tạo</label>
+                                    <label style={{ width: 110 }} className="form-control-static">Loại đào tạo</label>
                                     <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
                                         options={{ nonSelectedText: "Chọn loại đào tạo", allSelectedText: "Chọn tất cả loại đào tạo" }}
                                         onChange={this.handleStatusChange}

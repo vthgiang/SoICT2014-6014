@@ -36,7 +36,6 @@ class EmployeeDetailForm extends Component {
                     formID="form-view-employee"
                     title="Thông tin nhân viên"
                     hasSaveButton={false}
-                // disableSubmit={false}
                 >
                     <form className="form-group" id="form-view-employee" style={{ marginTop: "-15px" }}>
                         {(typeof employees !== 'undefined' && employees.length !== 0) &&

@@ -21,7 +21,6 @@ exports.getAllEducationPrograms = async (req, res) => {
 exports.searchEducationPrograms = async (req, res) => {
     try {
         var educationPrograms = await EducationProgramService.searchEducationPrograms(req.body,req.user.company._id);
-        console.log(educationPrograms);
         await LogInfo(req.user.email, 'GET_EDUCATIONPROGRAM', req.user.company);
         res.status(200).json({ success: true, messages:["get_education_program_success"], content: educationPrograms});
     } catch (error) {

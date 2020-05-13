@@ -1,7 +1,3 @@
-// const {EducationProgram} = require('../../../models/training/educationProgram.model');
-// const Department = require('../../../models/super-admin/organizationalUnit.model');
-// const Course = require('../../../models/training/course.model');
-// const Role = require('../../../models/auth/role.model')
 
 const { EducationProgram, Course, OrganizationalUnit, Role } = require('../../../models').schema;
 
