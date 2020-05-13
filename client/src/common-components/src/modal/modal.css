@@ -34,6 +34,11 @@
     margin-top: 0px;
 }
 
+.modal-size-100 .modal-body {
+    height: calc(100vh);
+    max-height: calc(100vh - 115px);
+}
+
 @media only screen and (max-width: 768px) {
     .modal-size-50{
         width: 100%;
@@ -63,9 +68,11 @@
 }
 .modal-body {
     max-width: 100%;
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 125px);
     overflow-y: auto;
     overflow-x: hidden;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 .modal-header .modal-title {
     font-weight: bold;

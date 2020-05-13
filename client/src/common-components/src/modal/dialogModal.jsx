@@ -49,7 +49,7 @@ class DialogModal extends Component {
 
     render() { 
         const {translate} = this.props;
-        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth, hasNote=true} = this.props;
+        const {resetOnClose = false, disableSubmit = false, hasSaveButton=true, size, maxWidth, hasNote=true, bodyPaddingTop=true, bodyPaddingBottom=true} = this.props;
         return ( 
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -60,7 +60,9 @@ class DialogModal extends Component {
                                 <h4 className="modal-title text-center">{this.props.title} &nbsp; { this.props.isLoading && <Loading/> }</h4>
                             </div>
                             <div className="modal-body text-left">
+                                {bodyPaddingTop && <div style={{height: "15px"}}></div>}
                                 {this.props.children}
+                                {bodyPaddingBottom && <div style={{height: "15px"}}></div>}
                             </div>
                             <div className="modal-footer">
                                 <div className="row">
