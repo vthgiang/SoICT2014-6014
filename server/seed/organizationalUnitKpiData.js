@@ -77,7 +77,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 86,
             employeePoint: 94,
             approvedPoint: 81,
-            status: 2
+            status: 1
         },
     ]);
 
@@ -207,7 +207,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 93,
             employeePoint: 95,
             approvedPoint: 87,
-            status: 3,
+            status: 2,
         }, 
     ]);
 
@@ -231,7 +231,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 82,
             employeePoint: 92,
             approvedPoint: 77,
-            status: 3,
+            status: 2,
         }, 
     ]);
 
@@ -290,7 +290,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][0]._id,
             weight: 5,
             criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-            status: 2,
+            status: 1,
             type: 1,
             automaticPoint: 87,
             employeePoint: 90,
@@ -300,7 +300,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][1]._id,
             weight: 5,
             criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-            status: 2,
+            status: 1,
             type: 2,
             automaticPoint: 93,
             employeePoint: 93,
@@ -310,7 +310,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][2]._id,
             weight: 40,
             criteria: "Mức độ mở rộng thị trường ở Đài Loan",
-            status: 2,
+            status: 1,
             type: 0,
             automaticPoint: 90,
             employeePoint: 95,
@@ -320,7 +320,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][2]._id,
             weight: 50,
             criteria: "Các cuộc khảo sát thực hiện được",
-            status: 2,
+            status: 1,
             type: 0,
             automaticPoint: 95,
             employeePoint: 95,
@@ -380,7 +380,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][0]._id,
             weight: 5,
             criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-            status: 2,
+            status: 1,
             type: 1,
             automaticPoint: 80,
             employeePoint: 90,
@@ -390,7 +390,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][1]._id,
             weight: 5,
             criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-            status: 2,
+            status: 1,
             type: 2,
             automaticPoint: 93,
             employeePoint: 93,
@@ -400,7 +400,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][3]._id,
             weight: 40,
             criteria: "Các cuộc khảo sát thực hiện được",
-            status: 2,
+            status: 1,
             type: 0,
             automaticPoint: 70,
             employeePoint: 95,
@@ -410,7 +410,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][3]._id,
             weight: 50,
             criteria: "Nguồn nhân lực củng cố được",
-            status: 2,
+            status: 1,
             type: 0,
             automaticPoint: 90,
             employeePoint: 90,
@@ -1117,6 +1117,12 @@ var organizationalUnitKpiData = async () => {
     ]);
 
 
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU CHO PHÒNG KINH DOANH
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+
     console.log("Tạo dữ liệu cho phòng kinh doanh");
 
     /**
@@ -1138,11 +1144,9 @@ var organizationalUnitKpiData = async () => {
 
     console.log("Đang tạo dữ liệu ...");
 
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU Organizational Unit Kpi Set
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+    /**
+     * TẠO DỮ LIỆU Organizational Unit Kpi Set
+     */
 
     console.log("Khởi tạo Organizational Unit Kpi Set");
     
@@ -1164,7 +1168,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 89,
             employeePoint: 77,
             approvedPoint: 62,
-            status: 2
+            status: 1
         },
     ]);
 
@@ -1293,7 +1297,7 @@ var organizationalUnitKpiData = async () => {
             automaticPoint: 89,
             employeePoint: 77,
             approvedPoint: 62,
-            status: 3,
+            status: 2,
         }, 
     ]);
 
@@ -1352,7 +1356,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][0]._id,
             weight: 5,
             criteria: "Hoàn thành tốt vai trò quản lý (Vai trò người phê quyệt)",
-            status: 2,
+            status: 1,
             type: 1,
             automaticPoint: 80,
             employeePoint: 80,
@@ -1362,7 +1366,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][1]._id,
             weight: 5,
             criteria: "Liên kết giữa các thành viên trong đơn vị (Vai trò người hỗ trợ)",
-            status: 2,
+            status: 1,
             type: 2,
             automaticPoint: 73,
             employeePoint: 64,
@@ -1372,7 +1376,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][2]._id,
             weight: 40,
             criteria: "Các cuộc nghiên cứu nhu cầu thị trường",
-            status: 2,
+            status: 1,
             type: 0,
             automaticPoint: 90,
             employeePoint: 75,
@@ -1382,7 +1386,7 @@ var organizationalUnitKpiData = async () => {
             parent: organizationalUnitKpiArray[1][3]._id,
             weight: 50,
             criteria: "Doanh số bán hàng",
-            status: 2,
+            status: 1,
             type: 0,
             automaticPoint: 90,
             employeePoint: 80,
