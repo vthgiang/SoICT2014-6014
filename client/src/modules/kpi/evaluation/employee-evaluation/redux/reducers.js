@@ -95,28 +95,29 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case  kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
-      console.log("---action.kpi---", action.payload);
+      console.log("----kpis---", state.currentKPI.kpis);
+      console.log("--id--", action.id);
       return {
         ...state,
         currentKPI: {
           ...state.currentKPI,
           kpis: state.currentKPI.kpis.map(target =>
-            target._id === action.payload
+            target._id === action.id
               ? { ...target, editing: true }
               : target)
         },
         isLoading: false
       };
     case kpiMemberConstants.EDITTARGET_KPIMEMBER_SUCCESS:
-      console.log("---action.kpi---", action.payload);
       return {
           ...state,
           currentKPI: {
             ...state.currentKPI,
             kpis: state.currentKPI.kpis.map(target =>
-              target._id === action.payload
+              target._id === action.payload._id
                 ? action.payload : target)
           },
+          target: action.payload,
           isLoading: false
       };
     case kpiMemberConstants.EDITTARGET_KPIMEMBER_FAILURE:
