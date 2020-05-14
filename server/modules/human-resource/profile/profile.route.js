@@ -9,12 +9,14 @@ const EmployeeController = require("./profile.controller");
 /**
  * Lấy thông tin cá nhân
  */
-router.get('/:email', auth, EmployeeController.getEmployeeProfile);
+router.get('/personals/:id', auth, EmployeeController.getEmployeeProfile);
 
 /**
  * Cập nhật thông tin cá nhân
  */
-router.put('/:email', auth, uploadFile('fileAvatar', '/human-resource/avatars'), EmployeeController.updatePersonalInformation);
+router.patch('/personals/:id', auth, uploadFile('fileAvatar', '/human-resource/avatars'), EmployeeController.updatePersonalInformation);
+
+
 
 /**
  * Lấy danh sách nhân viên

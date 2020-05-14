@@ -54,7 +54,8 @@ exports.uploadMultipleFile = uploadFile.fields([
  */
 exports.getEmployeeProfile = async (req, res) => {
     try {
-        var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.email);
+        var inforEmployee = await EmployeeService.getEmployeeProfile(req.params.id);
+        console.log(inforEmployee);
         await LogInfo(req.user.email, 'GET_INFOR_PERSONAL', req.user.company);
         res.status(200).json({ success: true, messages: ["get_infor_personal_success"], content: inforEmployee});
     } catch (error) {
@@ -73,7 +74,7 @@ exports.updatePersonalInformation = async (req, res) => {
         if (req.file !== undefined) {
             avatar = `/${req.file.path}`;
         }
-        var data = await EmployeeService.updatePersonalInformation(req.params.email, req.body, avatar);
+        var data = await EmployeeService.updatePersonalInformation(req.params.id, req.body, avatar);
         await LogInfo(req.user.email, 'EDIT_INFOR_PERSONAL', req.user.company);
         res.status(200).json({success: true, messages: ["edit_infor_personal_success"], content: data});
     } catch (error) {
