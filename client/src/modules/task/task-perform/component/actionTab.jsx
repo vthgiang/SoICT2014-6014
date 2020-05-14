@@ -503,16 +503,16 @@ class ActionTab extends Component {
                                     // if (item.parent === null)
                                     return <div className="post clearfix" style={{ textAlign: 'left', width: "100%", marginTop: "1.5%", marginLeft: "15px", }} key={item._id}>
                                         <div className="row">
-                                            <div className="user-block col-sm-2" style={{ display: "inline-block", marginBottom: "0px", marginLeft: "-14px" }}>
+                                            <div className="user-block col-sm-2" style={{ display: "inline-block", marginBottom: "0px", marginLeft: "-15px" }}>
                                                 <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
                                             </div>
-                                            <div className="col-sm-9" style={{ backgroundColor: "#f2f3f5", borderRadius: "18px", marginLeft: "-45px", width: "78.4%" }}>
+                                            <div className="col-sm-9" style={{ backgroundColor: "#f2f3f5", borderRadius: "18px", marginLeft: "-45px", }}>
                                                 <div className="user-block" style={{ display: "inline-block", marginBottom: "0px" }}>
                                                     <span className="username" style={{ marginLeft: "0px", marginTop:"10px" }} >
                                                         <a href="#abc">{item.creator.name}</a>
                                                     </span>
                                                     <p style={{ marginBottom: "2px", marginTop: "2px", fontFamily: 'inherit Helvetica, Arial, sans-serif', fontSize: "13px" }}>&nbsp;{item.description}</p>
-                                                    <div className="row" style={{ width: "300%", marginLeft: "0px", marginBottom: "0px" }} >
+                                                    <div className="row" style={{ width: "250%", marginLeft: "0px", marginBottom: "0px" }} >
                                                         <span className="description col-sm-5" style={{ marginLeft: "-11px" }}>{moment(item.createdAt).fromNow()}</span>
                                                         <div className="comment-content">
                                                             <React.Fragment>
@@ -533,7 +533,7 @@ class ActionTab extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="btn-group dropright">
+                                            <div class="btn-group dropleft">
                                                 <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
                                                     <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
@@ -658,7 +658,7 @@ class ActionTab extends Component {
                                                     style={{ width: '100%', height: 65, fontSize: 13, border: '1px solid #dddddd', marginLeft: "0px" }}
                                                     ref={input => this.contentAction[0] = input} />
 
-                                                <div className="row action-post" style={{ }}>
+                                                <div className="row action-post" style={{width:"110%" }}>
                                                     <input className="col-xs-8" type="file" name="file" onChange={this.onHandleChangeFile} />
                                                     <button type="submit" style={{ width: "18%", marginRight: "2%", marginLeft: "-15%" }} className="col-xs-1 btn btn-success btn-sm" onClick={(e) => this.submitAction(e, null, 0, task._id)}>Thêm hoạt động</button>
                                                     <button style={{ width: "13%", }} className="col-xs-2 btn btn-default btn-sm" onClick={this.handleAction}>Hủy bỏ</button>
@@ -678,21 +678,21 @@ class ActionTab extends Component {
                                             <div className="user-block col-sm-2" style={{ display: "inline-block" }}>
                                                 <img className="img-circle img-bordered-sm" src="http://webcoban.vn/image/cat-2.jpg" alt="user avatar" />
                                             </div>
-                                            <div className="col-sm-9" style={{ backgroundColor: "#f2f3f5", borderRadius: "18px",marginLeft:"-50px"  }}>
-                                                <div className="user-block" style={{ display: "inline-block", }}>
+                                            <div className="col-sm-9" style={{ backgroundColor: "#f2f3f5", borderRadius: "18px",marginLeft:"-48px"  }}>
+                                                <div className="user-block" style={{ display: "inline-block",marginBottom:"0px" }}>
                                                     <span className="username" style={{ marginTop:"10px" }} >
                                                         <a href="#abc" style={{marginLeft:"-50px"}}>{item.creator.name}</a>
                                                     </span>
                                                     <p style={{ marginBottom: "2px", marginTop: "2px", fontFamily: 'inherit Helvetica, Arial, sans-serif', fontSize: "13px" }}>&nbsp;{item.content}</p>
                                                     <div className="row" style={{width:"250%",marginBottom:"-20px"}} >
-                                                        <span className="description col-sm-5" style={{ marginLeft: "0px" }}>{moment(item.createdAt).fromNow()}</span>
+                                                        <span className="description col-sm-5" style={{ marginLeft: "4px" }}>{moment(item.createdAt).fromNow()}</span>
                                                         <div className="comment-content">
                                                             <React.Fragment>
                                                                 {/* Hiển thị nội dung hoạt động cho công việc*/}
                                                                 <div className="attach-file" style={{ marginTop: "-10px" }}>
                                                                     {/* <a href={item.file.url} download>{item.file.name}</a> */}
                                                                 </div>
-                                                                <ul className="list-inline" style={{ marginTop: '10px',marginBottom:"10px" }}>
+                                                                <ul className="list-inline" style={{ marginTop: '10px',marginBottom:"30px" }}>
                                                                     <li className="">
                                                                         <a href="#abc" title="Xem bình luận hoạt động này" className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}>
                                                                             <i className="fa fa-comments-o margin-r-5" /> Bình luận({item.comments.length}) &nbsp;
@@ -705,7 +705,7 @@ class ActionTab extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="btn-group dropright col-sm-1" style={{padding:"0px"}}>
+                                            <div class="btn-group dropleft col-sm-1" style={{padding:"0px"}}>
                                                 <button class="btn btn-primary-outline dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style={{ marginTop: "10px", backgroundColor: "transparent", }}  >
                                                     <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd" />
