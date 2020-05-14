@@ -1,12 +1,10 @@
 import {
-    TOKEN_SECRET, LOCAL_SERVER_API
+    LOCAL_SERVER_API
 } from '../../../../../env';
 import {
-    getStorage, AuthenticateHeader
+    getStorage
 } from '../../../../../config';
-import jwt from 'jsonwebtoken';
-import axios from 'axios';
-import {handleResponse} from '../../../../../helpers/handleResponse';
+
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const managerKPIPerService = {
     getAllKPIPersonalByMember,
@@ -15,10 +13,8 @@ export const managerKPIPerService = {
 };
 
 // Lấy tất cả kpi cá nhân
-async function getAllKPIPersonalByMember() {//member
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+function getAllKPIPersonalByMember() {//member
+    var id = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpipersonals/user/${id}`,
         method: 'GET',

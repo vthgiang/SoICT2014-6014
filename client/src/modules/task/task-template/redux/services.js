@@ -4,12 +4,8 @@ import { AuthenticateHeader } from '../../../../config';
 import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 import {
-    TOKEN_SECRET
-} from '../../../../env';
-import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
 
 
 export const taskTemplateService = {
@@ -53,10 +49,8 @@ function getAllTaskTemplateByRole(id) {
 
 // get all task template by User
 // Để lấy tất cả kết quả: cho pageNumber=1, noResultsPerPage = 0
-async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name="") {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name="") {
+    var id = getStorage("userId");
     const data = {
         id:id,
         pageNumber: pageNumber,
@@ -72,16 +66,14 @@ async function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit,
 }
 
 // add new task template
- async function addNewTaskTemplate(newTaskTemplate) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+ function addNewTaskTemplate(newTaskTemplate) {
+    var id = getStorage("userId");
     newTaskTemplate = {...newTaskTemplate, creator: id};
-     const requestOptions = {
-         method: 'POST',
-         headers: AuthenticateHeader(),
-         body: JSON.stringify(newTaskTemplate)
-     };
+    const requestOptions = {
+        method: 'POST',
+        headers: AuthenticateHeader(),
+        body: JSON.stringify(newTaskTemplate)
+    };
 
      return fetch(`${LOCAL_SERVER_API}/tasktemplates/create`, requestOptions).then(handleResponse);
  }

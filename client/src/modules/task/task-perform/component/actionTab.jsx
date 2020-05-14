@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import Swal from 'sweetalert2';
-import {
-    TOKEN_SECRET
-} from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
 
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
@@ -20,9 +15,7 @@ import moment from 'moment'
 class ActionTab extends Component {
     constructor(props) {
 
-        const token = getStorage();
-        const verified = jwt.verify(token, TOKEN_SECRET);
-        var idUser = verified._id;
+        var idUser = getStorage("userId");
         super(props);
         this.state = {
             currentUser: idUser,

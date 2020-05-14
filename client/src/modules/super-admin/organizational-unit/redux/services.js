@@ -41,8 +41,8 @@ function destroy(departmentId) {
 }
 
 
-async function getDepartmentsThatUserIsDean(currentRole) {
-    var id = getStorage('userId');
+function getDepartmentsThatUserIsDean(currentRole) {
+    var id = getStorage("userId");
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/organizational-units`,

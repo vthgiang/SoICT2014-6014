@@ -1,13 +1,11 @@
 import {handleResponse} from '../../../../helpers/handleResponse';
 import { AuthenticateHeader } from '../../../../config';
 import {
-    TOKEN_SECRET,LOCAL_SERVER_API
+    LOCAL_SERVER_API
 } from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
-import axios from 'axios';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const performTaskService = {
@@ -76,10 +74,8 @@ function getLogTimerTask(task) {
 };
 
 // get current status task
-async function getTimerStatusTask(task) { //function getTimerStatusTask(task, user)
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var user = verified._id;
+function getTimerStatusTask(task) { //function getTimerStatusTask(task, user)
+    var user = getStorage("userId");
     return  sendRequest =({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`,
         method: 'GET',

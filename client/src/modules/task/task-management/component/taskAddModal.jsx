@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-    TOKEN_SECRET
-} from '../../../../env';
-import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
@@ -70,9 +65,7 @@ class ModalAddTask extends Component {
         let informedEmployees = [].filter.call(selectInformed.options, o => o.selected).map(o => o.value);
         let selectKPI = this.refs.kpi;
         let kpi = [].filter.call(selectKPI.options, o => o.selected).map(o => o.value);
-        const token = getStorage();
-        const verified = await jwt.verify(token, TOKEN_SECRET);
-        var idUser = verified._id;
+        var idUser = getStorage("userId");
         var listTaskTemplate;
 
         var ckTemplate = false;
@@ -153,12 +146,10 @@ class ModalAddTask extends Component {
         }
 
     }
-    checkDefaultUser = async (roleTask, listUser) => {
-        const token = getStorage();
-        const verified = await jwt.verify(token, TOKEN_SECRET);
-        var idUser = verified._id;
+    checkDefaultUser = (roleTask, listUser) => {
+        var id = getStorage("userId");
         var role = this.props.role;
-        var currentUser = idUser;
+        var currentUser = id;
         if (roleTask === role) {
             return [...listUser, currentUser];
         }

@@ -2,29 +2,20 @@ import React, { Component } from 'react';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import {
-    TOKEN_SECRET
-} from '../../../../env';
-import {
     getStorage
 } from '../../../../config';
-import jwt from 'jsonwebtoken';
 import { performTaskAction } from "../redux/actions";
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { managerKpiActions } from "../../../kpi/employee/management/redux/actions";
 import { ModalApproveTask } from "./modalApproveTask";
-import { ButtonModal } from '../../../../common-components';
-import moment from 'moment'
-import 'moment/locale/vi'
-import DropdownButton from 'react-bootstrap/DropdownButton'
-import Dropdown from 'react-bootstrap/Dropdown'
+import moment from 'moment';
+import 'moment/locale/vi';
 // import './perform.css' 
 class ModalPerformTask extends Component {
     constructor(props) {
 
-        const token = getStorage();
-        const verified = jwt.verify(token, TOKEN_SECRET);
-        var idUser = verified._id;
+        var idUser = getStorage("userId");
         super(props);
         this.state = {
             currentUser: idUser,
