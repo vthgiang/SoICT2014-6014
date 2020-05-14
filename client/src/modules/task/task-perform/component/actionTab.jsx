@@ -108,8 +108,10 @@ class ActionTab extends Component {
                     }
                 })
                 //Chỉnh giao diện
-                document.getElementById("start-timer-task").style.width = "20%";
-                document.getElementById("btn-approve").style.marginLeft = "50%";
+                // document.getElementById("start-timer-task").style.width = "20%";
+                // document.getElementById("btn-approve").style.marginLeft = "50%";
+
+
                 // Setup thời thời gian chạy
                 if (currentTimer.pause === false) {
                     this.timer = setInterval(() => this.setState(state => {

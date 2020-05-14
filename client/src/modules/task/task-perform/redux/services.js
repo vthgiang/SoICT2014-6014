@@ -76,7 +76,7 @@ function getLogTimerTask(task) {
 // get current status task
 function getTimerStatusTask(task) { //function getTimerStatusTask(task, user)
     var user = getStorage("userId");
-    return  sendRequest =({
+    return  sendRequest ({
         url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/${task}/${user}`,
         method: 'GET',
     }, false, true, 'task.task_perform');
