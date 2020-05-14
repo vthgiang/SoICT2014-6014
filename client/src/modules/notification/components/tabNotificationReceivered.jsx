@@ -9,7 +9,7 @@ class TabNotificationReceivered extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            limit: 7, page: 1
+            limit: 5, page: 1
         }
     }
     render() { 
@@ -59,8 +59,8 @@ class TabNotificationReceivered extends Component {
                                 
                             </li>
                         ): notifications.isLoading ?
-                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:
-                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
+                        <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:
+                        <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
                     }
                     </ul>
                     <PaginateBar pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage}/>
@@ -71,7 +71,7 @@ class TabNotificationReceivered extends Component {
 
     setPage = (pageNumber) => {
         this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber };
+        const data = { limit: this.state.limit, page: pageNumber, content: {level: this.props.notifications.receivered.level} };
         this.props.paginateNotifications(data);
     }
 
@@ -92,14 +92,17 @@ class TabNotificationReceivered extends Component {
     }
 
     componentDidMount(){
+        this.props.getAllNotifications();
         this.props.paginateNotifications({
-            limit: this.state.limit, page: this.state.page
+            limit: this.state.limit, page: this.state.page,
+            content: {level: this.props.notifications.receivered.level}
         });
     }
 }
  
 const mapState = state => state;
 const actions = {
+    getAllNotifications: NotificationActions.getAllNotifications,
     paginateNotifications: NotificationActions.paginateNotifications,
     deleteNotification: NotificationActions.deleteNotification,
     readedNotification: NotificationActions.readedNotification

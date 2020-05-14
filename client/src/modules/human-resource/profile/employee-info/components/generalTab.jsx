@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { LOCAL_SERVER_API } from '../../../../../env';
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
@@ -40,7 +41,7 @@ class GeneralTab extends Component {
                 <div className=" row box-body">
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
-                            <img className="attachment-img avarta" src={avatar} alt="Attachment" />
+                            <img className="attachment-img avarta" src={LOCAL_SERVER_API+avatar} alt="Attachment" />
                         </div>
                     </div>
                     <div className="pull-right col-lg-8 col-md-8 col-ms-12 col-xs-12">

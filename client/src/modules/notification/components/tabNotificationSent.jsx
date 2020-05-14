@@ -9,7 +9,7 @@ class TabNotificationSent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            limit: 7,
+            limit: 5,
             page: 1
          }
     }
@@ -60,8 +60,8 @@ class TabNotificationSent extends Component {
                                 
                             </li>
                         ): notifications.isLoading ?
-                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:
-                        <div class="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
+                        <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:
+                        <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.no_data')}</div>
                     }
                     </ul>
                     <PaginateBar pageTotal={notifications.sent.totalPages} currentPage={notifications.sent.page} func={this.setPage}/>
@@ -72,7 +72,7 @@ class TabNotificationSent extends Component {
 
     setPage = (pageNumber) => {
         this.setState({ page: pageNumber });
-        const data = { limit: this.state.limit, page: pageNumber };
+        const data = { limit: this.state.limit, page: pageNumber, content: {level: this.props.notifications.sent.level}};
         this.props.paginateManualNotifications(data);
     }
 
@@ -93,12 +93,18 @@ class TabNotificationSent extends Component {
     }
 
     componentDidMount(){
-        this.props.paginateManualNotifications({limit: this.state.limit, page: this.state.page});
+        this.props.getAllManualNotifications();
+        this.props.paginateManualNotifications({
+            limit: this.state.limit, 
+            page: this.state.page,
+            content: {level: this.props.notifications.sent.level}
+        });
     }
 }
  
 const mapState = state => state;
 const actions = {
+    getAllManualNotifications: NotificationActions.getAllManualNotifications,
     paginateManualNotifications: NotificationActions.paginateManualNotifications,
     deleteManualNotification: NotificationActions.deleteManualNotification
 }

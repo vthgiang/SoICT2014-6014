@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import moment from 'moment';
 
 class DateTimeConverter extends Component {
     constructor(props) {
@@ -9,31 +10,15 @@ class DateTimeConverter extends Component {
     }
 
     convertDateTime = (time, type) => {
-        const {translate} = this.props;
-        
-        var data = new Date(time);
-        var day = data.getDate();
-        var month = data.getMonth()+1;
-        var year = data.getFullYear();
-        var hour = data.getHours();
-        var minute = data.getMinutes();
-        
         switch(type){
             case 1:
-                var timeNow = new Date();
-                var dayNow = timeNow.getDate();
-                if(day === dayNow)
-                    return `${translate('general.date_time.today')}, ${hour}:${minute}`
-                else
-                    return `${day}/${month}/${year}`
+                return moment(time).fromNow(); // bao lâu tính đến thời điểm hiện tại
 
             case 2: 
-                var dmy = `${translate('general.date_time.day')} ${day} ${translate('general.date_time.month')} ${month} ${translate('general.date_time.year')} ${year}`;
-                var hm = `${hour} ${translate('general.date_time.hour')} ${minute} ${translate('general.date_time.minute')}`
-                return `${hm}, ${dmy}`; 
+                return moment(time).calendar(); // ngày, giờ phút
             
             default:
-                return `${hour}:${minute} ${day}/${month}/${year}`;
+                return moment(time).format('LLLL'); // thứ ngày tháng năm giờ phút giấy
         }
     }
 

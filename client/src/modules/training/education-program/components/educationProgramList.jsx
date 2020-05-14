@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ToastContainer, toast } from 'react-toastify';
-import { ModalDetailEducation } from './educationProgramDetailModal';
-import { ModalEditEducation } from './educationProgramEditModal';
-import { ModalAddEducation } from './educationProgramAddModal';
+
+import { DeleteNotification, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+import { EducationProgramCreateForm, EducationProgramEditForm, EducationProgramDetailForm } from './combinedContent';
+
 import { EducationActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { DeleteNotification, PaginateBar, DataTableSetting } from '../../../../common-components';
+
 
 class ListEducation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            position: "All",
-            department: "All",
+            position: null,
+            organizationalUnit: null,
             page: 0,
             limit: 5,
-            hideColumn:[]
+            hideColumn: []
 
         };
         this.handleChange = this.handleChange.bind(this);
@@ -25,45 +25,46 @@ class ListEducation extends Component {
     componentDidMount() {
         this.props.getListEducation(this.state);
         this.props.getDepartment();
-        let script1 = document.createElement('script');
-        script1.src = 'lib/main/js/GridSelect.js';
-        script1.async = true;
-        script1.defer = true;
-        document.body.appendChild(script1);
-
     }
-    componentDidUpdate() {
-        this.hideColumn();
-    }
-    hideColumn = () => {
-        if (this.state.hideColumn !== undefined) {
-            var hideColumn = this.state.hideColumn;
-            for (var j = 0, len = hideColumn.length; j < len; j++) {
-                window.$(`#education-table td:nth-child(` + hideColumn[j] + `)`).hide();
-            }
-        }
+    // Function bắt sự kiện chỉnh sửa chương trình đào tạo
+    handleEdit = async (value) => {
+        await this.setState({
+            ...this.state,
+            currentEditRow: value
+        })
+        window.$('#modal-edit-education').modal('show');
     }
 
-    displayTreeSelect = (data, i) => {
-        i = i + 1;
-        if (data !== undefined) {
-            if (typeof (data.children) === 'undefined') {
-                return (
-                    <option key={data.id} data-level={i} value={data.id}>{data.name}</option>
-                )
-            } else {
-                return (
-                    <React.Fragment key={data.id}>
-                        <option data-level={i} value={data.id} style={{ fontWeight: "bold" }}>{data.name}</option>
-                        {
-                            data.children.map(tag => this.displayTreeSelect(tag, i))
-                        }
-                    </React.Fragment>
-                )
-            }
+    // Function bắt sự kiện xem thông tin chương trình đào tạo
+    handleView = async (value) => {
+        await this.setState({
+            ...this.state,
+            currentViewRow: value
+        })
+        window.$('#modal-view-education').modal('show');
+    }
 
-        }
-        else return null
+
+    // Function lưu giá trị unit vào state khi thay đổi
+    handleUnitChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            organizationalUnit: value
+        })
+    }
+
+    // Function lưu giá trị chức vụ vào state khi thay đổi
+    handlePositionChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            position: value
+        })
     }
 
     handleChange(event) {
@@ -77,10 +78,9 @@ class ListEducation extends Component {
         this.props.getListEducation(this.state);
     }
 
-    setLimit = async (number, hideColumn) => {
+    setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
-            hideColumn: hideColumn
         });
         this.props.getListEducation(this.state);
     }
@@ -94,59 +94,58 @@ class ListEducation extends Component {
     }
 
     render() {
-        var lists = this.props.education.listEducation;
-        const { tree, list } = this.props.department;
-        const { translate } = this.props;
-        var listDepartment = list, listPosition;
-        for (let n in listDepartment) {
-            if (listDepartment[n]._id === this.state.department) {
-                listPosition = [
-                    { _id: listDepartment[n].dean._id, name: listDepartment[n].dean.name },
-                    { _id: listDepartment[n].viceDean._id, name: listDepartment[n].viceDean.name },
-                    { _id: listDepartment[n].employee._id, name: listDepartment[n].employee.name }
-                ]
-            }
+        const { translate, education } = this.props;
+        const { list } = this.props.department;
+        var listEducations = "", listPosition = [];
+        if (this.state.organizationalUnit !== null) {
+            let organizationalUnit = this.state.organizationalUnit;
+            organizationalUnit.forEach(u => {
+                list.forEach(x => {
+                    if (x._id === u) {
+                        let position = [
+                            { _id: x.dean._id, name: x.dean.name },
+                            { _id: x.viceDean._id, name: x.viceDean.name },
+                            { _id: x.employee._id, name: x.employee.name }
+                        ]
+                        listPosition = listPosition.concat(position)
+                    }
+                })
+            })
         }
-        var pageTotal = (this.props.education.totalList % this.state.limit === 0) ?
-            parseInt(this.props.education.totalList / this.state.limit) :
-            parseInt((this.props.education.totalList / this.state.limit) + 1);
+        if (education.isLoading === false) {
+            listEducations = education.listEducations;
+        }
+        var pageTotal = (education.totalList % this.state.limit === 0) ?
+            parseInt(education.totalList / this.state.limit) :
+            parseInt((education.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                    <EducationProgramCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
                             <h4 className="box-title">Danh sách chương trình đào tạo bắt buộc:</h4>
                         </div>
-                        <button type="button" style={{ marginBottom: 15 }} className="btn btn-success pull-right" data-toggle="modal" data-target="#modal-addEducation">Thêm chương trình đào tạo</button>
-
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}:</label>
-                            <select className="form-control" defaultValue="All" id="tree-select" name="department" onChange={this.handleChange}>
-                                <option value="All" level={1}>--Tất cả---</option>
-                                {
-                                    tree !== null &&
-                                    tree.map((tree, index) => this.displayTreeSelect(tree, 0))
-                                }
-                            </select>
+                            <label className="form-control-static">{translate('human_resource.unit')}</label>
+                            <SelectMulti id={`multiSelectUnit`} multiple="multiple"
+                                options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                            </SelectMulti>
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.position')}:</label>
-                            <select className="form-control" defaultValue="All" name="position" onChange={this.handleChange}>
-                                <option value="All">--Tất cả--</option>
-                                {
-                                    listPosition !== undefined &&
-                                    listPosition.map((position, index) => (
-                                        <option key={index} value={position._id}>{position.name}</option>
-                                    ))
-                                }
-                            </select>
-                            <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} title="Tìm kiếm" >Tìm kiếm</button>
+                            <label className="form-control-static">{translate('human_resource.position')}</label>
+                            <SelectMulti id={`multiSelectPosition`} multiple="multiple"
+                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
+                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                            </SelectMulti>
                         </div>
+                        <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} title="Tìm kiếm" >Tìm kiếm</button>
                     </div>
                     <table id="education-table" className="table table-striped table-bordered table-hover">
                         <thead>
@@ -155,6 +154,7 @@ class ListEducation extends Component {
                                 <th title="Tên chương trình đào tạo">Tên chương trình</th>
                                 <th>Áp dụng cho đơn vị</th>
                                 <th>Áp dụng cho chức vụ</th>
+                                <th>Tổng số khoá học</th>
                                 <th style={{ width: '120px' }}>Hành động
                                 <DataTableSetting
                                         tableId="education-table"
@@ -172,39 +172,36 @@ class ListEducation extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists === 'undefined' || lists.length === 0) ? <tr><th colSpan={5 - this.state.hideColumn.length}><center> Không có dữ liệu</center></th></tr> :
-                                lists.map((x, index) => (
+                            {(typeof listEducations !== 'undefined' && listEducations.length !== 0) &&
+                                listEducations.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.numberEducation}</td>
-                                        <td>{x.nameEducation}</td>
-                                        <td>{(typeof x.unitEducation === 'undefined' || x.unitEducation.length === 0) ? "" :
-                                            x.unitEducation.map((y, indexs) => {
+                                        <td>{x.programId}</td>
+                                        <td>{x.name}</td>
+                                        <td>{(typeof x.applyForOrganizationalUnits === 'undefined' || x.applyForOrganizationalUnits.length === 0) ? "" :
+                                            x.applyForOrganizationalUnits.map((y, indexs) => {
                                                 if (indexs === 0) {
                                                     return y.name
                                                 }
                                                 return ", " + y.name
                                             })}
                                         </td>
-                                        <td>{(typeof x.positionEducation === 'undefined' || x.positionEducation.length === 0) ? "" :
-                                            x.positionEducation.map((y, indexs) => {
+                                        <td>{(typeof x.applyForPositions === 'undefined' || x.applyForPositions.length === 0) ? "" :
+                                            x.applyForPositions.map((y, indexs) => {
                                                 if (indexs === 0) {
                                                     return y.name
                                                 }
                                                 return ", " + y.name
                                             })}
                                         </td>
+                                        <td>{x.totalList}</td>
                                         <td>
-                                            <ModalDetailEducation data={x} />
-                                            <ModalEditEducation data={x} />
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="Thông tin chương trình đào tạo"><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa chương trình đào tạo"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={{
-                                                    title: "Xoá chương trình đào tạo",
-                                                    btnNo: translate('confirm.no'),
-                                                    btnYes: translate('confirm.yes'),
-                                                }}
+                                                content="Xoá chương trình đào tạo"
                                                 data={{
                                                     id: x._id,
-                                                    info: x.nameEducation + " - " + x.numberEducation
+                                                    info: x.name + " - " + x.programId
                                                 }}
                                                 func={this.props.deleteEducation}
                                             />
@@ -213,10 +210,33 @@ class ListEducation extends Component {
                             }
                         </tbody>
                     </table>
+                    {education.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listEducations === 'undefined' || listEducations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
-                <ToastContainer />
-                <ModalAddEducation />
+                {
+                    this.state.currentEditRow !== undefined &&
+                    <EducationProgramEditForm
+                        _id={this.state.currentEditRow._id}
+                        name={this.state.currentEditRow.name}
+                        programId={this.state.currentEditRow.programId}
+                        organizationalUnit={this.state.currentEditRow.applyForOrganizationalUnits}
+                        position={this.state.currentEditRow.applyForPositions}
+                    />
+                }
+                {
+                    this.state.currentViewRow !== undefined &&
+                    <EducationProgramDetailForm
+                        _id={this.state.currentViewRow._id}
+                        name={this.state.currentViewRow.name}
+                        programId={this.state.currentViewRow.programId}
+                        listCourses={this.state.currentViewRow.listCourses}
+                        totalList={this.state.currentViewRow.listCourse}
+                        data={this.state.currentViewRow}
+                    />
+                }
             </div>
         );
     };

@@ -17,8 +17,8 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
     const user = await User
         .findOne({email : data.email})
         .populate([
-            { path: 'roles', model: UserRole, populate: { path: 'roleId' } }, 
-            { path: 'company' }
+            { path: 'roles', model: UserRole, populate: { path: 'roleId'} }, 
+            { path: 'company', model: Company, select: '_id name short_name active' }
         ]);
 
     if(!user) throw ["email_invalid"];
@@ -148,7 +148,7 @@ exports.forgetPassword = async (email) => {
                         text-decoration: none;
                         color: white;
                         " 
-                    href="http://localhost:3000/reset-password?otp=${code}&email=${email}"
+                    href="${process.env.WEBSITE}/reset-password?otp=${code}&email=${email}"
                 >
                     Xác thực
                 </a>

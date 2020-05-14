@@ -2,6 +2,7 @@ import { NotificationConstants } from "./constants";
 
 const initState = {
     sent: {
+        level: undefined,
         list: [],
         paginate: [],
         totalDocs: 0,
@@ -15,6 +16,7 @@ const initState = {
         nextPage: 0,
     },
     receivered: {
+        level: undefined,
         list: [],
         paginate: [],
         totalDocs: 0,
@@ -44,6 +46,24 @@ var findIndex = (array, id) => {
 export function notifications(state = initState, action) {
     var index = -1, indexP = -1;
     switch (action.type) {
+        case NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_SENT:
+            return {
+                ...state,
+                sent: {
+                    ...state.sent,
+                    level: action.level
+                }
+            }
+
+        case NotificationConstants.SET_LEVEL_TO_QUERY_NOTIFICATION_RECEIVERED:
+            return {
+                ...state,
+                receivered: {
+                    ...state.receivered,
+                    level: action.level
+                }
+            }
+
         case NotificationConstants.GET_MANUAL_NOTIFICATIONS_REQUEST:
         case NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_REQUEST:
         case NotificationConstants.GET_NOTIFICATIONS_REQUEST:
@@ -134,14 +154,17 @@ export function notifications(state = initState, action) {
                 ...state,
                 sent: {
                     ...state.sent,
+                    list: [action.payload, ...state.sent.list],
                     paginate: [action.payload, ...state.sent.paginate]
                 },
                 isLoading: false
             };
 
         case NotificationConstants.READED_NOTIFICATION_SUCCESS:
-            index = findIndex(state.receivered.paginate, action.payload._id);
-            if(index !== -1) state.receivered.paginate[index] = action.payload;
+            index = findIndex(state.receivered.list, action.payload._id);
+            if(index !== -1) state.receivered.list[index] = action.payload;
+            indexP = findIndex(state.receivered.paginate, action.payload._id);
+            if(indexP !== -1) state.receivered.paginate[indexP] = action.payload;
             return {
                 ...state,
                 isLoading: false

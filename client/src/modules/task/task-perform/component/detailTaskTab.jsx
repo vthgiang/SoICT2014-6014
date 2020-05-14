@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { performTaskAction } from './../redux/actions';
 import { taskManagementActions } from './../../task-management/redux/actions';
-import { ModalEditTask } from './modalEditTask';
+import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
+import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
 import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
@@ -328,15 +329,16 @@ class DetailTaskTab extends Component {
             .replace(/v/gm, ('0000' + (d.getMilliseconds() % 1000)).substr(-3));
     }
 
-    handleShowEdit = async (id) => {
-        console.log('id', id);
+    handleShowEdit = async (id, role) => {
+        console.log('edit id', id);
+        console.log('edit role', role);
         await this.setState(state => {
             return {
                 ...state,
                 showEdit: id
             }
         });
-        window.$(`#modal-edit-task-editTask${id}`).modal('show');
+        window.$(`#modal-edit-task-by-${role}-${id}`).modal('show');
 
     }
     handleShowEndTask = async (id, role) => {
@@ -391,7 +393,7 @@ class DetailTaskTab extends Component {
                 </a>
                 <OrganizationalUnitKpiAddTargetModal organizationalUnitKpiSetId={currentKPI._id} organizationalUnit={currentKPI.organizationalUnit} /> */}
                 <div style={{ marginLeft: "-10px" }}>
-                    <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id)} data-backdrop="static" data-keyboard="false" title="Chỉnh sửa thông tin chung">
+                    <a className="btn btn-app" onClick={() => this.handleShowEdit(this.props.id, this.props.role)} data-backdrop="static" data-keyboard="false" title="Chỉnh sửa thông tin chung">
                         <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Chỉnh sửa
                     </a>
 
@@ -407,22 +409,22 @@ class DetailTaskTab extends Component {
                     </a>
 
                     <a className="btn btn-app" onClick={() => this.handleShowEvaluate(this.props.id, this.props.role)} data-toggle="modal" data-target="#modal-edit-task" data-backdrop="static" data-keyboard="false" title="Đánh giá công việc">
-                        <i className="fa fa-check-square-o" style={{ fontSize: "16px" }}></i>Đánh giá
+                        <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>Đánh giá
                     </a>
+
+                    {
+                        (this.state.collapseInfo === false) ?
+                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Ẩn thông tin
+                        </a> :
+                        <a class="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
+                            <i class="fa fa-info" style={{ fontSize: "16px" }}></i>Hiện thông tin
+                        </a>
+                    }
 
                 </div>
                 <br />
                 <div>
-
-                    {
-                        (this.state.collapseInfo === false) ?
-                            <a class="btn btn-info" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                                <i class="fa fa-minus-square-o" aria-hidden="true"></i><strong>&nbsp;&nbsp;Thông tin</strong>
-                            </a> :
-                            <a class="btn btn-info" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
-                                <i class="fa fa-plus-square-o" aria-hidden="true"></i><strong>&nbsp;&nbsp;Thông tin</strong>
-                            </a>
-                    }
 
                     <div id="info" class="collapse in" style={{ margin: "10px 0px 0px 10px" }}>
                         <p><strong>Độ ưu tiên công việc:</strong> {task && task.priority}</p>
@@ -650,11 +652,29 @@ class DetailTaskTab extends Component {
                     </div>
                 </div>
                 {
-                    (this.props.id && this.state.showEdit === this.props.id) &&
-                    <ModalEditTask
-                        id={`editTask${this.props.id}`}
+                    (this.props.id && this.state.showEdit === this.props.id) && this.props.role === "responsible" &&
+                    <ModalEditTaskByResponsibleEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Chỉnh sửa công việc với vai trò người thực hiện'
                     />
                 }
+
+                {
+                    (this.props.id && this.state.showEdit === this.props.id) && this.props.role === "accountable" &&
+                    <ModalEditTaskByAccountableEmployee
+                        id={this.props.id}
+                        role={this.props.role}
+                        title='Chỉnh sửa công việc với vai trò người phê duyệt'
+                    />
+                }
+
+                {/*{*/}
+                {/*    (this.props.id && this.state.showEdit === this.props.id) &&*/}
+                {/*    <ModalEditTaskByResponsibleEmployee*/}
+                {/*        id={`editTask${this.props.id}`}*/}
+                {/*    />*/}
+                {/*}*/}
 
 
                 {

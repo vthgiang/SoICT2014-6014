@@ -14,11 +14,13 @@ exports.getAllManualNotifications = async (creator) => { //id cua cong ty do
 /**
  * Phân trang danh sách các thông báo đã được tạo bởi admin, giám đốc ..
  */
-exports.paginateManualNotifications = async (creator, limit, page) => {
+exports.paginateManualNotifications = async (creator, data) => {
+    var info = Object.assign({creator}, data.content);
+    
     return await ManualNotification
-        .paginate( {creator} , { 
-            page, 
-            limit,
+        .paginate( info , { 
+            page: data.page, 
+            limit: data.limit,
             sort: { createdAt: -1 }, 
             populate: [
                 {path: 'users', model: User},
@@ -73,7 +75,24 @@ exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
 
 // Tạo notification và gửi đến cho user
 exports.createNotification = async (company, data, manualNotification=undefined) => {
-    const notificationToUsers = data.users.map(user=>{
+    let usersArr = data.users;
+    for (let i = 0; i < data.organizationalUnits.length; i++) {
+        let organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
+        let userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
+        usersArr = await usersArr.concat(userArr);
+    }
+
+    // Loại bỏ các giá trị trùng nhau
+    usersArr = usersArr.map(user => user.toString());
+    for(let i = 0, max = usersArr.length; i < max; i++) {
+        if(usersArr.indexOf(usersArr[i]) != usersArr.lastIndexOf(usersArr[i])) {
+            usersArr.splice(usersArr.indexOf(usersArr[i]), 1);
+            i--;
+        }
+    }
+    
+    // Gửi thông báo cho các user
+    let notifications = usersArr.map(user => {
         return {
             company,
             title: data.title,
@@ -85,27 +104,7 @@ exports.createNotification = async (company, data, manualNotification=undefined)
             manualNotification
         }
     });
-    
-    const users = await Notification.insertMany(notificationToUsers);
-
-    for (let i = 0; i < data.organizationalUnits.length; i++) {
-        const organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
-        const userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
-        const notificationToOrganizationalUnits = userArr.map(user => {
-            return {
-                company,
-                title: data.title,
-                level: data.level,
-                content: data.content,
-                creator: data.creator,
-                sender: data.sender,
-                user,
-                manualNotification
-            }
-        });
-        const organs = await Notification.insertMany(notificationToOrganizationalUnits);
-    }
-
+    await Notification.insertMany(notifications);
     return true;
 }
 
@@ -120,11 +119,13 @@ exports.getAllNotifications = async (user) => {
 /**
  * Phân trang danh sách các thông báo của người dùng nhận được
  */
-exports.paginateNotifications = async (user, limit, page) => {
+exports.paginateNotifications = async (user, data) => {
+    var info = Object.assign({user}, data.content);
+    
     return await Notification
-        .paginate( {user} , { 
-            page, 
-            limit,
+        .paginate( info , { 
+            page: data.page, 
+            limit: data.limit,
             sort: { createdAt: -1 }
         });
 }

@@ -229,7 +229,7 @@ exports.data = [
     { path: '/kpimembers/status-target/:id/:status', method: 'PUT', roles: ['Dean']},
     { path: '/detailkpi/:id', method: 'GET', roles: ['Dean']},
     { path: '/appovepoint/:id_kpi/:id_target', method: 'PUT', roles: ['Dean']},
-    { path: '/kpimembers/task/:id/:date', method: 'GET', roles: ['Dean']},
+    { path: '/kpimembers/task/:id/:employeeId/:date', method: 'GET', roles: ['Dean']},
     // Task-management
     { path: '/tasks/', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
     { path: '/tasks/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
@@ -313,4 +313,6 @@ exports.data = [
     { path: '/recommendprocure/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
     { path: '/recommendprocure/checkRepairNumber/:recommendNumber', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee']},
 
+    // Module DashboardEvaluationEmployeeKpiSet
+    { path: '/kpi/evaluation/dashboard/get-all-employee-kpi/:role', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee']},
 ];

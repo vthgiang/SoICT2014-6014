@@ -1,8 +1,6 @@
 import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
-import { TOKEN_SECRET } from '../../../../env';
 import { getStorage } from '../../../../config';
-import jwt from 'jsonwebtoken';
 
 export const DepartmentServices = {
     get,
@@ -44,9 +42,7 @@ function destroy(departmentId) {
 
 
 async function getDepartmentsThatUserIsDean(currentRole) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+    var id = getStorage('userId');
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/organizational-units`,
