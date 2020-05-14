@@ -1,7 +1,7 @@
 import { LOCAL_SERVER_API, TOKEN_SECRET } from '../../../env';
 import { getStorage } from '../../../config';
 import jwt from 'jsonwebtoken';
-import { sendRequest, sendRequestPublic } from '../../../helpers/requestHelper';
+import { sendRequest } from '../../../helpers/requestHelper';
 
 export const AuthService = {
     login,
@@ -18,7 +18,7 @@ export const AuthService = {
 };
 
 async function login(user) {
-    return sendRequestPublic({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/login`,
         method: 'POST',
         data: user
@@ -94,7 +94,7 @@ async function refresh() {
 }
 
 function forgotPassword(email) {
-    return sendRequestPublic({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/forget-password`,
         method: 'POST',
         data: {
@@ -104,7 +104,7 @@ function forgotPassword(email) {
 }
 
 function resetPassword(otp, email, password) {
-    return sendRequestPublic({
+    return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/reset-password`,
         method: 'POST',
         data: {
