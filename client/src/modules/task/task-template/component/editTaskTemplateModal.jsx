@@ -31,6 +31,7 @@ class ModalEditTaskTemplate extends Component {
                 taskActions: [],
                 taskInformations: []
             },
+
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -55,7 +56,6 @@ class ModalEditTaskTemplate extends Component {
             return {
                 ...prevState,
                 taskTemplateId: nextProps.taskTemplateId,
-                
 
                 errorOnName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnDescription:undefined,
@@ -69,45 +69,32 @@ class ModalEditTaskTemplate extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        console.log("SHOULD*****",nextProps.tasktemplates.template, this.props.tasktemplates.template)
         if (nextProps.taskTemplateId !== this.state.taskTemplateId) {
-            console.log("GUI............")
             this.props.getTaskTemplate(nextProps.taskTemplateId); // Gửi truy vấn lấy dữ liệu
+            return false;
         }
 
         let newDataArrived = nextProps.tasktemplates.template !== undefined && nextProps.tasktemplates.template !== null;
         newDataArrived = newDataArrived && (nextProps.tasktemplates.template !== this.props.tasktemplates.template);
-
-        if (newDataArrived){ // Dữ liệu đã về, bind vào prop
-            console.log("VE............")
+        if (newDataArrived){ // Dữ liệu đã về vầ được bind vào prop
             this.setState(state =>{
                 return {
                     ...state,
                     editingTemplate: nextProps.tasktemplates.template.info,
                 };
             });
+            return false;
         }
 
         return true;
     }
-  
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     if (nextProps.id !== prevState.id) {
-    //         return {
-    //             ...prevState,
-    //             id: nextProps.id,
-    //             editingTemplate:    nextProps.taskTemplate,
-    //         } 
-    //     } else {
-    //         return null;
-    //     }
-    // }
+
+
     
     /**
      * Xử lý form lớn tasktemplate
      */
     isTaskTemplateFormValidated = () => {
-
         let result = 
             this.validateTaskTemplateRead(this.state.editingTemplate.readByEmployees, false) &&
             this.validateTaskTemplateName(this.state.editingTemplate.name, false) &&
@@ -265,18 +252,11 @@ class ModalEditTaskTemplate extends Component {
     }
     
     
-    handleCloseModal = (id) => {
-        var modal = document.getElementById(`editTaskTemplate${id}`);
-        modal.classList.remove("in");
-        modal.style = "display: none;";
-    }
     // Submit new template in data
     handleSubmit = async (event) => {
         const { editingTemplate } = this.state;
   
-        this.props.editTaskTemplate(this.state.id,editingTemplate);
-
-        this.handleCloseModal(this.props.id);
+        this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
     }
 
     
@@ -300,8 +280,8 @@ class ModalEditTaskTemplate extends Component {
         var { editingTemplate, submitted} = this.state;
   
         const { department, user,translate } = this.props;
-        if (editingTemplate.taskActions) taskActions = editingTemplate.taskActions;
-        if (editingTemplate.taskInformations) taskInformations = editingTemplate.taskInformations;
+        if (editingTemplate && editingTemplate.taskActions) taskActions = editingTemplate.taskActions;
+        if (editingTemplate && editingTemplate.taskInformations) taskInformations = editingTemplate.taskInformations;
         
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
@@ -316,22 +296,22 @@ class ModalEditTaskTemplate extends Component {
 
         return (
             <DialogModal
-                    modalID="modal-edit-task-template" isLoading={user.isLoading}
-                    formID="form-edit-task-template"
-                    title={"Sửa mẫu công việc"}
-                    func={this.handleSubmit}
-                    disableSubmit={!this.isTaskTemplateFormValidated()}
-                    size={100}
+                modalID="modal-edit-task-template" isLoading={user.isLoading}
+                formID="form-edit-task-template"
+                title={"Sửa mẫu công việc"}
+                func={this.handleSubmit}
+                disableSubmit={!this.isTaskTemplateFormValidated()}
+                size={100}
             >
                 <form className="form-horizontal">
                     <div className="row">
                         <div className="col-sm-6">
                             <div className={'form-group has-feedback' + (submitted && editingTemplate.organizationalUnit==="" ? ' has-error' : '')}>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Đơn vị*:</label>
-                                <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
+                                <div className={`col-sm-10 form-group ${editingTemplate.errorOnUnit===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                     {departmentsThatUserIsDean !== undefined && currentUnit !== undefined &&
                                         <SelectBox
-                                            id={`unit-select-box-edit`}
+                                            id={`edit-unit-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             items={
@@ -340,7 +320,7 @@ class ModalEditTaskTemplate extends Component {
                                                 })
                                             }
                                             onChange={this.handleTaskTemplateUnit}
-                                            value = {currentUnit._id} ////////////////////////////
+                                            value = {currentUnit._id}
                                             multiple={false}
 
                                         />
@@ -363,7 +343,7 @@ class ModalEditTaskTemplate extends Component {
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
                                     {listRole &&
                                         <SelectBox
-                                            id={`edit-read-select-box`}
+                                            id={`edit-read-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             items={[
@@ -391,7 +371,7 @@ class ModalEditTaskTemplate extends Component {
                                 <div className="col-sm-10" style={{ width: '100%' }}>
                                     {userdepartments &&
                                         <SelectBox
-                                            id={`edit-responsible-select-box`}
+                                            id={`edit-responsible-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             items={[
@@ -405,7 +385,10 @@ class ModalEditTaskTemplate extends Component {
                                                 },
                                             ]}
                                             onChange={this.handleTaskTemplateResponsible}
-                                            value={editingTemplate.responsibleEmployees}
+                                            value={editingTemplate.responsibleEmployees.map(item => {
+                                                    return item._id;
+                                                })
+                                            }
                                             multiple={true}
                                             options={{placeholder: "Chọn người thực hiện"}}
                                         />
@@ -417,7 +400,7 @@ class ModalEditTaskTemplate extends Component {
                                 <div className="col-sm-10" style={{ width: '100%' }}>
                                     {userdepartments &&
                                         <SelectBox
-                                            id={`edit-accounatable-select-box`}
+                                            id={`edit-accounatable-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             items={[
@@ -431,7 +414,10 @@ class ModalEditTaskTemplate extends Component {
                                                 },
                                             ]}
                                             onChange={this.handleTaskTemplateAccountable}
-                                            value ={editingTemplate.accountableEmployees}
+                                            value ={editingTemplate.accountableEmployees.map(item => {
+                                                    return item._id;
+                                                })
+                                            }
                                             multiple={true}
                                             options={{placeholder: "Chọn người phê duyệt"}}
                                         />
@@ -443,7 +429,7 @@ class ModalEditTaskTemplate extends Component {
                                 <div className="col-sm-10" style={{ width: '100%' }}>
                                     {usercompanys &&
                                         <SelectBox
-                                            id={`edit-consulted-select-box`}
+                                            id={`edit-consulted-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             items={
@@ -452,7 +438,10 @@ class ModalEditTaskTemplate extends Component {
                                                 })
                                             }
                                             onChange={this.handleTaskTemplateConsult}
-                                            value ={editingTemplate.consultedEmployees}
+                                            value ={editingTemplate.consultedEmployees.map(item => {
+                                                    return item._id;
+                                                })
+                                            }
                                             multiple={true}
                                             options={{placeholder: "Chọn người hỗ trợ"}}
                                         />
@@ -464,7 +453,7 @@ class ModalEditTaskTemplate extends Component {
                                 <div className="col-sm-10" style={{ width: '100%' }}>
                                     {usercompanys &&
                                         <SelectBox
-                                            id={`edit-informed-select-box`}
+                                            id={`edit-informed-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{width: "100%"}}
                                             items={
@@ -474,7 +463,10 @@ class ModalEditTaskTemplate extends Component {
                                             }
                                             onChange={this.handleTaskTemplateInform}
                                             multiple={true}
-                                            value = {editingTemplate.informedEmployees}
+                                            value = {editingTemplate.informedEmployees.map(item => {
+                                                    return item._id;
+                                                })
+                                            }
                                             options={{placeholder: "Chọn người quan sát"}}
                                         />
                                     }
@@ -504,27 +496,22 @@ class ModalEditTaskTemplate extends Component {
                                 <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
                                 <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
                             </div>
-                            <div className="col-sm-6" style={{ marginTop: "15px" }} >
-                                <div className="box box-primary" style={{ borderTop: "-15px", paddingLeft: "15px",paddingBottom: "5px" }}>
-                                    <div className="row">
-                                        <div className="col-xs-12">
-                                            <div className='form-group' style={{ marginTop: "5px" }}>
-                                                <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.information_list')} </label>
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Danh sách các trường thông tin</legend>
+                                {
+                                    (typeof editingTemplate === 'undefined' || editingTemplate.taskInformations.length === 0)?
+                                        <span>{translate('task_template.no_data')}</span>:
+                                        editingTemplate.taskInformations.map((item, index) => 
+                                            <div style={{paddingBottom: "20px"}}>
+                                                <div>
+                                                    <label>{item.name} - Kiểu {item.type}</label>
+                                                    {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}
+                                                </div>
+                                                {item.description}
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="control-group" style={{ marginLeft: "-5px" }}>
-
-                                        {/* <ol>{
-                                            (typeof template__________ === 'undefined' || editingTemplate.taskInformations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
-                                                template__________.taskInformations.map((item, index) =>
-                                                    <li style={{ textAlign: 'left' }}>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}<p>Mô tả: {item.description}</p></li>
-                                                )
-                                        }
-                                        </ol> */}
-                                    </div>
-                                </div>
-                            </div>   
+                                    )
+                                }
+                            </fieldset>
                         </div>
                     </div>
                 </form>

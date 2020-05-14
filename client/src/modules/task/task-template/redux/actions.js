@@ -103,24 +103,17 @@ function addTaskTemplate(taskTemplate) {
 // Edit a task template
 function editTaskTemplate(id, taskTemplate) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST});
 
-        taskTemplateService.editTaskTemplate(id, taskTemplate)
-            .then(
-                taskTemplate => { 
-                    dispatch(success(taskTemplate));
-                    //dispatch(alertActions.success('Edit target successful'));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    //dispatch(alertActions.error(error.toString()));
-                }
-            );
+        taskTemplateService.editTaskTemplate(id, taskTemplate).then(
+            res => { 
+                dispatch({ type: taskTemplateConstants.EDIT_TEMPLATE_SUCCESS, payload: res });
+            },
+            error => {
+                dispatch({ type: taskTemplateConstants.EDIT_TEMPLATE_FAILURE });
+            }
+        );
     };
-
-    function request(id) { return { type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST, taskTemplate } }
-    function success(taskTemplate) { return { type: taskTemplateConstants.EDIT_TEMPLATE_SUCCESS, taskTemplate } }
-    function failure(error) { return { type: taskTemplateConstants.EDIT_TEMPLATE_FAILURE, error } }
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

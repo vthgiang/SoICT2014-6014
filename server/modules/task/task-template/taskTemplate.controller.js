@@ -65,15 +65,23 @@ exports.deleteTaskTemplate = async (req, res) => {
     }
 }
 
-//api sửa 1 lỗi công việc
+//api sửa 1 mẫu công việc
 exports.editTaskTemplate = async(req, res) => {
     try {
-        var data = await TaskTemplateService.editTaskTemplate(req.body,req.params.id);
+        var data = await TaskTemplateService.editTaskTemplate(req.body, req.params.id);
         await LogInfo(req.user.email, `Edit task templates ${req.body.name}`, req.user.company);
-        res.status(200).json(data);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_template_success'],
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, `Edit task templates ${req.body.name}`, req.user.company);
-        res.status(400).json(error);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_template_faile'],
+            content: error
+        });
     }
 }
  

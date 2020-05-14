@@ -12,7 +12,6 @@ exports.getAllTaskTemplates = (req, res) => {
 exports.getTaskTemplate = async (req, res) => {
     try {
         var tasktemplate = await TaskTemplate.findById(req.params.id).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
-        var nameRead = await Role.findById(tasktemplate.readByEmployees);
         res.status(200).json({
             "info": tasktemplate,
         })
@@ -140,35 +139,25 @@ exports.deleteTaskTemplate = async (id) => {
     return ("Delete success");
 }
 
-/*
-// sửa mẫu công việc sửa 12.05
-*/
-exports.editTaskTemplate =async(data,id)=>{ 
-    var tasktemplate =await TaskTemplate.findByIdAndUpdate(id,
-     {
-         "$set" : 
-         { 
-             name : data.name,
-             description:data.description,
-             formula:data.formula,
-             accountableEmployees:data.accountableEmployees,
-             readByEmployees:data.readByEmployees,
-             informedEmployees:data.informedEmployees,
-             responsibleEmployees:data.responsibleEmployees,
-             consultedEmployees:data.consultedEmployees,
-             organizationalUnit:data.organizationalUnit._id,
-             taskActions:data.taskActions
-         }           
-     },
-     { "new": true, "upsert": true },
-     function (err, managerparent) {
-         if (err) throw err;
-         
-     }
-     );
+/**
+ * Sửa mẫu công việc
+ */
+exports.editTaskTemplate =async(data, id)=>{
+    var taskTemplate = await TaskTemplate.findByIdAndUpdate(id,
+        {$set: { 
+            name: data.name,
+            description: data.description,
+            formula: data.formula,
+            accountableEmployees: data.accountableEmployees,
+            readByEmployees: data.readByEmployees,
+            informedEmployees: data.informedEmployees,
+            responsibleEmployees: data.responsibleEmployees,
+            consultedEmployees: data.consultedEmployees,
+            organizationalUnit: data.organizationalUnit._id,
+            taskActions: data.taskActions
+        }},
+        { new: true},
+    );
   
- return ({
-     message: "Edit Task Template Successfully!",
-     data : tasktemplate
- });       
+    return taskTemplate;     
 }

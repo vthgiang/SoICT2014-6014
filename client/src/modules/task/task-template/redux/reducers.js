@@ -114,13 +114,15 @@ export function tasktemplates(state = {}, action) {
                 };
         case taskTemplateConstants.EDIT_TEMPLATE_SUCCESS:
             return {
-                    ...state,
-                    items: state.items.map(template =>
-                        template._id === action.taskTemplate.data._id
-                            ? action.taskTemplate.data :  template
-                    ),
-                    isLoading: false
-                };
+                ...state,
+                items: state.items.map(template =>
+                    template._id === action.payload.content._id
+                        ? action.payload.content
+                        : template
+                ),
+                // template: action.payload.content,
+                isLoading: false
+            };
         case taskTemplateConstants.EDIT_TEMPLATE_FAILURE:
             return {
                 error: action.error,
