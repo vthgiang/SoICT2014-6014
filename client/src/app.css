@@ -211,3 +211,6 @@ legend.scheduler-border {
     -moz-box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
     box-shadow: 1px 1px 4px rgba(96, 92, 168, 0.35);
 }
+.box.box-solid.description > .box-body dd > ul{
+    margin: 0px;
+}

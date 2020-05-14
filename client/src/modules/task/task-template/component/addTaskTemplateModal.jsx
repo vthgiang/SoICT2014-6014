@@ -6,8 +6,8 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 
-import {InformationTemplate} from '../component/informationsTemplate';
-import {ActionTemplate} from '../component/actionsTemplate';
+import {InformationForm} from '../component/informationsTemplate';
+import {ActionForm} from '../component/actionsTemplate';
 
 import {DialogModal, ButtonModal, SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
@@ -226,38 +226,30 @@ class ModalAddTaskTemplate extends Component {
     }
 
     
-    handleAction =(data) =>{
-        //event.preventDefault(); // Ngăn không submit
+    handleTaskActionsChange =(data) =>{
         let { newTemplate } = this.state;
         this.setState(state => {
-            
             return {
                 ...state,
                 newTemplate: {
                     ...newTemplate,
                     taskActions: data
                 },
-                //action: Object.assign({}, state.EMPTY_ACTION),
             }
         })
-        console.log("+++++++++++++++++++",this.state);
     
     }
-    handleInformation =(data)=>{
-        //event.preventDefault(); // Ngăn không submit
+    handleTaskInformationsChange =(data)=>{
         let { newTemplate } = this.state;
         this.setState(state => {
-            
             return {
                 ...state,
                 newTemplate: {
                     ...newTemplate,
                     taskInformations: data
                 },
-                //action: Object.assign({}, state.EMPTY_ACTION),
             }
         })
-        console.log("+++++++++++++++++++",this.state);
     }
 
     render() {
@@ -444,7 +436,7 @@ class ModalAddTaskTemplate extends Component {
                                         }
                                     </div>
                                 </div>
-                                <ActionTemplate  taskAction ={taskActions} handleAction={this.handleAction} />
+                                <ActionForm  initialData ={taskActions} onDataChange={this.handleTaskActionsChange} />
                             </div>
                             <div className="col-sm-6">
                                 <div className={'form-group has-feedback' + (submitted && !newTemplate.description ? ' has-error' : '')}>
@@ -467,7 +459,7 @@ class ModalAddTaskTemplate extends Component {
                                     <label className="col-sm-12" style={{ fontWeight: "400" }}>A: Tổng số hoạt động</label>
                                     <label className="col-sm-12" style={{ fontWeight: "400" }}>AD: Tổng số lần duyệt "Chưa đạt" cho các hoạt động</label>
                                 </div>
-                            <InformationTemplate informationsTemplate ={taskInformations} handleInformation={this.handleInformation}/>
+                            <InformationForm initialData ={taskInformations} onDataChange={this.handleTaskInformationsChange}/>
                             </div>
                         </div>
                     </form>
