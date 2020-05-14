@@ -7,7 +7,7 @@ import Sortable from 'sortablejs';
 import {SelectBox, ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
 
-class actionsTemplate extends Component{
+class ActionForm extends Component{
 
     componentDidMount(){
         // Load library for sort action table
@@ -25,7 +25,7 @@ class actionsTemplate extends Component{
             EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
             editAction: false,
             action:  Object.assign({}, EMPTY_ACTION),
-            taskActions:this.props.taskAction
+            taskActions:this.props.initialData
         }
     }
 
@@ -168,7 +168,7 @@ handleAddAction = async (event) => {
             
             
         })
-         this.props.handleAction(this.state.taskActions);
+         this.props.onDataChange(this.state.taskActions);
 }
 
 // function edit item in action table
@@ -203,7 +203,7 @@ handleSaveEditedAction = async (event) => {
             action: Object.assign({}, state.EMPTY_ACTION),
         }
     })
-    this.props.handleAction(this.state.taskActions);
+    this.props.onDataChange(this.state.taskActions);
 }
 
 // delete action in action table
@@ -219,7 +219,7 @@ handleDeleteAction = async (index) => {
             taskActions:newTaskInformations
         }
     })
-    this.props.handleAction(this.state.taskActions);
+    this.props.onDataChange(this.state.taskActions);
 }
 
     render(){
@@ -296,4 +296,4 @@ handleDeleteAction = async (index) => {
     
 
 }
-export { actionsTemplate as ActionTemplate };
+export { ActionForm as ActionForm };
