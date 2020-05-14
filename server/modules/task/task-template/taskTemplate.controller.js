@@ -8,8 +8,23 @@ exports.getAllTaskTemplates = (req, res) => {
 }
 
 // Lấy mẫu công việc theo id
-exports.getTaskTemplate = (req, res) => {
-    return TaskTemplateService.getTaskTemplate(req, res);
+exports.getTaskTemplate = async (req, res) => {
+    try {
+        var taskTemplate = await TaskTemplateService.getTaskTemplate(req.params.id);
+        await LogInfo(req.user.email, `Get task templates ${req.body.name}`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_template_success'],
+            content: taskTemplate
+        });
+    } catch (error) {
+        await LogError(req.user.email, `Get task templates ${req.body.name}`, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_template_faile'],
+            content: error
+        });
+    }
 }
 
 // Lấy mẫu công việc mà một UserRole có quyền xem

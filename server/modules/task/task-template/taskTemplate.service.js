@@ -9,15 +9,9 @@ exports.getAllTaskTemplates = (req, res) => {
 }
 
 //Lấy mẫu công việc theo Id
-exports.getTaskTemplate = async (req, res) => {
-    try {
-        var tasktemplate = await TaskTemplate.findById(req.params.id).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
-        res.status(200).json({
-            "info": tasktemplate,
-        })
-    } catch (error) {
-        res.status(400).json({ message: error });
-    }
+exports.getTaskTemplate = async (id) => {
+    var taskTemplate = TaskTemplate.findById(id).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
+    return taskTemplate;
 }
 
 //Lấy mẫu công việc theo chức danh
@@ -157,7 +151,7 @@ exports.editTaskTemplate =async(data, id)=>{
             taskActions: data.taskActions
         }},
         { new: true},
-    );
+    ).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
   
     return taskTemplate;     
 }

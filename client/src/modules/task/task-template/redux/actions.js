@@ -65,18 +65,13 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
 // Get task template by id
 function getTaskTemplateById(id) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_REQUEST});
 
-        taskTemplateService.getById(id)
-            .then(
-                tasktemplate => dispatch(success(tasktemplate)),
-                error => dispatch(failure(error.toString()))
-            );
+        taskTemplateService.getById(id).then(
+            res => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_SUCCESS, payload: res }),
+            error => dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_FAILURE})
+        );
     };
-
-    function request(id) { return { type: taskTemplateConstants.GETTEMPLATE_BYID_REQUEST, id } }
-    function success(tasktemplate) { return { type: taskTemplateConstants.GETTEMPLATE_BYID_SUCCESS, tasktemplate } }
-    function failure(error) { return { type: taskTemplateConstants.GETTEMPLATE_BYID_FAILURE, error } }
 }
 
 // Add a new target of unit

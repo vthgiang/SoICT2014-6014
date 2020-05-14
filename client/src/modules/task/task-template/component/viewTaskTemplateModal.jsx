@@ -8,7 +8,6 @@ class ModalViewTaskTemplate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tasktemplate: ""
         };
     }
 
@@ -26,22 +25,23 @@ class ModalViewTaskTemplate extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.taskTemplateId !== this.state.taskTemplateId) {
             this.props.getTaskTemplate(nextProps.taskTemplateId);
+            return false;
         }
         return true;
     }
 
     render() {
-        var taskTemplate;
+        var taskTemplate = {};
 
         const { tasktemplates, translate } = this.props;
-        if (tasktemplates.template) taskTemplate = tasktemplates.template;
+        if (tasktemplates.taskTemplate) taskTemplate = tasktemplates.taskTemplate;
 
         return (
             <React.Fragment>
                 <DialogModal
                     size='75' modalID="modal-view-tasktemplate" isLoading={false}
                     formID="form-view-tasktemplate"
-                    title={taskTemplate && taskTemplate.info.name}
+                    title={taskTemplate && taskTemplate.name}
                     hasSaveButton={false}
                 >
 
@@ -56,13 +56,13 @@ class ModalViewTaskTemplate extends Component {
                                     <div className="box-body">
 
                                         <dt>{translate('task_template.unit')}</dt>
-                                        <dd>{taskTemplate && taskTemplate.info.organizationalUnit.name}</dd>
+                                        <dd>{taskTemplate.organizationalUnit && taskTemplate.organizationalUnit.name}</dd>
 
                                         <dt>{translate('task_template.description')}</dt>
-                                        <dd>{taskTemplate && taskTemplate.info.description}</dd>
+                                        <dd>{taskTemplate.description}</dd>
 
                                         <dt>{translate('task_template.formula')}</dt>
-                                        <dd>{taskTemplate && taskTemplate.info.formula}</dd>
+                                        <dd>{taskTemplate.formula}</dd>
                                         
                                         <dt>Tham số</dt>
                                         <dd>
@@ -85,18 +85,18 @@ class ModalViewTaskTemplate extends Component {
                                             <dt>{translate('task_template.permission_view')}</dt>
                                             <dd>
                                                  <ul>
-                                                    {taskTemplate && taskTemplate.info.readByEmployees.map((item, index) => {
+                                                    {taskTemplate.readByEmployees && taskTemplate.readByEmployees.map((item, index) => {
                                                         return <li key={index}>{item.name}</li>
                                                     })}
                                                 </ul>
                                             </dd>
 
-                                            {taskTemplate && taskTemplate.info.responsibleEmployees.length > 0 &&
+                                            {taskTemplate.responsibleEmployees && taskTemplate.responsibleEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.performer')}</dt>
                                                     <dd>
                                                         <ul>
-                                                            {taskTemplate.info.responsibleEmployees.map((item, index) => {
+                                                            {taskTemplate.responsibleEmployees.map((item, index) => {
                                                                 return <li key={index}>{item.name}</li>
                                                             })}
                                                         </ul>
@@ -104,12 +104,12 @@ class ModalViewTaskTemplate extends Component {
                                                 </React.Fragment>
                                             }
 
-                                            {taskTemplate && taskTemplate.info.accountableEmployees.length > 0 &&
+                                            {taskTemplate.accountableEmployees && taskTemplate.accountableEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.approver')}</dt>
                                                     <dd>
                                                         <ul>
-                                                            {taskTemplate.info.accountableEmployees.map((item, index) => {
+                                                            {taskTemplate.accountableEmployees.map((item, index) => {
                                                                 return <li key={index}>{item.name}</li>
                                                             })}
                                                         </ul>
@@ -117,12 +117,12 @@ class ModalViewTaskTemplate extends Component {
                                                 </React.Fragment>
                                             }
 
-                                            {taskTemplate && taskTemplate.info.consultedEmployees.length > 0 &&
+                                            {taskTemplate.consultedEmployees && taskTemplate.consultedEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.observer')}</dt>
                                                     <dd>
                                                         <ul>
-                                                            {taskTemplate.info.consultedEmployees.map((item, index) => {
+                                                            {taskTemplate.consultedEmployees.map((item, index) => {
                                                                 return <li key={index}>{item.name}</li>
                                                             })}
                                                         </ul>
@@ -130,12 +130,12 @@ class ModalViewTaskTemplate extends Component {
                                                 </React.Fragment>
                                             }
 
-                                            {taskTemplate && taskTemplate.info.informedEmployees.length > 0 &&
+                                            {taskTemplate.informedEmployees && taskTemplate.informedEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.supporter')}</dt>
                                                     <dd>
                                                         <ul>
-                                                            {taskTemplate.info.informedEmployees.map((item, index) => {
+                                                            {taskTemplate.informedEmployees.map((item, index) => {
                                                                 return <li key={index}>{item.name}</li>
                                                             })}
                                                         </ul>
@@ -157,8 +157,9 @@ class ModalViewTaskTemplate extends Component {
                                     </div>
                                     <div className="box-body">
                                         {
-                                            (typeof taskTemplate === 'undefined' || taskTemplate.info.taskActions.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
-                                                taskTemplate.info.taskActions.map((item, index) =>
+                                            (!taskTemplate.taskActions || taskTemplate.taskActions.length === 0)?
+                                                <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                                taskTemplate.taskActions.map((item, index) =>
                                                     <React.Fragment>
                                                         <dt style={{ textAlign: 'left' }} >{item.name} - {item.mandatory ? "" : "Không"} bắt buộc</dt>
                                                         <dd>{item.description}</dd>
@@ -175,8 +176,9 @@ class ModalViewTaskTemplate extends Component {
                                     </div>
                                     <div className="box-body">
                                         {
-                                            (typeof taskTemplate === 'undefined' || taskTemplate.info.taskInformations.length === 0) ? <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
-                                                taskTemplate.info.taskInformations.map((item, index) =>
+                                            (!taskTemplate.taskInformations || taskTemplate.taskInformations.length === 0)? 
+                                                <p style={{ color: 'red', textAlign: 'left' }}>{translate('task_template.no_data')}</p> :
+                                                taskTemplate.taskInformations.map((item, index) =>
                                                     <React.Fragment>
                                                         <dt>{item.name} - Kiểu {item.type} {item.filledByAccountableEmployeesOnly ? "- Chỉ quản lý được điền" : ""}</dt>
                                                         <dd>{item.description}</dd>

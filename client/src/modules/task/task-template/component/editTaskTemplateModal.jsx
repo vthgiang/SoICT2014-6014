@@ -74,13 +74,13 @@ class ModalEditTaskTemplate extends Component {
             return false;
         }
 
-        let newDataArrived = nextProps.tasktemplates.template !== undefined && nextProps.tasktemplates.template !== null;
-        newDataArrived = newDataArrived && (nextProps.tasktemplates.template !== this.props.tasktemplates.template);
+        let newDataArrived = nextProps.tasktemplates.taskTemplate !== undefined && nextProps.tasktemplates.taskTemplate !== null;
+        newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate !== this.props.tasktemplates.taskTemplate);
         if (newDataArrived){ // Dữ liệu đã về vầ được bind vào prop
             this.setState(state =>{
                 return {
                     ...state,
-                    editingTemplate: nextProps.tasktemplates.template.info,
+                    editingTemplate: nextProps.tasktemplates.taskTemplate,
                 };
             });
             return false;
@@ -95,6 +95,8 @@ class ModalEditTaskTemplate extends Component {
      * Xử lý form lớn tasktemplate
      */
     isTaskTemplateFormValidated = () => {
+        if (!this.state.editingTemplate._id)
+            return false;
         let result = 
             this.validateTaskTemplateRead(this.state.editingTemplate.readByEmployees, false) &&
             this.validateTaskTemplateName(this.state.editingTemplate.name, false) &&
@@ -341,7 +343,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className={'form-group has-feedback' + (submitted && editingTemplate.readByEmployees === [] ? ' has-error' : '')}>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Những người được phép xem*</label>
                                 <div className={`col-sm-10 form-group ${this.state.editingTemplate.errorOnRead===undefined?"":"has-error"}`} style={{ width: '100%', marginLeft: "0px" }}>
-                                    {listRole &&
+                                    {listRole && editingTemplate.readByEmployees &&
                                         <SelectBox
                                             id={`edit-read-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
@@ -369,7 +371,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className='form-group has-feedback'>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người thực hiện</label>
                                 <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {userdepartments &&
+                                    {userdepartments && editingTemplate.responsibleEmployees &&
                                         <SelectBox
                                             id={`edit-responsible-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
@@ -398,7 +400,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className='form-group has-feedback'>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người phê duyệt</label>
                                 <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {userdepartments &&
+                                    {userdepartments && editingTemplate.accountableEmployees &&
                                         <SelectBox
                                             id={`edit-accounatable-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
@@ -427,7 +429,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className='form-group has-feedback'>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người hỗ trợ</label>
                                 <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {usercompanys &&
+                                    {usercompanys && editingTemplate.consultedEmployees &&
                                         <SelectBox
                                             id={`edit-consulted-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
@@ -451,7 +453,7 @@ class ModalEditTaskTemplate extends Component {
                             <div className='form-group has-feedback'>
                                 <label className="col-sm-5 control-label" style={{ width: '100%', textAlign: 'left' }}>Người quan sát</label>
                                 <div className="col-sm-10" style={{ width: '100%' }}>
-                                    {usercompanys &&
+                                    {usercompanys && editingTemplate.informedEmployees &&
                                         <SelectBox
                                             id={`edit-informed-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
@@ -499,7 +501,7 @@ class ModalEditTaskTemplate extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">Danh sách các trường thông tin</legend>
                                 {
-                                    (typeof editingTemplate === 'undefined' || editingTemplate.taskInformations.length === 0)?
+                                    (!editingTemplate.taskInformations || editingTemplate.taskInformations.length === 0)?
                                         <span>{translate('task_template.no_data')}</span>:
                                         editingTemplate.taskInformations.map((item, index) => 
                                             <div style={{paddingBottom: "20px"}}>

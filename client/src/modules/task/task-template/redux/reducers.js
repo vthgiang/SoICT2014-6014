@@ -57,19 +57,19 @@ export function tasktemplates(state = {}, action) {
         case taskTemplateConstants.GETTEMPLATE_BYID_REQUEST:
             return {
                 ...state,
-                template: null,
+                taskTemplate: null,
                 loadingById: true,
                 isLoading: true
             };
         case taskTemplateConstants.GETTEMPLATE_BYID_SUCCESS:
             return {
                 ...state,
-                template: action.tasktemplate,
+                taskTemplate: action.payload.content,
                 isLoading: false
             };
         case taskTemplateConstants.GETTEMPLATE_BYID_FAILURE:
             return {
-                
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -116,11 +116,11 @@ export function tasktemplates(state = {}, action) {
             return {
                 ...state,
                 items: state.items.map(template =>
-                    template._id === action.payload.content._id
+                    template.resourceId._id === action.payload.content._id
                         ? action.payload.content
                         : template
                 ),
-                // template: action.payload.content,
+                taskTemplate: action.payload.content,
                 isLoading: false
             };
         case taskTemplateConstants.EDIT_TEMPLATE_FAILURE:
