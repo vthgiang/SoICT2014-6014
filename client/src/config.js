@@ -1,7 +1,7 @@
 import getBrowserFingerprint from 'get-browser-fingerprint';
 
 export const clearStorage = () => {
-    localStorage.removeItem('currentRole');
+    localStorage.removeItem("currentRole");
     localStorage.removeItem('jwt');
     return true;
 };
@@ -16,7 +16,7 @@ export const getStorage = (name='jwt') => {
 
 export const AuthenticateHeader = (name='jwt') => {
     const token = getStorage(name);
-    const currentRole = getStorage('currentRole');
+    const currentRole = getStorage("currentRole");
     const fingerprint = getBrowserFingerprint();
     // console.log(fingerprint);
     return {
@@ -37,7 +37,7 @@ export const FingerPrint = () => {
 
 export const AuthenticateHeaderPATCH = (name='jwt') => {
     const token = getStorage(name);
-    const currentRole = getStorage('currentRole');
+    const currentRole = getStorage("currentRole");
     const fingerprint = getBrowserFingerprint();
     return {
         'current-page': window.location.pathname,

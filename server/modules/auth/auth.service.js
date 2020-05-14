@@ -148,7 +148,7 @@ exports.forgetPassword = async (email) => {
                         text-decoration: none;
                         color: white;
                         " 
-                    href="http://localhost:3000/reset-password?otp=${code}&email=${email}"
+                    href="${process.env.WEBSITE}/reset-password?otp=${code}&email=${email}"
                 >
                     Xác thực
                 </a>

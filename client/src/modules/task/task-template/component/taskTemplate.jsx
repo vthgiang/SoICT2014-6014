@@ -207,9 +207,8 @@ class TaskTemplate extends Component {
                 <div className="box-body qlcv" id="table-task-template">
 
                     <div className = "form-group">
-                        {this.checkHasComponent('create-task-template-button') &&
-                        <button type="button" className="btn btn-success pull-right" data-toggle="modal" title="Thêm mới một mẫu công việc" data-target="#addTaskTemplate" data-backdrop="static" data-keyboard="false">{translate('task_template.add')}</button>}
-                        <ModalAddTaskTemplate />
+                        {this.checkHasComponent('create-task-template-button') &&                        
+                        <ModalAddTaskTemplate />}
                     </div>
                     
                     <div className="form-inline">

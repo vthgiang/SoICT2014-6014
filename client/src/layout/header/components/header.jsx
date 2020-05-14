@@ -113,7 +113,7 @@ class Header extends Component {
     componentDidMount(){
         this.props.refresh();
         
-        const currentRole = getStorage('currentRole');
+        const currentRole = getStorage("currentRole");
         this.props.getLinksOfRole(currentRole)
             .then(res=>{
                 const links = res.data.content;

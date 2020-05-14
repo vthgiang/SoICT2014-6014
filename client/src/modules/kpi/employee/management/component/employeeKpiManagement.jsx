@@ -88,9 +88,60 @@ class KPIPersonalManager extends Component {
                 {/* <section className="content"> */}
                     {/* <div className="row"> */}
                             {/* <div className="box"> */}
-                                <div className="col-sm-12" style={{ fontWeight: "500" }}>
-                                    <h3 className="box-title">Bảng thống kê kpi cá nhân hàng tháng</h3>
-                                </div>
+                                {/* <div className="col-sm-12" style={{ fontWeight: "500" }}>
+                                    <h4 className="box-title">Bảng thống kê kpi cá nhân hàng tháng</h4>
+                                </div> */}
+                                <div className="form-inline">
+                        <div className="form-group">
+                            <label>Nhân viên:</label>
+                            { <select defaultValue="all" className="form-control" ref={input=> this.user = input}>
+                            <option value="all">Tất cả nhân viên</option>
+                            <option value="all">Nhân viên phòng hành chính</option>
+                            <option value="all">Nhân viên phòng giao dịch</option>
+                            {/* <optgroup label={userdepartments[1].roleId.name}>
+                                <option key={userdepartments[1].userId._id} value={userdepartments[1].userId._id}>
+                                {userdepartments[1].userId.name}</option>
+                            </optgroup>
+                            <optgroup label={userdepartments[2].roleId.name}>
+                                <option key={userdepartments[2].userId._id} value={userdepartments[2].userId._id}>
+                                {userdepartments[2].userId.name}</option> */}
+                            {/* </optgroup> */}
+                            </select>}
+                        </div>
+                        <div className="form-group">
+                            <label>Trạng thái:</label>
+                            <select defaultValue={4} className="form-control" ref={input=> this.status = input}>
+                            <option value={0}>Đang thiết lập</option>
+                            <option value={1}>Chờ phê duyệt</option>
+                            <option value={2}>Đã kích hoạt</option>
+                            <option value={3}>Đã kết thúc</option>
+                            <option value={4}>Đang hoạt động</option>
+                            <option value={5}>Tất cả các trạng thái</option>
+                            </select>
+                        </div>
+                        </div>
+
+                        <div className="form-inline">
+                        <div className="form-group">
+                            <label>Từ tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.startDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker2" data-date-format="mm-yyyy" />
+
+                        </div>
+                        <div className="form-group">
+                            <label>Đến tháng:</label>
+
+                            <input type="text" className="form-control" ref={input=> this.endDate = input}
+                            defaultValue={this.formatDate(Date.now())} name="date" id="datepicker6" data-date-format="mm-yyyy" />
+                            <div className="form-group">
+                            <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>Tìm
+                                kiếm</button>
+                            </div>
+
+                        </div>
+
+                        </div>
                                 <DataTableSetting class="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
                                                 columnArr={[ 
                                                     'STT' ,
@@ -139,13 +190,6 @@ class KPIPersonalManager extends Component {
                                     </table>
                                 </div>
                             </div>
-                        // </div>
-                    // </div>
-                                        
-            //     </div>
-            //     {/* </section> */}
-            //     {/* </div> */}
-            // </div>
         )
     }
 

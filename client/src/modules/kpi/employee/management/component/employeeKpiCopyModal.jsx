@@ -4,12 +4,9 @@ import Swal from 'sweetalert2';
 import { managerKpiActions } from '../redux/actions';
 
 import {
-    TOKEN_SECRET
-} from '../../../../../env';
-import {
     getStorage
 } from '../../../../../config';
-import jwt from 'jsonwebtoken';
+
 
 class ModalCopyKPIPersonal extends Component {
     constructor(props) {
@@ -45,9 +42,7 @@ class ModalCopyKPIPersonal extends Component {
     }
     handleSubmit = async (event, oldkpipersonal) => {
         event.preventDefault();
-        const token = getStorage();
-        const verified = await jwt.verify(token, TOKEN_SECRET);
-        var id = verified._id;
+        var id = getStorage("userId");
         kpipersonal.creator = id;
         await this.setState(state => {
             return {

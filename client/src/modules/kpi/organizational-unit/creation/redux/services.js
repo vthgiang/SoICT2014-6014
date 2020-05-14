@@ -1,12 +1,11 @@
 import {handleResponse} from '../../../../../helpers/handleResponse';
 
 import {
-    TOKEN_SECRET, LOCAL_SERVER_API
+    LOCAL_SERVER_API
 } from '../../../../../env';
 import {
     getStorage, AuthenticateHeader
 } from '../../../../../config';
-import jwt from 'jsonwebtoken';
 
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
@@ -39,10 +38,8 @@ function getKPIParent(parentUnit) {
 }
 
 // Khởi tạo KPI đơn vị 
-async function addKPIUnit(newKPI) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var id = verified._id;
+function addKPIUnit(newKPI) {
+    var id = getStorage("userId");
     
     newKPI = {...newKPI, creator: id};
 
@@ -63,11 +60,9 @@ function addTargetKPIUnit(newTarget) {
 }
 
 // Chỉnh sửa KPI đơn vị
-async function editKPIUnit(id, newKPI) {
-    const token = getStorage();
-    const verified = await jwt.verify(token, TOKEN_SECRET);
-    var creator = verified._id;
-    newKPI = {...newKPI, creator: creator};
+function editKPIUnit(id, newKPI) {
+    var id = getStorage("userId");
+    newKPI = {...newKPI, creator: id};
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpiunits/${id}`,
